@@ -23,52 +23,31 @@
 #include "core/logger.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/settings.hpp"
+#include "core/saveadapter.hpp"
 
 using namespace gfx;
 
+namespace {
+GAME_LITERALCONST(Brundisium)
+GAME_LITERALCONST(map)
+GAME_LITERALCONST(sav)
+
+std::string findCityById(int id, const std::string& section)
+{
+  VariantMap vm = config::load( SETTINGS_RC_PATH(citiesIdModel) );
+  VariantMap idsVm = vm.get( section ).toMap();
+  return idsVm.get( utils::i2str( id ), std::string( literals::Brundisium ) );
+}
+}
+
 std::string LoaderHelper::getDefaultCityName(unsigned int location)
 {
-  switch( location )
-  {
-  case 0: return "Brundisium";
-  case 1: return "Corinthus";
-  case 2: return "Londinium";
-  case 3: return "Mediolanum";
-  case 4: return "Lindum";
-  case 5: return "Toletum";
-  case 6: return "Valentia";
-  case 7: return "Caesarea";
-  case 8: return "Carthago";
-  case 9:  return "Cyrene";
-  case 30: return "Carthago";
-  case 10: return "Tarraco";
-  case 11: return "Hierosolyma";
-  case 15: case 25: return "Tarraco";
-  case 12: return "Hierosolyma";
-  case 13: case 28: return "Toletum";
-  case 14: case 26: return "Syracusae";
-  case 16: case 31: return "Tarsus";
-  case 17: case 32: return "Tingis";
-  case 18: return "Augusta Trevorum";
-  case 19: return "Carthago Nova";
-  case 20: return "Leptis Magna";
-  case 21: return "Athenae";
-  case 22: return "Brundisium";
-  case 23: return "Capua";
-  case 24: return "Tarentum";
-  case 27: return "Miletus";
-  case 29: return "Lugdunum";
-  case 33: return "Valentia";
-  case 34: return "Lutetia";
-  case 35: return "Mediolanum";
-  case 36: return "Sarmizegetusa";
-  case 37: return "Londinium";
-  case 38: return "Damascus";
-  case 39: return "Massilia";
-  case 40: return "Lindum";
-  }
+  return findCityById(location, literals::map);
+}
 
-  return "unknown city";
+std::string LoaderHelper::getDefaultCityNameSav(unsigned int location)
+{
+  return findCityById(location, literals::sav);
 }
 
 object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )

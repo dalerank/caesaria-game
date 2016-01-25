@@ -3201,6 +3201,753 @@
     <ClCompile Include="..\..\source\city\wrath_of_venus.cpp">
       <Filter>sources\city</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\objects\actor_colony.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\amphitheater.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\aqueduct.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\barber.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\barracks.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\baths.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\bridge.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\building.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\clay_pit.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\coast.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\coastalbuilding.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\colosseum.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\constants.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\construction.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\dock.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\doctor.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\education.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\elevation.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\engineer_post.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\entertainment.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\extension.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\factory.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\farm.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\fort.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\fortification.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\forum.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\fountain.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\furniture_workshop.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\garden.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\gatehouse.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\goverment.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\granary.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\health.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\high_bridge.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\hippodrome.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\hospital.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\house.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\house_habitants.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\house_plague.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\house_spec.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\infodb.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\ironmine.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\low_bridge.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\marble_quarry.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\market.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\meadow.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\metadata.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\military.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\military_academy.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\missionarypost.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\native.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\objects_factory.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\overlay.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\params.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\pottery.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\prefecture.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\religion.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\rift.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\river.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\road.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\road_block.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\rock.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\ruins.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\senate.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\service.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\shipyard.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\sight.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\terrain.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\theater.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\timber_logger.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\tower.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\training.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\tree.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\wall.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\warehouse.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\warehouse_store.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\water.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\watersupply.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\waymark.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\weaponsworkshop.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\well.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\wharf.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\winery.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\working.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\objects\workshop_chariot.cpp">
+      <Filter>sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\ability.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\animals.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\balista.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\bow_arrow.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\cart_pusher.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\cart_supplier.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\chastener.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\chastener_elephant.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\circus_charioter.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\corpse.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\dock_pusher.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\dustcloud.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\emigrant.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\enemyarcher.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\enemysoldier.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\engineer.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\fish_place.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\fishing_boat.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\helper.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\human.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\immigrant.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\indigene.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\info.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\lion.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\lion_tamer.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\locust.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\market_buyer.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\market_kid.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\market_lady.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\merchant.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\merchant_camel.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\merchant_land.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\merchant_sea.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\mugger.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\patrician.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\patrolpoint.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\prefect.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\protestor.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\rioter.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\river_wave.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\romearcher.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\romehorseman.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\romesoldier.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\serviceman.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\ship.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\soldier.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\spear.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\taxcollector.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\thinks.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\throwing_weapon.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\trainee.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\walker.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\walkers_factory.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\wallguard.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\watergarbage.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\walker\workerhunter.cpp">
+      <Filter>sources\walkers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\build.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\changebuildingoptions.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\changeemperor.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\changeempireoptions.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\changehomeoptions.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\changespeed.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\cityindebt.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\clearland.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\contaminated_water.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\disaster.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\distant_battle.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\earthquake.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\enemy_attack.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\event.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\factory.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\fireworkers.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\fishplace.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\fundissue.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\gladiator_revolt.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\loadgame.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\militarythreat.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\missionwin.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\movecamera.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\notification.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\playsound.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\postpone.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\random_animals.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\random_damage.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\random_fire.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\random_plague.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\ranged.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\removecitizen.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\removegoods.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\requestdestroy.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\returnworkers.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\savegame.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\scribemessage.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\setsoundoptions.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\setvideooptions.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showadvisorwindow.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showempiremapwindow.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showfeastwindow.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showinfobox.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showlayer.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showrequestwindow.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showtileinfo.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\showtutorialwindow.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\start_work.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\trading_options.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\undo_action.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\updatecitysentiment.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\updatefavour.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\updatehouseservice.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\events\warningmessage.cpp">
+      <Filter>sources\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\ceres.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\divinities.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\mars.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\mercury.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\neptune.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\pantheon.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\romedivinity.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\religion\venus.cpp">
+      <Filter>sources\religion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\pathway\astarpathfinding.cpp">
+      <Filter>sources\pathway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\pathway\path_finding.cpp">
+      <Filter>sources\pathway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\pathway\pathway.cpp">
+      <Filter>sources\pathway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\pathway\pathway_helper.cpp">
+      <Filter>sources\pathway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\good.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\helper.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\orders.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\productmap.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\stock.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\storage.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\store.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\good\turnover.cpp">
+      <Filter>sources\good</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\aborigens.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\build.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\commodity_turnover.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\constants.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\constructor.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\crime.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\damage.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\desirability.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layer.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerdestroy.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layereducation.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerentertainment.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerfire.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerfood.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerhealth.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerinfo.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerreligion.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layersimple.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layertax.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layertroubles.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\layerwater.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\market_access.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\sentiment.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\layers\unemployed.cpp">
+      <Filter>sources\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\scene\briefing.cpp">
+      <Filter>sources\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\scene\level.cpp">
+      <Filter>sources\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\sound\themeplayer.cpp">
+      <Filter>sources\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\archive_sg2.cpp">
+      <Filter>sources\vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\archive_zip.cpp">
+      <Filter>sources\vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\fileinfo.cpp">
+      <Filter>sources\vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\vfs\memfile.cpp">
+      <Filter>sources\vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\recursive_mutex.cpp">
+      <Filter>sources\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\safethread.cpp">
+      <Filter>sources\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\main.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\city\ambientsound.hpp" />
@@ -6055,8 +6802,17 @@
     <Filter Include="sources\audio">
       <UniqueIdentifier>{283bc4f9-41ec-4b2b-aaba-d05746853579}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\NewFilter1">
-      <UniqueIdentifier>{4e04d151-0531-450e-b167-d48690c22536}</UniqueIdentifier>
+    <Filter Include="sources\religion">
+      <UniqueIdentifier>{1aded863-96f7-46f3-9d0f-78a05f902228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\pathway">
+      <UniqueIdentifier>{63d9cde9-6444-4f62-b9ac-fd6f05350360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\good">
+      <UniqueIdentifier>{58587540-e777-49f7-bb8f-796adefd11d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\layers">
+      <UniqueIdentifier>{a6413ed8-6af2-4b5a-a71c-78d7f1e417e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

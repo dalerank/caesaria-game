@@ -34,7 +34,7 @@ class Widget;
 class WidgetCalc
 {
 public:
-  WidgetCalc(Widget &parent, const VariantMap& vars, int rwidth);
+  WidgetCalc(Widget &parent, const VariantMap& vars);
   double eval( const std::string& str );
 
 private:

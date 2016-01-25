@@ -114,6 +114,7 @@ public:
   __GS_PROPERTY(logoImageIndex)
   __GS_PROPERTY(showLastChanges)
   __GS_PROPERTY(lastChangesNumber)
+  __GS_PROPERTY(citiesIdModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();
