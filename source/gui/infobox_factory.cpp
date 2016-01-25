@@ -88,17 +88,17 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
   if( factory->produceGoodType() != good::none )
   {
-    add<Image>( Point( 10, 10), good::Helper::picture( factory->produceGoodType() ) );
+    add<Image>( Point( 10, 10), good::Info( factory->produceGoodType() ).picture() );
   }
 
   // paint picture of in good
   if( factory->inStock().type() != good::none )
   {
     Label& lbStockInfo = add<Label>( Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
-    lbStockInfo.setIcon( good::Helper::picture( factory->inStock().type() ) );
+    lbStockInfo.setIcon( good::Info( factory->inStock().type() ).picture() );
 
-    std::string whatStock = fmt::format( "##{0}_factory_stock##", good::Helper::getTypeName( factory->consumeGoodType() ) );
-    std::string typeOut = fmt::format( "##{0}_factory_stock##", good::Helper::getTypeName( factory->produceGoodType() ) );
+    std::string whatStock = fmt::format( "##{0}_factory_stock##", good::Helper::name( factory->consumeGoodType() ) );
+    std::string typeOut = fmt::format( "##{0}_factory_stock##", good::Helper::name( factory->produceGoodType() ) );
     std::string text = utils::format( 0xff, "%d %s %d %s",
                                       factory->inStock().qty() / 100,
                                       _(whatStock),

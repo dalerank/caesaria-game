@@ -40,6 +40,11 @@ public:
   State state;
   bool spreadFire;
   DateTime lastTimeGrow;
+  struct {
+    enum { size=4 };
+    int itiles[size] = {0x6B8231, 0x103808, 0x103008, 0x737931};
+    int jtiles[size] = {0x102008, 0x737929, 0x526921, 0x084910};
+  } mmapColors;
 };
 
 Tree::Tree()
@@ -212,4 +217,12 @@ void Tree::_die()
   _d->flat = false;
   _animation().clear();
   _fgPictures().clear();
+}
+
+bool Tree::getMinimapColor(int& color1, int& color2) const
+{
+  const int size = _d->mmapColors.size;
+  color1 = _d->mmapColors.itiles[ pos().i() % size ];
+  color2 = _d->mmapColors.itiles[ pos().j() % size ];
+  return true;
 }

@@ -63,10 +63,11 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
     rect.setBottom( rect.top() + 30 );
     rect.setLeft( rect.left() + 40 );
 
-    Label& goodLabel = add<Label>( rect, good::Helper::getTypeName( gtype ) );
+    good::Info info( gtype );
+    Label& goodLabel = add<Label>( rect, info.name() );
     goodLabel.setTextAlignment( align::upperLeft, align::center );
     goodLabel.setTextOffset( Point( 30, 0 ) );
-    goodLabel.setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
+    goodLabel.setIcon( info.picture(), Point( 0, 7 ) );
   }
 
   setModal();

@@ -470,3 +470,10 @@ const Picture& Aqueduct::picture() const
 {
   return WaterSource::picture();
 }
+
+bool Aqueduct::getMinimapColor(int& color1, int& color2) const
+{
+  color1 = 0x31417B;
+  color2 = 0x314173;
+  return true;
+}

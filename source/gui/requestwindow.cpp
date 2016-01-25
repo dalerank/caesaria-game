@@ -77,10 +77,10 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     INIT_WIDGET_FROM_UI(Label*, lbTitle )
 
     if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
-    if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
+    if( imgIcon ) { imgIcon->setPicture( gr->info().picture() ); }
 
     std::string title, text, video;
-    if( gr->goodType() == good::denaries )
+    if( gr->info().type() == good::denaries )
     {
       text = "##rome_need_some_goods##";
       title = "##emperor_request_money##";
@@ -101,7 +101,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
     int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );
-    if( lbInterval ) { lbInterval->setText( utils::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
+    if( lbInterval ) { lbInterval->setText( fmt::format( "{} {}", month2Comply, _( "##months_to_comply##") ) ); }
 
     video = _d->video.empty() ? video : _d->video;
     if( smkViewer ) { smkViewer->setFilename( video ); }

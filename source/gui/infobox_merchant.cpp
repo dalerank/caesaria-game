@@ -87,12 +87,11 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
   std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
-  gfx::Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
   auto& label = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
   label.setFont( FONT_2 );
-  label.setIcon( pic );
+  label.setIcon( good::Info( goodType ).picture() );
   label.setText( outText );
   label.setTextOffset( Point( 30, 0 ) );
 }

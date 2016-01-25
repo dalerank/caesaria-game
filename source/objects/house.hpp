@@ -51,6 +51,7 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
   virtual bool build( const city::AreaInfo& info );
+  virtual bool getMinimapColor(int& color1, int& color2) const;
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual double state( Param param) const;

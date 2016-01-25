@@ -54,12 +54,12 @@ RequestButton::RequestButton(Widget* parent, const Point& pos, int index, Reques
   : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp ),
     __INIT_IMPL(RequestButton)
 {
-  __D_IMPL(d,RequestButton)
-  d->request = request;
+  __D_REF(d,RequestButton)
+  d.request = request;
 
-  auto goodRequest = d->request.as<GoodRequest>();
+  auto goodRequest = d.request.as<GoodRequest>();
   if( goodRequest.isValid() )
-    d->goodPic = good::Helper::picture( goodRequest->goodType() );
+    d.goodPic = goodRequest->info().picture();
 
   _finalizeResize();
 
@@ -78,7 +78,7 @@ void RequestButton::_updateTexture()
     int month2comply = game::Date::current().monthsTo( goodRequest->finishedDate() );
 
     canvasDraw( utils::i2str( goodRequest->qty() ), Point( 2, 2 ), font );
-    canvasDraw( good::Helper::getTypeName( goodRequest->goodType() ), Point( 60, 2 ), font );
+    canvasDraw( goodRequest->info().name(), Point( 60, 2 ), font );
     canvasDraw( fmt::format( "{} {}", month2comply, _( "##rqst_month_2_comply##") ), Point( 250, 2 ), font );
     canvasDraw( goodRequest->description(), Point( 5, height() - 20 ), font );
   }

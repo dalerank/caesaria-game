@@ -69,7 +69,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   Size lbSize( width() - 32, 30 );
   Label& lb = add<Label>( Rect( lbStartPos, lbSize ), denariesStr );
-  lb.setIcon( good::Helper::picture( good::denaries ) );
+  lb.setIcon( good::Info( good::denaries ).picture() );
   lb.setTextOffset( Point( 30, 0 ));
 
   std::string taxThisYearStr = fmt::format( "{} {}", _("##senate_thisyear_tax##"), senate->thisYearTax() );

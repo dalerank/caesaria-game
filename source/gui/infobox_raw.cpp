@@ -66,8 +66,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( rawmb->produceGoodType() != good::none )
   {
-    Picture pic = good::Helper::picture( rawmb->produceGoodType() );
-    add<Image>( Point( 10, 10 ), pic );
+    add<Image>( Point( 10, 10 ), good::Info( rawmb->produceGoodType() ).picture() );
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );

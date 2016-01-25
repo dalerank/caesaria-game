@@ -36,6 +36,7 @@ public:
   virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   virtual std::string sound() const;
   virtual const gfx::Picture& picture() const;
+  virtual bool getMinimapColor(int &color1, int &color2) const;
 
   void updatePicture(PlayerCityPtr city);
   void addRoad();

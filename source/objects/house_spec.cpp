@@ -762,13 +762,13 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
     for( auto& v : varConsumptions )
     {
-      spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
+      spec._d->consumptionMuls[ good::Helper::type( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
     for( auto& it : vmTextures )
     {
-      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
+      std::string arName = fmt::format( "h{}_{}", spec._d->houseLevel, it.first );
       StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];

@@ -30,16 +30,16 @@ namespace good
 
 class Helper
 {
+  friend class Info;
 public:
   static Helper& instance();
 
-  static const std::string &name( good::Product type );
-  static gfx::Picture picture( good::Product type, bool emp=false );
-  static good::Product getType( const std::string& name );
-  static std::string getTypeName( good::Product type );
+  static const std::string& name(Product type);
+  static good::Product type( const std::string& name );
 
   static float exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty);
   static float importPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty);
+
   static good::Product random();
   ~Helper();
 private:
@@ -47,6 +47,22 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class Info
+{
+public:
+  typedef enum { importing=0, exporting } PriceType;
+  Info();
+  Info( good::Product type );
+
+  const std::string& name() const;
+  gfx::Picture picture(bool emp=false) const;
+  inline Product type() const { return _type; }
+
+  float price( PlayerCityPtr city, PriceType inOut ) const;
+private:
+  Product _type;
 };
 
 }//end namespace good

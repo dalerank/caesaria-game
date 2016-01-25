@@ -454,9 +454,10 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   {
     if( sellgoods.capacity( product ) > 0  )
     {
+      good::Info info( product );
       Label& lb = gbox->add<Label>( Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture( good::Helper::picture( product, true) );
-      lb.setTooltipText( good::Helper::getTypeName( product ) );
+      lb.setBackgroundPicture( info.picture(true) );
+      lb.setTooltipText( info.name() );
       k++;
     }
   }
@@ -470,9 +471,10 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   {
     if( buygoods.capacity( product ) > 0  )
     {
+      good::Info info( product );
       Label& lb = gbox->add<Label>( Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture(  good::Helper::picture( product, true) );
-      lb.setTooltipText( good::Helper::getTypeName( product ) );
+      lb.setBackgroundPicture( info.picture(true) );
+      lb.setTooltipText( info.name() );
       k++;
     }
   }
@@ -495,7 +497,7 @@ public:
   {
     setText( fmt::format( "{}/{}", current, maxv ) );
     setTextOffset( Point( 30, 0 ) );
-    setIcon( good::Helper::picture( type, true), Point( 3, 3 ) );
+    setIcon( good::Info(type).picture(true), Point( 3, 3 ) );
   }
 };
 

@@ -107,9 +107,9 @@ Helper::Helper() : _d( new Impl )
 {  
 }
 
-Picture Helper::picture(Product type, bool emp )
+Picture Info::picture(bool emp) const
 {
-  const PicId& info = defaultsPicId[ type ];
+  const PicId& info = defaultsPicId[ _type ];
 
   int picId = emp ? info.emp : info.local;
   
@@ -129,7 +129,7 @@ const std::string& Helper::name(Product type )
   return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
 }
 
-Product Helper::getType( const std::string& name )
+Product Helper::type( const std::string& name )
 {
   good::Product type = instance()._d->findType( name );
 
@@ -141,11 +141,6 @@ Product Helper::getType( const std::string& name )
   }
 
   return type;
-}
-
-std::string Helper::getTypeName(Product type )
-{
-  return instance()._d->findName( type );
 }
 
 float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty)
@@ -165,6 +160,21 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 Product Helper::random()
 {
   return Product( math::random( good::all().size()-1 ));
+}
+
+Info::Info() : _type( none ) {}
+Info::Info(Product type) : _type( type ) {}
+
+const std::string& Info::name() const
+{
+  return Helper::name( _type );
+}
+
+float Info::price( PlayerCityPtr city, Info::PriceType inOut) const
+{
+  return (inOut == exporting)
+          ? Helper::exportPrice( city, _type, 1 )
+          : Helper::importPrice( city, _type, 1 );
 }
 
 }//end namespace good
