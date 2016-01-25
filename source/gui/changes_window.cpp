@@ -11,7 +11,7 @@ ChangesWindow::ChangesWindow(Widget * parent, const Rect & rect, const std::stri
 {
   setupUI(fmt::format(":/changes/{}.changes", number));
 
-  auto& btn = add<PushButton>(Rect(13, width() - 36, 13 + 300, width() - 12), "Don't show this message", 0xff, false, PushButton::whiteBorderUp);
+  auto& btn = add<PushButton>(Rect(13, width() - 36, 13 + 300, width() - 12), "", 0xff, false, PushButton::whiteBorderUp);
   CONNECT(&btn, onClicked(), this, ChangesWindow::hideAlways)
   update();
 }
@@ -22,13 +22,14 @@ void ChangesWindow::update()
   if (button)
   {
     bool showChanges = KILLSWITCH(showLastChanges);
-    button->setText(showChanges ? "Hide changes" : "Show changes");
+    button->setText(showChanges ? "Don't show this window" : "Show this window on start");
   }
 }
 
 void ChangesWindow::hideAlways() 
 { 
-  SETTINGS_SET_VALUE(showLastChanges, false); 
+  bool showChanges = KILLSWITCH(showLastChanges);
+  SETTINGS_SET_VALUE(showLastChanges, !showChanges);
   update();
 }
 

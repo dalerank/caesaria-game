@@ -4,6 +4,9 @@
 "##city_barbarian_off_tlp##":"Barbarians will not attack your city",
 "##city_barbarian_off##":"Barbarians : OFF",
 "##city_roadblock_off##":"Roadblocks : OFF",
+"##window_changes_title##":"Changes in this update",
+"##mainmenu_showlog##":"Show log file",
+"##mainmenu_changes##":"Show changes",
 "##city_metric##":"City metrics",
 "##city_roadblock_on##":"Roadblocks : ON",
 "##quantity##":"game ",
@@ -17,7 +20,8 @@
 "##city_c3rules_off_tlp##":"The game will use the rules of the game Caesar III and new",
 "##city_c3rules_on_tlp##":"When the game will be used only rules of the game Caesar III",
 "##city_c3rules_off##":"C3 rules + new rules",
-"##city_c3rules_on##":"С3 rules only",
+"##city_c3rules_on##":"
+С3 rules only",
 "##city_df_usual_tlp##":"Normal difficulty level, crime and taxes",
 "##city_df_hard_tlp##":"Increased risk of riots, reduced taxes",
 "##mainmenu_constructor##":"Map editor ",
@@ -27,12 +31,17 @@
 "##city_df_easy_tlp##":"Weak risk revolts, higher taxes, almost never interfere with the gods",
 "##city_df_simple_tlp##":"The usual risk of uprisings,no corruption, the usual tax rate",
 "##city_df_usual##":"Normal difficulty",
-"##city_df_hard##":"Hard to play",
+"##city_df_hard##":"Hard to play
+",
 "##city_df_nicety##":"Very hard to play",
-"##city_df_impossible##":"Impossible",
-"##city_df_fun##":"For fun",
-"##city_df_easy##":"Easy to play",
-"##city_df_simple##":"Simple to play",
+"##city_df_impossible##":"Impossible
+",
+"##city_df_fun##":"For fun
+",
+"##city_df_easy##":"Easy to play
+",
+"##city_df_simple##":"Simple to play
+",
 "##city_opts_god_on_tlp##":"Gods affect the life of the city",
 "##city_opts_god_off_tlp##":"Gods are not interested in your city",
 "##city_chastener_on_tlp##":"Caesar may send death squads",
@@ -41,8 +50,10 @@
 "##city_chastener_off##":"Caesar legions : OFF",
 "##city_androidbar_on_tlp##":"Show window for mobile devices",
 "##city_androidbar_off_tlp##":"Panel for mobile devices does not appear",
-"##city_androidbar_on##":"Adv. actions : SHOW",
-"##city_androidbar_off##":"Adv. actions : HIDE",
+"##city_androidbar_on##":"Adv. actions : SHOW
+",
+"##city_androidbar_off##":"Adv. actions : HIDE
+",
 "##city_debug_on_tlp##":"Debug menu is available",
 "##city_debug_off_tlp##":"Debug menu is hidden",
 "##city_debug_on##":"Debug menu : SHOW",
@@ -55,10 +66,14 @@
 "##city_forest_grow_on_tlp##":"The forest can grow",
 "##city_highlight_bld_off_tlp##":"The selected building is not highlithed",
 "##city_highlight_bld_on_tlp##":"The selected building is highlighted",
-"##city_destroy_epdh_off##":"Ext. epidemic rules",
-"##city_destroy_epdh_on##":"Simple epidemic rules",
-"##city_forest_fire_on##":"Forest : can fired",
-"##city_forest_fire_off##":"Forest : no fired",
+"##city_destroy_epdh_off##":"Ext. epidemic rules
+",
+"##city_destroy_epdh_on##":"Simple epidemic rules
+",
+"##city_forest_fire_on##":"Forest : can fired
+",
+"##city_forest_fire_off##":"Forest : no fired
+",
 "##city_forest_grow_off##":"Forest : not grow",
 "##city_forest_grow_on##":"Forest : grow",
 "##city_highlight_bld_off##":"Sel. building : not highlithed",
@@ -81,8 +96,10 @@
 "##city_mapmoving_mmb##":"Moving map : middle mouse button",
 "##city_tooltips_on##":"Show hints : ON",
 "##city_tooltips_off##":"Show hints : OFF",
-"##city_batching_on##":"Batching : ON",
-"##city_batching_off##":"Batching : OFF",
+"##city_batching_on##":"Batching : ON
+",
+"##city_batching_off##":"Batching : OFF
+",
 "##city_ccuseai_on##":"Comp. city : AI",
 "##city_ccuseai_off##":"Comp. city : Sript",
 "##city_warnings_on_tlp##":"Included debugging messages",
@@ -108,7 +125,8 @@
 "##aqueduct_info##":"Aqueducts allow reservoir construction away from water, thus allowing fountains to give drinking water to inland areas of a city.",
 "##actor##":"Actor",
 "##water_text##":"Impassable, but may be bridged at certain points. Water is often a vital trade link to the rest of the Empire via the construction of docks. Clay pits must be adjacent to water.",
-"##advchief_haveprofit##":"This year assets have risen by",
+"##advchief_haveprofit##
+":"This year assets have risen by",
 "##advchief_havedeficit##":"This year assets have fallen by",
 "##granery##":"Granary",
 "##granary_holds##":"Granary holds",
@@ -394,7 +412,8 @@
 "##market_kid_say_1##":"That fat lady up front told me to carry this and follow her!",
 "##sldr_encouraged##":"Encouraged",
 "##gatehouse##":"Gatehouse",
-"##more_8_month_from_festival##":"The memory of the earlier festival is fading from people's minds.",
+"##more_8_month_from_festival##
+":"The memory of the earlier festival is fading from people's minds.",
 "##east##":"East",
 "##delighted##":"Delighted",
 "##lionTamer_average_life##":"Here's some foreign meat for you Leo!",
@@ -578,7 +597,8 @@
 "##bath_access##":"Bath access",
 "##barber_access##":"Barber access",
 "##ovrm_market##":"Market access",
-"##formation_available_for_trained_troops##":"Only available to troops trained at a military academy.",
+"##formation_available_for_trained_troops##
+":"Only available to troops trained at a military academy.",
 "##debet##":"Income",
 "##timber##":"Timber",
 "##spirit_of_mars_text##":"The spirit guardian conjured by Mars to protect you awakens, and lays low some of those who dare to attack his chosen city.",
@@ -849,7 +869,8 @@
 "##column_info##":"Column formation",
 "##ovrm_commerce##":"Commerce",
 "##consul##":"Consul",
-"##mainmenu_dlc_concepts##":"Concepts",
+"##mainmenu_dlc_concepts##":"Concepts
+",
 "##spear##":"Spear",
 "##fort_javelin##":"Javelin",
 "##high_bridge##":"Ship bridge",
@@ -1279,7 +1300,8 @@
 "##floatsam##":"Flotsam",
 "##mainmenu_dlc_wallpapers##":"Wallpapers",
 "##legion##":"Legion",
-"##blessing_of_mercury_text##":"",
+"##blessing_of_mercury_text##
+":"",
 "##blessing_of_mercury_description##":"Delighted by your devotion to him, Mercury has uncovered hidden produce in a city granary.",
 "##advchief_education##":"Education",
 "##education_advisor_title##":"Education",
@@ -1713,8 +1735,10 @@
 "##nearby_building_negative_effect##":"A nearby building {0} is having a detrimental effect on the desirability of the location. Try placing gardens, statues or plazas, for example.",
 "##advpopulation_text_census##":"Population composition by age (in years)",
 "##advpopulation_text_society##":"Population composition by income",
-"##save_already_exist##":"Save with this name already exist. Continue?",
-"##savedlg_continue##":"Save",
+"##save_already_exist##":"Save with this name already exist. Continue?
+",
+"##savedlg_continue##":"Save
+",
 "##gmenu_file_save##":"Save game",
 "##save_city##":"Save game",
 "##save_map##":"Save map",
@@ -2200,7 +2224,8 @@
 "##scholar_so_hungry##":"I'm starving!",
 "##month_1_short##":"Jan",
 "##build_senate_for_advisors##":"Build senate before",
-"##click_on_city_for_info_tlp##":"Click city for more info",
+"##click_on_city_for_info_tlp##":"Click city for more info
+",
 "##farm_working_bad##":"",
 "##farm_working_normally##":"",
 "##god_mercury_short##":"",

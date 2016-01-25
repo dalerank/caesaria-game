@@ -2,8 +2,12 @@
 "##have_no_food_on_next_month##":"- pas de nourriture pour le prochain mois",
 "##small_food_on_next_month##":"Peu de nourriture pour le prochain mois",
 "##city_barbarian_off_tlp##":"Les barbares n'attaqueront pas votre citée",
-"##city_barbarian_off##":"Barbares : Désactivés",
+"##city_barbarian_off##":"
+Barbares : Désactivés",
 "##city_roadblock_off##":"",
+"##window_changes_title##":"",
+"##mainmenu_showlog##":"",
+"##mainmenu_changes##":"",
 "##city_metric##":"",
 "##city_roadblock_on##":"",
 "##quantity##":"",
@@ -30,7 +34,8 @@
 "##city_df_hard##":"Difficile",
 "##city_df_nicety##":"Trés difficile",
 "##city_df_impossible##":"Impossible",
-"##city_df_fun##":"Détente",
+"##city_df_fun##":"Détente
+",
 "##city_df_easy##":"Facile",
 "##city_df_simple##":"Simple",
 "##city_opts_god_on_tlp##":"Les dieux agissent sur la citée",
@@ -48,7 +53,8 @@
 "##city_debug_on##":"Menu de Debug : Affiché",
 "##city_debug_off##":"Menu de Debug : Caché",
 "##city_destroy_epdh_off_tlp##":"Les préfets brûle seulement les maison atteinte d'épidémie",
-"##city_destroy_epdh_on_tlp##":"Les préfets brûle les maison attainte d'épidémie ainsi que les bâtiments adjacents",
+"##city_destroy_epdh_on_tlp##":"Les préfets brûle les maison attainte d'épidémie ainsi que les bâtiments adjacents
+",
 "##city_forest_fire_on_tlp##":"Le feu peut se transmettre des bâtiments aux forêts",
 "##city_forest_fire_off_tlp##":"Le feu ne peut pas se transmettre des bâtiments aux forêts",
 "##city_forest_grow_off_tlp##":"Les forêts ne pousserons pas",
@@ -56,7 +62,8 @@
 "##city_highlight_bld_off_tlp##":"Le bâtiment sélectionné est en surbrillance",
 "##city_highlight_bld_on_tlp##":"Le bâtiment sélectionné n'est pas en surbrillance",
 "##city_destroy_epdh_off##":"Régles d'épidémies étendues",
-"##city_destroy_epdh_on##":"Régles d'épidémies simples",
+"##city_destroy_epdh_on##":"Régles d'épidémies simples
+",
 "##city_forest_fire_on##":"Forêt : Peuvent s'enflammer",
 "##city_forest_fire_off##":"Forêt : Ne peuvent pas s'enflammer",
 "##city_forest_grow_off##":"Forêt : Poussent",
@@ -108,7 +115,8 @@
 "##aqueduct_info##":"les aqueducs permettent la construction de réservoirs distants de l'eau, ce qui permet aux fontaines de fournir de l'eau potable aux emplacements éloignés des berges",
 "##actor##":"Acteur",
 "##water_text##":"",
-"##advchief_haveprofit##":"Cette année les profits ont augmenté de",
+"##advchief_haveprofit##
+":"Cette année les profits ont augmenté de",
 "##advchief_havedeficit##":"Cette année les profits ont diminué de",
 "##granery##":"Grenier",
 "##granary_holds##":"Le grenier détient",
@@ -394,7 +402,8 @@
 "##market_kid_say_1##":"La grosse dame là-bas m'a dit de porter ça et de la suivre !",
 "##sldr_encouraged##":"Encouragé",
 "##gatehouse##":"Corps de garde",
-"##more_8_month_from_festival##":"Le peuple se souvient de l'ancien festival.",
+"##more_8_month_from_festival##
+":"Le peuple se souvient de l'ancien festival.",
 "##east##":"Est",
 "##delighted##":"",
 "##lionTamer_average_life##":"Ave citoyen ! J'aime bien cette ville, pas vous ?",
@@ -578,7 +587,8 @@
 "##bath_access##":"Accès aux thermes",
 "##barber_access##":"Accès au barbier",
 "##ovrm_market##":"",
-"##formation_available_for_trained_troops##":"Uniquement disponible pour les troupes formées dans une académie militaire.",
+"##formation_available_for_trained_troops##
+":"Uniquement disponible pour les troupes formées dans une académie militaire.",
 "##debet##":"Revenus",
 "##timber##":"",
 "##spirit_of_mars_text##":"",
@@ -1279,7 +1289,8 @@
 "##floatsam##":"",
 "##mainmenu_dlc_wallpapers##":"Fonds d'écran",
 "##legion##":"Légion",
-"##blessing_of_mercury_text##":"",
+"##blessing_of_mercury_text##
+":"",
 "##blessing_of_mercury_description##":"",
 "##advchief_education##":"Education",
 "##education_advisor_title##":"Education",
@@ -1443,7 +1454,9 @@
 "##send_lavish_gift##":"",
 "##send_modest_gift##":"",
 "##send_generous_gift##":"",
-"##engineer_low_entertainment##":"Rien de tel après une dure journée de travail que de se détendre en allant voir un spéctacle ou un beau combat. Mais ce n'est pas dans cette cité que je pourrais faire çà.",
+"##engineer_low_entertainment##":"Rien de tel après une dure journée de travail que de se détendre en 
+allant voir un spéctacle ou un beau combat. Mais ce n'est pas dans cette
+ cité que je pourrais faire çà.",
 "##barber_need_colloseum##":"Après une journée passée à couper les cheveux, tout ce que je demande est un combat de lions. Aucune chance d'assister à ça ici !",
 "##show_spots_of_city_troubles_tip##":"",
 "##barber_good_life##":"Quelle cité merveilleuse. C'est un plaisir d'y travailler.",
@@ -1699,7 +1712,8 @@
 "##infobox_construction_comma_tip##":"",
 "##trade_advisor##":"Conseiller commercial",
 "##advisors##":"Conseillers",
-"##gmenu_advisors##":"Rapports",
+"##gmenu_advisors##":"Rapports
+",
 "##soldier##":"Soldat",
 "##soldiers_in_legion##":"",
 "##egift_soldier_from_pergamaum##":"Un soldat de Pergamum",

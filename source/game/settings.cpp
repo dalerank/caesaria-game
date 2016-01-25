@@ -409,7 +409,7 @@ int Settings::findLastChanges()
   int maxFoundChanges = 0;
   for ( const auto& item : entries)
   {
-    VariantMap vm = config::load(item.name);
+    VariantMap vm = config::load(item.fullpath);
     maxFoundChanges = math::max(maxFoundChanges, vm.get("revision", 0).toInt() );
   }
   return maxFoundChanges;

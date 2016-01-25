@@ -4,6 +4,9 @@
 "##city_barbarian_off_tlp##":"Barbarer kommer inte attakera din stad",
 "##city_barbarian_off##":"Barbarer: AV",
 "##city_roadblock_off##":"",
+"##window_changes_title##":"",
+"##mainmenu_showlog##":"",
+"##mainmenu_changes##":"",
 "##city_metric##":"",
 "##city_roadblock_on##":"",
 "##quantity##":"",
@@ -19,7 +22,8 @@
 "##city_c3rules_off##":"C3 regler + nya regler",
 "##city_c3rules_on##":"C3 regler bara",
 "##city_df_usual_tlp##":"Normal svårighetsgrad, brott och skatter",
-"##city_df_hard_tlp##":"Ökadade risker för upplopp, lägre skatter",
+"##city_df_hard_tlp##":"Ökadade risker för upplopp, lägre skatter
+",
 "##mainmenu_constructor##":"",
 "##city_df_nicety_tlp##":"",
 "##city_df_impossible_tlp##":"",
@@ -27,7 +31,8 @@
 "##city_df_easy_tlp##":"Liten risk för uppror, höga skatter, nästan ingen påverkan från gudarna",
 "##city_df_simple_tlp##":"Normal risk för uppror, ingen korruption, normala skatter",
 "##city_df_usual##":"Normal svårighetsgrad",
-"##city_df_hard##":"Ökad svårighetsgrad",
+"##city_df_hard##":"Ökad svårighetsgrad
+",
 "##city_df_nicety##":"Mycket hög svårighetsgrad",
 "##city_df_impossible##":"Omöjligt",
 "##city_df_fun##":"För skoj skull",
@@ -49,14 +54,17 @@
 "##city_debug_off##":"Debugmeny: DÖLJ",
 "##city_destroy_epdh_off_tlp##":"Staden påverkas inte av epedimier",
 "##city_destroy_epdh_on_tlp##":"Staden påverkas av epedimier",
-"##city_forest_fire_on_tlp##":"Skogen kan fatta eld",
-"##city_forest_fire_off_tlp##":"Skogen kan inte fatta eld",
+"##city_forest_fire_on_tlp##":"Skogen kan fatta eld
+",
+"##city_forest_fire_off_tlp##":"Skogen kan inte fatta eld
+",
 "##city_forest_grow_off_tlp##":"Skogen vill inte växa",
 "##city_forest_grow_on_tlp##":"Skogen kan växa",
 "##city_highlight_bld_off_tlp##":"",
 "##city_highlight_bld_on_tlp##":"",
 "##city_destroy_epdh_off##":"Ext. epidemi regler",
-"##city_destroy_epdh_on##":"Enkla epidemi regler",
+"##city_destroy_epdh_on##":"Enkla epidemi regler
+",
 "##city_forest_fire_on##":"Skogsbränder: På",
 "##city_forest_fire_off##":"Skogsbränder: Av",
 "##city_forest_grow_off##":"Skogen växer: Av",
@@ -108,11 +116,14 @@
 "##aqueduct_info##":"Akvedukter gör det möjligt att konstruera reservoarer långt från vatten, vilket gör det möjligt för fontäner att förse staden med vatten.",
 "##actor##":"Skådespelare",
 "##water_text##":"",
-"##advchief_haveprofit##":"Tillgångarna har i år stigit med",
+"##advchief_haveprofit##
+":"Tillgångarna har i år stigit med",
 "##advchief_havedeficit##":"Tillgångarna har i år minskat med",
 "##granery##":"Sädesmagasin",
-"##granary_holds##":"Sädesmagasin innehåller",
-"##granaries_holds##":"Sädesmagasiner innehåller",
+"##granary_holds##":"Sädesmagasin innehåller
+",
+"##granaries_holds##":"Sädesmagasiner innehåller
+",
 "##amphitheater##":"Amfiteater",
 "##amphitheatres##":"Amfiteatrar",
 "##ovrm_amphitheater##":"Amfiteatrar",
@@ -162,13 +173,17 @@
 "##wt_librarian##":"Bibliotekarie",
 "##ovrm_library##":"Bibliotek",
 "##libraries##":"Bibliotek",
-"##favor##":"Gynna",
-"##senatepp_favour_rating##":"Gynna",
-"##wndrt_favour##":"Gynna",
+"##favor##":"Gynna
+",
+"##senatepp_favour_rating##":"Gynna
+",
+"##wndrt_favour##":"Gynna
+",
 "##thanks_to##":"TACK TILL:",
 "##rome_gratitude_request_title##":"Kjesarens tacksamhet.",
 "##carthago_win_text##":"Tack vare din briljanta insats ligger det karthagiska hotet äntligen bakom oss. Våra forna fiender är nu laglydiga romerska medborgare. I alla fall de som ännu är i livet!",
-"##advemp_emperor_favour##":"Kjeserlig förmån",
+"##advemp_emperor_favour##":"Kjeserlig förmån
+",
 "##blessing_of_venus_title##":"En gudagåva från Venus",
 "##spirit_of_mars_title##":"En gudagåva från Mars",
 "##blessing_of_mercury_title##":"En gåva från Merkurius",
@@ -203,7 +218,8 @@
 "##briton##":"En britt",
 "##britons##":"Britter",
 "##waiting_for_free_dock##":"Har kastat ankar, i väntan på ledig kajplats",
-"##destroy_bridge_warning##":"Ta ned broar med försiktighet. Isolerade samhällen kommer försvinna utan tillgång till huvudvägen till Rom.",
+"##destroy_bridge_warning##":"Ta ned broar med försiktighet. Isolerade samhällen kommer försvinna utan tillgång till huvudvägen till Rom.
+",
 "##wt_rioter##":"Upprorsman",
 "##no_culture_building_in_city##":"Du har ingen kultur i din stad, ergo (latin för därför!) har du ingen kulturställning.",
 "##have_less_academy_in_city_0##":"Du har för få högskolor i din stad. Om du bygger fler förbättras din ställning.",
@@ -254,7 +270,8 @@
 "##vinard_bad_work##":"Det finns nästan inga anställda på denna vinodling. Som resultat kommer mycket få druvor att klara sig till skörden.",
 "##olive_farm_bad_work##":"Med nästan inga anställda här, de flesta olivträd saknar oliver.",
 "##wine_workshop_bad_work##":"Med så få anställda står produktionen nästan still. Det kommer att produceras mycket lite vin under det kommande året.",
-"##oil_workshop_bad_work##":"Med nästan inga anställda i olivodlingen, har produktionen avtagit. Det kommer produceras mycket lite olivolja det kommande året.",
+"##oil_workshop_bad_work##":"Med nästan inga anställda i olivodlingen, har produktionen avtagit. Det kommer produceras mycket lite olivolja det kommande året.
+",
 "##weapons_workshop_bad_work##":"Med så få anställda står produktionen nästan still. Det kommer inte att produceras många vapen under det kommande året.",
 "##pottery_workshop_bad_work##":"Med så få anställda vid krukmakeriet står produktionen nästan stilla. Det kommer inte att produceras mycket krukor under det kommande året.",
 "##meat_farm_bad_work##":"Det finns knappt några anställda vid den här farmen, djurantalet e lågt och växer extremt långsamt.",
@@ -279,7 +296,8 @@
 "##how_to_grow_prosperity##":"Ställningen har inte förändrats detta året. Att visa vinst i stadens årliga räkenskaper är det bästa sättet att förbättra välståndsställningen.",
 "##citizen_low_entertainment4##":"Man kan inte roa sig alls på det här stället!",
 "##prefect_so_hungry##":"Det finns inte nog med mat i staden. Det ökar brottsligheten.",
-"##house_pay_tax##":"Taxbetalande hus",
+"##house_pay_tax##":"Taxbetalande hus
+",
 "##actor_need_workers##":"Det finns helt enkelt inte tillräckligt med arbetare i staden.",
 "##house_food_only_for_month##":"Detta hus har matförråd som åtminstone kommer att räcka under den kommande månaden",
 "##house_have_not_food##":"Detta hus har inget livsmedelsförråd",
@@ -323,7 +341,8 @@
 "##your_favour_unchanged_from_last_year##":"Din ställning är oförändrad sedan förra året.",
 "##lugdunum_win_text##":"Din behandling av gallerna i Lugdunum och den sköna stadens prakt bådar väl för Roms expansion i den norra vildmarken. Bra gjort!",
 "##capua_win_text##":"Din förmåga att styra imponerar på mig. Många ståthållares karriärer gäckas när jag ber dem bygga den första kolonin. Ledare som du garanterar Rom en framtid. Kan du upprepa dina framgångar eller var det bara tur?",
-"##city_need_workers_text##":"Din stad behöver fler arbetare",
+"##city_need_workers_text##":"Din stad behöver fler arbetare
+",
 "##city_need_more_workers##":"Din stad kräver fler arbetare",
 "##more_0_month_from_festival##":"Ditt folk, somliga fortfarande berusade efter festen, välkomnar din generositet.",
 "##desirability_indiffirent_area##":"Dina medborgare ser varken positivt eller negativt på detta område",
@@ -394,7 +413,8 @@
 "##market_kid_say_1##":"Den tjocka damen bad mig bära detta och följa efter henne.",
 "##sldr_encouraged##":"Uppmuntrad",
 "##gatehouse##":"Grindstuga",
-"##more_8_month_from_festival##":"Minnet av den tidigare festivalen håller på att blekna.",
+"##more_8_month_from_festival##
+":"Minnet av den tidigare festivalen håller på att blekna.",
 "##east##":"Öst",
 "##delighted##":"Förtjusta",
 "##lionTamer_average_life##":"Här är lite utländskt kött åt dig, Leo.",
@@ -578,7 +598,8 @@
 "##bath_access##":"Badtillgång",
 "##barber_access##":"Barberartillgång",
 "##ovrm_market##":"Marknadstillgång",
-"##formation_available_for_trained_troops##":"Endast tillgänglig för trupper som utbildats på militärhögskola.",
+"##formation_available_for_trained_troops##
+":"Endast tillgänglig för trupper som utbildats på militärhögskola.",
 "##debet##":"Inkomst",
 "##timber##":"Timmer",
 "##spirit_of_mars_text##":"Andan väktare trollade av Mars för att skydda dig vaknar, och lägger låg några av dem som vågar angripa hans valda staden.",
@@ -757,7 +778,8 @@
 "##increase_trading_title##":"Begär ändringar",
 "##a_price_rise_title##":"Prisändringar",
 "##a_price_rise_text##":"",
-"##mainmenu_plname##":"Ändra namn",
+"##mainmenu_plname##":"Ändra namn
+",
 "##adjust_exact##":"Ställ in den exakta summa du vill donera",
 "##adjust_tax_rate##":"Justera skattenivån i staden",
 "##wharf_full_work##":"Med fullt antal anställda lassar och lossar vi med maximal hastighet.",
@@ -925,7 +947,8 @@
 "##month_3_short##":"Mar",
 "##army_marker##":"Armémarkör",
 "##god_mars_short##":"Mars",
-"##wrath_of_mars_text##":"Mars börjar bli arg på dig. Le om du vågar. Fastän du inte har några millitärastyrkor idag. Mars blir inte så lätt förolämpad. Va vaksam!",
+"##wrath_of_mars_text##":"Mars börjar bli arg på dig. Le om du vågar. Fastän du inte har några millitärastyrkor idag. Mars blir inte så lätt förolämpad. Va vaksam!
+",
 "##smallcurse_of_mars_failed_text##":"Mars är vrede med dig. Skratta om du inte är rädd, eftersom även idag kan du inte föra krig, kommer Mars inte glömma förolämpningar tillfogat honom. Akta dig!",
 "##smallcurse_of_mars_title##":"Mars är upprörd",
 "##smallcurse_of_mars_text##":"Mars vakar över soldater och belönar tapperhet i fält. Ingen man vågar kämpa utan Mars välsignelse.",
@@ -1256,7 +1279,8 @@
 "##ovrm_simple##":"Ingenting",
 "##plname_start_new_game##":"Ny karriär",
 "##mainmenu_newgame##":"Nytt spel",
-"##new_map##":"Ny karta",
+"##new_map##":"Ny karta
+",
 "##valencia_win_text##":"Hispaniens nya huvudstad är precis vad vi behöver för att knyta den avlägsna provinsen tätare till Rom. Genom att krossa etruskerna så totalt försvinner det sista hotet i väst.",
 "##barber_so_hungry##":"En hårklippning får dig att glömma hungern. Och det är många hungriga i den här staden.",
 "##newcomer_this_month##":"nykomling anlände denna månad",
@@ -1279,7 +1303,8 @@
 "##floatsam##":"Vrakgods",
 "##mainmenu_dlc_wallpapers##":"Bakgrundsbilder",
 "##legion##":"Militär",
-"##blessing_of_mercury_text##":"",
+"##blessing_of_mercury_text##
+":"",
 "##blessing_of_mercury_description##":"Förtjust över din hängivenhet har Merkurius upptäckt bortglömda produkter i ett av stadens sädesmagasin.",
 "##advchief_education##":"Utbildning",
 "##education_advisor_title##":"Utbildning",
@@ -1368,7 +1393,8 @@
 "##give_money##":"Ge pengar",
 "##send_money_to_city##":"Ge pengar till staden",
 "##send_money##":"Donera dessa pengar till staden från dina personliga besparingar",
-"##need_restart_for_apply_changes##":"Starta om spelet för att aktivera de nya inställningarna",
+"##need_restart_for_apply_changes##":"Starta om spelet för att aktivera de nya inställningarna
+",
 "##goto##":"Gå till",
 "##goto_empire_map##":"Gå till kartan över imperiet",
 "##extm_troubles_tlp##":"Gå till problemområde.",
@@ -1386,7 +1412,8 @@
 "##extm_rotate_map_clockwise_tlp##":"Rotera kartan medurs",
 "##extm_rotate_map_counter_clockwise_tlp##":"Rotera kartan moturs",
 "##rotateLeftBtnTooltip##":"Rotera panel moturs",
-"##ovrm_damage##":"Skada",
+"##ovrm_damage##":"Skada
+",
 "##rioter_rampaging_accross_city##":"Kravaller i staden. De förstör och tar allt de kommer över.",
 "##empire_tax##":"Tribut",
 "##prepare_to_festival##":"Förbereder den kommande festivalen",
@@ -1409,7 +1436,8 @@
 "##leave_empire?##":"Lämna det Romerska Riket?",
 "##coverage##":"Täckning i staden",
 "##emw_buy##":"Inköp",
-"##native_field##":"Ängmark",
+"##native_field##":"Ängmark
+",
 "##library_no_workers##":"Hyllorna i detta bibliotek är tomma, och värdelösa för lokalsamhället.",
 "##granary_info##":"Fulla sädesmagasin är livsviktiga för att hålla folkets magar fyllda och för att attrahera nya medborgare. Ett sädesmagasin kan lagra säd, kött, grönsaker och frukt.",
 "##fullscreen_on##":"Fullskärm",
@@ -1578,7 +1606,8 @@
 "##employers##":"Anställd arbetsstyrka",
 "##healthadv_some_regions_need_hospital##":"Utvecklingen i vissa områden hålls tillbaka av för få sjukhus i staden. Nya sjukhus attraherar fler patricierklasser till staden.",
 "##entertainment_short##":"Underhållning",
-"##entertainmentBtnTooltip##":"Underhållning",
+"##entertainmentBtnTooltip##":"Underhållning
+",
 "##adve_entertainment##":"Underhållning",
 "##entertainment_advisor_title##":"Underhållning",
 "##advchief_entertainment##":"Underhållning",
@@ -1872,7 +1901,8 @@
 "##warehouse_orders##":"Instruktioner handelsmagasin",
 "##access_ramp##":"Åtkomstramp",
 "##wt_lion_tamer##":"Lejontämjare",
-"##destroy_bridge##":"Förstör en bro",
+"##destroy_bridge##":"Förstör en bro
+",
 "##destroy_fort##":"Förstör ett fort",
 "##poor_city_mood_lack_migration##":"Stämningen i staden förhindrar immigration",
 "##adve_administration_religion##":"Styrelse/Religion",

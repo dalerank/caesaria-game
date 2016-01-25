@@ -7,7 +7,7 @@ import posixfile
 import os
 
 #Get remote file to local copy
-FILE_LINK = 'https://docs.google.com/spreadsheets/d/1r_DUqKKEPSV__GKNqlBalXOkB-xk2SsuP5ID-ReCtUs/pub?gid=0&single=true&output=csv'
+FILE_LINK = 'https://docs.google.com/spreadsheets/d/1vpV9B6GLUX5G5z3ftucBFl7pXr-I0QvHPI9vW6K4xlY/pub?gid=0&single=true&output=csv'
 response = urllib2.urlopen(FILE_LINK)
 local_CSV = open('./out.csv', 'w')
 local_CSV.write(response.read())

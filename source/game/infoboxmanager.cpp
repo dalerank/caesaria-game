@@ -134,7 +134,7 @@ void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
   std::string name = object::toString( type );
   bool alreadyHaveConstructor = _d->name2typeMap.find( name ) != _d->name2typeMap.end();
 
-  if( name == "unknown")
+  if( name == "unknown" )
   {
     Logger::warning( "InfoboxManager: added default infobox constructor" );
   }
