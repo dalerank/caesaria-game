@@ -434,13 +434,13 @@ void Walker::_setAction( Walker::Action action )
 
 void Walker::initialize(const VariantMap &options)
 {
-  VARIANT_LOAD_ANYDEF_D( _d, speed.value, 1.f, options )
+  VARIANT_LOAD_ANYDEF_D( _d, speed.value, 1.f, options );
 
   float tmpSpeedMultiplier = 0.8f + math::random( 40 ) / 100.f;
-  VARIANT_LOAD_ANYDEF_D( _d, speed.multiplier, tmpSpeedMultiplier, options )
+  VARIANT_LOAD_ANYDEF_D( _d, speed.multiplier, tmpSpeedMultiplier, options );
 
   std::string nation;
-  VARIANT_LOAD_STR( nation, options )
+  VARIANT_LOAD_STR( nation, options );
   if( !nation.empty() )
   {
     _d->nation = world::toNation( nation );

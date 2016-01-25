@@ -136,8 +136,7 @@ public:
       __REG_TYPE( plateau )
       __REG_TYPE( attackTrigger )
       __REG_TYPE( flooded_clay_pit )
-
-      append( object::unknown,        "" );
+      __REG_TYPE( unknown )
   #undef __REG_TYPE
   }
 };
