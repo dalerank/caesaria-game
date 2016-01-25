@@ -335,12 +335,12 @@ void WalkerRelations::load(const VariantMap& stream)
   {
     VariantMap item = itemr.second.toMap();
     __fillRelations<world::Nation>( itemr.first, item, "friend",
-                                   &WalkerHelper::getNation,
+                                   &world::toNation,
                                    "NationRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, world::nation::unknown );
 
     __fillRelations<world::Nation>( itemr.first, item, "enemy",
-                                   &WalkerHelper::getNation,
+                                   &world::toNation,
                                    "NationRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, world::nation::unknown );
   }

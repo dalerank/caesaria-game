@@ -18,6 +18,8 @@
 #ifndef _CAESARIA_NATIONTYPE_INCLUDE_H_
 #define _CAESARIA_NATIONTYPE_INCLUDE_H_
 
+#include <string>
+
 namespace world
 {
 

@@ -443,7 +443,7 @@ void Walker::initialize(const VariantMap &options)
   VARIANT_LOAD_STR( nation, options )
   if( !nation.empty() )
   {
-    _d->nation = WalkerHelper::getNation( nation );
+    _d->nation = world::toNation( nation );
   }
 }
 
