@@ -66,7 +66,7 @@ std::string PlayerArmy::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap:
+  case aboutEmpireMap:
      ret =  mode() == PlayerArmy::go2home
                   ? "##playerarmy_gone_to_home##"
                   : "##playerarmy_gone_to_location##";

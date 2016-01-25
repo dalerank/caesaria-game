@@ -35,7 +35,7 @@
     cities :
     {
       Tarentum : {
-        location : [ 900, 600 ]
+        nation : "roman"
 
         land : true
         sea : true
@@ -46,7 +46,7 @@
       }
       
       Capua : {
-        location : [ 820, 560 ]
+        nation : "roman"
 
         sea : true
         available : true

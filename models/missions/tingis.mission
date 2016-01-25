@@ -36,7 +36,7 @@
     cities :
     {    
       "Carthago Nova" : {
-        location : [ 220, 760 ]
+        nation : "carthaginian"
 
         land : true
         sea : true
@@ -47,7 +47,7 @@
       }
 
       Caesarea : {
-        location : [ 380, 780 ] 
+        nation : "roman"
 
         sea : true
         land : true

@@ -62,7 +62,7 @@ std::string Barbarian::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap: ret = "##enemy_army_threating_a_city##";      break;
+  case aboutEmpireMap: ret = "##enemy_army_threating_a_city##";      break;
   default:        ret = "##enemy_army_unknown_about##";  break;
   }
 

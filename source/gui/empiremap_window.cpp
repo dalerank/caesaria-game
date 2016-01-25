@@ -434,7 +434,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
 void EmpireMapWindow::Impl::drawCityInfo()
 {
   Label& lb = gbox->add<Label>( Rect( Point( 0, gbox->height() - 70), Size( gbox->width(), 30 ) ) );
-  std::string text = city.current->about( world::Object::empireAdvInfo );
+  std::string text = city.current->about( world::Object::aboutEmpireAdvInfo );
   lb.setTextAlignment( align::center, align::upperLeft );
   lb.setText( _( text ) );
 }
@@ -728,7 +728,7 @@ void EmpireMapWindow::_changePosition()
   std::string text;
   if( obj.isValid() )
   {
-    text = obj->about( world::Object::empireMap );
+    text = obj->about( world::Object::aboutEmpireMap );
   }
   else
   {

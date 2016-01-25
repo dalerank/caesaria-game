@@ -96,7 +96,7 @@
             sea : true
             available : true
 
-            mode : "empirean"
+            nation : "roman"
 
             sells : { iron : 25 }
             buys : { wheat: 25, weapon: 15, pottery : 15 }
@@ -104,7 +104,9 @@
 
           Londinium : {
             available : true
-            mode : "distant"
+            nation : "gaul"
+            sea : false
+            available : false
           }
         }
       }

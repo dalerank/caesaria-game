@@ -993,14 +993,20 @@ std::string ComputerCity::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap:
-    if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
-    else ret = name();
+  case aboutEmpireMap:
+    if( nation() == world::nation::roman
+        && tradeType() == EmpireMap::trUnknown )
+      ret = "##empmap_distant_romecity_tip##";
+    else
+      ret = name();
   break;
 
-  case empireAdvInfo:
-    if( isDistantCity() ) ret = "##empiremap_distant_city##";
-    else ret = "";
+  case aboutEmpireAdvInfo:
+    if( nation() == world::nation::roman
+        && tradeType() == EmpireMap::trUnknown )
+      ret = "##empiremap_distant_city##";
+    else
+      ret = "";
   break;
 
   default:
@@ -1015,15 +1021,22 @@ int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
 {
-  int index = config::id.empire.otherCity;
   std::map<int,std::string> rconfig = { {config::id.empire.otherCity, "world_othercity" },
-                                       {config::id.empire.distantCity, "world_distantcity" },
-                                       {config::id.empire.romeCity, "wolrd_romecity"} };
+                                        {config::id.empire.distantCity, "world_distantcity" },
+                                        {config::id.empire.romeCity, "wolrd_romecity"} };
 
-  if( _d->distantCity ) { index = config::id.empire.distantCity; }
-  else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
+  int index = config::id.empire.otherCity;
+  if( nation() == world::nation::roman ) { index = config::id.empire.romeCity; }
+  else
+  {
+    if( tradeType() == EmpireMap::trLand ||
+        tradeType() == EmpireMap::trSea ||
+        tradeType() == EmpireMap::trCity )
+     index = config::id.empire.distantCity;
+  }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
+  _animation().clear();
   _animation().load( rconfig[ index ] );
 }
 

@@ -42,7 +42,7 @@
     {
       Brundisium :
       {
-        romecity : true
+        nation : "roman"
         sea : true
         land : true
         available : true
@@ -55,11 +55,12 @@
       {
         sea : true
         land : true
-        distant : true
         available : true
 
         sells : {	oil : 5, timber : 25 }
         buys : { wine : 25 }
+
+        nation : "other"
 
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
@@ -69,7 +70,7 @@
       {
         sea : true
         land : true
-        distant : true
+        nation : "carthaginian"
         available : true
 
         sells : { meat : 25, marble : 20 }
@@ -85,6 +86,7 @@
         buys : { olive : 40, oil : 15, furniture : 25 }
         land : true
         sea : true
+        nation : "roman"
         available : true
         resources : [ "wheat", "vegetable", "fruit", "wine",
                       "fish", "timber", "clay" ]
@@ -94,6 +96,7 @@
       {
         land : true
         sea : true
+        nation : "roman"
         available : true
 
         sells : {	wine : 25, furniture : 25 }

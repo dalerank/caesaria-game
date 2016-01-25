@@ -36,8 +36,7 @@
     cities :
     {
       "Carthago Nova" : {
-        location : [ 220, 760 ]
-        romecity : true
+        nation : "carthaginian"
         sea : true
         land : true
         available : true
@@ -46,11 +45,10 @@
       }
 
       Carthago : {
-        location : [ 640, 760 ]
+        nation : "carthaginian"
 
-        sea : true
-        land : true
-        distant : true
+        sea : false
+        land : false
         available : true
 
         sells : { weapons : 25, furniture : 25 }
@@ -58,11 +56,10 @@
       }
 
       Tingis : {
-        location : [ 120, 840 ]
+        nation : "carthaginian"
 
         sea : true
         land : true
-        distant : true
         available : true
 
         sells : { marble : 15 }
