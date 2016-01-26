@@ -645,7 +645,7 @@ SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
   for( auto ov : overlays )
   {
     SmartPtr< T > b = ov.as<T>();
-    if( b.isValid() && b->produceGoodType() == goodtype )
+    if( b.isValid() && b->produce().type() == goodtype )
     {
       ret.push_back( b );
     }

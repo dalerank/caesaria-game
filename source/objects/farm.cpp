@@ -245,7 +245,7 @@ void Farm::computePictures()
 
     auto farmTile = _map().overlay<FarmTile>( _d->sublocs[n] );
     if( farmTile.isValid() )
-      farmTile->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
+      farmTile->setPicture( FarmTile::computePicture( produce().type(), percentTile ));
   }
 }
 
@@ -381,7 +381,7 @@ FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 
 OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 {
-  OverlayPtr farmtile( new FarmTile( produceGoodType(), ppos ) );
+  OverlayPtr farmtile( new FarmTile( produce().type(), ppos ) );
   farmtile->drop();
   farmtile->build( info );
   info.city->addOverlay( farmtile );

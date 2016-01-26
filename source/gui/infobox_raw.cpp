@@ -64,9 +64,9 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   INIT_WIDGET_FROM_UI( Label*, lbProductivity )
   INIT_WIDGET_FROM_UI( Label*, lbProgress )
 
-  if( rawmb->produceGoodType() != good::none )
+  if( rawmb->produce().type() != good::none )
   {
-    add<Image>( Point( 10, 10 ), good::Info( rawmb->produceGoodType() ).picture() );
+    add<Image>( Point( 10, 10 ), rawmb->produce().picture() );
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );

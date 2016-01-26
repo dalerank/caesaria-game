@@ -22,7 +22,7 @@
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
 #include "good/turnover.hpp"
-#include "good/good.hpp"
+#include "good/helper.hpp"
 
 class Factory : public WorkingBuilding
 {
@@ -37,8 +37,8 @@ public:
   good::Stock& outStock();
   const good::Stock& outStock() const;
 
-  good::Product consumeGoodType() const;
-  good::Product produceGoodType() const;
+  const good::Info& consume() const;
+  const good::Info& produce() const;
 
   good::Store& store();
 
