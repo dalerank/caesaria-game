@@ -16,7 +16,7 @@
   }
 
   gbox#GroupBox : {
-    geometry : [ 20, 55, "pw-20", "ph-20" ]
+    geometry : [ 20, 55, "100%-20", "100%-20" ]
     bgtype : "blackFrame"    
   }
 }

@@ -70,16 +70,16 @@ Emperor::Emperor() : __INIT_IMPL(Emperor)
 
 Emperor::~Emperor(){}
 
-int Emperor::relation(const std::string& cityname) const
-{
-  Relations::const_iterator i = _dfunc()->relations.find( cityname );
-  return ( i == _dfunc()->relations.end() ? 0 : i->second.value() );
-}
-
 void Emperor::updateRelation(const std::string& cityname, int value)
 {
   Relation& relation = _dfunc()->relations[ cityname ];
   relation.change( value );
+}
+
+void Emperor::updateRelation(const std::string& cityname, const RelationAbility& ability)
+{
+  Relation& relation = _dfunc()->relations[ cityname ];
+  relation.update( ability );
 }
 
 void Emperor::sendGift(const Gift& gift)
@@ -88,13 +88,20 @@ void Emperor::sendGift(const Gift& gift)
   relation.update( gift );
 }
 
-DateTime Emperor::lastGiftDate(const std::string& cityname) const
+const Gift& Emperor::lastGift(const std::string& cityname) const
 {
-  Relations::const_iterator it = _dfunc()->relations.find( cityname );
-  if( it == _dfunc()->relations.end() )
-    return DateTime( -350, 1, 1 );
-  else
-    return it->second.lastGift.date();
+  auto it = _dfunc()->relations.find( cityname );
+  return ( it == _dfunc()->relations.end() )
+            ? Gift::invalid
+            : it->second.gifts().last();
+}
+
+const Relation& Emperor::relation(const std::string& cityname) const
+{
+  auto it = _dfunc()->relations.find( cityname );
+  return ( it == _dfunc()->relations.end() )
+            ? Relation::invalid
+            : it->second;
 }
 
 void Emperor::Impl::updateRelation( CityPtr cityp )
@@ -104,7 +111,7 @@ void Emperor::Impl::updateRelation( CityPtr cityp )
 
   Relation& relation = relations[ cityp->name() ];
 
-  relation.soldiersSent = 0;     //clear chasteners count
+  relation.soldiers.sent = 0;     //clear chasteners count
   relation.change( -config::emperor::yearlyFavorDecrease );
 
   int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
@@ -135,7 +142,7 @@ void Emperor::Impl::updateRelation( CityPtr cityp )
 CityList Emperor::Impl::findTroubleCities()
 {
   CityList ret;
-  for( auto&& item : relations )
+  for( auto& item : relations )
   {
     CityPtr city = empire->findCity( item.first );
     Relation& relation = item.second;
@@ -150,7 +157,7 @@ CityList Emperor::Impl::findTroubleCities()
     if( emperorAngry  )
     {
       relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
-      if( relation.soldiersSent == 0 )
+      if( relation.soldiers.sent == 0 )
         ret.push_back( city );
     }
     else
@@ -164,17 +171,17 @@ CityList Emperor::Impl::findTroubleCities()
 
 void Emperor::timeStep(unsigned int time)
 {
-  __D_IMPL(d,Emperor)
+  __D_REF(d,Emperor)
   if( game::Date::isYearChanged() )
   {
-    for( auto cityp : d->empire->cities() )
-      d->updateRelation( cityp );
+    for( auto cityp : d.empire->cities() )
+      d.updateRelation( cityp );
   }
 
   if( game::Date::isMonthChanged() )
   {
-    CityList troubleCities = d->findTroubleCities();
-    d->resolveTroubleCities( troubleCities );
+    CityList troubleCities = d.findTroubleCities();
+    d.resolveTroubleCities( troubleCities );
   }
 }
 
@@ -195,19 +202,19 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     relation.wrathPoint = 0;
     relation.tryCount = 0;
-    relation.soldiersSent = relation.lastSoldiersSent * 2;
+    relation.soldiers.sent = relation.soldiers.last * 2;
 
-    unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
+    unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiers.sent );
 
-    RomeChastenerArmyPtr army = RomeChastenerArmy::create( empire );
+    auto army = RomeChastenerArmy::create( empire );
     army->setCheckFavor( true );
-    army->setBase( empire->rome() );
+    army->setBase( empire->capital() );
     army->setSoldiersNumber( sldrNumber );
     army->attack( ptr_cast<Object>( city ) );
 
     if( !army->isDeleted() )
     {
-      relation.lastSoldiersSent = sldrNumber;
+      relation.soldiers.last = sldrNumber;
     }
     else
     {
@@ -218,18 +225,18 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
 void Emperor::remSoldiers(const std::string& cityname, int value)
 {
-  __D_IMPL(d,Emperor)
+  __D_REF(d,Emperor)
   for( int i=0; i < value; i++ )
   {
-    d->relations[ cityname ].removeSoldier();
+    d.relations[ cityname ].removeSoldier();
   }
 }
 
 void Emperor::addSoldiers(const std::string& name, int value)
 {
-  __D_IMPL(d,Emperor)
-  Relation& relation = d->relations[ name ];
-  relation.soldiersSent += value;
+  __D_REF(d,Emperor)
+  Relation& relation = d.relations[ name ];
+  relation.soldiers.sent += value;
 }
 
 std::string Emperor::name() const { return _dfunc()->name; }
@@ -237,29 +244,29 @@ void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 
 void Emperor::citySentTax(const std::string &cityname, unsigned int money)
 {
-  __D_IMPL(d,Emperor)
-  d->relations[ cityname ].lastTaxDate = game::Date::current();
+  __D_REF(d,Emperor)
+  d.relations[ cityname ].lastTaxDate = game::Date::current();
 }
 
 void Emperor::resetRelations(const StringArray& cities)
 {
-  __D_IMPL(d,Emperor)
+  __D_REF(d,Emperor)
   CityList empCities;
   if( !cities.empty() )
   {
     if( cities.front() == "all" )
     {
-      empCities = d->empire->cities();
+      empCities = d.empire->cities();
     }
     else
     {
       for( auto city : cities )
-        empCities.addIfValid( d->empire->findCity( city ) );
+        empCities.addIfValid( d.empire->findCity( city ) );
     }
 
     for( auto city : empCities )
     {
-      Relation& r = d->relations[ city->name() ];
+      Relation& r = d.relations[ city->name() ];
       r.reset();
     }
   }
@@ -268,16 +275,16 @@ void Emperor::resetRelations(const StringArray& cities)
 
 void Emperor::checkCities()
 {
-  __D_IMPL(d,Emperor)
-  CityList empireCities = d->empire->cities();
+  __D_REF(d,Emperor)
+  CityList empireCities = d.empire->cities();
   for( auto city : empireCities )
   {
     if( !city->isAvailable() )
       continue;
 
-    if( d->relations.count( city->name() ) == 0 )
+    if( d.relations.count( city->name() ) == 0 )
     {
-      Relation& relation = d->relations[ city->name() ];
+      Relation& relation = d.relations[ city->name() ];
       relation.reset();
     }
   }
@@ -303,8 +310,7 @@ void Emperor::load(const VariantMap& stream)
 
 void Emperor::init(Empire &empire)
 {
-  __D_IMPL(d,Emperor)
-  d->empire = &empire;
+  _dfunc()->empire = &empire;
 }
 
 }//end namespace world

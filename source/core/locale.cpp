@@ -79,7 +79,7 @@ void Locale::setLanguage(std::string language)
 {
   _llocale.currentLanguage = language;
 
-  for( auto&& item : _llocale.translator )
+  for( auto& item : _llocale.translator )
   {
     item.second.text.clear();
   }

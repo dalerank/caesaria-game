@@ -37,9 +37,9 @@ namespace gfx
 
 namespace
 {
-  CAESARIA_LITERALCONST( small )
-  CAESARIA_LITERALCONST( big )
-  CAESARIA_LITERALCONST( mega )
+GAME_LITERALCONST( small )
+GAME_LITERALCONST( big )
+GAME_LITERALCONST( mega )
 
 struct CartInfo
 {
@@ -129,21 +129,21 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   //bool frontCart = false;
 
   VariantMap config = config::load( model );
-  foreach( it, config )
+  for( const auto& it : config )
   {
-    good::Product gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::type( it.first );
 
     if( gtype != good::none )
     {
-      VariantMap cartInfo = it->second.toMap();      
+      VariantMap cartInfo = it.second.toMap();
       Variant smallInfo = cartInfo.get( literals::small );
-      if( smallInfo.isValid() ) loadStage( gtype, it->first + literals::small, smallInfo.toMap(), stgCarts );
+      if( smallInfo.isValid() ) loadStage( gtype, it.first + literals::small, smallInfo.toMap(), stgCarts );
 
       Variant bigInfo = cartInfo.get( literals::big );
-      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it->first + literals::big, bigInfo.toMap(), stgCarts );
+      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it.first + literals::big, bigInfo.toMap(), stgCarts );
 
       Variant megaInfo = cartInfo.get( literals::mega );
-      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it->first + literals::mega, megaInfo.toMap(), stgCarts );
+      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it.first + literals::mega, megaInfo.toMap(), stgCarts );
     }
   }
 
@@ -245,14 +245,14 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
       pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
 
       std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
-      Logger::warning( "AnimationBank: load animations for " + typeName + ":" + stageName );
+      Logger::warning( "AnimationBank: load animations for {0}:{1}", typeName, stageName );
       loadStage( objects, type, rc, start, frames, (Walker::Action)action, step, delay );
     }
   break;
 
   case stgCarts:
     {
-      Logger::warning( "AnimationBank: load animations for %d:%s", type, stageName.c_str() );
+      Logger::warning( "AnimationBank: load animations for {0}:{1}", type, stageName );
       loadStage( carts, type, rc, start, frames, Walker::acMove, step, delay );
 
       VARIANT_INIT_ANY( int, back, stageInfo )
@@ -286,7 +286,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations( 
   DirectedAnimations::iterator it = objects.find( wtype );
   if( it == objects.end() )
   {
-    Logger::warning( "!!! WARNING: AnimationBank can't find config for type %d", wtype );
+    Logger::warning( "!!! WARNING: AnimationBank can't find config for type {0}", wtype );
     const AnimationBank::MovementAnimation& elMuleta = objects[ walker::unknown ].actions;
     objects[ wtype ].ownerType = wtype;
     objects[ wtype ].actions = elMuleta;

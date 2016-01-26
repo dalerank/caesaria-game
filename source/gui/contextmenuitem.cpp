@@ -17,6 +17,7 @@
 
 #include "contextmenuitem.hpp"
 #include "contextmenuitemprivate.hpp"
+#include "core/color_list.hpp"
 #include "contextmenu.hpp"
 
 using namespace gfx;
@@ -24,46 +25,96 @@ using namespace gfx;
 namespace gui
 {
 
-ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
-  : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ), _d( new Impl )
+ContextMenuItem::ContextMenuItem(Widget* parent, const std::string& text )
+  : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ),
+    __INIT_IMPL(ContextMenuItem)
 {
-  _d->isSeparator = false;
-  _d->subMenuAlignment = alignAuto;
-  _d->checked = false;
-  _d->isHovered = false;
-  _d->isAutoChecking = false;
-  _d->dim = Size( 0, 0 );
-  _d->offset = 0;
-  _d->subMenu = NULL;
-  _d->setFlag( drawSubmenuSprite, false );
-  _d->commandId = -1;
-  _d->luaFunction = -1;
+  __D_REF(d,ContextMenuItem)
+  d.is.separator = false;
+  d.is.checked = false;
+  d.is.hovered = false;
+  d.is.autoChecking = false;
+  d.dim = Size( 0, 0 );
+  d.offset = 0;
+  d.submenu.widget = nullptr;
+  d.submenu.align = alignAuto;
+  d.submenu.iconVisible = true;
+  d.setFlag( drawSubmenuSprite, false );
+  d.commandId = -1;
 }
 
-Signal1<bool>& ContextMenuItem::onChecked() {  return _d->onCheckedSignal; }
-Signal1<int>&ContextMenuItem::onAction() { return _d->onActionSignal; }
+Signal1<bool>& ContextMenuItem::onChecked() {  return _dfunc()->onCheckedSignal; }
+Signal1<int>& ContextMenuItem::onAction() { return _dfunc()->onActionSignal; }
+
+void ContextMenuItem::_updateTexture(Engine& painter)
+{
+  __D_REF(d,ContextMenuItem)
+  setTextOffset( Point( isAutoChecking() ? 20 : 4, 0 ) );
+
+  Label::_updateTexture( painter );
+  bool updateTexture = false;
+
+  if( isAutoChecking() )
+  {
+    const int sideOffset = 6;
+    const int side = height()-sideOffset;
+
+    Rect checkRect( sideOffset, sideOffset, side, side );
+    _textPicture().fill( ColorList::black, checkRect );
+    _textPicture().fill( isChecked() ? ColorList::firebrick : ColorList::floralwhite, checkRect.crop( 1 ) );
+    updateTexture = true;
+  }
+
+  if( isHovered() )
+  {
+    for( int k=0; k < 2; ++k )
+    {
+      Rect checkRect( Point( k+1, 2), Size( 1, height()-4 ) );
+      _textPicture().fill( ColorList::black, checkRect );
+    }
+
+    updateTexture = true;
+  }
+
+  if( d.submenu.iconVisible && subMenu() != nullptr )
+  {
+    for( int k=7; k > 0; --k )
+    {
+      Rect checkRect( Point( width() - (k+6)  , height()/2 - k/2), Size( 1, k ) );
+      _textPicture().fill( ColorList::black, checkRect );
+    }
+
+    updateTexture = true;
+  }
+
+  if( updateTexture )
+  {
+    _textPicture().update();
+  }
+}
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
-  ContextMenu* sub = new ContextMenu( parent(), Rect(0,0,100,100), id, false, false);
-  setSubMenu( sub );
-  parent()->bringChildToFront( sub );
-  return sub;
+  auto& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
+  setSubMenu( &sub );
+  sub.bringToFront();
+  return &sub;
 }
 
 //! Adds a sub menu from an element that already exists.
 void ContextMenuItem::setSubMenu( ContextMenu* menu )
 {
+  __D_REF(d,ContextMenuItem)
   if( menu )
     menu->grab();
 
-  if( _d->subMenu )
-    _d->subMenu->drop();
+  if( d.submenu.widget != nullptr )
+    d.submenu.widget->drop();
 
-  _d->subMenu = menu;
+  d.submenu.widget = menu;
   menu->setVisible(false);
 
-  if( _d->subMenu )
+  if( d.submenu.widget )
   {
     menu->setAllowFocus( false );
     if( menu->isFocused() )
@@ -76,46 +127,55 @@ void ContextMenuItem::setSubMenu( ContextMenu* menu )
 
 void ContextMenuItem::toggleCheck()
 {
-  if( _d->isAutoChecking )
+  __D_REF(d,ContextMenuItem)
+  if( d.is.autoChecking )
   {
-    _d->checked = !_d->checked;
-    emit _d->onCheckedSignal( _d->checked );
+    d.is.checked = !d.is.checked;
+    emit d.onCheckedSignal( d.is.checked );
   }
+}
+
+void ContextMenuItem::draw(Engine& painter)
+{
+  Label::draw( painter );
 }
 
 void ContextMenuItem::setFlag( DrawFlag flagName, bool set/*=true */ )
 {
-  _d->setFlag( flagName, set );
+  _dfunc()->setFlag( flagName, set );
 }
 
 ContextMenuItem::~ContextMenuItem()
 {
-  if( _d->subMenu )
-    _d->subMenu->drop();
+  __D_REF(d,ContextMenuItem)
+  if( d.submenu.widget )
+    d.submenu.widget->drop();
 }
 
 void ContextMenuItem::setHovered( bool hover )
 {
-  _d->isHovered = hover;
-  setFont( Font::create( hover ? FONT_2_RED : FONT_2 ));
+  _dfunc()->is.hovered = hover;
+  setFont( hover ? FONT_2_RED : FONT_2 );
 }
 
-bool ContextMenuItem::isSeparator() const {  return _d->isSeparator; }
-void ContextMenuItem::setCommandId( int cmdId ){	_d->commandId = cmdId;}
-int ContextMenuItem::commandId() const{  return _d->commandId;}
-bool ContextMenuItem::isHovered() const {  return _d->isHovered;}
-void ContextMenuItem::setAutoChecking( bool autoChecking ){  _d->isAutoChecking = autoChecking;}
-bool ContextMenuItem::isPointInside( const Point& point ) const{  return false;}
-int ContextMenuItem::offset() const{  return _d->offset;}
-void ContextMenuItem::setChecked( bool check ){  _d->checked = check;}
-bool ContextMenuItem::isChecked() const{  return _d->checked;}
-void ContextMenuItem::setIsSeparator( bool isSepar ){  _d->isSeparator = isSepar;}
-ContextMenu* ContextMenuItem::subMenu() const{  return _d->subMenu;}
-void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){  _d->subMenuAlignment = align;}
-ContextMenuItem::SubMenuAlign ContextMenuItem::subMenuAlignment() const{  return _d->subMenuAlignment;}
+bool ContextMenuItem::isAutoChecking() { return _dfunc()->is.autoChecking; }
+bool ContextMenuItem::isSeparator() const {  return _dfunc()->is.separator; }
+void ContextMenuItem::setCommandId( int cmdId ){	_dfunc()->commandId = cmdId;}
+int ContextMenuItem::commandId() const{  return _dfunc()->commandId;}
+bool ContextMenuItem::isHovered() const {  return _dfunc()->is.hovered;}
+void ContextMenuItem::setAutoChecking( bool autoChecking ){ _dfunc()->is.autoChecking = autoChecking;}
+bool ContextMenuItem::isPointInside( const Point& point ) const{ return false;}
+int ContextMenuItem::offset() const{  return _dfunc()->offset;}
+void ContextMenuItem::setChecked( bool check ) { _dfunc()->is.checked = check;}
+bool ContextMenuItem::isChecked() const{  return _dfunc()->is.checked;}
+void ContextMenuItem::setIsSeparator( bool separator ){  _dfunc()->is.separator = separator;}
+ContextMenu* ContextMenuItem::subMenu() const{  return _dfunc()->submenu.widget;}
+void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){ _dfunc()->submenu.align = align;}
+ContextMenuItem::SubMenuAlign ContextMenuItem::subMenuAlignment() const{ return _dfunc()->submenu.align;}
+void ContextMenuItem::setSubMenuIconVisible(bool visible) { _dfunc()->submenu.iconVisible = visible; }
 void ContextMenuItem::setIcon(const Picture& icon , Point offset){}
-void ContextMenuItem::setDimmension( const Size& size ) {  _d->dim = size;}
-const Size& ContextMenuItem::dimmension() const{  return _d->dim;}
-void ContextMenuItem::setOffset( int offset ){  _d->offset = offset;}
+void ContextMenuItem::setDimmension( const Size& size ) {  _dfunc()->dim = size;}
+const Size& ContextMenuItem::dimmension() const{  return _dfunc()->dim;}
+void ContextMenuItem::setOffset( int offset ){  _dfunc()->offset = offset;}
 
 }//end namespace gui

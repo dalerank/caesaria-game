@@ -19,11 +19,11 @@
 #include "stacktrace.hpp"
 
 #include <stdlib.h>
-#if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
+#if !defined(GAME_PLATFORM_WIN) && !defined(GAME_PLATFORM_ANDROID)
   #include <execinfo.h>
 #endif
 
-#if !defined(CAESARIA_PLATFORM_HAIKU) && !defined(CAESARIA_PLATFORM_ANDROID) && !defined(_MSC_VER)
+#if !defined(GAME_PLATFORM_HAIKU) && !defined(GAME_PLATFORM_ANDROID) && !defined(_MSC_VER)
   #include <cxxabi.h>
 #endif
 
@@ -35,7 +35,7 @@
 #include "osystem.hpp"
 #include <signal.h>
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 #include <windows.h>
 #include <imagehlp.h>
 #endif
@@ -43,7 +43,7 @@
 namespace crashhandler
 {
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 /** Convert exception code to human readable string. */
 static const char *ExceptionName(DWORD exceptionCode)
 {
@@ -153,7 +153,7 @@ static BOOL CALLBACK EnumModules(LPSTR moduleName, DWORD baseOfDll, PVOID userCo
 static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 {
 	// Prologue.
-	Logger::warning("CaesarIA %d has crashed.", CAESARIA_BUILD_NUMBER );
+  Logger::warning("CaesarIA {} has crashed.", GAME_BUILD_NUMBER );
 	// Initialize IMAGEHLP.DLL.
 	SymInitialize(GetCurrentProcess(), ".", TRUE);
 
@@ -200,14 +200,13 @@ static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 void printstack( bool showMessage, unsigned int starting_frame, unsigned int max_frames )
 {
-#if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
+#if !defined(GAME_PLATFORM_WIN) && !defined(GAME_PLATFORM_ANDROID)
   if (showMessage)
   {
     std::string file = vfs::Directory::applicationDir().getFilePath("stdout.txt").toString();
-    std::string msg = utils::format( 0xff,
-                                     "CaesarIA has crashed.\n\n"
-                                         "A stacktrace has been written to:\n"
-                                         "%s", file.c_str());
+    std::string msg = fmt::format( "CaesarIA has crashed.\n\n"
+                                   "A stacktrace has been written to:\n"
+                                   "{}", file );
     OSystem::error( "CaesarIA: Unhandled exception", msg );
   }
 
@@ -269,30 +268,30 @@ void printstack( bool showMessage, unsigned int starting_frame, unsigned int max
       if (status == 0)
       {
         funcname = ret; // use possibly realloc()-ed string
-        Logger::warning(" %s : %s+%s", symbollist[i], funcname.data(), begin_offset);
+        Logger::warning(" {0} : {1}+{2}", symbollist[i], funcname.data(), begin_offset);
       }
       else
       {
         // demangling failed. Output function name as a C function with
         // no arguments.
-        Logger::warning(" %s : %s()+%s", symbollist[i], begin_name, begin_offset);
+        Logger::warning(" {0} : {1}+{2}", symbollist[i], begin_name, begin_offset);
       }
     }
     else
     {
       // couldn't parse the line? print the whole line.
-      Logger::warning(" %s", symbollist[i]);
+      Logger::warning(" {}", symbollist[i]);
     }
   }
 
   //free(funcname);
   free(symbollist);
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   Logger::warning( "Game: stacltrace finished." );
 #else
   Logger::warning("Stack trace not available");
 
-#endif // CAESARIA_PLATFORM_LINUX
+#endif // GAME_PLATFORM_LINUX
 }
 
 /** Install crash handler. */
@@ -313,7 +312,7 @@ void CrashHandler_handleCrash(int signum)
 
 void install()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   SetUnhandledExceptionFilter(ExceptionHandler);
 #else
   signal( SIGABRT, CrashHandler_handleCrash);
@@ -326,7 +325,7 @@ void install()
 /** Uninstall crash handler. */
 void remove()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   SetUnhandledExceptionFilter(NULL);
 #endif
 }

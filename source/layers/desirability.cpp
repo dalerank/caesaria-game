@@ -51,10 +51,8 @@ namespace
 
 int Desirability::type() const {  return citylayer::desirability; }
 
-void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
+void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
   {
@@ -62,14 +60,13 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
       int desIndex = __des2index( desirability );
-      Picture pic( ResourceGroup::land2a, 37 + desIndex );
+      Picture pic( config::rc.land2a, 37 + desIndex );
 
-      engine.draw( pic, screenPos );
+      rinfo.engine.draw( pic, tile.mappos() + rinfo.offset );
     }
     else
     {
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
+      drawLandTile(rinfo, tile);
     }
   }
   else
@@ -78,30 +75,32 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else
     {
       //other buildings
       int picOffset = __des2index( desirability );
-      Picture pic( ResourceGroup::land2a, 37 + picOffset );
+      Picture pic( config::rc.land2a, 37 + picOffset );
 
       TilesArray tiles4clear = overlay->area();
 
       for( auto tile : tiles4clear )
       {
-        engine.draw( pic, tile->mappos() + offset );
+        rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
       }
     }
   }
 
   if( desirability != 0 )
   {
+#ifdef DEBUG
     Picture tx = _d->debugFont.once( utils::i2str( desirability ) );
     _d->debugText.push_back( tx );
 
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
+#endif
   }
 
   tile.setRendered();
@@ -114,13 +113,13 @@ void Desirability::beforeRender( Engine& engine )
   Info::beforeRender( engine );
 }
 
-void Desirability::handleEvent(NEvent& event)
+void Desirability::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -141,15 +140,7 @@ void Desirability::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
-}
-
-LayerPtr Desirability::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Desirability( camera, city ) );
-  ret->drop();
-
-  return ret;
+  Layer::onEvent( event );
 }
 
 Desirability::Desirability( Camera& camera, PlayerCityPtr city)

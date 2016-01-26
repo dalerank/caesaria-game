@@ -33,7 +33,7 @@ public:
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
-  void _applyDestroy();
+  void _applyDestroy();  
   void _declineDestroy();
 
 private:

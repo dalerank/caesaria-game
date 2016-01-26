@@ -18,7 +18,7 @@
     bgtype : "blackFrame"
 
     lbText#Label : {
-      geometry : [ 5, 55, 430, 100 ]
+      geometry : [ 5, 55, 400, 100 ]
       font : "FONT_2_WHITE"
       text : "##rome_need_some_goods##"
     }

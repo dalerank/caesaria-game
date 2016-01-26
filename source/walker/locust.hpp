@@ -19,14 +19,14 @@
 #define __CAESARIA_LOCUST_H_INCLUDED__
 
 #include "walker.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Locust : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-  static void create( PlayerCityPtr city, TilePos pos, int time);
   ~Locust();
 
   virtual void timeStep(const unsigned long time);
@@ -37,7 +37,7 @@ public:
   virtual const gfx::Picture& getMainPicture();
 
 protected:
-  Locust( PlayerCityPtr city );
+  Locust( PlayerCityPtr city, TilePos pos=TilePos(-1,-1), int time=0 );
 
   class Impl;
   ScopedPtr< Impl > _d;

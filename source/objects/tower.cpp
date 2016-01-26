@@ -44,12 +44,17 @@ public:
   Point offset;
   BalistaPtr catapult;
   bool needResetWays;
+};
 
+struct WallCondition
+{
   void mayPatroling( const Tile* tile, bool& ret )
   {
     FortificationPtr f = tile->overlay<Fortification>();
     ret = ( f.isValid() && f->mayPatrol() );
   }
+
+  TilePossibleCondition byWalls() { return makeDelegate( this, &WallCondition::mayPatroling ); }
 };
 
 Tower::Tower()
@@ -57,7 +62,7 @@ Tower::Tower()
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );
-  _picture().load( ResourceGroup::land2a, 149 );
+  _picture().load( config::rc.land2a, 149 );
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -127,19 +132,19 @@ void Tower::_rebuildWays()
   if( enter.empty() )
     return;
 
+  WallCondition condition;
+
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
-    TilePos offset( range, range );
-    TilesArray tiles = _city()->tilemap().rect( pos() - offset,
-                                                              pos() + offset );
+    TilesArray tiles = _map().rect( range, pos() );
     for( auto tile : tiles )
     {
       bool patrolingWall;
-      _d->mayPatroling( tile, patrolingWall );
+      condition.mayPatroling( tile, patrolingWall );
       if( patrolingWall )
       {
         TilePos tpos = enter.front()->pos();
-        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), condition.byWalls() );
 
         if( pathway.isValid() )
         {
@@ -178,11 +183,11 @@ void Tower::deliverService()
       && walkers().empty()
       && trValue > 0 )
   {
-    Impl::PatrolWays::iterator it = _d->patrolWays.begin();
-    std::advance( it, rand() % _d->patrolWays.size() );
+    auto patrolWayIt = _d->patrolWays.begin();
+    std::advance( patrolWayIt, rand() % _d->patrolWays.size() );
 
-    auto guard = WallGuard::create( _city(), walker::romeGuard );
-    guard->send2city( this, *it );
+    auto guard = Walker::create<WallGuard>( _city(), walker::romeGuard );
+    guard->send2city( this, *patrolWayIt );
 
     addWalker( guard.object() );
   }
@@ -191,7 +196,8 @@ void Tower::deliverService()
   {
     if( _d->catapult.isNull() )
     {
-      _d->catapult = Balista::create( _city() );
+      _d->catapult = Walker::create<Balista>( _city() );
+      _d->catapult->attach();
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
       _d->catapult->setBase( this );
     }
@@ -232,14 +238,14 @@ Point Tower::offset(const Tile& tile, const Point& subpos) const
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {
   PathwayList ret;
+
+  WallCondition condition;
+
   for( auto wall : dest )
   {
-    Pathway tmp = PathwayHelper::create( start, wall->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, wall->pos(), condition.byWalls() );
     if( tmp.isValid() )
-    {    
-      ret.push_back( PathwayPtr( new Pathway( tmp ) ) );
-      ret.back()->drop();
-    }
+      ret.push_back( ptr_make<Pathway>( tmp ) );
   }
 
   return ret;
@@ -247,7 +253,8 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
 
 Pathway Tower::getWay(TilePos start, TilePos stop)
 {
-  return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
+  WallCondition condition;
+  return PathwayHelper::create( start, stop, condition.byWalls() );
 }
 
 float Tower::evaluateTrainee(walker::Type traineeType)

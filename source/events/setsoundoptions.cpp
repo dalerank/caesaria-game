@@ -88,20 +88,19 @@ GameEventPtr ChangeSoundOptions::create()
 
 void ChangeSoundOptions::_exec(Game& game, unsigned int)
 {
-  SoundOptions* dialog = new SoundOptions( game.gui()->rootWidget() );
+  auto& dialog = game.gui()->add<SoundOptions>();
   Model* model = new Model();
 
   Engine& ae = Engine::instance();
 
-  CONNECT( dialog, onChange(), model,  Model::set )
-  CONNECT( dialog, onClose(),  model,  Model::restore )
-  CONNECT( dialog, onChange(), &ae,    Engine::setVolume )
+  CONNECT( &dialog, onChange(), model,  Model::set )
+  CONNECT( &dialog, onApply(),  model,  Model::apply )
+  CONNECT( &dialog, onClose(),  model,  Model::restore )
+  CONNECT( &dialog, onChange(), &ae,    Engine::setVolume )
 
-  dialog->update( audio::ambient, ae.volume( audio::ambient ) );
-  dialog->update( audio::theme, ae.volume( audio::theme ) );
-  dialog->update( audio::game, ae.volume( audio::game ) );
-
-  dialog->show();
+  dialog.update( audio::ambient, ae.volume( audio::ambient ) );
+  dialog.update( audio::theme, ae.volume( audio::theme ) );
+  dialog.update( audio::game, ae.volume( audio::game ) );
 }
 
 bool ChangeSoundOptions::_mayExec(Game&, unsigned int) const { return true; }

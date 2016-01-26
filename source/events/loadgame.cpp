@@ -46,14 +46,12 @@ void ShowLoadDialog::_exec(Game& game, unsigned int)
   if( !lvl )
     return;
 
-  Widget* parent = game.gui()->rootWidget();
-
   vfs::Path savesPath = SETTINGS_STR( savedir );
   std::string defaultExt = SETTINGS_STR( saveExt );
-  dialog::LoadFile* wnd = dialog::LoadFile::create( parent, Rect(), savesPath, defaultExt,-1 );
+  auto& dialog = game.gui()->add<dialog::LoadFile>( Rect(), savesPath, defaultExt,-1 );
 
-  CONNECT( wnd, onSelectFile(), lvl, scene::Level::loadStage );
-  wnd->setTitle( _("##mainmenu_loadgame##") );
+  CONNECT( &dialog, onSelectFile(), lvl, scene::Level::loadStage );
+  dialog.setTitle( _("##mainmenu_loadgame##") );
 }
 
 bool ShowLoadDialog::_mayExec(Game&, unsigned int) const{ return true; }

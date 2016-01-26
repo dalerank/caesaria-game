@@ -29,14 +29,14 @@ namespace gui
 class PushButton;
 
 // this is the menu with newGame/loadGame/quit choice
-class StartMenu : public Widget
+class Lobby : public Widget
 {
 public:
-  StartMenu( Widget* parent );
-  virtual ~StartMenu();
+  Lobby( Widget* parent );
+  virtual ~Lobby();
 
   virtual void draw(gfx::Engine &painter);
-  PushButton* addButton( const std::string& caption, int id );
+  PushButton& addButton( const std::string& caption, int id );
   void clear();
 private:
   class Impl;

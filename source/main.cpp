@@ -14,23 +14,22 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+ 
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
 #include "steam.hpp"
 
-#if defined(CAESARIA_PLATFORM_WIN)
+#ifdef GAME_PLATFORM_WIN
   #undef main
 #endif
 
-#if defined(CAESARIA_PLATFORM_ANDROID)
+#ifdef GAME_PLATFORM_ANDROID
 #include <SDL.h>
 #include <SDL_system.h>
 #endif
@@ -40,7 +39,7 @@ int main(int argc, char* argv[])
   crashhandler::install();
 
   vfs::Directory workdir;
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   workdir = vfs::Path( argv[0] ).directory();
@@ -50,6 +49,7 @@ int main(int argc, char* argv[])
 
   options.setwdir( workdir.toString() );
   options.checkwdir( argv, argc );
+  options.resetIfNeed( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
   SimpleLogger LOG("Game");
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
   LOG.info("Language set to " + SETTINGS_STR(language));
   LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
-  LOG.info("Cell width set to %d", SETTINGS_VALUE(cellw).toInt());
+  LOG.info("Cell width set to {}", SETTINGS_VALUE(cellw).toInt());
 
   try
   {

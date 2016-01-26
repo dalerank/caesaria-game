@@ -27,6 +27,7 @@ class LoaderHelper
 {
 public:
   static std::string getDefaultCityName( unsigned int location );
+  static std::string getDefaultCityNameSav( unsigned int location );
   static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city, unsigned int forceId=0 );
   static object::Type convImgId2ovrType(unsigned int imgId);
 };

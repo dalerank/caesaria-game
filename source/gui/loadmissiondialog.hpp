@@ -34,6 +34,7 @@ public:
   static LoadMission* create(Widget* parent, const vfs::Directory& dir );
         
   virtual void draw( gfx::Engine& engine );
+  LoadMission( Widget* parent, const vfs::Directory& dir );
 
 signals public:
   Signal1<std::string>& onSelectFile();
@@ -42,7 +43,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  LoadMission( Widget* parent, const vfs::Directory& dir );
 };
 
 }//end namespace dialog

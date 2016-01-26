@@ -33,6 +33,7 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
+#include "good/storage.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -137,10 +138,8 @@ public:
 };
 
 Building::Building(const object::Type type, const Size& size )
-: Construction( type, size ), _d( new Impl )
+  : Construction( type, size ), _d( new Impl )
 {
-  setState( pr::inflammability, 1 );
-  setState( pr::collapsibility, 1 );
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
@@ -172,8 +171,14 @@ void Building::timeStep(const unsigned long time)
 void Building::storeGoods(good::Stock &stock, const int amount)
 {
   std::string bldType = debugName();
-  Logger::warning( "This building should not store any goods %s at [%d,%d]",
-                   bldType.c_str(), pos().i(), pos().j() );
+  Logger::warning( "This building should not store any goods {0} at [{1},{2}]",
+                   bldType, pos().i(), pos().j() );
+}
+
+good::Store& Building::store()
+{
+  static good::Storage invalidStorage;
+  return invalidStorage;
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)
@@ -252,10 +257,10 @@ float Building::evaluateTrainee(walker::Type traineeType)
 void Building::reserveTrainee(walker::Type traineeType) { _d->reserved.trainees.reserve(traineeType); }
 void Building::cancelTrainee(walker::Type traineeType) { _d->reserved.trainees.erase(traineeType);}
 
-void Building::updateTrainee(  TraineeWalkerPtr walker )
+void Building::updateTrainee( TraineeWalkerPtr walker )
 {
    _d->reserved.trainees.erase( walker->type() );
-   _d->trainees[ walker->type() ] += walker->value() ;
+   _d->trainees[ walker->type() ] += walker->value();
 }
 
 void Building::setTraineeValue(walker::Type type, int value)
@@ -263,15 +268,9 @@ void Building::setTraineeValue(walker::Type type, int value)
   _d->trainees[ type ] = value;
 }
 
-void Building::initialize(const MetaData &mdata)
+void Building::initialize(const object::Info& mdata)
 {
   Construction::initialize( mdata );
-
-  Variant inflammabilityV = mdata.getOption( "inflammability" );
-  if( inflammabilityV.isValid() ) setState( pr::inflammability, inflammabilityV.toDouble() );
-
-  Variant collapsibilityV = mdata.getOption( "collapsibility" );
-  if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
 }
 
 void Building::save(VariantMap& stream) const

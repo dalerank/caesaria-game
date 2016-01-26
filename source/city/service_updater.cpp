@@ -33,7 +33,7 @@ namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(service)
+GAME_LITERALCONST(service)
 }
 
 REGISTER_SERVICE_IN_FACTORY(ServiceUpdater,serviceUpdater)
@@ -47,14 +47,6 @@ public:
   int value;
 };
 
-SrvcPtr ServiceUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new ServiceUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void ServiceUpdater::timeStep( const unsigned int time)
 {
   if( game::Date::isWeekChanged() )
@@ -62,12 +54,10 @@ void ServiceUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    HouseList houses = _city()->statistic().houses.find();
+    auto houses = _city()->statistic().houses.all();
 
-    for( auto item : houses )
-    {
-      item->setServiceValue( _d->stype, _d->value );
-    }
+    for( auto house : houses )
+      house->setServiceValue( _d->stype, _d->value );
   }
 }
 

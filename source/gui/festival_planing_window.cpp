@@ -52,37 +52,28 @@ public:
   int type;
   unsigned int cost;
   std::vector<TexturedButton*> godBtns;
-  std::map<int, RomeDivinityType > divines;
+  std::map<int, RomeDivinity::Type > divines;
 
-  PushButton* btnHelp;
-  PushButton* btnExit;
   PushButton* btnSmallFestival;
   PushButton* btnMiddleFestival;
   PushButton* btnGreatFestival;
 
-  TexturedButton* btnYes;
-  TexturedButton* btnNo;
-
   PlayerCityPtr city;
-  RomeDivinityType currentDivinity;
+  RomeDivinity::Type currentDivinity;
 
 public signals:
   Signal2<int, int> onFestivalAssignSignal;
 
 public:
-  void assignFestival()
-  {    
-    emit onFestivalAssignSignal( (int)currentDivinity, type );
-  }
-
-  void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )
+  void addImage( Widget* parent, RomeDivinity::Type type, int column, int startPic )
   {
     Size imgSize( 81, 91 );
-    godBtns.push_back( new TexturedButton( parent, Point( column * 100 + 60, 48),
-                                           imgSize, divId + type, ResourceGroup::festivalimg,
-                                           startPic, startPic, startPic+5, startPic+5 ) );
-    godBtns.back()->setIsPushButton( true );
-    godBtns.back()->setTooltipText( _("##arrange_festiable_for_this_god##") );
+    auto& btn = parent->add<TexturedButton>( Point( column * 100 + 60, 48),
+                                             imgSize, divId + type, gui::miniature.rc,
+                                             TexturedButton::States( startPic, startPic, startPic+5, startPic+5 ) );
+    btn.setIsPushButton( true );
+    btn.setTooltipText( _("##arrange_festiable_for_this_god##") );
+    godBtns.push_back( &btn );
     divines[ divId + type ] = type;    
   }
 
@@ -90,18 +81,12 @@ public:
   {
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
-    std::string text = utils::format( 0xff, "##hold_%s_festival##", divinity.isValid()
-                                                                    ? divinity->debugName().c_str()
-                                                                    : "unknown" );
+    std::string text = fmt::format( "##hold_{}_festival##", divinity.isValid()
+                                                               ? divinity->debugName()
+                                                               : "unknown" );
     lbTitle->setText( _(text) );
   }
 };
-
-FestivalPlanning* FestivalPlanning::create(Widget* parent, PlayerCityPtr city, int id )
-{
-  FestivalPlanning* ret = new FestivalPlanning( parent, id, Rect( 0, 0, 1, 1 ), city);
-  return ret;
-}
 
 FestivalPlanning::~FestivalPlanning(){}
 
@@ -112,14 +97,14 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   move( Point( 8, 30) );
   _d->city = city;
 
-  _d->addImage( this, romeDivCeres, 0, 17 );
-  _d->addImage( this, romeDivNeptune, 1, 18 );
-  _d->addImage( this, romeDivMercury, 2, 19 );
-  _d->addImage( this, romeDivMars, 3, 20 );
-  _d->addImage( this, romeDivVenus, 4, 21 );
+  _d->addImage( this, RomeDivinity::Ceres, 0, 17 );
+  _d->addImage( this, RomeDivinity::Neptune, 1, 18 );
+  _d->addImage( this, RomeDivinity::Mercury, 2, 19 );
+  _d->addImage( this, RomeDivinity::Mars, 3, 20 );
+  _d->addImage( this, RomeDivinity::Venus, 4, 21 );
 
   _d->godBtns.front()->setPressed( true );
-  _d->currentDivinity = romeDivCeres;
+  _d->currentDivinity = RomeDivinity::Ceres;
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbFestivalName )
@@ -130,8 +115,6 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   _d->updateTitle();
   _d->type = smallFest;
 
-  _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
   _d->cost = city->statistic().festival.calcCost( smallFest );
@@ -139,32 +122,34 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->cost ) );
+    _d->btnSmallFestival->setText( fmt::format( "{} {}", _("##small_festival##"), _d->cost ) );
   }
 
   _d->cost = city->statistic().festival.calcCost( middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
-    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->cost ));
+    _d->btnMiddleFestival->setText( fmt::format( "{} {}", _("##middle_festival##"), _d->cost ));
   }
 
   _d->cost = city->statistic().festival.calcCost( greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
-    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->cost ));
+    _d->btnGreatFestival->setText( fmt::format( "{} {}", _("##great_festival##"), _d->cost ));
   }
 
-  _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
-  _d->btnYes->setTooltipText( _("##new_festival##") );
-  _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
-  _d->btnNo->setTooltipText( _("##donot_organize_festival##") );
+  add<HelpButton>( Point( 52, height() - 52 ), "festival_adv" );
+  auto& btnYes = add<TexturedButton>( Point( 350, height() - 50 ), Size( 39, 26), -1, gui::button.ok );
+  auto& btnNo = add<TexturedButton>( Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, gui::button.cancel );
+  add<ExitButton>( Point( width() - 74, height() - 52 ), Widget::noId );
 
-  CONNECT( _d->btnExit,onClicked(), this, FestivalPlanning::deleteLater );
-  CONNECT( _d->btnNo,  onClicked(), this, FestivalPlanning::deleteLater );
-  CONNECT( _d->btnYes, onClicked(), _d.data(), Impl::assignFestival );
-  CONNECT( _d->btnYes, onClicked(), this, FestivalPlanning::deleteLater );
+  btnYes.setTooltipText( _("##new_festival##") );
+  btnNo.setTooltipText( _("##donot_organize_festival##") );
+
+  CONNECT_LOCAL( &btnNo,  onClicked(), FestivalPlanning::deleteLater );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::_assignFestival );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::deleteLater );
 }
 
 void FestivalPlanning::draw( gfx::Engine& painter )
@@ -185,7 +170,7 @@ bool FestivalPlanning::onEvent(const NEvent& event)
     {
       if( (btn->ID() & Impl::divId) == Impl::divId )
       {
-        for( auto abtn : _d->godBtns )  { abtn->setPressed( false ); }
+        for( auto abtn : _d->godBtns ) { abtn->setPressed( false ); }
 
         btn->setPressed( true );
         _d->currentDivinity = _d->divines[ btn->ID() ];
@@ -213,7 +198,12 @@ bool FestivalPlanning::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<int,int>& FestivalPlanning::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+Signal2<int,int>& FestivalPlanning::onFestivalAssign() { return _d->onFestivalAssignSignal; }
+
+void FestivalPlanning::_assignFestival()
+{
+  emit _d->onFestivalAssignSignal( (int)_d->currentDivinity, _d->type );
+}
 
 }//end namespace dialog
 

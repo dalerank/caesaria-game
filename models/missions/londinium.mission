@@ -35,9 +35,8 @@
 
     cities :
     {
-      "Lindum" : {
-				location : [ 280, 40 ]				
-
+      Lindum : {
+        nation : "roman"
         sea : true
         land : true
         available : true
@@ -47,7 +46,7 @@
       }
 
 			Lutetia : {
-				location : [ 360, 140 ]
+        nation : "roman"
 
         sea : true
         land : true
@@ -58,11 +57,10 @@
       }
 
 			"Augusta Trevorum" : {
-				location : [ 540, 140 ]
-
         sea : true
         land : true
         available : true
+        nation : "roman"
 
         sells : { meat : 15, wine : 15 }
         buys : { vegetable : 25 }

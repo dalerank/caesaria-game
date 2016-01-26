@@ -75,15 +75,15 @@ bool Fortification::build( const city::AreaInfo& info )
     return false;
   }
 
-  Pathway way2border = PathwayHelper::create( info.pos, info.city->borderInfo().roadEntry, PathwayHelper::allTerrain );
+  Pathway way2border = PathwayHelper::create( info.pos, info.city->getBorderInfo( PlayerCity::roadEntry ).epos(),
+                                              PathwayHelper::allTerrain );
   if( !way2border.isValid() )
   {
-    GameEventPtr event = WarningMessage::create( "##walls_need_a_gatehouse##", 1 );
-    event->dispatch();
+    events::dispatch<WarningMessage>( "##walls_need_a_gatehouse##", 1 );
   }
 
   Building::build( info );
-  FortificationList fortifications = info.city->statistic().objects.find<Fortification>();
+  auto fortifications = info.city->statistic().objects.find<Fortification>();
 
   for( auto fort : fortifications )
     fort->updatePicture( info.city );
@@ -103,7 +103,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
 
     auto fortifications = area.overlays().select<Fortification>();
     for( auto f : fortifications )
@@ -148,7 +148,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   if (!tmap.isInside(tile_pos))
   {
     static Picture ret;
-    ret.load( ResourceGroup::aqueduct, 121 );
+    ret.load( config::rc.aqueduct, 121 );
     return ret;
   }
 
@@ -214,7 +214,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   for (int i = 0; i < direction::count; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->type() == object::fortification) || is_busy[i]))
+        ( ( object::typeOrDefault( overlay_d[i] ) == object::fortification) || is_busy[i]))
     {
       switch (i)
       {

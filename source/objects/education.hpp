@@ -28,7 +28,7 @@ public:
 
   virtual int currentVisitors() const;
   virtual int maxVisitors() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   class Impl;
@@ -42,7 +42,7 @@ public:
 
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;  
-  virtual void buildingsServed(const std::set<BuildingPtr> &buildings, ServiceWalkerPtr walker);
+  virtual void buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker);
 protected:
   virtual int _getWalkerOrders() const;
 };

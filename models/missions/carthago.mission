@@ -36,21 +36,19 @@
     cities :
     {    
       Thamugadi : {
-        location : [ 530, 830 ]
-
         land : true
         sea : true
         available : true
+        nation : "roman"
 
         buys : { olive : 25, wine : 25, oil : 15 }
         sells : { clay: 15, timber : 10, furniture: 25 }
       }
 
       Caesarea : {
-        location : [ 380, 780 ]
-
         sea : true
         land : true
+        nation : "roman"
         available : true
 
         sells : { wheat : 25 }
@@ -58,11 +56,10 @@
       }
 
       Syracusae : {
-        location : [ 840, 720 ]
-
         sea : true
         land : true
         available : true
+        nation : "roman"
 
         sells : { iron : 25, weapon : 15 }
         buys : { fruit : 25, meat : 15, wine : 15 }

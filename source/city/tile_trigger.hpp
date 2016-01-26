@@ -24,9 +24,8 @@
 /** This is an immigrant coming with his stuff */
 class TileTrigger : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-
   virtual ~TileTrigger();
 
   virtual void timeStep(const unsigned long time);

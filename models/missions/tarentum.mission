@@ -7,6 +7,9 @@
   player.rank : 2  
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##tarentum_preview_mission##"
+  preview.title : "##tarentum_preview_title##"
+  preview.image : ""
 	
   win :
   {
@@ -37,7 +40,7 @@
     {
       Brundisium :
       {
-        romecity : true
+        nation : "roman"
         sea : true
         land : true
         available : true
@@ -50,7 +53,7 @@
       {
         sea : true
         land : true
-        distant : true
+        nation : "gaul"
         available : false
 
         sells : {}
@@ -64,6 +67,7 @@
       {
         sea : true
         land : true
+        nation : "roman"
         available : true
 
         sells : { furniture : 25, pottery : 25 }

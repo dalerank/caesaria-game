@@ -15,7 +15,7 @@
   {
     name : "n2_capua"
     population : 2500
-    culture : 35_
+    culture : 35
     prosperity : 10
     peace : 0
     favour : 60
@@ -40,9 +40,9 @@
 
     cities :
     {
-      Brundisium : {
-        location : [ 940, 560 ]
-        romecity : true
+      Brundisium :
+      {
+        nation : "roman"
         sea : true
         land : true
         available : true
@@ -51,27 +51,26 @@
         buys : { meat : 15, timber : 25, furniture : 25 }
       }
 
-      "Leptis Magna" : {
-        location : [ 860, 920 ]
-
+      "Leptis Magna" :
+      {
         sea : true
         land : true
-        distant : true
         available : true
 
         sells : {	oil : 5, timber : 25 }
         buys : { wine : 25 }
 
+        nation : "other"
+
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
       }
 
-      Carthago : {
-        location : [ 640, 760 ]
-
+      Carthago :
+      {
         sea : true
         land : true
-        distant : true
+        nation : "carthaginian"
         available : true
 
         sells : { meat : 25, marble : 20 }
@@ -81,22 +80,23 @@
                       "timber", "clay", "marble", "iron" ]
       }
 
-      Syracusae : {
-        location : [ 840, 720 ]
+      Syracusae :
+      {
         sells : { meat : 25, marble : 20 }
         buys : { olive : 40, oil : 15, furniture : 25 }
         land : true
         sea : true
+        nation : "roman"
         available : true
         resources : [ "wheat", "vegetable", "fruit", "wine",
                       "fish", "timber", "clay" ]
       }
 
-      Tarentum : {
-        location : [ 900, 600 ]
-
+      Tarentum :
+      {
         land : true
         sea : true
+        nation : "roman"
         available : true
 
         sells : {	wine : 25, furniture : 25 }

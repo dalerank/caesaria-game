@@ -31,7 +31,7 @@ namespace vfs
 {
 
 namespace {
-static const std::string readerTypename = CAESARIA_STR_EXT(ZipArchiveReader);
+static const std::string readerTypename = STRINGIFY(ZipArchiveReader);
 }
 
 ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
@@ -695,7 +695,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      Logger::warning( "file %s has unsupported compression method", item( index ).fullpath.toCString() );
+      Logger::warning( "file {} has unsupported compression method", item( index ).fullpath.toCString() );
       return NFile();
     }
   }

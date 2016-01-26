@@ -46,6 +46,15 @@ public:
     return ret;
   }
 
+  SmartList<T> toList() const
+  {
+    SmartList<T> ret;
+    for( auto i : *this )
+      ret.push_back( i );
+
+    return ret;
+  }
+
   template<class Dst>
   bool contain() const
   {
@@ -88,10 +97,9 @@ public:
 
 class ServiceWalker : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { noOrders=0, goServiceMaximum=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4, goServiceMinimum=0x8 } Order;
-
-  static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type serviceType() const;
   const TilePos& baseLocation() const;
@@ -135,7 +143,7 @@ protected:
   virtual void _centerTile();  // called when the walker is on a new tile
 
 protected:
-  ServiceWalker( PlayerCityPtr city, const Service::Type service );
+  ServiceWalker( PlayerCityPtr city, const Service::Type service=Service::srvCount );
 
   void _init(const Service::Type service);
   void _computeWalkerPath(int orders);

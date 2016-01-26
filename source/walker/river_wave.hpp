@@ -24,13 +24,14 @@
 
 class RiverWave : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RiverWavePtr create( PlayerCityPtr city );
   virtual ~RiverWave();
 
   virtual void send2City(const TilePos& location);
   virtual void timeStep(const unsigned long time);
   virtual void save(VariantMap& stream) const;
+  virtual void initialize(const VariantMap &options);
 
 protected:
   const gfx::Picture& getMainPicture();

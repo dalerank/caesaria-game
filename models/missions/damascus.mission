@@ -36,20 +36,20 @@
     cities :
     {
       Tarsus : {
-        location : [ 1660, 760 ]
         sells : { clay : 25, marble : 15, pottery : 25 }
         buys : { wine : 15, oil : 25 }
         land : true
         sea : true
+        nation : "roman"
         available : true
       }
      
       Hierosolyma : {
-        location : [ 1740, 920 ]
         sells : { wheat : 40, olive : 25, furniture : 25 }
         buys : { wine : 15 }
         land : true
         sea : true
+        nation : "roman"
 				available : true
       }
     }

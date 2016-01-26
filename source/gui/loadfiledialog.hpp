@@ -27,6 +27,7 @@ namespace gui
 {
 
 class FileListBox;
+class ListBoxItem;
 
 namespace dialog
 {
@@ -34,15 +35,13 @@ namespace dialog
 class LoadFile : public Window
 {
 public:
-  static LoadFile* create( Widget* parent, const Rect& rect,
-                                 const vfs::Directory& dir, const std::string& ext,
-                                 int id  );
+  LoadFile( Widget* parent, const Rect& rect,
+                  const vfs::Directory& dir, const std::string& ext,
+                  int id );
 
   virtual ~LoadFile();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
-
-  virtual bool onEvent( const NEvent& event);
 
   virtual bool isPointInside(const Point& point) const;
 
@@ -57,11 +56,10 @@ signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
-  LoadFile( Widget* parent, const Rect& rect,
-                  const vfs::Directory& dir, const std::string& ext,
-                  int id );
 
   virtual void _fillFiles();
+  void _resolveItemSelected( const ListBoxItem& item );
+  void _resolveItemDblClick( const ListBoxItem& item );
 
   gui::FileListBox* _fileslbx() const;
   const vfs::Directory& _directory() const;

@@ -36,7 +36,7 @@
     cities :
     {    
       Massilia : {
-        location : [ 500, 440 ]
+        nation : "roman"
 
         land : true
         sea : true
@@ -47,7 +47,7 @@
       }
 
       Capua : {
-        location : [ 820, 560 ]
+        nation : "roman"
 
         sea : true
         land : true

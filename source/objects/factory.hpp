@@ -21,6 +21,7 @@
 
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
+#include "good/turnover.hpp"
 #include "good/good.hpp"
 
 class Factory : public WorkingBuilding
@@ -60,26 +61,29 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void load( const VariantMap& stream );
 
   virtual void setProductRate( const float rate );
   virtual float productRate() const;
-  virtual unsigned int effciency() const;
+  virtual math::Percent effciency() const;
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
   std::string cartStateDesc() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
+
+  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
+  virtual void _productProgress();
+  virtual void _productReady();
+
   void _weekUpdate( unsigned int time );
   void _setConsumeGoodType( int index, good::Product product );
-  void _productReady();
-  void _productProgress();
   void _setUnworkingInterval( unsigned int weeks );
   virtual void _reachUnworkingTreshold();
 

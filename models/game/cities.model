@@ -23,7 +23,7 @@
     land : true
     
     resources : [ "wheat", "fruit", "olive", "fish", "clay" ] 
-	}
+  }
   
   Londinium : {
     location : [ 760, 420 ]
@@ -36,7 +36,7 @@
                   
     sells : { wheat : 40, clay : 40 }
     buys : { wine : 25, oil : 15, furniture : 25 }               
-	}
+  }
   
   Mediolanum : {
     location : [ 940, 720 ]

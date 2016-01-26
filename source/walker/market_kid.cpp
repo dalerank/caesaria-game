@@ -41,45 +41,23 @@ public:
   unsigned int birthTime;
 };
 
-MarketKidPtr MarketKid::create(PlayerCityPtr city )
-{
-  MarketKidPtr ret( new MarketKid( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
-{
-  MarketKidPtr ret( new MarketKid( city ) );
-  ret->setPos( lady->pos() );
-  ret->_pathway() = lady->pathway();
-
-  ret->drop();
-
-  return ret;
-}
-
-MarketKid::MarketKid(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+MarketKid::MarketKid(PlayerCityPtr city)
+  : Human( city, walker::marketKid ), _d( new Impl )
 {
   _d->delay = 0;
+
   _d->birthTime = 0;
   _d->basket.setCapacity( defaultCapacity );
-  _setType( walker::marketKid );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void MarketKid::setDelay( int delay ) {  _d->delay = delay; }
 
-void MarketKid::send2City( MarketPtr destination )
+void MarketKid::send2City( MarketPtr market )
 {
-  if( destination.isValid() )
+  if( market.isValid() )
   {
-    _d->marketPos = destination->pos();
-    _pathway().move( Pathway::reverse );
-    _centerTile();
+    _d->marketPos = market->pos();
+    market->addWalker( this );
     attach();
   }
   else
@@ -127,7 +105,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  auto market = _map().overlay( _d->marketPos ).as<Market>();
+  auto market = _map().overlay<Market>( _d->marketPos );
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

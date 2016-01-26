@@ -107,6 +107,14 @@ public:
   __GS_PROPERTY(ambientsounds)
   __GS_PROPERTY(debugMenu)
   __GS_PROPERTY(cntrGroupsModel)
+  __GS_PROPERTY(logfile)
+  __GS_PROPERTY(rightMenu)
+  __GS_PROPERTY(showEmpireMapTiles)
+  __GS_PROPERTY(logoImageRc)
+  __GS_PROPERTY(logoImageIndex)
+  __GS_PROPERTY(showLastChanges)
+  __GS_PROPERTY(lastChangesNumber)
+  __GS_PROPERTY(citiesIdModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -117,6 +125,8 @@ public:
   static vfs::Path rcpath( const std::string& option="" );
   static vfs::Path rpath( const std::string& option="" );
 
+  static int findLastChanges();
+
   static void load();
   static void save();
 
@@ -125,6 +135,7 @@ public:
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
   void changeSystemLang( const std::string& newLang );
+  void resetIfNeed(char* argv[], int argc);
 private:
   Settings();
 

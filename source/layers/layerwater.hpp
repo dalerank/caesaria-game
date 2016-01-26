@@ -27,21 +27,21 @@ namespace citylayer
 class Water : public Layer
 {
 public:
+  Water( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void drawPass( gfx::Engine &engine, gfx::Tile& tile, const Point& offset, gfx::Renderer::Pass pass);
-  virtual void drawWalkerOverlap(gfx::Engine &engine, gfx::Tile &tile, const Point& offset, const int depth);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-  virtual void handleEvent(NEvent& event);
+  virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawPass( const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass);
+  virtual void drawWalkerOverlap(const gfx::RenderInfo& rinfo, gfx::Tile &tile, const int depth);
+  virtual void onEvent( const NEvent& event);
+  virtual void render(gfx::Engine& engine);
+  virtual void afterRender(gfx::Engine& engine);
 
 private:
-  void _drawLandTile( gfx::Engine &engine, gfx::Tile &tile, const Point &offset, const Size &areaSize);
+  void _updatePaths();
+  void _drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile, const Size &areaSize);
 
   class Impl;
   ScopedPtr<Impl> _d;
-
-  Water( gfx::Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace citylayer

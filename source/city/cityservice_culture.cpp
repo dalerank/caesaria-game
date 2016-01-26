@@ -62,6 +62,7 @@ struct SubRating
   WhatFind whatFind;
   int coverage;
   int value;
+  int objects_n;
   int visitors;
 
   SubRating( const Points& points, WhatFind otype)
@@ -90,9 +91,14 @@ struct SubRating
       return 0;
     }
     /** buildings which we need check **/
-    rcity->statistic().objects
-                      .find<T>( whatFind )
-                      .for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
+
+    auto objects = rcity->statistic()
+                          .objects
+                          .find<T>( whatFind );
+
+    objects_n = objects.size();
+
+    objects.for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
 
     float coverage = visitors / population;
 
@@ -135,14 +141,6 @@ public:
            academies(coverage::academies,object::academy)
            {}
 };
-
-SrvcPtr CultureRating::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new CultureRating( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 CultureRating::CultureRating( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
@@ -203,6 +201,19 @@ int CultureRating::coverage( Coverage type) const
   }
 }
 
-std::string CultureRating::defaultName() { return CAESARIA_STR_EXT(CultureRating); }
+int CultureRating::objects_n(CultureRating::Coverage type) const
+{
+  switch( type )
+  {
+  case covSchool: return _d->schools.objects_n;
+  case covLibrary: return _d->libraries.objects_n;
+  case covAcademy: return _d->academies.objects_n;
+  case covReligion: return _d->religion.objects_n;
+  case covTheatres: return _d->theaters.objects_n;
+  default: return 0;
+  }
+}
+
+std::string CultureRating::defaultName() { return TEXT(CultureRating); }
 
 }//end namespace city

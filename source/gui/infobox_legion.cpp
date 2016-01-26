@@ -83,16 +83,16 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
 
   if( !walkers.empty() )
   {
-    foreach( i, walkers )
+    for( auto& wlk : walkers )
     {
-      RomeSoldierPtr rs = i->as<RomeSoldier>();
+      RomeSoldierPtr rs = wlk.as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = i->as<PatrolPoint>();
+      PatrolPointPtr pp = wlk.as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();
@@ -113,9 +113,9 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      BuildingList barracks = city->statistic().objects.find<Building>( object::barracks );
+      int barracks_n = city->statistic().objects.count( object::barracks );
 
-      std::string text = barracks.empty()
+      std::string text = barracks_n == 0
                           ? "##legion_haveho_soldiers_and_barracks##"
                           : "##legion_haveho_soldiers##";
 
@@ -133,8 +133,8 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   setTitle( _( fortTitle ) );
   _update();
 
-  CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
-  CONNECT( _d->btnAttackAnimals, onClicked(), this, AboutLegion::_toggleAnimalsAttack );
+  CONNECT_LOCAL( _d->btnReturn, onClicked(), AboutLegion::_returnSoldiers2fort );
+  CONNECT_LOCAL( _d->btnAttackAnimals, onClicked(), AboutLegion::_toggleAnimalsAttack );
 }
 
 AboutLegion::~AboutLegion() {}
@@ -173,7 +173,7 @@ void AboutLegion::_update()
 
   if( _d->btnAttackAnimals )
   {
-    std::string text = utils::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    std::string text = fmt::format( "##attack_animals_{}##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
   }
 
@@ -204,9 +204,9 @@ void AboutLegion::_addAvailalbesFormation()
 
   int index = 0;
   int formationPicId[] = { 33, 34, 30, 31, 29, 28 };
-  foreach( it, formations )
+  for( auto& it : formations )
   {
-    _addFormationButton( index, *it, formationPicId[ *it ] );
+    _addFormationButton( index, it, formationPicId[ it ] );
     index++;
   }
 }
@@ -272,11 +272,11 @@ void AboutLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
-  PushButton* btn = new PushButton( this, rect, "", id );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, picId );
-  btn->setIconOffset( Point( 1, 1 ) );
-  btn->setTooltipText( _("##legion_formation_tooltip##") );
+  PushButton& btn = add<PushButton>( rect, "", id );
+  btn.setBackgroundStyle( PushButton::whiteBorderUp );
+  btn.setIcon( gui::miniature.rc, picId );
+  btn.setIconOffset( Point( 1, 1 ) );
+  btn.setTooltipText( _("##legion_formation_tooltip##") );
 }
 
 void AboutLegion::_returnSoldiers2fort()

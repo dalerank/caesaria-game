@@ -25,18 +25,17 @@ namespace citylayer
 class Health : public Info
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-
-  static LayerPtr create( gfx::TilemapCamera& camera, PlayerCityPtr city, int type );
-  virtual void handleEvent(NEvent& event);
-
-private:
   Health(gfx::Camera& camera, PlayerCityPtr city, int type );
+  virtual int type() const;
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void render(gfx::Engine& engine);
+  virtual void onEvent( const NEvent& event);
+private:
+  void _updatePaths();
   int _getLevelValue(HousePtr house);
 
-  std::set<object::Type> _flags;
-  int _type;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

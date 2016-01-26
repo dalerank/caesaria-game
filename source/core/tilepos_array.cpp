@@ -16,6 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "tilepos_array.hpp"
+#include "gfx/tilepos.hpp"
 #include "variant_list.hpp"
 
 TilePosArray& TilePosArray::operator<<(const TilePos& pos)
@@ -26,11 +27,10 @@ TilePosArray& TilePosArray::operator<<(const TilePos& pos)
 
 TilePosArray& TilePosArray::addUnique(const TilePos& pos)
 {
-  for( auto& tpos : *this )
-    if( tpos == pos )
-      return *this;
+  auto it = std::find(begin(), end(), pos);
+  if( it == end() )
+    push_back( pos );
 
-  push_back( pos );
   return *this;
 }
 
@@ -53,10 +53,16 @@ TilePosArray&TilePosArray::pop_front()
   return *this;
 }
 
+void TilePosArray::remove(const TilePos& pos)
+{
+  erase( std::remove( begin(), end(), pos ) );
+}
+
 VariantList TilePosArray::save() const
 {
   VariantList ret;
-  for( auto& pos : *this ) { ret << pos; }
+  for( auto& pos : *this )
+    { ret << pos; }
   return ret;
 }
 

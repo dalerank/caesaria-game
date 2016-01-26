@@ -28,6 +28,7 @@
 #include "widget_helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "dialogbox.hpp"
+#include "core/common.hpp"
 #include "texturedbutton.hpp"
 
 using namespace gfx;
@@ -50,7 +51,7 @@ REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
 REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
 
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 64 ) )
 {  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
 
@@ -65,24 +66,22 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( rawmb->produceGoodType() != good::none )
   {
-    Picture pic = good::Helper::picture( rawmb->produceGoodType() );
-    new Image( this, Point( 10, 10 ), pic );
+    add<Image>( Point( 10, 10 ), good::Info( rawmb->produceGoodType() ).picture() );
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
 
   if( lbProgress != NULL )
   {
-    std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
+    std::string text = fmt::format( "{} {}%", _("##rawm_production_complete_m##"), rawmb->progress() );
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
-  _lbTitle()->setText( _(title) );
+  _lbTitle()->setText( _( rawmb->info().prettyName() ) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
-  text = ( utils::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
+  text = ( fmt::format( "{}\n{}", _(text), _( cartInfo ) ) );
 
   if( lbProductivity != NULL )
   {
@@ -95,31 +94,22 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
+    auto& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT_LOCAL( &btn, onClicked(), AboutRawMaterial::_showAdvInfo )
   }
 }
 
 void AboutRawMaterial::_showAdvInfo()
 {
-  auto miningBuilding = base().as<Factory>();
-  if( miningBuilding.isValid() )
-  {
-    std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
-                                                  (int)miningBuilding->state( pr::damage ),
-                                                  (int)miningBuilding->state( pr::fire ) );
+  std::string workerState = fmt::format( "Damage={}\nFire={}\n",
+                                         utils::objectState( base(), pr::damage ),
+                                         utils::objectState( base(), pr::fire ) );
 
-    dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
-    dialog->setCenter( ui()->rootWidget()->center() );
-  }
+  dialog::Information( ui(), "Information", workerState );
 }
 
 AboutRawMaterial::~AboutRawMaterial() {}
-
-void AboutRawMaterial::_showHelp()
-{
-  DictionaryWindow::show( ui()->rootWidget(), _type );
-}
+void AboutRawMaterial::_showHelp() { ui()->add<DictionaryWindow>( _type ); }
 
 }
 

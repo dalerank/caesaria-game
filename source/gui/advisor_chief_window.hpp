@@ -28,15 +28,12 @@ namespace advisorwnd
 
 class Chief : public Base
 {
+  __DECLARE_IMPL(Chief)
 public:
   Chief( PlayerCityPtr city, Widget* parent, int id );
+  virtual void setupUI(const VariantMap &ui);
 
   virtual void draw( gfx::Engine& painter );
-
-private:
-  void _showHelp();
-
-  __DECLARE_IMPL(Chief)
 };
 
 }//end namesapce advisorwnd

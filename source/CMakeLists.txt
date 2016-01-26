@@ -37,6 +37,7 @@ file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB THREAD_LIST "${CMAKE_CURRENT_SOURCE_DIR}/thread/*.*")
 file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
+file(GLOB CHANGES_LIST "${GAME_CONFIG_DIR}/changes/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
@@ -46,7 +47,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST})
 
 include_directories(${SDL2MINI_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
@@ -76,8 +77,8 @@ include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
-add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
-add_definitions( -DCAESARIA_USE_SHADERS )
+add_definitions( -DGAME_USE_FRAMEBUFFER )
+add_definitions( -DGAME_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
 
 if(WIN32)
@@ -94,6 +95,10 @@ if(UNIX)
     target_link_libraries(${PROJECT_NAME} "dl")
   endif()  
 endif(UNIX)
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(X64_BUILD 1)
+endif()
 
 if(USE_STEAM)
   if(WIN32)
@@ -140,16 +145,16 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"clang\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"gcc\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"icc\"" )
+  add_definitions("-DGAME_COMPILER_NAME=\"icc\"" )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # using Visual Studio C++
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"msvc\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"msvc\"")
 endif()
 
 message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
@@ -220,6 +225,12 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/tutorial" "${WORK_DIR}/resources/tutorial"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/changes" "${WORK_DIR}/resources/changes"
 )
 
 ADD_CUSTOM_COMMAND(

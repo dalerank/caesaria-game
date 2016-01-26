@@ -31,7 +31,7 @@ namespace dialog
 class MissionTargets : public Window
 {
 public:
-  static MissionTargets* create( Widget* parent, PlayerCityPtr city , int id=-1 );
+  MissionTargets( Widget* parent, PlayerCityPtr city, int id=-1, const Rect& rectangle=Rect() );
   virtual ~MissionTargets();
 
   virtual void draw( gfx::Engine& painter );
@@ -39,7 +39,6 @@ public:
   void setCity( PlayerCityPtr city );
 
 private:
-  MissionTargets( Widget* parent, int id, const Rect& rectangle );
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -36,7 +36,7 @@
     cities :
     {
       Mediolanum : {
-        location : [ 600, 300 ]
+        nation : "roman"
         sells : { iron : 25, marble : 15 }
         buys : { weapons : -15, furniture : 25 }
         land : true
@@ -45,7 +45,7 @@
       }    
 
       Athenae : {
-        location : [ 1200, 700 ]
+        nation : "greek"
         sells : { pottery : 40, wine : 15, oil : 25 }
         buys : { wheat : 15, meat : 25 }
         land : true

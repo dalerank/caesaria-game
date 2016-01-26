@@ -24,14 +24,15 @@
 #include <fstream>
 #include <ctime>
 
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   #include <limits.h>
   #include <unistd.h>
   #include <sys/stat.h>
 #endif
 
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef GAME_PLATFORM_LINUX
 #include <cstdlib>
+#include <string.h>
 const char* getDialogCommand()
 {
   if (::system(NULL))
@@ -44,15 +45,15 @@ const char* getDialogCommand()
   }
   return NULL;
 }
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   #include <cstdlib>
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   #include <windows.h>
 #endif
 
 void OSystem::error(const std::string& title, const std::string& text)
 {
-#if defined(CAESARIA_PLATFORM_LINUX)
+#if defined(GAME_PLATFORM_LINUX)
   const char * dialogCommand = getDialogCommand();
   if (dialogCommand)
   {
@@ -66,20 +67,90 @@ void OSystem::error(const std::string& title, const std::string& text)
   }
 
   // fail-safe method here, using stdio perhaps, depends on your application
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   MessageBox(NULL, text.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+#endif
+}
+
+#ifdef GAME_PLATFORM_LINUX
+/**
+ * Get the parent PID from a PID
+ * @param pid pid
+ * @param ppid parent process id
+ *
+ * Note: init is 1 and it has a parent id of 0.
+ */
+int getParentPid(const pid_t pid) {
+  char buffer[BUFSIZ];
+  sprintf(buffer, "/proc/%d/stat", pid);
+  int result;
+  FILE* fp = fopen(buffer, "r");
+  if (fp) {
+    size_t size = fread(buffer, sizeof (char), sizeof (buffer), fp);
+    if (size > 0) {
+      // See: http://man7.org/linux/man-pages/man5/proc.5.html section /proc/[pid]/stat
+      strtok(buffer, " "); // (1) pid  %d
+      strtok(NULL, " "); // (2) comm  %s
+      strtok(NULL, " "); // (3) state  %c
+      char * s_ppid = strtok(NULL, " "); // (4) ppid  %d
+      result = atoi(s_ppid);
+    }
+    fclose(fp);
+  }
+
+  return result;
+}
+
+/**
+ * Get a process name from its PID.
+ * @param pid PID of the process
+ * @param name Name of the process
+ *
+ * Source: http://stackoverflow.com/questions/15545341/process-name-from-its-pid-in-linux
+ */
+std::string getProcessName(const pid_t pid)
+{
+  char procfile[0xff];
+  sprintf(procfile, "/proc/%d/cmdline", pid);
+  char name[0xff];
+  FILE* f = fopen(procfile, "r");
+  if (f) {
+    size_t size;
+    size = fread(name, sizeof (char), sizeof (procfile), f);
+    if (size > 0) {
+      if ('\n' == name[size - 1])
+        name[size - 1] = '\0';
+    }
+    fclose(f);
+  }
+
+  return name;
+}
+#endif
+
+void OSystem::getProcessTree(int pid, StringArray& out)
+{
+#ifdef GAME_PLATFORM_LINUX
+  while (pid != 0)
+  {
+    std::string name = getProcessName(pid);
+    Logger::warning( "{} - {}", pid, name.c_str() );
+    pid = getParentPid( pid );
+    vfs::Path pname( name );
+    out.push_back( pname.baseName().toString() );
+  }
 #endif
 }
 
 void OSystem::openUrl(const std::string& url, const std::string& prefix)
 {
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef GAME_PLATFORM_LINUX
   std::string command = prefix + "xdg-open '" + url + "'";
   Logger::warning( command );
   ::system( command.c_str() );
-#elif defined(CAESARIA_PLATFORM_WIN)
-  ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_WIN)
+  ShellExecuteA(0, "Open", url.c_str(), 0, 0 , SW_SHOW );
+#elif defined(GAME_PLATFORM_MACOSX)
   std::string result = "open \"" + url + "\" &";
   ::system( result.c_str() );
 #endif
@@ -88,12 +159,12 @@ void OSystem::openUrl(const std::string& url, const std::string& prefix)
 void OSystem::openDir(const std::string& path, const std::string& prefix)
 {
   std::string result;
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef GAME_PLATFORM_LINUX
   result = prefix + "nautilus '" + path + "' &";
   ::system( result.c_str() );
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   result = "open \"" + path + "\" &";
   ::system( result.c_str() );
 #endif
@@ -101,12 +172,12 @@ void OSystem::openDir(const std::string& path, const std::string& prefix)
 
 int OSystem::gmtOffsetMs()
 {
-#if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_MACOSX)
+#if defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_MACOSX)
   std::time_t current_time;
   std::time(&current_time);
   struct std::tm *timeinfo = std::localtime(&current_time);
   return timeinfo->tm_gmtoff;
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   time_t now = time(NULL);
   struct tm lcl = *localtime(&now);
   struct tm gmt = *gmtime(&now);
@@ -119,52 +190,52 @@ bool OSystem::is(OSystem::Type type)
   switch( type )
   {
   case windows:
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
     return true;
 #endif
   break;
   case win32:
-#ifdef CAESARIA_PLATFORM_WIN32
+#ifdef GAME_PLATFORM_WIN32
     return true;
 #endif
   break;
   case win64:
-#ifdef CAESARIA_PLATFORM_WIN64
+#ifdef GAME_PLATFORM_WIN64
     return true;
 #endif
   break;
   case linux:
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef GAME_PLATFORM_LINUX
     return true;
 #endif
   break;
   case unix:
-#ifdef CAESARIA_PLATFORM_UNIX
+#ifdef GAME_PLATFORM_UNIX
     return true;
 #endif
   break;
   case android:
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
     return true;
 #endif
   break;
   case macos:
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
     return true;
 #endif
   break;
   case bsd:
-#ifdef CAESARIA_PLATFORM_XBSD
+#ifdef GAME_PLATFORM_XBSD
     return true;
 #endif
   break;
   case haiku:
-#ifdef CAESARIA_PLATFORM_HAIKU
+#ifdef GAME_PLATFORM_HAIKU
     return true;
 #endif
   break;
   case beos:
-#ifdef CAESARIA_PLATFORM_BEOS
+#ifdef GAME_PLATFORM_BEOS
     return true;
 #endif
   break;
@@ -182,13 +253,13 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   vfs::Path executable( executableFp );
   vfs::Directory targetdir( dir );
 
-  vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName().toString();
+  vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName();
 
   std::string restartBatchFile = OSystem::isWindows() ? "update_updater.cmd" : "update_updater.sh";
 
   vfs::Path updateBatchFile =  targetdir.getFilePath( restartBatchFile );
 
-  Logger::warning( "Preparing CaesarIA update batch file in " + updateBatchFile.toString() );
+  Logger::warning( "Preparing CaesarIA update batch file in " + updateBatchFile );
 
   std::ofstream batch(updateBatchFile.toCString());
 
@@ -198,12 +269,12 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   // Append the current set of command line arguments to the new instance
   std::string arguments;
 
-  for( auto&& optionItem : cmds )
+  for(const auto& optionItem : cmds )
   {
     arguments += " " + optionItem;
   }
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   batch << "@ping 127.0.0.1 -n 2 -w 1000 > nul" << std::endl; // # hack equivalent to Wait 2
   batch << "@copy " << tempUpdater.toString() << " " << updater.toString() << " >nul" << std::endl;
   batch << "@del " << tempUpdater.toString() << std::endl;
@@ -232,7 +303,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   batch.close();
 
   // Mark the shell script as executable in *nix
-  if( OSystem::is( OSystem::unix ))
+  if( OSystem::isUnix() )
     OSystem::markFileAsExecutable(updateBatchFile.toString());
 
   return updateBatchFile.toString();
@@ -241,7 +312,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
 void OSystem::markFileAsExecutable( const std::string& filename )
 {
   vfs::Path path( filename );
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   Logger::warning( "Marking file as executable: " + path.toString() );
 
   struct stat mask;
@@ -261,7 +332,7 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
   Logger::warning( "Preparing restart...");
   std::string _updateBatchFile = _prepareUpdateBatchFile( filename, dir, cmds );  
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   if (!_updateBatchFile.empty())
   {
     Logger::warning( "Update batch file pending, launching process.");

@@ -49,7 +49,7 @@ void Barracks::deliverTrainee()
 { 
   if( walkers().size() == 0 && _d->store.freeQty() > 0 )
   {
-    CartSupplierPtr walker = CartSupplier::create( _city() );
+    CartSupplierPtr walker = Walker::create<CartSupplier>( _city() );
     walker->send2city( this, good::weapon, 100 );
 
     addWalker( walker.object() );
@@ -57,14 +57,14 @@ void Barracks::deliverTrainee()
 
   if( _d->store.qty( good::weapon ) >= 100 )
   {
-    TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::soldier );
-    trainee->send2City( this, false );
+    auto traineeWalker = Walker::create<TraineeWalker>( _city(), walker::soldier );
+    traineeWalker->send2City( this, false );
 
-    if( !trainee->isDeleted() )
+    if( !traineeWalker->isDeleted() )
     {
       good::Stock delStock( good::weapon, 100 );
       _d->store.retrieve( delStock, 100 );
-      addWalker( trainee.object() );
+      addWalker( traineeWalker.object() );
       _d->notNeedSoldiers = false;
     }
     else
@@ -89,7 +89,7 @@ void Barracks::storeGoods(good::Stock& stock, const int amount)
 
 std::string Barracks::workersProblemDesc() const
 {
-  unsigned int pp = productivity();
+  math::Percent pp = productivity();
   unsigned int haveWeapon = _d->store.qty() >= _d->store.capacity() / 2;
   if( pp > 0  )
   {

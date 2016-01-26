@@ -56,10 +56,10 @@ public:
 
   //! Set if the window titlebar will be drawn
   //! Note: If the background is not drawn, then the titlebar is automatically also not drawn
-  virtual void setHeaderVisible(bool draw);
+  virtual void setTitleVisible(bool draw);
 
   //! Get if the window titlebar will be drawn
-  virtual bool headerVisible() const;
+  virtual bool titleVisible() const;
 
   virtual void setBackground( gfx::Picture texture );
   virtual void setBackground( BackgroundType type );
@@ -69,7 +69,7 @@ public:
   virtual Rect clientRect() const;
   virtual void setModal();
 
-  void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( FlagName flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 
@@ -78,6 +78,7 @@ public:
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setText( const std::string& text );
+  virtual void setTitleRect( const Rect& rect );
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
@@ -88,6 +89,12 @@ protected:
 private:
   class Impl;
   ScopedPtr<Impl> _d;
+};
+
+class SimpleWindow : public Window
+{
+public:
+  SimpleWindow(Widget* parent, const Rect& rect, const std::string& title="", const std::string& ui="");
 };
 
 }//end namespace gui

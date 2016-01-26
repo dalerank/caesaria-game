@@ -3,28 +3,28 @@
   bgtype : "whiteFrame"
 
   lbTitle#Label : {
-    geometry : [ 15, 15, "pw-15", 35 ]
+    geometry : [ 15, 15, "100%-15", 35 ]
     text : "##governor_salary_title##"
     font : "FONT_5"
     textAlign : [ "center", "center" ]
   }
 
   lbxTitles#ListBox : {
-    geometry : [ 16, 50, "pw-16", "ph-100" ]
+    geometry : [ 16, 50, "100%-16", "100%-100" ]
     textAlign : [ "center", "center" ]
     itemfont : "FONT_2_WHITE"
     itemheight : 22
   }
     
   btnOk#PushButton : {
-    geometry : [ 176, "ph-55", 336, "ph-35" ]
+    geometry : [ 176, "100%-55", 336, "100%-35" ]
     text : "##ok##"
     bgtype : "whiteBorderUp"      
     font : "FONT_2"
   }
 
   btnCancel#PushButton : {
-    geometry : [ 176, "ph-32", 336, "ph-12" ]
+    geometry : [ 176, "100%-32", 336, "100%-12" ]
     text : "##cancel##"
     bgtype : "whiteBorderUp"
     tooltip : "##exit_salary_window##"

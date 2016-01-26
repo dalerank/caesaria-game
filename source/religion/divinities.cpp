@@ -29,6 +29,7 @@
 #include "objects/warehouse.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
+#include "core/format.hpp"
 #include "city/states.hpp"
 #include "core/variant_list.hpp"
 #include "config.hpp"
@@ -38,11 +39,46 @@ using namespace gfx;
 namespace religion
 {
 
-namespace rome
-{
-
 namespace {
-CAESARIA_LITERALCONST(name)
+GAME_LITERALCONST(name)
+}
+
+struct RomeDinConfig
+{
+  RomeDivinity::Type type;
+  std::string name;
+};
+
+static std::map<RomeDivinity::Type, RomeDinConfig> RomeDinMap = {
+  { RomeDivinity::Ceres, { RomeDivinity::Ceres, "ceres" } },
+  { RomeDivinity::Mars, { RomeDivinity::Mars, "mars" } },
+  { RomeDivinity::Neptune, { RomeDivinity::Neptune, "neptune" } },
+  { RomeDivinity::Venus, { RomeDivinity::Venus, "venus" } },
+  { RomeDivinity::Mercury, { RomeDivinity::Mercury, "mercury" } }
+};
+
+std::string RomeDivinity::findIntName(RomeDivinity::Type type)
+{
+  auto it = RomeDinMap.find( type );
+  return it != RomeDinMap.end() ? it->second.name : "unknown";
+}
+
+StringArray RomeDivinity::getIntNames()
+{
+  StringArray ret;
+  for( auto& i : RomeDinMap )
+    ret.push_back( i.second.name );
+
+  return ret;
+}
+
+std::vector<RomeDivinity::Type> RomeDivinity::getIntTypes()
+{
+  std::vector<RomeDivinity::Type> ret;
+  for( auto& i : RomeDinMap )
+    ret.push_back( i.first );
+
+  return ret;
 }
 
 void RomeDivinity::load(const VariantMap& vm)
@@ -59,7 +95,7 @@ void RomeDivinity::load(const VariantMap& vm)
   _shortDesc = vm.get( "shortDesc" ).toString();
   if( _shortDesc.empty() )
   {
-    _shortDesc  = utils::format( 0xff, "##%s_desc##", internalName().c_str() );
+    _shortDesc  = fmt::format( "##{0}_desc##", internalName() );
   }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );
@@ -127,6 +163,7 @@ float RomeDivinity::relation() const { return _relation.current; }
 float RomeDivinity::monthDecrease() const { return 0.5f; }
 void RomeDivinity::setEffectPoint(int value) { _effectPoints = value; }
 int RomeDivinity::wrathPoints() const { return _wrathPoints; }
+object::Type RomeDivinity::templeType(Divinity::TempleSize size) const { return object::unknown; }
 DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
@@ -202,17 +239,17 @@ void RomeDivinity::checkAction( PlayerCityPtr city )
   }
 }
 
-RomeDivinity::RomeDivinity()
+RomeDivinity::RomeDivinity(Type type)
 {
+  _dtype = type;
   _relation.current = relation::neitralMood;
   _relation.target = relation::neitralMood;
   _blessingDone = 0;
   _smallCurseDone = 0;
 }
 
+RomeDivinity::Type RomeDivinity::dtype() const { return _dtype; }
 void RomeDivinity::setInternalName(const std::string& newName) { setDebugName( newName );}
 std::string RomeDivinity::internalName() const { return debugName();}
-
-}//end namespace rome
 
 }//end namespace religion

@@ -57,10 +57,25 @@ private:
 Dialog* Information(  Ui* ui,
                       const std::string& title,
                       const std::string& text );
-Dialog* Confirmation(Ui* ui,
+
+Dialog* Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
                       bool pauseGame = false);
+
+Dialog* Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callback,
+                      bool pauseGame = false);
+
+Dialog* Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callbackOk,
+                      Callback callbackCancel,
+                      bool pauseGame = false);
+
 
 }//end namespace dialog
 

@@ -26,14 +26,8 @@ namespace gui
 {
 
 //! constructor
-void ModalScreen::assignTo( Widget* widget )
-{
-  ModalScreen* mdScr = new ModalScreen( widget->parent() );
-  mdScr->addChild( widget );
-}
-
 ModalScreen::ModalScreen( Widget* parent, int id)
-: Widget( parent->ui()->rootWidget(), id, Rect( 0,0, 1, 1) ),
+: Widget( parent->ui()->rootWidget(), id, parent->ui()->rootWidget()->absoluteRect() ),
           _mouseDownTime(0)
 {
   #ifdef _DEBUG
@@ -145,7 +139,7 @@ bool ModalScreen::onEvent(const NEvent& event)
     }
     break;
   case sEventMouse:
-    if( event.mouse.type == mouseLbtnPressed )
+    if( event.mouse.type == NEvent::Mouse::btnLeftPressed )
     {
       _mouseDownTime = DateTime::elapsedTime();
     }
@@ -170,11 +164,11 @@ void ModalScreen::draw(gfx::Engine& painter )
 		Rect r;
 
 		Widget::Widgets rchildren = children();
-		foreach( w, rchildren )
+    for( auto w : rchildren )
 		{
-			if( (*w)->visible())
+      if( w->visible())
 			{
-				r = (*w)->absoluteRect();
+        r = w->absoluteRect();
         r._bottomright += Point( 1, 1 );
         r._lefttop -= Point( 1, 1 );
 
@@ -214,9 +208,8 @@ void ModalScreen::removeChild(Widget* child)
 void ModalScreen::addChild(Widget* child)
 {
   Widget::addChild(child);
-  _environment->setFocus(child);
+  ui()->setFocus(child);
 }
-
 
 void ModalScreen::_finalizeResize()
 {

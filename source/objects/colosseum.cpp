@@ -49,8 +49,8 @@ Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::collo
 {
   setPicture( ResourceGroup::entertainment, 36 );
 
-  _animationRef().load( ResourceGroup::entertainment, 37, 13);
-  _animationRef().setOffset( Point( 122, 81 ) );
+  _animation().load( ResourceGroup::entertainment, 37, 13);
+  _animation().setOffset( Point( 122, 81 ) );
 
   _fgPictures().resize(2);
 
@@ -65,7 +65,7 @@ void Colosseum::deliverService()
 
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
     _fgPictures().front().load( ResourceGroup::entertainment, 50 );
     int currentWalkerNumber = walkers().size();

@@ -73,7 +73,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##" CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, TEXT(a), "##" TEXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )
@@ -107,15 +107,15 @@ Helper::Helper() : _d( new Impl )
 {  
 }
 
-Picture Helper::picture(Product type, bool emp )
+Picture Info::picture(bool emp) const
 {
-  const PicId& info = defaultsPicId[ type ];
+  const PicId& info = defaultsPicId[ _type ];
 
   int picId = emp ? info.emp : info.local;
   
   if( picId > 0 )
   {
-    return Picture( emp ? ResourceGroup::empirepnls : ResourceGroup::panelBackground, picId );
+    return Picture( emp ? ResourceGroup::empirepnls : gui::rc.panel, picId );
   }
 
   return Picture();
@@ -129,7 +129,7 @@ const std::string& Helper::name(Product type )
   return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
 }
 
-Product Helper::getType( const std::string& name )
+Product Helper::type( const std::string& name )
 {
   good::Product type = instance()._d->findType( name );
 
@@ -137,15 +137,10 @@ Product Helper::getType( const std::string& name )
   {
     Logger::warning( "Can't find type for goodName " + name );
     return good::none;
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find type for goodName" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 
   return type;
-}
-
-std::string Helper::getTypeName(Product type )
-{
-  return instance()._d->findName( type );
 }
 
 float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty)
@@ -165,6 +160,21 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 Product Helper::random()
 {
   return Product( math::random( good::all().size()-1 ));
+}
+
+Info::Info() : _type( none ) {}
+Info::Info(Product type) : _type( type ) {}
+
+const std::string& Info::name() const
+{
+  return Helper::name( _type );
+}
+
+float Info::price( PlayerCityPtr city, Info::PriceType inOut) const
+{
+  return (inOut == exporting)
+          ? Helper::exportPrice( city, _type, 1 )
+          : Helper::importPrice( city, _type, 1 );
 }
 
 }//end namespace good

@@ -45,15 +45,12 @@ void ShowSaveDialog::_exec(Game& game, unsigned int)
 
   if( !saveDir.exist() )
   {
-    Dialog* dialog = Information( game.gui(),
-                                  _("##warning##"),
-                                  _("##save_directory_not_exist##") );
-    dialog->show();
+    Information( game.gui(), _("##warning##"), _("##save_directory_not_exist##") );
     return;
   }
 
-  SaveGame* dialog = new SaveGame( game.gui(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), &game, Game::save )
+  auto& dialog = game.gui()->add<SaveGame>( saveDir, defaultExt, -1 );
+  CONNECT( &dialog, onFileSelected(), &game, Game::save )
 }
 
 bool ShowSaveDialog::_mayExec(Game&, unsigned int) const{ return true; }

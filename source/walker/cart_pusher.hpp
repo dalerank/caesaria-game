@@ -26,17 +26,18 @@
 /** This walker delivers goods */
 class CartPusher : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { simpleCart = 100,
                  bigCart = 200,
                  megaCart = 400
                } CartCapacity;
 
-  static CartPusherPtr create( PlayerCityPtr city, CartCapacity cap=simpleCart );
   virtual ~CartPusher();
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
+
   BuildingPtr producerBuilding();
   BuildingPtr consumerBuilding();
   good::Stock& stock();
@@ -54,8 +55,7 @@ public:
   virtual TilePos places(Place type) const;
 
 protected:
-  CartPusher( PlayerCityPtr city );
-
+  CartPusher( PlayerCityPtr city, CartCapacity cap=simpleCart  );
   virtual gfx::Animation& getCartPicture();
   virtual void _changeDirection();
   virtual void _reachedPathway();

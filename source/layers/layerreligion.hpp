@@ -24,15 +24,17 @@ namespace citylayer
 class Religion : public Info
 {
 public:
+  Religion( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void onEvent( const NEvent& event);
+  virtual void render(gfx::Engine& engine);
 
 private:
-  Religion( gfx::Camera& camera, PlayerCityPtr city );
-  std::set<int> _flags;
+  void _updatePaths();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

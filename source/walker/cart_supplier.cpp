@@ -38,7 +38,8 @@
 #include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/cart_animation.hpp"
 
 using namespace gfx;
@@ -59,34 +60,16 @@ public:
   int maxDistance;
   long rcvReservationID;
   long reservationID;
-
-  good::Store* getStore(BuildingPtr building );
 };
 
 CartSupplier::CartSupplier( PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::supplier ), _d( new Impl )
 {
-  _setType( walker::supplier );
-
-  _d->storageBuildingPos = gfx::tilemap::invalidLocation();
-  _d->baseBuildingPos = gfx::tilemap::invalidLocation();
+  _d->storageBuildingPos = TilePos::invalid();
+  _d->baseBuildingPos = TilePos::invalid();
   _d->maxDistance = defaultDeliverDistance;
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
-}
-
-good::Store* CartSupplier::Impl::getStore( BuildingPtr building )
-{
-    good::Store* storage = nullptr;
-    auto factory = building.as<Factory>();
-    auto granary = building.as<Granary>();
-    auto warehouse = building.as<Warehouse>();
-
-    if( factory.isValid() ) { storage = &factory->store(); }
-    else if( granary.isValid() ) { storage = &granary->store(); }
-    else if( warehouse.isValid() ){ storage = &warehouse->store(); }
-
-    return storage;
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartSupplier::_reachedPathway()
@@ -98,19 +81,18 @@ void CartSupplier::_reachedPathway()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    BuildingPtr building;
-    building << _city()->getOverlay( _d->baseBuildingPos );
+    auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
-    good::Store* storage = _d->getStore( building );
+    if( building.isValid() )
+    {
+      good::Store& storage = building->store();
 
-    if( storage )
-    {
-      storage->applyStorageReservation( _d->stock, _d->rcvReservationID );
-      storage->store( _d->stock, _d->stock.qty() );
-    }
-    else
-    {
-      if( building.isValid() )
+      if( storage.capacity() > 0 )
+      {
+        storage.applyStorageReservation( _d->stock, _d->rcvReservationID );
+        storage.store( _d->stock, _d->stock.qty() );
+      }
+      else
       {
         building->storeGoods( _d->stock );
       }
@@ -119,24 +101,26 @@ void CartSupplier::_reachedPathway()
   else
   {
     // get goods from destination building
-    BuildingPtr building;
-    building << _city()->getOverlay( _d->storageBuildingPos );
+    auto building = _map().overlay<Building>( _d->storageBuildingPos );
 
-    good::Store* storage = _d->getStore( building );
-
-    if( storage )
+    if( building.isValid() )
     {
-      storage->applyRetrieveReservation(_d->stock, _d->reservationID);
-      _reserveStorage();
+      good::Store& storage = building->store();
+
+      if( storage.capacity() > 0 )
+      {
+        storage.applyRetrieveReservation(_d->stock, _d->reservationID);
+        _reserveStorage();
+      }
+
+      //wait while load cart
+      wait( _d->stock.qty() );
+
+      // walker is near the granary/warehouse
+      _pathway().move( Pathway::reverse );
+      _centerTile();
+      go();
     }
-
-    //wait while load cart
-    wait( _d->stock.qty() );
-
-    // walker is near the granary/warehouse
-    _pathway().move( Pathway::reverse );
-    _centerTile();
-    go();
   }
 }
 
@@ -192,7 +176,7 @@ void CartSupplier::getPictures( Pictures& oPics)
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type type,
                                  const good::Product what, const int needQty,
-                                 Pathway &oPathWay, long& reservId )
+                                 Pathway &oPathWay, long& reservId, BuildingPtr base )
 {
   SmartPtr< T > res;
 
@@ -201,13 +185,17 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  foreach( pathWayIt, pathWayList )
+  for( auto& pathWayIt : pathWayList )
   {
     // for every warehouse within range
-    BuildingPtr building= pathWayIt->first.as<Building>();
-    PathwayPtr pathWay= pathWayIt->second;
+    BuildingPtr building= pathWayIt.first.as<Building>();
 
-    SmartPtr< T > destBuilding = building.as<T>();
+    if( building == base )
+      continue;
+
+    PathwayPtr pathWay= pathWayIt.second;
+
+    SmartPtr<T> destBuilding = building.as<T>();
     int qty = destBuilding->store().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -227,13 +215,13 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   }
   else
   {
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 }
 
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
-  _d->storageBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+  _d->storageBuildingPos = TilePos::invalid();  // no destination yet
 
   if( _city()->tradeOptions().isStacking( type ) )
     return;
@@ -248,13 +236,15 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
 
   // try get that good from a granary
   _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granery,
-                                                             type, qty, pathWay, _d->reservationID );
+                                                             type, qty, pathWay, _d->reservationID,
+                                                             building );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
     _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, object::warehouse,
-                                                                 type, qty, pathWay, _d->reservationID );
+                                                                 type, qty, pathWay, _d->reservationID,
+                                                                 building );
   }
 
   if( _d->storageBuildingPos.i() >= 0 )
@@ -283,25 +273,12 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
 
 void CartSupplier::_reserveStorage()
 {
-  BuildingPtr building;
-  building << _city()->getOverlay( _d->baseBuildingPos );
+  auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
-  good::Store* storage = _d->getStore( building );
-
-  if( storage != 0 )
+  if( building.isValid() )
   {
-    _d->rcvReservationID = storage->reserveStorage( _d->stock, game::Date::current() );
+    _d->rcvReservationID = building->store().reserveStorage( _d->stock, game::Date::current() );
   }
-  else
-  {}
-}
-
-CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
-{
-  CartSupplierPtr ret( new CartSupplier( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 void CartSupplier::save( VariantMap& stream ) const
@@ -330,8 +307,7 @@ void CartSupplier::load( const VariantMap& stream )
 
 bool CartSupplier::die()
 {
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  e->dispatch();
+  events::dispatch<events::RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   return Walker::die();
 }

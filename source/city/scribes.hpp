@@ -22,6 +22,7 @@
 #include "game/predefinitions.hpp"
 #include "good/good.hpp"
 #include "core/position.hpp"
+#include "core/signals.hpp"
 #include "core/time.hpp"
 #include "core/variant.hpp"
 
@@ -57,6 +58,7 @@ public:
   const Messages& messages() const;
   const Message& getMessage( unsigned int index ) const;
   const Message& readMessage( unsigned int index );
+  bool haveUnreadMessage() const;
   void changeMessage( int index, Message& message );
   void removeMessage( int index );
   void addMessage( const Message& message );
@@ -66,6 +68,9 @@ public:
 
   Scribes();
   ~Scribes();
+
+public signals:
+  Signal1<int>& onChangeMessageNumber();
 
 private:
   class Impl;

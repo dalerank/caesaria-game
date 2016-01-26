@@ -38,6 +38,6 @@ private:
   VariantMap _vars;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_CHANGEBUILDINGOPTIONS_H_INCLUDE_

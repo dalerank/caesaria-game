@@ -1,3 +1,4 @@
+#include "directory.hpp"
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -22,17 +23,18 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "core/osystem.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
   #include <shlobj.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) 
-  #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX)
+  #if defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_HAIKU)
     //#include <sys/io.h>
     #include <linux/limits.h>
     #include <pwd.h>
-  #elif defined(CAESARIA_PLATFORM_MACOSX)
+  #elif defined(GAME_PLATFORM_MACOSX)
     #include <libproc.h>
     #include <pwd.h>    
   #endif
@@ -52,20 +54,20 @@ bool Directory::create( std::string dir )
   Directory rdir( dir );
   if( rdir.exist() )
   {
-    Logger::warning( "Directory %s also exist", dir.c_str() );
+    Logger::warning( "Directory {0} also exist", dir );
     return false;
   }
 
   int result=0;
-#ifdef CAESARIA_PLATFORM_WIN
-  CreateDirectoryA( rdir.removeEndSlash().toString().c_str(), NULL );
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  result = ::mkdir( rdir.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
+#ifdef GAME_PLATFORM_WIN
+  CreateDirectoryA( rdir.removeEndSlash().toCString(), NULL );
+#elif defined(GAME_PLATFORM_UNIX)
+  result = ::mkdir( rdir.toCString(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 
   if( result < 0 )
   {
-    Logger::warning( "Cannot create directory %s error=%d", dir.c_str(), result );
+    Logger::warning( "Cannot create directory {0} error={1}", dir, result );
   }
   return (result == 0);
 }
@@ -79,7 +81,7 @@ bool Directory::createByPath( Directory dir )
   std::string current;
   try
   {
-#if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     if( dir.toString().front() == '/' )
       switchTo( "/" );
 #endif
@@ -92,7 +94,7 @@ bool Directory::createByPath( Directory dir )
       {
         if( !path.isFolder() )
         {
-          Logger::warning( "Current path %s not a directory " + current );
+          Logger::warning( "Current path {} not a directory ", current );
           result = false;
           break;
         }
@@ -162,6 +164,11 @@ Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
 {
 }
 
+vfs::Directory::Directory(const char * nPath)
+  : Path( std::string(nPath) )
+{
+}
+
 Path Directory::getFilePath( const Path& fileName )
 {
   std::string ret = addEndSlash().toString();
@@ -201,7 +208,7 @@ Directory Directory::current(){  return FileSystem::instance().workingDirectory(
 
 Directory Directory::applicationDir()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   unsigned int pathSize=512;
   ByteArray tmpPath;
   tmpPath.resize( pathSize );
@@ -209,20 +216,20 @@ Directory Directory::applicationDir()
   Directory tmp( std::string( tmpPath.data() ) );
   tmp = tmp.up();
   return tmp;
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", ::getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   vfs::Directory wdir = vfs::Path( exe_path ).directory();
   //dir_path = dirname(exe_path);
   return wdir;
-/*#elif defined(CAESARIA_PLATFORM_HAIKU)
+/*#elif defined(GAME_PLATFORM_HAIKU)
   char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   dirname(exe_path);
   return Path( exe_path );*/
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   char exe_path[PROC_PIDPATHINFO_MAXSIZE];
   int ret = proc_pidpath(getpid(), exe_path, sizeof(exe_path));
   if (ret <= 0)
@@ -238,7 +245,7 @@ Directory Directory::applicationDir()
 Directory Directory::userDir()
 {
   std::string mHomePath;
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   struct passwd* pwd = getpwuid(getuid());
   if (pwd)
   {
@@ -256,7 +263,7 @@ Directory Directory::userDir()
     mHomePath = "./";
     Logger::warning( "Cannot find home user directory" );
   }
-#elif defined(CAESARIA_PLATFORM_LINUX) 
+#elif defined(GAME_PLATFORM_LINUX)
   struct passwd* pwd = getpwuid(getuid());
   if (pwd)
   {
@@ -274,13 +281,13 @@ Directory Directory::userDir()
     mHomePath = "./";
     Logger::warning( "Cannot find home user directory" );    
   }
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
    mHomePath = getenv("HOME");
    if( mHomePath.empty() )
    {
    	 mHomePath = "/boot/home";
    }
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   TCHAR path[MAX_PATH];
   if( SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE, NULL, 0, path)) )
   {
@@ -318,7 +325,7 @@ Directory Directory::up() const
     return Path( pathToAny.toString().substr( 0, index ) );
   }
 
-  _CAESARIA_DEBUG_BREAK_IF( !exist() );
+  _GAME_DEBUG_BREAK_IF( !exist() );
   return Directory();
 }
 
@@ -335,13 +342,12 @@ Path Directory::relativePathTo(Path path) const
   list2 = utils::split( path2.toString(), "/\\");
 
   unsigned int i=0;
+  utils::equaleMode emode = utils::equaleIgnoreCase;
+  if( OSystem::isUnix() )
+    emode = utils::equaleCase;
+
   for (; i<list1.size() && i<list2.size(); ++i)
   {
-    utils::equaleMode emode = utils::equaleIgnoreCase;
-#ifdef CAESARIA_PLATFORM_UNIX
-    emode = utils::equaleCase;
-#endif //CAESARIA_PLATFORM_UNIX
-
     if( !utils::isEquale( list1[ i ], list2[ i ], emode ) )
     {
       break;

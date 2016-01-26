@@ -50,6 +50,11 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
     return true;
   }
 
+  if( Engine::instance().getFlag( Engine::batching ) == 0 )
+  {
+    return false;
+  }
+
   if( dstrects.size() != pics.size() )
   {
     Logger::warning( "!!! WARNING: Cant create batch from pictures because length not equale dstrects" );
@@ -69,7 +74,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 
     if( pic.texture() != tx )
     {
-      Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + pic.name() );
+      Logger::warning( "!!! WARNING: Cant create batch from pictures {0} to {1}", pics.at( 0 ).name(), pic.name() );
       srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       haveErrors = true;
       continue;
@@ -108,6 +113,12 @@ Batch::Batch()
 Batch::Batch(SDL_Batch *batch)
 {
   _batch = batch;
+}
+
+void drawBatchWithFallback(Engine& engine, const Batch& batch, const Pictures& pictures, const Point& pos, Rect* clip)
+{
+   if( batch.valid() ) engine.draw( batch, clip );
+   else                engine.draw( pictures, pos, clip );
 }
 
 }//end namespace gfx

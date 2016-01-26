@@ -74,8 +74,6 @@ public:
     void load( const VariantMap& vm );
   };
 
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
   Parameters lastParams() const;
   Parameters params( unsigned int monthAgo ) const;
@@ -89,8 +87,8 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-private:
   Info(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

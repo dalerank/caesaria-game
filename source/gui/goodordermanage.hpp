@@ -39,8 +39,6 @@ public:
 
   virtual void draw( gfx::Engine& painter );
 
-  virtual bool onEvent(const NEvent &event);
-
   void increaseQty();
 
   void decreaseQty();
@@ -64,6 +62,7 @@ signals public:
 
 private:
   void _changeTradeLimit( int value );
+  void _fireWorkers();
 
   class Impl;
   ScopedPtr<Impl> _d;

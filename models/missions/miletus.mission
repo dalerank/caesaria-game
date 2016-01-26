@@ -38,7 +38,7 @@
     cities :
     {
       Athenae : {
-        location : [ 1200, 700 ]
+        nation : "greek"
 
         land : true
         sea : true
@@ -49,7 +49,7 @@
       }
 
       Corinthus : {
-        location : [ 1160, 760 ]
+        nation : "roman"
 
         sea : true
         land : true

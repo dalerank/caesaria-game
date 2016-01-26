@@ -24,6 +24,7 @@
 #include "color.hpp"
 #include "vfs/directory.hpp"
 #include "core/osystem.hpp"
+#include "color_list.hpp"
 #include "gfx/engine.hpp"
 #include <map>
 
@@ -161,7 +162,7 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
 
 void Font::setColor( NColor color )
 {
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   color = color.abgr();
 #endif
   _d->color.b = color.blue();
@@ -174,12 +175,19 @@ void Font::setColor( NColor color )
 #endif
 }
 
+Font Font::withColor(NColor color)
+{
+  Font ret( *this );
+  ret.setColor( color );
+  return ret;
+}
+
 void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
-#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+#if defined(GAME_PLATFORM_EMSCRIPTEN)
   SDL_Surface* sText = TTF_RenderText_Solid( _d->ttfFont, text.c_str(), _d->color );
 #else
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
@@ -297,7 +305,7 @@ Font& FontCollection::_getFont(const int key)
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
   {
-    Logger::warning( "Error, font is not initialized, key=%d", key );
+    Logger::warning( "Error, font is not initialized, key={0}", key );
     return _d->collection[ FONT_2 ];
   }
 
@@ -311,7 +319,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   if( ret.second == false )
   {
     // no insert font (already exists)
-    Logger::warning( "WARNING!!! font already exists, key=%d", key );
+    Logger::warning( "WARNING!!! font already exists, key={0}", key );
     return;
   }
 
@@ -348,20 +356,20 @@ void FontCollection::initialize(const std::string& resourcePath, const std::stri
   vfs::Path fontFilename = family;
   vfs::Path absolutFontfilename = resDir/fontFilename;
 
-  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      absolutFontfilename, 12, DefaultColors::black );
-  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      absolutFontfilename, 16, DefaultColors::black );
-  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),absolutFontfilename, 16, DefaultColors::white );
-  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  absolutFontfilename, 16, DefaultColors::caesarRed );
-  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      absolutFontfilename, 18, DefaultColors::black );
-  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  absolutFontfilename, 18, DefaultColors::caesarRed );
-  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),absolutFontfilename, 18, DefaultColors::white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW),absolutFontfilename, 18, DefaultColors::yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      absolutFontfilename, 20, DefaultColors::black );
-  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      absolutFontfilename, 24, DefaultColors::black );
-  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      absolutFontfilename, 28, DefaultColors::black);
-  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      absolutFontfilename, 32, DefaultColors::black);
-  addFont( FONT_7,       CAESARIA_STR_EXT(FONT_7),      absolutFontfilename, 36, DefaultColors::black);
-  addFont( FONT_8,       CAESARIA_STR_EXT(FONT_8),      absolutFontfilename, 42, DefaultColors::black);
+  addFont( FONT_0,       TEXT(FONT_0),      absolutFontfilename, 12, ColorList::black );
+  addFont( FONT_1,       TEXT(FONT_1),      absolutFontfilename, 16, ColorList::black );
+  addFont( FONT_1_WHITE, TEXT(FONT_1_WHITE),absolutFontfilename, 16, ColorList::white );
+  addFont( FONT_1_RED,   TEXT(FONT_1_RED),  absolutFontfilename, 16, ColorList::caesarRed );
+  addFont( FONT_2,       TEXT(FONT_2),      absolutFontfilename, 18, ColorList::black );
+  addFont( FONT_2_RED,   TEXT(FONT_2_RED),  absolutFontfilename, 18, ColorList::caesarRed );
+  addFont( FONT_2_WHITE, TEXT(FONT_2_WHITE),absolutFontfilename, 18, ColorList::white );
+  addFont( FONT_2_YELLOW,TEXT(FONT_2_YELLOW),absolutFontfilename, 18, ColorList::yellow );
+  addFont( FONT_3,       TEXT(FONT_3),      absolutFontfilename, 20, ColorList::black );
+  addFont( FONT_4,       TEXT(FONT_4),      absolutFontfilename, 24, ColorList::black );
+  addFont( FONT_5,       TEXT(FONT_5),      absolutFontfilename, 28, ColorList::black);
+  addFont( FONT_6,       TEXT(FONT_6),      absolutFontfilename, 32, ColorList::black);
+  addFont( FONT_7,       TEXT(FONT_7),      absolutFontfilename, 36, ColorList::black);
+  addFont( FONT_8,       TEXT(FONT_8),      absolutFontfilename, 42, ColorList::black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )

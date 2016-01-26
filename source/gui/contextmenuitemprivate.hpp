@@ -30,14 +30,20 @@ class ContextMenuItem::Impl : public FlagHolder<int>
 public: 
 	Size dim;
 	int offset;
-	int luaFunction;	
 	int commandId;
-	bool isAutoChecking;
-	bool checked;
-	bool isSeparator;   
-	bool isHovered;
-	ContextMenu* subMenu;
-	SubMenuAlign subMenuAlignment;
+
+  struct {
+    bool autoChecking;
+    bool hovered;
+    bool separator;
+    bool checked;
+  } is;
+
+  struct {
+    ContextMenu* widget;
+    bool iconVisible;
+    SubMenuAlign align;
+  } submenu;
 
 signals public:
 	Signal1<bool> onCheckedSignal;
