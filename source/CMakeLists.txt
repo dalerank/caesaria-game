@@ -96,6 +96,10 @@ if(UNIX)
   endif()  
 endif(UNIX)
 
+if(UNIX)
+  execute_process(COMMAND sh "../dep/localeconv/getdata.sh")
+endif(WIN32)
+
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(X64_BUILD 1)
 endif()

@@ -14,12 +14,12 @@
     items.font : "FONT_2"
 
     items : [
-      "Rome correct show animation"
-      "Restore infobox for rocks and water"
-      "Added advanced widget parser"
-      "Fixed city location when loading .sav files"
-      "Added changes window show on start game"
-      "Cities in empire map now draws with different animation"
+      "1. Rome correct show animation"
+      "2. Restore infobox for rocks and water"
+      "3. Added advanced widget parser"
+      "4. Fixed city location when loading .sav files"
+      "5. Added changes window show on start game"
+      "6. Cities in empire map now draws with different animation"
     ]
   }
 }

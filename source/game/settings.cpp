@@ -222,7 +222,7 @@ Settings::Settings() : _d( new Impl )
 #endif
 
 #ifdef GAME_USE_STEAM
-  _d->options[ oldgfx              ] = 0;
+  _d->options[ oldgfx              ] = false;
 #endif
 
   if( OSystem::isAndroid() )

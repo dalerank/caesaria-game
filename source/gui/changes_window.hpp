@@ -10,7 +10,7 @@ class ChangesWindow : public SimpleWindow
 {
 public:
   //
-  ChangesWindow( Widget *parent, const Rect& rect, const std::string& title, int number);
+  ChangesWindow( Widget *parent, const Rect& rect, int number);
 
   void update();
 

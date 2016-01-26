@@ -6,8 +6,8 @@
 namespace gui
 {
 
-ChangesWindow::ChangesWindow(Widget * parent, const Rect & rect, const std::string & title, int number)
-  : SimpleWindow( parent, rect, title, ":/gui/changes.gui" )
+ChangesWindow::ChangesWindow(Widget * parent, const Rect & rect, int number)
+  : SimpleWindow( parent, rect, "", ":/gui/changes.gui" )
 {
   setupUI(fmt::format(":/changes/{}.changes", number));
 

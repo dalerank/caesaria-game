@@ -171,7 +171,7 @@ void Lobby::Impl::showChangesWindowIfNeed()
   if( !internal::wasChangesShow && KILLSWITCH(showLastChanges) )
   {
     internal::wasChangesShow = true;
-    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), _("##window_changes_title##"), lastChanges );
+    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), lastChanges );
   }
 }
 
