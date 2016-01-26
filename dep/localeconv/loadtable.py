@@ -41,8 +41,9 @@ list = reader()
 for rows in list:
 	for row in rows:
 		key = row[1]
-		for x in range(2, len(row)):
-			write(x,"\"{}\":\"{}\",\n".format(key, row[x]))
+		if len(key) > 0:
+			for x in range(2, len(row)):
+				write(x,"\"{}\":\"{}\",\n".format(key, row[x]))
 
 for i in range(2, col_count):
 	write(i, "}")
