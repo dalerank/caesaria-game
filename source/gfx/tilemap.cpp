@@ -174,8 +174,8 @@ void Tilemap::addSvkBorder()
     {
       TilePos tpos[4] = { TilePos( -_d->size/2 + u, _d->size-i ), TilePos( i, -u),
                           TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, _d->size-1-i) };
-      Picture pics[4] = { at( 0, _d->size-i ).picture(), at( i, 0 ).picture(),
-                          at( i, _d->size -1 ).picture(), at( _d->size-1,  _d->size-1-i).picture() };
+      const Tile* tl[4] = { &at( 0, _d->size-i ), &at( i, 0 ),
+                            &at( i, _d->size -1 ), &at( _d->size-1,  _d->size-1-i) };
 
       for( int idx=0; idx < 4; idx++ )
       {
@@ -184,7 +184,33 @@ void Tilemap::addSvkBorder()
         if( r.isPointInside( t.mappos() ) )
         {
           _d->svkBorder.push_back( new Tile( tpos[idx] ) );
-          _d->svkBorder.back()->setPicture( pics[idx] );
+          Picture pic = tl[idx]->picture();
+          const Tile& tile = *tl[idx];
+
+          switch( idx )
+          {
+          case 0:
+            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            else if( tile.terrain().water ) pic.load( "land1a", 120 );
+            else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+
+          case 1:
+            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            else if( tile.terrain().water ) pic.load( "land1a", 120 );
+            else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+
+          case 2:
+            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            else if( tile.terrain().water ) pic.load( "land1a", 120 );
+            else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+
+          case 3:
+            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            else if( tile.terrain().water ) pic.load( "land1a", 120 );
+            else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+          }
+
+          _d->svkBorder.back()->setPicture( pic );
         }
       }
     }

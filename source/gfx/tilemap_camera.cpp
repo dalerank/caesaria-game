@@ -402,7 +402,7 @@ void TilemapCamera::Impl::updateFlatTiles()
   {
     if( viewRect.isPointInside( i->mappos() + Point( config::tilemap.cell.picSize().width()/2, 0 ) + offset)  )
     {
-      tiles.flat.push_back( i );
+      tiles.ground.push_back( i );
     }
   }
 }
