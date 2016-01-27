@@ -19,7 +19,6 @@
 #define _CAESARIA_EARTHQUAKE_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events
@@ -29,7 +28,7 @@ class EarthQuake : public GameEvent
 {
 public:
   static GameEventPtr create();
-  static GameEventPtr create( TilePos start, TilePos stop );
+  static GameEventPtr create(const TilePos& start, const TilePos& stop );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

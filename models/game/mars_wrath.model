@@ -4,7 +4,7 @@
     items : {
       troop_soldiers : {
         type : "etruscanSoldier"
-        city.pop : 0.01
+        city.pop : 0.01 
         location : "random"
       }
     }
@@ -13,7 +13,7 @@
     barbarian_attack#messagebox : {
       title : "##barbarian_attack_title##"
       text : "##barbarian_attack_text##"
-      video : "/smk/spy_army.smk"
+      video : "spy_army"
     }
   }
 }

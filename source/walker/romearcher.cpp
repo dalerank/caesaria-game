@@ -13,16 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "romearcher.hpp"
-#include "city/helper.hpp"
 #include "spear.hpp"
+#include "city/city.hpp"
+#include "gfx/animation.hpp"
+#include "objects/construction.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeSpearman, walker::romeSpearman, RomeArcher, archer )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::romeSpearman, RomeArcher, archer )
 
 RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type )
@@ -33,17 +34,9 @@ RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
 
 void RomeArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), p );
   wait( game::Date::days2ticks( 1 ) / 2 );
-}
-
-RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeArcherPtr ret( new RomeArcher( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void RomeArcher::timeStep(const unsigned long time)
@@ -54,16 +47,15 @@ void RomeArcher::timeStep(const unsigned long time)
   {
   case Soldier::fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
-    if( !enemies.empty() )
+    if( !enemy.isValid() )
     {
-      WalkerPtr p = enemies.front();
-      turn( p->pos() );
+      turn( enemy->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( p->pos() );
+        _fire( enemy->pos() );
         _updateAnimation( time+1 );
       }
     }
@@ -77,16 +69,15 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).firstOrEmpty();
 
-    if( !constructions.empty() )
+    if( !construction.isValid() )
     {
-      ConstructionPtr b = constructions.front();
-      turn( b->pos() );
+      turn( construction->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( b->pos() );
+        _fire( construction->pos() );
         _updateAnimation( time+1 );
       }
     }

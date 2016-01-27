@@ -17,15 +17,14 @@
 
 #include "locust.hpp"
 #include "core/variant_map.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Locust::Impl
@@ -37,32 +36,11 @@ public:
   Picture picture;
 };
 
-WalkerPtr Locust::create(PlayerCityPtr city)
+Locust::Locust(PlayerCityPtr city, TilePos pos, int time)
+  : Walker( city, walker::locust  ), _d( new Impl )
 {
-  Locust* locust = new Locust( city );
-
-  WalkerPtr ret( locust );
-  ret->drop();
-
-  return ret;
-}
-
-void Locust::create(PlayerCityPtr city, TilePos pos, int time)
-{
-  Locust* locust = new Locust( city );
-  locust->setPos( pos );
-
-  WalkerPtr ret( locust );
-  ret->drop();
-
-  city->addWalker( ret );
-}
-
-Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
-{
-  _setType( walker::locust );
-
-  _d->time = 0;
+  _d->time = time;
+  setPos( pos );
 
   setName( _("##locust##") );
   _setHealth( 0 );
@@ -70,9 +48,7 @@ Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   setFlag( vividly, false );
 }
 
-Locust::~Locust()
-{
-}
+Locust::~Locust() {}
 
 void Locust::timeStep(const unsigned long time)
 {
@@ -80,9 +56,8 @@ void Locust::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm;
-    farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != objects::meat_farm )
+    auto farm = _map().overlay<Farm>( pos() );
+    if( object::typeOrDefault( farm ) != object::meat_farm )
     {
       farm->updateProgress( -50 );
     }
@@ -98,16 +73,16 @@ void Locust::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
-  stream[ "time" ] = _d->time;
+  VARIANT_SAVE_ANY_D( stream, _d, time )
+  VARIANT_SAVE_ANY_D( stream, _d, counter )
 }
 
 void Locust::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->time = stream.get( "time" );
-
-  //_d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
+  VARIANT_LOAD_ANY_D( _d, time, stream )
+  VARIANT_LOAD_ANY_D( _d, counter, stream )
 }
 
 const Picture& Locust::getMainPicture()

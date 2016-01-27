@@ -29,7 +29,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutHouse : public Simple
+class AboutHouse : public Infobox
 {
 public:
    AboutHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile);
@@ -39,7 +39,11 @@ public:
    void drawGood(HousePtr house, const good::Product &goodType, const int col, const int row, const int startY );
 
    virtual bool onEvent(const NEvent &event);
+
+protected:
    virtual void _showHelp();
+   virtual void _showHbtInfo();
+   virtual void _showSrvcInfo();
 
 private:
    HousePtr _house;

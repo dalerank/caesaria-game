@@ -23,80 +23,94 @@
 #include "constants.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
+#include "gfx/imgid.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::river, River)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::river, River)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-River::River() : TileOverlay( objects::river, Size(1) )
+River::River()
+  : Overlay( object::river, Size(1) )
 {
+  setPicture( config::rc.land1a, 182 );
 }
 
-bool River::build( const CityAreaInfo& info )
+bool River::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
-  setPicture( computePicture() );
+  Overlay::build( info );
+  updatePicture( info );
 
-  RiverList rifts = neighbors();
-  foreach( it, rifts )
-  {
-    (*it)->updatePicture();
-  } 
+  RiverList rivers = neighbors();
+  for( auto tile : rivers )
+    tile->updatePicture( info );
 
   return true;
 }
 
 void River::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlWater, true );
 }
 
 RiverList River::neighbors() const
 {
-  RiverList ret;
-
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
-
-  foreach( it, tiles )
-  {
-    RiverPtr rt = ptr_cast<River>( (*it)->overlay() );
-    if( rt.isValid() )
-    {
-      ret.push_back( rt );
-    }
-  }
-
-  return ret;
+  return _map().getNeighbors(pos(), Tilemap::FourNeighbors)
+               .overlays<River>();
 }
 
-Picture River::computePicture()
+const Picture& River::picture( const city::AreaInfo& info ) const
 {
-  int i = tile().i();
-  int j = tile().j();
+  const TilePos tile_pos = info.tiles().empty() ? tile().epos() : info.pos;
+
+  int i = tile_pos.i();
+  int j = tile_pos.j();
 
   RiverList neigs = neighbors();
 
-  directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  foreach( it, neigs )
+  int directions = 0;  // bit field, N=1, E=2, S=4, W=8
+  for( auto riverTile : neigs )
   {
-    Tile* tile = &(*it)->tile();
-    if (tile->j() > j)      { directionFlags += 1; } // road to the north
-    else if (tile->j() < j) { directionFlags += 4; } // road to the south
-    else if (tile->i() > i) { directionFlags += 2; } // road to the east
-    else if (tile->i() < i) { directionFlags += 8; } // road to the west
+    Tile* tile = &riverTile->tile();
+    if (tile->j() > j)      { directions |= 1; } // road to the north
+    else if (tile->j() < j) { directions |= 4; } // road to the south
+    else if (tile->i() > i) { directions |= 2; } // road to the east
+    else if (tile->i() < i) { directions |= 8; } // road to the west
   }
+
+  int advDirections = 0;
+  bool haveAdvTiles = !info.tiles().empty();
+  if (haveAdvTiles)
+  {
+    const TilePos& p = tile_pos;
+    for( auto tile : info.tiles() )
+    {
+      int i = tile->epos().i();
+      int j = tile->epos().j();
+
+      if( !tile->overlay().is<River>() )
+        continue;
+
+      if( i == p.i() && j == (p.j() + 1)) advDirections |= 1;
+      else if (i == p.i() && j == (p.j() - 1)) advDirections |= 4;
+      else if (j == p.j() && i == (p.i() + 1)) advDirections |= 2;
+      else if (j == p.j() && i == (p.i() - 1)) advDirections |= 8;
+    }
+  }
+
+  if( advDirections > 0 )
+    directions |= advDirections;
 
   // std::cout << "direction flags=" << directionFlags << std::endl;
 
   int index = 0;
   if( tile().getFlag( Tile::tlCoast ) )
   {
-    switch (directionFlags)
+    switch (directions)
     {
     case 1: index = 175; break;
     case 2: index = 176; break;
@@ -106,19 +120,19 @@ Picture River::computePicture()
   }
   else
   {
-    switch (directionFlags)
+    switch (directions)
     {
     case 0: index = 199; break; // no River!
     case 1: index = 164; break; // North
     case 2: index = 165; break; // East
     case 3: index = 1188;  break; // North+East
     case 4: index = 166; break; // South
-    case 5: index = 162 + math::random( 2 ); break;  // North+South
+    case 5: index = 162 + (i+j)%2; break;  // North+South
     case 6: index = 1198;  break; // East+South
     case 7: index = 188; break; // North+East+South
     case 8: index = 167; break; // West
     case 9: index = 198; break; // North+West
-    case 0xa: index = 160 + math::random( 2 ); break;  // East+West
+    case 0xa: index = 160 + (i+j)%2; break;  // East+West
     case 0xb: index = 185; break; // North+East+West
     case 0xc: index = 1194; break;  // South+West
     case 0xd: index = 194; break; // North+South+West
@@ -127,23 +141,28 @@ Picture River::computePicture()
     }
   }
 
-  return Picture::load( ResourceGroup::land1a, index);
+  static Picture ret;
+  ret.load( config::rc.land1a, index);
+
+  return ret;
 }
 
-bool River::isWalkable() const{  return false;}
-bool River::isFlat() const {  return true;}
+bool River::isWalkable() const{ return false;}
+bool River::isFlat() const { return true;}
 void River::destroy() {}
 bool River::isDestructible() const { return false;}
 Renderer::PassQueue River::passQueue() const {  return riftPassQueue; }
 
-void River::updatePicture()
+void River::updatePicture(const city::AreaInfo& info)
 {
-  setPicture( computePicture() );
-  tile().setPicture( picture() );
-  tile().setOriginalImgId( directionFlags );
+  auto texture = picture( info );
+  setPicture( texture );
+  tile().setPicture( texture );
+  tile().setImgId( imgid::fromResource( texture.name() ) );
 }
 
 void River::load(const VariantMap& stream)
 {
-  updatePicture();
+  city::AreaInfo info( _city(), pos() );
+  updatePicture( info );
 }

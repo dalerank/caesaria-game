@@ -13,17 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_STACKTRACE_H_INCLUDED__
 #define __CAESARIA_STACKTRACE_H_INCLUDED__
 
+//#include <cdk.h>
 #include "platform.hpp"
 
-class Stacktrace
+namespace crashhandler
 {
-public:
-  static void print(unsigned int starting_frame = 0, unsigned int max_frames = 63);
-};
+void install();
+void remove();
+void printstack(bool showMessage = true, unsigned int starting_frame = 0, unsigned int max_frames = 63 );
+}
 
 #endif //__CAESARIA_STACKTRACE_H_INCLUDED__

@@ -13,17 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GUIENVIRONMENT_INCLUDE_
 #define __CAESARIA_GUIENVIRONMENT_INCLUDE_
 
 #include "widget.hpp"
 
-namespace gfx
-{
-  class Engine;
-}
+namespace gfx { class Engine; }
 
 namespace gui
 {
@@ -31,6 +28,14 @@ namespace gui
 class Ui : Widget
 {
 public:
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
+
+  typedef enum { showTooltips=0, drawDebugArea } Flag;
   Ui( gfx::Engine& painter );
 
   virtual ~Ui();
@@ -39,25 +44,28 @@ public:
   virtual bool setFocus( Widget* element);
   virtual bool removeFocus( Widget* element);
 
-  Widget* rootWidget();								//  
+  Widget* rootWidget();
   Widget* getFocus() const;
   Point cursorPos() const;
 
   virtual bool isHovered( const Widget* element );
   Widget* findWidget( int id );
+  Widget* findWidget( const Point& p );
   Widget* hovered() const;
 
   virtual void draw();
   virtual void beforeDraw();
 
   void animate(unsigned int time);
-
+  Size vsize() const;
   bool handleEvent(const NEvent& event);
 
   virtual void deleteLater( Widget* ptrElement );
 
   Widget* createWidget( const std::string& type, Widget* parent );
 
+  void setFlag( Flag name, int value );
+  bool hasFlag( Flag name );
   void clear();
    
 private:    
@@ -67,7 +75,6 @@ private:
   virtual void draw( gfx::Engine& painter );
   virtual bool isHovered() const;
 
-  void _drawTooltip( unsigned int time );
   void _updateHovered( const Point& mousePos);
   Widget* next(bool reverse, bool group);
 

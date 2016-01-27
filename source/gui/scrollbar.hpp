@@ -104,7 +104,7 @@ public signals:
 	Signal1<int>& onPositionChanged();
 
 protected:
-	void _resizeEvent();
+	void _finalizeResize();
 	void _refreshControls();
 
   virtual int _getPosFromMousePos(const Point& p) const;
@@ -118,8 +118,6 @@ protected:
 
   unsigned int _lastStateNameHash;
 
-  int _overrideBgColor;
-  int _value;
   int _sliderPos, _lastSliderPos;
 	int _drawLenght;
   int _minValue;

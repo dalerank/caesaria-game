@@ -13,53 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
 #include "info_box.hpp"
-
-#include "gfx/tile.hpp"
-#include "core/exception.hpp"
-#include "core/gettext.hpp"
-#include "gfx/decorator.hpp"
-#include "objects/metadata.hpp"
-#include "objects/house_level.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/event.hpp"
-#include "core/variant_map.hpp"
-#include "texturedbutton.hpp"
-#include "gui/label.hpp"
-#include "city/city.hpp"
-#include "objects/market.hpp"
-#include "core/utils.hpp"
-#include "good/goodhelper.hpp"
-#include "objects/farm.hpp"
-#include "objects/entertainment.hpp"
-#include "objects/house.hpp"
-#include "objects/religion.hpp"
-#include "religion/romedivinity.hpp"
-#include "objects/warehouse.hpp"
-#include "gfx/engine.hpp"
-#include "gui/special_orders_window.hpp"
-#include "good/goodstore.hpp"
-#include "environment.hpp"
-#include "groupbox.hpp"
-#include "walker/walker.hpp"
-#include "objects/watersupply.hpp"
-#include "objects/senate.hpp"
-#include "core/logger.hpp"
-#include "objects/constants.hpp"
-#include "events/event.hpp"
-#include "objects/well.hpp"
-#include "image.hpp"
-#include "core/foreach.hpp"
-#include "dictionary.hpp"
+#include "widget_helper.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
-#include "widget_helper.hpp"
+#include "core/logger.hpp"
+#include "label.hpp"
+#include "core/event.hpp"
+#include "core/variant_map.hpp"
+#include "stretch_layout.hpp"
+#include "core/utils.hpp"
+#include "core/gettext.hpp"
+#include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -68,7 +38,9 @@ namespace gui
 namespace infobox
 {
 
-class Simple::Impl
+const Rect Infobox::defaultRect = Rect( 0, 0, 510, 300 );
+
+class Infobox::Impl
 {
 public:
   Label* lbBlackFrame;
@@ -78,6 +50,7 @@ public:
   PushButton* btnHelp;
   bool isAutoPosition;
   GameAutoPause autopause;
+  std::map<Widget*, Callback> callbacks;
 
   Impl() : lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0),
@@ -87,11 +60,11 @@ public:
   }
 };
 
-Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
+Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
 : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->autopause.activate();
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   // create the title
   setupUI( ":/gui/infobox.gui" );
@@ -114,8 +87,8 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
     _d->btnHelp->bringToFront();
   }
 
-  CONNECT( _d->btnExit, onClicked(), this, Simple::deleteLater );
-  CONNECT( _d->btnHelp, onClicked(), this, Simple::_showHelp );
+  CONNECT( _d->btnExit, onClicked(), this, Infobox::deleteLater );
+  CONNECT( _d->btnHelp, onClicked(), this, Infobox::_showHelp );
 
   // black box
   Point lastPos( width() - 32, height() - 48 );
@@ -126,45 +99,43 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
     lastPos.setY( _d->lbBlackFrame->top() - 10 );
   }
 
-  if( _d->lbText && blackArea.width() == 0 )
+  if( _d->lbText )
   {
     Rect r = _d->lbText->relativeRect();
-    r.LowerRightCorner = _d->btnExit->righttop();
+    if( blackArea.width() == 0 ) { r._bottomright = _d->btnExit->righttop(); }
+    else { r._bottomright = blackArea.righttop(); }
+
     _d->lbText->setGeometry( r );
-  }
+  }  
 
   _afterCreate();
+  setModal();
 }
 
-void Simple::setText( const std::string& text )
+void Infobox::setText( const std::string& text )
 {
   if( _d->lbText ) { _d->lbText->setText( text ); }
 }
 
-Simple::~Simple() {}
+Infobox::~Infobox() {}
 
-void Simple::draw(gfx::Engine& engine )
+void Infobox::draw(gfx::Engine& engine )
 {
   Window::draw( engine );
 }
 
-bool Simple::isPointInside( const Point& point ) const
+bool Infobox::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
   return parent()->absoluteRect().isPointInside( point );
 }
 
-bool Simple::onEvent( const NEvent& event)
+bool Infobox::onEvent( const NEvent& event)
 {
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }
@@ -174,55 +145,76 @@ bool Simple::onEvent( const NEvent& event)
   break;
   }
 
-  return Widget::onEvent( event );
+  return Window::onEvent( event );
 }
 
-void Simple::setTitle( const std::string& title )
+void Infobox::setTitle( const std::string& title )
 {
-  if( _d->lbTitle ) { _d->lbTitle->setText( title ); }
+  if( _d->lbTitle )
+  {
+    Size s = _d->lbTitle->font().getTextSize( title );
+    if( s.width() > (int)_d->lbTitle->width() )
+      _d->lbTitle->setFont( FONT_2 );
+
+    _d->lbTitle->setText( title );
+  }
 }
 
-bool Simple::isAutoPosition() const{  return _d->isAutoPosition;}
-void Simple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
+bool Infobox::isAutoPosition() const{  return _d->isAutoPosition;}
+void Infobox::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
 
-void Simple::setupUI(const VariantMap& ui)
+void Infobox::setupUI(const VariantMap& ui)
 {
   Window::setupUI( ui );
 
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-void Simple::setupUI(const vfs::Path& filename)
+void Infobox::setupUI(const vfs::Path& filename)
 {
   Window::setupUI( filename );
 }
 
-Label* Simple::_lbTitleRef(){  return _d->lbTitle;}
+void Infobox::addCallback(const std::string& name, Callback callback)
+{
+  //Point start = _d->btnHelp->absoluteRect().righttop();
+  INIT_WIDGET_FROM_UI( VLayout*, layout )
+  if( layout )
+  {
+    auto& button = add<PushButton>( Rect(), name );
+    button.onClicked() += callback;
+  }
+}
 
-Label* Simple::_lbTextRef(){ return _d->lbText; }
-Label* Simple::_lbBlackFrameRef(){  return _d->lbBlackFrame; }
-PushButton*Simple::_btnExitRef() { return _d->btnExit; }
+Label* Infobox::_lbTitle(){  return _d->lbTitle;}
+Label* Infobox::_lbText(){ return _d->lbText; }
+Label* Infobox::_lbBlackFrame(){  return _d->lbBlackFrame; }
 
-void Simple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
+PushButton*Infobox::_btnHelp() { return _d->btnHelp; }
+PushButton*Infobox::_btnExit() { return _d->btnExit; }
+
+void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
   _d->lbBlackFrame->setVisible( need > 0 );
   if( !_d->lbBlackFrame || 0 == need)
     return;
 
   // number of workers
-  std::string text = utils::format( 0xff, "%d %s (%d %s)",
-                                    have, _("##employers##"),
-                                    need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
+  std::string text = fmt::format( "{} {} ({} {})",
+                                  have, _("##employers##"),
+                                  need, _("##requierd##") );
+  _d->lbBlackFrame->setIcon( gui::rc.panel, picId );
+  _d->lbBlackFrame->setIconOffset( { 20, 10 } );
   _d->lbBlackFrame->setText( text );
 }
 
 
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
+  : Infobox( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = ptr_cast<Building>( tile.overlay() );
-  setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+  auto building = tile.overlay<Building>();
+  if( building.isValid() )
+    setTitle( building->info().prettyName() );
 }
 
 }

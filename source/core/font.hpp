@@ -30,7 +30,6 @@
 namespace gfx
 {
  class Picture;
- class PictureRef;
 }
 
 enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
@@ -46,12 +45,17 @@ class Font
   friend class FontCollection;
 
 public:
+  static const bool alphaDraw=true;
+  static const bool solidDraw=false;
+  static const bool updateTx=true;
+  static const bool ignoreTx=false;
+
   Font();
   static Font create( const std::string& family, const int size );
   static Font create( FontType type );
   static Font create( FontType type, NColor color );
   static Font create( const std::string& type );  
-  
+
   ~Font();
 
   Font( const Font& other );
@@ -60,6 +64,8 @@ public:
 
   int color() const;
   void setColor(NColor color );
+
+  Font withColor( NColor color );
 
   bool isValid() const;
 
@@ -72,7 +78,7 @@ public:
   void draw(gfx::Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
   void draw(gfx::Picture& dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
 
-  gfx::Picture* once(const std::string &text, bool mayChange=false);
+  gfx::Picture once(const std::string& text, bool mayChange=false);
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;
@@ -88,10 +94,10 @@ class FontCollection
 public:
   static FontCollection& instance();
 
-  void initialize(const std::string &resourcePath);
+  void initialize(const std::string& resourcePath, const std::string& family );
 
-  Font& getFont_(const int key);  // get a saved font
-  Font& getFont_(const std::string& name );  // get a saved font
+  Font& _getFont(const int key);  // get a saved font
+  Font& _getFont(const std::string& name );  // get a saved font
 
   void setFont(const int key, const std::string& name, Font font);  // save a font
   void addFont(const int key, const std::string& name, vfs::Path filename, const int size, const NColor& color);

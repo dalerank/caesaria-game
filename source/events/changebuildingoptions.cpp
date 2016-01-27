@@ -26,9 +26,7 @@ REGISTER_EVENT_IN_FACTORY(ChangeBuildingOptions, "building_options" )
 
 GameEventPtr ChangeBuildingOptions::create()
 {
-  ChangeBuildingOptions* e = new ChangeBuildingOptions();
-
-  GameEventPtr ret( e );
+  GameEventPtr ret( new ChangeBuildingOptions() );
   ret->drop();
 
   return ret;
@@ -55,4 +53,4 @@ void ChangeBuildingOptions::_exec(Game& game, unsigned int)
   game.city()->setBuildOptions( options );
 }
 
-}
+}//end namespace events

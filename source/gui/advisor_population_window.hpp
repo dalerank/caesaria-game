@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_POPULATION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_POPULATION_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -29,17 +29,12 @@ namespace gui
 namespace advisorwnd
 {
 
-class Population : public Window
+class Population : public Base
 {
+  __DECLARE_IMPL(Population)
 public:
   Population( PlayerCityPtr city, Widget* parent, int id );
-
   virtual void draw( gfx::Engine& painter );
-
-private:
-  void _showHelp();
-
-  __DECLARE_IMPL(Population)
 };
 
 }//end advisorwnd advisorwnd

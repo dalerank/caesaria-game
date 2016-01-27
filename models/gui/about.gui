@@ -1,19 +1,19 @@
 {  
   lbx#ListBox : {
-    geometry : [ 11, 11, "pw-11", "ph-36" ]
+    geometry : [ 12, 12, "100%-12", "100%-36" ]
     itemheight : 18
     items.font : "FONT_2"
 
     items : [
-      { text : "About", font : "FONT_3" }
+      { text : "About", font : "FONT_3", align : "center" }
       "CaesarIA is remake of Caesar III in the big and seamless "
       "world of Ancient Rome."
       ""
-      { text : "Bugs", font : "FONT_3" },
+      { text : "Bugs", font : "FONT_3", align : "center" },
       "If you see any errors or mistakes while playing please"
       "report to caesaria.game@gmail.com"
       ""
-      { text : "Translations", font : "FONT_3" }
+      { text : "Translations", font : "FONT_3", align : "center" }
       "You can create the translation yourself if your language"
       "is not available in CaesarIA yet. Please email us about"
       "yours translation before it will be add to last release"
@@ -21,11 +21,11 @@
       "translations table in google docs, that not two people"
       "creating equale translation"
       ""
-      { text : "Feedback", font : "FONT_3" }
+      { text : "Feedback", font : "FONT_3", align : "center" }
       "We need you think about the project and any suggestions"
       "you might have."
       ""
-      { text : "Join to us", font : "FONT_3" }
+      { text : "Join to us", font : "FONT_3", align : "center" }
       "The CaesarIA created by enthusiasts and we are always"
       "looking for people, which can join our team. If you"
       "think you fit one of the descriptions below, or if you"
@@ -36,7 +36,7 @@
       "we can use. Graphical artists to create new graphic "
       "set for the game, menus, etc."
       ""
-      { text : "Donations", font : "FONT_3" }
+      { text : "Donations", font : "FONT_3", align : "center" }
       { text : "see http://bitbucket.org/dalerank/caesaria/wiki/Donations",
         url : "http://bitbucket.org/dalerank/caesaria/wiki/Donations", font : "FONT_2" },
       "",

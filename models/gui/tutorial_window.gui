@@ -1,6 +1,7 @@
 {  
   geometry : [ 0, 0, 590, 450 ]
   bgtype : "whiteFrame"
+  static : true
     
   lbTitle#Label :
   {
@@ -35,7 +36,7 @@
   }
 
   lbxHelp#ListBox : {
-    geometry : [ 16, 76, 580, 410 ]
+    geometry : [ 16, 76, "pw-16", 410 ]
     bgtype : "blackFrame"
     itemfont : "FONT_2_WHITE"
     itemheight : 17

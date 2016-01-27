@@ -20,58 +20,62 @@
 #include "game/resourcegroup.hpp"
 #include "walker/market_buyer.hpp"
 #include "core/variant_map.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "city/city.hpp"
 #include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::market, Market)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::market, Market)
 
 class Market::Impl
 {
 public:
-  good::SimpleStore store;
+  good::Storage goodStore;
 
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    for( good::Product i = good::none; i < good::goodCount; ++i)
-    {
-      anyGoodStored |= ( store.qty( i ) >= 100 );
-    }
+    for( const auto& i : good::all() )
+      anyGoodStored |= ( goodStore.qty( i ) >= 100 );
 
     return anyGoodStored;
   }
 
   void initStore()
   {
-    store.setCapacity(5000);
-    store.setCapacity(good::wheat, 800);
-    store.setCapacity(good::fish, 600);
-    store.setCapacity(good::fruit, 600);
-    store.setCapacity(good::meat, 600);
-    store.setCapacity(good::vegetable, 600);
-    store.setCapacity(good::pottery, 250);
-    store.setCapacity(good::furniture, 250);
-    store.setCapacity(good::oil, 250);
-    store.setCapacity(good::wine, 250);
+    goodStore.setCapacity(5000);
+    goodStore.setCapacity(good::wheat, 800);
+    goodStore.setCapacity(good::fish, 600);
+    goodStore.setCapacity(good::fruit, 600);
+    goodStore.setCapacity(good::meat, 600);
+    goodStore.setCapacity(good::vegetable, 600);
+    goodStore.setCapacity(good::pottery, 250);
+    goodStore.setCapacity(good::furniture, 250);
+    goodStore.setCapacity(good::oil, 250);
+    goodStore.setCapacity(good::wine, 250);
+  }
+
+  bool checkStorageInWorkRange( PlayerCityPtr city, const Locations& enter, object::Type objTypr )
+  {
+    auto route = PathwayHelper::shortWay( city, enter, objTypr, PathwayHelper::roadOnly );
+    bool invalidRoute = !route.isValid();
+    bool tooFarFromStorage = (route.length() >= MarketBuyer::maxBuyDistance() );
+
+    return !(invalidRoute || tooFarFromStorage);
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, constants::objects::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
   _d( new Impl )
 {
-  _fgPicturesRef().resize(1);  // animation
+  _fgPictures().resize(1);  // animation
   _d->initStore();
-
-  _animationRef().load( ResourceGroup::commerce, 2, 10 );
-  _animationRef().setDelay( 4 );
 }
 
 void Market::deliverService()
@@ -79,12 +83,12 @@ void Market::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( _city() );
-    buyer->send2City( this );
+    auto marketBuyer = Walker::create<MarketBuyer>( _city() );
+    marketBuyer->send2City( this );
 
-    if( !buyer->isDeleted() )
+    if( !marketBuyer->isDeleted() )
     {
-      addWalker( buyer.object() );
+      addWalker( marketBuyer.object() );
     }
     else if( _d->isAnyGoodStored() )
     {
@@ -93,19 +97,19 @@ void Market::deliverService()
   }
 }
 
-unsigned int Market::walkerDistance() const {  return 26; }
-good::Store &Market::goodStore(){  return _d->store; }
+unsigned int Market::walkerDistance() const { return 26; }
+good::Store& Market::goodStore(){ return _d->goodStore; }
 
-std::list<good::Product> Market::mostNeededGoods()
+good::Products Market::mostNeededGoods()
 {
-  std::list<good::Product> res;
+  good::Products res;
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for( good::Product goodType = good::none; goodType < good::goodCount; ++goodType)
+  for( auto& goodType : good::all() )
   {
     // for all types of good
-    good::Stock &stock = _d->store.getStock(goodType);
+    good::Stock &stock = _d->goodStore.getStock(goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
     {
@@ -113,10 +117,9 @@ std::list<good::Product> Market::mostNeededGoods()
     }
   }
 
-  for( std::multimap<float, good::Product>::iterator itMap = mapGoods.begin(); itMap != mapGoods.end(); ++itMap)
+  for( auto& it : mapGoods )
   {
-    good::Product goodType = itMap->second;
-    res.push_back(goodType);
+    res.insert(it.second);
   }
 
   return res;
@@ -126,7 +129,7 @@ std::list<good::Product> Market::mostNeededGoods()
 int Market::getGoodDemand(const good::Product &goodType)
 {
   int res = 0;
-  good::Stock &stock = _d->store.getStock(goodType);
+  good::Stock& stock = _d->goodStore.getStock(goodType);
   res = stock.capacity() - stock.qty();
   res = (res/100)*100;  // round at the lowest century
   return res;
@@ -135,27 +138,45 @@ int Market::getGoodDemand(const good::Product &goodType)
 void Market::save( VariantMap& stream) const 
 {
   ServiceBuilding::save( stream );
-  stream[ "goodStore" ] = _d->store.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
 }
 
 void Market::load( const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  _d->store.load( stream.get( "goodStore" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
 
   _d->initStore();
 }
 
+bool Market::build(const city::AreaInfo& info)
+{
+  bool isOk = ServiceBuilding::build( info );
+  bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
+  if( isOk && !isLoadingMode )
+  {
+    Locations locations = roadside().locations();
+    bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
+    bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
+
+    if( !accessGranary )
+        _setError( "##market_too_far_from_granary##" );
+    else if( !accessWarehouse )
+        _setError( "##market_too_far_from_warehouse##" );
+  }
+
+  return isOk;
+}
+
 void Market::timeStep(const unsigned long time)
 {
-  if( game::Date::isWeekChanged() )
+  if( game::Date::isDayChanged() )
   {
-    ServiceWalkerList servicemen;
-    servicemen << walkers();
-    if( servicemen.size() > 0 && _d->store.qty() == 0 )
+    int servicemen_n = walkers().count<ServiceWalker>();
+    if( servicemen_n > 0 && _d->goodStore.qty() == 0 )
     {
-      servicemen.front()->return2Base();
+      walkers().firstOrEmpty<ServiceWalker>()->return2Base();
     }
   }
 

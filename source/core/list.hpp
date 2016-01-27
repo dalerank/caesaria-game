@@ -142,7 +142,7 @@ public:
 
 
 	//! Copy constructor.
-    List(const List<T>& other) : _first(0), _last(0), _size(0)
+  List(const List<T>& other) : _first(0), _last(0), _size(0)
 	{
 		*this = other;
 	}
@@ -156,11 +156,11 @@ public:
 
 
 	//! Assignment operator
-	void operator=(const List<T>& other)
+	List<T>& operator=(const List<T>& other)
 	{
 		if(&other == this)
 		{
-			return;
+      return *this;
 		}
 
 		clear();
@@ -171,6 +171,8 @@ public:
 			push_back(node->Element);
 			node = node->Next;
 		}
+    
+    return *this;
 	}
 
 
@@ -198,11 +200,23 @@ public:
 
 	//! Checks for empty list.
 	/** \return True if the list is empty and false if not. */
-    bool empty() const 	{		return (_first == 0);	}
+  bool empty() const 	{		return (_first == 0);	}
 
   //! Adds an element at the end of the list.
   /** \param element Element to add to the list. */
   void append(const T& element)   {      push_back( element );  }
+
+  //! Adds an elements at the end of the list.
+  /** \param other array of elements to add to the list. */
+  void append( const List<T>& other )
+  {
+    SKListNode* node = other._first;
+    while(node)
+    {
+      push_back(node->Element);
+      node = node->Next;
+    }
+  }
 
 	//! Adds an element at the end of the list.
 	/** \param element Element to add to the list. */

@@ -21,32 +21,27 @@
 #include "core/foreach.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::bow_arrow, BowArrow)
 
-BowArrowPtr BowArrow::create(PlayerCityPtr city)
-{
-  BowArrowPtr ret( new BowArrow( city ) );
-  ret->drop();
-
-  return ret;
+namespace {
+const int defaultAttackValue=-3;
 }
 
 void BowArrow::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    (*w)->updateHealth( -3 );
-    (*w)->acceptAction( Walker::acFight, startPos() );
+    wlk->updateHealth( defaultAttackValue );
+    wlk->acceptAction( Walker::acFight, startPos() );
   }
 }
 
 const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
 int BowArrow::_rcStartIndex() const { return 130; }
 
-BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
+BowArrow::BowArrow(PlayerCityPtr city)
+  : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
 

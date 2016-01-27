@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ROME_DIVINITY_VENUS_H_INCLUDED__
 #define __CAESARIA_ROME_DIVINITY_VENUS_H_INCLUDED__
@@ -26,14 +28,19 @@ namespace rome
 
 class Venus : public RomeDivinity
 {
+  DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
-  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
+  virtual object::Type templeType( TempleSize size ) const;
 
 protected:
   void _doWrath( PlayerCityPtr city );
   void _doBlessing( PlayerCityPtr city );
   void _doSmallCurse( PlayerCityPtr city );
+
+private:
+  Venus();
+  int _wrathCounter;
 };
 
 }//end namespace rome

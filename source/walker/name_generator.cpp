@@ -20,12 +20,18 @@
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 
+namespace {
+static const char* defaultExt = "en";
+}
+
 class NameGenerator::Impl
 {
 public:
   StringArray male;
   StringArray female;
   StringArray surname;
+
+  vfs::Path fileTemplate;
 };
 
 NameGenerator& NameGenerator::instance()
@@ -36,24 +42,36 @@ NameGenerator& NameGenerator::instance()
 
 NameGenerator::~NameGenerator(){}
 
-std::string NameGenerator::rand( NameType type )
+std::string NameGenerator::rand(NameType type , world::Nation nation)
 {
   const NameGenerator& ng = instance();
 
   StringArray* names;
   switch( type )
   {
-  case male: names = &ng._d->male; break;
-  case female: names = &ng._d->female; break;
+  case plebMale: names = &ng._d->male; break;
+  case plebFemale: names = &ng._d->female; break;
   case patricianMale: names = &ng._d->male; break;
   case patricianFemale: names = &ng._d->female; break;
+  case indigeneMale: names = &ng._d->male; break;
+  case indigeneFemale: names = &ng._d->female; break;
+  case merchant: names = &ng._d->male; break;
   }
 
   return names->random() + " " + ng._d->surname.random();
 }
 
-void NameGenerator::initialize(const vfs::Path &filename)
+void NameGenerator::initialize( vfs::Path filename)
 {
+  _d->fileTemplate = filename;
+}
+
+void NameGenerator::setLanguage(const std::string& language)
+{
+  vfs::Path filename = _d->fileTemplate.changeExtension( language );
+  if( !filename.exist() )
+    filename.changeExtension( defaultExt );
+
   VariantMap names = config::load( filename );
 
   _d->female.clear();
@@ -61,10 +79,9 @@ void NameGenerator::initialize(const vfs::Path &filename)
   _d->surname.clear();
 
   VariantMap ctNames = names.get( "citizens" ).toMap();
-  _d->male << ctNames.get( "male" ).toList();
-  _d->female << ctNames.get( "female" ).toList();
-  _d->surname << ctNames.get( "surname" ).toList();
+  _d->male = ctNames.get( "male" ).toStringArray();
+  _d->female = ctNames.get( "female" ).toStringArray();
+  _d->surname = ctNames.get( "surname" ).toStringArray();
 }
 
-NameGenerator::NameGenerator() : _d( new Impl )
-{}
+NameGenerator::NameGenerator() : _d( new Impl ) {}

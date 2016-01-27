@@ -28,11 +28,17 @@ class WalkerManager
 public:
   static WalkerManager& instance();
 
-  bool canCreate( constants::walker::Type type ) const;
+  bool canCreate( walker::Type type ) const;
 
-  void addCreator( constants::walker::Type type, WalkerCreator* ctor );
+  void addCreator( walker::Type type, WalkerCreator* ctor );
 
-  WalkerPtr create( constants::walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
+  WalkerPtr create( walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
+
+  template< class T>
+  SmartPtr<T> create( walker::Type walkerType, PlayerCityPtr city )
+  {
+    return ptr_cast<T>( create(walkerType, city) );
+  }
 
   ~WalkerManager();
 private:
@@ -44,8 +50,14 @@ private:
 
 #define REGISTER_CLASS_IN_WALKERFACTORY(type,a) \
 namespace { \
-struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new WalkerBaseCreator<a>() ); }}; \
+struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new WalkerDefaultCreator<a>() ); }}; \
 static Registrator_##a rtor_##a; \
+}
+
+#define REGISTER_NAMED_CLASS_IN_WALKERFACTORY(type,a,name) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { WalkerManager::instance().addCreator( type, new WalkerTypedCreator<a>( type ) ); }}; \
+static Registrator_##name rtor_##name; \
 }
 
 #endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

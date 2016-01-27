@@ -30,9 +30,10 @@ class Directory : public Path
 {
 public:
   Directory();
-  Directory( const Path& pathTo );
+  Directory( const Path& nPath );
   Directory( const std::string& nPath );
   Directory( const Directory& nPath );
+  explicit Directory(const char* nPath);
 
   virtual ~Directory();
 
@@ -41,22 +42,24 @@ public:
 
   Directory operator/(const Directory& dir ) const;
   Path operator/(const Path& filename ) const;
+  Path operator/(const std::string& filename ) const;
+  Path operator/(const char* filename ) const;
 
-  Entries getEntries() const;
+  Entries entries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;
   Directory up() const;
-  Path getRelativePathTo( Path path ) const;
+  Path relativePathTo( Path path ) const;
   //void Remove();
 
-  static Directory getCurrent();
-  static bool changeCurrentDir( const Path& dirName );
-  static Directory getApplicationDir();
-  static Directory getUserDir();
+  static Directory current();
+  static bool switchTo( const Path& dirName );
+  static Directory applicationDir();
+  static Directory userDir();
 
   static bool create( std::string dir );
-  static bool createByPath(Directory dir );
+  static bool createByPath( Directory dir );
 };
 
-}//end namespace io
+}//end namespace vfs
 
 #endif //__CAESARIA_DIRECTORY_H_INCLUDED__

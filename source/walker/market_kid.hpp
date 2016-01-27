@@ -13,23 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_MARKET_KID_H_INCLUDED__
 #define __CAESARIA_MARKET_KID_H_INCLUDED__
 
 #include "human.hpp"
+#include "good/good.hpp"
+#include "objects/predefinitions.hpp"
 
 class MarketKid : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static MarketKidPtr create( PlayerCityPtr city );
-  static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
+  enum { defaultCapacity=100 };
 
   good::Stock& getBasket();
   void setDelay( int delay );
 
-  void send2City( MarketPtr destination );
+  void send2City(MarketPtr market);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

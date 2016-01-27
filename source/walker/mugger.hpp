@@ -19,11 +19,12 @@
 #define __CAESARIA_MUGGER_H_INCLUDE_
 
 #include "human.hpp"
+#include "objects/predefinitions.hpp"
 
 class Mugger : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static MuggerPtr create( PlayerCityPtr city );
   virtual ~Mugger();
 
   virtual void timeStep(const unsigned long time);

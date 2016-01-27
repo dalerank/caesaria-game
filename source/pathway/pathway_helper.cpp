@@ -17,7 +17,7 @@
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -27,30 +27,30 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
   Pathfinder& p = Pathfinder::instance();
   switch( type )
   {
-  case allTerrain: return p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
-  case roadOnly: return p.getPath( startPos, stopPos, Pathfinder::roadOnly );
+  case allTerrain: return p.getPath( startPos, stopPos, Pathway::terrainOnly );
+  case roadOnly: return p.getPath( startPos, stopPos, Pathway::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
+    Pathway ret = p.getPath( startPos, stopPos, Pathway::roadOnly );
     if( !ret.isValid() )
     {
-      ret = p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
+      ret = p.getPath( startPos, stopPos, Pathway::terrainOnly );
     }
 
     return ret;
   }
   break;
 
-  case deepWater: return p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
-  case water: return p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+  case deepWater: return p.getPath( startPos, stopPos, Pathway::deepWaterOnly );
+  case water: return p.getPath( startPos, stopPos, Pathway::waterOnly );
 
   case deepWaterFirst:
   {
-    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
+    Pathway ret = p.getPath( startPos, stopPos, Pathway::deepWaterOnly );
     if( !ret.isValid() )
     {
-      ret = p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+      ret = p.getPath( startPos, stopPos, Pathway::waterOnly );
     }
 
     return ret;
@@ -73,16 +73,16 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
     switch( type )
     {
-    case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathway::terrainOnly );
+    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathway::roadOnly );
 
     case roadFirst:
     {
-      way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->roadside(), Pathway::roadOnly );
 
       if( !way.isValid() )
       {
-        way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
+        way = p.getPath( startPos, construction->enterArea(), Pathway::terrainOnly );
       }
     }
     break;
@@ -93,7 +93,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
     if( !way.isValid() )
     {
-      Logger::warning( "PathwayHelper: can't find way from [%d,%d] to construction: name=%s pos=[%d,%d]",
+      Logger::warning( "PathwayHelper: can't find way from [{0},{1}] to construction: name={2} pos=[{3},{4}]",
                        startPos.i(), startPos.j(), construction->name().c_str(),
                        construction->pos().i(), construction->pos().j() );
     }
@@ -102,57 +102,81 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
   return way;
 }
 
-Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)
+Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition, int flags)
 {
   Pathfinder::instance().setCondition( condition );
-  return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
+  return Pathfinder::instance().getPath( startPos, stopPos, Pathway::customCondition|flags );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(const TilePos& startPos, ConstructionList buildings, WayType type)
 {
-  DirectRoute ret;
-  city::Helper helper( city );
-  ConstructionList constructions = helper.find<Construction>( buildingType );
-
-  foreach( it, constructions )
+  DirectRoute route;
+  for( auto it : buildings )
   {
-    Pathway path = create( startPos, *it, type );
+    Pathway path = create( startPos, it, type );
     if( path.isValid() )
     {
-      if( !ret.way().isValid() )
+      if( !route.isValid() )
       {
-        ret.second = path;
-        ret.first = *it;
+        route.set( it, path );
       }
       else
       {
-        if( ret.way().length() > path.length() )
+        if( route.length() > path.length() )
         {
-          ret.second = path;
-          ret.first = *it;
+          route.set( it, path );
         }
       }
     }
   }
 
-  return ret;
+  return route;
 }
 
-Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type)
+{  
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
+  return shortWay( startPos, constructions, type );
+}
+
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const Locations& area, object::Type buildingType, WayType type)
+{
+  Locations locations( area );
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
+
+  DirectRoute shortestWay;
+  while( !locations.empty() )
+  {
+    DirectRoute route = shortWay( locations.front(), constructions, type );
+    if( !shortestWay.isValid() )
+    {
+      shortestWay = route;
+    }
+    else if( shortestWay.length() > route.length() )
+    {
+      shortestWay = route;
+    }
+
+    locations.pop_front();
+  }
+
+  return shortestWay;
+}
+
+Pathway PathwayHelper::randomWay(PlayerCityPtr city, const TilePos& startPos, int walkRadius)
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
-  TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
-  tiles = tiles.walkableTiles( true );
+  TilesArray tiles = city->tilemap().area( startPos - offset, startPos + offset );
+  tiles = tiles.walkables( true );
+  tiles.remove(startPos);
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
   {
     do
     {
-      TilesArray::iterator destPos = tiles.begin();
-      std::advance( destPos, math::random( tiles.size() - 1 ) );
-
-      Pathway pathway = create( startPos, (*destPos)->pos(), PathwayHelper::allTerrain );
+      Tile* destPos = tiles.random();
+      Pathway pathway = create( startPos, destPos->pos(), PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
@@ -165,7 +189,7 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
   return Pathway();
 }
 
-Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
+Pathway PathwayHelper::way2border(PlayerCityPtr city, const TilePos& pos)
 {
   Tilemap& tmap = city->tilemap();
 
@@ -179,11 +203,10 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
     if( start == lastStart && stop == lastStop )
       break;
 
-    TilesArray border = tmap.getRectangle( start, stop );
-    border = border.walkableTiles( true );
-    foreach( it, border )
+    TilesArray border = tmap.rect( start, stop );
+    border = border.walkables( true );
+    for( auto& tile : border )
     {
-      Tile* tile = *it;
       Pathway pw = create( pos, tile->pos(), PathwayHelper::allTerrain );
 
       if( pw.isValid() )
@@ -193,3 +216,29 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
 
   return Pathway();
 }
+
+bool PathwayCondition::append(OverlayPtr overlay)
+{
+  if( overlay.isNull() )
+    return false;
+
+  for( auto tile : overlay->area() )
+    insert( tile );
+
+  return true;
+}
+
+void PathwayCondition::checkRoads(const Tile* tile, bool& ret)
+{
+  ret = false;
+  if( tile->getFlag( Tile::tlRoad ) )  { ret = true;  }
+  else                                 { ret = count( tile ) > 0; }
+}
+
+void PathwayCondition::allTiles(const Tile*, bool& ret)
+{
+  ret = true;
+}
+
+TilePossibleCondition PathwayCondition::byRoads() { return makeDelegate( this, &PathwayCondition::checkRoads ); }
+TilePossibleCondition PathwayCondition::bySomething() { return makeDelegate( this, &PathwayCondition::allTiles ); }

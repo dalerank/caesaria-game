@@ -12,24 +12,49 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "gameautopause.hpp"
 #include "events/changespeed.hpp"
+#include "gui/widget.hpp"
 
 using namespace events;
 
+class GameAutoPauseWidget : public gui::Widget
+{
+public:
+  GameAutoPause locker;
+  GameAutoPauseWidget( gui::Widget* parent )
+    : gui::Widget( parent, -1, Rect() )
+  {
+    locker.activate();
+  }
+};
+
 GameAutoPause::GameAutoPause()
 {
+  _activated = false;
 }
 
 void GameAutoPause::activate()
 {
-  GameEventPtr e = Pause::create( Pause::hidepause );
-  e->dispatch();
+  if( !_activated )
+  {
+    events::dispatch<Pause>( Pause::hidepause );
+    _activated = true;
+  }
+}
+
+void GameAutoPause::insertTo(gui::Widget *parent)
+{
+  parent->add<GameAutoPauseWidget>();
 }
 
 GameAutoPause::~GameAutoPause()
 {
-  GameEventPtr e = Pause::create( Pause::hideplay );
-  e->dispatch();
+  if( !_activated )
+    return;
+
+  events::dispatch<Pause>( Pause::hideplay );
 }

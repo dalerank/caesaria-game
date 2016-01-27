@@ -18,13 +18,13 @@
 #include "military.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"
 #include "walker/patrolpoint.hpp"
 #include "barracks.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
@@ -33,24 +33,27 @@
 #include "walker/romearcher.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_javelin, FortJaveline)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_horse, FortMounted)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::fort_legionaries, FortLegionary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_javelin, FortJaveline)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_horse, FortMounted)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_legionaries, FortLegionary)
 
 FortLegionary::FortLegionary()
-  : Fort( objects::fort_legionaries, 16 )
+  : Fort( object::fort_legionaries, 16 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 21 );
 
   _addFormation( frmNorthDblLine );
   _addFormation( frmWestDblLine );
   _addFormation( frmSquad );
   _addFormation( frmOpen );
+
+  _setWorkersType( walker::legionary );
 }
+
+int FortLegionary::flagIndex() const { return 21; }
 
 void FortLegionary::_readyNewSoldier()
 {
@@ -58,16 +61,16 @@ void FortLegionary::_readyNewSoldier()
 
   if( !tiles.empty() )
   {
-    RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
+    auto soldier = Walker::create<RomeSoldier>( _city(), walker::legionary );
     soldier->send2city( this, tiles.front()->pos() );
     addWalker( soldier.object() );
   }
 }
 
 FortMounted::FortMounted()
-  : Fort( constants::objects::fort_horse, 15 )
+  : Fort( object::fort_horse, 15 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 39 );
 
   _addFormation( frmNorthLine );
@@ -77,10 +80,12 @@ FortMounted::FortMounted()
   _addFormation( frmOpen );
 }
 
-bool FortMounted::build( const CityAreaInfo& info )
+bool FortMounted::build( const city::AreaInfo& info )
 {
   return Fort::build( info );
 }
+
+int FortMounted::flagIndex() const { return 39; }
 
 void FortMounted::_readyNewSoldier()
 {
@@ -88,16 +93,16 @@ void FortMounted::_readyNewSoldier()
 
   if( !tiles.empty() )
   {
-    RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
+    auto soldier = Walker::create<RomeHorseman>( _city() );
     soldier->send2city( this, tiles.front()->pos() );
     addWalker( soldier.object() );
   }
 }
 
 FortJaveline::FortJaveline()
-  : Fort( objects::fort_javelin, 14 )
+  : Fort( object::fort_javelin, 14 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 30 );
 
   _addFormation( frmNorthDblLine );
@@ -105,14 +110,16 @@ FortJaveline::FortJaveline()
   _addFormation( frmOpen );
 }
 
+int FortJaveline::flagIndex() const { return 30;  }
+
 void FortJaveline::_readyNewSoldier()
 {
   TilesArray tiles = enterArea();
 
   if( !tiles.empty() )
   {
-    RomeArcherPtr soldier = RomeArcher::create( _city() );
-    soldier->send2city( this, tiles.front()->pos() );
-    addWalker( soldier.object() );
+    auto archer = Walker::create<RomeArcher>( _city() );
+    archer->send2city( this, tiles.front()->pos() );
+    addWalker( archer.object() );
   }
 }

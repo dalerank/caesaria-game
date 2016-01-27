@@ -21,74 +21,78 @@
 namespace updater
 {
 
-class UpdaterOptions :
-	public ProgramOptions
+class UpdaterOptions : public ProgramOptions
 {
 public:
-	UpdaterOptions()
-	{
-		SetupDescription();
-	}
+  UpdaterOptions()
+  {
+    reset( 0, 0 );
+  }
 
-	// Construct options from command line arguments
-	UpdaterOptions(int argc, char* argv[])
-	{
-		SetupDescription();
-		ParseFromCommandLine(argc, argv);
+  // Construct options from command line arguments
+  UpdaterOptions(int argc, char* argv[])
+  {     
+    reset( argc, argv );
+  }
 
-		for (int i = 1; i < argc; ++i)
-		{
-			_cmdLineArgs.push_back(argv[i]);
-		}
-	}
+  void reset(int argc, char* argv[])
+  {
+    SetupDescription();
+    parse(argc, argv);
 
-	void CheckProxy(const HttpConnectionPtr& conn) const
-	{
-        std::string proxyStr = get( "--proxy" );
+    for (int i = 1; i < argc; ++i)
+    {
+      _cmdLineArgs.push_back(argv[i]);
+    }
+  }
 
-		if( proxyStr.empty() )
-		{
-			Logger::warning( "No proxy configured.");
-			return; // nothing to do
-		}
+  void CheckProxy(const HttpConnectionPtr& conn) const
+  {
+    std::string proxyStr = get( "--proxy" );
 
-        std::string proxyUser = get( "--proxyuser" );
-        std::string proxyPassword = get( "--proxypass" );
-		if( proxyUser.empty() && proxyPassword.empty() )
-		{
-			// Non-authenticated proxy
-			Logger::warning( "Using proxy: %s", proxyStr.c_str() );
-			conn->SetProxyHost( proxyStr );
-		}
-		else
-		{
-			// Proxy with authentication
-			Logger::warning( "Using proxy with authentication: %s", proxyStr.c_str() );
-			conn->SetProxyHost( proxyStr );
-			conn->SetProxyUsername( proxyUser );
-			conn->SetProxyPassword( proxyPassword );
-		}
-	}
+    if( proxyStr.empty() )
+    {
+       Logger::warning( "No proxy configured.");
+       return; // nothing to do
+    }
+
+    std::string proxyUser = get( "--proxyuser" );
+    std::string proxyPassword = get( "--proxypass" );
+    if( proxyUser.empty() && proxyPassword.empty() )
+    {
+      // Non-authenticated proxy
+      Logger::warning( "Using proxy: {}", proxyStr );
+      conn->SetProxyHost( proxyStr );
+    }
+    else
+    {
+      // Proxy with authentication
+      Logger::warning( "Using proxy with authentication: {}", proxyStr );
+      conn->SetProxyHost( proxyStr );
+      conn->SetProxyUsername( proxyUser );
+      conn->SetProxyPassword( proxyPassword );
+    }
+  }
 
 private:
-	// Implement base class method
-	void SetupDescription()
-	{
-		// Get options from command line
-        _desc[ "--proxy"     ] = "Use a proxy to connect to the internet, example --proxy http://proxy:port";
-		_desc[ "--proxyuser" ] = "Use a proxy to connect to the internet, example --proxyuser user";
-		_desc[ "--proxypass" ] = "Use a proxy to connect to the internet, example --proxypass pass";
-		_desc[ "--targetdir" ] = "The folder which should be updated.--targetdir c:\\games\\caesaria";
-		_desc[ "--help" ] = "Display this help page";
-		_desc[ "--keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
-		_desc[ "--noselfupdate" ] = "Don't update updater";
-        _desc[ "--verbose"   ] = "Show more debug info";
-        _desc[ "--dry-run"   ] = "Don't do any updates, just perform checks.";
-        _desc[ "--no-exec"   ] = "Don't download executable files";
-        _desc[ "--release"   ] = "Create stable_info.txt for this configuration";
-		_desc[ "--directory" ] = "Use only in release/update mode, path to working directory";
-        _desc[ "--version"   ] = "Use only in releases/udate mode, current version";
-	}
+  // Implement base class method
+  void SetupDescription()
+  {
+    // Get options from command line
+    _desc[ "--proxy"     ] = "Use a proxy to connect to the internet, example --proxy http://proxy:port";
+    _desc[ "--proxyuser" ] = "Use a proxy to connect to the internet, example --proxyuser user";
+    _desc[ "--proxypass" ] = "Use a proxy to connect to the internet, example --proxypass pass";
+    _desc[ "--targetdir" ] = "The folder which should be updated.--targetdir c:\\games\\caesaria";
+    _desc[ "--help" ] = "Display this help page";
+    _desc[ "--keep-mirrors" ] = "Don't download updated mirrors list from the server, use local one.";
+    _desc[ "--noselfupdate" ] = "Don't update updater";
+    _desc[ "--verbose"   ] = "Show more debug info";
+    _desc[ "--dry-run"   ] = "Don't do any updates, just perform checks.";
+    _desc[ "--no-exec"   ] = "Don't download executable files";
+    _desc[ "--release[update]"   ] = "Create stable_info.txt for this configuration";
+    _desc[ "--directory" ] = "Use only in release/update mode, path to working directory";
+    _desc[ "--version"   ] = "Use only in releases/udate mode, current version";
+  }
 };
 
 }

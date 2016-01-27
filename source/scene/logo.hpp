@@ -29,13 +29,16 @@ namespace scene
 class SplashScreen: public Base
 {
 public:
+  enum { hideDevText=0, showDevText=1 };
+
   SplashScreen();
   virtual ~SplashScreen();
 
   void initialize();
 
   virtual void draw();
-  void exitScene();
+  void setImage(const std::string& image, int index);
+  void exitScene(bool showDevText);
   void setText( std::string text );
   void setPrefix( std::string prefix );
 

@@ -34,6 +34,7 @@ class ChangeSalary::Impl
 {
 public:
   int newSalary;
+  int currentSalary;
 
 public slots:
   void resolveSalaryChange(const ListBoxItem&);
@@ -44,44 +45,40 @@ public signals:
 };
 
 ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
-  : Window( p, Rect(), "" ), __INIT_IMPL(ChangeSalaryWindow)
+  : Window( p, Rect(), "" ), __INIT_IMPL(ChangeSalary)
 {
+  __D_IMPL(d,ChangeSalary)
   setupUI( ":/gui/changesalary.gui");
   setCenter( parent()->center() );
 
-  _dfunc()->newSalary = salary;
+  d->newSalary = salary;
+  d->currentSalary = salary;
 
-  ListBox* lbxTitles;
-  GET_WIDGET_FROM_UI( lbxTitles )
+  LINK_WIDGET_ACTION( PushButton*, btnCancel, onClicked(), this, ChangeSalary::deleteLater );
+  LINK_WIDGET_ACTION( PushButton*, btnOk, onClicked(), d.data(), Impl::setNewSalary );
+  LINK_WIDGET_ACTION( PushButton*, btnOk, onClicked(), this, ChangeSalary::deleteLater  );
+  LINK_WIDGET_ACTION( ListBox*, lbxTitles, onItemSelected(), d.data(), Impl::resolveSalaryChange );
+}
+
+void ChangeSalary::setRanks(world::GovernorRanks ranks)
+{
+  INIT_WIDGET_FROM_UI( ListBox*, lbxTitles )
   if( lbxTitles )
   {
-    world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    foreach( i, ranks )
+    for( auto& rank : ranks )
     {
-      std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
-      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( (*i).salary ) );
-      item.setTag( (*i).salary );
-      if( (*i).salary == salary )
-      {
-        lbxTitles->setSelected( std::distance( ranks.begin(), i ) );
-      }
+      std::string salaryStr = _( "##" + rank.rankName + "_salary##" );
+      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( rank.salary ) );
+      item.setTag( rank.salary );
     }
+
+    lbxTitles->setSelectedTag( _dfunc()->currentSalary );
   }
-
-  PushButton* btnCancel;
-  PushButton* btnOk;
-  GET_WIDGET_FROM_UI( btnCancel  )
-  GET_WIDGET_FROM_UI( btnOk )
-
-  CONNECT( btnCancel, onClicked(), this, ChangeSalary::deleteLater );
-  CONNECT( btnOk, onClicked(), _dfunc().data(), Impl::setNewSalary );
-  CONNECT( btnOk, onClicked(), this, ChangeSalary::deleteLater  );
-  CONNECT( lbxTitles, onItemSelected(), _dfunc().data(), Impl::resolveSalaryChange );
 }
 
 ChangeSalary::~ChangeSalary(){}
-Signal1<int>& ChangeSalary::onChangeSalary(){  return _dfunc()->onChangeSalarySignal; }
-void ChangeSalary::Impl::resolveSalaryChange(const ListBoxItem& item ) { newSalary = item.tag(); }
+Signal1<int>& ChangeSalary::onChangeSalary(){ return _dfunc()->onChangeSalarySignal; }
+void ChangeSalary::Impl::resolveSalaryChange( const ListBoxItem& item ) { newSalary = item.tag(); }
 void ChangeSalary::Impl::setNewSalary(){ emit onChangeSalarySignal( newSalary ); }
 
 }//end namespace dialog

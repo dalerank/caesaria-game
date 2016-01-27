@@ -23,23 +23,33 @@
 class Farm : public Factory
 {
 public:
-  Farm(const good::Product outGood, const TileOverlay::Type type );
+  Farm(const good::Product outGood, const object::Type type );
 
   virtual ~Farm();
   void init();
 
   void computePictures();
+  void assignTile( const TilePos& pos );
 
   virtual void timeStep(const unsigned long time);
-  virtual bool build(const CityAreaInfo &info);
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual void burn();
+  virtual void collapse();
+  virtual void destroy();
+  virtual void computeRoadside();
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
   virtual unsigned int produceQty() const;
+  virtual void initialize(const object::Info& mdata);
 
 protected:
+  gfx::Picture _getMainPicture();
+  OverlayPtr _buildFarmTile( const city::AreaInfo& info, const TilePos& ppos );
+  void _buildFarmTiles(const city::AreaInfo& info, const TilePos& pos );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
@@ -49,7 +59,7 @@ class FarmWheat : public Farm
 public:
   FarmWheat();
   virtual std::string troubleDesc() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 class FarmOlive : public Farm

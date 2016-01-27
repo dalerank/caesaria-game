@@ -18,7 +18,7 @@
 
 #include "gl_engine.hpp"
 
-#ifdef CAESARIA_GL_RENDER
+#ifdef GAME_GL_RENDER
 
 #include <cstdlib>
 #include <string>
@@ -36,23 +36,24 @@
 #include "vfs/file.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
 
-#ifndef CAESARIA_PLATFORM_WIN
+#ifndef GAME_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   #define glOrtho glOrthof
-  #undef CAESARIA_USE_FRAMEBUFFER
+  #undef GAME_USE_FRAMEBUFFER
   #include <SDL_opengles.h>
   #define USE_GLES
 #else
   #include <SDL_opengl.h>
 #endif
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   #ifndef GL_GLEXT_PROTOTYPES
     #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
     PFNGLCREATESHADERPROC glCreateShader;
@@ -82,7 +83,7 @@
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
 
-  #ifndef CAESARIA_PLATFORM_MACOSX
+  #ifndef GAME_PLATFORM_MACOSX
     #define glGenFramebuffers         glGenFramebuffersEXT
     #define glGenTextures             glGenTexturesEXT
     #define glGenRenderbuffers        glGenRenderbuffersEXT
@@ -94,7 +95,7 @@
     #define glFramebufferTexture2D    glFramebufferTexture2DEXT
   #endif
 #else
-  #undef CAESARIA_USE_SHADERS
+  #undef GAME_USE_SHADERS
 #endif
 
 #include "core/font.hpp"
@@ -105,7 +106,7 @@
 
 namespace gfx{
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
 
 static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
 "void main(void) \n"
@@ -359,7 +360,7 @@ void PostprocFilter::setVariables(const VariantMap& variables)
 
 void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
 {
-#ifdef CAESARIA_USE_SHADERS
+#ifdef GAME_USE_SHADERS
   vfs::NFile file = vfs::NFile::open( fragmentShader );
   if( !file.isOpen() )
     return;
@@ -430,8 +431,8 @@ void PostprocFilter::begin()
 {
   glUseProgram( _program );
 
-  foreach( i, _variables )
-    setUniformVar( i->first, i->second );
+  for( auto i : _variables )
+    setUniformVar( i.first, i.second );
 }
 
 
@@ -457,11 +458,11 @@ void EffectManager::load(vfs::Path effectModel)
 {
   VariantMap stream = config::load( effectModel );
 
-  VariantMap technique = stream.get( CAESARIA_STR_EXT(technique) ).toMap();
+  VariantMap technique = stream.get( STRINGIFY(technique) ).toMap();
 
-  foreach( pass, technique )
+  for( auto pass : technique )
   {
-    VariantMap variables = pass->second.toMap();
+    VariantMap variables = pass.second.toMap();
     PostprocFilterPtr effect = PostprocFilter::create();
     std::string shaderFile = variables.get( "shader" ).toString();
     variables.erase( "shader" );
@@ -491,12 +492,12 @@ public:
   Size viewportSize;
   bool useViewport;
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   FrameBuffer fb;
   EffectManager effects;
 #endif
 
-  PictureRef fpsText;
+  Picture fpsText;
   Font debugFont;
 
 public:
@@ -504,7 +505,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+      Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
       THROW("Failed to create window");
     }
   }
@@ -526,7 +527,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -569,7 +570,6 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
-  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -580,7 +580,7 @@ void GlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   #ifndef GL_GLEXT_PROTOTYPES
     ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
     ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
@@ -608,15 +608,15 @@ void GlEngine::init()
     ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
     ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
   #endif //GL_GLEXT_PROTOTYPES
-#endif //CAESARIA_USE_FRAMEBUFFER
+#endif //GAME_USE_FRAMEBUFFER
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
-  Logger::warning( "Screen bpp: %d", SDL_BITSPERPIXEL(mode.format));
-  Logger::warning( "Vendor     : %s", glGetString(GL_VENDOR));
-  Logger::warning( "Renderer   : %s", glGetString(GL_RENDERER));
-  Logger::warning( "Version    : %s", glGetString(GL_VERSION));
-  Logger::warning( "Extensions : %n", glGetString(GL_EXTENSIONS));
+  Logger::warning( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
+  Logger::warning( "Vendor     : {}", glGetString(GL_VENDOR));
+  Logger::warning( "Renderer   : {}", glGetString(GL_RENDERER));
+  Logger::warning( "Version    : {}", glGetString(GL_VERSION));
+  Logger::warning( "Extensions : {}", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -635,12 +635,12 @@ void GlEngine::init()
 
   Logger::warning( "GrafixEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
-                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+                                               GAME_VERSION_MAJOR, GAME_VERSION_MINOR, GAME_VERSION_REVSN,
+                                               GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.initialize( _srcSize );
@@ -648,7 +648,7 @@ void GlEngine::init()
   }
 #endif
 
-  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
+  _d->fpsText = Picture( Size( 200, 20 ), 0, true );
 }
 
 void GlEngine::exit()
@@ -657,31 +657,25 @@ void GlEngine::exit()
    SDL_Quit();
 }
 
-void GlEngine::deletePicture( Picture* pic )
-{
-  if( pic )
-    unloadPicture( *pic );
-}
-
 void GlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  if( flag == showMetrics )
   {
     _d->debugFont = Font::create( FONT_2 );
   }
 }
 
-Picture* GlEngine::createPicture( const Size& size )
+Picture GlEngine::createPicture( const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
 
-  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size={}x{}", size.width(), size.height() ) );
 
-  Picture *pic = new Picture();
-  pic->init( 0, img, 0 );  // no offset
+  Picture pic;
+  pic.init( 0, img, 0 );  // no offset
 
   return pic;
 }
@@ -706,27 +700,26 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
-/*static int power_of_2(int input)
+Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
-    int value = 1;
+  return Batch();
+}
 
-    while (value < input)
-    {
-        value <<= 1;
-    }
-    return value;
-}*/
+void GlEngine::unloadBatch(const Batch &batch)
+{
+
+}
+
+void GlEngine::setVirtualSize( const Size& rect )
+{
+
+}
 
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
   GLuint& texture( ioPicture.textureID() );
 
   SDL_Surface* surface = ioPicture.surface(); //SDL_DisplayFormatAlpha( ioPicture.surface() );
-  //SDL_SetAlpha( surface, 0, 0 );
-
-  //SDL_FreeSurface( ioPicture.surface() );
-
-  //ioPicture.init( 0, ioPicture.surface(),  );
 
   GLenum texture_format;
   GLint nOfColors;
@@ -791,7 +784,7 @@ void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 
 void GlEngine::startRenderFrame()
 {
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.begin();
@@ -802,15 +795,15 @@ void GlEngine::startRenderFrame()
 
 void GlEngine::endRenderFrame()
 {
-  if( getFlag( Engine::debugInfo ) )
+  if( getFlag( Engine::showMetrics ) )
   {
     std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _d->fpsText->fill( 0, Rect() );
-    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
-    draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );
+    _d->fpsText.fill( 0, Rect() );
+    _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
+    draw( _d->fpsText, Point( _srcSize.width() / 2, 2 ) );
   }
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.draw( _d->effects.effects() );
@@ -831,21 +824,9 @@ void GlEngine::endRenderFrame()
   _drawCall = 0;
 }
 
-void GlEngine::initViewport(int index, Size s)
+void GlEngine::setScale( float scale )
 {
-#ifdef CAESARIA_USE_FRAMEBUFFER
-  _d->viewportSize = s;
-#endif
-}
-
-void GlEngine::setViewport(int, bool render)
-{
-  _d->useViewport = render;
-}
-
-void GlEngine::drawViewport(int, Rect r)
-{
-
+  //
 }
 
 void GlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect)
@@ -932,9 +913,24 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   }
 }
 
+void GlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+
+}
+
 void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
 {
-  int i=0;
+  //  int i=0;
+}
+
+void GlEngine::fillRect(const NColor& color, const Rect& rect)
+{
+
+}
+
+void GlEngine::drawLines(const NColor& color, const PointsArray& p1)
+{
+
 }
 
 void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
@@ -1023,19 +1019,16 @@ void GlEngine::resetColorMask()
 
 void GlEngine::createScreenshot( const std::string& filename )
 {
-  Picture* screen = createPicture( screenSize() );
+  Picture screen = createPicture( screenSize() );
 #ifdef USE_GLES
   glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
 #else
-  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen.surface()->pixels);
 #endif
 
-  PictureConverter::flipVertical( *screen );
+  PictureConverter::flipVertical( screen );
 
-  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
-
-  deletePicture( screen );
-  delete screen;
+  IMG_SavePNG( filename.c_str(), screen.surface(), -1 );
 }
 
 unsigned int GlEngine::fps() const {  return _fps; }
@@ -1077,6 +1070,15 @@ Engine::Modes GlEngine::modes() const
   return ret;
 }
 
+void GlEngine::draw(const gfx::Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+
 }
 
+void GlEngine::draw(const gfx::Batch &pic, Rect *clipRect)
+{
+
+}
+
+}
 #endif

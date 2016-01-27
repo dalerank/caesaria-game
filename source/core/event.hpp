@@ -160,6 +160,8 @@ enum KeyCode
     KEY_COMMA            = 0xBC,  // Comma Key  (,)
     KEY_MINUS            = 0xBD,  // Minus Key  (-)
     KEY_PERIOD           = 0xBE,  // Period Key (.)
+    KEY_EQUALS           = 0xBF,
+    KEY_TILDA            = 0xC0,  // tilda key
     KEY_ATTN             = 0xF6,  // Attn key
     KEY_CRSEL            = 0xF7,  // CrSel key
     KEY_EXSEL            = 0xF8,  // ExSel key
@@ -237,6 +239,9 @@ enum GuiEventType
 	guiTableCellChange,
 	guiTableCellSelected,
 	guiTableCellDblclick,
+  guiTreeviewNodeExpand,
+  guiTreeviewNodeCollapse,
+  guiTreeviewNodeSelect,
 
 	//! No real event. Just for convenience to get number of events
 	guiEventCount
@@ -257,9 +262,9 @@ enum SysEventType
   sEventKeyboard,
 
   //! A keyboard symbol input event.
-  sTextInput,
+  sEventTextInput,
 
-  sAppEvent,
+  sEvenApplication,
 
   sEventUser,
 
@@ -267,56 +272,6 @@ enum SysEventType
   //! This enum is never used, it only forces the compiler to
   //! compile these enumeration values to 32 bit.
   sEventMax = 0x7fffffff
-};
-
-//! Enumeration for all mouse input events
-enum MouseEventType
-{
-  //! Left mouse button was pressed down.
-  mouseLbtnPressed = 0,
-
-  //! Middle mouse button was pressed down.
-  mouseMbtnPressed, //1
-
-  //! Right mouse button was pressed down.
-  mouseRbtnPressed, //2
-
-  //! Left mouse button was left up.
-  mouseLbtnRelease, //3
-
-  //! Middle mouse button was left up.
-  mouseMbtnRelease, //4
-
-  //! Right mouse button was left up.
-  mouseRbtnRelease, //5
-
-  //! The mouse cursor changed its position.
-  mouseMoved, //6
-
-  //! The mouse wheel was moved. Use Wheel value in event data to find out
-  //! in what direction and how fast.
-  mouseWheel,
-
-  //! Left mouse button double click.
-  mouseLbtDblClick,
-
-  //! Right mouse button double click.
-  mouseRbtnDblClick,
-
-  //! Middle mouse button double click.
-  mouseMbtnDblClick,
-
-  //! Left mouse button triple click.
-  mouseLbtnTrplClick,
-
-  //! Right mouse button triple click.
-  mouseRbtnTrplClick,
-
-  //! Middle mouse button triple click.
-  mouseMbtnTrplClick,
-
-  //! No real event. Just for convenience to get number of events
-  mouseEventCount
 };
 
 //! Masks for mouse button states
@@ -359,7 +314,7 @@ struct NEvent
   };
 
   //! Any kind of mouse event.
-  struct _MouseEvent
+  struct Mouse
   {    
     int x;  //! X position of mouse cursor
     int y;  //! Y position of mouse cursor
@@ -368,21 +323,42 @@ struct NEvent
     /** Only valid if event was CAESARIA_MOUSE_WHEEL */
     float wheel;
 
-    bool shift:1; //! True if shift was also pressed
-    bool control:1;     //! True if ctrl was also pressed
+    bool shift;       //! True if shift was also pressed
+    bool control;     //! True if ctrl was also pressed
 
     //! A bitmap of button states. You can use isButtonPressed() to determine
     //! if a button is pressed or not.
     //! Currently only valid if the event was EMIE_MOUSE_MOVED
     unsigned int buttonStates;
 
-    const Point pos() { return Point( x, y ); }
     const Point pos() const { return Point( x, y ); }
     bool isLeftPressed() const { return 0 != ( buttonStates & mbsmLeft ); }     //! Is the left button pressed down?
     bool isRightPressed() const { return 0 != ( buttonStates & mbsmRight ); }   //! Is the right button pressed down?
     bool isMiddlePressed() const { return 0 != ( buttonStates & mbsmMiddle ); } //! Is the middle button pressed down?
 
-    MouseEventType type;     //! Type of mouse event
+
+    //! Enumeration for all mouse input events
+    enum Type
+    {
+      btnLeftPressed = 0,   //! Left mouse button was pressed down.
+      btnMiddlePressed,     //! Middle mouse button was pressed down.
+      btnRightPressed,      //! Right mouse button was pressed down.
+      mouseLbtnRelease,     //! Left mouse button was left up.
+      mouseMbtnRelease,     //! Middle mouse button was left up.
+      mouseRbtnRelease,     //! Right mouse button was left up.
+      moved,           //! The mouse cursor changed its position.
+      mouseWheel,           //! The mouse wheel was moved. Use Wheel value in event data to find out
+                            //! in what direction and how fast.
+      mouseLbtDblClick,     //! Left mouse button double click.
+      mouseRbtnDblClick,    //! Right mouse button double click.
+      mouseMbtnDblClick,    //! Middle mouse button double click.
+      mouseLbtnTrplClick,   //! Left mouse button triple click.
+      mouseRbtnTrplClick,   //! Right mouse button triple click.
+      mouseMbtnTrplClick,   //! Middle mouse button triple click.
+
+      mouseEventCount       //! No real event. Just for convenience to get number of events
+    };
+    Type type;    //! Type of mouse event
   };
 
   //! Any kind of keyboard event.
@@ -411,7 +387,7 @@ struct NEvent
   union
   {
     struct _GuiEvent gui;
-    struct _MouseEvent mouse;
+    struct Mouse mouse;
     struct _KeyboardEvent keyboard;
     struct _InputEvent text;
     struct _UserEvent user;

@@ -21,35 +21,21 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "enemysoldier.hpp"
+#include "gfx/tilepos.hpp"
 #include "game/gamedate.hpp"
+#include "config.hpp"
 #include "spear.hpp"
-
-using namespace constants;
-
-namespace {
-  const int attackDistance = 16;
-}
 
 Balista::Balista( PlayerCityPtr city )
   : WallGuard( city, walker::balista )
 {
   _setType( walker::balista );
   setSpeedMultiplier( 0.f );
-  setAttackDistance( 8 );
+  setAttackDistance( config::distance::ballistaRange );
 
   _isActive = false;
 
   setName( _("##balista##") );
-}
-
-BalistaPtr Balista::create(PlayerCityPtr city)
-{
-  BalistaPtr ret( new Balista( city ) );
-  ret->drop();
-
-  city->addWalker( ret.object() );
-
-  return ret;
 }
 
 Balista::~Balista(){}
@@ -62,13 +48,12 @@ void Balista::setActive(bool active)
 
 bool Balista::_tryAttack()
 {
-  EnemySoldierList enemies;
-  enemies << _findEnemiesInRange( attackDistance() );
+  auto enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
   if( !enemies.empty() )
   {
     //find nearest walkable wall
-    EnemySoldierPtr soldierInAttackRange = _findNearbyEnemy( enemies );
+    auto soldierInAttackRange = _findNearbyEnemy( enemies );
 
     if( soldierInAttackRange.isValid() )
     {
@@ -83,7 +68,7 @@ bool Balista::_tryAttack()
 
 void Balista::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->setPicInfo( ResourceGroup::sprites, 146 );
   spear->setPicOffset( Point( -15, 15 ));
   spear->toThrow( pos(), target );

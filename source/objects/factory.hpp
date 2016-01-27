@@ -21,22 +21,24 @@
 
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
-#include "good/good.hpp"
+#include "good/turnover.hpp"
+#include "good/helper.hpp"
 
 class Factory : public WorkingBuilding
 {
 public:
   Factory( const good::Product inGood, const good::Product outGood,
-           const TileOverlay::Type type, const Size& size );
+           const object::Type type, const Size& size );
   virtual ~Factory();
 
-  good::Stock& inStockRef();
-  const good::Stock& inStockRef() const;
+  good::Stock& inStock();
+  const good::Stock& inStock() const;
 
-  good::Stock& outStockRef();
+  good::Stock& outStock();
+  const good::Stock& outStock() const;
 
-  good::Product consumeGoodType() const;
-  good::Product produceGoodType() const;
+  const good::Info& consume() const;
+  const good::Info& produce() const;
 
   good::Store& store();
 
@@ -59,22 +61,29 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void load( const VariantMap& stream );
 
   virtual void setProductRate( const float rate );
   virtual float productRate() const;
-  virtual unsigned int effciency() const;
+  virtual math::Percent effciency() const;
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
   std::string cartStateDesc() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
+
+  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
+  virtual void _productProgress();
+  virtual void _productReady();
+
+  void _weekUpdate( unsigned int time );
+  void _setConsumeGoodType( int index, good::Product product );
   void _setUnworkingInterval( unsigned int weeks );
   virtual void _reachUnworkingTreshold();
 
@@ -83,24 +92,13 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class Winery : public Factory
-{
-public:
-  Winery();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
-
-protected:
-  virtual void _storeChanged();
-};
-
 class Creamery : public Factory
 {
 public:
   Creamery();
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
+  virtual bool build(const city::AreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

@@ -19,35 +19,34 @@
 #include "weaponsworkshop.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
+#include "good/stock.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects_factory.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::weapons_workshop, WeaponsWorkshop)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::weapons_workshop, WeaponsWorkshop)
 
 WeaponsWorkshop::WeaponsWorkshop()
-  : Factory(good::iron, good::weapon, objects::weapons_workshop, Size(2) )
+  : Factory(good::iron, good::weapon, object::weapons_workshop, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 108);
+  setPicture( info().randomPicture( size() ) );
 
-  _animationRef().load( ResourceGroup::commerce, 109, 6);
-  _fgPicturesRef().resize(2);
+  //_animationRef().load( ResourceGroup::commerce, 109, 6);
+  _fgPictures().resize(2);
 }
 
-bool WeaponsWorkshop::canBuild( const CityAreaInfo& areaInfo ) const
+bool WeaponsWorkshop::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return Factory::canBuild( areaInfo );
 }
 
-bool WeaponsWorkshop::build( const CityAreaInfo& info )
+bool WeaponsWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  city::Helper helper( info.city );
-  bool haveIronMine = !helper.find<Building>( objects::iron_mine ).empty();
+  bool haveIronMine = info.city->statistic().objects.count( object::iron_mine ) > 0;
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 
@@ -56,6 +55,6 @@ bool WeaponsWorkshop::build( const CityAreaInfo& info )
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
-  _fgPicturesRef()[1].setOffset( 20, 15 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
+  _fgPicture(1).setOffset( 20, 15 );
 }

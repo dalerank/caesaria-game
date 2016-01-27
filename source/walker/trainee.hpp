@@ -19,6 +19,7 @@
 #define __CAESARIA_TRAINEEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "objects/overlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 class Propagator;
@@ -26,13 +27,13 @@ class Propagator;
 /** This walker goes to work */
 class TraineeWalker : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
-
-  void checkDestination(const gfx::TileOverlay::Type buildingType, Propagator& pathPropagator);
   virtual int value() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
-  void setBase(Building &building);
+  void setBase(BuildingPtr building);
+  BuildingPtr base() const;
+  BuildingPtr receiver() const;
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
@@ -41,11 +42,12 @@ public:
 
   virtual ~TraineeWalker();
 protected:
-  TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);
+  TraineeWalker( PlayerCityPtr city, walker::Type traineeType=walker::trainee );
   void _computeWalkerPath( bool roadOnly );
 
+  void _checkDestination(const object::Type buildingType, Propagator& pathPropagator);
   virtual void _reachedPathway();
-  void _init(constants::walker::Type traineeType);
+  void _init( walker::Type traineeType);
   void _cancelPath();
 
 private:
@@ -58,11 +60,5 @@ class TraineeWalkerCreator : public WalkerCreator
 public:
   virtual WalkerPtr create( PlayerCityPtr city );
 };
-
-#define REGISTER_TRAINEEMAN_IN_WALKERFACTORY(type,trainee,a) \
-namespace { \
-struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new TraineeWalkerCreator() ); }}; \
-static Registrator_##a rtor_##a; \
-}
 
 #endif //__CAESARIA_TRAINEEWALKER_H_INCLUDED__

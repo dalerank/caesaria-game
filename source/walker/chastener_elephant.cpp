@@ -32,42 +32,43 @@
 #include "core/priorities.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerElephant, ChastenerElephant)
 
-class ChastenerElephant::Impl
+struct ElephantWayCondition
 {
-public:
-  void mayMove( const Tile* tile, bool& ret )
+  void tryMove( const Tile* tile, bool& ret )
   {
-    BuildingPtr f = ptr_cast<Building>( tile->overlay() );
-    ret = ( tile->isWalkable( true ) || f.isValid() );
+    BuildingPtr building = tile->overlay<Building>();
+    ret = ( tile->isWalkable( true ) || building.isValid() );
   }
+
+  TilePossibleCondition mayMove() { return makeDelegate( this, &ElephantWayCondition::tryMove ); }
 };
 
 ChastenerElephant::ChastenerElephant( PlayerCityPtr city )
-    : EnemySoldier( city, walker::romeChastenerElephant ), _d( new Impl )
+    : EnemySoldier( city, walker::romeChastenerElephant )
 {
   _excludeAttack().clear();
-  _excludeAttack() << objects::disasterGroup
-                   << objects::roadGroup
-                   << objects::bridgeGroup;
+  _excludeAttack() << object::group::disaster
+                   << object::group::road
+                   << object::group::bridge;
 }
 
 Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range )
 {
   Pathway ret;
 
+  ElephantWayCondition condition;
+
   for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
   {
     ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, constructions )
+    for( auto construction : constructions )
     {
-      ConstructionPtr c = ptr_cast<Construction>( *it );
-      ret = PathwayHelper::create( pos(), c->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
+      ret = PathwayHelper::create( pos(), construction->pos(), condition.mayMove() );
       if( ret.isValid() )
       {
         return ret;
@@ -80,11 +81,10 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 
 bool ChastenerElephant::_tryAttack()
 {
-  Tilemap& tmap = _city()->tilemap();
-  TilesArray tiles = tmap.getNeighbors( pos() );
-  foreach( it, tiles )
+  ConstructionList constructions = _map().getNeighbors( pos() )
+                                         .overlays<Construction>();
+  for( auto ov : constructions )
   {
-    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
     if( ov.isValid() && !_excludeAttack().count( ov->group() ) )
     {
       ov->collapse();
@@ -94,15 +94,7 @@ bool ChastenerElephant::_tryAttack()
   return EnemySoldier::_tryAttack();
 }
 
-ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
-{
-  ChastenerElephantPtr ret( new ChastenerElephant( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-int ChastenerElephant::agressive() const { return -2; }
+int ChastenerElephant::agressive() const { return 4; }
 
 bool ChastenerElephant::die()
 {

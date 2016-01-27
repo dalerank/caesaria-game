@@ -33,10 +33,18 @@ private:
 
 	double _recentDownloadSpeed;
 
+  ProgressHandler(IUpdateView& view) :
+    _view(view)
+  {}
+
 public:
-	ProgressHandler(IUpdateView& view) :
-		_view(view)
-	{}
+  static SmartPtr<ProgressHandler> create( IUpdateView& view )
+  {
+    SmartPtr<ProgressHandler> ret( new ProgressHandler( view ) );
+    ret->drop();
+
+    return ret;
+  }
 
 	void OnOverallProgress(const OverallDownloadProgressInfo& info)
 	{
@@ -55,8 +63,8 @@ public:
 		};
 
 		progress.progressFraction = info.progressFraction > 1.0 ? 1.0 : info.progressFraction;
-		progress.downloadedBytes = info.downloadedBytes;
-		progress.bytesToDownload = info.totalDownloadSize;
+    progress.connection.downloaded = info.downloadedBytes;
+    progress.connection.need = info.totalDownloadSize;
 		progress.filesToDownload = info.filesToDownload;
 
 		_view.onProgressChange(progress);
@@ -70,28 +78,28 @@ public:
 		progress.file = info.file;
 		progress.progressFraction = info.progressFraction > 1.0 ? 1.0 : info.progressFraction;
 		progress.mirrorDisplayName = info.mirrorDisplayName;
-		progress.downloadSpeed = info.downloadSpeed;
-		progress.downloadedBytes = info.downloadedBytes;
-		progress.bytesToDownload = 0;
+    progress.connection.speed = info.downloadSpeed;
+    progress.connection.downloaded = info.downloadedBytes;
+    progress.connection.need = 0;
 		progress.filesToDownload = 1;
 
 		_view.onProgressChange(progress);
 
-		_recentDownloadSpeed = progress.downloadSpeed;
+    _recentDownloadSpeed = progress.connection.speed;
 	}
 
-	void OnDownloadFinish()
+	void onDownloadFinish()
 	{
 		ProgressInfo progress;
 
 		progress.type = ProgressInfo::FileDownload;
 		progress.progressFraction = 1.0;
-		progress.downloadSpeed = _recentDownloadSpeed;
+    progress.connection.speed = _recentDownloadSpeed;
 
 		_view.onProgressChange(progress);
 	}
 
-	void OnFileOperationProgress(const CurFileInfo& info)
+	void onFileOperationProgress(const CurFileInfo& info)
 	{
 		ProgressInfo progress;
 

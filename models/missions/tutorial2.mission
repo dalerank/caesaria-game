@@ -1,6 +1,6 @@
 {
   version : 1
-  map : ":/maps/Brundisium.sav"
+  map : ":/maps/Tutorial2.sav"
   funds : 8000
   city.name : "Brundisium"
   player.rank : 1
@@ -8,30 +8,35 @@
   climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
+  preview.text : "##tutorial2_preview_mission##"
+  preview.title : "##tutorial2_preview_title##"
+  preview.image : ""
 	
   win :
   {
     population : 650
+    name : "n2_nexthope"
     culture : 0
     prosperity : 0
     peace : 0
     favour : 0
     finishDate : "-300.01.01"
     next : ":/missions/mission3.briefing"
-    title : "##win_clerk_title##"
-    win.text : "##tutorial2_win_text##"
+    title : "##engineer##"
     may_continue : false
-    short : "##tt2_caption##"
-    maxHouseLevel : "big_villa"
+    short : "##tt2_short##"
+    win.text : "##tt2_win_text##"
+    sound.overview : "tutorial2_speech"
+    sound.win      : "tutorial2_win_speech"
     caption : "##tt2_caption##"
-    overview :  [ "##tutorial_markets_text##",
-                  "@img=picture2_00008",
-                  "##tutorial_granary_text##",
-                  "@img=picture3_00006",
+    overview :  [ "##tutorial_priority##",
+                  "@img=picture3_00004",
                   "##tutorial_granary_text2##",
                   "@img=picture3_00005",
-                  "##tutorial_priority##",
-                  "@img=picture3_00004" ]
+                  "##tutorial_granary_text##",
+                  "@img=picture3_00006",
+                  "##tutorial_markets_text##",
+                  "@img=picture2_00008" ]
   }
 	
   empire : {
@@ -87,14 +92,21 @@
        enabled : true
        cities : {
           Capua : {
-            location : [ 820, 560 ]
-
             land : true
             sea : true
             available : true
 
+            nation : "roman"
+
             sells : { iron : 25 }
             buys : { wheat: 25, weapon: 15, pottery : 15 }
+          }
+
+          Londinium : {
+            available : true
+            nation : "gaul"
+            sea : false
+            available : false
           }
         }
       }
@@ -127,6 +139,7 @@
     buildings : 
     { 
       well : true
+      missionaryPost : false
       engineering_post : true
       prefecture : true
       small_ceres_temple : true
@@ -134,6 +147,7 @@
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
+      roadBlock : true
       market : true
       granery : true
       wheat_farm : true

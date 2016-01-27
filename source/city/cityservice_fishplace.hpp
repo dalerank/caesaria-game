@@ -19,16 +19,16 @@
 #define __CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Fishery)
+
 class Fishery : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   virtual bool isDeleted() const;
@@ -38,14 +38,12 @@ public:
   virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
 
-private:
   Fishery(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Fishery> FisheryPtr;
 
 }//end namespace city
 

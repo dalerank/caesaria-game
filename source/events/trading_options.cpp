@@ -19,7 +19,7 @@
 #include "core/utils.hpp"
 #include "game/game.hpp"
 #include "world/empire.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "world/computer_city.hpp"
 #include "factory.hpp"
 
@@ -44,37 +44,38 @@ void ChangeTradingOptions::load(const VariantMap& stream)
 void ChangeTradingOptions::_exec(Game& game, unsigned int)
 {
   VariantMap citiesVm = _options.get( "cities" ).toMap();
-  foreach( it, citiesVm )
+  for( auto& it : citiesVm )
   {
-    world::CityPtr cityp = game.empire()->findCity( it->first );
+    world::CityPtr cityp = game.empire()->findCity( it.first );
     if( cityp.isNull() )
     {
-      int trade_delay = it->second.toMap().get( "delay_trade" );
-      if( trade_delay > 0 )
+      unsigned int tradeDelayMnt = it.second.toMap().get( "delay_trade" );
+      if( tradeDelayMnt > 0 )
       {
-        cityp->delayTrade( trade_delay );
+        cityp->delayTrade( tradeDelayMnt );
       }
 
-      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( cityp );
+      world::ComputerCityPtr ccity = cityp.as<world::ComputerCity>();
       if( ccity.isValid() )
       {
-        ccity->changeTradeOptions( it->second.toMap() );
+        ccity->changeTradeOptions( it.second.toMap() );
       }
     }
   }
 
   VariantMap goodsVm = _options.get( "goods" ).toMap();
-  foreach( it, goodsVm )
+  for( const auto& it : goodsVm )
   {
-    good::Product gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::toType( it.first );
     if( gtype != good::none )
     {
-      VariantMap goodInfo = it->second.toMap();
+      VariantMap goodInfo = it.second.toMap();
       bool relative = goodInfo.get( "relative", false );
-      int buy = goodInfo.get( "buy" );
-      int sell = goodInfo.get( "sell" );
-      if( relative ) { game.empire()->changePrice( gtype, buy, sell ); }
-      else { game.empire()->setPrice( gtype, buy, sell ); }
+      world::PriceInfo prices;
+      prices.buy = goodInfo.get( "buy" );
+      prices.sell = goodInfo.get( "sell" );
+      if( relative ) { game.empire()->changePrice( gtype, prices ); }
+      else { game.empire()->setPrice( gtype, prices ); }
     }
   }
 }

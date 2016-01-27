@@ -19,34 +19,31 @@
 #define _CAESARIA_ADVISOR_INCLUDE_H_
 
 #include <string>
-
-namespace constants
-{
+#include "core/namedtype.hpp"
 
 namespace advisor
 {
 
-enum Type
-{
-  employers=0,
-  military,
-  empire,
-  ratings,
-  trading,
-  population,
-  health,
-  education,
-  entertainment,
-  religion,
-  finance,
-  main,
-  count
-};
+BEGIN_NAMEDTYPE(Type,none)
+APPEND_NAMEDTYPE(employers)
+APPEND_NAMEDTYPE(military)
+APPEND_NAMEDTYPE(empire)
+APPEND_NAMEDTYPE(ratings)
+APPEND_NAMEDTYPE(trading)
+APPEND_NAMEDTYPE(population)
+APPEND_NAMEDTYPE(health)
+APPEND_NAMEDTYPE(education)
+APPEND_NAMEDTYPE(entertainment)
+APPEND_NAMEDTYPE(religion)
+APPEND_NAMEDTYPE(finance)
+APPEND_NAMEDTYPE(main)
+APPEND_NAMEDTYPE(unknown)
+END_NAMEDTYPE(Type)
 
-Type findType( const std::string& advisorName );
+Type fromString( const std::string& name );
 
 } //end namespace advisor
 
-} //end namespace constants
+typedef advisor::Type Advisor;
 
 #endif  //_CAESARIA_ADVISOR_INCLUDE_H_

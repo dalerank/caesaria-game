@@ -20,6 +20,7 @@
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
+#include "game/advisor.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
@@ -31,62 +32,79 @@ class PushButton;
 class Menu : public Widget
 {
 public:
-  static Menu* create( Widget* parent, int id, PlayerCityPtr city );
+  typedef enum { leftSide, rightSide } Side;
+  static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
   virtual void minimize();
   virtual void maximize();
+  virtual void cancel();
+  virtual void setSide(Side side, const Point& offset);
 
   virtual void draw( gfx::Engine& engine );
-
+  virtual void setPosition(const Point& relativePosition);
   virtual bool onEvent(const NEvent& event);
 
   bool unselectAll();
+  Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
 
 signals public:
   Signal1<int>& onCreateConstruction();
+  Signal1<int>& onCreateObject();
   Signal0<>& onRemoveTool();
+  Signal0<>& onUndo();
+  Signal0<>& onSwitchAlarm();
+  Signal0<>& onMessagesShow();
   Signal0<>& onHide();
 
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  Menu( Widget* parent, int id, const Rect& rectangle );
+  struct Model;
+  struct Link;
+
+  virtual void _updateButtons();
+  virtual void _setModel(Model* model );
+  void _setChildGeometry(Widget* w, const Rect& r );
+  void _updateBuildOptions();
   void _createBuildMenu( int type, Widget* parent );
+  void _createLink( Link& config);
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
-                          const std::string& tooltip="" );
+                          const std::string& tooltip="" ,
+                          const Rect& rect=Rect());
 };
 
 class ExtentMenu : public Menu
 {
 public:
-  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city );
+  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   virtual bool onEvent(const NEvent& event);
-
   virtual void draw( gfx::Engine& engine );
 
   void toggleOverlayMenuVisible();
-
+  void setConstructorMode( bool enabled );
+  void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
+  Rect getMinimapRect() const;
+  ExtentMenu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city);
 
 slots public:
   void changeOverlay( int ovType );
+  void showInfo( int type );
 
 signals public:
   Signal1<int>& onSelectOverlayType();
   Signal0<>& onEmpireMapShow();
   Signal0<>& onAdvisorsWindowShow();
-  Signal0<>& onSwitchAlarm();
-  Signal0<>& onMessagesShow();
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-  ExtentMenu( Widget* parent, int id, const Rect& rectangle );
+  virtual void _updateButtons();
 };
 
 }//end namespace gui

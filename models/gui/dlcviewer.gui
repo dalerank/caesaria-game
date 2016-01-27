@@ -1,0 +1,4 @@
+{  
+  etxs : [ ".png", ".pdf", ".jpg", ".mp3", ".ogg" ]
+  exclude : [ ".", ".." ]
+}

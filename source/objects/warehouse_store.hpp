@@ -20,21 +20,19 @@
 #define _CAESARIA_WAREHOUSESTORE_HPP_INCLUDE_
 
 #include "warehouse.hpp"
-#include "game/enums.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
+#include "good/productmap.hpp"
 
 class WarehouseStore : public good::Store
 {
 public:
-  typedef std::map< good::Product, int > StockMap;
-
   WarehouseStore();
 
   void init(Warehouse &_warehouse);
-
   virtual int qty(const good::Product &goodType) const;
   virtual int qty() const;
   virtual int capacity() const;
+  virtual good::ProductMap details() const;
   virtual void setCapacity( const int maxcap);
   virtual void setCapacity(const good::Product& goodType, const int maxQty);
   virtual int capacity(const good::Product& goodType ) const;
@@ -43,16 +41,16 @@ public:
   virtual int getMaxStore(const good::Product goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID);
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID);
 
-  virtual void retrieve( good::Stock& stock, const int amount);
+  virtual void retrieve( good::Stock& stock, const int amounts);
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 
 private:
   Warehouse* _warehouse;
-  StockMap _capacities;
+  good::ProductMap _capacities;
 };
 
 #endif //_CAESARIA_WAREHOUSESTORE_HPP_INCLUDE_

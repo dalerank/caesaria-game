@@ -20,27 +20,28 @@
 #include "core/safetycast.hpp"
 #include "core/requirements.hpp"
   
-template<class T> class SmartPtr
+template<class T>
+class SmartPtr
 {
 protected:
   //bool managed;
   T *obj;
 public:
-  
+
   void deleteObject()
   {
     //check again
     if (obj==NULL) return;
-  
+
     //delete object
     delete obj;
     obj = 0;
   }
-  
+
   void dereferenceObject()
   {
     if (obj==0) return;
-     
+
     //check if last reference
     unsigned int lastRef = obj->rcount();
     obj->drop();
@@ -48,7 +49,7 @@ public:
     if ( lastRef == 1)
       obj = 0;
   }
-  
+
   void referenceObject(void *aVObj)
   {
     //convert to T
@@ -62,7 +63,7 @@ public:
 
     //reference new object
     obj = anObj;
-  
+
     //check again
     if( obj == 0 ) return;
 
@@ -71,9 +72,9 @@ public:
 
   void detachObject()   { obj = 0; }
   void attachObject(void * anObj) {    obj = (T*)anObj;   }
-  T* object()   {    return obj;  }
-  T* operator->() const   { return obj; }
-  
+  inline T* object() const { return obj;  }
+  inline T* operator->() const   { return obj; }
+
   SmartPtr()   { obj = 0;  }
 
   ~SmartPtr()  { dereferenceObject();  }
@@ -97,10 +98,10 @@ public:
     referenceObject(aPtr.obj);
   }
 
-  bool operator==(const SmartPtr<T> &aPtr) const   {    return (obj == aPtr.obj);  }
-  bool operator!=(const SmartPtr<T> &aPtr) const  {     return (obj != aPtr.obj);  }
-  bool operator<(const SmartPtr<T> &aPtr ) const  {    return (obj < aPtr.obj);  }
-  bool operator==(void *ptr) const  {    return ((void*)obj == ptr);  }
+  inline bool operator==(const SmartPtr<T> &aPtr) const   {    return (obj == aPtr.obj);  }
+  inline bool operator!=(const SmartPtr<T> &aPtr) const  {     return (obj != aPtr.obj);  }
+  inline bool operator<(const SmartPtr<T> &aPtr ) const  {    return (obj < aPtr.obj);  }
+  inline bool operator==(void *ptr) const  {    return ((void*)obj == ptr);  }
 
   template<class Src>
   SmartPtr& operator<<( SmartPtr<Src> ptr )
@@ -110,14 +111,33 @@ public:
     return *this;
   }
 
-  bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
-  T& operator[] (int index)  {    return (*obj)[index];  }
-  bool isNull() const  {    return obj == 0;  }
-  bool isValid() const   {    return obj != 0;  }
+  template<class Src>
+  inline bool equals( const SmartPtr<Src>& ptr ) const { return ((void*)obj == ptr.object()); }
+
+  template<class Dst>
+  SmartPtr<Dst> as() const
+  {
+    SmartPtr<Dst> ret( safety_cast<Dst*>( obj ) );
+    return ret;
+  }
+
+  template<class Dst>
+  bool is() const
+  {
+    return safety_cast<Dst*>( obj ) != 0;
+  }
+
+  inline bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
+  inline T& operator[] (int index)  {    return (*obj)[index];  }
+  inline bool isNull() const  {    return obj == 0;  }
+  inline bool isValid() const   {    return obj != 0;  }
 };
 
 template<class A, class B>
 inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ); }
+
+template<class A, typename... Args>
+inline SmartPtr<A> ptr_make(Args... args) { SmartPtr<A> ret( new A( args... ) ); ret->drop(); return ret; }
 
 template<class A, class B>
 inline bool is_kind_of( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ) != 0; }

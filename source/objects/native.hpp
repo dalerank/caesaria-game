@@ -23,11 +23,11 @@
 class NativeBuilding : public Building
 {
 public:
-  NativeBuilding( const TileOverlay::Type type, const Size& size );
+  NativeBuilding( const object::Type type, const Size& size );
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual bool canDestroy() const;
 };
 

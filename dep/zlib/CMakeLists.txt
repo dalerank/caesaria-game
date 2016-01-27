@@ -1,9 +1,37 @@
 project(zlib)
 
-file(GLOB ZLIB_HEADERS_LIST "*.h")
-file(GLOB ZLIB_SOURCES_LIST "*.c")
+set(ZLIB_HEADERS_LIST
+    crc32.h
+    deflate.h
+    gzguts.h
+    inffast.h
+    inffixed.h
+    inflate.h
+    inftrees.h
+    trees.h
+    zutil.h)
 
-add_library(${PROJECT_NAME} ${ZLIB_SOURCES_LIST})
+set(ZLIB_SOURCES_LIST
+    adler32.c
+    compress.c
+    crc32.c
+    deflate.c
+    gzclose.c
+    gzlib.c
+    gzread.c
+    gzwrite.c
+    inflate.c
+    infback.c
+    inftrees.c
+    inffast.c
+    trees.c
+    uncompr.c
+    zutil.c
+    zip.c
+    ioapi.c
+)
+
+add_library(${PROJECT_NAME} STATIC ${ZLIB_SOURCES_LIST})
 
 # Required on Unix OS family to be able to be linked into shared libraries.
 set_target_properties(${PROJECT_NAME}

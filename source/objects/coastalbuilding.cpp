@@ -13,21 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
-#include "core/foreach.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
+#include "core/variant_list.hpp"
 #include "constants.hpp"
 
-using namespace constants;
+using namespace direction;
 using namespace gfx;
 
 class CoastalFactory::Impl
@@ -38,7 +38,7 @@ public:
 
   bool isFlatCoast( const Tile& tile ) const
   {
-    int imgId = tile.originalImgId();
+    int imgId = tile.imgId();
     return (imgId >= 372 && imgId <= 387);
   }
 
@@ -46,12 +46,12 @@ public:
 };
 
 CoastalFactory::CoastalFactory(const good::Product consume, const good::Product produce,
-                               const TileOverlay::Type type, Size size) : Factory(consume, produce, type, size),
+                               const object::Type type, Size size) : Factory(consume, produce, type, size),
   _d( new Impl )
 {
 }
 
-bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
+bool CoastalFactory::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
@@ -59,28 +59,27 @@ bool CoastalFactory::canBuild( const CityAreaInfo& areaInfo ) const
 
   const_cast< CoastalFactory* >( this )->_setDirection( direction );
 
-  return (is_constructible && direction != noneDirection );
+  return (is_constructible && direction != direction::none );
 }
 
-bool CoastalFactory::build( const CityAreaInfo& info )
+bool CoastalFactory::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos ) );
 
-  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea area( info.city->tilemap(), info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
+  for( auto tile : area )
+    _d->saveTileInfo.push_back( tile::encode( *tile ) );
 
   return Factory::build( info );
 }
 
 void CoastalFactory::destroy()
 {
-  city::Helper helper( _city() );
-
-  TilesArray area = helper.getArea( this );
+  TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, area ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  for( auto tile : tiles ) { tile::decode( *tile, _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }
@@ -89,16 +88,16 @@ void CoastalFactory::save(VariantMap& stream) const
 {
   Factory::save( stream );
 
-  stream[ "direction" ] = (int)_d->direction;
-  stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
+  VARIANT_SAVE_ANY_D( stream, _d, direction )
+  VARIANT_SAVE_CLASS_D_LIST( stream, _d, saveTileInfo )
 }
 
 void CoastalFactory::load(const VariantMap& stream)
 {
   Factory::load( stream );
 
-  _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
-  _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+  VARIANT_LOAD_ENUM_D( _d, direction, stream )
+  VARIANT_LOAD_CLASS_D_AS_LIST( _d, saveTileInfo, stream )
 }
 
 void CoastalFactory::assignBoat(ShipPtr)
@@ -108,7 +107,6 @@ void CoastalFactory::assignBoat(ShipPtr)
 
 const Tile& CoastalFactory::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -120,7 +118,7 @@ const Tile& CoastalFactory::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 CoastalFactory::~CoastalFactory()
@@ -171,5 +169,5 @@ Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
     return east;
   }
 
-  return noneDirection;
+  return direction::none;
 }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
@@ -37,10 +37,16 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  /**
+   * @brief Calls when player press help button
+   */
   void _showHelp();
+  void _updateAdvice();
+  void _initUI();
+  void _showDetailInfo(Widget* widget);
+  void _moveCamera(Widget* widget);
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  PlayerCityPtr _city;
 };
 
 }

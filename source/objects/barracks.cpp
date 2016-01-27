@@ -19,28 +19,26 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::barracks, Barracks)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::barracks, Barracks)
 
 class Barracks::Impl
 {
 public:
-  good::SimpleStore store;
+  good::Storage store;
   bool notNeedSoldiers;
 };
 
-Barracks::Barracks() : TrainingBuilding( objects::barracks, Size( 3 ) ),
+Barracks::Barracks() : TrainingBuilding( object::barracks, Size( 3 ) ),
   _d( new Impl )
 {
   setMaximumWorkers(5);
-  setPicture( ResourceGroup::security, 17 );
+  _picture().load( ResourceGroup::security, 17 );
 
   _d->store.setCapacity( 1000 );
   _d->store.setCapacity( good::weapon, 1000 );
@@ -51,25 +49,22 @@ void Barracks::deliverTrainee()
 { 
   if( walkers().size() == 0 && _d->store.freeQty() > 0 )
   {
-    CartSupplierPtr walker = CartSupplier::create( _city() );
+    CartSupplierPtr walker = Walker::create<CartSupplier>( _city() );
     walker->send2city( this, good::weapon, 100 );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 
   if( _d->store.qty( good::weapon ) >= 100 )
   {
-    TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::soldier );
-    trainee->send2City( this, false );
+    auto traineeWalker = Walker::create<TraineeWalker>( _city(), walker::soldier );
+    traineeWalker->send2City( this, false );
 
-    if( !trainee->isDeleted() )
+    if( !traineeWalker->isDeleted() )
     {
       good::Stock delStock( good::weapon, 100 );
       _d->store.retrieve( delStock, 100 );
-      addWalker( trainee.object() );
+      addWalker( traineeWalker.object() );
       _d->notNeedSoldiers = false;
     }
     else
@@ -94,7 +89,7 @@ void Barracks::storeGoods(good::Stock& stock, const int amount)
 
 std::string Barracks::workersProblemDesc() const
 {
-  unsigned int pp = productivity();
+  math::Percent pp = productivity();
   unsigned int haveWeapon = _d->store.qty() >= _d->store.capacity() / 2;
   if( pp > 0  )
   {
@@ -137,14 +132,14 @@ void Barracks::save(VariantMap& stream) const
 {
   TrainingBuilding::save( stream );
 
-  stream[ "store" ] = _d->store.save();
-  VARIANT_SAVE_ANY_D( stream, _d, notNeedSoldiers );
+  VARIANT_SAVE_CLASS_D( stream, _d, store )
+  VARIANT_SAVE_ANY_D( stream, _d, notNeedSoldiers )
 }
 
 void Barracks::load(const VariantMap& stream)
 {
   TrainingBuilding::load( stream );
 
-  _d->store.load( stream.get( "store" ).toMap() );
-  VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream );
+  VARIANT_LOAD_CLASS_D( _d, store, stream )
+  VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream )
 }

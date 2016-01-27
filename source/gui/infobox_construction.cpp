@@ -20,9 +20,11 @@
 #include "game/settings.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
+#include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
+#include "events/playsound.hpp"
 
-using namespace constants;
+using namespace events;
 
 namespace gui
 {
@@ -31,10 +33,10 @@ namespace infobox
 {
 
 AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea )
-  : Simple( parent, rect, blackArea )
+  : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
-  _btnToggleWorking = 0;
+  _btnToggleWorking = nullptr;
 }
 
 AboutConstruction::~AboutConstruction() {}
@@ -60,18 +62,18 @@ bool AboutConstruction::onEvent(const NEvent& event)
   default: break;
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
-PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
+PushButton* AboutConstruction::_buttonToggleWorking() { return _btnToggleWorking; }
 
 void AboutConstruction::_setWorkingVisible(bool show)
 {
-  if( !_btnToggleWorking && _lbBlackFrameRef() )
+  if( !_btnToggleWorking && _lbBlackFrame() )
   {
-     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), Rect( 0, 0, 100, 25 ), "", -1, false, PushButton::blackBorderUp  );
-     _btnToggleWorking->setFont( Font::create( FONT_1 ) );
-     _btnToggleWorking->setPosition( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ) );
+     Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
+     _btnToggleWorking = &_lbBlackFrame()->add<PushButton>( btnRect, "", -1, false, PushButton::blackBorderUp  );
+     _btnToggleWorking->setFont( FONT_1 );
      _updateWorkingText();
 
      CONNECT( _btnToggleWorking, onClicked(), this, AboutConstruction::_resolveToggleWorking );
@@ -86,40 +88,46 @@ void AboutConstruction::_setWorkingVisible(bool show)
 void AboutConstruction::_setWorkingActive(bool working)
 {
   if( _btnToggleWorking )
-    _btnToggleWorking->setText( working ? "Working" : "Not working");
+    _btnToggleWorking->setText( working ? _("##abwrk_working##") : _("##abwrk_not_working##") );
 }
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
-  _setWorkingActive( working.isValid() ? working->isActive() : false );
+  auto workingBuilding = base().as<WorkingBuilding>();
+  _setWorkingActive( workingBuilding.isValid() ? workingBuilding->isActive() : false );
 }
 
 void AboutConstruction::_resolveToggleWorking()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
-  if( working.isValid() )
+  auto workingBuilding = base().as<WorkingBuilding>();
+  if( workingBuilding.isValid() )
   {
-    working->setActive( !working->isActive() );
-    _setWorkingActive( working->isActive() );
+    workingBuilding->setActive( !workingBuilding->isActive() );
+    _setWorkingActive( workingBuilding->isActive() );
+  }
+}
+
+void AboutConstruction::_baseAssigned()
+{
+  if( base().isValid() )
+  {
+    events::dispatch<PlaySound>( "bmsel_" + base()->info().typeName(), 1, 100, audio::infobox, true );
   }
 }
 
 ConstructionPtr AboutConstruction::base() const { return _construction; }
-void AboutConstruction::setBase(ConstructionPtr construction) { _construction = construction; }
 
 void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
-    events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
-                                                           ? events::ShowTileInfo::next
-                                                           : events::ShowTileInfo::prew );
+    events::dispatch<ShowTileInfo>( base()->pos(), flag == KEY_PERIOD
+                                    ? ShowTileInfo::next
+                                    : ShowTileInfo::prew );
     deleteLater();
-    e->dispatch();
   }
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

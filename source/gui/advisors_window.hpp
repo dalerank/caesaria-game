@@ -19,7 +19,7 @@
 #define __CAESARIA_ADVISORSWINDOW_H_INCLUDED__
 
 #include "window.hpp"
-#include "game/enums.hpp"
+#include "core/signals.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
@@ -30,26 +30,56 @@ class PushButton;
 namespace advisorwnd
 {
 
-class AWindow : public Window
+class ParlorModel;
+class Parlor : public Window
 {
 public:
-  static AWindow* create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city  );
+  struct Item
+  {
+    Advisor type;
+    gfx::ImgID pic;
+    std::string tooltip;
+  };
+  typedef std::vector<Item> Items;
+
+  static Parlor* create(Widget* parent, int id, const Advisor type, ParlorModel* model);
 
   // draw on screen
   virtual void draw( gfx::Engine& engine );
-
-  void showAdvisor( const constants::advisor::Type type );
-
   virtual bool onEvent(const NEvent& event);
-protected:
-  class Impl;
-  ScopedPtr< Impl > _d;
 
-  AWindow( Widget* parent, int id );
-  PushButton* addButton( const int pos, const int picId, std::string="" );
+  void showAdvisor(Advisor type);
+  void setModel( ParlorModel* model );
+
+public signals:
+  Signal1<Advisor> onSwitchAdvisor;
+
+protected:
+  ScopedPtr<ParlorModel> _model;
+
+  Parlor( Widget* parent, int id );
+  PushButton* _addButton(Advisor advisorName, int picId, std::string="" );
+  void _initButtons();
 };
 
-}
+class ParlorModel
+{
+public:
+  ParlorModel( PlayerCityPtr city );
+  void setParent( Widget* parlor );
+  Parlor::Items items();
+
+public slots:
+  void switchAdvisor( Advisor advisor );
+  void sendMoney2City( int money );
+  void showEmpireMapWindow();
+
+protected:
+  __DECLARE_IMPL(ParlorModel)
+};
+
+
+}//end namespace advisorwnd
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISORSWINDOW_H_INCLUDED__

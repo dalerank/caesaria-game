@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curl", "curl\curl.vcxproj", "{510B352D-6F80-4C0B-BA4B-D6C6CA574E2E}"
 EndProject
@@ -40,16 +40,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CaesarIA-game", "CaesarIA-g
 		{065BBBE3-5286-4B4A-901B-76DC180ED3E3} = {065BBBE3-5286-4B4A-901B-76DC180ED3E3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{84F8683B-DC17-4A62-9485-F3AD3673EEA0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6522D808-5CFE-4863-910F-93E05639D6AD} = {6522D808-5CFE-4863-910F-93E05639D6AD}
-		{C264ABD3-DEBD-40C2-94F0-4DA7928F8986} = {C264ABD3-DEBD-40C2-94F0-4DA7928F8986}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mixer", "mixer\mixer.vcxproj", "{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8ADCEC8A-B4C0-411B-BEA9-DE6678364376}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl2mini", "sdl2mini\sdl2mini.vcxproj", "{B86137AB-1CAB-48D2-B562-75C4C609F2DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,27 +232,32 @@ Global
 		{6522D808-5CFE-4863-910F-93E05639D6AD}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
 		{6522D808-5CFE-4863-910F-93E05639D6AD}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
 		{6522D808-5CFE-4863-910F-93E05639D6AD}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Debug|Win32.Build.0 = Debug|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Debug|x64.ActiveCfg = Debug|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Debug|x64.Build.0 = Debug|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Release|Win32.ActiveCfg = Release|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Release|Win32.Build.0 = Release|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Release|x64.ActiveCfg = Release|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.Release|x64.Build.0 = Release|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
-		{84F8683B-DC17-4A62-9485-F3AD3673EEA0}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Debug|Win32.Build.0 = Debug|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Debug|x64.ActiveCfg = Debug|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.MinSizeRel|x64.ActiveCfg = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Release|Win32.ActiveCfg = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Release|Win32.Build.0 = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.Release|x64.ActiveCfg = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{D88FBF2D-6FB2-42CE-80E0-EB092C1A35CA}.RelWithDebInfo|x64.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Debug|Win32.Build.0 = Debug|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Debug|x64.ActiveCfg = Debug|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.MinSizeRel|x64.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Release|Win32.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Release|Win32.Build.0 = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.Release|x64.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{B86137AB-1CAB-48D2-B562-75C4C609F2DA}.RelWithDebInfo|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

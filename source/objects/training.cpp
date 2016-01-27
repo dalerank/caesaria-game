@@ -30,13 +30,12 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::gladiatorSchool, GladiatorSchool)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::lionsNursery, LionsNursery)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::gladiatorSchool, GladiatorSchool)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::lionsNursery, LionsNursery)
 
-TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
+TrainingBuilding::TrainingBuilding(const object::Type type, const Size& size )
   : WorkingBuilding( type, size )
 {
    _trainingDelay = DateTime::daysInWeek;
@@ -49,7 +48,7 @@ void TrainingBuilding::timeStep(const unsigned long time)
    if( _lastSendDate.daysTo( game::Date::current() ) > _trainingDelay )
    {
      _lastSendDate = game::Date::current();
-      deliverTrainee();
+     deliverTrainee();
    }
 }
 
@@ -68,15 +67,15 @@ void TrainingBuilding::load( const VariantMap& stream )
 }
 
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( objects::gladiatorSchool, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size(3))
 {
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::gladiator );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::gladiator );
   trainee->send2City( this );
 }
 
@@ -85,9 +84,9 @@ void GladiatorSchool::timeStep(const unsigned long time)
   TrainingBuilding::timeStep( time );
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( objects::lionsNursery, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size(3) )
 {
-   _fgPicturesRef().resize(1);
+   _fgPictures().resize(1);
 }
 
 void LionsNursery::timeStep(const unsigned long time)
@@ -98,11 +97,8 @@ void LionsNursery::timeStep(const unsigned long time)
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  LionTamerPtr tamer = LionTamer::create( _city() );
+  auto tamer = Walker::create<LionTamer>( _city() );
   tamer->send2City( this, true );
 
-  if( !tamer->isDeleted() )
-  {
-    addWalker( tamer.object() );
-  }
+  addWalker( tamer.object() );
 }

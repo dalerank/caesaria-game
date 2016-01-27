@@ -13,44 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012- Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "river_wave.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-RiverWavePtr RiverWave::create(PlayerCityPtr city)
-{
-  RiverWavePtr ret( new RiverWave( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 RiverWave::RiverWave(PlayerCityPtr city )
-  : Walker( city )
+  : Walker( city, walker::riverWave )
 {
   _delay = math::random( 100 );
-  _setType( walker::riverWave );
   _animation.load( ResourceGroup::sprites, 109, 5 );
-  _animation.setDelay( 4 );
+  _animation.setDelay( Animation::slow );
   _animation.setOffset( Point( 0, 0) );
   _animation.start( false );
-
-  setName( _("##river_wave##") );
 
   setFlag( vividly, false );
 }
 
-void RiverWave::send2City(const TilePos &location )
+void RiverWave::send2City(const TilePos& location )
 {
   setPos( location );
-  _city()->addWalker( this );
+  attach();
 }
 
 void RiverWave::timeStep(const unsigned long time)
@@ -76,5 +65,11 @@ RiverWave::~RiverWave() {}
 void RiverWave::save( VariantMap& stream ) const
 {
   Walker::save( stream );
+}
+
+void RiverWave::initialize(const VariantMap& options)
+{
+  Walker::initialize( options );
+  setName( _("##river_wave##") );
 }
 

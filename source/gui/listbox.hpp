@@ -41,15 +41,20 @@ public:
   typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
-  ListBox(Widget* parent,
+  ListBox( Widget* parent,
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
+           bool drawBack=false, bool mos=false);
+
+  //! constructor
+  ListBox( Widget* parent,
+           const RectF& rectangle, int id=-1, bool clip=true,
            bool drawBack=false, bool mos=false);
 
   //! destructor
   virtual ~ListBox();
 
   //! returns amount of list items
-  virtual unsigned int itemCount() const;
+  virtual unsigned int itemsCount() const;
 
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
   virtual ListBoxItem& item(unsigned int id);
@@ -61,6 +66,9 @@ public:
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
+
+  virtual void setSelectedTag(const Variant& tag);
+  virtual void setSelectedWithData(const std::string& name, const Variant& data);
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(const std::string &item);
@@ -151,12 +159,12 @@ public:
   virtual void setupUI(const VariantMap &ui);
 
 signals public:
-  Signal1<std::string>& onItemSelectedAgain();
+  Signal1<const ListBoxItem&>& onItemSelectedAgain();
   Signal1<const ListBoxItem&>& onItemSelected();
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
   virtual void _drawItemText(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
   virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
@@ -165,7 +173,8 @@ protected:
 private:
   void _selectNew(int ypos);
   void _recalculateScrollPos();
-
+  void _updateBackground(int scrollbarWidth);
+  void _recalculateItemHeight( const Font& defaulFont, int height );
   void _indexChanged( unsigned int eventType );
   ElementState _getCurrentItemState( unsigned int index, bool hl );
   Font _getCurrentItemFont( const ListBoxItem& item, bool selected );

@@ -2,14 +2,14 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := application
+LOCAL_MODULE := main
 
-SDL_PATH       := ../../libs/SDL
-SDL_MIXER_PATH := ../../libs/SDL_mixer
-SDL_NET_PATH   := ../../libs/SDL_net
 STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
 DEP_PATH := ../dep
+SDL_PATH := $(LOCAL_PATH)/$(DEP_PATH)/sdl2mini
+SDL_MIXER_PATH := $(DEP_PATH)/mixer
+SDL_NET_PATH := $(DEP_PATH)/SDL_net
 
 LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(SDL_PATH)/include \
@@ -44,11 +44,15 @@ LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,, \
   $(wildcard $(GAME_PATH)/religion/*.cpp) \
   $(wildcard $(GAME_PATH)/scene/*.cpp) \
   $(wildcard $(GAME_PATH)/sound/*.cpp) \
-  $(wildcard $(GAME_PATH)/game/*.cpp))
+  $(wildcard $(GAME_PATH)/game/*.cpp) \
+  $(wildcard $(GAME_PATH)/thread/*.cpp) \
+  $(wildcard $(LOCAL_PATH)/$(STEAM_PATH)/*.cpp) \
+  $(wildcard $(GAME_PATH)/layers/*.cpp) \
+  $(wildcard $(SDL_PATH)/src/main/android/SDL_android_main.c) )
   
 LOCAL_SHARED_LIBRARIES := SDL2 SDL2_mixer SDL2_net sdl_ttf pnggo lzma bzip2 aes smk
 LOCAL_CPP_FEATURES += exceptions
 LOCAL_CPP_FEATURES += rtti
-LOCAL_LDLIBS := -lGLESv1_CM -llog
+LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog
 
 include $(BUILD_SHARED_LIBRARY)

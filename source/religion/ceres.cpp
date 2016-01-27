@@ -21,9 +21,9 @@
 #include "objects/farm.hpp"
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -32,69 +32,63 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Ceres::create()
-{
-  DivinityPtr ret( new Ceres() );
-  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Ceres::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Ceres::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(ceres)
+                    : SML_TEMPLE_TYPE(ceres);
+}
+
+Ceres::Ceres()
+  : RomeDivinity( RomeDivinity::Ceres )
+{
+
+}
+
 void Ceres::_doWrath( PlayerCityPtr city )
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
-                                                            _("##wrath_of_ceres_description##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Ceres.smk");
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##wrath_of_ceres_title##"),
+                                         _("##wrath_of_ceres_description##"),
+                                         true,
+                                         "god_ceres");
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach( farm, farms )
+  for( auto farm : farms )
   {
-    (*farm)->updateProgress( -(*farm)->progress() );
+    FactoryProgressUpdater::assignTo( farm.as<Factory>(), -8, DateTime::weekInMonth * DateTime::monthsInYear );
   }
 }
 
 void Ceres::_doBlessing(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_ceres_title##"),
-                                                            _("##blessing_of_ceres_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##blessing_of_ceres_title##"),
+                                         _("##blessing_of_ceres_description##") );
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach( farm, farms )
+  for( auto farm : farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
-  }
-
-  foreach(farm, farms)
-  {
-    (*farm)->updateProgress( 100.f -  (*farm)->progress() );
+    farm->updateProgress( 100.f -  farm->progress() );
+    FactoryProgressUpdater::assignTo( farm.as<Factory>(), 5, game::Date::days2ticks( 60 ) );
   }
 }
 
 void Ceres::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_ceres_title##"),
-                                                            _("##smallcurse_of_ceres_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##smallcurse_of_ceres_title##"),
+                                         _("##smallcurse_of_ceres_description##") );
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach( farm, farms )
+  for( auto farm : farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -2, DateTime::weekInMonth * DateTime::monthsInYear );
+    farm->updateProgress( -farm->progress() );
   }
 }
 

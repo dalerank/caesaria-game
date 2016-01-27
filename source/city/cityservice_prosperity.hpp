@@ -19,18 +19,19 @@
 #define __CAESARIA_CITYSERVICE_PROSPERITY_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "config.hpp"
 
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(ProsperityRating)
+
 class ProsperityRating : public Srvc
 {
 public:
-  typedef enum { cmHousesCap, cmHaveProfit, cmWorkless,
-                 cmWorkersSalary, cmChange, cmPercentPlebs } Mark;
-  static SrvcPtr create(PlayerCityPtr city);
+  typedef enum { housesCap, haveProfit, worklessPercent,
+                 workersSalary, changeValue, plebsPercent } Mark;
 
   virtual void timeStep( const unsigned int time );
   int value() const;
@@ -42,14 +43,13 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 
-private:
   ProsperityRating(PlayerCityPtr city);
+private:
+  void _checkStats();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<ProsperityRating> ProsperityRatingPtr;
 
 }//end namespace city
 

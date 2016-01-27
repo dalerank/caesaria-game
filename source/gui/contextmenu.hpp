@@ -1,20 +1,22 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
-#define __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
+#ifndef __CAESARIA_CONTEXT_MENU_H_INCLUDED__
+#define __CAESARIA_CONTEXT_MENU_H_INCLUDED__
 
 #include "widget.hpp"
 #include "core/signals.hpp"
@@ -47,7 +49,7 @@ public:
 
   //! constructor
   ContextMenu( Widget* parent, const Rect& rectangle, int id=-1,
-                     bool getFocus = true, bool allowFocus = true);
+               bool getFocus = true, bool allowFocus = true);
 
   //! destructor
   virtual ~ContextMenu();
@@ -111,12 +113,6 @@ public:
   //! When an eventparent is set it receives events instead of the usual parent element
   virtual void setEventParent( Widget *parent );
 
-  //! Writes attributes of the element.
-  virtual void save( VariantMap& out ) const;
-
-  //! Reads attributes of the element
-  virtual void load( const VariantMap& in );
-
   virtual void setAllowFocus( bool enabled );
 
   void beforeDraw( gfx::Engine& painter );
@@ -130,7 +126,6 @@ signals public:
 	
 protected:
   void _setHovered( int index );
-
   void _closeAllSubMenus();
   bool _hasOpenSubMenu() const;
 
@@ -152,5 +147,5 @@ protected:
 };
 
 }//end namespace gui
-#endif // __OPENCAESAR3_CONTEXT_MENU_H_INCLUDED__
+#endif // __CAESARIA_CONTEXT_MENU_H_INCLUDED__
 

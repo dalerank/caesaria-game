@@ -17,9 +17,10 @@
 
 #include "goodcaravan.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 
@@ -31,7 +32,7 @@ class GoodCaravan::Impl
 public:
   CityPtr base;
   std::string destination;
-  good::SimpleStore store;
+  good::Storage store;
 
   VariantMap options;
 };
@@ -48,7 +49,8 @@ void GoodCaravan::sendTo(ObjectPtr obj)
 {
   _d->destination = "";
 
-  if( _d->base.isValid() && obj.isValid() )
+  bool baseAndDestinationCorrect = _d->base.isValid() && obj.isValid();
+  if( baseAndDestinationCorrect )
   {
     _d->destination = obj->name();
     _findWay( _d->base->location(), obj->location() );
@@ -59,7 +61,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
     }
     else
     {
-      Logger::warning( "GoodCaravan: cannot find way from %s to %s", _d->base->name().c_str(), obj->name().c_str() );
+      Logger::warning( "GoodCaravan: cannot find way from {0} to {1}", _d->base->name(), obj->name() );
     }
   }
   else
@@ -69,13 +71,9 @@ void GoodCaravan::sendTo(ObjectPtr obj)
   }
 }
 
-void GoodCaravan::sendTo(CityPtr obj)
-{
-  sendTo( ptr_cast<Object>( obj ) );
-}
-
+void GoodCaravan::sendTo(CityPtr obj) { sendTo( obj.as<Object>() ); }
 good::Store& GoodCaravan::store() { return _d->store; }
-std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
+std::string GoodCaravan::type() const { return TEXT(GoodCaravan); }
 
 void GoodCaravan::timeStep(unsigned int time)
 {
@@ -86,9 +84,9 @@ void GoodCaravan::save(VariantMap& stream) const
 {
   MovableObject::save( stream );
 
-  stream[ "store" ] = _d->store.save();
-  stream[ "base"  ] = Variant( _d->base.isValid() ? _d->base->name() : "" );
-  stream[ "destination" ] = Variant( _d->destination );
+  VARIANT_SAVE_CLASS_D( stream, _d, store )
+  stream[ "base"  ] = Variant( utils::objNameOrDefault( _d->base ) );
+  VARIANT_SAVE_STR_D( stream, _d, destination )
 }
 
 void GoodCaravan::load(const VariantMap& stream)
@@ -96,9 +94,11 @@ void GoodCaravan::load(const VariantMap& stream)
   MovableObject::load( stream );
 
   _d->options = stream;
-  _d->store.load( stream.get( "store").toMap() );
   _d->base = empire()->findCity( stream.get( "base" ).toString() );
-  _d->destination = stream.get( "destination" ).toString();
+  Logger::warningIf( _d->base.isNull(), "!!! WARNING: GoodCaravan::load base not exists" );
+
+  VARIANT_LOAD_CLASS_D( _d, store, stream )
+  VARIANT_LOAD_STR_D( _d, destination, stream )
 }
 
 void GoodCaravan::_reachedWay()
@@ -115,12 +115,12 @@ GoodCaravan::GoodCaravan( CityPtr city )
  : MovableObject( city->empire() ), _d( new Impl )
 {
   _d->base = city;
-  _d->store.setCapacity( 10000 );
-  _d->store.setCapacity( good::goodCount, 10000 );
+  _d->store.setCapacity( defaultCapacity );
+  _d->store.setCapacity( good::any(), defaultCapacity );
 
-  setSpeed( 3.f );
+  setSpeed( deafaultSpeed );
 
-  setPicture( gfx::Picture::load( ResourceGroup::panelBackground, 108 ) );
+  setPicture( gfx::Picture( gui::rc.panel, 108 ) );
 }
 
-}
+}//end namespace world

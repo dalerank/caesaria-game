@@ -8,19 +8,21 @@
   adviserEnabled : true
   fishPlaceEnabled : true
   climate : 0
+  preview.title : "##valentia_preview_title##"
   preview.text : "##valentia_preview_mission##"
   preview.image : ""
 	
   win :
   {
     population : 10000
+    name : "n2_valentia"
     culture : 70
     prosperity : 65
     peace : 60
     favour : 60
     finishDate : "150.01.01"
     next : ":/missions/mission9.briefing"
-    title : "##win_praetor_title##"
+    title : "##consul##"
     win.text : "##valencia_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -34,8 +36,7 @@
     cities :
     {
       "Carthago Nova" : {
-        location : [ 220, 760 ]
-        romecity : true
+        nation : "carthaginian"
         sea : true
         land : true
         available : true
@@ -44,11 +45,10 @@
       }
 
       Carthago : {
-        location : [ 640, 760 ]
+        nation : "carthaginian"
 
-        sea : true
-        land : true
-        distant : true
+        sea : false
+        land : false
         available : true
 
         sells : { weapons : 25, furniture : 25 }
@@ -56,11 +56,10 @@
       }
 
       Tingis : {
-        location : [ 120, 840 ]
+        nation : "carthaginian"
 
         sea : true
         land : true
-        distant : true
         available : true
 
         sells : { marble : 15 }
@@ -239,7 +238,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -266,7 +265,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -293,7 +292,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -320,7 +319,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -347,7 +346,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -374,7 +373,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -401,7 +400,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -428,7 +427,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -455,7 +454,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -482,7 +481,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -526,9 +525,8 @@
       granery : true
       warehouse : true
       senate : true
-      forum : false
       garden : true
-
+      roadBlock : true
       prefecture : true
       small_ceres_temple : true
       small_venus_temple : true

@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
 #define _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
@@ -34,23 +33,37 @@ namespace citizen
 {
 
 // Simple info box with static text on plain background
-class AboutPeople : public Simple
+class AboutPeople : public Infobox
 {
 public:
   AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);
   virtual ~AboutPeople();
+  virtual void draw(gfx::Engine &engine);
 
 protected:
+  AboutPeople( Widget* parent, const Rect& window, const Rect& blackArea );
+  const WalkerList& _walkers() const;
+
   void _setWalker(WalkerPtr walker);
   void _updateTitle();
+  void _checkEnemy(WalkerPtr walker, bool& found);
+  void _checkUnvividly(WalkerPtr walker, bool& found);
+  void _checkAnimal(WalkerPtr walker, bool& found);
+  void _checkMerchant(WalkerPtr walker, bool& found);
+  void _checkDefault(WalkerPtr walker, bool& found);
   void _updateNeighbors();
+  void _init(PlayerCityPtr city , const TilePos &pos, const std::string& model );
+  virtual void _updateExtInfo();
+  Label* _lbThinks();
+
+private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace citizen
 
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_

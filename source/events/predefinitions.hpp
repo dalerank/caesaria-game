@@ -26,6 +26,13 @@ namespace events
 
 PREDEFINE_CLASS_SMARTPOINTER(GameEvent)
 
+template<typename Class, typename... Args>
+void dispatch( const Args & ... args)
+{
+  auto event = Class::create( args... );
+  event->dispatch();
 }
 
-#endif //__OPENCAESAR3_EVENTS_PREDEFINITIONS_H_INCLUDED__
+}//end namespace events
+
+#endif //__CAESARIA_EVENTS_PREDEFINITIONS_H_INCLUDED__

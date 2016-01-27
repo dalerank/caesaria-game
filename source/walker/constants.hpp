@@ -18,15 +18,12 @@
 #ifndef __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
 #define __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
 
-namespace constants
-{
+#include "core/namedtype.hpp"
 
 namespace walker
 {
 
-enum Type
-{
-  unknown=0,
+BEGIN_NAMEDTYPE(Type,unknown),
   immigrant,
   emigrant,
   soldier,
@@ -61,7 +58,7 @@ enum Type
   romeGuard,
   lion,
   spear,  //34
-  fishPlace,
+  fishPlace, //35
   seaMerchant,
   scholar,
   librarian,
@@ -86,19 +83,21 @@ enum Type
   indigeneRioter,
   indigene,
   missioner,
-  zebra,
-  riverWave,
+  zebra,//60
+  riverWave,//61
   supplier,
   circusCharioter,
   docker,
   gladiatorRiot,
   merchantCamel,
+  house_plague,
+  trigger,
   all = 0xff,
   any = all
-};
+END_NAMEDTYPE(Type)
+
+class Info;
 
 } //end namespace walker
-
-} //end namespace constants
 
 #endif //__CAESARIA_WALKER_CONSTANTS_H_INCLUDED__

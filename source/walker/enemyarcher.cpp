@@ -21,6 +21,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -38,9 +39,7 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
+REGISTER_CLASS_IN_WALKERFACTORY( walker::etruscanArcher, EnemyArcher )
 
 EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
   : EnemySoldier( city, type )
@@ -51,7 +50,7 @@ EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
 
 void EnemyArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), p );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }
@@ -80,7 +79,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       WalkerPtr p = enemies.front();
       turn( p->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         _fire( p->pos() );
         _updateAnimation( time+1 );
@@ -95,16 +94,15 @@ void EnemyArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    ConstructionPtr building = _findContructionsInRange( attackDistance() ).firstOrEmpty();
 
-    if( !constructions.empty() )
+    if( building.isValid() )
     {
-      ConstructionPtr b = constructions.front();
-      turn( b->pos() );
+      turn( building->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
-        _fire( b->pos() );
+        _fire( building->pos() );
         _updateAnimation( time+1 );
       }
     }
@@ -116,15 +114,6 @@ void EnemyArcher::timeStep(const unsigned long time)
 
   default: break;
   } // end switch( _d->action )
-}
-
-EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, constants::walker::Type type )
-{
-  EnemyArcherPtr ret( new EnemyArcher( city, type ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void EnemyArcher::load( const VariantMap& stream )

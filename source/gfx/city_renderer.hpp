@@ -35,7 +35,8 @@ public:
   CityRenderer();
   virtual ~CityRenderer();
 
-  void initialize(PlayerCityPtr city, Engine* engine, gui::Ui *guienv);
+  void initialize(PlayerCityPtr city, Engine* engine, gui::Ui *guienv,
+                  bool oldGraphic=false);
 
   Camera* camera();
 
@@ -51,13 +52,13 @@ public:
 
   void animate( unsigned int time );
 
-  void addLayer( layer::LayerPtr layer );
-  layer::LayerPtr currentLayer() const;
+  void addLayer( SmartPtr<citylayer::Layer> layer );
+  SmartPtr<citylayer::Layer> currentLayer() const;
+  SmartPtr<citylayer::Layer> getLayer(int type) const;
   void setLayer( int layertype );
   int  layerType() const;
 
-  TilePos screen2tilepos( Point point ) const;
-
+  TilePos screen2tilepos(const Point &point ) const;
   void setViewport( const Size& size );
 
 public signals:

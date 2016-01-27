@@ -27,7 +27,7 @@ class ChangeBuildingOptions : public GameEvent
 public:
   static GameEventPtr create();
 
-  virtual void load(const VariantMap &);
+  virtual void load(const VariantMap& );
   virtual VariantMap save() const;
 
 protected:
@@ -38,6 +38,6 @@ private:
   VariantMap _vars;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_CHANGEBUILDINGOPTIONS_H_INCLUDE_

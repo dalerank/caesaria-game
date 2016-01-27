@@ -18,11 +18,10 @@
 
 #include "core/utils.hpp"
 #include "vfs/path.hpp"
+#include "core/platform_specific.hpp"
 
 // Platform-specific Sleep(int msec) definition
-#ifdef CAESARIA_PLATFORM_WIN
-	#include <windows.h>
-#else
+#ifdef GAME_PLATFORM_UNIX
 	// Linux doesn't know Sleep(), add a substitute def
 	#include <unistd.h>
 	#define Sleep(x) usleep(static_cast<int>(1000 * (x)))
@@ -36,27 +35,12 @@ namespace updater
  */
 class Util
 {
+  static const std::size_t KbBts = 1024;
+  static const std::size_t MbBts = 1024 * 1024;
+  static const std::size_t GbBts = 1024 * 1024 * 1024;
 public:
 	// Formats the given number in bytes/kB/MB/GB
-  static std::string getHumanReadableBytes(std::size_t size)
-  {
-    if (size > 1024*1024*1024)
-    {
-      return utils::format( 0xff, "%0.2f GB", size / (1024*1024*1024.f) );
-    }
-    else if (size > 1024*1024)
-    {
-      return  utils::format( 0xff, "%0.1f MB", size / (1024*1024.f) );
-    }
-    else if (size > 1024)
-    {
-      return  utils::format( 0xff, "%0.0f kB", size / 1024.f );
-    }
-    else
-    {
-      return  utils::format( 0xff, "%d bytes", size);
-    }
-  }
+  static std::string getHumanReadableBytes(std::size_t size);
 
   static void Wait(int millisecs)
   {

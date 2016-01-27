@@ -17,6 +17,8 @@
 #define _CAESARIA_TILESARRAY_INCLUDE_H_
 
 #include "tile.hpp"
+#include "core/tilepos_array.hpp"
+#include "core/position_array.hpp"
 
 #include <vector>
 #include <cstring>
@@ -27,27 +29,57 @@ namespace gfx
 class TilesArray : public std::vector<Tile*>
 {
 public:
-  bool contain( TilePos tilePos ) const;
+  struct Corners
+  {
+    TilePos leftup;
+    TilePos leftdown;
+    TilePos rightdown;
+    TilePos rightup;
+  };
+
+  bool contain( const TilePos& tilePos ) const;
+  bool contain( Tile* a ) const;
+  Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
   TilesArray( const TilesArray& a );
 
-  TilePos leftUpCorner() const;
+  Corners corners() const;
 
+  TilePos leftUpCorner() const;
   TilePos rightDownCorner() const;
 
   TilesArray& operator=(const TilesArray& a);
 
   TilesArray& append( const TilesArray& a );
+  TilesArray& append( Tile* a );
+  bool appendOnce( Tile* a );
 
-  TilesArray walkableTiles( bool alllands=false ) const;
+  TilesArray walkables( bool alllands=false ) const;
+  TilesArray select( Tile::Type flag ) const;
+  TilesArray select( Tile::Param param ) const;
 
-  TilesArray& remove(const TilePos &pos );
+  TilesArray terrains() const;
+  TilesArray masters() const;
+  TilesArray children( Tile* master ) const;
+  TilesArray waters() const;
 
-  TileOverlayList overlays() const;
+  TilesArray& remove(const TilePos& pos );
+  PointsArray mappositions() const;
+  Locations locations() const;
+
+  OverlayList overlays() const;
+
+  template<class T>
+  SmartList<T> overlays() const { return overlays().select<T>(); }
+
+  void pop_front();
 
   Tile* random() const;
+
+  template< class T >
+  SmartList<T> overlays() { return overlays().select<T>(); }
 };
 
 }//end namespace

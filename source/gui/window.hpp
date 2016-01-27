@@ -27,50 +27,49 @@ namespace gui
 class Window : public Widget
 {
 public:
-	typedef enum { buttonClose=0, buttonMin, buttonMax, buttonCount } ButtonName;
+  typedef enum { buttonClose=0, buttonMin, buttonMax, buttonCount } ButtonName;
   typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
   typedef enum { bgNone, bgWhiteFrame } BackgroundType;
-	//! constructor
+  //! constructor
   Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1, BackgroundType style=bgWhiteFrame );
 
-	//! destructor
-	virtual ~Window();
+  //! destructor
+  virtual ~Window();
 
-	//! called if an event happened.
-	virtual bool onEvent(const NEvent& event);
+  //! called if an event happened.
+  virtual bool onEvent(const NEvent& event);
 
-	//! draws the element and its children
-	virtual void draw( gfx::Engine& painter );
+  //! draws the element and its children
+  virtual void draw( gfx::Engine& painter );
 
-	//! Returns pointer to the close button
-	virtual PushButton* button( ButtonName btn ) const;
+  //! Returns pointer to the close button
+  virtual PushButton* button( ButtonName btn ) const;
 
-	//!
-	virtual void beforeDraw(gfx::Engine &painter);
+  //!
+  virtual void beforeDraw(gfx::Engine &painter);
 
-	//! Set if the window background will be drawn
-	virtual void setBackgroundVisible(bool draw);
+  //! Set if the window background will be drawn
+  virtual void setBackgroundVisible(bool draw);
 
-	//! Get if the window background will be drawn
-	virtual bool backgroundVisible() const;
+  //! Get if the window background will be drawn
+  virtual bool backgroundVisible() const;
 
-	//! Set if the window titlebar will be drawn
-	//! Note: If the background is not drawn, then the titlebar is automatically also not drawn
-	virtual void setHeaderVisible(bool draw);
+  //! Set if the window titlebar will be drawn
+  //! Note: If the background is not drawn, then the titlebar is automatically also not drawn
+  virtual void setTitleVisible(bool draw);
 
-	//! Get if the window titlebar will be drawn
-	virtual bool headerVisible() const;
+  //! Get if the window titlebar will be drawn
+  virtual bool titleVisible() const;
 
-	virtual void setBackground( gfx::Picture texture );
+  virtual void setBackground( gfx::Picture texture );
   virtual void setBackground( BackgroundType type );
 
-	virtual gfx::Picture background() const;
+  virtual gfx::Picture background() const;
 
-	virtual Rect clientRect() const;
+  virtual Rect clientRect() const;
+  virtual void setModal();
 
-	virtual void setModal();
-
-	void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( FlagName flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 
@@ -79,17 +78,25 @@ public:
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setText( const std::string& text );
+  virtual void setTitleRect( const Rect& rect );
 
 protected:
-	void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
-	void _init();
-  virtual void _resizeEvent();
+  void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
+  void _init();
+  virtual void _finalizeResize();
+  virtual void _updateBackground();
 
 private:
-	class Impl;
-	ScopedPtr<Impl> _d;
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
+class SimpleWindow : public Window
+{
+public:
+  SimpleWindow(Widget* parent, const Rect& rect, const std::string& title="", const std::string& ui="");
 };
 
 }//end namespace gui
 
-#endif
+#endif //_CAESARIA_WINDOW_H_INCLUDE_

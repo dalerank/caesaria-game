@@ -23,7 +23,7 @@
     land : true
     
     resources : [ "wheat", "fruit", "olive", "fish", "clay" ] 
-	}
+  }
   
   Londinium : {
     location : [ 760, 420 ]
@@ -36,7 +36,7 @@
                   
     sells : { wheat : 40, clay : 40 }
     buys : { wine : 25, oil : 15, furniture : 25 }               
-	}
+  }
   
   Mediolanum : {
     location : [ 940, 720 ]
@@ -97,7 +97,7 @@
 	}
   
   Carthago : {
-    location : [ 970, 570 ]
+    location : [ 970, 1160 ]
     
     sea : true
     land : true
@@ -218,7 +218,7 @@
 	}
 	
 	"Leptis Magna" : {
-    location : [ 1100, 1300 ]
+    location : [ 860, 920 ]
     
     sea : true
     land : true

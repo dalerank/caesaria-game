@@ -19,8 +19,6 @@
 #define _CAESARIA_GOODS_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 #include "good/good.hpp"
 
 namespace city
@@ -29,7 +27,6 @@ namespace city
 class GoodsUpdater : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
   virtual void timeStep( const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
@@ -38,8 +35,8 @@ public:
   virtual VariantMap save() const;
   good::Product goodType() const;
 
-private:
   GoodsUpdater( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr<Impl> _d;

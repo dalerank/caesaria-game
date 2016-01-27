@@ -18,12 +18,12 @@
 
 #include "enumerator.hpp"
 
-namespace constants
+namespace direction
 {
 
-typedef enum
+enum Value
 { 
-  noneDirection=0,
+  none=0,
   north,
   northWest,
   west,
@@ -32,16 +32,16 @@ typedef enum
   southEast,
   east,
   northEast,
-  countDirection
-} Direction;
+  count
+};
 
-class DirectionHelper : public EnumsHelper<Direction>
+class Helper : public EnumsHelper<Value>
 {
 public:
-  DirectionHelper() : EnumsHelper<Direction>( noneDirection )
+  Helper() : EnumsHelper<Value>( none )
   {
-#define ADD_DIRECTION(a) append(a, "##"#a"##" );
-    ADD_DIRECTION(noneDirection)
+#define ADD_DIRECTION(a) append(a, #a );
+    ADD_DIRECTION(none)
     ADD_DIRECTION(north)
     ADD_DIRECTION(northWest)
     ADD_DIRECTION(west)
@@ -52,8 +52,16 @@ public:
     ADD_DIRECTION(northEast)
 #undef ADD_DIRECTION
   }
+
+  static Helper& instance()
+  {
+    static Helper inst;
+    return inst;
+  }
 };
 
-} //end namespace constants
+} //end namespace direction
+
+typedef direction::Value Direction;
 
 #endif  //_CAESARIA_DIRECTION_INCLUDE_H_

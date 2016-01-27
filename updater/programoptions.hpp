@@ -38,8 +38,11 @@ protected:
 public:
 	virtual ~ProgramOptions()	{}
 
-	void ParseFromCommandLine(int argc, char* argv[])
+  void parse(int argc, char* argv[])
 	{
+    if( argc == 0 )
+      return;
+
 		_runPath = argv[0];
 
 		for (int i = 0; i < argc; i++)
@@ -68,24 +71,23 @@ public:
 
 	std::string runPath() const 	{		return _runPath;	}
 
-	void Set(const std::string& key)
+  void set(const std::string& key)
 	{
 		_vm[ key ] = true;
 		_cmdLineArgs.push_back("--" + key);
 	}
 
-	void Set(const std::string& key, const std::string& value)
+  void set(const std::string& key, const std::string& value)
 	{
 		_vm[ key ] = Variant( value );
 		_cmdLineArgs.push_back("--" + key + " " + value);
 	}
 
-	void Reset(const std::string& key)
+  void reset(const std::string& key)
 	{
 		_vm.erase( key );
 
-		for( StringArray::iterator i = _cmdLineArgs.begin();
-			 i != _cmdLineArgs.end(); ++i)
+    for( auto i=_cmdLineArgs.begin(); i != _cmdLineArgs.end(); ++i)
 		{
 			if( *i == ("--" + key) )
 			{
@@ -115,12 +117,10 @@ public:
 		return _cmdLineArgs;
 	}
 
-	virtual void PrintHelp()
+  virtual void printHelp()
 	{
-		for( std::map< std::string, std::string >::iterator i=_desc.begin(); i!=_desc.end(); i++ )
-		{
-			Logger::warning( "%s\t%s", i->first.c_str(), i->second.c_str() );
-		}
+    for( auto i : _desc )
+      Logger::warning( "{}\t{}", i.first.c_str(), i.second.c_str() );
 	}
 
 protected:

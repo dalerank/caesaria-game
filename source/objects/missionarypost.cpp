@@ -21,19 +21,17 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY( objects::missionaryPost, MissionaryPost)
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::missionaryPost, MissionaryPost)
 
 MissionaryPost::MissionaryPost()
-  : ServiceBuilding( Service::missionary, objects::missionaryPost, Size(2) )
+  : ServiceBuilding( Service::missionary, object::missionaryPost, Size(2) )
 {
   setMaximumWorkers(20);
   setWorkers( 0 );
-  setPicture( ResourceGroup::transport, 93 );
+  _picture().load( ResourceGroup::transport, 93 );
 
-  setState( inflammability, 0 );
-  setState( collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void MissionaryPost::deliverService()
@@ -42,7 +40,7 @@ void MissionaryPost::deliverService()
   {
     ServiceBuilding::deliverService();
 
-    WalkerList ws = walkers();
+    const WalkerList& ws = walkers();
     if( !ws.empty() )
     {
       if( ws.front()->type() == walker::missioner )

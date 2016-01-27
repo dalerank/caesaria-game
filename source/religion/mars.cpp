@@ -14,21 +14,23 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "objects/warehouse.hpp"
-#include "city/helper.hpp"
 #include "mars.hpp"
+#include "city/city.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walker/enemysoldier.hpp"
 #include "events/postpone.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/fort.hpp"
-#include "game/settings.hpp"
 #include "objects/extension.hpp"
+#include "city/spirit_of_mars.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
+using namespace city;
 
 namespace religion
 {
@@ -36,38 +38,38 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Mars::create()
-{
-  DivinityPtr ret( new Mars() );
-  ret->setInternalName( baseDivinityNames[ romeDivMars ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Mars::updateRelation(float income, PlayerCityPtr city)
 {  
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Mars::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(mars)
+                    : SML_TEMPLE_TYPE(mars);
+}
+
+Mars::Mars()
+  : RomeDivinity( RomeDivinity::Mars )
+{
+
+}
+
 void Mars::_doWrath(PlayerCityPtr city)
 {
-  events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
-                                                            _("##wrath_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Mars.smk" );
-  message->dispatch();
+  events::dispatch<ShowInfobox>( _("##wrath_of_mars_title##"),
+                                 _("##wrath_of_mars_text##"),
+                                 true,
+                                 "god_mars" );
 
-
-  VariantMap vm = config::load( game::Settings::rcpath( "mars_wrath.model" ) );
-  events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
-  barb_attack->dispatch();
+  VariantMap vm = config::load( ":/mars_wrath.model" );
+  events::dispatch<PostponeEvent>( "", vm );
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  city::Helper helper( city );
-  FortList forts = helper.find<Fort>( objects::militaryGroup );
+  FortList forts = city->statistic().objects.find<Fort>();
 
   std::string text, title;
   if( !forts.empty() )
@@ -79,40 +81,24 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
   }
   else
   {
-    title = "##smallcurse_of_mars_title##";
+    title = "##smallcurse_of_mars_failed_title##";
     text = "##smallcurse_of_mars_failed_text##";
   }
 
-  events::GameEventPtr message = events::ShowInfobox::create( _(title),
-                                                              _(text),
-                                                              events::ShowInfobox::send2scribe );
+  events::dispatch<ShowInfobox>( _(title),
+                                 _(text),
+                                 true );
 
-  message->dispatch();
 }
 
 void Mars::_doBlessing(PlayerCityPtr city)
 {
-  EnemySoldierList enemies;
-  enemies << city->walkers( walker::any );
+  events::dispatch<ShowInfobox>( _("##spirit_of_mars_title##"),
+                                 _("##spirit_of_mars_text##"),
+                                 true );
 
-  bool blessingDone = false;
-  int step = enemies.size() / 3;
-  for( int k=0; k < step; k++ )
-  {
-    int index = math::random( enemies.size() );
-    EnemySoldierList::iterator it = enemies.begin();
-    std::advance( it, index );
-    (*it)->die();
-    blessingDone = true;
-  }
-
-  if( blessingDone )
-  {
-    events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
-                                                              _("##spirit_of_mars_text##"),
-                                                              events::ShowInfobox::send2scribe );
-    event->dispatch();
-  }
+  SrvcPtr spiritOfmars = Srvc::create<SpiritOfMars>( city, 6 );
+  spiritOfmars->attach();
 }
 
 }//end namespace rome

@@ -26,8 +26,8 @@
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "walkers_factory.hpp"
+#include "objects/construction.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishPlace, FishPlace)
@@ -40,38 +40,31 @@ public:
   Animation animation;
 };
 
-FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
+FishPlace::FishPlace( PlayerCityPtr city )
+  : Fish( city ), _d( new Impl )
 {
   _setType( walker::fishPlace );
   setSpeedMultiplier( 0.1f );
 
-  setName( _("##ship##") );
+  setName( _("##fish_place##") );
 
-  _d->fishCount = rand() % 100;
+  _d->fishCount = math::random( 100 );
 
   if( _d->fishCount > 1 )
   {
-    _d->animation.load( ResourceGroup::land3a, 19, 24); //big fish place
+    _d->animation.load( config::rc.land3a, 19, 24); //big fish place
     _d->basicOffset = Point( -41, 122 );
     _d->animation.setOffset( _d->basicOffset );
   }
   else
   {
-    _d->animation.load( ResourceGroup::land3a, 1, 18);
+    _d->animation.load( config::rc.land3a, 1, 18);
     _d->basicOffset =  Point( 0, 55 );
     _d->animation.setOffset( _d->basicOffset );
   } //small fish place
-  _d->animation.setDelay( 4 );
+  _d->animation.setDelay( Animation::slow );
 
   setFlag( vividly, false );
-}
-
-FishPlacePtr FishPlace::create(PlayerCityPtr city)
-{
-  FishPlacePtr ret( new FishPlace( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 FishPlace::~FishPlace(){}
@@ -104,7 +97,7 @@ void FishPlace::send2city(TilePos rpos, TilePos dst )
 {
   if( dst.i() < 0 || dst.j() < 0 )
   {
-    dst = _city()->borderInfo().boatExit;
+    dst = _city()->getBorderInfo( PlayerCity::boatExit ).epos();
   }
 
   _findway( rpos, dst );
@@ -112,13 +105,13 @@ void FishPlace::send2city(TilePos rpos, TilePos dst )
 
 void FishPlace::_reachedPathway()
 {
-  if( pos() == _city()->borderInfo().boatExit )
+  if( pos() == _city()->getBorderInfo( PlayerCity::boatExit).epos() )
   {
     deleteLater();
   }
   else
   {
-    _findway( pos(), _city()->borderInfo().boatExit );
+    _findway( pos(), _city()->getBorderInfo( PlayerCity::boatExit ).epos() );
   }
 }
 
@@ -132,7 +125,7 @@ void FishPlace::_findway( TilePos start, TilePos end)
   }
   else
   {
-    _city()->addWalker( this );
+    attach();
     setPos( start );
     setPathway( pathway );
     go();

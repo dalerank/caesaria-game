@@ -10,102 +10,36 @@
     textAlign : [ "center", "center" ]
   }
 
-  lbGameSound#Label :
+  spinGameSound#SpinBox :
   {
-    geometry : [ 28, 60, 200, 84 ]
+    geometry : [ 28, 60, "pw-28", 84 ]
     text : "##gmsndwnd_game_volume##"
+    postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 3 }
   }
-    
-  lbGameSoundPercent#Label :
+         
+  spinAmbientSound#SpinBox :
   {
-    geometry : [ 260, 60, 310, 84 ]
-    font : "FONT_2"
-  }
-     
-  btnIncreaseGameSound#TexturedButton : {
-    geometry : [ 206, 60, 230, 84 ]
-    normal :   [ "paneling", 601 ]
-    hovered :  [ "paneling", 602 ]
-    pressed :  [ "paneling", 603 ]
-    disabled : [ "paneling", 304 ]
-    id : 1
-  } 
-    
-  btnDeccreaseGameSound#TexturedButton : {
-    geometry : [ 230, 60, 254, 84 ]
-    normal :   [ "paneling", 605 ]
-    hovered :  [ "paneling", 606 ]
-    pressed :  [ "paneling", 607 ]
-    disabled : [ "paneling", 305 ]
-    id : 2
-  } 
-    
-  lbAmbientSound#Label :
-  {
-    geometry : [ 28, 96, 200, 120 ]
+    geometry : [ 28, 96, "pw-28", 120 ]
     text : "##gmsndwnd_ambient_sound##"
+    postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 1 }
   }
     
-  lbAmbientSoundPercent#Label :
+  spinThemeSound#SpinBox :
   {
-    geometry : [ 260, 96, 310, 120 ]
-    font : "FONT_2"
-  }
-     
-  btnIncreaseAmbientSound#TexturedButton : {
-    geometry : [ 206, 96, 230, 120 ]
-    normal :   [ "paneling", 601 ]
-    hovered :  [ "paneling", 602 ]
-    pressed :  [ "paneling", 603 ]
-    disabled : [ "paneling", 304 ]
-    id : 11
-  } 
-    
-  btnDecreaseAmbientSound#TexturedButton : {
-    geometry : [ 230, 96, 254, 120 ]
-    normal :   [ "paneling", 605 ]
-    hovered :  [ "paneling", 606 ]
-    pressed :  [ "paneling", 607 ]
-    disabled : [ "paneling", 305 ]
-    id : 12
-  }
-
-  lbThemeSound#Label :
-  {
-    geometry : [ 28, 132, 200, 156 ]
+    geometry : [ 28, 132, "pw-28", 156 ]
     text : "##gmsndwnd_theme_sound##"
+    postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 2 }
   }
 
-  lbThemeSoundPercent#Label :
-  {
-    geometry : [ 260, 132, 310, 156 ]
-    font : "FONT_2"
-  }
-
-  btnIncreaseThemeSoundd#TexturedButton : {
-    geometry : [ 206, 132, 230, 156 ]
-    normal :   [ "paneling", 601 ]
-    hovered :  [ "paneling", 602 ]
-    pressed :  [ "paneling", 603 ]
-    disabled : [ "paneling", 304 ]
-    id : 21
-  }
-
-  btnDeccreaseThemeSound#TexturedButton : {
-    geometry : [ 230, 132, 254, 156 ]
-    normal :   [ "paneling", 605 ]
-    hovered :  [ "paneling", 606 ]
-    pressed :  [ "paneling", 607 ]
-    disabled : [ "paneling", 305 ]
-    id : 22
-  }
-    
   btnOk#PushButton :
   {
     geometryf : [ 0.25, 0.70, 0.75, 0.79 ]

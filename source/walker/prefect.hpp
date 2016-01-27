@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKER_PREFECT_H_INCLUDED__
 #define __CAESARIA_WALKER_PREFECT_H_INCLUDED__
@@ -23,13 +23,12 @@
 
 class Prefect : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
                  go2enemy, fightEnemy,
                  doNothing } SbAction;
-
-  static PrefectPtr create( PlayerCityPtr city );
 
   virtual void timeStep(const unsigned long time);
   virtual float serviceValue() const;
@@ -38,11 +37,11 @@ public:
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( PrefecturePtr prefecture, Prefect::SbAction, int water=0 );
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
   virtual void initialize(const VariantMap &options);
-
+  virtual Gender gender() const;
   virtual std::string thoughts(Thought th) const;
   virtual TilePos places(Place type) const;
 
@@ -60,6 +59,7 @@ protected:
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   bool _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _serveBuildings( ReachedBuildings& reachedBuildings );
+  void _serveHouse( HousePtr house );
   void _back2Prefecture();
   void _back2Patrol();
   void _setSubAction(const SbAction action );

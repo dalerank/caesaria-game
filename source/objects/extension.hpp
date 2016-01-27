@@ -33,6 +33,9 @@ public:
   virtual std::string type() const = 0;
   virtual void destroy( ConstructionPtr parent ) {}
 
+  void setName( const std::string& name ) { _name = name; }
+  const std::string& name() const { return _name; }
+
 protected:
   ConstructionExtension() : _isDeleted( false )
   {}
@@ -40,13 +43,15 @@ protected:
   bool _isDeleted;
   DateTime _finishDate;
   VariantMap _options;
+  std::string _name;
 };
 
 class WarehouseBuff : public ConstructionExtension
 {
 public:
   static ConstructionExtensionPtr create();
-  static ConstructionExtensionPtr assignTo(WarehousePtr warehouse, int type, float value, int week2finish );
+  static ConstructionExtensionPtr assignTo(WarehousePtr warehouse, int group, float value, int week2finish );
+  static ConstructionExtensionPtr uniqueTo(WarehousePtr warehouse, int group, float value, int week2finish, const std::string& name );
 
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual std::string type() const;
@@ -62,6 +67,7 @@ class FactoryProgressUpdater : public ConstructionExtension
 public:
   static ConstructionExtensionPtr create();
   static ConstructionExtensionPtr assignTo(FactoryPtr factory, float value, int week2finish );
+  static ConstructionExtensionPtr uniqueTo(FactoryPtr factory, float value, int week2finish, const std::string& name );
 
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual std::string type() const;
@@ -73,7 +79,7 @@ class ConstructionParamUpdater : public ConstructionExtension
 {
 public:
   static ConstructionExtensionPtr create();
-  static ConstructionExtensionPtr assignTo(ConstructionPtr construction, int paramName,  bool relative, int value, int week2finish );
+  static ConstructionExtensionPtr assignTo(ConstructionPtr construction, Param paramName,  bool relative, int value, int week2finish );
 
   virtual void timeStep(ConstructionPtr parent, unsigned int time);
   virtual std::string type() const;

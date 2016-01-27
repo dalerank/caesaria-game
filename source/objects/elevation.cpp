@@ -17,16 +17,15 @@
 
 #include "elevation.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::elevation, Elevation)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::elevation, Elevation)
 
 namespace {
   static const int startElevationId = 845;
@@ -39,9 +38,9 @@ public:
 };
 
 Elevation::Elevation()
-  : TileOverlay( constants::objects::elevation, Size( 2 ) ), _d( new Impl )
+  : Overlay( object::elevation, Size( 2 ) ), _d( new Impl )
 {
-  setDebugName( CAESARIA_STR_EXT(Elevation) );
+  setDebugName( TEXT(Elevation) );
 }
 
 Elevation::~Elevation(){}
@@ -62,20 +61,20 @@ Point Elevation::offset( const Tile& tile, const Point& subpos) const
   return Point( -(5 - subpos.y()), 0 );
 }
 
-void Elevation::changeDirection(Tile* masterTile, constants::Direction direction)
+void Elevation::changeDirection(Tile* masterTile, Direction direction)
 {
   int imgid = _d->basicImgId - startElevationId;
 
-  TileOverlay::changeDirection( masterTile, direction );
+  Overlay::changeDirection( masterTile, direction );
   setPicture( imgid::toPicture( startElevationId + (imgid + (direction - 1) / 2 ) % 4 ) );
 }
 
 bool Elevation::isDestructible() const { return false; }
 
-bool Elevation::build( const CityAreaInfo& info )
+bool Elevation::build( const city::AreaInfo& info )
 {
-  bool res = TileOverlay::build( info );
-  _d->basicImgId = info.city->tilemap().at( info.pos ).originalImgId();
+  bool res = Overlay::build( info );
+  _d->basicImgId = info.city->tilemap().at( info.pos ).imgId();
 
   return res;
 }

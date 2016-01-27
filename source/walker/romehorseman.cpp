@@ -29,22 +29,13 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeHorseman, walker::romeHorseman, RomeSoldier, romeSoldier )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::romeHorseman, RomeSoldier, horseman )
 
 RomeHorseman::RomeHorseman( PlayerCityPtr city, walker::Type type )
     : RomeSoldier( city, type )
 {
-}
-
-RomeHorsemanPtr RomeHorseman::create( PlayerCityPtr city, walker::Type type)
-{
-  RomeHorsemanPtr ret( new RomeHorseman( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 /*

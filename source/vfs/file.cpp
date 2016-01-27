@@ -19,23 +19,12 @@
 #include "filesystem.hpp"
 #include "path.hpp"
 #include "core/logger.hpp"
+#include "core/platform_specific.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #define getline_def getline_win
-  #include <windows.h>
-  #include <io.h>
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  #ifdef CAESARIA_PLATFORM_LINUX
-    //#include <sys/io.h>
-    #include <linux/limits.h>
-  #elif defined(CAESARIA_PLATFORM_MACOSX)
-    #include <libproc.h>
-  #endif
+#elif defined(GAME_PLATFORM_UNIX)
   #define getline_def getline
-  #include <sys/stat.h>
-  #include <unistd.h>
-  #include <stdio.h>
-  #include <libgen.h>
 #endif
 
 namespace vfs
@@ -59,10 +48,15 @@ NFile::NFile()
 
 NFile::NFile( FSEntityPtr file )
 {
-  #ifdef _DEBUG
-    setDebugName("NFile");
-  #endif
-	_entity = file;
+#ifdef _DEBUG
+  setDebugName("NFile");
+#endif
+  _entity = file;
+}
+
+NFile::NFile(const NFile& nfile)
+{
+  *this = nfile;
 }
 
 NFile::~NFile()
@@ -135,6 +129,11 @@ int NFile::write(const void* buffer, unsigned int sizeToWrite)
   return _entity.isValid() ? _entity->write( buffer, sizeToWrite ) : 0;
 }
 
+int NFile::write(const std::string& str )
+{
+  return write( str.c_str(), str.size() );
+}
+
 int NFile::write( const ByteArray& bArray )
 {
   return _entity.isValid() ? _entity->write( bArray ) : 0;
@@ -142,7 +141,7 @@ int NFile::write( const ByteArray& bArray )
 
 bool NFile::isOpen() const
 {
-	return _entity.isValid() ? _entity->isOpen() : false;
+  return _entity.isValid() ? _entity->isOpen() : false;
 }
 
 void NFile::flush()
@@ -151,6 +150,11 @@ void NFile::flush()
   {
 	  _entity->flush();
   }
+}
+
+size_t NFile::lastModify() const
+{
+  return _entity.isValid() ? _entity->lastModify() : 0;
 }
 
 NFile& NFile::operator=( const NFile& other )
@@ -168,37 +172,37 @@ unsigned long NFile::size(vfs::Path filename)
 
 bool NFile::remove( Path filename )
 {
-#ifdef CAESARIA_PLATFORM_WIN
-  BOOL result = DeleteFileA( filename.toString().c_str() );
+#ifdef GAME_PLATFORM_WIN
+  BOOL result = DeleteFileA( filename.toCString() );
   if( !result )
   {
-    int error = GetLastError();
+    /*int error = */GetLastError();
     //Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
   }
   return result;
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  int result = ::remove( filename.toString().c_str() );
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
+  int result = ::remove( filename.toCString() );
   return (result == 0);
 #endif
 }
 
 bool NFile::rename(Path oldpath, Path newpath)
 {
-#ifdef CAESARIA_PLATFORM_WIN
-  bool result = MoveFileExA( oldpath.toString().c_str(), newpath.toString().c_str(), MOVEFILE_REPLACE_EXISTING );
+#ifdef GAME_PLATFORM_WIN
+  bool result = MoveFileExA( oldpath.toCString(), newpath.toCString(), MOVEFILE_REPLACE_EXISTING );
 
   if( !result )
   {
-    int error = GetLastError();
+    /*int error = */GetLastError();
     //Logger::warning( "Error[%d] on renamed file %s to %s", error, oldpath.toString().c_str(), newpath.toString().c_str() );
   }
   return result;
 #else
-  int result = ::rename( oldpath.toString().c_str(), newpath.toString().c_str() );
+  int result = ::rename( oldpath.toCString(), newpath.toCString() );
 
   if( result != 0 )
   {
-    Logger::warning( "Error[%d] on renamed file %s to %s", result, oldpath.toString().c_str(), newpath.toString().c_str() );
+    Logger::warning( "Error[{}] on renamed file {} to {}", result, oldpath.toCString(), newpath.toCString() );
   }
   return (result == 0);
 #endif

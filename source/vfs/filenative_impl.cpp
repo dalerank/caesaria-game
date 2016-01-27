@@ -17,11 +17,12 @@
 
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
+#include "core/platform_specific.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
-#define getline_def getline_fp
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_WIN
+  #define getline_def getline_fp
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
+  #ifdef GAME_PLATFORM_ANDROID
     #define getline_def getline_fp
   #else
     #define getline_def getline
@@ -34,41 +35,40 @@ namespace vfs
 FileNative::FileNative(const Path& fileName, Entity::Mode mode)
 : _file(0), _size(0), _name(fileName), _mode( mode )
 {
-	#ifdef _DEBUG
-		setDebugName("NFile");
-	#endif
+  #ifdef _DEBUG
+    setDebugName("NFile");
+  #endif
 
-	openFile();
+  openFile();
 }
 
 FileNative::FileNative() : _file( 0 ), _size( 0 ), _mode( fmRead )
 {
-
 }
 
 FileNative::~FileNative()
 {
-	if( _file )
+  if( _file )
   {
-		fclose(_file);
+    fclose(_file);
   }
 }
 
 bool FileNative::isEof() const
 {
-    if (isOpen())
-        return feof( _file ) != 0;
+  if (isOpen())
+    return feof( _file ) != 0;
 
-    return false;
+  return false;
 }
 
 //! returns how much was read
 int FileNative::read(void* buffer, unsigned int sizeToRead)
 {
-	if (!isOpen())
-		return 0;
+  if (!isOpen())
+    return 0;
 
-	return (int)fread(buffer, 1, sizeToRead, _file);
+  return (int)fread(buffer, 1, sizeToRead, _file);
 }
 
 //! changes position in file, returns true if successful
@@ -76,100 +76,100 @@ int FileNative::read(void* buffer, unsigned int sizeToRead)
 //! otherwise from begin of file
 bool FileNative::seek(long finalPos, bool relativeMovement)
 {
-	if (!isOpen())
-		return false;
+  if (!isOpen())
+    return false;
 
-	return fseek(_file, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
+  return fseek(_file, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
 //! returns size of file
 long FileNative::size() const{	return _size;}
 
 //! returns where in the file we are.
-long FileNative::getPos() const {	return ftell(_file);}
+long FileNative::getPos() const { return ftell(_file);}
 
 
-#if defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
+#if defined(GAME_PLATFORM_WIN) || defined(GAME_PLATFORM_ANDROID)
 size_t getline_fp(char **linebuf, size_t *linebufsz, FILE *file)
 {
-    int delimiter = '\n';
-    //static const int GROWBY = 80; /* how large we will grow strings by */
-    
-    int ch;
-    unsigned int idx = 0;
-    
-    if (file == NULL || linebuf==NULL || linebufsz == NULL || *linebuf == NULL || *linebufsz < 2) 
-    {
-        return -1;
-    }
-    
-    while (1) 
-    {
-        ch = fgetc(file);
-        if (ch == EOF)
-            break;
+  int delimiter = '\n';
+  //static const int GROWBY = 80; /* how large we will grow strings by */
 
-        (*linebuf)[idx++] = (char)ch;
-        if ((char)ch == delimiter || idx >= *linebufsz )
-            break;
-    }
+  int ch;
+  unsigned int idx = 0;
+
+  if (file == NULL || linebuf==NULL || linebufsz == NULL || *linebuf == NULL || *linebufsz < 2)
+  {
+    return -1;
+  }
+
+  while (1)
+  {
+    ch = fgetc(file);
+    if (ch == EOF)
+      break;
+
+    (*linebuf)[idx++] = (char)ch;
+    if ((char)ch == delimiter || idx >= *linebufsz )
+      break;
+  }
 	
-	if( idx != 0 )
-	    (*linebuf)[idx] = 0;
-	else if ( ch == EOF )
-	    return -1;
+  if( idx != 0 )
+    (*linebuf)[idx] = 0;
+  else if ( ch == EOF )
+    return -1;
 
-	return idx;
+  return idx;
 }
-#endif //defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
+#endif //defined(GAME_PLATFORM_WIN) || defined(GAME_PLATFORM_ANDROID)
 
 ByteArray FileNative::readLine()
 {
-    if (!isOpen())
+  if (!isOpen())
+  {
+    return ByteArray();
+  }
+
+  size_t defaultBytesRead = 100;
+  ByteArray ret;
+  ret.resize( defaultBytesRead );
+
+  bool endLineReaded = false;
+  unsigned int readOneLineCounter = 0;
+  while( !endLineReaded )
+  {
+    readOneLineCounter++;
+    char* currentPos = ret.data() + ret.size() - defaultBytesRead;
+
+    int reallyReadingBytes = getline_def( &currentPos, &defaultBytesRead, _file);
+
+    if( reallyReadingBytes <= 0 )
+      return ByteArray();
+
+    if( readOneLineCounter > 1000 )
     {
+      Logger::warning( "Too many iteration for read one line" );
       return ByteArray();
     }
 
-    size_t defaultBytesRead = 100;
-    ByteArray ret;
-    ret.resize( defaultBytesRead );
+    if( reallyReadingBytes != (int)defaultBytesRead )
+      ret.resize( ret.size() - defaultBytesRead + reallyReadingBytes );
 
-    bool endLineReaded = false;
-    unsigned int readOneLineCounter = 0;
-    while( !endLineReaded )
+    if( ret.back() == '\n' )
     {
-        readOneLineCounter++;
-        char* currentPos = ret.data() + ret.size() - defaultBytesRead;
-
-        int reallyReadingBytes = getline_def( &currentPos, &defaultBytesRead, _file);
-
-        if( reallyReadingBytes <= 0 )
-            return ByteArray();
-
-        if( readOneLineCounter > 1000 )
-        {
-            Logger::warning( "Too many iteration for read one line" );
-            return ByteArray();
-        }
-
-        if( reallyReadingBytes != (int)defaultBytesRead )
-            ret.resize( ret.size() - defaultBytesRead + reallyReadingBytes );
-
-        if( ret.back() == '\n' )
-        {
-            ret.push_back( '\0' );
-            return ret;
-        }
+      ret.push_back( '\0' );
+      return ret;
     }
+  }
 
-    return ret;
+  return ret;
 }
 
 ByteArray FileNative::read(unsigned int sizeToRead)
 {
   if (!isOpen())
   {
-     return ByteArray();
+    return ByteArray();
   }
 
   ByteArray ret;
@@ -193,7 +193,7 @@ void FileNative::openFile()
   const char* modeStr[] = { "rb", "wb", "ab" };
   if( (unsigned int)_mode > Entity::fmAppend )
   {
-    Logger::warning( "Unsupported file open mode for %s", _name.toString().c_str() );
+    Logger::warning( "Unsupported file open mode for {0}", _name.toString() );
     _mode = Entity::fmRead;
   }
 
@@ -208,7 +208,7 @@ void FileNative::openFile()
   }
   else
   {
-    Logger::warning( "FileNative: Can't open file %s", _name.toString().c_str() );
+    Logger::warning( "FileNative: Can't open file {0}", _name.toString() );
   }
 }
 
@@ -232,12 +232,52 @@ int FileNative::write( const ByteArray& bArray )
   return (int)fwrite( bArray.data(), 1, bArray.size(), _file );
 }
 
-bool FileNative::isOpen() const{	return _file != 0;}
+bool FileNative::isOpen() const { return _file != 0;}
+
+size_t FileNative::lastModify() const
+{
+#ifdef GAME_PLATFORM_ANDROID
+  return 0;
+#elif defined(GAME_PLATFORM_UNIX)
+  struct stat attr;
+  stat(_name.toCString(), &attr);
+  return attr.st_mtime;
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE  hFile = CreateFile(_name.toCString(), GENERIC_READ, FILE_SHARE_READ, NULL,
+                             OPEN_EXISTING, 0, NULL);
+  bool err = GetFileTime( hFile, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  time_t ret = 0;
+  if( !err )
+  {
+    SYSTEMTIME sysTime;
+    FileTimeToSystemTime( &creationTime, &sysTime );
+
+    struct tm tmtime = {0};
+
+    tmtime.tm_year = sysTime.wYear - 1900;
+    tmtime.tm_mon = sysTime.wMonth - 1;
+    tmtime.tm_mday = sysTime.wDay;
+    tmtime.tm_hour = sysTime.wHour;
+    tmtime.tm_min = sysTime.wMinute;
+    tmtime.tm_sec = sysTime.wSecond;
+    tmtime.tm_wday = 0;
+    tmtime.tm_yday = 0;
+    tmtime.tm_isdst = -1;
+    ret = mktime(&tmtime);
+  }
+
+  CloseHandle( hFile );
+  return ret;
+#endif
+}
 
 void FileNative::flush()
 {
   if( !isOpen() )
-      return;
+    return;
 
   fflush( _file );
 }

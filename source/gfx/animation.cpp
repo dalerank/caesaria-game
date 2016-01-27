@@ -18,8 +18,8 @@
 #include "animation.hpp"
 #include "core/position.hpp"
 #include "core/variant_map.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "animation_bank.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -49,12 +49,12 @@ unsigned int Animation::frameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
 {
-  foreach( pic, _pictures ) { pic->setOffset( offset ); }
+  for( auto&& pic : _pictures ) { pic.setOffset( offset ); }
 }
 
 void Animation::addOffset(const Point& offset)
 {
-  foreach( pic, _pictures) { pic->addOffset( offset );}
+  for( auto&& pic : _pictures) { pic.addOffset( offset );}
 }
 
 Point Animation::offset() const
@@ -96,10 +96,7 @@ void Animation::update( unsigned int time )
 
 const Picture& Animation::currentFrame() const
 {
-  __D_IMPL_CONST(d,Animation)
-  return ( d->index >= 0 && d->index < (int)_pictures.size())
-                  ? _pictures[d->index]
-                  : Picture::getInvalid();
+  return _pictures.valueOrEmpty( _dfunc()->index );
 }
 
 int Animation::index() const { return _dfunc()->index;}
@@ -107,12 +104,13 @@ void Animation::setIndex(int index){  _dfunc()->index = math::clamp<int>( index,
 
 Animation::Animation() : __INIT_IMPL(Animation)
 {
-  setDelay( 0 );
+  setDelay( nodelay );
   start( true );
 }
 
 Animation::~Animation() {}
 Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
+Animation::Animation(const std::string& alias) : __INIT_IMPL(Animation) {  load( alias ); }
 
 void Animation::setDelay( const unsigned int delay ){ _dfunc()->delay = delay;}
 unsigned int Animation::delay() const{  return _dfunc()->delay; }
@@ -124,35 +122,34 @@ void Animation::load( const std::string &prefix, const int start, const int numb
 {
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
-  {
-    const Picture& pic = Picture::load(prefix, start + revMul*i*step);
-    _pictures.push_back( pic );
-  }
+    _pictures.append( prefix, start + revMul*i*step );
+}
+
+void Animation::load(const std::string& alias)
+{
+  *this = AnimationBank::instance().simple( alias );
 }
 
 VariantMap Animation::save() const
 {
   __D_IMPL_CONST(d,Animation)
   VariantMap ret;
+
   VARIANT_SAVE_ANY_D( ret, d, index )
   VARIANT_SAVE_ANY_D( ret, d, delay )
   VARIANT_SAVE_ANY_D( ret, d, loop )
 
-  VariantList pics;
-  foreach( i, _pictures)
-    pics << Variant( (*i).name() );
-
-  ret[ "pictures" ] = pics;
+  ret[ "pictures" ] = _pictures.names();
 
   return ret;
 }
 
-void Animation::load(const VariantMap &stream)
+void Animation::load(const VariantMap& stream)
 {
   __D_IMPL(d,Animation)
   VARIANT_LOAD_ANY_D( d, index, stream )
   VARIANT_LOAD_ANY_D( d, delay, stream )
-  VARIANT_LOAD_ANY_D( d, loop, stream );
+  VARIANT_LOAD_ANY_D( d, loop,  stream )
 
   VariantMap range = stream.get( "range" ).toMap();
   if( !range.empty() )
@@ -161,12 +158,21 @@ void Animation::load(const VariantMap &stream)
     int start = range.get( "start" );
     int number = range.get( "number" );
     for( int k=0; k < number; k++ )
-      _pictures.push_back( Picture::load( rc, start + k ) );
+      _pictures.append( rc, start + k  );
   }
 
-  VariantList vl_pics = stream.get( "pictures" ).toList();
-  foreach( i, vl_pics )
-    _pictures.push_back( Picture::load( (*i).toString() ) );
+  _pictures.load( stream.get( "pictures" ).toStringArray() );
+}
+
+void Animation::simple(const VariantMap& stream)
+{
+  __D_IMPL(d,Animation)
+  VARIANT_INIT_STR( rc, stream )
+  VARIANT_INIT_ANY( int, start, stream )
+  VARIANT_INIT_ANY( int, frames, stream )
+  VARIANT_LOAD_ANY_D( d, delay, stream )
+  VARIANT_INIT_ANY( bool, reverse, stream )
+  load( rc, start, frames, reverse );
 }
 
 void Animation::clear() { _pictures.clear();}
@@ -191,7 +197,7 @@ bool Animation::isValid() const{  return _pictures.size() > 0;}
 
 void Animation::addFrame(const std::string& resource, int index)
 {
-  _pictures.push_back( Picture::load( resource, index ) );
+  _pictures.push_back( Picture( resource, index ) );
 }
 
 const Picture& Animation::frame(int index) const

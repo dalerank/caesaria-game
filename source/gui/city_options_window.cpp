@@ -13,166 +13,426 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
+#include "world/empire.hpp"
 #include "listbox.hpp"
 #include "core/utils.hpp"
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
+#include "game/infoboxmanager.hpp"
+#include "layers/layer.hpp"
+#include "game/settings.hpp"
+#include "spinbox.hpp"
+#include "texturedbutton.hpp"
+#include "city/build_options.hpp"
 #include "topmenu.hpp"
+#include "core/variant_map.hpp"
+#include "game/difficulty.hpp"
+#include "core/metric.hpp"
+#include "city/city_option.hpp"
+#include "stretch_layout.hpp"
+#include "widget_factory.hpp"
+
+using namespace citylayer;
 
 namespace gui
 {
 
-class CityOptionsWindow::Impl
+static void _setAutoText(Widget *widget, const std::string& text)
+{
+  if( widget )
+  {
+    widget->setText( _(text) );
+    if( utils::endsWith( text, "##" ) )
+    {
+      std::string tlp = text.substr( 0, text.length() - 2 );
+      tlp.append( "_tlp##" );
+      widget->setTooltipText( _( tlp ) );
+    }
+  }
+}
+
+static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
+{
+  _setAutoText( widget, fmt::format( "##{}_{}##", text, enabled ? "on" : "off" ) );
+}
+
+class OptionButton : public PushButton
+{
+public:
+  std::string basicName;
+  std::string group;
+  std::string type;
+  int index;
+
+  typedef std::map<int,std::string> States;
+  States states;
+
+  OptionButton( Widget* parent )
+   : PushButton( parent, Rect( 0, 0, 1, 1 ), "", -1, false, greyBorderLineSmall )
+  {    
+    index = 0;
+    setMaxSize( Size( 0, 24 ) );
+  }
+
+  virtual void setupUI( const VariantMap& ui )
+  {
+    basicName = ui.get( "base" ).toString();
+
+    setText( "##" + basicName + "_mode##" );
+
+    VariantMap vstates = ui.get( "states" ).toMap();
+    for( auto& st : vstates )
+      states[ st.second.toInt() ] = st.first;
+
+    VariantList vlink = ui.get( "link" ).toList();
+    group = vlink.get( 0 ).toString();
+    type = vlink.get( 1 ).toString();
+  }
+
+  void update(int value)
+  {
+    index = 0;
+    for( auto& item : states )
+    {
+      if( item.first == value )
+      {
+        std::string text = fmt::format( "##{}_{}##", basicName, item.second );
+        setText( _(text) );
+        _setAutoText( this, text );
+        break;
+      }
+      index++;
+    }
+  }
+
+  Signal3<std::string,std::string,int> onChange;
+protected:
+  virtual void _btnClicked()
+  {
+    PushButton::_btnClicked();
+
+    if( states.size() > 0 )
+    {
+      index = (index+1) % states.size();
+      States::iterator it = states.begin();
+      std::advance( it, index );
+
+      emit onChange(group,type,it->first);
+    }
+  }
+};
+
+REGISTER_CLASS_IN_WIDGETFACTORY(OptionButton)
+
+namespace dialog
+{
+
+class CityOptions::Impl
 {
 public:
   GameAutoPause locker;
-  PushButton* btnGodEnabled;
-  PushButton* btnWarningsEnabled;
-  PushButton* btnZoomEnabled;
-  PushButton* btnDebugEnabled;
-  PushButton* btnInvertZoom;
+  Widget* widget;  
+  PushButton* btnToggleBatching;
+  PushButton* btnDifficulty;
+  PushButton* btnMetrics;
+  PushButton* btnC3Gameplay;
+  PushButton* btnRoadBlocks;
+
+  SpinBox* sbFireRisk;
+  SpinBox* sbCollapseRisk;
+
   PlayerCityPtr city;
 
   void update();
-  void toggleDebug();
-  void toggleGods();
-  void toggleZoomEnabled();
-  void invertZoom();
-  void toggleWarnings();
   Widget* findDebugMenu(Ui *ui);
+  void changeFireRisk( int value );
+  void changeCollapseRisk( int value );
+  void toggleDifficulty();
+  void toggleRoadBlocks();
+  void toggleUseBatching();
+  void toggleMetrics();
+  void toggleC3gameplay();
+  void enableC3gameplay();
+  void toggleCityOption( PlayerCity::OptionType option );
+  void changeCityOption( PlayerCity::OptionType option, int delta);
+  void changeShowTooltips(std::string,std::string,int value);
+  void chagetInfoboxLock(std::string,std::string,int value);
+  void resolveOptionChange(std::string group, std::string name, int value);
+  void changeDebugVisible(std::string group, std::string name, int value);
+  void changeAndroidBarVisible(std::string group, std::string name, int value);
+  void changeCcAi(std::string group, std::string name, int value);
+  void setCityOption(PlayerCity::OptionType option, int value);
 };
 
-CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
+CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
   _d->locker.activate();
-  setupUI( ":/gui/cityoptions.gui" );
+  _d->widget = this;
+  Window::setupUI( ":/gui/cityoptions.gui" );
 
-  setCenter( parent->center() );
+  GET_DWIDGET_FROM_UI( _d, sbFireRisk )
+  GET_DWIDGET_FROM_UI( _d, sbCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, btnC3Gameplay )
 
-  GET_DWIDGET_FROM_UI( _d, btnGodEnabled )
-  GET_DWIDGET_FROM_UI( _d, btnWarningsEnabled )
-  GET_DWIDGET_FROM_UI( _d, btnZoomEnabled )
-  GET_DWIDGET_FROM_UI( _d, btnInvertZoom )
-  GET_DWIDGET_FROM_UI( _d, btnDebugEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnDifficulty )
+  GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
+  GET_DWIDGET_FROM_UI( _d, btnMetrics )
+  GET_DWIDGET_FROM_UI( _d, btnRoadBlocks )
 
-  CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods );
-  CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings );
-  CONNECT( _d->btnZoomEnabled, onClicked(), _d.data(), Impl::toggleZoomEnabled )
-  CONNECT( _d->btnInvertZoom, onClicked(), _d.data(), Impl::invertZoom )
-  CONNECT( _d->btnDebugEnabled, onClicked(), _d.data(), Impl::toggleDebug )
+  LINK_WIDGET_ACTION( OptionButton*, btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
+  LINK_WIDGET_ACTION( OptionButton*, btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
+
+  CONNECT( _d->sbFireRisk, onChange(), _d.data(), Impl::changeFireRisk )
+  CONNECT( _d->sbCollapseRisk, onChange(), _d.data(), Impl::changeCollapseRisk )
+
+  CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
+  CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
+  CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
+  CONNECT( _d->btnRoadBlocks, onClicked(), _d.data(), Impl::toggleRoadBlocks )
+  CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3gameplay )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
-  CONNECT( btnClose, onClicked(), this, CityOptionsWindow::deleteLater );
+  CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
+  if( btnClose ) btnClose->setFocus();
+
+  auto buttons = findChildren<OptionButton*>( true );
+  for( auto btn : buttons )
+    CONNECT( btn, onChange, _d.data(), Impl::resolveOptionChange );
 
   _d->update();
+
+  WidgetClose::insertTo( this, KEY_RBUTTON );
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
-CityOptionsWindow::~CityOptionsWindow() {}
+CityOptions::~CityOptions() {}
 
-void CityOptionsWindow::Impl::toggleGods()
+void CityOptions::setupUI(const VariantMap& ui)
 {
-  bool value = city->getOption( PlayerCity::godEnabled );
-  city->setOption( PlayerCity::godEnabled, value > 0 ? 0 : 1 );
+  Window::setupUI( ui );
+}
+
+void CityOptions::Impl::setCityOption( PlayerCity::OptionType option, int value )
+{
+  city->setOption( option, value  );
   update();
 }
 
-void CityOptionsWindow::Impl::toggleDebug()
+void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int delta )
 {
-  Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
+  int value = city->getOption( option );
+  city->setOption( option, math::clamp<int>( value + delta, 0, 9999 ) );
+  update();
+}
+
+void gui::dialog::CityOptions::Impl::chagetInfoboxLock(std::string, std::string, int value)
+{
+  infobox::Manager::instance().setBoxLock( value > 0 );
+}
+
+void CityOptions::Impl::resolveOptionChange(std::string group, std::string name, int value)
+{
+  if( group == "city" )
+  {
+     PlayerCity::OptionType option = city::findOption( name );
+     if( option != -1 )
+       city->setOption( option, value );
+  }
+  else if( group == "game" )
+  {
+     game::Settings::set( name, value );
+  }
+  else if( group == "draw" )
+  {
+    DrawOptions::Flag flag = DrawOptions::findFlag( name );
+    DrawOptions::takeFlag( flag, value > 0 );
+  }
+  update();
+}
+
+void CityOptions::Impl::changeDebugVisible(std::string,std::string, int value)
+{
+  Widget* menu = findDebugMenu( widget->ui() );
   if( menu )
+    menu->setVisible( value );
+}
+
+void CityOptions::Impl::changeAndroidBarVisible(std::string, std::string, int value)
+{
+  Widget* abar = widget->ui()->findWidget( Hash( "AndroidActionsBar" ) );
+  if( abar )
+    abar->setVisible( value );
+}
+
+void CityOptions::Impl::changeCcAi(std::string, std::string, int value)
+{
+  world::CityList cities = city->empire()->cities();
+
+  for( auto rcity : cities )
+    rcity->setModeAI( value ? world::City::indifferent : world::City::inactive );
+}
+
+void CityOptions::Impl::changeFireRisk( int value ) { setCityOption( PlayerCity::fireKoeff, value ); }
+void CityOptions::Impl::changeCollapseRisk( int value ) { setCityOption( PlayerCity::collapseKoeff, value ); }
+
+void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
+{
+  int value = city->getOption( option );
+  city->setOption( option, value > 0 ? 0 : 1 );
+  update();
+}
+
+void CityOptions::Impl::toggleDifficulty()
+{
+  int value = city->getOption( PlayerCity::difficulty );
+  value = (value+1)%game::difficulty::count;
+  city->setOption( PlayerCity::difficulty, value );
+  update();
+}
+
+void CityOptions::Impl::toggleMetrics()
+{
+  int value = SETTINGS_VALUE( metricSystem );
+  value = (value+1)%metric::Measure::count;
+  metric::Measure::setMode( (metric::Measure::Mode)value );
+  SETTINGS_SET_VALUE( metricSystem, value );
+  update();
+}
+
+void CityOptions::Impl::toggleC3gameplay()
+{
+  int value = city->getOption( PlayerCity::c3gameplay );
+  value = !value;
+  if( value )
   {
-    menu->setVisible( !menu->visible() );
+    auto dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?", true );
+    dlg->show();
+
+    CONNECT( dlg, onOk(), this, Impl::enableC3gameplay )
   }
+}
+
+void CityOptions::Impl::enableC3gameplay() { city->setOption( PlayerCity::c3gameplay, true ); }
+
+void CityOptions::Impl::changeShowTooltips(std::string,std::string,int value)
+{
+  widget->ui()->setFlag( Ui::showTooltips, value );
+}
+
+void CityOptions::Impl::toggleRoadBlocks()
+{
+  city::development::Options opts;
+  opts = city->buildOptions();
+  opts.toggleBuildingAvailable( object::roadBlock );
+  city->setBuildOptions( opts );
   update();
 }
 
-void CityOptionsWindow::Impl::toggleZoomEnabled()
+void CityOptions::Impl::toggleUseBatching()
 {
-  bool value = city->getOption( PlayerCity::zoomEnabled );
-  city->setOption( PlayerCity::zoomEnabled, value > 0 ? 0 : 1 );
+  bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+  gfx::Engine::instance().setFlag( gfx::Engine::batching, !value );
   update();
 }
 
-void CityOptionsWindow::Impl::invertZoom()
+Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 {
-  bool value = city->getOption( PlayerCity::zoomInvert );
-  city->setOption( PlayerCity::zoomInvert, value > 0 ? 0 : 1 );
-  update();
+  auto topmenu = ui->rootWidget()->children().select<TopMenu>();
+  for( auto w : topmenu )
+    return w->findItem( "Debug" );
+
+  return nullptr;
 }
 
-void CityOptionsWindow::Impl::toggleWarnings()
+void CityOptions::Impl::update()
 {
-  bool value = city->getOption( PlayerCity::warningsEnabled );
-  city->setOption( PlayerCity::warningsEnabled, value > 0 ? 0 : 1 );
-  update();
-}
-
-Widget* CityOptionsWindow::Impl::findDebugMenu( Ui* ui )
-{
-  const Widgets& children = ui->rootWidget()->children();
-  foreach( it, children )
+  auto buttons = widget->findChildren<OptionButton*>( true );
+  for( auto btn : buttons )
   {
-    TopMenu* ret = safety_cast<TopMenu*>( *it );
-    if( ret != 0 )
+    int value = 0;
+    if( btn->group == "city" )
     {
-      return ret->findItem( "Debug" );
+       PlayerCity::OptionType option = city::findOption( btn->type );
+       if( option != -1 )
+         value = city->getOption( option ) > 0 ? 1 : 0;
     }
+    else if( btn->group == "game" )
+    {
+       value = game::Settings::get( btn->type );
+    }
+    else if( btn->group == "draw" )
+    {
+      DrawOptions::Flag flag = DrawOptions::findFlag( btn->type );
+      value = DrawOptions::getFlag( flag );
+    }
+    else if( btn->group == "gfx" )
+    {
+
+    }
+
+    btn->update( value );
   }
 
-  return 0;
+  if( sbFireRisk )
+  {
+    sbFireRisk->setValue( city->getOption( PlayerCity::fireKoeff ) );
+  }
+
+  if( sbCollapseRisk )
+  {
+    sbCollapseRisk->setValue( city->getOption( PlayerCity::collapseKoeff ) );
+  }
+
+  if( btnDifficulty )
+  {
+    int value = city->getOption( PlayerCity::difficulty );
+    std::string text = fmt::format( "##city_df_{}##", game::difficulty::name[ value ] );
+    _setAutoText( btnDifficulty, text );
+  }
+
+  if( btnC3Gameplay )
+  {
+    int value = city->getOption( PlayerCity::c3gameplay );
+    std::string text = fmt::format( "##city_c3rules_{}##", value ? "on" : "off" );
+    _setAutoText( btnDifficulty, text );
+  }
+
+  if( btnMetrics )
+  {
+    std::string text = fmt::format( "{}: {}" , _("##city_metric##"), _(metric::Measure::measureType()) );
+    _setAutoText( btnMetrics, text );
+  }
+
+  if( btnToggleBatching )
+  {
+    bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+    _setAutoText( btnToggleBatching, "city_batching", value );
+  }
+
+  if( btnRoadBlocks )
+  {
+    const city::development::Options& opts = city->buildOptions();
+    bool value = opts.isBuildingAvailable(object::roadBlock );
+    _setAutoText( btnRoadBlocks, "city_roadblock", value );
+  }
 }
 
-void CityOptionsWindow::Impl::update()
-{
-  if( btnGodEnabled )
-  {
-    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0
-                              ? _("##city_opts_god_on##")
-                              : _("##city_opts_god_off##") );
-  }
-
-  if( btnWarningsEnabled )
-  {
-    btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
-                              ? _("##city_warnings_on##")
-                              : _("##city_warnings_off##") );
-  }
-
-  if( btnZoomEnabled )
-  {
-    btnZoomEnabled->setText( city->getOption( PlayerCity::zoomEnabled ) > 0
-                              ? _("##city_zoom_on##")
-                              : _("##city_zoom_off##") );
-  }
-
-  if( btnInvertZoom )
-  {
-    btnInvertZoom->setText( city->getOption( PlayerCity::zoomInvert ) > 0
-                              ? _("##city_zoominv_on##")
-                              : _("##city_zoominv_off##") );
-  }
-
-  if( btnDebugEnabled )
-  {
-    Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
-    btnDebugEnabled->setText( (menu ? menu->visible() : false)
-                                ? _("##city_debug_on##")
-                                : _("##city_debug_off##") );
-  }
-}
+}//end namespace dialog
 
 }//end namespace gui

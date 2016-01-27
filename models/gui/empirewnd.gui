@@ -13,25 +13,24 @@
     normal : [ "paneling", 292 ]
     hovered : [ "paneling", 293 ]
     pressed : [ "paneling", 294 ]
-    disabled : [ "paneling", 295 ]
+    disabled : [ "paneling", 294 ]
     tooltip : "##to_trade_advisor##"
   }
 
-  btnExit#TexturedButton : {
+  btnExit#ExitButton : {
     geometry : [ "pw-44", "ph-44", "pw-20", "ph-20" ]
-    normal : [ "paneling", 533 ]
-    hovered : [ "paneling", 534 ]
-    pressed : [ "paneling", 535 ]
-    disabled : [ "paneling", 536 ]
     tooltip : "##return_to_main_map##"
   }
 
-  btnHelp#TexturedButton : {
+  btnHelp#HelpButton : {
     geometry : [ 20, "ph-44", 44, "ph-20" ]
-    normal : [ "paneling", 528 ]
-    hovered : [ "paneling", 529 ]
-    pressed : [ "paneling", 530 ]
-    disabled : [ "paneling", 531 ]
+    uri : "empiremap"
+  }
+
+  btnAi#PushButton : {
+    geometry : [ 20, "ph-100", 48, "ph-72" ]
+    text : "AI"
+    text.align : [ "center", "center" ]
   }
 
   lbTitle#Label : {

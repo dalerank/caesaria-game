@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_ratings_window.hpp"
 #include "gfx/picture.hpp"
@@ -21,6 +21,7 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "game/player.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
@@ -35,12 +36,15 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "world/emperor.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
+#include "city/states.hpp"
 #include "dictionary.hpp"
 #include "city/cityservice_peace.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/requestdispatcher.hpp"
 #include "city/cityservice_info.hpp"
+#include "city/statistic.hpp"
+#include "advisor_rating_button.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -51,95 +55,60 @@ namespace gui
 namespace advisorwnd
 {
 
-class RatingButton : public PushButton
+namespace {
+enum { muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongTime=90 };
+const char* const cultureCoverageDesc[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
+}
+
+class RatingColumn : public Label
 {
 public:
-  RatingButton( Widget* parent, Point pos, std::string title, std::string tooltip )
-    : PushButton( parent, Rect( pos, Size( 108, 65 )), _(title), -1, false, PushButton::whiteBorderUp )
-  {
-    setTextAlignment( align::center, align::upperLeft );
-    setTooltipText( _(tooltip) );
-    _value = 0;
-    _target = 0;
-  }
+  Pictures columns;
 
-  virtual void _updateTextPic()
+  RatingColumn(Widget *parent, const Point& center, int value )
+    : Label( parent )
   {
-    PushButton::_updateTextPic();
+    int columnStartY = 275;
+    Picture footer( gui::rc.panel, gui::column.footer );
+    Picture header( gui::rc.panel, gui::column.header );
+    Picture body( gui::rc.panel, gui::column.body );
 
-    Font digitFont = Font::create( FONT_4 );
-    PictureRef& pic = _textPictureRef();
-    if( pic )
+    for( int i=0; i < value; i++ )
     {
-      digitFont.draw( *pic, utils::format( 0xff, "%d", _value ), width() / 2 - 10, 17, true, false );
+      columns.append( body, Point( center.x() - body.width() / 2, -columnStartY + (10 + i * 2)) );
+    }
 
-      Font targetFont = Font::create( FONT_1 );
-      targetFont.draw( *pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
+    columns.append( footer, Point( center.x() - footer.width() / 2, -columnStartY + footer.height()) );
+    if( value >= 50 )
+    {
+      columns.append( header, Point( center.x() - header.width() / 2, -columnStartY + (10 + value * 2)) );
+    }
 
-      pic->update();
-    }     
+    setCenter( center );
   }
 
-  void setValue( const int value )
+  virtual void draw(Engine &painter)
   {
-    _value = value;
-    _resizeEvent();
+    painter.draw( columns, parent()->absoluteRect().lefttop() );
   }
-
-  void setTarget( const int value )
-  {
-    _target = value;
-    _resizeEvent();
-  }
-
-private:
-  int _value;
-  int _target;
 };
 
 class Ratings::Impl
 {
 public:
-  Pictures columns;
-  RatingButton* btnCulture;
-  RatingButton* btnProsperity;
-  RatingButton* btnPeace;
-  RatingButton* btnFavour;
-  TexturedButton* btnHelp;
   Label* lbRatingInfo;
+  PlayerCityPtr city;
 
-  void updateColumn( const Point& alignCenter, const int value );
+public:
   void checkCultureRating();
   void checkProsperityRating();
   void checkPeaceRating();
   void checkFavourRating();
-
-  PlayerCityPtr city;
 };
-
-void Ratings::Impl::updateColumn( const Point& center, const int value )
-{
-  int columnStartY = 275;
-  const Picture& footer = Picture::load( ResourceGroup::panelBackground, 544 );
-  const Picture& header = Picture::load( ResourceGroup::panelBackground, 546 );
-  const Picture& body = Picture::load( ResourceGroup::panelBackground, 545 );
-
-  for( int i=0; i < value; i++ )
-  {
-    columns.append( body, Point( center.x() - body.width() / 2, -columnStartY + (10 + i * 2)) );
-  }
-
-  columns.append( footer, Point( center.x() - footer.width() / 2, -columnStartY + footer.height()) );
-  if( value >= 50 )
-  {
-    columns.append( header, Point( center.x() - header.width() / 2, -columnStartY + (10 + value * 2)) );
-  }
-}
 
 void Ratings::Impl::checkCultureRating()
 {
-  city::CultureRatingPtr culture;
-  culture << city->findService( city::CultureRating::defaultName() );
+  CultureRatingPtr culture = city->statistic().services.find<CultureRating>();
 
   if( culture.isValid() )
   {
@@ -151,13 +120,18 @@ void Ratings::Impl::checkCultureRating()
 
     StringArray troubles;
 
-    const char* covTypename[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
     for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
     {
       int coverage = culture->coverage( CultureRating::Coverage(k) );
-      if( coverage < 100 )
+      int objects_n = culture->objects_n( CultureRating::Coverage(k) );
+      if( objects_n == 0 )
       {
-        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
+        std::string troubleDesc = fmt::format( "##haveno_{}_in_city##", cultureCoverageDesc[ k ] );
+        troubles.push_back( troubleDesc );
+      }
+      else if( coverage < 100 )
+      {
+        std::string troubleDesc = fmt::format( "##have_less_{}_in_city_{}##", cultureCoverageDesc[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
       }
     }
@@ -168,120 +142,124 @@ void Ratings::Impl::checkCultureRating()
 
 void Ratings::Impl::checkProsperityRating()
 {
-  city::ProsperityRatingPtr prosperity;
-  prosperity << city->findService( city::ProsperityRating::defaultName() );
+  ProsperityRatingPtr prosperity = city->statistic().services.find<ProsperityRating>();
 
+  std::string text;
   if( prosperity != 0 )
   {
     StringArray troubles;
-    unsigned int prValue = prosperity->value();
-    if( prValue == 0 )
+    unsigned int currentProsperity = prosperity->value();
+    if( currentProsperity == 0 )
     {
       lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;
     }
 
-    city::InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
 
     if( current[ city::Info::prosperity ] > lastYear[ city::Info::prosperity ] ) { troubles <<  "##your_prosperity_raising##"; }
 
-    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles << "##high_workless_number##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles << "##much_plebs##"; }
-    if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
+    if( prosperity->getMark( ProsperityRating::housesCap ) < 0 ) { troubles << "##bad_house_quality##"; }
+    if( prosperity->getMark( ProsperityRating::haveProfit ) == 0 ) { troubles << "##lost_money_last_year##"; }
+    if( prosperity->getMark( ProsperityRating::worklessPercent ) > config::workless::high ) { troubles << "##high_workless_number##"; }
+    if( prosperity->getMark( ProsperityRating::workersSalary ) < 0 ) { troubles << "##workers_salary_less_then_rome##"; }
+    if( prosperity->getMark( ProsperityRating::plebsPercent ) > muchPlebsPercent ) { troubles << "##much_plebs##"; }
+    if( prosperity->getMark( ProsperityRating::changeValue ) == 0 )
     {
       troubles << "##no_prosperity_change##";
       troubles << "##how_to_grow_prosperity##";
     }
-    if( prValue > 90 ) { troubles << "##amazing_prosperity_this_city##"; }
+    if( currentProsperity > cityAmazinProsperity ) { troubles << "##amazing_prosperity_this_city##"; }
     if( current[ Info::payDiff ] > 0 ) { troubles << "##prosperity_lack_that_you_pay_less_rome##"; }
 
 
-    unsigned int caesarsHelper = city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::thisYear );
-    caesarsHelper += city->funds().getIssueValue( city::Funds::caesarsHelp, city::Funds::lastYear );
+    unsigned int caesarsHelper = city->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::thisYear );
+    caesarsHelper += city->treasury().getIssueValue( econ::Issue::caesarsHelp, econ::Treasury::lastYear );
     if( caesarsHelper > 0 )
     {
       troubles << "##emperor_send_money_to_you_nearest_time##";
     }
 
-    std::string text = troubles.empty()
+    text = troubles.empty()
                         ? "##good_prosperity##"
                         : troubles.random();
 
-    lbRatingInfo->setText( _(text) );
+
   }
+  else
+  {
+    text = "##cant_calc_prosperity##";
+  }
+
+  lbRatingInfo->setText( _(text) );
 }
 
 void Ratings::Impl::checkPeaceRating()
 {
   StringArray advices;
-  city::MilitaryPtr ml;
-  ml << city->findService( city::Military::defaultName() );
+  MilitaryPtr ml = city->statistic().services.find<Military>();
+  PeacePtr peaceRt = city->statistic().services.find<Peace>();
 
-  if( ml.isValid() )
+  if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
-    unsigned int peace = city->peace();
-
-    bool cityUnderRomeAttack = ml->haveNotification( city::Military::Notification::chastener );
-    bool cityUnderBarbarianAttack = ml->haveNotification( city::Military::Notification::barbarian );
-
-    if( cityUnderBarbarianAttack || cityUnderRomeAttack )
-    {
-      if( cityUnderRomeAttack ) { advices << "##city_under_rome_attack##"; }
-      if( cityUnderBarbarianAttack ) { advices << "##city_under_barbarian_attack##"; }
-    }
-    else
-    {
-      if( ml->monthFromLastAttack() < 36 )
-      {
-        advices << "##province_has_peace_a_short_time##";
-      }
-
-      if( peace > 90 ) { advices << "##your_province_quiet_and_secure##"; }
-      else if( peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
-      else if( peace > 70 ) { advices << "##its_very_peacefull_province##"; }
-      else if( peace > 60 ) { advices << "##this_province_feels_peaceful##"; }
-      else if( peace > 50 ) { advices << "##this_lawab_province_become_very_peacefull##"; }
-    }
+    Logger::warning( "!!! WARNING: checkPeaceRating failed some is null" );
+    return;
   }
 
-  city::PeacePtr peaceRt;
-  peaceRt << city->findService( city::Peace::defaultName() );
-  if( peaceRt.isValid() )
+  unsigned int peace = city->peace();
+
+  bool cityUnderRomeAttack = ml->haveNotification( notification::chastener );
+  bool cityUnderBarbarianAttack = ml->haveNotification( notification::barbarian );
+
+  if( cityUnderBarbarianAttack || cityUnderRomeAttack )
   {
-    advices << peaceRt->reason();
+    if( cityUnderRomeAttack ) { advices << "##city_under_rome_attack##"; }
+    if( cityUnderBarbarianAttack ) { advices << "##city_under_barbarian_attack##"; }
+  }
+  else
+  {
+    if( ml->monthFromLastAttack() < 36 )
+    {
+      advices << "##province_has_peace_a_short_time##";
+    }
+
+    if( peace > peaceLongTime ) { advices << "##your_province_quiet_and_secure##"; }
+    else if( peace > 80 ) { advices << "##overall_city_become_a_sleepy_province##"; }
+    else if( peace > 70 ) { advices << "##its_very_peacefull_province##"; }
+    else if( peace > 60 ) { advices << "##this_province_feels_peaceful##"; }
+    else if( peace > peaceAverage ) { advices << "##this_lawab_province_become_very_peacefull##"; }
   }
 
-  if( advices.empty() ) { advices << "##peace_rating_text##"; }
+  std::string peaceRtReason = peaceRt->reason();
+  if( !peaceRtReason.empty() )
+    advices << peaceRtReason;
+
+  if( advices.empty() )
+    advices << "##peace_rating_text##";
+
   lbRatingInfo->setText( _(advices.random()) );
 }
 
 void Ratings::Impl::checkFavourRating()
 {
   StringArray problems;
-  city::request::DispatcherPtr rd;
-  rd << city->findService( city::request::Dispatcher::defaultName() );
+  request::DispatcherPtr rd = city->statistic().services.find<request::Dispatcher>();
+  InfoPtr info = city->statistic().services.find<Info>();
 
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+  Info::Parameters current = info->lastParams();
+  Info::Parameters lastYear = info->yearParams( 0 );
 
-  city::Info::Parameters current = info->lastParams();
-  city::Info::Parameters lastYear = info->yearParams( 0 );
-
-  PlayerPtr player = city->player();
+  PlayerPtr player = city->mayor();
   world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
   float salaryKoeff = player->salary() / (float)rank.salary;
 
-  int brokenEmpireTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::lastYear );
+  int brokenEmpireTax = city->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
   if( brokenEmpireTax > 0 )
   {
-    int twoYearsAgoBrokenTax = city->funds().getIssueValue( city::Funds::overdueEmpireTax, city::Funds::twoYearAgo );
+    int twoYearsAgoBrokenTax = city->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearsAgo );
 
     if( twoYearsAgoBrokenTax > 0 ) { problems << "##broke_empiretax_with2years_warning##"; }
     else { problems << "##broke_empiretax_warning##"; }
@@ -293,17 +271,18 @@ void Ratings::Impl::checkFavourRating()
   else if( salaryKoeff > 1.5f ) { problems << "##try_reduce_your_salary##"; }
   else if( salaryKoeff > 1.f ) { problems << "##your_salary_frowned_senate##"; }
 
-  if( current[ city::Info::favour ] == lastYear[ city::Info::favour ] )   {    problems << "##your_favour_unchanged_from_last_year##";  }
-  else if( current[ city::Info::favour ] > lastYear[ city::Info::favour ] ) { problems << "##your_favour_increased_from_last_year##"; }
+  if( current[ Info::favour ] == lastYear[ Info::favour ] )   {    problems << "##your_favour_unchanged_from_last_year##";  }
+  else if( current[ Info::favour ] > lastYear[ Info::favour ] ) { problems << "##your_favour_increased_from_last_year##"; }
 
-  if( current[ city::Info::favour ] < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
-  else if( current[ city::Info::favour ] > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
+  if( current[ Info::favour ] < 30 ) { problems << "##your_favor_is_dropping_catch_it##"; }
+  else if( current[ Info::favour ] > 90 ) { problems << "##emperoradv_caesar_has_high_respect_for_you##"; }
 
   if( rd.isValid() )
   {
     if( rd->haveCanceledRequest() )
     {
       problems << "##imperial_request_cance_badly_affected##";
+      problems << "##request_failed##";
     }
   }
 
@@ -313,46 +292,61 @@ void Ratings::Impl::checkFavourRating()
 }
 
 Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
-  : Window( parent, Rect( 0, 0, 640, 432 ), "", id ), _d( new Impl )
+  : Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
   setupUI( ":/gui/ratingsadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lbNeedPopulation;
-  GET_WIDGET_FROM_UI( lbNeedPopulation )
+  INIT_WIDGET_FROM_UI( Label*, lbNeedPopulation )
   GET_DWIDGET_FROM_UI( _d, lbRatingInfo )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  if( lbNeedPopulation ) lbNeedPopulation->setText( utils::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ) );
+  if( lbNeedPopulation )
+  {
+    std::string text = fmt::format( "{} {} ({} {}",
+                                    _("##population##"), city->states().population,
+                                    targets.needPopulation(), _("##need_population##")  );
+    lbNeedPopulation->setText( text );
+  }
 
-  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wndrt_culture##", "##wndrt_culture_tooltip##" );
-  _d->btnCulture->setTarget( targets.needCulture() );
-  _d->btnCulture->setValue( _d->city->culture() );
-  _d->updateColumn( _d->btnCulture->relativeRect().center(), 0 );
-  CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
+  INIT_WIDGET_FROM_UI( RatingButton*, btnCulture )
+  if( btnCulture )
+  {
+    btnCulture->setTarget( targets.needCulture() );
+    btnCulture->setValue( _d->city->culture() );
+    add<RatingColumn>( btnCulture->relativeRect().center(), _d->city->culture() );
+  }
+  CONNECT( btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
-  _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
-  _d->btnProsperity->setValue( _d->city->prosperity() );
-  _d->btnProsperity->setTarget( targets.needProsperity() );
-  _d->updateColumn( _d->btnProsperity->relativeRect().center(), _d->city->prosperity() );
-  CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
+  INIT_WIDGET_FROM_UI( RatingButton*, btnProsperity )
+  if( btnProsperity )
+  {
+    btnProsperity->setValue( _d->city->prosperity() );
+    btnProsperity->setTarget( targets.needProsperity() );
+    add<RatingColumn>( btnProsperity->relativeRect().center(), _d->city->prosperity() );
+  }
+  CONNECT( btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
-  _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
-  _d->btnPeace->setValue( _d->city->peace() );
-  _d->btnPeace->setTarget( targets.needPeace() );
-  _d->updateColumn( _d->btnPeace->relativeRect().center(), 0 );
-  CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
+  INIT_WIDGET_FROM_UI( RatingButton*, btnPeace )
+  if( btnPeace )
+  {
+    btnPeace->setValue( _d->city->peace() );
+    btnPeace->setTarget( targets.needPeace() );
+    add<RatingColumn>( btnPeace->relativeRect().center(), _d->city->peace() );
+  }
+  CONNECT( btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
-  _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
-  _d->btnFavour->setValue( _d->city->favour() );
-  _d->btnFavour->setTarget( targets.needFavour() );
-  _d->updateColumn( _d->btnFavour->relativeRect().center(), 0 );
-  CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
+  INIT_WIDGET_FROM_UI( RatingButton*, btnFavour )
+  if( btnFavour )
+  {
+    btnFavour->setValue( _d->city->favour() );
+    btnFavour->setTarget( targets.needFavour() );
+    add<RatingColumn>( btnFavour->relativeRect().center(), _d->city->favour() );
+  }
+  CONNECT( btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "ratings_advisor" );
 }
 
 void Ratings::draw( gfx::Engine& painter )
@@ -361,13 +355,6 @@ void Ratings::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
-
-  painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-}
-
-void Ratings::_showHelp()
-{
-  DictionaryWindow::show( this, "ratings_advisor" );
 }
 
 }

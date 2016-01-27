@@ -21,7 +21,7 @@
 namespace events
 {
 
-class SaveGame : public GameEvent
+class ShowSaveDialog : public GameEvent
 {
 public:
   static GameEventPtr create();
@@ -31,7 +31,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  SaveGame();
+  ShowSaveDialog();
 };
 
 }

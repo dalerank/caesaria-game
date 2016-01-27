@@ -26,8 +26,6 @@ namespace gui
 class ModalScreen : public Widget
 {
 public:
-  static void assignTo(Widget* widget);
-
   //! constructor
   ModalScreen( Widget* parent, int id=-1 );
 
@@ -41,7 +39,8 @@ public:
   virtual void addChild(Widget* child);
 
   //! draws the element and its children
-virtual void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
   //! Modalscreen is not a typical element, but rather acts like a state for it's children.
   //! isVisible is overriden to give this a useful behaviour, so that a modal will no longer
@@ -55,7 +54,7 @@ protected:
   virtual bool _canTakeFocus(Widget* target) const;
 
   //! Updates the absolute position.
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
 private:        
   unsigned int _mouseDownTime;

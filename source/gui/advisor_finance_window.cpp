@@ -25,21 +25,22 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
+#include "game/datetimehelper.hpp"
+#include "listbox.hpp"
 #include "objects/house_level.hpp"
+#include "core/event.hpp"
+#include "environment.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "city/statistic.hpp"
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -54,71 +55,100 @@ namespace {
   Point offset( 0, 17 );
 }
 
+struct RowInfo
+{
+  std::string title;
+  econ::Issue::Type type;
+};
+
 class Finance::Impl
 {
 public:
-  PlayerCityPtr city;
+  typedef enum { taxes=0,  trade=1, donations=2, debt=3, imports=4, wages=5,
+                 constructions=6, credit=7, salaries=8,
+                 sundries=9, empireTaxes=10, expensives=11,
+                 profits=12, balance=13 } Row;
 
-  gui::Label* lbTaxRateNow;
-  TexturedButton* btnHelp;
-
-  void updateTaxRateNowLabel();
-  void decreaseTax();
-  void increaseTax();
-  int calculateTaxValue();
+  std::map<int,RowInfo> names = { {taxes, {"##taxes##", econ::Issue::taxIncome}},
+                             {trade,{"##trade##", econ::Issue::exportGoods}},
+                             {donations,{"##donations##", econ::Issue::donation }},
+                             {debt,{"##debet##", econ::Issue::debet }},
+                             {imports,{"##import_fn##", econ::Issue::importGoods}},
+                             {wages,{"##wages##",     econ::Issue::workersWages}},
+                             {constructions,{"##buildings##", econ::Issue::buildConstruction}},
+                             {credit,{"##percents##",  econ::Issue::creditPercents}},
+                             {salaries,{"##pn_salary##", econ::Issue::playerSalary}},
+                             {sundries,{"##other##",     econ::Issue::sundries}},
+                             {empireTaxes,{"##empire_tax##",econ::Issue::empireTax}},
+                             {expensives,{"##credit##",    econ::Issue::credit}},
+                             {profits,{"##profit##",    econ::Issue::cityProfit}},
+                             {balance,{"##balance##",   econ::Issue::balance}}
+                           };
 };
 
+
+
 Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 420 ), "", id ), _d( new Impl )
+  : Base( parent, city, id ), _d( new Impl )
 {
-  _d->city = city;
   setupUI( ":/gui/financeadv.gui" );
 
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
-
-  Label* lbCityHave;
-  GET_WIDGET_FROM_UI( lbCityHave )
-  if( lbCityHave ) lbCityHave->setText( utils::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") ) );
-
-  GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
-  _d->updateTaxRateNowLabel();
-
-  unsigned int regTaxPayers = statistic::getTaxPayersPercent( city );
-  std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
-  Label* lbRegPayers;
-  GET_WIDGET_FROM_UI( lbRegPayers )
-  if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
-
-  Point sp = startPoint;
-  _drawReportRow( sp, _("##taxes##"), city::Funds::taxIncome );
-  _drawReportRow( sp + offset, _("##trade##"), city::Funds::exportGoods );
-  _drawReportRow( sp + offset * 2, _("##donations##"), city::Funds::donation );
-  _drawReportRow( sp + offset * 3, _("##debet##"), city::Funds::debet );
-  
-  sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 4, _("##import_fn##"), city::Funds::importGoods );
-  _drawReportRow( sp + offset * 5, _("##wages##"), city::Funds::workersWages );
-  _drawReportRow( sp + offset * 6, _("##buildings##"), city::Funds::buildConstruction );
-  _drawReportRow( sp + offset * 7, _("##percents##"), city::Funds::creditPercents );
-  _drawReportRow( sp + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
-  _drawReportRow( sp + offset * 9, _("##other##"), city::Funds::sundries );
-  _drawReportRow( sp + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
-  _drawReportRow( sp + offset * 11, _("##credit##"), city::Funds::credit );
-
-  sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 12, _("##profit##"), city::Funds::cityProfit );
-  
-  sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * 13, _("##balance##"), city::Funds::balance );
-
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-
-  TexturedButton* btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, 601 );
-  TexturedButton* btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, 605 );
-  CONNECT( btnDecreaseTax, onClicked(), _d.data(), Impl::decreaseTax );
-  CONNECT( btnIncreaseTax, onClicked(), _d.data(), Impl::increaseTax );
-  CONNECT( _d->btnHelp, onClicked(), this, Finance::_showHelp );
+  _updateCityTreasure();
+  _updateTaxRateNowLabel();
+  _updateRegisteredPayers();
+  _initReportRows();
+  _initTaxManager();
 }
+
+class FinanceRow : public PushButton
+{
+public:
+  FinanceRow( Widget* parent, const Rect& rect, const std::string& title,
+              int type, PlayerCityPtr city, bool line )
+    : PushButton( parent, rect )
+  {
+    setBackgroundStyle( PushButton::noBackground );
+    text = title;
+    dline = line;
+    lastyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
+    thisyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
+
+    setFont( FONT_1 );
+    Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
+  }
+
+  void _updateTexture()
+  {
+    PushButton::_updateTexture();
+
+    canvasDraw( _(text), Point( 20, 0 ) );
+    canvasDraw( utils::i2str( lastyear ), Point( 215, 0) );
+    canvasDraw( utils::i2str( thisyear ), Point( 355, 0) );
+  }
+
+  void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    if( _state() == stHovered )
+      painter.draw( border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+
+    if( dline )
+    {
+      Rect p( absoluteRect().leftbottom() + Point( 200, -1 ), Size( 72, 1) );
+      painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
+
+      p = Rect( absoluteRect().leftbottom() + Point( 340, -1 ), Size( 72, 1) );
+      painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
+    }
+  }
+
+  bool dline;
+  int lastyear;
+  int thisyear;
+  std::string text;
+  gfx::Pictures border;
+};
 
 void Finance::draw(gfx::Engine& painter )
 {
@@ -126,65 +156,146 @@ void Finance::draw(gfx::Engine& painter )
     return;
 
   Window::draw( painter );
-
-  Rect p( startPoint + absoluteRect().lefttop() + offset * 3 + Point( 200, 0 ), Size( 72, 1) );
-  painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
-
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * 3 + Point( 340, 0 ), Size( 72, 1) );
-  painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
-
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * 11 + Point( 200, 10 ), Size( 72, 1) );
-  painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
-
-  p =  Rect( startPoint + absoluteRect().lefttop() + offset * 11 + Point( 340, 10 ), Size( 72, 1) );
-  painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 }
 
-void Finance::_showHelp()
+bool Finance::onEvent(const NEvent& event)
 {
-  DictionaryWindow::show( this, "finance_advisor" );
+  if( event.EventType == sEventGui
+      && event.gui.type == guiButtonClicked )
+  {
+    if( safety_cast<FinanceRow*>( event.gui.caller ) != 0 )
+      return true;
+  }
+
+  return Base::onEvent(event);
 }
 
-void Finance::_drawReportRow(const Point& pos, const std::string& title, int type)
+void Finance::_updateTaxRateNowLabel()
 {
-  Font font = Font::create( FONT_1 );
-
-  int lyvalue = _d->city->funds().getIssueValue( (city::Funds::IssueType)type, city::Funds::lastYear );
-  int tyvalue = _d->city->funds().getIssueValue( (city::Funds::IssueType)type, city::Funds::thisYear );
-
-  Size size( 100, 20 );
-  Label* lb = new Label( this, Rect( pos, size), title );
-  lb->setFont( font );
-
-  lb = new Label( this, Rect( pos + Point( 215, 0), size), utils::format( 0xff, "%d", lyvalue ) );
-  lb->setFont( font );
-
-  lb = new Label( this, Rect( pos + Point( 355, 0), size), utils::format( 0xff, "%d", tyvalue ) );
-  lb->setFont( font );
-}
-
-void Finance::Impl::updateTaxRateNowLabel()
-{
+  INIT_WIDGET_FROM_UI( Label*, lbTaxRateNow )
   if( !lbTaxRateNow )
     return;
 
-  int taxValue = statistic::getTaxValue( city );
-  std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
-                                                    city->funds().taxRate(), _("##may_collect_about##"),
-                                                    taxValue, _("##denaries##") );
+  int taxValue = _city->statistic().tax.possible();
+  std::string strCurretnTax = fmt::format( "{}% {} {} {}",
+                                           _city->treasury().taxRate(), _("##may_collect_about##"),
+                                           taxValue, _("##denarii_short##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
 
-void Finance::Impl::decreaseTax()
+void Finance::_decreaseTax()
 {
-  city->funds().setTaxRate( city->funds().taxRate() - 1 );
-  updateTaxRateNowLabel();
+  _city->treasury().setTaxRate( _city->treasury().taxRate() - 1 );
+  _updateTaxRateNowLabel();
 }
 
-void Finance::Impl::increaseTax()
+void Finance::_increaseTax()
 {
-  city->funds().setTaxRate( city->funds().taxRate() + 1 );
-  updateTaxRateNowLabel();
+  _city->treasury().setTaxRate( _city->treasury().taxRate() + 1 );
+  _updateTaxRateNowLabel();
+}
+
+void Finance::_addRow( const Rect& rect, int index, bool line )
+{
+  const auto& info = _d->names[ index ];
+  auto& btn = add<FinanceRow>( rect + offset * index, info.title, info.type, _city, line );
+  btn.setID( info.type );
+  CONNECT_LOCAL( &btn, onClickedEx(), Finance::_showIssueDetails )
+}
+
+class FinanceDetails : public Window
+{
+public:
+  FinanceDetails( Widget* parent, const Size& size, const std::string& title, PlayerCityPtr city, econ::Issue::Type type )
+   : Window( parent, Rect( Point(), size), title )
+  {
+    setTextAlignment( align::center, align::center );
+    setFont( FONT_3 );
+    setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
+    add<ExitButton>( Point( width() - 37, 12 ) );
+
+    ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
+    listbox.setItemFont( Font::create( FONT_1 ) );
+    listbox.setItemHeight( 16 );
+
+    const econ::DateIssues& history = city->treasury().getIssueHistory().issues();
+    DateTime lasttime;
+    int summ = 0;
+    for( auto it = history.rbegin(); it != history.rend(); ++it )
+    {
+      const auto& issue = *it;
+      if( issue.type == type )
+      {
+        summ += issue.money;
+        if( lasttime != issue.time && summ != 0 )
+        {
+          lasttime = issue.time;
+          summ = 0;
+          std::string text = fmt::format( "{} {} {}", utils::date2str( issue.time, true ), issue.money, "##issue_description##" );
+          listbox.addItem( text );
+        }
+      }
+    }
+
+    moveTo( Widget::parentCenter );
+    setModal();
+  }
+};
+
+void Finance::_showIssueDetails(Widget* widget)
+{
+  int id = widget->ID();
+  const auto& info = _d->names[ id ];
+  ui()->add<FinanceDetails>( Size(480, 640 ), _(info.title), _city, info.type );
+}
+
+void Finance::_initReportRows()
+{
+  Rect rect( startPoint, Size( 500, 20 ) );
+  _addRow( rect, Impl::taxes );
+  _addRow( rect, Impl::trade );
+  _addRow( rect, Impl::donations );
+  _addRow( rect, Impl::debt, true );
+
+  rect += Point( 0, 6 );
+  _addRow( rect, Impl::imports );
+  _addRow( rect, Impl::wages );
+  _addRow( rect, Impl::constructions );
+  _addRow( rect, Impl::credit );
+  _addRow( rect, Impl::salaries );
+  _addRow( rect, Impl::sundries );
+  _addRow( rect, Impl::empireTaxes );
+  _addRow( rect, Impl::expensives, true );
+
+  rect += Point( 0, 6 );
+  _addRow( rect, Impl::profits );
+  _addRow( rect, Impl::balance );
+}
+
+void Finance::_initTaxManager()
+{
+  add<HelpButton>( Point( 12, height() - 39), "finance_advisor" );
+  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, gui::button.arrowDown );
+  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, gui::button.arrowUp );
+
+  CONNECT_LOCAL( &btnDecreaseTax, onClicked(), Finance::_decreaseTax );
+  CONNECT_LOCAL( &btnIncreaseTax, onClicked(), Finance::_increaseTax );
+}
+
+void Finance::_updateRegisteredPayers()
+{
+  unsigned int regTaxPayers = _city->statistic().tax.payersPercent();
+  std::string strRegPaeyrs = fmt::format( "{}% {}", regTaxPayers, _("##population_registered_as_taxpayers##") );
+  INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
+  if( lbRegPayers )
+    lbRegPayers->setText( strRegPaeyrs );
+}
+
+void Finance::_updateCityTreasure()
+{
+  INIT_WIDGET_FROM_UI( Label*, lbCityHave )
+  if( lbCityHave )
+    lbCityHave->setText( fmt::format( "{} {} {}", _("##city_have##"), _city->treasury().money(), _("##denarii_short##") ) );
 }
 
 }//end namespace advisorwnd

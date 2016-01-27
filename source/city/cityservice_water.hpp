@@ -19,7 +19,6 @@
 #define __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -28,12 +27,10 @@ namespace city
 class Water : public city::Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep(const unsigned int time );
 
 private:
-  Water( PlayerCityPtr city );
+  Water( PlayerCityPtr city );  
 };
 
 }//end namespace city

@@ -121,7 +121,7 @@ public:
 		virtual void OnDownloadProgress(const CurDownloadInfo& info) = 0;
 
 		// called on finishing the single-file
-		virtual void OnDownloadFinish() = 0;
+    virtual void onDownloadFinish() = 0;
 	};
 
 	typedef SmartPtr<DownloadProgress> DownloadProgressPtr;
@@ -130,7 +130,7 @@ public:
 	class FileOperationProgress : public virtual ReferenceCounted
 	{
 	public:
-		virtual void OnFileOperationProgress(const CurFileInfo& info) = 0;
+    virtual void onFileOperationProgress(const CurFileInfo& info) = 0;
 
 		virtual void OnFileOperationFinish() = 0;
 	};
@@ -203,27 +203,28 @@ private:
 public:
 	// Pass the program options to this class
 	Updater(const UpdaterOptions& options, vfs::Path executable);
+  virtual ~Updater();
 
 	// Removes leftovers from previous run
-	void CleanupPreviousSession();
+  void cleanupPreviousSession();
 
 	// Returns TRUE if new mirrors should be downloaded
-	bool isMirrorsNeedUpdate();
+  bool isNeedLoadMirrorsFromServer();
 
 	// Returns the number of registered mirrors
-	std::size_t GetNumMirrors();
+  std::size_t mirrors_n();
 
 	// Update the local tdm_mirrors.txt file from the main servers.
-	void updateMirrors();
+  void downloadNewMirrors();
 
 	// Load information from the tdm_mirrors.txt file
 	void loadMirrors();
 
 	// Download the checksum crc_info.txt file from the mirrors.
-	void GetStableVersionFromServer();
+  void downloadStableVersion();
 
 	// Download the tdm_version_info.txt file from a mirror.
-	void GetVersionInfoFromServer();
+  void downloadCurrentVersion();
 
 	// Return the version string of the newest available version
 	std::string getNewestVersion();
@@ -247,13 +248,13 @@ public:
 	//DifferentialUpdateInfo GetDifferentialUpdateInfo();
 
 	// Compare locally installed files to the "ideal" state defined in crc_info.txt 
-	void CheckLocalFiles();
+  void checkLocalFiles();
 
 	// True if the local files are not up to date and downloads need to be started
-	bool LocalFilesNeedUpdate();
+  bool isDownloadQueueFull();
 
 	// Generates an internal TODO list needed to perform the update step
-	void PrepareUpdateStep(std::string prefix);
+  void prepareUpdateStep(const std::string& prefix);
 
 	// Performs the update step, downloads stuff and integrates the package
 	void PerformUpdateStep();
@@ -281,10 +282,10 @@ public:
 	bool NewUpdaterAvailable();
 
 	// Removes all packages, except the one containing the tdm_update binary
-	void RemoveAllPackagesExceptUpdater();
+  void removeAllPackagesExceptUpdater();
 
 	// Re-launches the updater (starts update batch file in Win32 builds)
-	void RestartUpdater();
+  void restartUpdater();
 
 	// Cleanup (both after regular exit and user terminations)
 	void postUpdateCleanup();
@@ -300,17 +301,17 @@ public:
 	void removeDownload( std::string itemname );
 
 private:
-	// Throws if mirrors are empty
-	void AssertMirrorsNotEmpty();
+  class Impl;
+  ScopedPtr<Impl> _d;
 
-	void NotifyDownloadProgress();
+  void notifyDownloadProgress();
 	void NotifyFullUpdateProgress();
 
 	// Notifier shortcut
 	void NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, double fraction);
 
 	// Returns false if the local files is missing or needs an update
-	bool CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile);
+  bool checkLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile);
 
 	// Get the target path (defaults to current path)
 	vfs::Directory getTargetDir();
@@ -319,17 +320,21 @@ private:
 	DownloadPtr prepareMirroredDownload(const std::string& remoteFile);
 
 	// Downloads a file from a random mirror to the target folder
-	void PerformSingleMirroredDownload(const std::string& remoteFile);
+  void downloadSingleFile(const std::string& remoteFile);
 
 	// Downloads a file from a random mirror to the target folder, checking required size and CRC after download
-	void PerformSingleMirroredDownload(const std::string& remoteFile, std::size_t requiredSize, unsigned int requiredCrc);
+  void downloadSingleFile(const std::string& remoteFile, std::size_t requiredSize, unsigned int requiredCrc);
 
 	// Starts the download and waits for completion
-	void PerformSingleMirroredDownload(const DownloadPtr& download);
-
-	void _markFileAsExecutable(vfs::Path path);
+  void downloadSingleFile(const DownloadPtr& download);
 
   bool isIgnored(std::string name);
+};
+
+class SteamHelper
+{
+public:
+  static void checkDepsAndStart();
 };
 
 } // namespace

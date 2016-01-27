@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "loader.hpp"
 
@@ -26,10 +26,9 @@
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/foreach.hpp"
 #include "game.hpp"
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"
@@ -40,7 +39,6 @@
 #include <vector>
 
 using namespace gfx;
-using namespace constants;
 
 namespace game
 {
@@ -61,11 +59,12 @@ public:
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
-  void finalize( Game& game );
-  bool maySetSign( const Tile& tile )
-  {
-    return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
-  }
+  void finalize(Game& game , bool needInitEnterExit);
+  bool maySetSign( const Tile& tile );
+  void clearTile(Tile& tile);
+
+public signals:
+  Signal1<std::string> onUpdateSignal;
 };
 
 Loader::Loader() : _d( new Impl )
@@ -96,14 +95,14 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
+  Logger::warning( "({}, {})", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "({}, {})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
-    tile::clear( signTile );
-    gfx::TileOverlayPtr waymark = TileOverlayFactory::instance().create( constants::objects::waymark );
-    CityAreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    clearTile( signTile );
+    OverlayPtr waymark = Overlay::create( object::waymark );
+    city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
   }
@@ -111,43 +110,64 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
 void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
-  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
+  TilesArray area = tmap.allTiles();
 
-  foreach( it, area )
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+  for( auto tile : area )
   {
-    int rId = (*it)->originalImgId() - 364;
+    int rId = tile->imgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       Animation water = AnimationBank::simple( AnimationBank::animWater );
       water.setIndex( rId );
-      (*it)->setAnimation( water );
-      (*it)->setFlag( Tile::tlDeepWater, true );
+      tile->setAnimation( water );
+      tile->setFlag( Tile::tlDeepWater, true );
     }
 
-    if( (*it)->getFlag( Tile::tlMeadow ) )
+    if( tile->getFlag( Tile::tlMeadow ) )
     {
-      const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
-      if( !(*it)->picture().isValid() )
+      Animation meadowAnim;
+      int index = math::random( meadow.size()-1 );
+      meadowAnim.addFrame( meadow.frame( index ) );
+      meadowAnim.setDelay( 10 );
+
+      if( !tile->picture().isValid() )
       {
-        Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
-        (*it)->setPicture( pic );
+        Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+        tile->setPicture( pic );
       }
-      (*it)->setAnimation( meadow );
+      tile->setAnimation( meadowAnim );
     }
   }
 }
 
-void Loader::Impl::finalize( Game& game )
+void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
 {
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
-  const BorderInfo& border = game.city()->borderInfo();
-
-  initEntryExitTile( border.roadEntry, game.city() );
-  initEntryExitTile( border.roadExit,  game.city() );
+  if( needInitEnterExit )
+  {
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos(), game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadExit ).epos(),  game.city() );
+  }
 
   initTilesAnimation( tileMap );
+}
+
+bool Loader::Impl::maySetSign(const Tile &tile)
+{
+  return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
+}
+
+void Loader::Impl::clearTile(Tile& tile)
+{
+  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+  int imgId = math::random( 58 );
+
+  Picture pic( config::rc.land1a, startOffset + imgId );
+  tile.setPicture( config::rc.land1a, startOffset + imgId );
+  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void Loader::Impl::initLoaders()
@@ -159,33 +179,35 @@ void Loader::Impl::initLoaders()
   loaders.push_back( new loader::OMap() );
 }
 
-bool Loader::load( vfs::Path filename, Game& game )
+Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
+
+bool Loader::load(vfs::Path filename, Game& game)
 {
   // try to load file based on file extension
-  Impl::LoaderIterator it = _d->loaders.begin();
-  for( ; it != _d->loaders.end(); ++it)
+  for( auto loader : _d->loaders )
   {
-    if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
-        (*it)->isLoadableFileFormat(file) */ )
+    if( !loader->isLoadableFileExtension( filename.toString() ) )
+      continue;
+
+    ClimateType currentClimate = (ClimateType)loader->climateType( filename.toString() );
+    if( currentClimate >= 0  )
     {
-      ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
-      if( currentClimate >= 0  )
-      {
-        game::climate::initialize( currentClimate );
-      }
-
-      bool loadok = (*it)->load( filename.toString(), game );      
-      
-      if( loadok )
-      {
-        _d->restartFile = (*it)->restartFile();
-        _d->finalize( game );
-      }
-
-      return loadok;
+      game::climate::initialize( currentClimate );
     }
+
+    bool loadok = loader->load( filename.toString(), game );
+    bool needToFinalizeMap = loader->finalizeMap();
+    if( loadok )
+    {
+      _d->restartFile = loader->restartFile();
+
+      _d->finalize( game, needToFinalizeMap );
+    }
+
+    return loadok;
   }
-  Logger::warning( "GameLoader: not found loader for " + filename.toString() );
+
+  Logger::warning( "WARNING !!! GameLoader not found loader for " + filename.toString() );
 
   return false; // failed to load
 }

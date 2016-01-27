@@ -30,7 +30,7 @@ namespace gui
 class EmperrorRequestWindow : public Window
 {
 public:
-  static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request,
+  static EmperrorRequestWindow* create(Widget* parent, city::RequestPtr request,
                                        bool mayExec, const std::string &video="");
   virtual ~EmperrorRequestWindow();
 
@@ -38,9 +38,11 @@ public:
   virtual void setText(const std::string& text);
   virtual void setTitle(const std::string& text);
   virtual bool onEvent(const NEvent &event);
+  void setVideo( const std::string& video );
 
 private:
-  EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request );
+  EmperrorRequestWindow( Widget* parent, city::RequestPtr request );
+  void _openEmperrorAdvisor();
 
   class Impl;
   ScopedPtr< Impl > _d;

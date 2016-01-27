@@ -62,6 +62,7 @@ signals public:
 
 private:
   void _changeTradeLimit( int value );
+  void _fireWorkers();
 
   class Impl;
   ScopedPtr<Impl> _d;

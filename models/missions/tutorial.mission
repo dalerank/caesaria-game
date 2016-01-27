@@ -7,11 +7,17 @@
   date : "-350.01.01"
   adviserEnabled : false
   fishPlaceEnabled : false
+  collapseKoeff : 10
+  fireKoeff : 10
   climate : 0
+  preview.text : "##tutorial_preview_mission##"
+  preview.title : "##tutorial_preview_title##"
+  preview.image : ""
 	
   win :
   {
     population : 150
+    name : "n2_nvillage"
     culture : 0
     prosperity : 0
     peace : 0
@@ -21,8 +27,11 @@
     may_continue : false
     short : "##build_some_houses##"
     finishDate : "-300.01.01"
-    maxHouseLevel : "big_villa"
+    maxHouseLevel : "hut"
     caption : "##new_village##"
+    win.text : "##tutorial_win_text##"
+    sound.overview : "tutorial_speech"
+    sound.win      : "tutorial_win_speech"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002",
                   "##tutorial_text_roads##",
@@ -114,7 +123,7 @@
                    
     buildings : 
     { 
-      well : true
+      well : true     
     }
   }
 }

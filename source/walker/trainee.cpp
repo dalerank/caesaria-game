@@ -19,36 +19,35 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "objects/building.hpp"
+#include "gfx/tilemap.hpp"
+#include "core/common.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
-
-typedef Priorities<TileOverlay::Type> NecessaryBuildings;
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY(walker::trainee,TraineeWalker,trainee)
 
 class TraineeWalker::Impl
 {
 public:
-  NecessaryBuildings necBuildings;  // list of buildings needing this trainee
-  BuildingPtr base;
-  BuildingPtr destination;
+  object::TypeSet necBuildings;  // list of buildings needing this trainee
+  TilePos baseLocation;
+  TilePos destLocation;
   unsigned int maxDistance;
   float maxNeed;  // evaluates the need for that trainee
 };
 
 TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
-  : Human( city ), _d( new Impl )
+  : Human( city, traineeType ), _d( new Impl )
 {
-  _setType( traineeType );
   _d->maxDistance = 30;
   _init( traineeType );
 }
@@ -57,37 +56,62 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:      _d->necBuildings << objects::theater
-                                           << objects::amphitheater;  break;
-  case walker::gladiator:  _d->necBuildings << objects::amphitheater
-                                              << objects::colloseum;  break;
-  case walker::lionTamer:  _d->necBuildings << objects::colloseum;  break;
-  case walker::soldier:    _d->necBuildings << objects::military_academy
-                                            << objects::fort_legionaries
-                                            << objects::fort_horse
-                                            << objects::fort_javelin
-                                            << objects::tower;  break;
-  case walker::charioteer:  _d->necBuildings << objects::hippodrome;  break;
+  case walker::actor:      _d->necBuildings << object::theater
+                                            << object::amphitheater;  break;
+  case walker::gladiator:  _d->necBuildings << object::amphitheater
+                                            << object::colloseum;  break;
+  case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
+  case walker::soldier:    _d->necBuildings << object::military_academy
+                                            << object::fort_legionaries
+                                            << object::fort_horse
+                                            << object::fort_javelin
+                                            << object::tower;  break;
+  case walker::charioteer: _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void TraineeWalker::_cancelPath()
 {
-  if( _d->destination.isValid() )
+  BuildingPtr destination = receiver();
+  Logger::warningIf( destination.isNull(), "!!! WARNING: Trainee _cancelPath destination is null" );
+
+  if( destination.isValid() )
   {
-    _d->destination->cancelTrainee( type() );
+    destination->cancelTrainee( type() );
   }
 }
 
-void TraineeWalker::setBase(Building &originBuilding){  _d->destination = &originBuilding;}
+void TraineeWalker::setBase(BuildingPtr originBuilding)
+{
+  _d->baseLocation = utils::objPosOrDefault( originBuilding );
+}
+
+BuildingPtr TraineeWalker::base() const
+{
+  return _map().overlay<Building>( _d->baseLocation );
+}
+
+BuildingPtr TraineeWalker::receiver() const
+{
+  return _map().overlay<Building>( _d->destLocation );
+}
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
-  if( _d->base.isNull() )
+  if( _d->baseLocation == TilePos::invalid() )
   {
+    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
+    deleteLater();
+    return;
+  }
+
+  BuildingPtr base = _map().overlay<Building>( _d->baseLocation );
+  if( !base.isValid() )
+  {
+    Logger::warning( "!!! WARNING: trainee walker base is null at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -95,27 +119,19 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  city::Helper helper( _city() );
 
-  BuildingList buildings;
-  foreach( buildingType, _d->necBuildings )
-  {
-    BuildingList tmpBuildings = helper.find<Building>( *buildingType );
-    buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
-  }
-
-  TilesArray startArea = roadOnly ? _d->base->getAccessRoads() : _d->base->enterArea();
+  BuildingList buildings = _city()->statistic().objects.find<Building>( _d->necBuildings );
+  TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();
 
   DirectRoute droute;
   _d->maxNeed = 0;
   unsigned int minDistance = _d->maxDistance;
 
   bool isNeedTrainee = false;
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    BuildingPtr bld = *it;
-    float curNeed = bld->evaluateTrainee( type() );
-    if( curNeed > 0 )
+    float howMuchNeedMyService = bld->evaluateTrainee( type() );
+    if( howMuchNeedMyService > 0 )
     {
       isNeedTrainee = true;
       break;
@@ -124,22 +140,29 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   if( !isNeedTrainee )
   {
-    Logger::warning( "Not need trainee walker from [%d,%d]", _d->base->pos().i(), _d->base->pos().j() );
+    Logger::warning( "!!! WARNING: not need trainee walker from [{},{}]", base->pos().i(), base->pos().j() );
     deleteLater();
     return;
   }
 
-  foreach( itile, startArea )
+  std::set<BuildingPtr> checkedBuilding;
+
+  for( auto itile : startArea )
   {
-    TilePos startPos = (*itile)->pos();
-    foreach( it, buildings )
+    TilePos startPos = itile->pos();
+
+    for( auto bld : buildings )
     {
-      BuildingPtr bld = *it;
+      bool buildingAlsoServicing = checkedBuilding.count( bld ) > 0;
+      if( buildingAlsoServicing )
+        continue;
+
+      checkedBuilding.insert( bld );
 
       float curNeed = bld->evaluateTrainee( type() );
       if( _d->maxNeed < curNeed )
       {
-        Pathway way = PathwayHelper::create( startPos, bld.object(),
+        Pathway way = PathwayHelper::create( startPos, bld,
                                              roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
         if( way.isValid() && way.length() < minDistance )
         {
@@ -153,7 +176,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   if( droute.first.isValid() )
   {
     finalPath = droute.second;
-    _d->destination = ptr_cast<Building>( droute.first );
+    _d->destLocation = droute.first->pos();
   }
 
   if( finalPath.isValid() )
@@ -169,20 +192,20 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   }
 }
 
-void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
+void TraineeWalker::_checkDestination(const object::Type buildingType, Propagator &pathPropagator)
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
-  foreach( item, pathWayList )
+  for( auto item : pathWayList )
   {
     // for every building within range
-    BuildingPtr building = ptr_cast<Building>( item->first );
+    BuildingPtr building = item.first.as<Building>();
 
     float need = building->evaluateTrainee( type() );
     if (need > _d->maxNeed)
     {
       _d->maxNeed = need;
-      _d->destination = building;
+      _d->destLocation = building->pos();
     }
   }
 }
@@ -191,13 +214,21 @@ int TraineeWalker::value() const{ return 100; }
 
 void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {
-  _d->base = base;
+  if( !base.isValid() )
+  {
+    Logger::warning( "!!! WARNING: trainee walker base is null" );
+    deleteLater();
+    return;
+  }
+
+  _d->baseLocation = base->pos();
   _computeWalkerPath( roadOnly );
 
-  if( !isDeleted() && _d->destination.isValid() )
+  if( !isDeleted() && config::tilemap.isValidLocation( _d->destLocation ) )
   {
-    _d->destination->reserveTrainee( type() );
-    _city()->addWalker( this );
+    BuildingPtr dest = receiver();
+    dest->reserveTrainee( type() );
+    attach();
   }
 }
 
@@ -206,18 +237,20 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  if( _d->destination.isValid() )
+  auto destidnationBuilding = _map().overlay( _d->destLocation ).as<Building>();
+  if( destidnationBuilding.isValid() )
   {
-    _d->destination->updateTrainee( this );
+    destidnationBuilding->updateTrainee( this );
   }
 }
 
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base->pos();
-  stream[ "destBldPos" ] = _d->destination->pos();
-  stream[ "maxDistance" ] = _d->maxDistance;
+  VARIANT_SAVE_ANY_D( stream, _d, baseLocation );
+  VARIANT_SAVE_ANY_D( stream, _d, destLocation );
+
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   stream[ "traineeType" ] = type();
   stream[ "type" ] = (int)walker::trainee;
 }
@@ -226,9 +259,9 @@ void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
 
-  _d->base << _city()->getOverlay( stream.get( "originBldPos" ).toTilePos() );
-  _d->destination << _city()->getOverlay( stream.get( "destBldPos" ).toTilePos() );
-  _d->maxDistance = (int)stream.get( "maxDistance" );
+  VARIANT_LOAD_ANY_D( _d, baseLocation, stream )
+  VARIANT_LOAD_ANY_D( _d, destLocation, stream )
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );
@@ -239,8 +272,8 @@ TilePos TraineeWalker::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
-  case plDestination: return _d->destination.isValid() ? _d->destination->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->baseLocation;
+  case plDestination: return _d->destLocation;
   default: break;
   }
 
@@ -249,15 +282,3 @@ TilePos TraineeWalker::places(Walker::Place type) const
 
 
 TraineeWalker::~TraineeWalker(){}
-
-TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )
-{
-  TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
-  ret->drop();
-  return ret;
-}
-
-WalkerPtr TraineeWalkerCreator::create(PlayerCityPtr city)
-{
-  return TraineeWalker::create( city, walker::trainee ).object();
-}

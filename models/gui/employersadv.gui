@@ -1,5 +1,5 @@
 {
-  geometry : [ 0, 0, 640, 416 ]
+  size : [ 640, 416 ]
   bgtype : "whiteFrame"
     
   lbIcon#Label : {
@@ -48,9 +48,17 @@
     }
 
     lbSalaries#Label : {
-      geometry : [ 168, 4, 508, 30 ]
+      geometry : [ 168, 4, 520, 30 ]
       font : "FONT_2_WHITE"
       text : "you pay 0 dn, Rome pay 0 dn"
+    }
+
+    btnAdvSalaries#PushButton : {
+      geometry : [ "pw-120", 5, "pw-10", "ph-5" ]
+      text : "##adv_salary##"
+      bgtype : "blackBorderUp"
+      font : "FONT_2_WHITE"
+      text.align : [ "center", "center" ]
     }
   }
 

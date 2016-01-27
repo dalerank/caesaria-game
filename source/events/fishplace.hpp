@@ -19,17 +19,16 @@
 #define _CAESARIA_FISHPLACE_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events
 {
 
-class FishPlaceEvent : public GameEvent
+class ChangeFishery : public GameEvent
 {
 public:
   typedef enum { unknown, add=1, remove } Mode;
-  static GameEventPtr create( TilePos pos, Mode mode );
+  static GameEventPtr create( const TilePos& pos, Mode mode );
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
@@ -39,7 +38,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  FishPlaceEvent();
+  ChangeFishery();
 
   class Impl;
   ScopedPtr<Impl> _d;

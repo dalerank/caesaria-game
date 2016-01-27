@@ -15,18 +15,19 @@
   win :
   {
     population : 7000
+    name : "n2_lugdunum"
     culture : 40
     prosperity : 25
     peace : 40
     favour : 30
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
-    title : "##win_procurator_title##"
+    title : "##aedile##"
     win.text : "##lugdunum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##mediolanum_5_title##"
-    overview :  [ "##mediolanum_5_overview##" ]
+    caption : "##lugdunum_preview_title##"
+    overview :  [ "##lugdunum_overview##" ]
   }
 	
   empire : {
@@ -35,7 +36,7 @@
     cities :
     {    
       Massilia : {
-        location : [ 500, 440 ]
+        nation : "roman"
 
         land : true
         sea : true
@@ -46,7 +47,7 @@
       }
 
       Capua : {
-        location : [ 820, 560 ]
+        nation : "roman"
 
         sea : true
         land : true
@@ -64,7 +65,7 @@
       date : "-350.01.01"
       population : 500
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }    
@@ -73,7 +74,7 @@
       date : "-350.01.01"
       population : 1000
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }   
@@ -82,7 +83,7 @@
       date : "-350.01.01"
       population : 2000
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }   
@@ -91,7 +92,7 @@
       date : "-350.01.01"
       population : 3000
       send2scribe : true
-      video : "/smk/Population2.smk"
+      video : "population2"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
@@ -103,7 +104,7 @@
       action : {
         message#messagebox : {
           send2scribe : true
-          video : "/smk/1st_Glad.smk"
+          video : "1st_glad"
           title : "##working_colloseum_title##"
           text : "##working_colloseum_text##"
         }
@@ -120,7 +121,7 @@
       date : "-350.01.01"
       type : "city_indebt"
       emperorMoney : [ 8000, 5000, 0 ]
-      video : [ ":/smk/Emp_2nd_chance.bik", ":/smk/Emp_displeased.smk", ":/smk/Emp_angry.smk" ]
+      video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
@@ -187,7 +188,7 @@
         "step_1.video#messagebox" : {
           title : "##city_fire_title##"
           text : "##city_fire_text##"
-          video : "/smk/city_fire.smk"
+          video : "city_fire"
         }
       }
     }
@@ -271,7 +272,7 @@
         "step_1.video#messagebox" : {
           title : "##city_fire_title##"
           text : "##city_fire_text##"
-          video : "/smk/city_fire.smk"
+          video : "city_fire"
         }
       }
     }
@@ -299,7 +300,7 @@
           date : "-217.10.01"
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -326,7 +327,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -359,7 +360,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -386,7 +387,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -413,7 +414,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -440,7 +441,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -467,7 +468,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -494,7 +495,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -521,7 +522,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -548,7 +549,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -575,7 +576,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -602,7 +603,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -629,7 +630,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -656,7 +657,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -683,7 +684,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -710,7 +711,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -737,7 +738,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -764,7 +765,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -791,7 +792,7 @@
         m#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -817,7 +818,7 @@
       prefecture : true
       engineering_post : true
       plaza : true
-
+      roadBlock : true
       quarry : true
       clay_pit : true
       iron_mine : true
@@ -826,7 +827,6 @@
       weapons_workshop : true
       furniture_workshop : true
 
-      forum : false
       garden : true
       low_bridge : true
       high_bridge : true
@@ -846,7 +846,7 @@
       school : true
       academy : true
       library : true
-      mission_post : true
+      missionaryPost : true
       senate : true
       gatehouse : true
       wall : true 

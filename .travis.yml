@@ -3,6 +3,7 @@ os:
 - osx
 before_install:
 # Get build dependencies
+<<<<<<< HEAD
 - brew install cmake
 - brew install wget
 - brew install https://raw.github.com/eugeneoden/homebrew/eca9de1/Library/Formula/sshpass.rb
@@ -14,6 +15,15 @@ before_install:
 - mkdir -p $LIBDIR
 - cp -r /Volumes/SDL2/SDL2.framework $LIBDIR
 - cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR
+=======
+- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots
+- sudo apt-get -qq update
+- sudo apt-get install -qq cmake build-essential libasound2-dev libxxf86vm-dev
+- sudo apt-get -qq install g++-4.8
+- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+#- sudo apt-get install -qq gcc-multilib g++-multilib
+>>>>>>> master
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
@@ -27,6 +37,7 @@ before_script:
 script:
 # Build CaesarIA
 - make -j4
+<<<<<<< HEAD
 after_success:
 - cd $TRAVIS_BUILD_DIR/../caesaria-test
 - cp $TRAVIS_BUILD_DIR/xcompile/mac_install_libs.sh install_libs.sh
@@ -39,3 +50,10 @@ after_success:
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 - sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
+=======
+notifications:
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never
+>>>>>>> master

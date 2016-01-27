@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 	// Start logging
   Logger::registerWriter( Logger::consolelog, "" );
 
-	Logger::warning( "Updater v%s (c) 2012-2014 by dalerank is"
+  Logger::warning( "Updater v{} (c) 2012-2015 by dalerank is"
 									 " part of CaesarIA (http://bitbucket.org/dalerank/caesaria).",
 									 LIB_UPDATE_VERSION );
 	Logger::warning( "\n" );
@@ -47,14 +47,18 @@ int main(int argc, char* argv[])
 
 	if( localOptions.isSet( "update" ) || localOptions.isSet( "release" ))
 	{
-        std::string basedir = localOptions.get( "directory" );
-        std::string version = localOptions.get( "version" );
+    std::string basedir = localOptions.get( "directory" );
+    std::string version = localOptions.get( "version" );
 		Packager p( basedir, version );
 
 		p.createUpdate( localOptions.isSet( "release" ) );
 
 		return 0;
 	}
+  else if( localOptions.isSet( "launch-steam" ) )
+  {
+    SteamHelper::checkDepsAndStart();
+  }
 	else
 	{
 		ConsoleUpdater updater(argc, argv);
@@ -67,16 +71,16 @@ int main(int argc, char* argv[])
 		{
 			case ConsoleUpdater::None:
 				// should not happen?
-				break;
+      break;
 			case ConsoleUpdater::Failed:
 				exitCode = EXIT_FAILURE;
-				break;
+      break;
 			case ConsoleUpdater::Ok:
 				exitCode = EXIT_SUCCESS;
-				break;
+      break;
 			case ConsoleUpdater::OkNeedRestart:
 				exitCode = EXIT_SUCCESS;
-				break;
+      break;
 		};
 
 		return exitCode;

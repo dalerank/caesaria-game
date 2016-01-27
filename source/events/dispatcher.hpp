@@ -18,19 +18,19 @@
 #ifndef _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
 #define _CAESARIA_EVENT_DISPATCHER_H_INCLUDE_
 
+#include "event.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "event.hpp"
 #include "core/singleton.hpp"
 
-class Game;
+namespace vfs{ class Path; }
 
 namespace events
 {
 
 class Dispatcher : public StaticSingleton<Dispatcher>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Dispatcher)
 public:
   virtual ~Dispatcher();
 
@@ -39,7 +39,7 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
-  void load( vfs::Path filename, const std::string& section="" );
+  void load( const vfs::Path& filename, const std::string& section="" );
 
   void reset();
 

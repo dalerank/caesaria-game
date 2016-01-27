@@ -71,7 +71,15 @@ MirrorDownload::MirrorDownload(const HttpConnectionPtr& conn,
 	_urls = std::vector<std::string>(urls.begin(), urls.end());
 
 	// Push the sorted Mirrors into our own _mirrors member
-	_mirrors = std::vector<Mirror>(orderedMirrors.begin(), orderedMirrors.end());
+  _mirrors = std::vector<Mirror>(orderedMirrors.begin(), orderedMirrors.end());
+}
+
+DownloadPtr MirrorDownload::create(const HttpConnectionPtr& conn, const MirrorList& mirrors, const std::string& srcFilename, vfs::Path destFilename)
+{
+  DownloadPtr ret( new MirrorDownload(conn, mirrors, srcFilename, destFilename ) );
+  ret->drop();
+
+  return ret;
 }
 
 std::string MirrorDownload::GetCurrentMirrorName()

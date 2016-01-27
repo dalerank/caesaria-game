@@ -37,7 +37,6 @@ public:
 
   //! Деструктор
   virtual ~VideoOptions(void);
-  virtual bool onEvent(const NEvent &event);
 
 public:
   Signal1<Size>& onSreenSizeChange();
@@ -46,6 +45,8 @@ public:
 
 private:
   void _update();
+  virtual bool _onButtonClicked(Widget *sender);
+  virtual bool _onListboxChanged(Widget *sender);
 
   class Impl;
   ScopedPtr< Impl > _d;

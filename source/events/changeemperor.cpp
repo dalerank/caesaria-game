@@ -64,8 +64,7 @@ void ChangeEmperor::_exec(Game& game, unsigned int)
       text = _( "##emperor_changed_default_text##" ) + empName;
     }
 
-    GameEventPtr e = events::ShowInfobox::create( "##emperor_changed_title##", text );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( "##emperor_changed_title##", text );
   }
 }
 

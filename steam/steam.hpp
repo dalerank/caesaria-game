@@ -18,8 +18,6 @@
 #ifndef _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 #define _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 
-#ifdef CAESARIA_USE_STEAM
-
 #include <string>
 #include "gfx/picture.hpp"
 #include "core/signals.hpp"
@@ -32,8 +30,10 @@ enum AchievementType
   achievementNewVillage = 0,
   achievementNewGraphics = 1,
   achievementFirstWin = 2,
-  achievementNumber
+  achv_count
 };
+
+bool available();
 
 bool checkSteamRunning();
 bool connect();
@@ -41,18 +41,17 @@ void close();
 void update();
 void init();
 
-void unlockAchievement( AchievementType achivId );
-void missionWin();
+void evaluateAchievement( AchievementType achivId );
+void missionWin(const std::string& name);
 bool isAchievementReached( AchievementType achivId );
 bool isStatsReceived();
-const gfx::Picture& achievementImage( AchievementType achivId );
+gfx::Picture achievementImage( AchievementType achivId );
 std::string achievementCaption( AchievementType achivId );
-
+std::string language();
+std::string ld_prefix();
 std::string userName();
 const gfx::Picture& userImage();
 
 }
-
-#endif  //CAESARIA_USE_STEAM
 
 #endif  //_CAESARIA_STEAM_HANDLER_INCLUDE_H_

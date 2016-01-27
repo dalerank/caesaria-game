@@ -114,8 +114,6 @@ PKWareInputStream::PKWareInputStream(istream *i, bool close_stream, int file_len
 }
 
 PKWareInputStream::~PKWareInputStream() {
-	delete dictionary;
-	delete buffer;
 	if (close_stream) {
 		delete input;
 	}
@@ -292,8 +290,8 @@ void PKWareInputStream::readHeader() {
 		default:
 			throw PKException("Unknown dictionary size");
 	}
-	dictionary = new PKDictionary(dictSize);
-	buffer = new char[BUFFER_SIZE];
+  dictionary.reset( new PKDictionary(dictSize) );
+  buffer.resize( BUFFER_SIZE );
 	//System.out.println("Dictionary size: "+dictSize);
 	file_length -= 2; // Subtract two header bytes from total file length
 }
@@ -438,11 +436,11 @@ int PKWareInputStream::reverse(int number, int length) {
 void PKWareInputStream::fillBuffer() {
 	bufOffset = 0;
 	if (file_length <= BUFFER_SIZE) {
-		input->read(buffer, file_length);
+    input->read(buffer.data(), file_length);
 		eof_reached = true;
 		eof_position = file_length;
 	} else {
-		input->read(buffer, BUFFER_SIZE);
+    input->read(buffer.data(), BUFFER_SIZE);
 		file_length -= BUFFER_SIZE;
 	}
 }

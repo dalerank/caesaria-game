@@ -27,6 +27,9 @@ class ByteArray : public std::vector<char>
 public:
   ByteArray();
 
+  explicit ByteArray( unsigned int cap );
+  explicit ByteArray( const std::string& str );
+
   ByteArray& operator=( const std::string& str );
 
   ByteArray copy( unsigned int start, int length=-1) const;

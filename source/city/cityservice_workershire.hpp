@@ -19,9 +19,6 @@
 #define __CAESARIA_CITYSERVICE_WORKERSHIRE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "gfx/tileoverlay.hpp"
-#include "core/predefinitions.hpp"
 #include "core/priorities.hpp"
 #include "industry.hpp"
 
@@ -31,7 +28,6 @@ namespace city
 class WorkersHire : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   void setRecruterDistance( const unsigned int distance );
@@ -41,8 +37,8 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
-private:
   WorkersHire( PlayerCityPtr city );
+private:
  
   class Impl;
   ScopedPtr< Impl > _d;

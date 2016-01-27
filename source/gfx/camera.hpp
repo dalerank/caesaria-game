@@ -34,6 +34,7 @@ public:
   virtual Tile* at( const TilePos& p ) const = 0;
   virtual Tile* at( const Point& p, bool overborder ) const = 0;
   virtual Point offset() const = 0;
+  virtual Point mpos( const Point& p ) const = 0;
   virtual void move(PointF relative) = 0;
   virtual void moveRight(const int amount) = 0;
   virtual void moveLeft(const int amount) = 0;
@@ -41,6 +42,8 @@ public:
   virtual void moveDown(const int amount) = 0;
   virtual const TilesArray& tiles() const = 0;
   virtual const TilesArray& flatTiles() const = 0;
+  virtual const TilesArray& subtrateTiles() const = 0;
+  virtual const TilesArray& groundTiles() const = 0;
   virtual int centerX() const = 0;
   virtual int centerZ() const = 0;
   virtual TilePos center() const = 0;
@@ -48,14 +51,19 @@ public:
   virtual int scrollSpeed() const = 0;
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
-  virtual void setCenter( TilePos pos ) = 0;
+  virtual void setZoom( int amount ) = 0;
+  virtual void changeZoom( int delta ) = 0;
+  virtual int maxZoom() const = 0;
+  virtual int zoom() const = 0;
+  virtual void setCenter( TilePos pos, bool checkCorner ) = 0;
+  virtual void setCenter( TilePos pos ) { setCenter( pos, true ); }
   virtual void refresh() = 0;
 
   virtual ~Camera() {}
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
-  virtual Signal1<constants::Direction>& onDirectionChanged() = 0;
+  virtual Signal1<Direction>& onDirectionChanged() = 0;
 };
 
 } //end namespace gfx

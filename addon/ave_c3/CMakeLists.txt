@@ -6,7 +6,7 @@ SET (LIB_TYPE SHARED)
 set(BASE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 
-add_definitions(-DCAESARIA_ADDON_DEFINED)
+add_definitions(-DGAME_ADDON_DEFINED)
 
 aux_source_directory(. SOURCES_LIST)
 file(GLOB HEADERS_LIST "*.hpp")
@@ -50,6 +50,15 @@ if(EXT_BINDIR)
       COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${ADDON_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/addons/${ADDON_FILENAME}"
   )
 endif(EXT_BINDIR)
+
+set(USE_CPP11 ON)
+
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+endif()
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

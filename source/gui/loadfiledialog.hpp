@@ -26,18 +26,22 @@
 namespace gui
 {
 
-class LoadFileDialog : public Window
+class FileListBox;
+class ListBoxItem;
+
+namespace dialog
+{
+
+class LoadFile : public Window
 {
 public:
-  LoadFileDialog( Widget* parent, const Rect& rect,
+  LoadFile( Widget* parent, const Rect& rect,
                   const vfs::Directory& dir, const std::string& ext,
                   int id );
-  
-  virtual ~LoadFileDialog();
+
+  virtual ~LoadFile();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
-
-  virtual bool onEvent( const NEvent& event);
 
   virtual bool isPointInside(const Point& point) const;
 
@@ -52,9 +56,20 @@ signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
+
+  virtual void _fillFiles();
+  void _resolveItemSelected( const ListBoxItem& item );
+  void _resolveItemDblClick( const ListBoxItem& item );
+
+  gui::FileListBox* _fileslbx() const;
+  const vfs::Directory& _directory() const;
+  const std::string& _extensions() const;
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_LOADFILEDIALOG_H_INCLUDED__

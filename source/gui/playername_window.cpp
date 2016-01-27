@@ -22,6 +22,8 @@
 #include "core/logger.hpp"
 #include "core/event.hpp"
 #include "widget_helper.hpp"
+#include "core/gettext.hpp"
+#include "label.hpp"
 
 namespace gui
 {
@@ -31,10 +33,16 @@ namespace dialog
 
 class ChangePlayerName::Impl
 {
-public signals:
-  Signal1<std::string> onNameChangeSignal;
-  Signal0<> onCloseSignal;
-  Signal0<> onNewGameSignal;
+public:
+  bool mayExit;
+  EditBox* edPlayerName;
+  Label* lbExitHelp;
+
+  struct {
+    Signal1<std::string> onNameChange;
+    Signal0<> onClose;
+    Signal0<> onNewGame;
+  } signal;
 };
 
 ChangePlayerName::ChangePlayerName(Widget* parent)
@@ -44,19 +52,19 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
 
   setCenter( parent->center() );
 
-  EditBox* edPlayerName;
-  PushButton* btnContinue;
-  GET_WIDGET_FROM_UI( edPlayerName )
-  GET_WIDGET_FROM_UI( btnContinue )
+  GET_DWIDGET_FROM_UI( _d, edPlayerName )
+  GET_DWIDGET_FROM_UI( _d, lbExitHelp)
 
-  CONNECT( edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::_emit );
-  CONNECT( btnContinue, onClicked(), &_d->onNewGameSignal, Signal0<>::_emit );
-  CONNECT( edPlayerName, onEnterPressed(), &_d->onNewGameSignal, Signal0<>::_emit );
+  CONNECT( _d->edPlayerName, onTextChanged(), &_d->signal.onNameChange, Signal1<std::string>::_emit );
+  CONNECT( _d->edPlayerName, onEnterPressed(), &_d->signal.onNewGame, Signal0<>::_emit );
+  LINK_WIDGET_ACTION( PushButton*, btnContinue, onClicked(), &_d->signal.onNewGame, Signal0<>::_emit );
 
-  if( edPlayerName )
+  if( _d->edPlayerName )
   {
-    edPlayerName->moveCursor( edPlayerName->text().length() );
+    _d->edPlayerName->moveCursor( _d->edPlayerName->text().length() );
   }
+
+  _d->mayExit = true;
 
   setModal();
 }
@@ -65,36 +73,49 @@ bool ChangePlayerName::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed && event.keyboard.key == KEY_ESCAPE )
   {
-    deleteLater();
-    emit _d->onCloseSignal();
+    if( _d->mayExit )
+    {
+      deleteLater();
+      emit _d->signal.onClose();
 
-    return true;
+      return true;
+    }
   }
 
   return Window::onEvent( event );
 }
 
+void ChangePlayerName::setMayExit(bool value)
+{
+  _d->mayExit = value;
+  if( _d->lbExitHelp )
+    _d->lbExitHelp->setVisible( value );
+}
+
 ChangePlayerName::~ChangePlayerName(){}
 
-std::string ChangePlayerName::text() const
+std::string ChangePlayerName::name() const
 {
-  const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
-  return ed ? ed->text() : "";
+  return _d->edPlayerName ? _d->edPlayerName->text() : "";
+}
+
+void ChangePlayerName::setName(const std::string& text)
+{
+  std::string correctName = text.empty() ? _("##new_governor##") : text;
+  if( _d->edPlayerName ) _d->edPlayerName->setText( correctName );
 }
 
 void ChangePlayerName::setModal()
 {
   Window::setModal();
 
-  EditBox* edPlayerName;
-  GET_WIDGET_FROM_UI( edPlayerName )
-
-  if( edPlayerName ) edPlayerName->setFocus();
+  if( _d->edPlayerName )
+    _d->edPlayerName->setFocus();
 }
 
-Signal0<>& ChangePlayerName::onClose(){  return _d->onCloseSignal;}
-Signal0<>& ChangePlayerName::onNewGame(){  return _d->onNewGameSignal;}
-Signal1<std::string>& ChangePlayerName::onNameChange(){  return _d->onNameChangeSignal;}
+Signal0<>& ChangePlayerName::onClose(){  return _d->signal.onClose;}
+Signal0<>& ChangePlayerName::onContinue(){  return _d->signal.onNewGame;}
+Signal1<std::string>& ChangePlayerName::onNameChange(){  return _d->signal.onNameChange;}
 
 }//end namespace dialog
 

@@ -19,16 +19,17 @@
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "good/good.hpp"
 
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Info)
+
 class Info : public Srvc
 {
 public:
+  enum { lastMonth=1 };
   typedef enum { population=0, funds, tax, taxpayes,
                  monthWithFood, foodKoeff, godsMood,
                  needWorkers, maxWorkers, workless,
@@ -38,7 +39,7 @@ public:
                  romeWages, peace, milthreat,
                  houseNumber, slumNumber, shackNumber,
                  sentiment, foodStock, foodMontlyConsumption,
-                 favour, prosperity,
+                 favour, prosperity, blackHouses,
                  paramsCount } ParamName;
 
   class Parameters : public std::vector<int>
@@ -47,6 +48,7 @@ public:
     DateTime date;
 
     Parameters();
+    Parameters( const Parameters& other );
 
     VariantList save() const;
     void load(const VariantList& stream );
@@ -56,28 +58,21 @@ public:
   {
     DateTime date;
     int value;
-  };
+  };  
 
-  struct ScribeMessage
+  class History : public std::vector<Parameters>
   {
-    std::string text;
-    std::string title;
-    good::Product gtype;
-    Point position;
-    int type;
-    DateTime date;
-    bool opened;
-    Variant ext;
-
+  public:
     VariantMap save() const;
-    void load( const VariantMap& stream );
+    void load( const VariantMap& vm );
   };
 
-  typedef std::list<ScribeMessage> Messages;
-  typedef std::vector< Info::Parameters > History;
-  typedef std::vector< Info::MaxParameterValue > MaxParameters;
-
-  static SrvcPtr create( PlayerCityPtr city );
+  class MaxParameters : public std::vector< MaxParameterValue >
+  {
+  public:
+    VariantMap save() const;
+    void load( const VariantMap& vm );
+  };
 
   virtual void timeStep( const unsigned int time );
   Parameters lastParams() const;
@@ -92,20 +87,12 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-  const Messages& messages() const;
-  const ScribeMessage& getMessage( int index ) const;
-  void changeMessage( int index, ScribeMessage& message );
-  void removeMessage( int index );
-  void addMessage( const ScribeMessage& message );
-
-private:
   Info(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Info> InfoPtr;
 
 }//end namespace city
 

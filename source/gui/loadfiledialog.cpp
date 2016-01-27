@@ -31,65 +31,50 @@
 #include "widget_helper.hpp"
 #include "filelistbox.hpp"
 #include "vfs/file.hpp"
+#include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
 
 namespace gui
 {
 
-class LoadFileDialog::Impl
+namespace dialog
+{
+
+class LoadFile::Impl
 {
 public:
-  Label* lbTitle;
   FileListBox* lbxFiles;
-  PushButton* btnExit;
-  PushButton* btnHelp;
-  PushButton* btnLoad;
-  PushButton* btnDelete;
   vfs::Directory directory;
   std::string fileExtensions;
   std::string saveItemText;
   bool mayDelete;
 
-  void fillFiles();
-
-  void resolveItemSelected( const ListBoxItem& item );
-
-  void resolveItemDblClick( std::string fileName );
-
   void deleteFile();
-
   void emitSelectFile();
 
 signals public:
   Signal1<std::string> onSelecteFileSignal;
 };
 
-LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
-                              const vfs::Directory& dir, const std::string& ext,
-                              int id )
+LoadFile::LoadFile( Widget* parent, const Rect& rect,
+                    const vfs::Directory& dir, const std::string& ext,
+                    int id )
   : Window( parent, rect, "", id ), _d( new Impl )
 {
-  _d->btnLoad = 0;
-
   Widget::setupUI( ":/gui/loadfile.gui" );
-
-  WidgetEscapeCloser::insertTo( this );
-
-  // create the title
-  GET_DWIDGET_FROM_UI( _d, lbTitle )
 
   _d->directory = dir;
   _d->fileExtensions = ext;
 
-  GET_DWIDGET_FROM_UI( _d, btnExit )
-  GET_DWIDGET_FROM_UI( _d, btnHelp )
-  GET_DWIDGET_FROM_UI( _d, btnLoad )
-  GET_DWIDGET_FROM_UI( _d, btnDelete )
+  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
+  INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
+  INIT_WIDGET_FROM_UI( PushButton*, btnDelete )
   GET_DWIDGET_FROM_UI( _d, lbxFiles )
 
-  CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
-  CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
-  CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnExit,   onClicked(), LoadFile::deleteLater )
+  CONNECT( btnLoad,   onClicked(), _d.data(), Impl::emitSelectFile )
+  CONNECT( btnDelete, onClicked(), _d.data(), Impl::deleteFile )
+  CONNECT( btnDelete, onClicked(), this,      LoadFile::_fillFiles )
 
   if( _d->lbxFiles )
   {
@@ -98,56 +83,60 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
     _d->lbxFiles->setFocus();
   }
 
-  CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
-  CONNECT( _d->lbxFiles, onItemSelectedAgain(), _d.data(), Impl::resolveItemDblClick );
-  _d->fillFiles();
+  CONNECT_LOCAL( _d->lbxFiles, onItemSelected(),      LoadFile::_resolveItemSelected )
+  CONNECT_LOCAL( _d->lbxFiles, onItemSelectedAgain(), LoadFile::_resolveItemDblClick );
+
+  _fillFiles();
 
   setMayDelete( false );
-  setCenter( parent->center() );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
+  GameAutoPause::insertTo( this );
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
-LoadFileDialog::~LoadFileDialog(){}
+LoadFile::~LoadFile(){}
 
-void LoadFileDialog::Impl::fillFiles()
+void LoadFile::_fillFiles()
 {
-  if( !lbxFiles )
+  if( !_d->lbxFiles )
     return;
-  lbxFiles->clear();
+  _d->lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).getEntries();
-  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtensions );
+  vfs::Entries flist = vfs::Directory( _d->directory ).entries();
+  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, _d->fileExtensions );
 
-  StringArray names;
-  foreach( it, flist )
-  {
-    names <<  (*it).fullpath.toString();
-  }
+  StringArray names = flist.items().fullnames();
+
   std::sort( names.begin(), names.end() );
 
-  lbxFiles->addItems( names );
+  _d->lbxFiles->addItems( names );
 }
 
-void LoadFileDialog::Impl::resolveItemSelected(const ListBoxItem& item)
+void LoadFile::_resolveItemSelected(const ListBoxItem& item)
 {
-  saveItemText = item.text();
-  if( btnLoad ) btnLoad->setEnabled( !saveItemText.empty() );
-  if( btnDelete ) btnDelete->setEnabled( !saveItemText.empty() );
+  _d->saveItemText = item.text();
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
+  INIT_WIDGET_FROM_UI( PushButton*, btnDelete )
+
+  if( btnLoad ) btnLoad->setEnabled( !_d->saveItemText.empty() );
+  if( btnDelete ) btnDelete->setEnabled( !_d->saveItemText.empty() );
 }
 
-void LoadFileDialog::Impl::resolveItemDblClick(std::string fileName)
+void LoadFile::_resolveItemDblClick(const ListBoxItem& item)
 {
-  saveItemText = fileName;
-  emitSelectFile();
+  _d->saveItemText = item.text();
+  _d->emitSelectFile();
 }
 
-void LoadFileDialog::Impl::deleteFile()
+void LoadFile::Impl::deleteFile()
 {
   vfs::Path path4delete( saveItemText );
   vfs::NFile::remove( directory/path4delete );
-  fillFiles();
 }
 
-void LoadFileDialog::Impl::emitSelectFile()
+void LoadFile::Impl::emitSelectFile()
 {
   if( saveItemText.empty() )
     return;
@@ -156,33 +145,34 @@ void LoadFileDialog::Impl::emitSelectFile()
   emit onSelecteFileSignal( (directory/fn).toString() );
 }
 
-void LoadFileDialog::draw(gfx::Engine& engine )
+void LoadFile::draw(gfx::Engine& engine )
 {
   Window::draw( engine );
 }
 
-bool LoadFileDialog::isPointInside( const Point& point ) const
+bool LoadFile::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
   return parent()->absoluteRect().isPointInside( point );
 }
 
-bool LoadFileDialog::onEvent( const NEvent& event)
+void LoadFile::setMayDelete(bool mayDelete)
 {
-  return Widget::onEvent( event );
-}
+  INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
+  INIT_WIDGET_FROM_UI( PushButton*, btnDelete )
 
-void LoadFileDialog::setMayDelete(bool mayDelete)
-{
   _d->mayDelete = mayDelete;
-  _d->btnDelete->setVisible( mayDelete );
-  _d->btnLoad->bringToFront();
-  _d->btnLoad->setRight( !mayDelete
-                          ? _d->btnDelete->right()
-                          : _d->btnDelete->left() );
+  if( btnDelete ) btnDelete->setVisible( mayDelete );
+  if( btnLoad )
+  {
+    btnLoad->bringToFront();
+    btnLoad->setRight( !mayDelete
+                          ? btnDelete->right()
+                          : btnDelete->left() );
+  }
 }
 
-void LoadFileDialog::setShowExtension(bool showExtension)
+void LoadFile::setShowExtension(bool showExtension)
 {
   if( _d->lbxFiles )
   {
@@ -191,9 +181,26 @@ void LoadFileDialog::setShowExtension(bool showExtension)
   }
 }
 
-void LoadFileDialog::setTitle( const std::string& title ) { if( _d->lbTitle ) _d->lbTitle->setText( title ); }
-void LoadFileDialog::setText(const std::string &text) { if( _d->btnLoad ) _d->btnLoad->setText( text ); }
-bool LoadFileDialog::isMayDelete() const { return _d->mayDelete; }
-Signal1<std::string>& LoadFileDialog::onSelectFile() {  return _d->onSelecteFileSignal; }
+void LoadFile::setTitle( const std::string& title )
+{
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  if( lbTitle )
+    lbTitle->setText( title );
+}
+
+void LoadFile::setText(const std::string &text)
+{
+  INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
+  if( btnLoad )
+    btnLoad->setText( text );
+}
+
+bool LoadFile::isMayDelete() const { return _d->mayDelete; }
+Signal1<std::string>& LoadFile::onSelectFile() {  return _d->onSelecteFileSignal; }
+FileListBox* LoadFile::_fileslbx() const { return _d->lbxFiles; }
+const vfs::Directory& LoadFile::_directory() const { return _d->directory; }
+const std::string&LoadFile::_extensions() const { return _d->fileExtensions; }
+
+}//end namespace dialog
 
 }//end namespace gui

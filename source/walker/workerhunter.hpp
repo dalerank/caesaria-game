@@ -20,21 +20,18 @@
 
 #include "serviceman.hpp"
 #include "city/industry.hpp"
-
-class Recruter;
-typedef SmartPtr<Recruter> RecruterPtr;
+#include "walker/predefinitions.hpp"
 
 class Recruter : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RecruterPtr create( PlayerCityPtr city );
-
   int needWorkers() const;
 
   void hireWorkers( const int workers );  
   void setPriority( const city::HirePriorities& priority );
   virtual void send2City( WorkingBuildingPtr building, const int workersNeeded );
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   void once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance);
   void timeStep(const unsigned long time);
 
@@ -46,13 +43,13 @@ public:
   virtual bool die();
 
 protected:
+  Recruter( PlayerCityPtr city );
+  virtual void _reachedPathway();
   virtual void _centerTile();
+  virtual void _noWay();
 
 private:
-  Recruter( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(Recruter)
 };
 
 #endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_

@@ -22,17 +22,17 @@
 #include "gui/environment.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
 {
 
 
-GameEventPtr WarningMessage::create(const std::string& text)
+GameEventPtr WarningMessage::create(const std::string& text, int level)
 {
   WarningMessage* ev = new WarningMessage();
   ev->_text = text;
+  ev->_level = level;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
@@ -49,11 +49,11 @@ void WarningMessage::_exec(Game& game, unsigned int)
     return;
 
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
-                                      game.gui()->rootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
+                                      game.gui()->findWidget( gui::WindowMessageStack::defaultID ) );
 
   if( window && !_text.empty() )
   {
-    window->addMessage( _(_text) );
+    window->addMessage( _(_text), (gui::WindowMessageStack::MsgLevel)_level );
   }
 }
 

@@ -23,16 +23,19 @@
 #include "gui/gameautopause.hpp"
 #include "scene/level.hpp"
 #include "core/gettext.hpp"
+#include "objects/construction.hpp"
 #include "clearland.hpp"
 #include "core/logger.hpp"
+
+using namespace gui::dialog;
 
 namespace events
 {
 
-GameEventPtr RequestDestroy::create( ConstructionPtr constr )
+GameEventPtr RequestDestroy::create( OverlayPtr constr )
 {
   RequestDestroy* e = new RequestDestroy();
-  e->_reqConstruction = constr;
+  e->_overlay = constr;
   e->_alsoExec = false;
   e->_mayDelete = false;
 
@@ -47,15 +50,13 @@ void RequestDestroy::_exec(Game& game, unsigned int)
   if( !_alsoExec )
   {
     _alsoExec = true;
-    std::string constrQuestion = _reqConstruction->errorDesc();
+    std::string constrQuestion = _overlay->errorDesc();
     std::string questionStr = constrQuestion.empty()
                                   ? "##destroy_this_building##"
                                   : constrQuestion;
-    gui::DialogBox* dialog = new gui::DialogBox( game.gui()->rootWidget(), Rect(), _("##warning##"), _(questionStr), gui::DialogBox::btnOkCancel );
-    CONNECT(dialog, onOk(), this, RequestDestroy::_applyDestroy );
-    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
-    CONNECT(dialog, onCancel(), this, RequestDestroy::_declineDestroy );
-    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
+    Dialog* dialog = Confirmation( game.gui(), _("##warning##"), _(questionStr),
+                                   makeDelegate( this, &RequestDestroy::_applyDestroy ),
+                                   makeDelegate( this, &RequestDestroy::_declineDestroy ));
   }
 }
 
@@ -64,11 +65,10 @@ bool RequestDestroy::_mayExec(Game& , unsigned int ) const { return !_alsoExec; 
 
 void RequestDestroy::_applyDestroy()
 {
-  if( _reqConstruction.isValid() )
+  if( _overlay.isValid() )
   {
-    _reqConstruction->setState( Construction::destroyable, 1. );
-    GameEventPtr e = ClearTile::create( _reqConstruction->pos() );
-    e->dispatch();
+    _overlay->setState( pr::destroyable, 1. );
+    events::dispatch<ClearTile>( _overlay->pos() );
     _mayDelete = true;
   }
 }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
 #include "gfx/picture.hpp"
@@ -22,6 +22,8 @@
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
+#include "environment.hpp"
+#include "gameautopause.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -29,25 +31,37 @@ using namespace gfx;
 namespace gui
 {
 
+namespace dialog
+{
+
 namespace {
   int okBtnPicId = 239;
   int cancelBtnPicId = 243;
 }
 
-class DialogBox::Impl
+class Dialog::Impl
 {
-signals public:
-  Signal1<int> onResultSignal;
-  Signal0<> onOkSignal;
-  Signal0<> onCancelSignal;
-  Signal0<> onNeverSignal;
+public:
+  GameAutoPause locker;
+
+  struct {
+    Signal1<int> onResult;
+    Signal0<> onOk;
+    Signal0<> onCancel;
+    Signal0<> onNever;
+  } signal;
 };
 
-DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
-                      const std::string& text, int buttons )
-                      : Window( parent, rectangle, "" ), _d( new Impl )
+Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
+                      const std::string& text, int buttons, bool lockGame)
+                      : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
   Font font = Font::create( FONT_3 );
+
+  button( buttonClose )->hide();
+  button( buttonMin )->hide();
+  button( buttonMax )->hide();
+
   int titleHeight = font.getTextSize( "A" ).height();
   if( rectangle.size() == Size( 0, 0 ) )
   {    
@@ -66,71 +80,97 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     size += Size( 0, 30 ); //borders
 
     setGeometry( Rect( Point( 0, 0 ), size ) );
-    setCenter( parent->center() );
+    setCenter( parent()->center() );
   }
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + titleHeight), title );
-  lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );  
+  auto& lbTitle = add<Label>( Rect( 10, 10, width() - 10, 10 + titleHeight), title );
+  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setTextAlignment( align::center, align::center );
 
-  Label* lbText = new Label( this, Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
-  lbText->setTextAlignment( align::center, align::upperLeft );
-  lbText->setWordwrap( true );
+  auto& lbText = add<Label>( Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
+  lbText.setTextAlignment( align::center, align::upperLeft );
+  lbText.setWordwrap( true );
 
   if( (buttons == btnOk) || (buttons == btnCancel) )
   {
-    new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
-                        Size( 39, 26 ), buttons,
-                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
+    add<TexturedButton>( Point( width() / 2 - 20, height() - 50),
+                         Size( 39, 26 ), buttons,
+                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons & (btnOk | btnCancel) )
   {
-    new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
-                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
+    add<TexturedButton>( Point( width() / 2 - 24 - 16, height() - 50),
+                         Size( 39, 26 ), btnOk, okBtnPicId );
+    add<TexturedButton>( Point( width() / 2 + 16, height() - 50 ),
+                         Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 
   if( buttons & btnNever )
   {
-    new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnNever, cancelBtnPicId );
+    add<TexturedButton>( Point( width() - 24 - 16, height() - 50),
+                         Size( 39, 26 ), btnNever, cancelBtnPicId );
 
 
-   }
+  }
+
+  if( lockGame )
+    _d->locker.activate();
+
+  moveTo( Widget::parentCenter );
   setModal();
 }
 
-Signal1<int>& DialogBox::onResult()
+Signal1<int>& Dialog::onResult()
 {
-  return _d->onResultSignal;
+  return _d->signal.onResult;
 }
 
-bool DialogBox::onEvent( const NEvent& event )
+bool Dialog::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  switch( event.EventType )
   {
-    int id = event.gui.caller->ID();
-    emit _d->onResultSignal( id );
+    case sEventGui:
+      if( event.gui.type == guiButtonClicked )
+      {
+        int id = event.gui.caller->ID();
+        emit _d->signal.onResult( id );
 
-    switch( id )
+        switch( id )
+        {
+        case btnOk: emit _d->signal.onOk(); break;
+        case btnCancel: emit _d->signal.onCancel(); break;
+        case btnNever: emit _d->signal.onNever(); break;
+        }
+
+        return true;
+      }
+    break;
+
+    case sEventKeyboard:
     {
-    case btnOk: emit _d->onOkSignal(); break;
-    case btnCancel: emit _d->onCancelSignal(); break;
-    case btnNever: emit _d->onNeverSignal(); break;
-    }
+      switch( event.keyboard.key )
+      {
+      case KEY_ESCAPE: emit _d->signal.onCancel(); break;
+      case KEY_RETURN: emit _d->signal.onOk(); break;
+      default: break;
+      }
 
-    return true;
+      return true;
+    }
+    break;
+
+    default:
+    break;
   }
 
   return Widget::onEvent( event );
 }
 
-Signal0<>& DialogBox::onOk() {  return _d->onOkSignal;}
-Signal0<>& DialogBox::onCancel(){  return _d->onCancelSignal;}
-Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
+Signal0<>& Dialog::onOk() {  return _d->signal.onOk;}
+Signal0<>& Dialog::onCancel(){  return _d->signal.onCancel;}
+Signal0<>& Dialog::onNever() { return _d->signal.onNever; }
 
-void DialogBox::draw(gfx::Engine& painter )
+void Dialog::draw(gfx::Engine& painter )
 {
   if( !visible() )
   {
@@ -140,23 +180,44 @@ void DialogBox::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-DialogBox* DialogBox::information(Widget *parent, const std::string &title, const std::string &text)
+Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 {
-  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOk );
-  ret->setModal();
-  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOk );
+
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
+  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
 
   return ret;
 }
 
-DialogBox *DialogBox::confirmation(Widget *parent, const std::string &title, const std::string &text)
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback, bool pauseGame)
 {
-  DialogBox* ret = new DialogBox( parent, Rect(), title, text, btnOkCancel );
-  ret->setModal();
-  CONNECT( ret, onOk(), ret, DialogBox::deleteLater );
-  CONNECT( ret, onCancel(), ret, DialogBox::deleteLater );
+  auto* dialog = Confirmation( ui, title, text, pauseGame );
+  dialog->onOk().connect( callback );
+
+  return dialog;
+}
+
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel, bool pauseGame)
+{
+  auto* dialog = Confirmation( ui, title, text, pauseGame );
+  dialog->onOk().connect( callbackOk );
+  dialog->onCancel().connect( callbackCancel );
+
+  return dialog;
+}
+
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
+{
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOkCancel, pauseGame );
+
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
+  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
 
   return ret;
 }
+
+}//end namespace dialog
 
 }//end namespace gui

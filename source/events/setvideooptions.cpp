@@ -39,16 +39,15 @@ GameEventPtr SetVideoSettings::create()
 
 void SetVideoSettings::_exec(Game& game, unsigned int)
 {
-  dialog::VideoOptions* dialog = new dialog::VideoOptions( game.gui()->rootWidget(),
-                                                           game.engine()->modes(),
-                                                           game.engine()->isFullscreen() );
+  gfx::Engine* e = game.engine();
+  auto& options = game.gui()->add<dialog::VideoOptions>( e->modes(),
+                                                         e->isFullscreen() );
 
-  CONNECT( dialog, onSreenSizeChange(), this, SetVideoSettings::_setResolution );
-  CONNECT( dialog, onFullScreenChange(), this, SetVideoSettings::_setFullscreen );
+  CONNECT( &options, onSreenSizeChange(), this, SetVideoSettings::_setResolution );
+  CONNECT( &options, onFullScreenChange(), this, SetVideoSettings::_setFullscreen );
 }
 
 bool SetVideoSettings::_mayExec(Game&, unsigned int) const { return true; }
-
 void SetVideoSettings::_setResolution(Size newSize)
 {
   SETTINGS_SET_VALUE( resolution, newSize );
@@ -61,4 +60,4 @@ void SetVideoSettings::_setFullscreen(bool fullscreen)
   game::Settings::save();
 }
 
-}
+}//end namespace events

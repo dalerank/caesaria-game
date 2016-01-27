@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "army.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"
@@ -24,17 +23,23 @@
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/common.hpp"
 #include "core/variant_map.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
 namespace world
 {
 
+namespace {
+static const int maxLoss = 100;
+}
+
 class Army::Impl
 {
 public:
-  CityPtr base;
+  std::string base;
   std::string destination;
   int strength;
 
@@ -44,19 +49,15 @@ public:
 Army::Army( EmpirePtr empire )
   : MovableObject( empire ), __INIT_IMPL(Army)
 {
-  __D_IMPL(d,Army)
+  __D_REF(d,Army)
 
-  _animation().load( ResourceGroup::empirebits, 37, 16 );
-  _animation().setLoop( Animation::loopAnimation );
-  Size size = _animation().frame( 0 ).size();
-  _animation().setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  d->strength = 0;
+  _animation().load( "world_army" );
+  d.strength = 0;
 }
 
 ArmyPtr Army::create(EmpirePtr empire)
 {
   ArmyPtr ret( new Army( empire ) );
-
   ret->drop();
 
   return ret;
@@ -66,16 +67,16 @@ Army::~Army(){}
 
 void Army::_reachedWay()
 {
-  __D_IMPL(d,Army)
+  __D_REF(d,Army)
 
   ObjectPtr obj;
-  if( !d->destination.empty() )
+  if( !d.destination.empty() )
   {
-    obj = empire()->findObject( d->destination );
+    obj = empire()->findObject( d.destination );
   }
   else
   {
-    ObjectList objs = empire()->findObjects( location(), 20 );
+    ObjectList objs = empire()->findObjects( location(), config::army::viewRange );
     objs.remove( this );
 
     if( !objs.empty() )
@@ -88,7 +89,7 @@ void Army::_reachedWay()
   }
   else
   {
-    Logger::warning( "!!!Army: nof found object with name " +(d->destination.empty() ? "NULL" : d->destination) );
+    Logger::warning( "!!!Army: nof found object with name " +(d.destination.empty() ? "NULL" : d.destination) );
   }
 
   MovableObject::_reachedWay();
@@ -99,8 +100,8 @@ void Army::save(VariantMap& stream) const
   MovableObject::save( stream );
 
   __D_IMPL_CONST(d,Army)
-  stream[ "base"  ] = Variant( d->base.isValid() ? d->base->name() : "" );
-  VARIANT_SAVE_STR_D( stream, d, destination )
+  VARIANT_SAVE_STR_D ( stream, d, base  )
+  VARIANT_SAVE_STR_D ( stream, d, destination )
   VARIANT_SAVE_ENUM_D( stream, d, strength )
 }
 
@@ -109,46 +110,46 @@ void Army::load(const VariantMap& stream)
   MovableObject::load( stream );
 
   __D_IMPL(d,Army)
-  d->base = empire()->findCity( d->options[ "base" ].toString() );  
   d->options = stream;
 
+  VARIANT_LOAD_STR_D( d, base, stream )
   VARIANT_LOAD_STR_D( d, destination, stream )
   VARIANT_LOAD_ANY_D( d, strength, stream )
 }
 
-std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
+std::string Army::type() const { return TEXT(Army); }
 
-void Army::setBase(CityPtr base){  _dfunc()->base = base;  }
+void Army::setBase(CityPtr base) { _dfunc()->base = utils::objNameOrDefault( base ); }
 
 void Army::attack(ObjectPtr obj)
 {
-  __D_IMPL(d,Army)
-  if( d->base.isValid() && obj.isValid() )
+  __D_REF(d,Army)
+  CityPtr baseCity = empire()->findCity( d.base );
+  if( baseCity.isValid() && obj.isValid() )
   {
-    d->destination = obj->name();
-    _findWay( d->base->location(), obj->location() );
+    d.destination = obj->name();
+    _findWay( baseCity->location(), obj->location() );
 
     if( _way().empty() )
     {
-      Logger::warning( "Army: cannot find way from %s to %s", d->base->name().c_str(), obj->name().c_str() );
+      Logger::warning( "Army: cannot find way from {} to {}", d.base, obj->name() );
     }
 
     attach();
   }
   else
   {
-    Logger::warningIf( d->base.isNull(), "Army: base is null" );
-    Logger::warningIf( obj.isNull(), "Army: object for attack is null" );
+    Logger::warning( "Army: base is " + ( d.base.empty() ? "null" : d.base ) );
+    Logger::warning( "Army: object for attack is " + utils::objNameOrDefault( obj, "null" ) );
   }
 }
 
 void Army::setStrength(int value)
 {
-  _dfunc()->strength = value;
-  if( _dfunc()->strength <= 0 )
-  {
+  __D_REF(d,Army)
+  d.strength = value;
+  if( d.strength <= 0 )
     deleteLater();
-  }
 }
 
 int Army::strength() const { return _dfunc()->strength; }
@@ -164,38 +165,34 @@ void Army::addObject(ObjectPtr obj )
   ArmyPtr otherArmy = ptr_cast<Army>( obj );
   if( otherArmy.isValid() && _isAgressiveArmy( otherArmy ) )
   {
-    int attackersLoss = 0;
-    int selfLoss = 0;
+    Army::BattleResult result = Army::battle( otherArmy->strength(), strength() );
 
-    Army::battle( otherArmy->strength(), strength(), attackersLoss, selfLoss );
-
-    otherArmy->killSoldiers(attackersLoss);
-    killSoldiers(selfLoss);
-    }
+    otherArmy->killSoldiers( result.atcLoss );
+    killSoldiers( result.defLoss );
+  }
 }
 
 std::string Army::target() const { return _dfunc()->destination; }
 
-void Army::battle(unsigned int attackers, unsigned int defenders, int& attackersLoss, int& deffLoss )
+Army::BattleResult Army::battle(unsigned int attackers, unsigned int defenders )
 {
   int delimArmy2self = math::percentage( attackers, defenders );
-  attackersLoss = 0;
-  deffLoss = 0;
+  BattleResult result;
 
   if( delimArmy2self < 25 )
   {
-    attackersLoss = 100;
-    deffLoss = math::random( 10 );
+    result.atcLoss = maxLoss;
+    result.defLoss = math::random( 10 );
   }
   else if( delimArmy2self <= 100 )
   {
-    int minAtLoss = 100 - delimArmy2self;
-    int randomAtLoss = math::random(100+delimArmy2self);
-    attackersLoss = math::clamp<int>( randomAtLoss, minAtLoss, 100 );
+    int minAtLoss = maxLoss - delimArmy2self;
+    int randomAtLoss = math::random(maxLoss+delimArmy2self);
+    result.atcLoss = math::clamp<int>( randomAtLoss, minAtLoss, maxLoss );
 
-    int minSelfLoss = math::random( attackersLoss );
-    int randomSelfLoss = math::random( attackersLoss + delimArmy2self );
-    deffLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, 100 );
+    int minSelfLoss = math::random( result.atcLoss );
+    int randomSelfLoss = math::random( result.atcLoss + delimArmy2self );
+    result.defLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, maxLoss );
   }
   else if( delimArmy2self < 400 )
   {
@@ -208,14 +205,16 @@ void Army::battle(unsigned int attackers, unsigned int defenders, int& attackers
      else if (pctAdvantage < 300) { minb = 20; }
      else { minb = 15; }
 
-     attackersLoss = math::clamp<int>( math::random( 100 ), 0, minb );
-     deffLoss = math::clamp<int>( math::random( 100 ), 100 - minb, 100 );
+     result.atcLoss = math::clamp<int>( math::random( maxLoss ), 0, minb );
+     result.defLoss = math::clamp<int>( math::random( maxLoss ), maxLoss - minb, maxLoss );
   }
   else
   {
-    attackersLoss = math::random( 10 );
-    deffLoss = 100;
-    }
+    result.atcLoss = math::random( 10 );
+    result.defLoss = maxLoss;
+  }
+
+  return result;
 }
 
 bool Army::_isAgressiveArmy(ArmyPtr) const
@@ -223,4 +222,4 @@ bool Army::_isAgressiveArmy(ArmyPtr) const
   return true;
 }
 
-}
+}//end namespace world

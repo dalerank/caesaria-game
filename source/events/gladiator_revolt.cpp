@@ -22,21 +22,19 @@
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/training.hpp"
 #include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
 #include "factory.hpp"
-
-using namespace constants;
 
 namespace events
 {
@@ -88,8 +86,7 @@ GladiatorRevolt::GladiatorRevolt() : _d( new Impl )
 
 void GladiatorRevolt::_exec(Game& game, unsigned int)
 {
-  city::Helper helper( game.city() );
-  GladiatorSchoolList gladSchool = helper.find<GladiatorSchool>( objects::gladiatorSchool );
+  GladiatorSchoolList gladSchool = game.city()->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
 
   if( !gladSchool.empty() )
   {
@@ -97,14 +94,13 @@ void GladiatorRevolt::_exec(Game& game, unsigned int)
 
     for( int k=0; k < _d->count; k++ )
     {
-      WalkerPtr wlk = WalkerManager::instance().create( walker::gladiatorRiot, game.city() );
-      EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
-      if( enemy.isValid() )
+      auto rioter = WalkerManager::instance().create<EnemySoldier>( walker::gladiatorRiot, game.city() );
+      if( rioter.isValid() )
       {
-        enemy->send2City( location );
-        enemy->wait( math::random( k * 30 ) );
-        enemy->setAttackPriority( EnemySoldier::attackAll );
-        enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
+        rioter->send2City( location );
+        rioter->wait( math::random( k * 30 ) );
+        rioter->setAttackPriority( EnemySoldier::attackAll );
+        rioter->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
   }

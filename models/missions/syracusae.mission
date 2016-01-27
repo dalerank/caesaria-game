@@ -7,17 +7,21 @@
   player.rank : 3
   adviserEnabled : true
   fishPlaceEnabled : false
-	
+  preview.text : "##syracusae_preview_mission##"
+  preview.title : "##syracusae_preview_title##"
+  preview.image : ""
+
   win :
   {
     population : 4000
+    name : "n2_syracusae"
     culture : 40
     prosperity : 20
     peace : 25
     favour : 20
     finishDate : "-100.01.01"
     next : ":/missions/mission5.briefing"
-    title : "##win_engineer_title##"
+    title : ""##quaestor##""
     win.text : "##win_syracusae_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -31,7 +35,7 @@
     cities :
     {
       Tarentum : {
-        location : [ 900, 600 ]
+        nation : "roman"
 
         land : true
         sea : true
@@ -42,7 +46,7 @@
       }
       
       Capua : {
-        location : [ 820, 560 ]
+        nation : "roman"
 
         sea : true
         available : true
@@ -60,7 +64,7 @@
       date : "-350.01.01"
       population : 500
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }    
@@ -69,7 +73,7 @@
       date : "-350.01.01"
       population : 1000
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }   
@@ -78,7 +82,7 @@
       date : "-350.01.01"
       population : 2000
       send2scribe : true
-      video : "/smk/Population1.smk"
+      video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }   
@@ -87,7 +91,7 @@
       date : "-350.01.01"
       population : 3000
       send2scribe : true
-      video : "/smk/Population2.smk"
+      video : "population2"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
@@ -99,7 +103,7 @@
       action : {
         message#messagebox : {
           send2scribe : true
-          video : "/smk/1st_Glad.smk"
+          video : "1st_glad"
           title : "##working_colloseum_title##"
           text : "##working_colloseum_text##"
         }
@@ -181,14 +185,18 @@
       }
     }
 
-    oil_price_rising#trading_options : {
+    oil_price_rising#trading_options :
+    {
       date : "-267.04.01"
-      goods : {
+      goods :
+      {
         oil : { relative : true, buy : 40, sell : 30 }
       }
 
-      exec : {
-        message#messagebox : {
+      exec :
+      {
+        message#messagebox :
+        {
           good : "oil"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
@@ -216,21 +224,25 @@
     emperor_request1#city_request : {
       date : "-267.02.01"
       reqtype : "good_request"
-      video : "/smk/Urgent_message2.smk"
+      video : "urgent_message2"
       month : 24
       good : { oil : 5 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
     }    
     
-    oil_price_rising#trading_options : {
+    oil_price_rising#trading_options :
+    {
       date : "-267.04.01"
-      goods : {
+      goods :
+      {
         oil : { relative : true, buy : 40, sell : 30 }
       }
 
-      exec : {
-        message#messagebox : {
+      exec :
+      {
+        message#messagebox :
+         {
           good : "oil"
           title : "##a_price_rise_title##"
           text : "##a_price_rise_text##"
@@ -261,7 +273,7 @@
         greeck_attack#messagebox : {
           title : "##greeck_attack_title##"
           text : "##greeck_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
           send2scribe : true
         }
       }
@@ -324,7 +336,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -352,7 +364,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -380,7 +392,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -408,7 +420,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -436,7 +448,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -464,7 +476,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -492,7 +504,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -520,7 +532,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -548,7 +560,7 @@
         greeck_attack_2#messagebox : {
 		  title : "##greeck_attack_title##"
 		  text : "##greeck_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		  send2scribe : true
 		}
 	  }
@@ -598,7 +610,6 @@
       weapons_workshop : true
       oil_workshop : true
       furniture_workshop : true
-      forum : false
       garden : true
       low_bridge : true
       high_bridge : true
@@ -628,6 +639,7 @@
       wheat_farm : true
       vegetable_farm : true
       olive_farm : true
+      roadBlock : true
     }
   }
 }

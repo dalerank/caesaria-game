@@ -19,45 +19,57 @@
 #define _CAESARIA_PRIORITIES_INCLUDE_H_
 
 #include <vector>
-#include "variant.hpp"
-#include "core/foreach.hpp"
+#include "variant_list.hpp"
 #include <set>
 
-inline std::set<int>& operator<<(std::set<int>& which, int value)
+template<class T>
+inline std::set<T>& operator<<(std::set<T>& which, const T& value)
 {
   which.insert( value );
   return which;
 }
 
 template<class T>
-class Priorities : public std::vector< T >
+inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
+{
+  for( auto& item : values )
+    which.insert( item );
+
+  return which;
+}
+
+template<class T>
+class Vector : public std::vector< T >
 {
 public:
-  inline Priorities& operator<<( const T& v )
+  inline Vector& operator<<( const T& v )
   {
     this->push_back( v );
     return *this;
   }
 
-  VariantList toVariantList() const
+  VariantList save() const
   {
     VariantList vl;
-    foreach( i, *this ) { vl.push_back( Variant( *i ) ); }
+    for( auto& item : *this ) { vl.push_back( Variant( item ) ); }
 
     return vl;
   }
 
-  bool count( const T& v ) const
+  void load( const VariantList& stream )
   {
-    foreach( i, *this ) { if( *i == v ) return true; }
-
-    return false;
+    *this << stream;
   }
 
-  Priorities& operator << ( const VariantList& vl )
+  bool contain( const T& v ) const
   {
-    foreach( i, vl ) { this->push_back( (T)(*i).toInt() ); }
+    auto it = std::find(this->begin(), this->end(), v);
+    return it != this->end();
+  }
 
+  Vector& operator << ( const VariantList& vl )
+  {
+    for( auto& i : vl ) { this->push_back( (T)i.toInt() ); }
     return *this;
   }
 };

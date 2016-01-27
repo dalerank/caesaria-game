@@ -18,22 +18,17 @@
 #ifndef __CAESARIA_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_PREDEFINITIONS_H_INCLUDED__
 
-#include "smartptr.hpp"
-#include "position.hpp"
-#include "smartlist.hpp"
-
-#include <vector>
+#include "platform_types.hpp"
 
 #define PREDEFINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
 #define PREDEFINE_CLASS_SMARTLIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef SmartList< a > a##b;
 
 class TilePos;
+class Point;
+class FointF;
 class Size;
+class Variant;
 class VariantMap;
 class DateTime;
-typedef long unsigned int ThreadID;
-
-typedef std::vector< TilePos > TilePosArray;
-typedef std::vector< Point > PointsArray;
 
 #endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__

@@ -16,23 +16,22 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "taxcollector.hpp"
-#include "city/helper.hpp"
-#include "city/funds.hpp"
+#include "city/statistic.hpp"
+#include "game/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
-#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include <game/settings.hpp>
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::taxCollector, TaxCollector)
 
@@ -41,39 +40,28 @@ class TaxCollector::Impl
 public:
   float money;
   bool return2base;
+  bool housePersonalTax;
 
-  std::map< std::string, float > history;
+  std::map< TilePos, float > history;
 };
 
 void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
-  int difficulty = SETTINGS_VALUE(difficulty);
-  float multiply = 1.0f;
-  switch (difficulty)
+  UqBuildings<House> houses = getReachedBuildings( pos() ).select<House>();
+  for( auto house : houses )
   {
-    case 0: multiply = 3.0f; break;
-    case 1: multiply = 2.0f; break;
-    case 2: multiply = 1.5f; break;
-    case 3: multiply = 1.0f; break;
-    case 4: multiply = 0.75f; break;
-  }
+    if( house->isDeleted() || _d->history.count( house->pos() ) > 0 )
+      continue;
 
-  ReachedBuildings buildings = getReachedBuildings( pos() );
-  foreach( it, buildings )
-  {
-    HousePtr house = ptr_cast<House>( *it );
-
-    if( house.isValid() )
+    if( _d->housePersonalTax )
     {
-      float tax = house->collectTaxes() * multiply;
+      float tax = house->collectTaxes();
       _d->money += tax;
-      house->applyService( this );
-
-      std::string posStr = utils::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
-      _d->history[ posStr ] += tax;
+      _d->history[ house->pos() ] += tax;
     }
+    house->applyService( this );
   }
 }
 
@@ -81,42 +69,36 @@ std::string TaxCollector::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    city::Helper helper( _city() );
-    TilePos offset( 2, 2 );
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), reachDistance() );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 
-    foreach( h, houses )
+    for( auto house : houses )
     {
-      HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
+      HouseLevel::ID level = (HouseLevel::ID)house->spec().level();
       if( level < HouseLevel::bigDomus ) poorHouseCounter++;
       else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
     }
 
     if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
     if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
-
   }
 
   return ServiceWalker::thoughts(th);
 }
 
-TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
+BuildingPtr TaxCollector::base() const
 {
-  TaxCollectorPtr tc( new TaxCollector( city ) );
-  tc->drop();
-
-  return tc;
+  return _map().overlay( baseLocation() ).as<Building>();
 }
 
-TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
+TaxCollector::TaxCollector(PlayerCityPtr city)
+  : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
   _d->return2base = false;
+  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes ) : false;
   _setType( walker::taxCollector );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 float TaxCollector::takeMoney() const
@@ -136,10 +118,9 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    foreach( it, _d->history )
-    {
-      Logger::warning( "       [%s]:%f", it->first.c_str(), it->second );
-    }
+    for( const auto& step : _d->history )
+      Logger::warning( "       [{},{}]:{}", step.first.i(), step.first.j(), step.second );
+
     deleteLater();
     return;
   }
@@ -147,7 +128,7 @@ void TaxCollector::_reachedPathway()
   {
     _d->return2base = true;
 
-    Pathway way = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos(), base(), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       _updatePathway( way );
@@ -159,12 +140,11 @@ void TaxCollector::_reachedPathway()
   ServiceWalker::_reachedPathway();
 }
 
-void TaxCollector::_noWay(){  die();  }
+void TaxCollector::_noWay() { die(); }
 
 void TaxCollector::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
-
   VARIANT_LOAD_ANY_D( _d, money, stream )
   VARIANT_LOAD_ANY_D( _d, return2base, stream )
 }
@@ -175,3 +155,5 @@ void TaxCollector::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, money )
   VARIANT_SAVE_ANY_D( stream, _d, return2base )
 }
+
+Walker::Gender TaxCollector::gender() const { return male; }

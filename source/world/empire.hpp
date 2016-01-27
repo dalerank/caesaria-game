@@ -24,9 +24,13 @@
 #include "core/referencecounted.hpp"
 #include "core/serializer.hpp"
 #include "good/good.hpp"
+#include "price_info.hpp"
+#include "governor_rank.hpp"
 
 namespace world
 {
+
+class TradeRoutes;
 
 class Empire : public ReferenceCounted, public Serializable
 {
@@ -50,15 +54,11 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
-  CityPtr rome() const;
+  CityPtr capital() const;
+
+  TradeRoutes& troutes();
 
   TraderoutePtr createTradeRoute( std::string start, std::string stop );
-
-  TraderoutePtr findRoute( unsigned int index );
-  TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
-
-  TraderouteList tradeRoutes( const std::string& startCity );
-  TraderouteList tradeRoutes();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
@@ -70,9 +70,9 @@ public:
   bool isAvailable() const;
   void setAvailable( bool value );
 
-  void setPrice( good::Product gtype, int buy, int sell );
-  void changePrice( good::Product gtype, int buy, int sell );
-  void getPrice( good::Product gtype, int& buy, int& sell ) const;
+  void setPrice(good::Product gtype, const PriceInfo &prices );
+  void changePrice(good::Product gtype, const PriceInfo &delta);
+  PriceInfo getPrice( good::Product gtype ) const;
 
   void clear();
 private:
@@ -80,30 +80,18 @@ private:
   void _loadObjects(const VariantMap& objects );
   void _initializeObjects(vfs::Path filename);
   void _initializeCities( vfs::Path filename );
+  void _initializeCapital();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-struct GovernorRank
-{
-  std::string rankName;
-  std::string pretty;
-  unsigned int salary;
-  unsigned int level;
-
-  void load( const std::string& name, const VariantMap& vm );
-};
-
-typedef std::vector<GovernorRank> GovernorRanks;
-
 class EmpireHelper 
 {
 public:
-  static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
   static float governorSalaryKoeff( CityPtr city );
   static GovernorRanks ranks();
-  static GovernorRank getRank( unsigned int name );
+  static GovernorRank getRank(GovernorRank::Level level);
 };
 
 }//end namespace world

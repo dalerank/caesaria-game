@@ -27,7 +27,7 @@
   }
 
   grape : {
-    small : { back : false, rc : "cartgs", start : 41, frames : 1, step : 8, delay : 2 }
+    small : { back : false, rc : "carts", start : 41, frames : 1, step : 8, delay : 2 }
     big : { back : false, rc : "citizen05", start : 105, frames : 1, step : 8, delay : 2, addh : 20 }
     mega : { back : false, rc : "citizen05", start : 105, frames : 1, step : 8, delay : 2, addh : 40 }
   }
@@ -52,8 +52,8 @@
 
   oil : {
     small : { back : false, rc : "carts", start : 65, frames : 1, step : 8, delay : 2 }
-    big : { back : false, rc : "citizen05", start : 121, frames : 1, step : 8, delay : 2, addh : 20 }
-    mega : { back : false, rc : "citizen05", start : 121, frames : 1, step : 8, delay : 2, addh : 40 }
+    big : { back : false, rc : "citizen05", start : 121, frames : 1, step : 8, delay : 2, addh : 0 }
+    mega : { back : false, rc : "citizen05", start : 121, frames : 1, step : 8, delay : 2, addh : 0 }
   }
 
   furniture : {

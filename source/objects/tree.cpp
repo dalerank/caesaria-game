@@ -17,63 +17,212 @@
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
-#include "city/helper.hpp"
-#include "core/foreach.hpp"
+#include "gfx/imgid.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "objects_factory.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/animation_bank.hpp"
 #include "core/variant_map.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tree, Tree)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::tree, Tree)
+
+enum class State { well=0, burning, burnt };
+class Tree::Impl
+{
+public:
+  bool flat;
+  int age;
+  int health;
+  State state;
+  bool spreadFire;
+  DateTime lastTimeGrow;
+  struct {
+    enum { size=4 };
+    int itiles[size] = {0x6B8231, 0x103808, 0x103008, 0x737931};
+    int jtiles[size] = {0x102008, 0x737929, 0x526921, 0x084910};
+  } mmapColors;
+};
 
 Tree::Tree()
-  : TileOverlay( constants::objects::tree, Size(1) )
+  : Overlay( object::tree, Size(1) ), _d( new Impl )
 {
+  _d->age = math::random( 15 );
+  _d->flat = false;
+  _d->health = 100;
+  _d->state = State::well;
+  _d->lastTimeGrow = game::Date::current();
+  _d->spreadFire = false;
+
+  setPicture( info().randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
 {
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
+  if( _d->state == State::burning )
+  {
+    if( game::Date::isDayChanged() )
+    {
+      _d->health-=5;
+      if( !_d->spreadFire && _d->health < 50 )
+        _burnAround();
+    }
+
+    _animation().update( time );
+    _fgPictures().back() = _animation().currentFrame();
+
+    if( _d->health <= 0 )
+      _die();
+  }
+  else if( game::Date::isMonthChanged() )
+  {
+    _d->health = math::clamp( _d->health+5, 0, 100 );
+    bool mayHealth4grow = _d->health > 50;
+    bool growLast5years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 5;
+    bool haveRuleToGrow = _city()->getOption( PlayerCity::forestGrow );
+
+    if( haveRuleToGrow && mayHealth4grow && !growLast5years)
+      grow();
+  }
 }
 
-bool Tree::isFlat() const { return _isFlat; }
+bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build( const CityAreaInfo& info )
+bool Tree::build( const city::AreaInfo& rinfo )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
-  setPicture( Picture::load( picname ) );
-  _isFlat = picture().height() <= tilemap::cellPicSize().height();
-  return TileOverlay::build( info );
+  std::string txName = imgid::toResource( rinfo.city->tilemap().at( rinfo.pos ).imgId() );
+  if( info().havePicture( txName ) )
+    _picture().load( txName );
+
+  if( !picture().isValid() )
+      setPicture( info().randomPicture(1) );
+
+  _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
+  return Overlay::build( rinfo );
 }
 
 void Tree::save(VariantMap& stream) const
 {
-  TileOverlay::save( stream );
+  Overlay::save( stream );
 
-  stream[ "treeFlat" ] = _isFlat;
+  VARIANT_SAVE_ANY_D( stream, _d, flat )
+  VARIANT_SAVE_ANY_D( stream, _d, age )
+  VARIANT_SAVE_ANY_D( stream, _d, health )
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
+  VARIANT_SAVE_ANY_D( stream, _d, spreadFire )
+  VARIANT_SAVE_ANY_D( stream, _d, lastTimeGrow )
 }
+
+bool Tree::canDestroy() const { return _d->state != State::burning; }
 
 void Tree::load(const VariantMap& stream)
 {
-  TileOverlay::load( stream );
+  Overlay::load( stream );
 
-  _isFlat = stream.get( "treeFlat" );
+  VARIANT_LOAD_ANY_D( _d, flat, stream )
+  VARIANT_LOAD_ANY_D( _d, age, stream )
+  VARIANT_LOAD_ANY_D( _d, health, stream )
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
+  VARIANT_LOAD_ANY_D( _d, spreadFire, stream )
+  VARIANT_LOAD_TIME_D( _d, lastTimeGrow, stream )
+
+  if( _d->state == State::burning )
+    _startBurning();
 }
 
 void Tree::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
-  foreach( it, tiles )
+  TilesArray tiles = area();
+  for( auto it : tiles )
+    it->setFlag( Tile::tlTree, false );
+}
+
+void Tree::burn()
+{
+  if( _city()->getOption( PlayerCity::forestFire ) == 0 )
+    return;
+
+  if( _d->state != State::well )
+    return;
+
+  _startBurning();
+}
+
+void Tree::_startBurning()
+{
+  _d->state = State::burning;
+  _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
+  _fgPictures().resize(1);
+}
+
+void Tree::_burnAround()
+{
+   _d->spreadFire = true;
+
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
+  for( auto overlay : ovelrays )
   {
-    (*it)->setFlag( Tile::tlTree, false );
+    if( math::probably( 0.5f ) )
+      overlay->burn();
   }
+}
+
+void Tree::grow()
+{
+  TilesArray tiles = _map().getNeighbors( pos() );
+  _d->lastTimeGrow = game::Date::current();
+  for( unsigned int i=0; i < tiles.size(); ++i )
+  {
+    auto tile = tiles.random();
+    if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
+    {
+      OverlayPtr overlay = Overlay::create( type() );
+      if( overlay.isValid()  )
+      {
+        city::AreaInfo areainfo( _city(), tile->pos() );
+        bool buildOk = overlay->build( areainfo );
+        if( buildOk )
+        {
+          _city()->addOverlay( overlay );
+
+          auto newTree = overlay.as<Tree>();
+          if( newTree.isValid() )
+          {
+            Picture pic = info().randomPicture( Size(1) );
+            newTree->setPicture( pic );
+            newTree->_d->flat = pic.height() < pic.width() / 2;
+            newTree->_d->health = 10;
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+void Tree::_die()
+{
+  _d->state = State::burnt;
+  setPicture( "burnedTree", 1 );
+  _d->flat = false;
+  _animation().clear();
+  _fgPictures().clear();
+}
+
+bool Tree::getMinimapColor(int& color1, int& color2) const
+{
+  const int t = (pos().i() + pos().j()) % 3;
+  color1 = _d->mmapColors.itiles[ t ];
+  color2 = _d->mmapColors.jtiles[ t+1 ];
+  return true;
 }

@@ -26,6 +26,7 @@
 #include "objects/aqueduct.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
@@ -38,31 +39,30 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
   else
   {
-    if( is_kind_of<Aqueduct>( tile->overlay() ) )
-    {
-      AqueductPtr aq = ptr_cast<Aqueduct>( tile->overlay() );
+    AqueductPtr aq = tile->overlay<Aqueduct>();
+    if( aq.isValid() )
+    {     
       ret = aq->canAddRoad( PlayerCityPtr(), tile->pos() );
     }
   }
 }
 
-RoadPropagator::RoadPropagator()
+bool __checkWalkables( const TilesArray& tiles )
 {
+  for( auto tile : tiles )
+  {
+    if( !tile->isWalkable( true ) || tile->overlay().is<Building>() )
+      return false;
+  }
 
+  return true;
 }
 
-RoadPropagator& RoadPropagator::instance()
-{
-  static RoadPropagator inst;
-  return inst;
-}
-
-TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
+TilesArray RoadPropagator::createPath(Tilemap& tileMap, const TilePos& startPos, const TilePos& stopPos,
                                       bool roadAssignment, bool returnRect )
 {  
-  Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
+  Logger::warning( "RoadPropagator::getPath from ({0},{1}) to ({2}, {3})",
                     startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
-
   TilesArray ret;
   if( startPos == stopPos )
   {
@@ -72,7 +72,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 
   if( returnRect )
   {
-    ret = tileMap.getRectangle( startPos, stopPos );
+    ret = tileMap.rect( startPos, stopPos );
   }
   else
   {
@@ -85,24 +85,18 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
                 : TilePos( startPos.i(), stopPos.j() );
 
     if( yMoveFirst )
-    {
-      ret.append( tileMap.getRectangle( startPos, midlPos ) );
-      ret.append( tileMap.getRectangle( midlPos, stopPos ) );
+    {      
+      ret.append( tileMap.rect( startPos, midlPos ) );
+      ret.append( tileMap.rect( midlPos, stopPos ) );
     }
     else
     {
-      ret.append( tileMap.getRectangle( stopPos, midlPos ) );
-      ret.append( tileMap.getRectangle( midlPos, startPos ) );
+      ret.append( tileMap.rect( stopPos, midlPos ) );
+      ret.append( tileMap.rect( midlPos, startPos ) );
     }
 
-    foreach( it, ret )
-    {
-      if( !(*it)->isWalkable( true ) )
-      {
-        ret.clear();
-        break;
-      }
-    }
+    if( !__checkWalkables( ret ) )
+      ret.clear();
   }
 
   if( ret.empty() )
@@ -110,9 +104,9 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
     Pathfinder& finder = Pathfinder::instance();
     finder.setCondition( makeDelegate( &RoadPropagator::instance(), &RoadPropagator::canBuildRoad ) );
 
-    int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly | Pathfinder::customCondition;
+    int flags = Pathway::fourDirection | Pathway::terrainOnly | Pathway::customCondition;
 
-    flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
+    flags |= (roadAssignment ? 0 : Pathway::ignoreRoad );
     const Tile& stile = tileMap.at( startPos );
     const Tile& ftile = tileMap.at( stopPos );
     Pathway way = finder.getPath( stile.pos(), ftile.pos(), flags );

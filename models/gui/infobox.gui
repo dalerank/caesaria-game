@@ -13,10 +13,10 @@
     
   lbTitle#Label : 
   {
-    geometryf : [ 0.10 , 0.02, 0.9, 0.19 ]
+    geometryf : [ 0.10 , 0.02, 0.9, 0.13 ]
     text : "##title##"
     font : "FONT_5"
-    textAlign : [ "center", "upperLeft" ]
+    textAlign : [ "center", "center" ]
   }
 
   btnHelp#TexturedButton :
@@ -27,6 +27,11 @@
     hovered : [ "paneling", 529 ]
     pressed : [ "paneling", 530 ]
     disabled : [ "paneling", 531 ]
+  }
+
+  layoutCallbacks#HLayout :
+  {
+    geometry : [ 32, "ph-40", "pw-32", "ph-16" ]
   }
 
   btnExit#TexturedButton :
@@ -41,7 +46,7 @@
 
   lbText#Label :
   {
-    geometry : [ 32, 64, 380, 128 ]
+    geometry : [ 32, 64, "pw-20", 128 ]
     multiline : true
     font : "FONT_2"
     multiline : true

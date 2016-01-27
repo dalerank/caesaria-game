@@ -20,12 +20,13 @@
 #include "objects/metadata.hpp"
 #include "objects/warehouse.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
-#include "special_orders_window.hpp"
-#include "good/goodstore.hpp"
+#include "good/helper.hpp"
+#include "warehouse_orders_window.hpp"
+#include "good/store.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace gfx;
 
@@ -35,13 +36,16 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(warehouse,AboutWarehouse)
+
 AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   setupUI( ":/gui/warehouseinfo.gui" );
-  _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
-  setBase( ptr_cast<Construction>( _warehouse ) );
+  _warehouse = tile.overlay<Warehouse>();
+
+  setBase( _warehouse );
   _setWorkingVisible( true );
 
   /*StringArray warnings;
@@ -54,15 +58,16 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
     lb->setTextAlignment( alignCenter, alignCenter );
   }*/
 
-  PushButton* btnOrders;
-  GET_WIDGET_FROM_UI( btnOrders );
-  CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOrders, onClicked(), AboutWarehouse::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
+  std::string title = _warehouse->info().prettyName();
+  if( _warehouse->isTradeCenter() )
+    title = "##trade_center##";
+
   setTitle( _(title) );
 
   // summary: total stock, free capacity
-  int _paintY = _lbTitleRef() ? _lbTitleRef()->bottom() : 50;
+  int _paintY = _lbTitle() ? _lbTitle()->bottom() : 50;
 
   drawGood(good::wheat,     0, _paintY+0);
   drawGood(good::vegetable, 0, _paintY+25);
@@ -97,10 +102,10 @@ void AboutWarehouse::showSpecialOrdersWindow()
   }
   else
   {
-    pos = absoluteRect().UpperLeftCorner;
+    pos = absoluteRect().lefttop();
   }
 
-  new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
+   parent()->add<WarehouseSpecialOrdersWindow>( pos, _warehouse );
 }
 
 void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY )
@@ -109,14 +114,13 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
   int qty = _warehouse->store().qty(goodType);
 
   // pictures of goods
-  const Picture& pic = good::Helper::picture( goodType );
-  Label* lb = new Label( this, Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic, Point( 0, 4 ) );
+  std::string outText = fmt::format( "{} {}", qty / 100, _(goodName) );
 
-  std::string outText = utils::format( 0xff, "%d %s", qty / 100, _(goodName) );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 24, 0 ) );
+  Label& lb = add<Label>( Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
+  lb.setFont( FONT_2 );
+  lb.setIcon( good::Info( goodType ).picture(), Point( 0, 4 ) );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 24, 0 ) );
 }
 
 }

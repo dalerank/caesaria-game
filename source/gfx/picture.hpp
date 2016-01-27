@@ -21,23 +21,30 @@
 
 #include <vector>
 #include <string>
-#include "core/size.hpp"
-#include "core/scopedptr.hpp"
-#include "core/position.hpp"
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
+#include "core/smartptr.hpp"
 
 struct SDL_Texture;
 struct SDL_Surface;
 
 namespace gfx
 {
+
+class PictureImpl;
   
 // an image with offset, this is the basic rendered object
 class Picture
 {
 public:
   Picture();
+  Picture( const Size& size, unsigned char* data=0, bool mayChange=false );
+
+#ifndef CAESARIA_DISABLE_PICTUREBANK
+  Picture( const std::string& group, const int id );
+  Picture( const std::string& filename );
+#endif
+
   ~Picture();
 
   Picture( const Picture& other );
@@ -54,7 +61,7 @@ public:
   const Point& offset() const;
 
   void setName(const std::string &name);  // for save game
-  std::string name() const;
+  const std::string& name() const;
   void setAlpha( unsigned char value );
 
   void init( SDL_Texture* tx, SDL_Surface* srf, unsigned int ogltx );
@@ -64,16 +71,19 @@ public:
   unsigned int& textureID();
   unsigned int textureID() const;
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
+  Picture& load( const std::string& group, const int id );
+  Picture& withFallback( const std::string& group, const int id );
+  Picture& load( const std::string& filename );
+#endif
+
   int width() const;
   int height() const;
   int pitch() const;
 
-  /*void draw( const Picture& srcpic, int x, int y, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Point& pos, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );*/
-
   void fill(const NColor& color, Rect rect=Rect() );
+  Picture& draw(Picture pic, const Point& point, const Size& size );
+  Picture& draw(Picture pic, const Rect& src, const Rect& dst=Rect());
 
   unsigned int* lock();
   void unlock();
@@ -81,42 +91,19 @@ public:
   Size size() const;
   unsigned int sizeInBytes() const;
 
-  bool isValid() const;
+  void save( const std::string& filename );
 
-  static Picture& load( const std::string& group, const int id );
-  static Picture& load( const std::string& filename );     
-
-  static Picture* create( const Size& size, unsigned char* data=0, bool mayChange=false );
+  bool isValid() const;  
 
   static const Picture& getInvalid();
-  static void destroy( Picture* ptr );
 
   void update();
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
+  SmartPtr<PictureImpl> _d;
 
-struct PictureRefDeleter
-{
-  static inline void cleanup( Picture* pic )
-  {
-    // Enforce a complete type.
-    // If you get a compile error here, you need add destructor in class-container
-    typedef char IsIncompleteType[ sizeof(Picture) ? 1 : -1 ];
-    (void) sizeof(IsIncompleteType);
-
-    Picture::destroy( pic );
-  }
-};
-
-class PictureRef : public ScopedPtr< Picture, PictureRefDeleter >
-{
-public:
-  void init( const Size& size )
-  {
-    reset( Picture::create( size, 0, true ) );
-  }
+  Point _offset;  // the image is shifted when displayed
+  Rect _orect;
+  std::string _name; // for game save
 };
 
 }//end namespace gfx

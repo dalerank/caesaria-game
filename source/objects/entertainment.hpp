@@ -20,22 +20,40 @@
 
 #include "objects/service.hpp"
 
+struct TraineeWayInfo
+{
+  DateTime time;
+  TilePos  base;
+  TilePos  destination;
+};
+
+class TraineeWays : public std::vector<TraineeWayInfo>
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+  void removeExpired( const DateTime& current, int expsMonth = 2 );
+};
+
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-  typedef std::vector<constants::walker::Type> NecessaryWalkers;
+  typedef TraineeWays IncomeWays;
+  typedef TraineeWays OutcomeWays;
+  typedef std::vector<walker::Type> NecessaryWalkers;
 
-  EntertainmentBuilding( const Service::Type service, const TileOverlay::Type type,
+  EntertainmentBuilding( const Service::Type service, const object::Type type,
                          Size size);
 
   virtual ~EntertainmentBuilding();
 
   virtual void deliverService();
-  virtual int visitorsNumber() const;
+  virtual int currentVisitors() const;
+  virtual int maxVisitors() const;
 
   virtual unsigned int walkerDistance() const;
+  virtual NecessaryWalkers necessaryWalkers() const;
 
-  virtual float evaluateTrainee(constants::walker::Type  traineeType);
   virtual bool isShow() const;
   virtual unsigned int showsCount() const;
 
@@ -44,11 +62,14 @@ public:
 
   virtual std::string troubleDesc() const;
 
-  virtual NecessaryWalkers necessaryWalkers() const;
+  virtual void updateTrainee( TraineeWalkerPtr walker );
+  virtual float evaluateTrainee(walker::Type  traineeType);
+
+  const IncomeWays& incomes() const;
 
 protected:
   virtual WalkerList _specificWorkers() const;
-  void _addNecessaryWalker( constants::walker::Type type );
+  void _addNecessaryWalker( walker::Type type );
   bool _isWalkerReady();
 
   class Impl;

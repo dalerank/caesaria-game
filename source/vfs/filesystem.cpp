@@ -23,14 +23,9 @@
 #include "entries.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "core/platform_specific.hpp"
 
-#if defined (CAESARIA_PLATFORM_WIN)
-	#include <direct.h> // for _chdir
-	#include <io.h> // for _access
-	#include <tchar.h>
-	#include <windows.h>
-	#include <stdio.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -65,20 +60,20 @@ public:
 
 ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const std::string& password )
 {
-  foreach( it, openArchives )
+  for( auto& item : openArchives )
   {
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
     const Path absPath = filename.absolutePath();
-    const Path arcPath = (*it)->entries()->getPath();
+    const Path arcPath = item->entries()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
       if( password.size() )
       {
-        (*it)->Password=password;
+        item->Password=password;
       }
 
-      return *it;
+      return item;
     }
   }
 
@@ -100,9 +95,9 @@ FileSystem::~FileSystem() {}
 
 NFile FileSystem::loadFileFromArchive( const Path& filePath )
 {
-  foreach( it, _d->openArchives )
+  for( auto& item :  _d->openArchives )
   {
-    NFile file = (*it)->createAndOpenFile( filePath );
+    NFile file = item->createAndOpenFile( filePath );
 
     if( file.isOpen() )
     {
@@ -144,41 +139,41 @@ void FileSystem::addArchiveLoader( ArchiveLoaderPtr loader)
 //! Returns the total number of archive loaders added.
 unsigned int FileSystem::archiveLoaderCount() const
 {
-	return _d->archiveLoaders.size();
+  return _d->archiveLoaders.size();
 }
 
 //! Gets the archive loader by index.
 ArchiveLoaderPtr FileSystem::getArchiveLoader(unsigned int index) const
 {
-	if (index < _d->archiveLoaders.size())
+  if (index < _d->archiveLoaders.size())
   {
-		return _d->archiveLoaders[index];
+    return _d->archiveLoaders[index];
   }
-	else
-		return ArchiveLoaderPtr();
+  else
+    return ArchiveLoaderPtr();
 }
 
 //! move the hirarchy of the filesystem. moves sourceIndex relative up or down
 bool FileSystem::moveArchive(unsigned int sourceIndex, int relative)
 {
-	bool r = false;
-	const int dest = (int) sourceIndex + relative;
-	const int dir = relative < 0 ? -1 : 1;
-	const int sourceEnd = ((int) _d->openArchives.size() ) - 1;
-	ArchivePtr t;
+  bool r = false;
+  const int dest = (int) sourceIndex + relative;
+  const int dir = relative < 0 ? -1 : 1;
+  const int sourceEnd = ((int) _d->openArchives.size() ) - 1;
+  ArchivePtr t;
 
-	for (int s = (int) sourceIndex;s != dest; s += dir)
-	{
-		if (s < 0 || s > sourceEnd || s + dir < 0 || s + dir > sourceEnd)
-			continue;
+  for (int s = (int) sourceIndex;s != dest; s += dir)
+  {
+    if (s < 0 || s > sourceEnd || s + dir < 0 || s + dir > sourceEnd)
+      continue;
 
-		t = _d->openArchives[s + dir];
-		_d->openArchives[s + dir] = _d->openArchives[s];
-		_d->openArchives[s] = t;
-		r = true;
-	}
+    t = _d->openArchives[s + dir];
+    _d->openArchives[s + dir] = _d->openArchives[s];
+    _d->openArchives[s] = t;
+    r = true;
+  }
 
-	return r;
+  return r;
 }
 
 
@@ -292,7 +287,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   if( archive.isValid() )
   {
     const std::string arcType = archive->getTypeName();
-    Logger::warning( "FileSystem: check archive:type-%s as opened %s", arcType.c_str(), filename.toString().c_str() );
+    Logger::warning( "FileSystem: check archive:type-{0} as opened {0}", arcType, filename.toString() );
     _d->openArchives.push_back( archive );
     if( password.size() )
     {
@@ -327,7 +322,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-        return archive;
+      return archive;
     }
 
     int i;
@@ -391,7 +386,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-      Logger::warning( "Mount archive %s", file.path().toString().c_str() );
+      Logger::warning( "Mount archive {}", file.path().toString() );
       _d->openArchives.push_back(archive);
 
       if (password.size())
@@ -403,7 +398,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
     }
     else
     {
-      Logger::warning( "Could not create archive for %s", file.path().toString().c_str() );
+      Logger::warning( "Could not create archive for {}", file.path().toCString() );
     }
   }
 
@@ -418,13 +413,13 @@ void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = fol
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 {
   Logger::warning( "FileSystem: mountArchive call for " + archive->getTypeName() );
-	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-	{
-		if( archive == _d->openArchives[i])
-		{
-			return archive;
-		}
-	}
+  for (unsigned int i=0; i < _d->openArchives.size(); ++i)
+  {
+    if( archive == _d->openArchives[i])
+    {
+      return archive;
+    }
+  }
 
 	_d->openArchives.push_back(archive);
   return archive;
@@ -434,15 +429,15 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 //! removes an archive from the file system.
 bool FileSystem::unmountArchive(unsigned int index)
 {
-	bool ret = false;
-	if (index < _d->openArchives.size())
-	{
-    Logger::warning( "FileSystem: unmountArchive %d", index );
-		_d->openArchives.erase( _d->openArchives.begin() + index );
-		ret = true;
-	}
+  bool ret = false;
+  if (index < _d->openArchives.size())
+  {
+    Logger::warning( "FileSystem: unmountArchive {0}", index );
+    _d->openArchives.erase( _d->openArchives.begin() + index );
+    ret = true;
+  }
 
-	return ret;
+  return ret;
 }
 
 
@@ -465,15 +460,16 @@ bool FileSystem::unmountArchive(const Path& filename)
 //! Removes an archive from the file system.
 bool FileSystem::unmountArchive( ArchivePtr archive)
 {
-	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-	{
-		if( archive == _d->openArchives[i] )
-		{
-			return unmountArchive(i);
-		}
-	}
+  foreach( i, _d->openArchives )
+  {
+    if( archive == *i )
+    {
+      int index = std::distance( _d->openArchives.begin(), i );
+      return unmountArchive( index );
+    }
+  }
 
-	return false;
+  return false;
 }
 
 //! gets an archive
@@ -481,108 +477,105 @@ unsigned int FileSystem::archiveCount() const {	return _d->openArchives.size(); 
 
 ArchivePtr FileSystem::getFileArchive(unsigned int index)
 {
-	return index < archiveCount() ? _d->openArchives[index] : 0;
+  return index < archiveCount() ? _d->openArchives[index] : 0;
 }
 
 //! Returns the string of the current working directory
 const Path& FileSystem::workingDirectory()
 {
-	int type = 0;
+  int type = 0;
 
-	if (type != fsNative)
-	{
-		type = fsVirtual;
-	}
-	else
-	{
-		#if defined(CAESARIA_PLATFORM_WIN)
-			char tmp[_MAX_PATH];
-			_getcwd(tmp, _MAX_PATH);
-      _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
-		#elif defined(CAESARIA_PLATFORM_UNIX)
-			// getting the CWD is rather complex as we do not know the size
-			// so try it until the call was successful
-			// Note that neither the first nor the second parameter may be 0 according to POSIX
-			unsigned int pathSize=256;
-            ScopedPtr< char > tmpPath( new char[pathSize] );
-      
-            while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
-			{
-				pathSize *= 2;
-				tmpPath.reset( new char[pathSize] );
-			}
+  if (type != fsNative)
+  {
+          type = fsVirtual;
+  }
+  else
+  {
+#if defined(GAME_PLATFORM_WIN)
+    char tmp[_MAX_PATH];
+    _getcwd(tmp, _MAX_PATH);
+    _d->workingDirectory[type] = utils::replace( tmp, "\\", "/" );
+#elif defined(GAME_PLATFORM_UNIX)
+    // getting the CWD is rather complex as we do not know the size
+    // so try it until the call was successful
+    // Note that neither the first nor the second parameter may be 0 according to POSIX
+    unsigned int pathSize=256;
+    ByteArray tmpPath( pathSize );
 
-            if( tmpPath )
-			{
-								_d->workingDirectory[fsNative] = Path( tmpPath.data() );
-			}
-		#endif //CAESARIA_PLATFORM_UNIX
+    while( (pathSize < (1<<16)) && !( getcwd( tmpPath.data(), pathSize)))
+    {
+      pathSize *= 2;
+      tmpPath.resize( pathSize );
+    }
 
-		//_d->workingDirectory[type].validate();
-	}
+    _d->workingDirectory[fsNative] = Path( tmpPath.data() );
+#endif //GAME_PLATFORM_UNIX
 
-	return _d->workingDirectory[type];
+    //_d->workingDirectory[type].validate();
+  }
+
+  return _d->workingDirectory[type];
 }
 
 
 //! Changes the current Working Directory to the given string.
 bool FileSystem::changeWorkingDirectoryTo(Path newDirectory)
 {
-	bool success=false;
+  bool success=false;
 
-    if ( _d->fileSystemType != fsNative)
-    {
-      // is this empty string constant really intended?
-      _d->workingDirectory[fsVirtual] = newDirectory.flattenFilename( "" );
-      success = true;
-    }
-    else
-    {
-        _d->workingDirectory[ fsNative ] = newDirectory;
-#if defined(CAESARIA_PLATFORM_WIN)
-        success = ( _chdir( newDirectory.toString().c_str() ) == 0 );
-#elif defined(CAESARIA_PLATFORM_UNIX)
-        success = ( chdir( newDirectory.toString().c_str() ) == 0 );
-#endif //CAESARIA_PLATFORM_UNIX
-    }
+  if ( _d->fileSystemType != fsNative)
+  {
+    // is this empty string constant really intended?
+    _d->workingDirectory[fsVirtual] = newDirectory.flattenFilename( "" );
+    success = true;
+  }
+  else
+  {
+    _d->workingDirectory[ fsNative ] = newDirectory;
+#if defined(GAME_PLATFORM_WIN)
+    success = ( _chdir( newDirectory.toCString() ) == 0 );
+#elif defined(GAME_PLATFORM_UNIX)
+    success = ( chdir( newDirectory.toCString() ) == 0 );
+#endif //GAME_PLATFORM_UNIX
+  }
 
-    return success;
+  return success;
 }
 
 //! Sets the current file systen type
 FileSystem::Mode FileSystem::setMode( Mode listType)
 {
-	Mode current = _d->fileSystemType;
-	_d->fileSystemType = listType;
-	return current;
+  Mode current = _d->fileSystemType;
+  _d->fileSystemType = listType;
+  return current;
 }
 
 //! looks if file is in the same directory of path. returns offset of directory.
 //! 0 means in same directory. 1 means file is direct child of path
 inline int isInSameDirectory ( const Path& path, const Path& file )
 {
-	int subA = 0;
-	int subB = 0;
-	int pos;
+  int subA = 0;
+  int subB = 0;
+  int pos;
 
   if ( path.toString().size() && !utils::isEqualen( path.toString(), file.toString(), path.toString().size() ) )
-		return -1;
+    return -1;
 
-	pos = 0;
-	while ( (pos = path.toString().find( '/', pos )) >= 0 )
-	{
-		subA += 1;
-		pos += 1;
-	}
+  pos = 0;
+  while ( (pos = path.toString().find( '/', pos )) >= 0 )
+  {
+    subA += 1;
+    pos += 1;
+  }
 
-	pos = 0;
-	while ( (pos = file.toString().find ( '/', pos )) >= 0 )
-	{
-		subB += 1;
-		pos += 1;
-	}
+  pos = 0;
+  while ( (pos = file.toString().find ( '/', pos )) >= 0 )
+  {
+    subB += 1;
+    pos += 1;
+  }
 
-	return subB - subA;
+  return subB - subA;
 }
 
 //! Creates a list of files and directories in the current working directory
@@ -594,12 +587,12 @@ Entries FileSystem::getFileList()
   
   //Logger::warning( "FileSystem: start listing directory" );
 
-	//! Construct from native filesystem
+  //! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
 	{
 		// --------------------------------------------
 		//! Windows version
-		#if defined(CAESARIA_PLATFORM_WIN)
+    #if defined(GAME_PLATFORM_WIN)
 			struct _finddata_t c_file;
 			long hFile;
 
@@ -607,6 +600,10 @@ Entries FileSystem::getFileList()
 			{
 				do
 				{
+          if(!strcmp( c_file.name, ".") || !strcmp( c_file.name, ".."))
+          {
+            continue;
+          }
 					ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
 				}
 				while( _findnext( hFile, &c_file ) == 0 );
@@ -618,7 +615,7 @@ Entries FileSystem::getFileList()
 			//entry.Name = "E:\\";
 			//entry.isDirectory = true;
 			//Files.push_back(entry);
-		#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+    #elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
 			//Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
@@ -634,10 +631,10 @@ Entries FileSystem::getFileList()
 					unsigned int size = 0;
 					bool isDirectory = false;
 
-					if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
+          if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
 					{
 						continue;
-					}
+          }
 					struct stat buf;
 					if (stat(dirEntry->d_name, &buf)==0)
 					{
@@ -649,7 +646,7 @@ Entries FileSystem::getFileList()
 				}
 				closedir(dirHandle);
 			}
-		#endif //CAESARIA_PLATFORM_UNIX
+    #endif //GAME_PLATFORM_UNIX
 	}
 	else
 	{
@@ -661,10 +658,10 @@ Entries FileSystem::getFileList()
 		EntryInfo e3;
 
 		//! PWD
-		ret.addItem( Path( rpath.toString() + "." ), 0, 0, true, 0);
+    ret.addItem( rpath.toString() + Path::firstEntry, 0, 0, true, 0);
 
 		//! parent
-		ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+    ret.addItem( rpath.toString() + Path::secondEntry, 0, 0, true, 0);
 
 		//! merge archives
 		for (unsigned int i=0; i < _d->openArchives.size(); ++i)
@@ -693,48 +690,22 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
     if (_d->openArchives[i]->entries()->findFile(filename)!=-1)
       return true;
 
-  #if defined(CAESARIA_PLATFORM_WIN)
+  #if defined(GAME_PLATFORM_WIN)
     if( sens == Path::nativeCase || sens == Path::ignoreCase )
     {
-      return ( _access( filename.toString().c_str(), 0) != -1);
+      return ( _access( filename.toCString(), 0) != -1);
     }
-  #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+  #elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     if( sens == Path::nativeCase || sens == Path::equaleCase )
     {
-      return ( access( filename.toString().c_str(), 0 ) != -1);
+      return ( access( filename.toCString(), 0 ) != -1);
     }
-  #endif //CAESARIA_PLATFORM_UNIX
+  #endif //GAME_PLATFORM_UNIX
 
-  Entries files = Directory( filename.directory() ).getEntries();
+  Entries files = Directory( filename.directory() ).entries();
   files.setSensType( sens );
   int index = files.findFile( filename );
   return index != -1;
-}
-
-DateTime FileSystem::getFileUpdateTime(const Path& filename) const
-{ 
-#ifndef CAESARIA_PLATFORM_WIN
-  struct tm *foo;
-  struct stat attrib;
-  stat( filename.toString().c_str(), &attrib);
-  foo = gmtime((const time_t*)&(attrib.st_mtime));
-
-  return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
-                   foo->tm_hour, foo->tm_min, foo->tm_sec );
-#else
-  FILETIME creationTime,
-           lpLastAccessTime,
-           lastWriteTime;
-  HANDLE h = CreateFile( filename.toString().c_str(),
-                         GENERIC_READ, FILE_SHARE_READ, NULL,
-                         OPEN_EXISTING, 0, NULL);
-  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
-  SYSTEMTIME systemTime;
-  FileTimeToSystemTime( &creationTime, &systemTime );
-  CloseHandle(h);
-  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
-                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
-#endif
 }
 
 FileSystem& FileSystem::instance()

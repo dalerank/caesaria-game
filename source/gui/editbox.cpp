@@ -23,13 +23,18 @@
 #include "core/variant_map.hpp"
 #include "gfx/picture.hpp"
 #include "core/time.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "widget_factory.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(EditBox)
 
 class EditBox::Impl
 {
@@ -45,7 +50,6 @@ public:
   Font lastBreakFont;
 	bool mouseMarking;
 	bool border;
-	bool drawBackground;
 	bool overrideColorEnabled;
 	int markBegin;
 	int markEnd;
@@ -56,9 +60,15 @@ public:
 	int horizScrollPos, vertScrollPos; // scroll position in characters
 	unsigned int max;
 	std::string holderText;
-  Picture bgPicture;
-  Pictures background;
-  PictureRef textPicture;
+
+  struct {
+    bool visible;
+    Picture image;
+    Batch batch;
+    Pictures fallback;
+  } background;
+
+  Picture textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
 	char passwordChar;
@@ -71,7 +81,7 @@ public:
 		markBegin = 0;
 		markEnd = 0;
 		border = false;
-		drawBackground = true;
+    background.visible = true;
 		overrideColor = NColor(101,255,255,255);
 		cursorPos = 0;
 		horizScrollPos = 0;
@@ -97,37 +107,36 @@ signals public:
 
 std::string __ucs2utf8( const std::wstring& text )
 {
-	std::string ret;
-	foreach( i, text )
-	{
-		if( (unsigned short)*i < 0x80 )
-		{
-			ret.push_back( (char)(*i & 0xff ) );
-		}
-		else
-		{
-			ret.push_back( (char)( (*i >> 8) & 0xff) );
-			ret.push_back( (char)( *i & 0xff ) );
-		}
-	}
+  std::string ret;
+  for( auto& symbol : text )
+  {
+    if( (unsigned short)symbol < 0x80 )
+    {
+      ret.push_back( (char)(symbol & 0xff ) );
+    }
+    else
+    {
+      ret.push_back( (char)( (symbol >> 8) & 0xff) );
+      ret.push_back( (char)(  symbol       & 0xff ) );
+    }
+  }
 
-	return ret;
+  return ret;
 }
 
 void EditBox::_init()
 {
   _d->lastBreakFont = activeFont();
 
-  #ifdef _DEBUG
-      setDebugName( "EditBox");
-  #endif
+#ifdef _DEBUG
+  setDebugName( "EditBox");
+#endif
 
   // this element can be tabbed to
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop(true);
+  setTaborder(-1);
 
   _breakText();
-
   _calculateScrollPos();
 
   setTextAlignment( align::upperLeft, align::center );
@@ -208,7 +217,7 @@ void EditBox::setWordWrap(bool enable)
 	_breakText();
 }
 
-void EditBox::_resizeEvent()
+void EditBox::_finalizeResize()
 {
   _breakText();
   _calculateScrollPos();
@@ -241,7 +250,7 @@ void EditBox::setupUI(const VariantMap& ui)
 {
 	Widget::setupUI( ui );
 
-	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
 
 	_d->textOffset = ui.get( "textOffset" ).toPoint();
 
@@ -275,7 +284,7 @@ bool EditBox::onEvent(const NEvent& event)
 				}
 			}
 			break;
-		case sTextInput:
+		case sEventTextInput:
 			_inputChar(*(unsigned short*)event.text.text);
 		break;
 
@@ -757,12 +766,8 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   if( isFocused() )
   {
     _d->setTextRect( this, 0, _d->holderText );
-    Font holderFont = font;
-
-    if( holderFont.isValid() )
-    {
-        holderFont.draw( *_d->textPicture, _d->holderText, 0, 0 );
-    }
+    if( font.isValid() )
+      font.draw( _d->textPicture, _d->holderText, 0, 0 );
   }
 }
 
@@ -775,15 +780,25 @@ void EditBox::beforeDraw(Engine& painter)
   {
     _d->needUpdateTexture = false;
 
-    if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
+    if( !_d->textPicture.isValid() || ( size() != _d->textPicture.size() ) )
     {
-      _d->textPicture.reset( Picture::create( size(), 0, true ) );
-      _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
+      _d->textPicture = Picture( size(), 0, true );
+      _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 
-    if( !_d->bgPicture.isValid() )
+    if( !_d->background.image.isValid() )
     {
-      Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
+      _d->background.batch.destroy();
+
+      Pictures pics;
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
+      bool batchOk = _d->background.batch.load( pics, absoluteRect().lefttop() );
+      if( !batchOk )
+      {
+        _d->background.batch.destroy();
+        Decorator::reverseYoffset( pics );
+        _d->background.fallback = pics;
+      }
     }
 
     Rect localClipRect = absoluteRect();
@@ -812,7 +827,7 @@ void EditBox::beforeDraw(Engine& painter)
       const int hlineCount = ml ? _getLineFromPos(realmend) - hlineStart + 1 : 1;
       const int lineCount = ml ? _d->brokenText.size() : 1;
 
-      _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
+      _d->textPicture.fill( 0x00000000, Rect(0, 0, 0, 0) );
       if( !_d->text.empty() )
       {
         for (int i=0; i < lineCount; ++i)
@@ -855,9 +870,9 @@ void EditBox::beforeDraw(Engine& painter)
            //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
            Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
            curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
-           curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
+           curTextureRect += (_d->currentTextRect.lefttop() - absoluteRect().lefttop() );
 
-           _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
+           _d->lastBreakFont.draw( _d->textPicture, rText, curTextureRect.lefttop() );
 
            // draw mark and marked text
            if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -891,9 +906,9 @@ void EditBox::beforeDraw(Engine& painter)
              else
                  mend = _d->lastBreakFont.getTextSize( (char*)txtLine->c_str() ).width();
 
-             _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
-             _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
-             _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.x() + mend - mbegin, 0 );
+             _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.lefttop();
+             _d->markAreaRect._lefttop += Point( mbegin, 0 );
+             _d->markAreaRect._bottomright += Point( _d->markAreaRect.left() + mend - mbegin, 0 );
 
              //draw mark
              _d->markAreaRect = _d->markAreaRect /*+ marginOffset */;
@@ -938,8 +953,8 @@ void EditBox::beforeDraw(Engine& painter)
     _d->setTextRect( this, cursorLine);
     _d->cursorRect = _d->currentTextRect - absoluteClippingRect().lefttop();
 
-    _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
-    _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
+    _d->cursorRect._lefttop += Point( charcursorpos-1, 6 );
+    _d->cursorRect._bottomright = _d->cursorRect.lefttop() + Point( 1, height() - 4 );
     //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
     //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
   }
@@ -953,7 +968,7 @@ void EditBox::draw( Engine& painter )
   if( !visible() )
 		return;
 
-	const bool focus = _environment->hasFocus(this);
+  const bool focus = ui()->hasFocus(this);
 
   //const ElementStyle& style = getStyle().GetState( getActiveState() );
 	//const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
@@ -966,19 +981,20 @@ void EditBox::draw( Engine& painter )
     //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
   }
 
-	// draw the text
-  if( _d->bgPicture.isValid() )
+  // draw the background
+  if( _d->background.visible )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
-  }
-  else
-  {
-    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+
+    pipe.draw( _d->background.image )
+        .fallback( _d->background.batch )
+        .fallback( _d->background.fallback );
   }
 
-  if( _d->textPicture )
+  // draw the text
+  if( _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
+    painter.draw( _d->textPicture, _d->textOffset + absoluteRect().lefttop() );
   }
 
   if( focus )
@@ -1046,8 +1062,8 @@ Size EditBox::textDimension()
 	for (unsigned int i=1; i < _d->brokenText.size(); ++i)
 	{
 		_d->setTextRect( this, i);
-    ret.addInternalPoint(_d->currentTextRect.UpperLeftCorner);
-    ret.addInternalPoint(_d->currentTextRect.LowerRightCorner);
+    ret.addInternalPoint(_d->currentTextRect.lefttop());
+    ret.addInternalPoint(_d->currentTextRect.rightbottom() );
 	}
 
 	return ret.size();
@@ -1073,8 +1089,8 @@ bool EditBox::_processMouse(const NEvent& event)
 {
 	switch(event.mouse.type)
 	{
-	case mouseLbtnRelease:
-		if (_environment->hasFocus(this))
+  case NEvent::Mouse::mouseLbtnRelease:
+    if (ui()->hasFocus(this))
 		{
 			Point rpos = event.mouse.pos() - _d->textOffset;
 			_d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y());
@@ -1087,7 +1103,7 @@ bool EditBox::_processMouse(const NEvent& event)
 			return true;
 		}
 		break;
-	case mouseMoved:
+  case NEvent::Mouse::moved:
 		{
 			if (_d->mouseMarking)
 			{
@@ -1098,8 +1114,8 @@ bool EditBox::_processMouse(const NEvent& event)
 			}
 		}
 		break;
-	case mouseLbtnPressed:
-		if (!_environment->hasFocus(this))
+  case NEvent::Mouse::btnLeftPressed:
+    if (!ui()->hasFocus(this))
 		{
 			_d->mouseMarking = true;
 			Point rpos = event.mouse.pos() - _d->textOffset;
@@ -1325,8 +1341,8 @@ void EditBox::Impl::setTextRect( EditBox* who, int line, const std::string& temp
 
   currentTextRect = who->absoluteRect();
 
-  currentTextRect.UpperLeftCorner += Point( -horizScrollPos, d.height() * line - vertScrollPos );
-  currentTextRect.LowerRightCorner = Point( currentTextRect.right() + horizScrollPos, currentTextRect.UpperLeftCorner.y() + d.height() );
+  currentTextRect._lefttop += Point( -horizScrollPos, d.height() * line - vertScrollPos );
+  currentTextRect._bottomright = Point( currentTextRect.right() + horizScrollPos, currentTextRect.top() + d.height() );
 }
 
 int EditBox::_getLineFromPos(int pos)
@@ -1346,24 +1362,30 @@ int EditBox::_getLineFromPos(int pos)
 
 std::wstring __unic2utf8(unsigned short wc)
 {
- std::wstring ret;
+ ByteArray bytes;
+ if (wc < 0x80)
+   bytes.push_back( (wchar_t)wc );
 
- if( wc < 0x80 )
- {
-   ret += (wchar_t)wc;
- }
  else if (wc < 0x800)
  {
-   ret += (wchar_t)( ((0xC0 | wc>>6) << 8 ) + (0x80 | (wc & 0x3F)) );
+   bytes.push_back( 0xc0 | (wc >> 6) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
  }
- /*else if (wc < 0x10000)
+ else if (wc < 0x10000)
  {
-   unsigned char a = (0xe0 | ((wc >> 12)& 0x0f)) ;
-   unsigned char b = ( (0x80| ((wc >> 6) & 0x3f)) + (0x80| (wc & 0x3f)) );
-   ret += (a << 8) + b;
- }*/
- else
-   ret += '?';
+   bytes.push_back( 0xe0 | (wc >> 12) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+ else if (wc <= 0x10ffff)
+ {
+   bytes.push_back( 0xf0 | (wc >> 18) );
+   bytes.push_back( 0x80 | ((wc >> 12) & 0x3f) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+
+ std::wstring ret = utils::utf8toWString( bytes.data(), bytes.size() );
 
  return ret;
 }
@@ -1435,7 +1457,7 @@ void EditBox::_calculateScrollPos()
 		std::wstring *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
-    int cStart = _d->currentTextRect.UpperLeftCorner.x() + _d->horizScrollPos +
+    int cStart = _d->currentTextRect.left() + _d->horizScrollPos +
                                 font.getTextSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
 
 		int cEnd = cStart + font.getTextSize( "_ " ).width();
@@ -1451,13 +1473,13 @@ void EditBox::_calculateScrollPos()
 	}
 
 	// vertical scroll position
-  if( screenBottom() < _d->currentTextRect.LowerRightCorner.y() + _d->vertScrollPos)
+  if( screenBottom() < _d->currentTextRect.bottom() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.LowerRightCorner.y() - screenBottom() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.bottom() - screenBottom() + _d->vertScrollPos;
   }
-  else if ( screenTop() > _d->currentTextRect.UpperLeftCorner.y() + _d->vertScrollPos)
+  else if ( screenTop() > _d->currentTextRect.top() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.y() - screenTop() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.top()  - screenTop() + _d->vertScrollPos;
   }
 	else
 		_d->vertScrollPos = 0;
@@ -1483,65 +1505,11 @@ void EditBox::_sendGuiEvent( unsigned int type)
     parent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
 }
 
-//! Writes attributes of the element.
-//void EditBox::save( core::VariantArray* out ) const
-//{
-	/*out->addBool  ("Border", 			  Border);
-	out->addBool  ("Background", 		  Background);
-	out->addBool  ("_d->overrideColorEnabled",_d->overrideColorEnabled );
-	//out->addColor ("OverrideColor",       OverrideColor);
-	// out->addFont("OverrideFont",OverrideFont);
-	out->addInt   ("MaxChars",            Max);
-	out->addBool  ("WordWrap",            WordWrap);
-	out->addBool  ("MultiLine",           MultiLine);
-	out->addBool  ("AutoScroll",          AutoScroll);
-	out->addBool  ("PasswordBox",         PasswordBox);
-	String ch = L" ";
-	ch[0] = PasswordChar;
-	out->addString("PasswordChar",        ch.c_str());
-	out->addEnum  ("HTextAlign",          _textHorzAlign, NrpAlignmentNames);
-	out->addEnum  ("VTextAlign",          _textVertAlign, NrpAlignmentNames);
-
-	INrpElement::serializeAttributes(out,options);
-    */
-//}
-
-
-//! Reads attributes of the element
-//void EditBox::load( core::VariantArray* in )
-//{
-//       Widget::load(in);
-/*
-	setDrawBorder( in->getAttributeAsBool("Border") );
-	setDrawBackground( in->getAttributeAsBool("Background") );
-	setOverrideColor(in->getAttributeAsColor("OverrideColor"));
-	enableOverrideColor(in->getAttributeAsBool("_d->overrideColorEnabled"));
-	setMax(in->getAttributeAsInt("MaxChars"));
-	setWordWrap(in->getAttributeAsBool("WordWrap"));
-	setMultiLine(in->getAttributeAsBool("MultiLine"));
-	setAutoScroll(in->getAttributeAsBool("AutoScroll"));
-	String ch = in->getAttributeAsStringW("PasswordChar");
-
-	if (!ch.size())
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"));
-	else
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"), ch[0]);
-
-	setTextAlignment( (CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
-			(CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
-
-	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
-    */
-//}
-
 NColor EditBox::overrideColor() const
 {
     return _d->overrideColor;
 }
 
-void EditBox::setDrawBackground( bool enabled )
-{
-    _d->drawBackground = enabled;
-}
+void EditBox::setDrawBackground( bool enabled ) { _d->background.visible = enabled; }
 
 }//end namespace gui

@@ -18,13 +18,13 @@
 #include "empireprices.hpp"
 #include "city/trade_options.hpp"
 #include "city/city.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
 #include "core/event.hpp"
+#include "widgetescapecloser.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -34,34 +34,44 @@ namespace gui
 namespace advisorwnd
 {
 
-EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
-  : Window( parent, rectangle, "", id )
+class EmpirePrices::Impl
 {
-  setupUI( ":/gui/empireprices.gui" );
+public:
+  Point startPos = { 140, 50 };
+  Point importOffset = { 0, 34 };
+  Point exportOffset = { 0, 58 };
+  Point nextOffset = { 30, 0 };
+  Size  iconSize = { 24, 24 };
+};
 
-  trade::Options& ctrade = city->tradeOptions();
-  Font font = Font::create( FONT_1 );
-  Point startPos( 140, 50 );
-  for( good::Product gtype=good::wheat; gtype < good::prettyWine; ++gtype )
-    {
-      if( gtype == good::fish || gtype == good::denaries)
-        {
-          continue;
-        }
+EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, PlayerCityPtr city)
+  : Window( parent, rectangle, "", id ), __INIT_IMPL(EmpirePrices)
+{
+  Window::setupUI( ":/gui/empireprices.gui" );
 
-      Picture goodIcon = good::Helper::picture( gtype );
-      new Image( this, startPos, goodIcon );
+  __D_REF(d,EmpirePrices)
+  Font fontBuy = Font::create( FONT_1 );
+  Font fontSell = Font::create( FONT_1, ColorList::darkOrange );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
-      std::string priceStr = utils::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
-      Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
+  good::Products goods = good::tradable();
+  Point startPos = d.startPos;
+  for( auto gtype : goods )
+  {
+    good::Info info( gtype );
+    Image& img = add<Image>( startPos, info.picture() );
+    img.setTooltipText( info.name() );
 
-      priceStr = utils::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
-      lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
+    add<Label>( Rect( startPos + d.importOffset, d.iconSize ),
+                utils::i2str( info.price( city, good::Info::importing ) ),
+                fontBuy );
 
-      startPos += Point( 30, 0 );
-    }
+    add<Label>( Rect( startPos + d.exportOffset, d.iconSize ),
+                utils::i2str( info.price( city, good::Info::exporting ) ),
+                fontSell );
+
+    startPos += d.nextOffset;
+  }
 }
 
 void EmpirePrices::draw(Engine &painter)
@@ -72,15 +82,16 @@ void EmpirePrices::draw(Engine &painter)
   Window::draw( painter );
 }
 
-bool EmpirePrices::onEvent(const NEvent &event)
+void EmpirePrices::setupUI(const VariantMap& ui)
 {
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-    {
-      deleteLater();
-      return true;
-    }
+  Window::setupUI( ui );
 
-  return Window::onEvent( event );
+  __D_IMPL(_d,EmpirePrices)
+  VARIANT_LOAD_ANYDEF_D( _d, startPos, _d->startPos, ui )
+  VARIANT_LOAD_ANYDEF_D( _d, importOffset, _d->importOffset, ui )
+  VARIANT_LOAD_ANYDEF_D( _d, exportOffset, _d->exportOffset, ui )
+  VARIANT_LOAD_ANYDEF_D( _d, nextOffset, _d->nextOffset, ui )
+  VARIANT_LOAD_ANYDEF_D( _d, iconSize, _d->iconSize, ui )
 }
 
 }

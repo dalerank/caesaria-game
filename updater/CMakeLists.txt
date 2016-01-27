@@ -7,16 +7,19 @@ set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 aux_source_directory(. UPD_SRC_LIST)
 file(GLOB UPD_INC_LIST "*.hpp")
 
+add_definitions(-DGAME_DISABLED_TILEMAPCONFIG)
+
 set( UPD_DEP_SOURCES_LIST
+      "${BASE_SOURCE_DIR}/core/hash.cpp"
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
-      "${BASE_SOURCE_DIR}/thread/mutex.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
-      "${BASE_SOURCE_DIR}/thread/thread.cpp"
-      "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
-      "${BASE_SOURCE_DIR}/thread/threadtask.cpp"
+      "${BASE_SOURCE_DIR}/core/format.cpp"
+      "${BASE_SOURCE_DIR}/gfx/tilepos.cpp"
+      "${BASE_SOURCE_DIR}/thread/safethread.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
+      "${BASE_SOURCE_DIR}/core/variant_map.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
@@ -25,6 +28,7 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
+      "${BASE_SOURCE_DIR}/core/osystem.cpp"
 )
 
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")
@@ -85,6 +89,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+  target_link_libraries(${PROJECT_NAME} "imagehlp")
 endif(WIN32)
 
 # prepare working directory
@@ -104,7 +109,7 @@ if(EXT_BINDIR)
   ADD_CUSTOM_COMMAND(
       TARGET ${PROJECT_NAME}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
 
@@ -115,3 +120,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
   endif(NOT HAIKU)
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+# Enforce C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")

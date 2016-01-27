@@ -14,14 +14,13 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 #define _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 
 #include "working.hpp"
-#include "game/enums.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/position.hpp"
 
 class Warehouse: public WorkingBuilding
@@ -56,6 +55,8 @@ public:
   bool isGettingFull() const;
   float tradeBuff( Buff type ) const;
 
+  bool isTradeCenter() const;
+  void setTradeCenter( bool enabled );
   Rooms& rooms();
 
   virtual std::string troubleDesc() const;

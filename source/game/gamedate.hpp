@@ -20,20 +20,20 @@
   
 #include "core/time.hpp"
 #include "core/scopedptr.hpp"
+#include "core/singleton.hpp"
 
 namespace game
 {
 
-class Date
+class Date : public StaticSingleton<Date>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Date)
 public:
   void timeStep( unsigned int time );
 
   void init( const DateTime& date );
 
-  static Date& instance();
-
-  static inline DateTime current() { return instance()._current; }
+  static inline const DateTime& current() { return instance()._current; }
   static inline bool isDayChanged() { return instance()._dayChange; }
   static inline bool isWeekChanged() { return instance()._weekChange; }
   static inline bool isMonthChanged() { return instance()._monthChange; }

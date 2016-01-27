@@ -12,23 +12,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "wharf.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "game/gamedate.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wharf, Wharf)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wharf, Wharf)
 
 class Wharf::Impl
 {
@@ -37,16 +37,14 @@ public:
   FishingBoatPtr boat;
 };
 
-Wharf::Wharf() : CoastalFactory(good::none, good::fish, objects::wharf, Size(2)), _d( new Impl )
+Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, Impl::northPic );
+  _picture().load( ResourceGroup::wharf, Impl::northPic );
 }
 
 void Wharf::destroy()
 {
-  city::Helper helper( _city() );
-
   if( _d->boat.isValid() )
   {
     _d->boat->die();
@@ -74,17 +72,17 @@ void Wharf::timeStep(const unsigned long time)
 
   if( progress() >= 100.0 )
   {
-    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )  )
+    if( store().freeQty( produce().type() ) > 0 )
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object
-      good::Stock tmpStock( produceGoodType(), 100, 100 );
+      good::Stock tmpStock( produce().type(), 100, 100 );
       store().store( tmpStock, 100 );
     }
   }
   else
   {
-    if( _d->boat.isValid() && !_d->boat->isBusy() && outStockRef().empty() )
+    if( _d->boat.isValid() && !_d->boat->isBusy() && outStock().empty() )
     {
       _d->boat->startCatch();
     }
@@ -93,12 +91,12 @@ void Wharf::timeStep(const unsigned long time)
 
 ShipPtr Wharf::getBoat() const
 {
-  return ptr_cast<Ship>( _d->boat );
+  return _d->boat.as<Ship>();
 }
 
 void Wharf::assignBoat( ShipPtr boat )
 {
-  _d->boat = ptr_cast<FishingBoat>( boat );
+  _d->boat = boat.as<FishingBoat>();
   if( _d->boat.isValid() )
   {
     _d->boat->setBase( this );
@@ -144,8 +142,8 @@ std::string Wharf::troubleDesc() const
 {
   if( _d->boat.isValid() )
   {
-    WalkerList places = _city()->walkers( walker::fishPlace );
-    if( places.empty() )
+    int places_n = _city()->statistic().walkers.count( walker::fishPlace );
+    if( !places_n )
     {
       return "##no_fishplace_in_city##";
     }
@@ -158,10 +156,10 @@ void Wharf::_updatePicture(Direction direction)
 {
   switch( direction )
   {
-  case south: setPicture( ResourceGroup::wharf, Impl::southPic ); break;
-  case north: setPicture( ResourceGroup::wharf, Impl::northPic ); break;
-  case west: setPicture( ResourceGroup::wharf, Impl::westPic ); break;
-  case east: setPicture( ResourceGroup::wharf, Impl::eastPic ); break;
+  case direction::south: setPicture( ResourceGroup::wharf, Impl::southPic ); break;
+  case direction::north: setPicture( ResourceGroup::wharf, Impl::northPic ); break;
+  case direction::west: setPicture( ResourceGroup::wharf, Impl::westPic ); break;
+  case direction::east: setPicture( ResourceGroup::wharf, Impl::eastPic ); break;
 
   default: break;
   }

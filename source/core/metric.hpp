@@ -18,6 +18,8 @@
 #ifndef __CAESARIA_METRIC_H_INCLUDED__
 #define __CAESARIA_METRIC_H_INCLUDED__
 
+#include "core/singleton.hpp"
+
 namespace metric
 {
 
@@ -26,30 +28,55 @@ class Unit;
 
 class Qty
 {
+  unsigned int _value = 0;
 public:
+  Qty( const Qty& other ) { *this = other; }
   explicit Qty( unsigned int value ) : _value( value ) {}
 
-  operator unsigned int() const { return _value; }
+  inline operator unsigned int() const { return _value; }
+  inline Qty& operator=( const Qty& other ) {_value = other._value; return *this; }
   Unit toUnits() const;
-
-private:
-  unsigned int _value;
 };
 
 class Unit
 {
+  float _value = 0.f;
 public:
   Unit( const Qty& qty ) { _value = (unsigned int)qty / unit2QtyLimiter; }
+  Unit( const Unit& unit ) { *this = unit; }
   static Unit fromQty( unsigned int value ) { return Unit( value / unit2QtyLimiter ); }
+  static Unit fromValue( unsigned int value ) { return Unit( value ); }
   unsigned int toQty() { return _value * unit2QtyLimiter; }
   float value() const { return _value; }
-  float ivalue() const { return (int)_value; }
+  int ivalue() const { return (int)_value; }
   bool operator>( float v ) const { return _value > v; }
+  Unit& operator=( const Unit& other ) { _value=other._value; return *this; }
+  inline bool operator>=( const Unit& v ) const { return _value >= v._value; }
 
 private:
   explicit Unit( unsigned int value) : _value( value ) {}
 
-  float _value;
+};
+
+class Measure : public StaticSingleton<Measure>
+{
+  SET_STATICSINGLETON_FRIEND_FOR(Measure)
+public:
+  typedef enum { native=0, metric, roman, count } Mode;
+
+  static const char* measureType();
+  static const char* measureShort();
+
+  static void setMode( Mode mode ) { instance()._mode = mode; }
+  static int convQty( int qty );
+
+  static Mode mode() { return instance()._mode; }
+  static bool isRoman() { return instance()._mode == roman; }
+
+private:
+  Measure() : _mode( native ) {}
+
+  Mode _mode;
 };
 
 inline Unit Qty::toUnits() const { return Unit::fromQty( _value ); }

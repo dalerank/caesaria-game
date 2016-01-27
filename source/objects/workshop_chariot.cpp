@@ -28,18 +28,17 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::chariotSchool, WorkshopChariot)
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::chariotSchool, WorkshopChariot)
-
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( objects::chariotSchool, Size(3) )
+WorkshopChariot::WorkshopChariot()
+  : TrainingBuilding( object::chariotSchool, Size(3) )
 {
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 void WorkshopChariot::deliverTrainee()
 {
-  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::charioteer );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::charioteer );
   trainee->send2City( this );
 }
 

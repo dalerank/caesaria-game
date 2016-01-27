@@ -32,13 +32,16 @@ class Timer : public ReferenceCounted
 public:
   enum { looped=true, singleShot=false };
   static TimerPtr create( unsigned int time, bool loop, int id=-1 );
+  static void destroy( int id );
 
   virtual ~Timer();
 
   void update( unsigned int time );
 
-  void setTime( unsigned int time );
+  void setInterval( unsigned int time );
   void setLoop( bool loop );
+
+  int id() const;
 
   bool isActive() const;
   
@@ -53,24 +56,6 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-class DebugTimer
-{
-public:
-  static unsigned int ticks();
-  static void reset( const std::string& name );
-  static unsigned int take(const std::string& name, bool reset=false);
-  static unsigned int delta( const std::string& name, bool reset=false );
-
-  static void check( const std::string& prefix, const std::string& name );
-
-private:
-  static DebugTimer& instance();
-  DebugTimer();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 #endif //__CAESARIA_TIMER_H_INCLUDED__

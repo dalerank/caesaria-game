@@ -16,12 +16,12 @@
 #include "throwing_weapon.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class ThrowingWeapon::Impl
@@ -29,6 +29,7 @@ class ThrowingWeapon::Impl
 public:
   Point offset;
   Point srcPos;
+  Point amappos;
   Point dstPos;
   PointF deltaMove;
   Picture pic;
@@ -41,7 +42,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 {
   _d->from = src;
   _d->dst = dst;
-  int yMultiplier = tilemap::cellSize().height();
+  int yMultiplier = config::tilemap.cell.size().height();
   Point xOffset( yMultiplier, yMultiplier );
   _d->dstPos = Point( dst.i(), dst.j() ) * yMultiplier + xOffset;
   _d->srcPos = Point( src.i(), src.j() ) * yMultiplier + xOffset;
@@ -51,13 +52,14 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _setWpos( _d->srcPos );
 
-  _city()->addWalker( this );
-  const Tile& tile = _city()->tilemap().at( src );
-  TileOverlayPtr ov = tile.overlay();
+  attach();
+
+  const Tile& tile = _map().at( src );
+  OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, xOffset ).y();
-    const Tile& dTile = _city()->tilemap().at( dst );
+    const Tile& dTile = _map().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {
@@ -69,10 +71,11 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   turn( dst );
 }
 
-Point ThrowingWeapon::mappos() const
+const Point& ThrowingWeapon::mappos() const
 {
-  const Point& p = _wpos();
-  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  const Point& p = wpos();
+  _d->amappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+  return _d->amappos;
 }
 
 void ThrowingWeapon::timeStep(const unsigned long time)
@@ -84,9 +87,9 @@ void ThrowingWeapon::timeStep(const unsigned long time)
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
     _d->height += _d->deltaHeight;
-    const int wcell = tilemap::cellSize().height();
+    const int wcell = config::tilemap.cell.size().height();
 
-    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
+    Point tp = (_d->currentPos.toPoint() - config::tilemap.cell.center()) / wcell;
     TilePos ij( tp.x(), tp.y() );
     setPos( ij );
     _setWpos( _d->currentPos.toPoint() );
@@ -107,7 +110,7 @@ void ThrowingWeapon::timeStep(const unsigned long time)
 
 void ThrowingWeapon::turn(TilePos p)
 {
-  int yMultiplier = tilemap::cellSize().height();
+  int yMultiplier = config::tilemap.cell.size().height();
   PointF xOffset( yMultiplier, yMultiplier );
   PointF prPos = PointF( p.i(), p.j() ) * yMultiplier + xOffset;
   float t = (_d->currentPos - prPos).getAngle();
@@ -137,11 +140,17 @@ void ThrowingWeapon::turn(TilePos p)
   //if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }
   //else  { index = rcStartIndex() + 2 + angle; }
 
-  _d->pic = Picture::load( rcGroup(), index );
+  _d->pic.load( rcGroup(), index );
   _d->pic.setOffset( _d->offset );
 }
 
 const Picture& ThrowingWeapon::getMainPicture() {  return _d->pic; }
+
+void ThrowingWeapon::initialize(const VariantMap& options)
+{
+  Walker::initialize( options );
+  setName( _("##unknow_throwing_weapon##") );
+}
 TilePos ThrowingWeapon::dstPos() const {  return _d->dst; }
 TilePos ThrowingWeapon::startPos() const{  return _d->from; }
 ThrowingWeapon::~ThrowingWeapon() {}
@@ -159,7 +168,5 @@ void ThrowingWeapon::setPicOffset(Point offset)
 
 ThrowingWeapon::ThrowingWeapon(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {
-  setName( _("##unknow_throwing_weapon##") );
-
   setFlag( vividly, false );
 }

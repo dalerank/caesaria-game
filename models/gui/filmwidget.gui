@@ -1,6 +1,7 @@
 {  
   geometry : [ 0, 0, 415, 450 ]
   bgtype : "whiteFrame"
+  static : true
     
   lbTitle#Label :
   {
@@ -30,7 +31,7 @@
 
   lbBlackFrame#Label :
   {
-    geometry : [ 10, 310, 405, 400 ]
+    geometry : [ 12, 310, "pw-12", 400 ]
     bgtype : "blackFrame"    
 
     lbTime#Label : {
@@ -39,14 +40,15 @@
     }
 
     lbReceiver#Label : {
-      geometry : [ 150, 0, 405, 20 ]
+      geometry : [ 150, 0, "pw-0", 20 ]
       font : "FONT_1"
     }
 
     lbMessage#Label : {
-      geometry : [ 0, 20, 430, 90 ]
+      geometry : [ 0, 20, "pw-0", 90 ]
       font : "FONT_1"
       multiline : true
+      margin : [ 4, 0, 4, 0 ]
     }
   }
 }

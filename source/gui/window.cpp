@@ -22,8 +22,11 @@
 #include "core/logger.hpp"
 #include "gfx/engine.hpp"
 #include "modal_widget.hpp"
+#include "texturedbutton.hpp"
+#include "widgetescapecloser.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
 
 using namespace gfx;
@@ -42,6 +45,31 @@ public:
   }
 };
 
+class BatchState
+{
+public:
+  Batch body;
+  Pictures fallback;
+
+  void reset() { fallback.clear(); }
+
+  void fill( const Rect& area, const Point& lefttop, Decorator::Mode style, bool negativeY )
+  {
+    bool errorsOnBatch = false;
+    body.destroy();
+    Decorator::draw( fallback, area, style, nullptr, negativeY  );
+    errorsOnBatch = !body.load( fallback, lefttop );
+
+    if( errorsOnBatch )
+    {
+      Decorator::reverseYoffset( fallback );
+      body.destroy();
+    }
+    else
+      fallback.clear();
+  }
+};
+
 class Window::Impl
 {
 public:
@@ -50,14 +78,31 @@ public:
 
 	Label* title;
 
-	Picture backgroundImage;
-	Pictures bgStyle;
-	Point dragStartPosition;
-	Window::BackgroundType backgroundType;
-	bool dragging;
+  struct
+  {
+    BatchState batch;
 
-	NColor currentColor;
-	NColor captionColor;
+    Window::BackgroundType type;
+    Picture image;
+    bool dirty;
+
+    void set(Window::BackgroundType t)
+    {
+      image = Picture::getInvalid();
+      type  = t;
+      dirty = true;
+    }
+  } background;
+
+  struct {
+    bool active;
+    Point startPosition;
+  } drag;
+
+  struct {
+    NColor caption;
+    NColor current;
+  } colors;
 
 	FlagHolder<Window::FlagName> flags;
 };
@@ -67,26 +112,24 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 	: Widget( parent, id, rectangle ),
 	  _d( new Impl )
 {
-  _d->flags.setFlag( fdraggable, true );
-  _d->flags.setFlag( fbackgroundVisible, true );
-  _d->flags.setFlag( ftitleVisible, true );
-	_d->title = 0;
+  setWindowFlag( fdraggable, true );
+  setWindowFlag( fbackgroundVisible, true );
+  setWindowFlag( ftitleVisible, true );
 #ifdef _DEBUG
   setDebugName( "Window");
 #endif
-	_d->backgroundImage = Picture::getInvalid();
-	_d->dragging = false;
-	_d->buttons.resize( buttonCount );
-	for( unsigned int index=0; index < _d->buttons.size(); index++ )
-        _d->buttons[ index ] = NULL;
+  _d->title = nullptr;
+  _d->background.image = Picture::getInvalid();
+  _d->drag.active = false;
+  _d->buttons.resize( buttonCount, nullptr );
 
   _init();
 
-    // this element is a tab group
+  // this element is a tab group
   setBackground( type );
   setTabgroup( true );
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop( true );
+  setTaborder(-1);
   setText( title );
 }
 
@@ -97,49 +140,73 @@ void Window::setText(const std::string& text )
     _d->title->setText( text );
 }
 
+void Window::setTitleRect(const Rect& rect)
+{
+  if( _d->title )
+    _d->title->setGeometry( rect );
+}
+
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
-    PushButton*& btn = _d->buttons[ btnName ];
-    if( !btn )
-    {
-        btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
-        btn->setTooltipText( tooltip );
-        btn->setVisible(visible);
-        btn->setSubElement(true);
-        btn->setTabStop(false);
-        btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
-    }
+  PushButton*& btn = _d->buttons[ btnName ];
+  if( !btn )
+  {
+    btn = &add<PushButton>( Rect( 0, 0, 10,10 ) );
+    btn->setTooltipText( tooltip );
+    btn->setVisible(visible);
+    btn->setSubElement(true);
+    btn->setTabstop(false);
+    btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
+  }
 }
 
 void Window::_init()
 {
-  _createSystemButton( buttonClose, "Close", true );
-  _createSystemButton( buttonMin,"Min", false );
-  _createSystemButton( buttonMax, "Restore", false );
+  _createSystemButton( buttonClose, "Close",   false );
+  _createSystemButton( buttonMin,   "Min",     false );
+  _createSystemButton( buttonMax,   "Restore", false );
 
 	if( !_d->title )
 	{
-		_d->title = new Label( this, Rect( 0, 0, width(), 20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title->setTextAlignment( align::center, align::center );
+    _d->title->setFont( FONT_4 );
 		_d->title->setSubElement( true );
 	}
 
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
-void Window::_resizeEvent()
+void Window::_finalizeResize()
 {
-  Widget::_resizeEvent();
-  if( _d->backgroundType != bgNone  )
+  Widget::_finalizeResize();
+  if( _d->background.type != bgNone  )
   {
-    setBackground( _d->backgroundType );
+    setBackground( _d->background.type );
+  }
+}
+
+void Window::_updateBackground()
+{
+  _d->background.batch.reset();
+  switch( _d->background.type )
+  {
+  case bgWhiteFrame:
+  {
+    _d->background.batch.fill( Rect( 0, 0, width(), height()),
+                               absoluteRect().lefttop(),
+                               Decorator::whiteFrame, Decorator::normalY );
+  }
+  break;
+
+  default: break;
   }
 }
 
 Window::~Window()
 {
-	Logger::warning( "Window was removed" );
+  Logger::warning( "Window ID={} was removed", ID() );
 }
-
 
 //! called if an event happened.
 bool Window::onEvent(const NEvent& event)
@@ -151,47 +218,52 @@ bool Window::onEvent(const NEvent& event)
 		case sEventGui:
 			if (event.gui.type == guiElementFocusLost)
 			{
-				_d->dragging = false;
+        _d->drag.active = false;
 			}
-
 			else if (event.gui.type == guiElementFocused)
 			{
 					if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
 						bringToFront();
 			}
-			else
-				if (event.gui.type == guiButtonClicked)
-				{
-					if (event.gui.caller == _d->buttons[ buttonClose ] )
-					{
-    					// send close event to parent
-    					// if the event was not absorbed
-              if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
-					        deleteLater();
-              return true;
-					}
-				}
+      else if (event.gui.type == guiButtonClicked)
+      {
+        if (event.gui.caller == _d->buttons[ buttonClose ] )
+        {
+            // send close event to parent
+            // if the event was not absorbed
+            if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
+                deleteLater();
+            return true;
+        }
+      }
 		break;
 
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnPressed:
-				_d->dragStartPosition = event.mouse.pos();
-				_d->dragging = _d->flags.isFlag( fdraggable );
+      case NEvent::Mouse::btnLeftPressed:
+        _d->drag.startPosition = event.mouse.pos();
+        _d->drag.active = _d->flags.isFlag( fdraggable );
 				bringToFront();
 
-				return true;
-			case mouseRbtnRelease:
-			case mouseLbtnRelease:
-				_d->dragging = false;
+      return true;
 
-				return true;
-			case mouseMoved:
+      case NEvent::Mouse::mouseRbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
+      {
+        if( _d->drag.active )
+        {
+          _d->drag.active = false;
+          return true;
+        }
+      }
+      break;
+
+      case NEvent::Mouse::moved:
 				if ( !event.mouse.isLeftPressed() )
-					_d->dragging = false;
+          _d->drag.active = false;
 
-				if (_d->dragging)
+        if (_d->drag.active)
 				{
 					// gui window should not be dragged outside its parent
 					const Rect& parentRect = parent()->absoluteRect();
@@ -201,20 +273,19 @@ bool Window::onEvent(const NEvent& event)
 						event.mouse.y > parentRect.bottom() -1))
 						return true;
 
-					move( event.mouse.pos() - _d->dragStartPosition );
-					_d->dragStartPosition = event.mouse.pos();
+          move( event.mouse.pos() - _d->drag.startPosition );
+          _d->drag.startPosition = event.mouse.pos();
 
-                    return true;
+          return true;
 				}
-				break;
-			default:
-				break;
+      break;
+
+      default:
+      break;
 			}
 		break;
 
-		case sEventKeyboard:
-			{
-			}
+		case sEventKeyboard:			
 		break;
 
 		default:
@@ -228,6 +299,12 @@ bool Window::onEvent(const NEvent& event)
 
 void Window::beforeDraw( Engine& painter )
 {
+  if( _d->background.dirty )
+  {
+    _d->background.dirty = false;
+    _updateBackground();
+  }
+
 	Widget::beforeDraw( painter );
 }
 
@@ -236,18 +313,12 @@ void Window::draw( Engine& painter )
 {
 	if( visible() )
 	{
-		//NColor colors[ 4 ] = { _d->currentColor, _d->currentColor, _d->currentColor, _d->currentColor };
-
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-			if( _d->backgroundImage.isValid() )
-			{
-				painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
-			}
-			else
-			{
-				painter.draw( _d->bgStyle, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
-			}
+      DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      pipe.draw( _d->background.image )
+          .fallback( _d->background.batch.body )
+          .fallback( _d->background.batch.fallback );
 		}
 	}
 
@@ -270,33 +341,26 @@ void Window::setBackgroundVisible(bool draw) {	_d->flags.setFlag( fbackgroundVis
 bool Window::backgroundVisible() const {	return _d->flags.isFlag( fbackgroundVisible ); }
 
 //! Set if the window titlebar will be drawn
-void Window::setHeaderVisible(bool draw)
+void Window::setTitleVisible(bool draw)
 {
 	_d->flags.setFlag( ftitleVisible, draw );
 	_d->title->setVisible( draw );
 }
 
 //! Get if the window titlebar will be drawn
-bool Window::headerVisible() const {	return _d->flags.isFlag( ftitleVisible );}
+bool Window::titleVisible() const {	return _d->flags.isFlag( ftitleVisible );}
 Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
 
 void Window::setBackground( Picture texture )
 {
-  _d->backgroundImage = texture;
-  _d->backgroundType = bgNone;
-  _d->bgStyle.clear();
+  _d->background.image = texture;
+  _d->background.type = bgNone;
+  _d->background.batch.body.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)
 {
-  _d->backgroundImage = Picture::getInvalid();
-  _d->backgroundType = type;
-  _d->bgStyle.clear();
-  switch( type )
-  {
-  case bgWhiteFrame: Decorator::draw( _d->bgStyle, Rect( 0, 0, width(), height()), Decorator::whiteFrame ); break;
-  default: break;
-  }
+  _d->background.set( type );
 }
 
 void Window::setModal()
@@ -305,7 +369,7 @@ void Window::setModal()
   mdScr->addChild( this );
 }
 
-Picture Window::background() const {return _d->backgroundImage; }
+Picture Window::background() const {return _d->background.image; }
 
 void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
 {
@@ -319,8 +383,8 @@ void Window::setupUI(const VariantMap &ui)
   StringArray buttons = ui.get( "buttons" ).toStringArray();  
   if( buttons.empty() || buttons.front() == "off" )
   {
-    foreach( i, _d->buttons )
-       (*i)->hide();
+    for( auto& button : _d->buttons )
+       button->hide();
   }
 
   _d->flags.setFlag( fdraggable, !ui.get( "static", false ).toBool() );
@@ -342,7 +406,19 @@ void Window::setupUI(const vfs::Path& path)
 void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
 	Widget::setTextAlignment( horizontal, vertical );
-	_d->title->setTextAlignment( horizontal, vertical );
+  if( _d->title )
+    _d->title->setTextAlignment( horizontal, vertical );
+}
+
+SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
+  : Window( parent, rect, title, -1 )
+{
+  if( !ui.empty() )
+    setupUI(ui);
+  add<ExitButton>(Point(width() - 34, height() - 34));
+
+  moveTo(Widget::parentCenter);
+  WidgetClose::insertTo(this, KEY_RBUTTON);
 }
 
 }//end namespace gui

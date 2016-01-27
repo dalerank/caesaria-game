@@ -24,7 +24,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutRuins : public Simple
+class AboutRuins : public Infobox
 {
 public:
   AboutRuins(Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
@@ -32,7 +32,7 @@ public:
 
 protected:
   void _showHelp();
-  int _ruinType;
+  object::Type _ruinType;
 };
 
 }

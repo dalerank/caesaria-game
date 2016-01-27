@@ -24,8 +24,14 @@ void Pictures::load(const std::string& rc, int startIndex, int number, int multi
 {
   for( int i = 0; i < number; ++i)
   {
-    this->push_back( Picture::load(rc, startIndex + i*multiplier) );
+    this->push_back( Picture(rc, startIndex + i*multiplier) );
   }
+}
+
+void Pictures::load(const StringArray& names)
+{
+  for( auto& it : names )
+    this->push_back( Picture( it ) );
 }
 
 Pictures& Pictures::operator<<(const Picture& pic)
@@ -40,10 +46,32 @@ Pictures& Pictures::append(const Pictures& pics)
   return *this;
 }
 
+Pictures& Pictures::append(const std::string &rc, int index)
+{
+  this->push_back( Picture( rc, index ) );
+  return *this;
+}
+
 void Pictures::append(const Picture &pic, const Point &offset)
 {
   this->push_back( pic );
   this->back().setOffset( offset );
+}
+
+const Picture& Pictures::valueOrEmpty(unsigned int index) const
+{
+  return index < size()
+              ? (*this)[index]
+                : Picture::getInvalid();
+}
+
+StringArray Pictures::names() const
+{
+  StringArray ret;
+  for( auto& pic : *this )
+    ret << pic.name();
+
+  return ret;
 }
 
 

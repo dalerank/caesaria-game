@@ -12,11 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_
 #define _CAESARIA_EVENT_PLAYSOUND_H_INCLUDE_
 
 #include "event.hpp"
+#include "sound/constants.hpp"
 
 namespace events
 {
@@ -24,8 +27,8 @@ namespace events
 class PlaySound : public GameEvent
 {
 public:
-  static GameEventPtr create(std::string rc, int index, int volume );
-  static GameEventPtr create(std::string filename, int volume, bool theme=false );
+  static GameEventPtr create(const std::string& rc, int index, int volume, audio::SoundType type=audio::ambient, bool force=false );
+  static GameEventPtr create(const std::string& filename, int volume, audio::SoundType type=audio::ambient, bool force=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -36,7 +39,8 @@ private:
 
   std::string _sound;
   int _volume;
-  bool _theme;
+  bool _force;
+  audio::SoundType _type;
 };
 
 }

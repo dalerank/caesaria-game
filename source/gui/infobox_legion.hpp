@@ -26,7 +26,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutLegion : public Simple
+class AboutLegion : public Infobox
 {
 public:
   AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos );

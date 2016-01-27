@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
 #define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
@@ -26,17 +26,23 @@
 namespace gui
 {
 
-class CityOptionsWindow : public Window
+namespace dialog
+{
+
+class CityOptions : public Window
 {
 public:
-  CityOptionsWindow( Widget* parent, PlayerCityPtr city );
+  CityOptions( Widget* parent, PlayerCityPtr city );
 
-  virtual ~CityOptionsWindow();
+  virtual ~CityOptions();
+  virtual void setupUI(const VariantMap &ui);
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+} //end namespace dialog
 
 } //end namespace gui
 

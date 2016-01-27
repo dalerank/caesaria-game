@@ -17,61 +17,94 @@
 #include "city.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
-#include "core/foreach.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(Shoreline, shoreline)
+
 class Shoreline::Impl
 {
 public:
-  TilesArray slTiles;
-  TilesArray dwTiles;
+  struct {
+    TilesArray coast;
+    TilesArray water;
+    TilesArray riverside;
+  } tiles;
 
   int lastTimeUpdate;
   unsigned int nextWaterGarbage;
 
   void checkMap(PlayerCityPtr city );
+  void generateWaterGarbage(PlayerCityPtr city);
 };
 
 void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
-  int mapSize = city->tilemap().size();
-  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
+  Tilemap& tmap = city->tilemap();
+  const TilesArray& rtiles = tmap.allTiles();
 
-  foreach( tile, tiles )
+  //initialize coastal and water tiles
+  for( auto tile : rtiles )
   {
-    int imgId = (*tile)->originalImgId();
-    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*tile)->getFlag( Tile::tlCoast ) )
+    int imgId = tile->imgId();
+    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->terrain().coast )
     {
-      slTiles.push_back( *tile );
+      tiles.coast.push_back( tile );
     }
 
-    if( (*tile)->getFlag( Tile::tlDeepWater ) )
+    if( tile->terrain().deepWater )
     {
-      dwTiles.push_back( *tile );
+      tiles.water.push_back( tile );
+    }
+  }
+
+  //initialize riverside tiles
+  std::set<Tile*> checkedTiles;
+  for( auto tile : tiles.coast )
+  {
+    TilesArray area = tmap.area( 2, tile->pos() );
+    for( auto dtile : area )
+    {
+      if( dtile->getFlag( Tile::tlWater ) || dtile->getFlag( Tile::tlDeepWater ) )
+        continue;
+
+      auto pair = checkedTiles.insert( dtile );
+      if( pair.second )
+        tiles.riverside.push_back( dtile );
+    }
+    }
+}
+
+void Shoreline::Impl::generateWaterGarbage(PlayerCityPtr city)
+{
+  auto waterGarbage = Walker::create<WaterGarbage>( city );
+  waterGarbage->send2City( city->getBorderInfo( PlayerCity::boatEntry ).epos() );
+
+  nextWaterGarbage += math::random( game::Date::days2ticks( 10 ) );
+
+  for( int k=0; k < 20; k++ )
+  {
+    Tile* randomTile = tiles.water.random();
+    if( randomTile )
+    {
+      auto rw = Walker::create<RiverWave>( city );
+      rw->send2City( randomTile->pos() );
     }
   }
 }
 
-city::SrvcPtr Shoreline::create( PlayerCityPtr city )
-{
-  city::SrvcPtr ret( new Shoreline( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-std::string Shoreline::defaultName(){ return CAESARIA_STR_EXT(Shoreline); }
+std::string Shoreline::defaultName(){ return TEXT(Shoreline); }
 
 Shoreline::Shoreline( PlayerCityPtr city )
   : city::Srvc( city, Shoreline::defaultName() ), _d( new Impl )
@@ -82,38 +115,32 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::timeStep( const unsigned int time )
 {
-  //if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
-  if( _d->slTiles.empty() )
-  {
+  if( _d->tiles.coast.empty() )
     _d->checkMap( _city() );
+
+  //update riverside tiles is need
+  if( _city()->getOption( PlayerCity::riversideAsWell ) )
+  {
+    for( auto tile : _d->tiles.riverside )
+      tile->setParam( Tile::pWellWater, 16 );
   }
 
   if( time > _d->nextWaterGarbage )
-  {
-    WaterGarbagePtr wg = WaterGarbage::create( _city() );
-    wg->send2City( _city()->borderInfo().boatEntry );
-
-    _d->nextWaterGarbage = time + math::random( game::Date::days2ticks( 10 ) );
-
-    for( int k=0; k < 20; k++ )
-    {
-      Tile* t = _d->dwTiles.random();
-      RiverWavePtr rw = RiverWave::create( _city() );
-      rw->send2City( t->pos() );
-    }
-  }
+    _d->generateWaterGarbage( _city() );
 
   _d->lastTimeUpdate = time;
 
-  foreach( it, _d->slTiles )
+  std::string picName;
+  picName.reserve( 256 );
+  for( auto tile : _d->tiles.coast )
   {
-    Tile* tile = *it;
     if( tile->overlay().isValid() )
       continue;
 
-    int picId = tile->originalImgId();
+    ImgID picId = tile->imgId();
     if( tile->param( Tile::pDesirability ) > 10 )
     {
       switch( picId )
@@ -133,12 +160,11 @@ void Shoreline::timeStep( const unsigned int time )
       }
     }
 
-    std::string picName = imgid::toResource( picId );
+    picName = imgid::toResource( picId );
     if( picName != tile->picture().name())
     {
       tile->setPicture( picName );
     }
-
   }
 }
 

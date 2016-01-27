@@ -17,51 +17,59 @@
 
 #include "cityservice_roads.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/road.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Roads,roads)
 
 class Roads::Impl
 {
 public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
-  typedef std::pair<TileOverlay::Type, int> UpdateBuilding;
+  typedef std::pair<object::Type, int> UpdateBuilding;
+  typedef std::vector< UpdateBuilding > BuildingInfo;
 
-  int defaultIncreasePaved;
-  int defaultDecreasePaved;
+  BuildingInfo btypes;
+  struct {
+    int increase;
+    int decrease;
+  } paved;
 
   DateTime lastTimeUpdate;
 
   void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-SrvcPtr Roads::create(PlayerCityPtr city)
-{
-  SrvcPtr ret( new Roads( city ) );
-  ret->drop();
-  return ret;
-}
-
-std::string Roads::defaultName(){  return "roads";}
+std::string Roads::defaultName(){  return TEXT(Roads);}
 
 Roads::Roads( PlayerCityPtr city )
   : Srvc( city, Roads::defaultName() ), _d( new Impl )
 {
-  _d->defaultIncreasePaved = 4;
-  _d->defaultDecreasePaved = -1;
+  _d->paved.increase = 4;
+  _d->paved.decrease = -1;
   _d->lastTimeUpdate = game::Date::current();
+
+  _d->btypes.push_back( Impl::UpdateBuilding(object::senate, desirability::senateInfluence) );
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, desirability::normalInfluence));
 }
 
 void Roads::timeStep( const unsigned int time )
@@ -69,50 +77,40 @@ void Roads::timeStep( const unsigned int time )
   if( _d->lastTimeUpdate.month() == game::Date::current().month() )
     return;
 
-  _d->lastTimeUpdate = game::Date::current();
-
-  std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );
-  btypes.push_back( Impl::UpdateBuilding(objects::small_ceres_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_mars_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_mercury_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_neptune_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_venus_temple, 4));
-
-  Helper helper( _city() );
+  _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  foreach( it, btypes )
+  for( auto type : _d->btypes )
   {
-    BuildingList tmp = helper.find<Building>( it->first );
+    BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
-    foreach( b, tmp )
+    for( auto b : tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->object(), it->second ) );
+      positions.push_back( Impl::UpdateInfo( b.object(), type.second ) );
     }
   }
 
-  HouseList houses = helper.find<House>( objects::house );
-  foreach( house, houses )
+  HouseList houses = _city()->statistic().houses.find();
+  for( auto house : houses )
   {
-    if( (*house)->spec().level() >= HouseLevel::bigMansion )
+    if( house->level() >= HouseLevel::bigMansion )
     {
-      positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
+      positions.push_back( Impl::UpdateInfo( house.object(), 5 ) );
     }
   }
 
   Propagator propagator( _city() );
-  foreach( upos, positions )
+  for( auto& upos : positions )
   {
-    _d->updateRoadsAround( propagator, *upos );
+    _d->updateRoadsAround( propagator, upos );
   }
 
-  if( _d->lastTimeUpdate.month() % 3 == 1 )
+  if( (int)_d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( objects::road );
-    foreach( road, roads )
+    RoadList roads = _city()->statistic().objects.find<Road>( object::road );
+    for( auto road : roads )
     {
-      (*road)->appendPaved( _d->defaultDecreasePaved );
+      road->appendPaved( _d->paved.decrease );
     }
   }
 }
@@ -124,17 +122,11 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
   propagator.init( info.first );
   PathwayList pathWayList = propagator.getWays( info.second );
 
-  foreach( current, pathWayList )
+  for( auto& path : pathWayList )
   {
-    const TilesArray& tiles = (*current)->allTiles();
-    foreach( it, tiles )
-    {
-      RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
-      if( road.isValid() )
-      {
-        road->appendPaved( defaultIncreasePaved );
-      }
-    }
+    RoadList roads = path->allTiles().overlays<Road>();
+    for( auto road : roads )
+      road->appendPaved( paved.increase );
   }
 }
 

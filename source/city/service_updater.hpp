@@ -19,8 +19,6 @@
 #define _CAESARIA_SERVICE_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
 namespace city
 {
@@ -28,7 +26,7 @@ namespace city
 class ServiceUpdater : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
+  ServiceUpdater( PlayerCityPtr city );
   virtual void timeStep( const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
@@ -36,8 +34,9 @@ public:
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
 
+  virtual ~ServiceUpdater();
+
 private:
-  ServiceUpdater( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

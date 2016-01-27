@@ -21,14 +21,14 @@
 namespace updater
 {
 
-const char* const LIB_UPDATE_VERSION = "0.0.7";
+const char* const LIB_UPDATE_VERSION = "0.0.10";
 
 const char* const LIB_UPDATE_PLATFORM =
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 "Win32"
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
 "Linux"
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
 "MacOSX"
 #else
 "Unknown"
@@ -44,7 +44,7 @@ const char* const STABLE_VERSION_FILE = "stable_info.txt";
 // The file containing the version information of all released packages since 1.02
 const char* const UPDATE_VERSION_FILE = "version_info.txt";
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 const char* const UPDATE_UPDATER_BATCH_FILE = "update_updater.cmd";
 #else
 const char* const UPDATE_UPDATER_BATCH_FILE = "update_updater.sh";

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WALKER_H_INCLUDE_
 #define _CAESARIA_WALKER_H_INCLUDE_
@@ -21,42 +21,65 @@
 #include <string>
 #include <memory>
 
-#include "objects/building.hpp"
 #include "walker/action.hpp"
-#include "objects/service.hpp"
-#include "gfx/picture.hpp"
-#include "game/enums.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/serializer.hpp"
-#include "world/nation.hpp"
-#include "pathway/predefinitions.hpp"
-#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
-#include "predefinitions.hpp"
+#include "pathway/predefinitions.hpp"
+#include "core/referencecounted.hpp"
+#include "city/predefinitions.hpp"
+#include "constants.hpp"
 #include "core/debug_queue.hpp"
+#include "world/nation.hpp"
+#include "core/smartptr.hpp"
+#include "predefinitions.hpp"
 
 class Pathway;
+namespace gfx { class Tile; class Animation; class Tilemap; }
+
+#define WALKER_MUST_INITIALIZE_FROM_FACTORY friend class Walker;
 
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
   typedef unsigned int UniqueId;
+  typedef enum { male, female } Gender;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
+  typedef enum { infiniteWait=-1, showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
   typedef enum { thCurrent, thAction, thCount } Thought;
   typedef enum { plOrigin, plDestination, pcCount } Place;
 
-  Walker( PlayerCityPtr city );
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->_awake();
+    instance->drop();
+
+    return instance;
+  }
+
+  template<typename ObjClass>
+  static SmartPtr<ObjClass> create( walker::Type type, PlayerCityPtr city )
+  {
+    return ptr_cast<ObjClass>( create( type, city ));
+  }
+
+  static WalkerPtr create( walker::Type type, PlayerCityPtr city );
+
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
-  virtual constants::walker::Type type() const;
+  virtual walker::Type type() const;
+
+  const walker::Info& info() const;
 
   // position and movement
 
   TilePos pos() const;
   void setPos( const TilePos& pos );
 
-  virtual Point mappos() const;
+  virtual const Point& mappos() const;
   Point tilesubpos() const;
 
   const gfx::Tile& tile() const;
@@ -78,9 +101,10 @@ public:
   void setFlag( Flag flag, bool value );
   bool getFlag( Flag flag ) const;
 
-  constants::Direction direction() const;
+  Direction direction() const;
   Walker::Action action() const;
 
+  virtual Gender gender() const;
   virtual double health() const;
   virtual void updateHealth(double value);
   virtual void acceptAction( Action action, TilePos pos );
@@ -102,6 +126,7 @@ public:
   virtual void wait( int ticks = 0 );
   virtual int  waitInterval() const;
   virtual bool die();
+  virtual void mapTurned();
 
   virtual void getPictures( gfx::Pictures& oPics);
 
@@ -114,9 +139,15 @@ public:
   virtual world::Nation nation() const;
 
   void attach();
+  Point wpos() const;
 
 protected:
+  Walker( PlayerCityPtr city );
+  Walker( PlayerCityPtr city, walker::Type type );
+
+  void _awake();
   void _walk();
+  void _updateMappos();
   void _computeDirection();
   const gfx::Tile& _nextTile() const;
 
@@ -130,21 +161,23 @@ protected:
   virtual const gfx::Picture& getMainPicture();
   virtual void _setAction( Walker::Action action );
   virtual void _updatePathway(const Pathway& pathway );
+  virtual Point& _rndOffset();
   virtual void _updateThoughts();
 
-  Pathway& _pathwayRef();
+  Pathway& _pathway();
 
-  gfx::Animation& _animationRef();
-  const gfx::Animation &_animationRef() const;
-  void _setDirection( constants::Direction direction );
+  gfx::Animation& _animation();
+  const gfx::Animation &_animation() const;
+  void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
-  void _setType( constants::walker::Type type );
+  void _setLocation( const TilePos& pos );
+  void _setType( walker::Type type );
   PlayerCityPtr _city() const;
+  gfx::Tilemap& _map() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
-  void _setWpos( Point pos );
-  Point _wpos() const;
+  void _setWpos(const Point &pos );
 
 private:
   class Impl;

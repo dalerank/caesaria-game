@@ -18,18 +18,19 @@
 #include "walker_debuginfo.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
-#include "gfx/helper.hpp"
+#include "core/color_list.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/decorator.hpp"
-
-#include "gfx/picture.hpp"
+#include "gfx/tilesarray.hpp"
+#include "gfx/camera.hpp"
+#include "gfx/picturesarray.hpp"
 
 namespace gfx
 {
 
-void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera, NColor color )
+void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColor color )
 {
-  Point camOffset = camera->offset();
   const Pathway& pathway = walker->pathway();
 
   const TilesArray& tiles = pathway.allTiles();   
@@ -40,34 +41,36 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
   {
     if( walker->agressive() > 0 )
     {
-      pathColor = DefaultColors::red;
+      pathColor = ColorList::red;
     }
     else
     {
-      pathColor = pathway.isReverse() ? DefaultColors::blue : DefaultColors::green;
+      pathColor = pathway.isReverse() ? ColorList::blue : ColorList::green;
     }
   }
 
   Point pos = walker->mappos();
-  Point xOffset( tilemap::cellSize().width(), 0 );
+  Point xOffset( config::tilemap.cell.size().width(), 0 );
+  PointsArray points;
   if( pathway.isReverse() )
   {
     int rStart = pathway.length() - pathway.curStep();
     for( int step=rStart-1; step >= 0; step-- )
-    {
-      engine.drawLine(  pathColor, pos + camOffset, tiles[ step ]->mappos() + camOffset + xOffset );
-      pos = tiles[ step ]->mappos() + xOffset;
-    }
+    {      
+      pos = tiles[ step ]->mappos() + rinfo.offset + xOffset;
+      points.push_back( pos );
+    }    
   }
   else
   {
     for( unsigned int step=pathway.curStep()+1; step < tiles.size(); step++ )
     {
-      Tile* tile = tiles[ step ];
-      engine.drawLine(  pathColor, pos + camOffset, tile->mappos() + camOffset + xOffset );
-      pos = tile->mappos() + xOffset;
+      pos = tiles[ step ]->mappos() + rinfo.offset + xOffset;
+      points.push_back( pos );
     }
   }
+
+  rinfo.engine.drawLines( pathColor, points );
 }
 
 }//end namespace gfx

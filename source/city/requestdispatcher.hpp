@@ -19,7 +19,6 @@
 #define _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "request.hpp"
 #include "core/signals.hpp"
 
 namespace city
@@ -31,8 +30,6 @@ namespace request
 class Dispatcher : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
-
   bool add(const VariantMap& stream , bool showMessage=true);
   virtual ~Dispatcher();
 
@@ -44,10 +41,10 @@ public:
 
   bool haveCanceledRequest() const;
 
-  RequestList requests() const;
+  const RequestList& requests() const;
 
-private:
   Dispatcher(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -27,13 +27,11 @@
 #include "core/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/path.hpp"
+#include "core/event.hpp"
+#include "element_state.hpp"
 
-namespace gfx
-{
- class Engine;
-}
-struct NEvent;
+namespace gfx { class Engine; }
+namespace vfs { class Path; }
 
 namespace gui
 {
@@ -43,9 +41,30 @@ class Ui;
 class Widget : public virtual ReferenceCounted
 {
 public:       
-  typedef List<Widget*> Widgets;
-  typedef Widgets::iterator ChildIterator;
-  typedef Widgets::const_iterator ConstChildIterator;
+  class Widgets : public List<Widget*>
+  {
+  public:
+    template<class T>
+    List<T*> select() const
+    {
+      List<T*> ret;
+      for( auto item : *this )
+      {
+        T* ptr = safety_cast<T*>( item );
+        if( ptr )
+          ret.push_back( ptr );
+      }
+
+      return ret;
+    }
+  };
+
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
 
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
@@ -56,13 +75,16 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  List< T > findChildren()
+  List< T > findChildren( bool indepth=false )
   {
     List< T > ret;
-    foreach( it, children() )
+    for( auto child : children() )
     {
-      if( T elm = safety_cast< T >( *it ) )
+      if( T elm = safety_cast< T >( child ) )
           ret.push_back( elm );
+
+      if( indepth )
+        ret.append( child->findChildren<T>( indepth ) );
     }
 
     return ret;
@@ -82,13 +104,15 @@ public:
 	//! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
-  //virtual void setFont( Font font, u32 nA=0 );
+  virtual void setFont( const Font& font );
+
+  virtual void setFont( FontType type, NColor color=0 );
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
   
-  virtual Ui* ui();
+  virtual Ui* ui() const;
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
@@ -121,6 +145,9 @@ public:
   virtual int screenLeft() const;
 
   virtual int bottom() const;
+
+  typedef enum { parentCenter } DefinedPosition;
+  virtual void moveTo( DefinedPosition pos );
 
   virtual Point center() const;
 
@@ -165,6 +192,8 @@ public:
   //! Draws the element and its children.
   virtual void draw( gfx::Engine& painter );
 
+  virtual void debugDraw( gfx::Engine& painter );
+
   virtual void animate( unsigned int timeMs );
 
   //! Destructor
@@ -172,9 +201,16 @@ public:
 
   //! Moves this element in absolute point.
   virtual void setPosition(const Point& relativePosition);
+  virtual void setPosition(int x, int y);
 
   //! Moves this element on relative distance.
   virtual void move( const Point& offset );
+
+  //!
+  virtual void canvasDraw( const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0 );
+
+  //!
+  virtual void canvasDraw( const gfx::Picture& picture, const Point& point );
 
   //! Returns true if element is visible.
   virtual bool visible() const;
@@ -193,7 +229,7 @@ public:
   //! If set to true, the focus will visit this element when using the tab key to cycle through elements.
   /** If this element is a tab group (see isTabGroup/setTabGroup) then
   ctrl+tab will be used instead. */
-  virtual void setTabStop(bool enable);
+  virtual void setTabstop(bool enable);
 
   //! Returns true if this element can be focused by navigating with the tab key
   virtual bool isTabStop() const;
@@ -201,7 +237,7 @@ public:
   //! Sets the priority of focus when using the tab key to navigate between a group of elements.
   /** See setTabGroup, isTabGroup and getTabGroup for information on tab groups.
   Elements with a lower number are focused first */
-  virtual void setTabOrder( int index );
+  virtual void setTaborder( int index );
 
   //! Returns the number in the tab order sequence
   virtual int tabOrder() const;
@@ -275,7 +311,13 @@ public:
    *	\return Returns the first element with the given id. If no element
    *	with this id was found, 0 is returned.
    */
-  virtual Widget* findChild(int id, bool searchchildren=false) const;
+  virtual Widget* findChild(int id, bool searchChildren=false) const;
+
+  template<class T>
+  T* findChild(int id, bool searchChildren=false) const
+  {
+    return safety_cast<T*>( findChild( id, searchChildren ) );
+  }
 
   //! Reads attributes of the scene node.
   /** Implement this to set the attributes of your scene node for
@@ -299,8 +341,8 @@ public:
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */
   void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
-
   void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
+  void setGeometry(float left, float top, float rigth, float bottom );
 
   //! 
   void setLeft( int newLeft );
@@ -379,11 +421,14 @@ public:
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
   bool next( int startOrder, bool reverse, bool group,
-                      Widget*& first, Widget*& closest, bool includeInvisible=false) const;
+             Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
   void setParent( Widget* parent );
 
   void setRight(int newRight);
+
+  void addProperty(const std::string& name, const Variant &value );
+  const Variant& getProperty( const std::string& name ) const;  
 
 protected:
 
@@ -393,11 +438,14 @@ protected:
    * When _resizeEvent() is called, the widget already has its new
    * geometry.
    */
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
+  virtual bool _onButtonClicked( Widget* sender ) { return false; }
+  virtual bool _onMousePressed( const NEvent::Mouse& event ) { return false; }
+  virtual bool _onListboxChanged( Widget* sender ) { return false; }
+  virtual void _finalizeMove();
 
   Widgets& _getChildren();
 
-protected:
   // not virtual because needed in constructor
   void _addChild(Widget* child);
 
@@ -405,22 +453,9 @@ protected:
   void _recalculateAbsolutePosition(bool recursive);
 
   __DECLARE_IMPL(Widget)
-
-  //! GUI Environment
-  Ui* _environment;
 };
 
 typedef SmartPtr< Widget > WidgetPtr;
-
-enum ElementState
-{
-  stNormal=0, 
-  stPressed, 
-  stHovered, 
-  stDisabled, 
-  stChecked,
-  StateCount
-};
 
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

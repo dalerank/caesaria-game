@@ -47,8 +47,7 @@ void ShowTutorial::_exec(Game& game, unsigned int)
   if( _tutorial.empty() )
     return;
 
-  gui::TutorialWindow* wnd = new gui::TutorialWindow( game.gui()->rootWidget(), _tutorial );
-  wnd->show();
+  game.gui()->add<gui::TutorialWindow>( _tutorial );
 }
 
 bool ShowTutorial::_mayExec(Game&, unsigned int) const { return true; }

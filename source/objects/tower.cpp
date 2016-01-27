@@ -18,20 +18,20 @@
 #include "tower.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "fortification.hpp"
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
+#include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
 #include "walker/balista.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::tower, Tower)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::tower, Tower)
 
 class Tower::Impl
 {
@@ -44,23 +44,28 @@ public:
   Point offset;
   BalistaPtr catapult;
   bool needResetWays;
+};
 
+struct WallCondition
+{
   void mayPatroling( const Tile* tile, bool& ret )
   {
-    FortificationPtr f = ptr_cast<Fortification>( tile->overlay() );
+    FortificationPtr f = tile->overlay<Fortification>();
     ret = ( f.isValid() && f->mayPatrol() );
   }
+
+  TilePossibleCondition byWalls() { return makeDelegate( this, &WallCondition::mayPatroling ); }
 };
 
 Tower::Tower()
-  : ServiceBuilding( Service::guard, objects::tower, Size( 2 ) ), _d( new Impl )
+  : ServiceBuilding( Service::guard, object::tower, Size( 2 ) ), _d( new Impl )
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );
-  setPicture( ResourceGroup::land2a, 149 );
+  _picture().load( config::rc.land2a, 149 );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void Tower::save(VariantMap& stream) const
@@ -73,27 +78,27 @@ void Tower::load(const VariantMap& stream)
   Building::load( stream );
 }
 
-bool Tower::canBuild(const CityAreaInfo& areaInfo) const
+bool Tower::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tmap = areaInfo.city->tilemap();
 
-  bool freeMap[ countDirection ] = { 0 };
+  bool freeMap[ direction::count] = { 0 };
   const TilePos& pos = areaInfo.pos;
-  freeMap[ noneDirection ] = tmap.at( pos ).getFlag( Tile::isConstructible );
-  freeMap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
-  freeMap[ east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
-  freeMap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::none ] = tmap.at( pos ).getFlag( Tile::isConstructible );
+  freeMap[ direction::north ] = tmap.at( pos + TilePos( 0, 1 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::east ] = tmap.at( pos + TilePos( 1, 0 ) ).getFlag( Tile::isConstructible );
+  freeMap[ direction::northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
-  bool frtMap[ countDirection ] = { 0 };
-  frtMap[ noneDirection ] = is_kind_of<Fortification>( tmap.at( pos ).overlay() );
-  frtMap[ north ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
-  frtMap[ northEast ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
-  frtMap[ east  ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
+  bool frtMap[ direction::count ] = { 0 };
+  frtMap[ direction::none ] = is_kind_of<Fortification>( tmap.at( pos ).overlay() );
+  frtMap[ direction::north ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
+  frtMap[ direction::northEast ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
+  frtMap[ direction::east  ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
 
-  bool mayConstruct = ((frtMap[ noneDirection ] || freeMap[ noneDirection ]) &&
-                       (frtMap[ north ] || freeMap[ north ]) &&
-                       (frtMap[ east ] || freeMap[ east ]) &&
-                       (frtMap[ northEast ] || freeMap[ northEast ]) );
+  bool mayConstruct = ((frtMap[ direction::none ] || freeMap[ direction::none ]) &&
+                       (frtMap[ direction::north ] || freeMap[ direction::north ]) &&
+                       (frtMap[ direction::east ] || freeMap[ direction::east ]) &&
+                       (frtMap[ direction::northEast ] || freeMap[ direction::northEast ]) );
 
   if( !mayConstruct )
   {
@@ -127,19 +132,19 @@ void Tower::_rebuildWays()
   if( enter.empty() )
     return;
 
+  WallCondition condition;
+
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
-    TilePos offset( range, range );
-    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset,
-                                                              pos() + offset );
-    foreach( tile, tiles )
+    TilesArray tiles = _map().rect( range, pos() );
+    for( auto tile : tiles )
     {
       bool patrolingWall;
-      _d->mayPatroling( *tile, patrolingWall );
+      condition.mayPatroling( tile, patrolingWall );
       if( patrolingWall )
       {
         TilePos tpos = enter.front()->pos();
-        Pathway pathway = PathwayHelper::create( tpos, (*tile)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), condition.byWalls() );
 
         if( pathway.isValid() )
         {
@@ -178,23 +183,21 @@ void Tower::deliverService()
       && walkers().empty()
       && trValue > 0 )
   {
-    Impl::PatrolWays::iterator it = _d->patrolWays.begin();
-    std::advance( it, rand() % _d->patrolWays.size() );
+    auto patrolWayIt = _d->patrolWays.begin();
+    std::advance( patrolWayIt, rand() % _d->patrolWays.size() );
 
-    WallGuardPtr guard = WallGuard::create( _city(), walker::romeGuard );
-    guard->send2city( this, *it );
+    auto guard = Walker::create<WallGuard>( _city(), walker::romeGuard );
+    guard->send2city( this, *patrolWayIt );
 
-    if( !guard->isDeleted() )
-    {
-      addWalker( guard.object() );
-    }
+    addWalker( guard.object() );
   }
 
   if( trValue > 1 )
   {
     if( _d->catapult.isNull() )
     {
-      _d->catapult = Balista::create( _city() );
+      _d->catapult = Walker::create<Balista>( _city() );
+      _d->catapult->attach();
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
       _d->catapult->setBase( this );
     }
@@ -206,14 +209,18 @@ void Tower::deliverService()
   }
 }
 
+void Tower::burn()
+{
+  Logger::warning( "WARNING: Tower cant be burn. Ignore." );
+}
+
 TilesArray Tower::enterArea() const
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );
+  TilesArray tiles = _city()->statistic().map.around( this );
 
-  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  for( auto it=tiles.begin(); it != tiles.end(); )
   {
-    FortificationPtr wall = ptr_cast<Fortification>( (*it)->overlay() );
+    auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
     else { it = tiles.erase( it ); }
   }
@@ -231,14 +238,14 @@ Point Tower::offset(const Tile& tile, const Point& subpos) const
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {
   PathwayList ret;
-  foreach( wall, dest )
+
+  WallCondition condition;
+
+  for( auto wall : dest )
   {
-    Pathway tmp = PathwayHelper::create( start, (*wall)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, wall->pos(), condition.byWalls() );
     if( tmp.isValid() )
-    {    
-      ret.push_back( PathwayPtr( new Pathway( tmp ) ) );
-      ret.back()->drop();
-    }
+      ret.push_back( ptr_make<Pathway>( tmp ) );
   }
 
   return ret;
@@ -246,7 +253,8 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
 
 Pathway Tower::getWay(TilePos start, TilePos stop)
 {
-  return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
+  WallCondition condition;
+  return PathwayHelper::create( start, stop, condition.byWalls() );
 }
 
 float Tower::evaluateTrainee(walker::Type traineeType)

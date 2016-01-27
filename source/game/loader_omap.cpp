@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_omap.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
 #include "game.hpp"
@@ -31,7 +31,6 @@
 #include "core/saveadapter.hpp"
 #include "vfs/archive_zip.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 #include <map>
@@ -81,7 +80,14 @@ bool OMap::load(const std::string& filename, Game& game)
   return true;
 }
 
-int OMap::climateType(const std::string& filename) {  return _d->climate; }
+int OMap::climateType(const std::string& filename)
+{
+  VariantMap vm = config::load( filename );
+  _d->climate = vm.get( "climate" ).toInt();
+
+  return _d->climate;
+}
+
 std::string OMap::restartFile() const {  return _d->restartFile; }
 OMap::OMap() : _d( new Impl ) {}
 

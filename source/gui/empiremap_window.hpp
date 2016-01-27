@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
 #define __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
@@ -28,6 +28,8 @@ class EmpireMapWindow : public Widget
 {
 public:
   typedef enum { showCityInfo=0x1 } Flag;
+
+  EmpireMapWindow( Widget* parent, int id, PlayerCityPtr city );
   static EmpireMapWindow* create( PlayerCityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
@@ -43,15 +45,14 @@ public:
 
 protected:
   void _changePosition();
+  virtual bool _onMousePressed( const NEvent::Mouse& event);
   const Point& _offset() const;
 
   Widget* _resetInfoPanel();
-  void _showHelp();
+  void _toggleAi();
 
   class Impl;
   ScopedPtr< Impl > _d;
-
-  EmpireMapWindow( Widget* parent, int id, PlayerCityPtr city );
 };
 
 }//end namespace gui

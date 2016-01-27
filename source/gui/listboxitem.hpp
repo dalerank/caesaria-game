@@ -57,10 +57,15 @@ public:
 
   void setText( const std::string& text );
   const std::string& text() const;
-	void setTag( int tag );
-	int tag() const;
+
+  void setTooltip( const std::string& text );
+  const std::string& tooltip() const;
+
+  void setTag(const Variant& tag );
+  const Variant& tag() const;
 	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
+  void setIcon( const std::string& rc, int index );
 
   bool isEnabled() const;
   void setEnabled( bool en );
@@ -88,12 +93,14 @@ public:
   void setUrl( const std::string& url );
   const std::string& url() const;
 
-  Variant data() const;
-  void setData( const Variant& value );
+  Variant data( const std::string& name ) const;
+  void setData( const std::string& name, const Variant& value );
+  void setData( const VariantMap& map );
 
   void setTextColor( ColorType type, NColor color);
 
   void updateText( const Point& p, Font f, const Size& s );
+  void resetPicture(const Size &s);
   void draw(const std::string& text, Font f , const Point& p);
   void clear();
 
@@ -108,7 +115,7 @@ public:
 	//!sets the item text alignment
 	void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-	OverrideColor OverrideColors[ count ];
+  OverrideColor overrideColors[ count ];
 
   static ListBoxItem& invalidItem();
 

@@ -1,7 +1,8 @@
 {
-  geometry : [ 0, 0, 640, 256 ]
+  size : [ 640, 256 ]
   bgtype : "whiteFrame"
-
+  static : true
+  
   lbBlackframe#Label : {
     geometryf : [ 0.05, 0.4, 0.95, 0.7 ]
     bgtype : "blackFrame"
@@ -11,6 +12,11 @@
     font : "FONT_1"
     geometry : [ 180, 80, 250, 105 ]
     text : "##work##"
+  }
+
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00262"
   }
 
   lbMaxAvailableText#Label : {

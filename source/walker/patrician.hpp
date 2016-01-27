@@ -20,23 +20,25 @@
 
 #include "human.hpp"
 #include "predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Patrician : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static PatricianPtr create( PlayerCityPtr city );
   virtual ~Patrician();
 
-  virtual void send2City( TilePos start );
+  virtual void send2City( HousePtr house );
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void initialize(const VariantMap &options);
 
   virtual bool die();
 
 protected:
-  void _findNewWay(const TilePos& start);
+  bool _findNewWay(const TilePos& start);
   virtual void _reachedPathway();
 
 private:

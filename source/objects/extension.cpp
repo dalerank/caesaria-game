@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "objects/house.hpp"
 #include "walker/soldier.hpp"
+#include "core/stacktrace.hpp"
 #include "warehouse.hpp"
 
 void ConstructionExtension::save(VariantMap &stream) const
@@ -39,7 +40,10 @@ void ConstructionExtension::load(const VariantMap &stream)
 
 void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
 {
-  _isDeleted = game::Date::current() > _finishDate;
+  if( game::Date::isDayChanged() )
+  {
+    _isDeleted = game::Date::current() > _finishDate;
+  }
 }
 
 ConstructionExtensionPtr FactoryProgressUpdater::create()
@@ -52,7 +56,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::create()
 
 ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, float value, int week2finish)
 {
-  FactoryProgressUpdater* updater = new FactoryProgressUpdater();
+  auto updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
   updater->_finishDate = game::Date::current();
@@ -61,7 +65,40 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   ConstructionExtensionPtr ret( updater );
   ret->drop();
 
-  factory->addExtension( ret );
+  if( factory.isValid() ) { factory->addExtension( ret );  }
+  else
+  {
+    crashhandler::printstack(false);
+    Logger::warning( "WARNING!!! Factory not initialized" );
+  }
+
+  return ret;
+}
+
+ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, float value, int week2finish, const std::string& name)
+{
+  if( !factory.isValid() )
+  {
+    Logger::warning( "WARNING!!! Factory not initialized" );
+    crashhandler::printstack(false);
+    return ConstructionExtensionPtr();
+  }
+
+  if( name.empty() )
+  {
+    Logger::warning( "WARNING!!! Cant assigned named extension without name" );
+    return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionList exts = factory->extensions();
+  for( auto it : exts )
+  {
+    if( it->name() == name )
+      return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionPtr ret = assignTo( factory, value, week2finish );
+  ret->setName( name );
 
   return ret;
 }
@@ -80,7 +117,7 @@ void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string FactoryProgressUpdater::type() const { return CAESARIA_STR_EXT(FactoryProgressUpdater); }
+std::string FactoryProgressUpdater::type() const { return TEXT(FactoryProgressUpdater); }
 
 FactoryProgressUpdater::FactoryProgressUpdater()
 {
@@ -96,7 +133,7 @@ ConstructionExtensionPtr FortCurseByMars::create()
 
 ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int monthsCurse)
 {
-  FortCurseByMars* curse = new FortCurseByMars();
+  auto curse = new FortCurseByMars();
   DateTime gdate = game::Date::current();
   gdate.appendMonth( monthsCurse );
   curse->_finishDate = gdate;
@@ -113,26 +150,26 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    FortPtr base = ptr_cast<Fort>( parent );
-    if( !base.isValid() )
+    auto fort = parent.as<Fort>();
+    if( !fort.isValid() )
     {
       Logger::warning( "FortCurseByMars::run base is null ");
       _isDeleted = true;
       return;
     }
 
-    SoldierList sldrs = base->soldiers();
+    SoldierList sldrs = fort->soldiers();
 
-    foreach( it, sldrs )
+    for( auto it : sldrs )
     {
-      (*it)->updateMorale( -100 );
+      it->updateMorale( -100 );
     }
   }
 
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string FortCurseByMars::type() const{ return CAESARIA_STR_EXT(FortCurseByMars); }
+std::string FortCurseByMars::type() const{ return TEXT(FortCurseByMars); }
 
 FortCurseByMars::FortCurseByMars() {}
 
@@ -204,7 +241,7 @@ ConstructionExtensionPtr ExtensionsFactory::create(const VariantMap& stream)
 
 ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
 {
-#define ADD_CREATOR(T) _d->addCreator<T>( CAESARIA_STR_EXT(T) );
+#define ADD_CREATOR(T) _d->addCreator<T>( TEXT(T) );
 
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
@@ -237,12 +274,34 @@ ConstructionExtensionPtr WarehouseBuff::assignTo(WarehousePtr warehouse, int gro
   return buff;
 }
 
+ConstructionExtensionPtr WarehouseBuff::uniqueTo(WarehousePtr warehouse, int group, float value, int week2finish, const std::string& name)
+{
+  if( !warehouse.isValid() )
+    return ConstructionExtensionPtr();
+
+  ConstructionExtensionPtr ret = warehouse->getExtension( name );
+  if( ret.isValid() )
+    return ret;
+
+  auto buff = new WarehouseBuff();
+  buff->_options[ "value" ] = value;
+  buff->_options[ "group" ] = group;
+  buff->_name = name;
+  buff->_finishDate = game::Date::current();
+  buff->_finishDate.appendWeek( week2finish );
+
+  warehouse->addExtension( buff );
+  buff->drop(); //automatic delete
+
+  return buff;
+}
+
 void WarehouseBuff::timeStep(ConstructionPtr parent, unsigned int time)
 {
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string WarehouseBuff::type() const {  return CAESARIA_STR_EXT(WarehouseBuff); }
+std::string WarehouseBuff::type() const {  return TEXT(WarehouseBuff); }
 float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
 int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
 
@@ -256,9 +315,9 @@ ConstructionExtensionPtr ConstructionParamUpdater::create()
   return ret;
 }
 
-ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, int paramName, bool relative, int value, int week2finish)
+ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, Param paramName, bool relative, int value, int week2finish)
 {
-  ConstructionParamUpdater* buff = new ConstructionParamUpdater();
+  auto buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;
@@ -283,20 +342,20 @@ void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int tim
     {
       int value = _options[ "value" ];
       int finishValue = _options[ "finishValue" ];
-      parent->updateState( _options[ "param" ], value );
+      parent->updateState( Param( _options[ "param" ].toInt() ), value );
       finishValue += value;
     }
   }
 }
 
-std::string ConstructionParamUpdater::type() const { return CAESARIA_STR_EXT(ConstructionParamUpdater); }
+std::string ConstructionParamUpdater::type() const { return TEXT(ConstructionParamUpdater); }
 
 void ConstructionParamUpdater::destroy(ConstructionPtr parent)
 {
   if( parent.isValid() )
   {
     int finishValue = _options[ "finishValue" ];
-    parent->updateState( _options[ "param" ], -finishValue );
+    parent->updateState( Param( _options[ "param" ].toInt() ), -finishValue );
   }
 }
 

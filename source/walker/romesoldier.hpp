@@ -23,9 +23,8 @@
 
 class RomeSoldier : public Soldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:  
-  static RomeSoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
-
   void send2city(FortPtr base, TilePos pos);
   void send2expedition(const std::string& name);
 
@@ -35,6 +34,7 @@ public:
   virtual void send2patrol();  
 
   virtual void save(VariantMap &stream) const;
+  virtual Gender gender() const;
   virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 
@@ -51,13 +51,13 @@ protected:
   virtual void _back2base();
   virtual void _duckout();
 
-  void _init( constants::walker::Type type );
+  void _init( walker::Type type );
 
   virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual ConstructionList _findContructionsInRange(unsigned int range);
 
   Pathway _findPathway2NearestEnemy(unsigned int range);
-  RomeSoldier(PlayerCityPtr city, constants::walker::Type type);
+  RomeSoldier(PlayerCityPtr city, walker::Type type);
 
 private:
   class Impl;

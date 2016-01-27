@@ -16,66 +16,46 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_factory.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "city/migration.hpp"
-#include "cityservice_workershire.hpp"
+#include "city/city.hpp"
 #include "cityservice_timers.hpp"
-#include "cityservice_prosperity.hpp"
-#include "cityservice_religion.hpp"
-#include "cityservice_festival.hpp"
-#include "cityservice_roads.hpp"
-#include "cityservice_fishplace.hpp"
-#include "cityservice_shoreline.hpp"
-#include "cityservice_info.hpp"
-#include "migration.hpp"
-#include "requestdispatcher.hpp"
-#include "cityservice_disorder.hpp"
-#include "cityservice_animals.hpp"
-#include "cityservice_culture.hpp"
-#include "health_updater.hpp"
-#include "desirability_updater.hpp"
-#include "cityservice_military.hpp"
-#include "cityservice_health.hpp"
-#include "goods_updater.hpp"
-#include "service_updater.hpp"
 
 namespace city
 {
 
+typedef SmartList<ServiceCreator> Creators;
+
 class ServiceFactory::Impl
 {
 public:
-  typedef std::vector< ServiceCreatorPtr > Creators;
   Creators creators;
+
+  ServiceCreatorPtr find( const std::string& name )
+  {
+    auto it = std::find_if(creators.begin(),
+                           creators.end(),
+                           [name](ServiceCreatorPtr a) { return a->serviceName() == name; } );
+    return it != creators.end() ? *it : ServiceCreatorPtr();
+  }
 };
 
 SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
 {
-  std::string::size_type sharpPos = name.find( "#" );
-  std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
+  auto sharpPos = name.find( "#" );
+  const std::string serviceTypename = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
-  Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
+  Logger::warning( "CityServiceFactory: try find creator for service " + serviceTypename );
 
-  ServiceFactory& inst = instance();
-  foreach( it, inst._d->creators )
+  auto creator = instance()._d->find( serviceTypename );
+  if( creator.isValid() )
   {
-    if( srvcType == (*it)->serviceName() )
-    {
-      city::SrvcPtr srvc = (*it)->create( city );
-      srvc->setName( name );
-      return srvc;
-    }
+    city::SrvcPtr srvc = creator->create( city );
+    srvc->setName( name );
+    return srvc;
   }
 
   Logger::warning( "CityServiceFactory: not found creator for service " + name );
   return SrvcPtr();
-}
-
-ServiceFactory& ServiceFactory::instance()
-{
-  static city::ServiceFactory inst;
-  return inst;
 }
 
 void ServiceFactory::addCreator( ServiceCreatorPtr creator )
@@ -83,39 +63,24 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
   if( creator.isNull() )
     return;
 
-  foreach( it, _d->creators )
+  auto found = _d->find( creator->serviceName() );
+
+  if( found.isValid() )
   {
-    if( creator->serviceName() == (*it)->serviceName() )
-    {
-      Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
-      return;
-    }
+    Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
+    return;
   }
 
   _d->creators.push_back( creator );
 }
 
+ServiceFactory::~ServiceFactory()
+{
+
+}
+
 ServiceFactory::ServiceFactory() : _d( new Impl )
 {
-  addCreator<Migration>();
-  addCreator<WorkersHire>();
-  addCreator<ProsperityRating>();
-  addCreator<Shoreline>();
-  addCreator<Info>();
-  addCreator<CultureRating>();
-  addCreator<Animals>();
-  addCreator<Religion>();
-  addCreator<Festival>();
-  addCreator<Roads>();
-  addCreator<Fishery>();
-  addCreator<Disorder>();
-  addCreator<request::Dispatcher>();
-  addCreator<HealthUpdater>();
-  addCreator<DesirabilityUpdater>();
-  addCreator<Military>();
-  addCreator<HealthCare>();
-  addCreator<GoodsUpdater>();
-  addCreator<ServiceUpdater>();
 }
 
 }//end namespace city

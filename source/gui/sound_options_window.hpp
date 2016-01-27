@@ -32,21 +32,23 @@ namespace dialog
 class SoundOptions : public Window
 {
 public:
-  SoundOptions( Widget* parent,
-                      int gameSound, int ambientSound, int themeSound );
+  typedef enum { applyId=1001, closeId } BtnID;
+  SoundOptions( Widget* parent );
 
-  //! Деструктор
+  //! Destructor
   virtual ~SoundOptions(void);
 
-  virtual bool onEvent(const NEvent &event);
 
 public signals:
-  Signal2<audio::SoundType, int >& onSoundChange();
+  Signal2<audio::SoundType,audio::Volume>& onChange();
+  Signal0<>& onApply();
   Signal0<>& onClose();
 
-private:
-  void _update();
+public slots:
+  void update(audio::SoundType type, audio::Volume value );
 
+private:
+  virtual bool _onButtonClicked(Widget *sender);
   class Impl;
   ScopedPtr< Impl > _d;
 };

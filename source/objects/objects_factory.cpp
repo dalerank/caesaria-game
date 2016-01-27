@@ -21,18 +21,17 @@
 #include "core/logger.hpp"
 #include <map>
 
-using namespace constants;
 using namespace gfx;
 
 class TileOverlayFactory::Impl
 {
 public:
-  typedef std::map< TileOverlay::Type, TileOverlayConstructor* > Constructors;
-  std::map< std::string, TileOverlay::Type > name2typeMap;
+  typedef std::map< object::Type, TileOverlayConstructor* > Constructors;
+  std::map< std::string, object::Type > name2typeMap;
   Constructors constructors;
 };
 
-TileOverlayPtr TileOverlayFactory::create(const TileOverlay::Type type) const
+OverlayPtr TileOverlayFactory::create(const object::Type type) const
 {
   Impl::Constructors::iterator findConstructor = _d->constructors.find( type );
 
@@ -41,12 +40,12 @@ TileOverlayPtr TileOverlayFactory::create(const TileOverlay::Type type) const
     return findConstructor->second->create();
   }
 
-  return TileOverlayPtr();
+  return OverlayPtr();
 }
 
-TileOverlayPtr TileOverlayFactory::create( const std::string& typeName ) const
+OverlayPtr TileOverlayFactory::create( const std::string& typeName ) const
 {
-  return TileOverlayPtr();
+  return OverlayPtr();
 }
 
 TileOverlayFactory& TileOverlayFactory::instance()
@@ -59,7 +58,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 {
 }
 
-void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )
+void TileOverlayFactory::addCreator( const object::Type type, const std::string& typeName, TileOverlayConstructor* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
 
@@ -70,11 +69,11 @@ void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::st
   }
   else
   {
-    Logger::warning( "TileOverlayFactory already have constructor for %s", typeName.c_str() );
+    Logger::warning( "TileOverlayFactory already have constructor for {0}", typeName );
   }
 }
 
-bool TileOverlayFactory::canCreate( const TileOverlay::Type type ) const
+bool TileOverlayFactory::canCreate( const object::Type type ) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

@@ -20,97 +20,6 @@
 #include "vfs/entries.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
-
-#ifdef CAESARIA_PLATFORM_WIN
-
-#include <string>
-#include <windows.h>
-#include <psapi.h>
-
-namespace updater
-{
-
-bool Util::caesariaIsRunning()
-{
-	DWORD processes[1024];
-	DWORD num;
-
-	if (!EnumProcesses(processes, sizeof(processes), &num))
-	{
-		return false;
-	}
-
-	// Iterate over the processes
-	for (int i = 0; i < int(num/sizeof(DWORD)); i++)
-	{
-		char szProcessName[MAX_PATH] = "unknown";
-
-		// Get the handle for this process
-		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, processes[i]);
-
-		if (hProcess)
-		{
-			HMODULE hMod;
-			DWORD countBytes;
-
-			if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes))
-			{
-				GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
-
-				std::string processName(szProcessName);
-
-				// grayman - This was checking for "Doom3.exe". Starting with 1.08, the D3
-				// executable is no longer needed to run TDM, so we'll check for TheDarkMod.exe
-				// instead.
-
-				if (processName == "TheDarkMod.exe")
-				{
-					// At this point, we know we need to quit. There's no longer a need
-					// to check for "gamex86.dll".
-
-/*					HMODULE hModules[1024];
-					DWORD cbNeeded;
-
-					if (EnumProcessModules(hProcess, hModules, sizeof(hModules), &cbNeeded))
-					{
-						for (unsigned int m = 0; m < (cbNeeded / sizeof(HMODULE)); m++)
-						{
-							TCHAR szModName[MAX_PATH];
-
-							// Get the full path to the module's file.
-							if (GetModuleBaseName(hProcess, hModules[m], szModName, sizeof(szModName)/sizeof(TCHAR)))
-							{
-								// Print the module name and handle value.
-								if (std::string(szModName) == "gamex86.dll")
-								{
-									CloseHandle(hProcess); // close the handle, we're terminating
-
-									return true;
-								}
-							}
-						}
-					}
- */
-					// instead, quit
-
-					CloseHandle(hProcess); // close the handle, we're terminating
-
-					return true;
-				}
-			}
-		}
-
-		CloseHandle(hProcess);
-	}
-
-	return false;
-}
-    
-} // namespace
-
-#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
-// Linux implementation
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -118,58 +27,113 @@ bool Util::caesariaIsRunning()
 namespace updater
 {
 
-namespace
+#ifdef GAME_PLATFORM_WIN
+
+#include <string>
+#include <windows.h>
+#include <psapi.h>
+
+bool Util::caesariaIsRunning()
 {
-	const std::string systemProcFolder("/proc/");
-	const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
+  DWORD processes[1024];
+  DWORD num;
 
-	bool CheckProcessFile(const std::string& name, const std::string& processName)
-	{
-		// Try to cast the filename to an integer number (=PID)
-		try
-		{
-			unsigned long pid = utils::toUint( name );
-		
-			// Was the PID read correctly?
-			if (pid == 0)
-			{
-				return false;
-			}
-			
-			const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
-			
-			std::ifstream cmdLineFile(cmdLineFileName.c_str());
+  bool haveInfoAboutProcesses = EnumProcesses(processes, sizeof(processes), &num);
+  if( !haveInfoAboutProcesses )
+  {
+    return false;
+  }
 
-			if (cmdLineFile.is_open())
-			{
-				// Read the command line from the process file
-				std::string cmdLine;
-				getline(cmdLineFile, cmdLine);
-				
-				if (cmdLine.find(processName) != std::string::npos)
-				{
-					// Process found, return success
-					return true;
-				}
-			}
-			
-			// Close the file
-			cmdLineFile.close();
-		}
-		catch( ... )
-		{
-			// Cast to int failed, no PID
-		}
+  // Iterate over the processes
+  for (int i = 0; i < int(num/sizeof(DWORD)); i++)
+  {
+    char szProcessName[MAX_PATH] = "unknown";
 
-		return false;
-	}
+    // Get the handle for this process
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, processes[i]);
 
-} // namespace
+    if( hProcess )
+    {
+      HMODULE hMod;
+      DWORD countBytes;
+
+      bool haveInfoAboutProcess = EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes);
+      if( haveInfoAboutProcess )
+      {
+        GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
+
+        std::string processName(szProcessName);
+
+        // grayman - This was checking for "Doom3.exe". Starting with 1.08, the D3
+        // executable is no longer needed to run TDM, so we'll check for TheDarkMod.exe
+        // instead.
+
+        if (processName == "caesaria.exe")
+        {
+            // At this point, we know we need to quit. There's no longer a need
+          CloseHandle(hProcess); // close the handle, we're terminating
+          return true;
+        }
+      }
+    }
+
+    CloseHandle(hProcess);
+  }
+
+  return false;
+}
+    
+#elif defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_HAIKU)
+// Linux implementation
+
+const std::string systemProcFolder("/proc/");
+const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
+
+bool CheckProcessFile(const std::string& name, const std::string& processName)
+{
+  // Try to cast the filename to an integer number (=PID)
+  try
+  {
+    unsigned long pid = utils::toUint( name );
+
+    // Was the PID read correctly?
+    if (pid == 0)
+    {
+      return false;
+    }
+
+    const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
+
+    std::ifstream cmdLineFile(cmdLineFileName.c_str());
+
+    if (cmdLineFile.is_open())
+    {
+      // Read the command line from the process file
+      std::string cmdLine;
+      getline(cmdLineFile, cmdLine);
+
+      if (cmdLine.find(processName) != std::string::npos)
+      {
+        // Process found, return success
+        return true;
+      }
+    }
+
+    // Close the file
+    cmdLineFile.close();
+  }
+  catch( ... )
+  {
+    // Cast to int failed, no PID
+  }
+
+  return false;
+}
 
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
-  vfs::Entries procs = vfs::Directory(systemProcFolder).getEntries();
+  vfs::Entries procs = vfs::Directory(systemProcFolder).entries();
 
   foreach( i, procs )
   {
@@ -178,13 +142,11 @@ bool Util::caesariaIsRunning()
       return true;
     }
   }
-	
+
   return false;
 }
 
-} // namespace
-
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
 // Mac OS X
 #include <assert.h>
 #include <errno.h>
@@ -193,9 +155,6 @@ bool Util::caesariaIsRunning()
 #include <stdio.h>
 #include "core/logger.hpp"
 #include <sys/sysctl.h>
-
-namespace updater
-{
 
 // greebo: Checks for a named process, modeled loosely after
 // http://developer.apple.com/library/mac/#qa/qa2001/qa1123.html
@@ -209,11 +168,11 @@ bool FindProcessByName(const char* processName)
 	
 	if (err == -1)
 	{
-        Logger::warning("Failed to receive buffer size for process list.");
+    Logger::warning("Failed to receive buffer size for process list.");
 		return false;
 	}
 	
-    kinfo_proc* procList = static_cast<kinfo_proc*>(malloc(length));
+  kinfo_proc* procList = static_cast<kinfo_proc*>(malloc(length));
 	
 	if (procList == NULL)
 	{
@@ -248,8 +207,28 @@ bool Util::caesariaIsRunning()
 	return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
 }
 
-} // namespace
-
 #else
 #error Unsupported Platform
 #endif
+
+std::string Util::getHumanReadableBytes(std::size_t size)
+{
+  if (size > GbBts)
+  {
+    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
+  }
+  else if (size > MbBts)
+  {
+    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
+  }
+  else if (size > KbBts)
+  {
+    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
+  }
+  else
+  {
+    return  utils::format( 0xff, "%d bytes", size);
+  }
+}
+
+} //end namespace updater

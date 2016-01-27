@@ -26,7 +26,8 @@ namespace world
 class Barbarian : public Army
 {
 public:
-  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1,-1) );
+  static const Point startLocation;
+  static BarbarianPtr create(EmpirePtr empire, Point location=Point(-1, -1) );
   virtual std::string type() const;
 
   virtual void timeStep( unsigned int time );
@@ -34,7 +35,9 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual void updateStrength( int value );
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
+  virtual std::string about(Object::AboutType type);
+  void setMinpop4attack( int value );
 
 protected:
   virtual bool _isAgressiveArmy(ArmyPtr other) const;

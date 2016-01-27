@@ -15,57 +15,67 @@
 
 #include "event_messagebox.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
 {
 
-EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
-                                  const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
-  : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
+namespace infobox
+{
+
+AboutEvent::AboutEvent( Widget* parent, const std::string& title,
+                        const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
+  : Infobox( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
   setAutoPosition( false );
+  setWindowFlag( fdraggable, false );
 
   setCenter( parent->center() );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
-  _lbTextRef()->setText( message );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
+  _lbText()->setText( message );
 
-  Rect rect = _lbTextRef()->relativeRect();
-  rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
+  Rect rect = _lbText()->relativeRect();
+  rect._bottomright = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, util::date2str( time ) );
-  lbTime->setFont( Font::create( FONT_2_WHITE ) );
+  Label& lbTime = add<Label>( rect, utils::date2str( time, true ) );
+  lbTime.setFont( FONT_2_WHITE );
 
   if( !additional.empty() )
   {
-    Label* lbAdditional = new Label( this, rect + Point( rect.width() / 2, 0 ), additional );
-    lbAdditional->setTextAlignment( align::upperLeft, align::center );
-    lbAdditional->setTextOffset( Point( 30, 0 ) );
+    Label& lbAdditional = add<Label>( rect + Point( rect.width() / 2, 0 ), additional );
+    lbAdditional.setTextAlignment( align::upperLeft, align::center );
+    lbAdditional.setTextOffset( Point( 30, 0 ) );
   }
 
-  _lbTextRef()->setTop( _lbTextRef()->top() + 30 );
+  _lbText()->setTop( _lbText()->top() + 30 );
 
   if( gtype != good::none )
   {
-    Rect rect = _lbTextRef()->relativeRect();
-    _lbTextRef()->move( Point( 0, 30 ) );
+    Rect rect = _lbText()->relativeRect();
+    _lbText()->move( Point( 0, 30 ) );
 
-    rect.LowerRightCorner.setY( rect.top() + 30 );
-    rect.UpperLeftCorner.setX( rect.left() + 40 );
-    Label* goodLabel = new Label( this, rect, good::Helper::getTypeName( gtype ) );
-    goodLabel->setTextAlignment( align::upperLeft, align::center );
-    goodLabel->setTextOffset( Point( 30, 0 ) );
-    goodLabel->setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
-  }    
+    rect.setBottom( rect.top() + 30 );
+    rect.setLeft( rect.left() + 40 );
+
+    good::Info info( gtype );
+    Label& goodLabel = add<Label>( rect, info.name() );
+    goodLabel.setTextAlignment( align::upperLeft, align::center );
+    goodLabel.setTextOffset( Point( 30, 0 ) );
+    goodLabel.setIcon( info.picture(), Point( 0, 7 ) );
+  }
+
+  setModal();
 }
 
-EventMessageBox::~EventMessageBox() {}
+
+AboutEvent::~AboutEvent() {}
+
+}//end namespace infobox
 
 }//end namespace gui

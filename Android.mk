@@ -7,7 +7,7 @@ LOCAL_MODULE := main
 LOCAL_C_INCLUDES := 
 
 # Add your application source files here...
-LOCAL_SRC_FILES := android/libs/SDL/src/main/android/SDL_android_main.c
+LOCAL_SRC_FILES := dep/sdl2mini/src/main/android/SDL_android_main.c
 
 LOCAL_SHARED_LIBRARIES := SDL2 application
 LOCAL_CPP_FEATURES += exceptions

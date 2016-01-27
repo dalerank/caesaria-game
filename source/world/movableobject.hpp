@@ -20,7 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "object.hpp"
-#include "core/variant.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {
@@ -28,18 +28,15 @@ namespace world
 class Route : public PointsArray
 {
 public:
-  size_type step;
+  unsigned int step;
 
-  void reset()
-  {
-    clear();
-    step = 0;
-  }
+  void reset();
 };
 
 class MovableObject : public Object
 {
 public:
+  enum { defaultSpeed=1, defaultViewDistance=40 };
   virtual ~MovableObject();
 
   virtual void save( VariantMap& stream ) const;
@@ -47,7 +44,7 @@ public:
   virtual void setSpeed( float speed );
   virtual void timeStep(const unsigned int time);
   virtual bool isMovable() const { return true; }
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
   virtual const Route& way() const;
 
 protected:

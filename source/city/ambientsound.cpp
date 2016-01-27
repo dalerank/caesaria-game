@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+ // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,25 +18,94 @@
 #include "ambientsound.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "gfx/tilearea.hpp"
 #include "sound/engine.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/utils.hpp"
-#include "gfx/tileoverlay.hpp"
-#include "core/foreach.hpp"
+#include "objects/overlay.hpp"
+#include "config.hpp"
+#include "core/variant_map.hpp"
+#include "core/saveadapter.hpp"
+#include "cityservice_factory.hpp"
+#include "game/settings.hpp"
 
 #include <set>
 
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(AmbientSound,ambient_sound)
+
+struct AmbientEmitter
+{
+  static const int msIntervalBetweenSwitch = 1000;
+  struct Info
+  {
+    StringArray sounds;
+    unsigned int lastAccessTime;
+    int index;
+
+    int nextIndex() const
+    {
+      return (index+1)%sounds.size();
+    }
+
+    Info() : lastAccessTime(0), index(0) {}
+  };
+
+  std::map< Tile::Type, Info > info;
+
+  static AmbientEmitter& instance()
+  {
+    static AmbientEmitter inst;
+    return inst;
+  }
+
+  void initialize( const vfs::Path& filename )
+  {
+    VariantMap types = config::load( filename );
+    for( const auto& rtype : types )
+    {
+      Tile::Type type = gfx::tile::findType( rtype.first );
+      if( type != Tile::tlUnknown )
+      {
+        info[ type ].sounds = rtype.second.toStringArray();
+      }
+    }
+  }
+
+  static std::string sound( Tile::Type tileType, unsigned int time )
+  {
+    AmbientEmitter& ambient = instance();
+    auto it = ambient.info.find( tileType );
+    if( it != ambient.info.end() )
+    {
+      Info& ref = it->second;
+      if( time - ref.lastAccessTime > AmbientEmitter::msIntervalBetweenSwitch )
+      {
+        if( ref.sounds.size() > 0 )
+        {
+          ref.index = ref.nextIndex();
+          ref.lastAccessTime = time;
+          return ref.sounds[ ref.index ];
+        }
+      }
+    }
+
+    return "";
+  }
+};
+
 struct SoundEmitter
 {  
   Tile* tile;
-  TileOverlayPtr overlay;
-  TilePos& camerapos;
+  OverlayPtr overlay;
+  TilePos& cameraPos;
 
-  SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )
+  SoundEmitter( Tile* t, TilePos& cam ) : cameraPos( cam )
   {
     tile = t;
     overlay = t->overlay();
@@ -44,12 +113,13 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->pos().distanceFrom( camerapos )
-             < a.tile->pos().distanceFrom( camerapos ));
+    return ( tile->pos().distanceSqFrom( cameraPos )
+             < a.tile->pos().distanceSqFrom( cameraPos ));
   }
 
-  std::string getSound() const
+  std::string sound( unsigned int time ) const
   {
+    time = DateTime::elapsedTime();
     if( overlay.isValid() )
     {
       return overlay->sound();
@@ -58,7 +128,7 @@ struct SoundEmitter
     {
       if( tile->getFlag( Tile::tlWater ) )
       {
-        return "river_00001.ogg";
+        return "river_00001";
       }
       else if( tile->getFlag( Tile::tlTree ) )
       {
@@ -66,16 +136,21 @@ struct SoundEmitter
       }
       else
       {
-        return utils::format( 0xff, "emptyland_%05d.ogg", (tile->i() * tile->j()) % 3 + 1  );
+        return AmbientEmitter::sound( Tile::tlGrass, time );
       }
     }
 
     return "";
   }
 
-  float getDistance( TilePos p ) const
+  float distance( const TilePos& p ) const
   {
     return tile->pos().distanceFrom( p );
+  }
+
+  float distancef( const Point& p ) const
+  {
+    return tile->mappos().distanceTo( p );
   }
 
   bool isValid() const
@@ -84,36 +159,33 @@ struct SoundEmitter
   }
 };
 
+typedef std::set< SoundEmitter > Emitters;
+typedef std::set< int >  HashSet;
+
 class AmbientSound::Impl
 {
 public:
   Camera* camera;
   TilePos cameraPos;
-
-  typedef std::set< SoundEmitter > Emitters;
-
   Emitters emitters;
+
+  TilesArea emmitersArea;
+  HashSet processedSounds;
 };
-
-SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
-{
-  SrvcPtr p( new AmbientSound( city, camera ) );
-  p->drop();
-
-  return p;
-}
 
 AmbientSound::~AmbientSound() {}
 
-AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
+AmbientSound::AmbientSound(PlayerCityPtr city)
 : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->camera = camera;
+  _d->camera = 0;
+  _d->emmitersArea.reserve( ambientsnd::maxDistance * ambientsnd::maxDistance + 1 );
+  AmbientEmitter::instance().initialize( SETTINGS_RC_PATH(ambientsounds) );
 }
 
 void AmbientSound::timeStep( const unsigned int time )
 {
-  if( time % 20 != 1 )
+  if( time % ambientsnd::updateInterval != 1 )
     return;
 
   if( !_d->camera )
@@ -129,20 +201,19 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilePos offset( 3, 3 );
-  TilesArray tiles = _city()->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  _d->emmitersArea = TilesArea( _city()->tilemap(), ambientsnd::maxDistance, _d->cameraPos );
 
-  foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
+  for( auto tile : _d->emmitersArea )
+    _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
 
   //remove so far emitters
-  for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
+  for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
-    if( abs( distance.i() ) > 3 || abs( distance.j() ) > 3
+    if( abs( distance.i() ) > ambientsnd::maxDistance || abs( distance.j() ) > ambientsnd::maxDistance
         || !(*i).isValid() )
     {
-      //ae.stop( (*i).getSound() );
-      _d->emitters.erase( i++ );
+      i = _d->emitters.erase( i );
     }
     else
     {
@@ -151,22 +222,25 @@ void AmbientSound::timeStep( const unsigned int time )
   }
 
   //create emitters map
-  std::set< std::string > processedSounds;
-  for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
-       i != _d->emitters.rend(); ++i )
-  {
-    std::string sound = i->getSound();
+  _d->processedSounds.clear();
 
-    if( sound.empty() )
+  std::string resourceName;
+  resourceName.reserve(256);
+  for( auto i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
+  {
+    resourceName = i->sound( time );
+
+    if( resourceName.empty() )
       continue;
 
-    std::set< std::string >::const_iterator tIt = processedSounds.find( sound );
+    unsigned int hash = Hash(resourceName);
+    bool alsoResolved = _d->processedSounds.count( hash ) > 0;
 
-    if( tIt == processedSounds.end() )
+    if( !alsoResolved )
     {
-      processedSounds.insert( sound );
+      _d->processedSounds.insert( hash );
 
-      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::ambientSound  );
+      ae.play( resourceName, sound::maxLevel / (ambientsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambient  );
     }
   }
 }
@@ -177,6 +251,11 @@ void AmbientSound::destroy()
   _d->camera = 0;
 }
 
-std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }
+void AmbientSound::setCamera(Camera *camera)
+{
+  _d->camera = camera;
+}
+
+std::string AmbientSound::defaultName() { return TEXT(AmbientSound); }
 
 }//end namespace city
