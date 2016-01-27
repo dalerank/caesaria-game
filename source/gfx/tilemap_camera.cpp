@@ -277,6 +277,17 @@ const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.visible.empty() )
   {
+
+  /*const TilesArray& tl = tmap->svkBorderTiles();
+  Rect viewRect( Point( -config::tilemap.cell.picSize().width(), -config::tilemap.cell.size().height() ),
+                 size.virtuals + config::tilemap.cell.picSize() * 2 );
+  for( auto i : tl )
+  {
+    if( viewRect.isPointInside( i->mappos() + Point( config::tilemap.cell.picSize().width()/2, 0 ) + offset)  )
+    {
+      tiles.ground.push_back( i );
+    }
+  }*/
     _d->offset = _d->getOffset( _d->centerMapXZ );    
 
     int mapSize = _d->tmap->size();
@@ -308,6 +319,12 @@ const TilesArray& TilemapCamera::tiles() const
         if( (i >= 0) && (j >= 0) && (i < mapSize) && (j < mapSize) )
         {
           _d->tiles.visible.push_back( tile );
+        }
+        else
+        {
+          Tile* dtile = _d->tmap->svk_at( i, j );
+          if( dtile )
+            _d->tiles.visible.push_back( dtile );
         }
 
         Tile* master = tile->master();
@@ -393,18 +410,7 @@ void TilemapCamera::Impl::updateFlatTiles()
       tile->setRendered();
       tiles.flat.push_back( tile );
     }
-  }
-
-  const TilesArray& tl = tmap->svkBorderTiles();
-  Rect viewRect( Point( -config::tilemap.cell.picSize().width(), -config::tilemap.cell.size().height() ),
-                 size.virtuals + config::tilemap.cell.picSize() * 2 );
-  for( auto i : tl )
-  {
-    if( viewRect.isPointInside( i->mappos() + Point( config::tilemap.cell.picSize().width()/2, 0 ) + offset)  )
-    {
-      tiles.ground.push_back( i );
-    }
-  }
+  }  
 }
 
 Point TilemapCamera::offset() const{  return _d->offset;}

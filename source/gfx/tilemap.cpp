@@ -24,6 +24,7 @@
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
@@ -157,16 +158,29 @@ TilesArray Tilemap::allTiles() const
 const TilesArray& Tilemap::border() const { return _d->mapBorder; }
 const TilesArray& Tilemap::svkBorderTiles() const { return _d->svkBorder; }
 
-void Tilemap::addSvkBorder()
+int findSvkBorderIndex( const std::string& basicCoastName, const VariantMap& items )
 {
-  if( !_d->svkBorder.empty() )
-    return;
+  int limiterIndex = basicCoastName.find( "_" );
+  std::string str = basicCoastName.substr( limiterIndex+1 );
+
+  return items.get( str ).toInt();
+}
+
+void Tilemap::addSvkBorder()
+{  
+  _d->svkBorder.clear();
 
   Rect r;
   r.addInternalPoint( Tile( TilePos(-1, -1) ).mappos() );
   r.addInternalPoint( Tile( TilePos(0, _d->size+1) ).mappos() );
   r.addInternalPoint( Tile( TilePos(_d->size+1, _d->size+1) ).mappos() );
   r.addInternalPoint( Tile( TilePos(_d->size+1, 0) ).mappos() );
+
+  VariantMap bordermaps = config::load( ":/svk_borders.model" );
+  VariantMap coast_west = bordermaps.get( "coast_west" ).toMap();
+  VariantMap coast_north = bordermaps.get( "coast_north" ).toMap();
+  VariantMap coast_south = bordermaps.get( "coast_south" ).toMap();
+  VariantMap coast_east = bordermaps.get( "coast_east" ).toMap();
 
   for( int u=0; u < _d->size/2; u++ )
   {
@@ -190,31 +204,58 @@ void Tilemap::addSvkBorder()
           switch( idx )
           {
           case 0:
-            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_west ) );
+            else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
             else if( tile.terrain().water ) pic.load( "land1a", 120 );
             else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+          break;
+
+          default: pic = Picture::getInvalid(); break;
 
           case 1:
-            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_south ) );
+            else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
             else if( tile.terrain().water ) pic.load( "land1a", 120 );
             else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+          break;
 
           case 2:
-            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_north ) );
+            else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
             else if( tile.terrain().water ) pic.load( "land1a", 120 );
             else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+          break;
 
           case 3:
-            if( tile.terrain().coast ) pic.load( "land1a", 128 );
+            if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_east )  );
+            else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
             else if( tile.terrain().water ) pic.load( "land1a", 120 );
             else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+          break;
           }
+
+          if( pic.height() > config::tilemap.cell.picSize().height() )
+            _d->svkBorder.back()->setFlag( Tile::tlTree, true );
 
           _d->svkBorder.back()->setPicture( pic );
         }
       }
     }
+    }
+}
+
+Tile* Tilemap::svk_at(int i, int j) const
+{
+  TilePos tpos( i, j );
+  for( auto i : _d->svkBorder )
+  {
+    if( i->pos() == tpos )
+    {
+      return i;
+    }
   }
+
+  return nullptr;
 }
 
 int Tilemap::size() const { return _d->size; }

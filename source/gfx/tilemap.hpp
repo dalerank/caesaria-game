@@ -54,6 +54,7 @@ public:
 
   const TilesArray& svkBorderTiles() const;
   void addSvkBorder();
+  Tile* svk_at( int i, int j ) const;
 
   // returns all tiles on a rectangular perimeter
   // (i1, j1) : left corner of the rectangle (minI, minJ)
