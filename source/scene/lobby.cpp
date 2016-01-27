@@ -149,6 +149,9 @@ void Lobby::Impl::showLogFile()
 {
   vfs::Directory logfile = SETTINGS_STR( workDir );
   logfile = logfile/SETTINGS_STR( logfile );
+  if( !logfile.exist() )
+      dialog::Information( &ui(), "", "Cant found logfile");
+
   OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
 }
 
@@ -156,6 +159,7 @@ void Lobby::Impl::showChanges()
 {
   SETTINGS_SET_VALUE(showLastChanges, true);
   SETTINGS_SET_VALUE(lastChangesNumber, 0 );
+  internal::wasChangesShow = false;
   showChangesWindowIfNeed();
 }
 

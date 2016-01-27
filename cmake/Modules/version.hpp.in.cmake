@@ -19,6 +19,6 @@
 #define GAME_VERSION_MAJOR 0
 #define GAME_VERSION_MINOR 5
 #define GAME_VERSION_REVSN @rev_number@
-#define GAME_BUILD_NUMBER  72
+#define GAME_BUILD_NUMBER  73
 
 #endif
