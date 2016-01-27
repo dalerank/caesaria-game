@@ -548,6 +548,11 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ cutForest2timber ] = !value;
     _d->options[ ironInRocks      ] = !value;
   }
+
+  if( opt == svkBorderEnabled )
+  {
+    _d->tilemap.setSvkBorderEnabled( value );
+  }
 }
 
 int PlayerCity::prosperity() const

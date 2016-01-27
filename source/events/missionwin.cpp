@@ -36,4 +36,21 @@ void MissionWin::_exec(Game& game, unsigned int) {}
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
 MissionWin::MissionWin( const std::string& name ) : _name( name ) {}
+
+GameEventPtr MissionLose::create(const std::string& name)
+{
+#ifdef CAESARIA_USE_STEAM
+  steamapi::missionLose( name );
+#endif
+
+  GameEventPtr ret( new MissionLose( name ) );
+  ret->drop();
+
+  return ret;
+}
+
+void MissionLose::_exec(Game& game, unsigned int) {}
+bool MissionLose::_mayExec(Game&, unsigned int) const{  return true; }
+
+MissionLose::MissionLose( const std::string& name ) : _name( name ) {}
 }

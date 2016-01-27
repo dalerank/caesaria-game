@@ -71,6 +71,8 @@
       btnForestGrow#OptionButton      : { base : "city_forest_grow",states: { off:0, on:1 },  link : [ "city", "forestGrow" ] }
       btnClaypitCollapse#OptionButton:{base:"city_claypit_collapse",states:{off:0,on:1 }, link : [ "city", "claypitMayCollapse" ] }
       btnMinesCollapse#OptionButton:{base:"city_mines_collapse",states:{off:0,on:1 }, link : [ "city", "minesMayCollapse" ] }
+      btnDrawSvkBorder#OptionButton:{base:"draw_svk_border",states:{off:0,on:1 }, link : [ "city", "svkBorderEnabled" ] }
+
 
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }

@@ -93,6 +93,7 @@ public:
   PlayerCityPtr city;
   Picture tilePosText;
   Tile* currentTile;
+  int sizeMap;
   Picture outline;
   Camera* camera;
   Font debugFont;
@@ -296,6 +297,11 @@ void Layer::drawPass( const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 void Layer::drawWalkers( const RenderInfo& rinfo, const Tile& tile)
 {
   Pictures pics;
+  if( tile.epos().i() < 0 || tile.epos().j() < 0
+      || tile.epos().i() >= _dfunc()->sizeMap
+      || tile.epos().j() >= _dfunc()->sizeMap )
+    return;
+
   const WalkerList& walkers = _city()->walkers( tile.epos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
@@ -706,6 +712,7 @@ Layer::Layer(Camera* camera, PlayerCityPtr city )
   _d.camera = camera;
   _d.greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
   _d.city = city;
+  _d.sizeMap = city->tilemap().size();
   _d.debugFont = Font::create( FONT_1_WHITE );
   _d.currentTile = 0;
   _d.posMode = 0;

@@ -669,6 +669,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 
       window.moveTo( Widget::parentCenter );
       window.setModal();
+
+      events::dispatch<MissionLose>( pcity->victoryConditions().name() );
     }
   }
 }

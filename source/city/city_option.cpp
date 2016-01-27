@@ -63,6 +63,8 @@ public:
     _O(soldiersHaveSalary)
     _O(housePersonalTaxes)
     _O(cutForest2timber)
+    _O(ironInRocks)
+    _O(svkBorderEnabled)
 #undef _O
   }
 };
@@ -96,6 +98,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::housePersonalTaxes, 1);
   resetIfNot( PlayerCity::cutForest2timber, 1 );
   resetIfNot( PlayerCity::ironInRocks, 1 );
+  resetIfNot( PlayerCity::svkBorderEnabled, 1 );
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 
