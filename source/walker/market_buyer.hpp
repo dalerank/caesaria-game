@@ -22,7 +22,7 @@
 #include "objects/warehouse.hpp"
 
 /** This is the market lady buying goods at granaries and warehouses */
-class MarketBuyer : public Human
+class MarketBuyer : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

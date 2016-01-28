@@ -433,8 +433,8 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
   if( !houses.empty() )
   {
     int number = math::random( houses.size() );
-    HouseList randHouses = houses.random( number );
-    for( auto house : randHouses )
+    HouseList randomHouses = houses.random( number );
+    for( auto house : randomHouses )
     {
       ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
       if( emigrant.isValid() )

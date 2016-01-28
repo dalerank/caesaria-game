@@ -69,6 +69,9 @@ public:
                          const TilePos& start=TilePos::invalid(),
                          const TilePos& stop=TilePos::invalid() ) const;
 
+    template<class T>
+    SmartList< T > random( int numner ) const;
+
     template< class T >
     int count( TilePos start=TilePos::invalid(),
                TilePos stop=TilePos::invalid() ) const;
@@ -413,6 +416,12 @@ SmartList<T> Statistic::_Walkers::find(walker::Type type, int radius, const Tile
 {
   TilePos offset( radius, radius);
   return find<T>( type, pos - offset, pos + offset );
+}
+
+template< class T >
+SmartList<T> Statistic::_Walkers::random(int number) const
+{
+  return find<T>().random( number );
 }
 
 template< class T >

@@ -39,3 +39,9 @@ void Human::_initHumabOptions()
 }
 
 Human::~Human() {}
+
+Citizen::Citizen(PlayerCityPtr city)
+  : Human( city )
+{
+
+}

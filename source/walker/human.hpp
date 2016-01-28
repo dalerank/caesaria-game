@@ -32,4 +32,10 @@ protected:
   void _initHumabOptions();
 };
 
+class Citizen : public Human
+{
+public:
+  Citizen( PlayerCityPtr city );
+};
+
 #endif //_CAESARIA_WALKER_H_INCLUDE_
