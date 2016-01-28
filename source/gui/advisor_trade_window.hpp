@@ -32,7 +32,7 @@ namespace advisorwnd
 class Trade : public Base
 {
 public:
-  Trade( Widget* parent, PlayerCityPtr city, int id );
+  Trade( Widget* parent, PlayerCityPtr city );
   virtual void draw( gfx::Engine& painter );
 
 private:

@@ -33,7 +33,7 @@ class Population : public Base
 {
   __DECLARE_IMPL(Population)
 public:
-  Population( PlayerCityPtr city, Widget* parent, int id );
+  Population( PlayerCityPtr city, Widget* parent );
   virtual void draw( gfx::Engine& painter );
 };
 

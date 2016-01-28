@@ -29,7 +29,7 @@ namespace advisorwnd
 class Employer : public Base
 {
 public:
-  Employer( PlayerCityPtr city, Widget* parent, int id );
+  Employer( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
   virtual bool onEvent(const NEvent &event);

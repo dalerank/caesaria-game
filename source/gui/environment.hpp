@@ -35,6 +35,19 @@ public:
     return *widget;
   }
 
+  template<typename WidgetClass>
+  WidgetClass* findWidget()
+  {
+    for( auto widget : children() )
+    {
+      WidgetClass* ret = safety_cast<WidgetClass*>( widget );
+      if( ret )
+        return ret;
+    }
+
+    return nullptr;
+  }
+
   typedef enum { showTooltips=0, drawDebugArea } Flag;
   Ui( gfx::Engine& painter );
 

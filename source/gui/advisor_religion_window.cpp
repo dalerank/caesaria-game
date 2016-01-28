@@ -79,8 +79,9 @@ public:
 };
 
 
-Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 280 ), "", id ), __INIT_IMPL(Religion)
+Religion::Religion(PlayerCityPtr city, Widget* parent)
+: Base( parent, city, advisor::religion, Rect( 0, 0, 640, 280 ) ),
+  __INIT_IMPL(Religion)
 {
   __D_REF(d,Religion)
   setupUI( ":/gui/religionadv.gui" );

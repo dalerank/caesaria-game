@@ -66,6 +66,7 @@ class ParlorModel
 {
 public:
   ParlorModel( PlayerCityPtr city );
+
   void setParent( Widget* parlor );
   Parlor::Items items();
 

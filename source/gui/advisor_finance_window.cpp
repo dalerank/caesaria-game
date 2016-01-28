@@ -88,8 +88,8 @@ public:
 
 
 
-Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
-  : Base( parent, city, id ), _d( new Impl )
+Finance::Finance(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::finance ), _d( new Impl )
 {
   setupUI( ":/gui/financeadv.gui" );
 

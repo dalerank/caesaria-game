@@ -113,7 +113,6 @@ public:
   void drawStatic( Engine& painter );
   void drawTradeRoutes( Engine& painter );
   void drawMovable( Engine& painter );
-  void showTradeAdvisorWindow();
   void initBorder(Widget* p);
   void drawLines( Engine& painter );
   void drawDebugTiles( Engine& painter );
@@ -291,9 +290,10 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   }
 }
 
-void EmpireMapWindow::Impl::showTradeAdvisorWindow()
+void EmpireMapWindow::_showTradeAdvisor()
 {
   events::dispatch<ShowAdvisorWindow>( true, advisor::trading );
+  deleteLater();
 }
 
 void EmpireMapWindow::Impl::initBorder( Widget* p )
@@ -576,8 +576,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, gbox )
   if( _d->gbox ) _d->gbox->sendToBack();
 
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnTrade, onClicked(), EmpireMapWindow::deleteLater )
-  LINK_WIDGET_ACTION( PushButton*, btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnTrade, onClicked(), EmpireMapWindow::_showTradeAdvisor )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnAi, onClicked(), EmpireMapWindow::_toggleAi )
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )

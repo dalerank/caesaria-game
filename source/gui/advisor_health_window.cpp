@@ -165,13 +165,11 @@ private:
   Pictures border;
 };
 
-Health::Health(PlayerCityPtr city, Widget* parent, int id )
-  : Window( parent, Rect( 0, 0, 640, 290 ), "", id )
+Health::Health(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::health, Rect( 0, 0, 640, 290 ) )
 {
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
-
-  _city = city;
 
   _initUI();
   _updateAdvice();
