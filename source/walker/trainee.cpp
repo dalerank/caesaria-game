@@ -46,7 +46,7 @@ public:
 };
 
 TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
-  : Human( city, traineeType ), _d( new Impl )
+  : Citizen( city, traineeType ), _d( new Impl )
 {
   _d->maxDistance = 30;
   _init( traineeType );

@@ -56,7 +56,7 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Human( city, walker::marketBuyer ), _d( new Impl )
+  : Citizen( city, walker::marketBuyer ), _d( new Impl )
 {
    _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!

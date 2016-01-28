@@ -112,7 +112,9 @@ void Object::load(const VariantMap& stream)
 
   VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
-  _d->nation = world::toNation( stream.get( "nation" ).toString() );
+  Variant vNation = stream.get( "nation" );
+  if( vNation.isValid() )
+    _d->nation = world::toNation( vNation.toString() );
 }
 
 void Object::attach()

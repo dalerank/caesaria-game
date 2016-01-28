@@ -41,7 +41,7 @@ public:
 };
 
 Patrician::Patrician(PlayerCityPtr city )
-  : Human( city, walker::patrician ), _d( new Impl )
+  : Citizen( city, walker::patrician ), _d( new Impl )
 {
 }
 

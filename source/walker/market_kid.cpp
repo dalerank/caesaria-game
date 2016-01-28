@@ -42,7 +42,7 @@ public:
 };
 
 MarketKid::MarketKid(PlayerCityPtr city)
-  : Human( city, walker::marketKid ), _d( new Impl )
+  : Citizen( city, walker::marketKid ), _d( new Impl )
 {
   _d->delay = 0;
 
