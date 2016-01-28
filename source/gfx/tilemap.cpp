@@ -191,14 +191,14 @@ const TilesArray& Tilemap::border() const { return _d->mapBorder; }
 void Tilemap::setSvkBorderEnabled(bool enabled)
 {
   _d->svk.enabled = enabled;
-  if( !enabled )
-    clearSvkBorder();
+  clearSvkBorder();
 }
 
-int findSvkBorderIndex( const std::string& basicCoastName, const VariantMap& items )
+int findSvkBorderIndex( const Tile& tile, const VariantMap& items )
 {
-  int limiterIndex = basicCoastName.find( "_" );
-  std::string str = basicCoastName.substr( limiterIndex+1 );
+  const std::string& name = tile.picture().name();
+  int limiterIndex = name.find( "_" );
+  std::string str = name.substr( limiterIndex+1 );
 
   return items.get( str ).toInt();
 }
@@ -208,7 +208,6 @@ void Tilemap::clearSvkBorder()
   _d->svk.tiles.clear();
   SvkBorderConfig::instance().init();
 }
-
 
 Tile* Tilemap::svk_at(int i, int j) const
 {
@@ -227,9 +226,8 @@ Tile* Tilemap::svk_at(int i, int j) const
   {
     Tile* tl = svk.addTile( tpos, *this, _d->size );
     _d->svk.tiles[ tpos.hash() ] = tl;
+    return tl;
   }
-
-  return nullptr;
 }
 
 int Tilemap::size() const { return _d->size; }
@@ -696,7 +694,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( 0, j );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_west ) );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_west ) );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -706,7 +704,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( i, 0 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_south ) );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_south ) );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -716,7 +714,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( i, size-1 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_north ) );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_north ) );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -726,7 +724,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( size-1, j );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_east )  );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_east )  );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -736,7 +734,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( 0, 0 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_00 )  );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_00 )  );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -746,7 +744,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( 0, 0 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_0x )  );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_0x )  );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -756,7 +754,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( 0, 0 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_xx )  );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_xx )  );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
@@ -766,7 +764,7 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
     const Tile& tile = tmap.at( 0, 0 );
     tl = new Tile( tpos );
 
-    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( pic.name(), coast_x0 )  );
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_x0 )  );
     else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
     else if( tile.terrain().water ) pic.load( "land1a", 120 );
     else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
