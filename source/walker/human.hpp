@@ -36,6 +36,7 @@ class Citizen : public Human
 {
 public:
   Citizen( PlayerCityPtr city );
+  Citizen( PlayerCityPtr city, walker::Type type );
 };
 
 #endif //_CAESARIA_WALKER_H_INCLUDE_

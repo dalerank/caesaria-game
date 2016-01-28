@@ -45,3 +45,9 @@ Citizen::Citizen(PlayerCityPtr city)
 {
 
 }
+
+Citizen::Citizen(PlayerCityPtr city, walker::Type type)
+  : Human( city, type )
+{
+
+}
