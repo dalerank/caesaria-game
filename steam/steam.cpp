@@ -803,7 +803,7 @@ bool available() { return false; }
 bool checkSteamRunning() { return true; }
 bool connect() { return true; }
 void missionWin( const std::string& name ) {}
-void missionLose( const std::string& name )
+void missionLose( const std::string& name ) {}
 void close() {}
 bool isAchievementReached(steamapi::AchievementType) { return true; }
 gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
