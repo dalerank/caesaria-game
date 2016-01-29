@@ -1009,6 +1009,16 @@ std::string ComputerCity::about(Object::AboutType type)
       ret = "";
   break;
 
+  case aboutEmtype:
+    if( nation() == world::nation::roman )
+      return "world_romancity";
+
+    if( tradeType() != EmpireMap::trUnknown )
+      return "world_distantcity";
+
+    return "world_othercity";
+  break;
+
   default:
     ret = "##compcity_unknown_about##";
   }
@@ -1018,30 +1028,6 @@ std::string ComputerCity::about(Object::AboutType type)
 
 unsigned int ComputerCity::tradeType() const { return _d->terrain; }
 int ComputerCity::strength() const { return _d->strength; }
-
-void ComputerCity::_initTextures()
-{
-  std::map<int,std::string> rconfig = { {config::id.empire.otherCity,   "world_othercity" },
-                                        {config::id.empire.distantCity, "world_distantcity" },
-                                        {config::id.empire.romeCity,    "world_roma"} };
-
-  int index = config::id.empire.otherCity;
-  Point offset(7,7);
-  if( nation() == world::nation::roman ) { index = config::id.empire.romeCity; }
-  else
-  {
-    if( tradeType() == EmpireMap::trLand ||
-        tradeType() == EmpireMap::trSea ||
-        tradeType() == EmpireMap::trCity )
-     index = config::id.empire.distantCity;
-     offset = Point();
-  }
-
-  setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().clear();
-  _animation().load( rconfig[ index ] );
-  _animation().addOffset( offset );
-}
 
 void ComputerCity::_resetGoodState(good::Product pr)
 {

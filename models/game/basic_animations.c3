@@ -83,10 +83,5 @@
   fire_small  : { type : 700, rc : "land2a", start : 224, frames : 8, delay : 1, step : 1, offset : [14, 18] }
   fire_middle : { type : 701, rc : "land2a", start : 215, frames : 8, delay : 1, step : 1, offset : [14, 26] }
   fire_big    : { type : 702, rc : "land2a", start : 188, frames : 8, delay : 1, step : 1, offset : [14, 26] }
-  world_ourcity :   {             rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1,                     loop : true }
-  world_roma :      {             rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1, offset : [ 7, -7 ], loop : true }
-  world_army : { rc : "empire_bits", start : 37, frames : 16, delay : 1, step : 1, offset : "center", loop : true }
-  world_barbarian : { rc : "empire_bits", start : 53, frames : 16, delay : 1, step : 1, offset : "center", loop : true }
-  world_playerarmy : { rc : "empire_bits", start : 72, frames : 6, delay : 1, step : 1, offset : "center", loop : true }
 }
 

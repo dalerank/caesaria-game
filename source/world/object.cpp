@@ -35,11 +35,10 @@ class Object::Impl
 {
 public:
   Picture pic;
+  std::string emtype;
   Point location;
   EmpirePtr empire;
   std::string name;
-  Animation animation;
-  Pictures pictures;
   unsigned int time;
   bool isDeleted;
   Nation nation;
@@ -67,32 +66,22 @@ void Object::addObject(ObjectPtr obj)
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
-Picture Object::picture() const { return _d->pic; }
-
-const Pictures& Object::pictures() const
-{
-  _d->animation.update( _d->time++ );
-  _d->pictures[ idxAnimation ] = _d->animation.currentFrame();
-
-  return _d->pictures;
-}
-
-void Object::setPicture(Picture pic)
-{
-  _d->pic = pic;
-  _d->pictures[ idxPicture ] = pic;
-}
-
-bool Object::isMovable() const { return false; }
 Nation Object::nation() const {  return _d->nation; }
-std::string Object::about(Object::AboutType) { return ""; }
 
+std::string Object::about(Object::AboutType type)
+{
+  if( type == aboutEmtype )
+    return _d->emtype;
+
+  return "";
+}
 
 void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
   VARIANT_SAVE_STR_D( stream, _d, name )    
+  VARIANT_SAVE_STR_D( stream, _d, emtype )
   VARIANT_SAVE_CLASS_D( stream, _d, animation )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
@@ -103,14 +92,10 @@ void Object::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANYDEF_D( _d, location, _d->location, stream )
   VARIANT_LOAD_STRDEF_D( _d, name, _d->name, stream )
+  VARIANT_LOAD_STRDEF_D( _d, emtype, "unknown", stream )
 
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
-  std::string picName = stream.get( "picture" ).toString();
-  if( !picName.empty() )
-    setPicture( Picture( picName )  );
-
-  VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
   Variant vNation = stream.get( "nation" );
   if( vNation.isValid() )
@@ -131,12 +116,11 @@ Object::Object(EmpirePtr empire) : _d( new Impl )
   _d->nation = nation::unknown;
   _d->empire = empire;
   _d->pictures.resize( 2 );
+  _d->emtype = "unknown";
   _d->isDeleted = false;
 }
 
 void Object::deleteLater() { _d->isDeleted = true; }
 void Object::_setNation(Nation nation) { _d->nation = nation; }
-Animation& Object::_animation() { return _d->animation; }
-Pictures&  Object::_pictures()  { return _d->pictures; }
 
 }//end namespace world

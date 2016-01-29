@@ -16,16 +16,13 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "rome.hpp"
-#include "empire.hpp"
-#include "good/storage.hpp"
-#include "game/funds.hpp"
-#include "events/showinfobox.hpp"
-#include "game/gamedate.hpp"
-#include "barbarian.hpp"
-#include "goodcaravan.hpp"
-#include "core/gettext.hpp"
-#include "game/player.hpp"
-#include "city/states.hpp"
+#include <GameWorld>
+#include <GameGood>
+#include <GameEvents>
+#include <GameApp>
+#include <GameObjects>
+#include <GameCore>
+#include <GameCity>
 
 using namespace events;
 
@@ -76,9 +73,15 @@ econ::Treasury& Rome::treasury() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
 bool Rome::isPaysTaxes() const { return true; }
-
-std::string Rome::about(Object::AboutType type) { return "##empiremap_capital##"; }
 const city::States& Rome::states() const { return _d->states; }
+
+std::string Rome::about(Object::AboutType type)
+{
+  if( type == aboutEmtype )
+    "world_romancapital";
+
+  return "##empiremap_capital##";
+}
 
 void Rome::timeStep(const unsigned int time)
 {
@@ -124,7 +127,7 @@ void Rome::load(const VariantMap& stream)
   City::load( stream );
   _animation().clear();
   _animation().load( "world_roma" );
-  _animation().addOffset( {-4,7});
+  _animation().addOffset( {-4,7} );
 }
 
 DateTime Rome::lastAttack() const { return _d->lastAttack; }

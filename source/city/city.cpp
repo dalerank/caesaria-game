@@ -162,8 +162,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   _d->services.initialize( this, ":/services.model" );
 
-  setPicture( Picture( ResourceGroup::empirebits, 1 ) );
-
   setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
@@ -198,6 +196,7 @@ std::string PlayerCity::about(Object::AboutType type)
   {
   case aboutEmpireMap: ret = "##empiremap_our_city##";     break;
   case aboutEmpireAdvInfo: ret = "##empiremap_our_city##"; break;
+  case aboutEmtype: ret = "world_ourcity"; break;
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 
