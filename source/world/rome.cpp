@@ -122,7 +122,9 @@ void Rome::addObject(ObjectPtr obj)
 void Rome::load(const VariantMap& stream)
 {
   City::load( stream );
+  _animation().clear();
   _animation().load( "world_roma" );
+  _animation().addOffset( {-4,7});
 }
 
 DateTime Rome::lastAttack() const { return _d->lastAttack; }

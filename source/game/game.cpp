@@ -708,7 +708,7 @@ void Game::clear()
 
 void Game::destroy()
 {
-  audio::Engine::instance().exit();
+  //audio::Engine::instance().exit();
 }
 
 void Game::setNextScreen(ScreenType screen) { _dfunc()->nextScreen = screen;}
