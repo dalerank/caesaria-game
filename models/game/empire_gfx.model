@@ -62,8 +62,21 @@
   world_playerarmy : {
     animation : { rc : "empire_bits", start : 72,  frames : 6,  delay : 1,  step : 1, offset : "center",  loop : true }
   }
+
   world_ourcity : {
     pictures : [ ["empire_bits",1] ]
     animation : { rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1,                     loop : true }
+  }
+
+  world_merchantsea : {
+    pictures : [ ["empire_bits",69] ]
+  }
+
+  world_merchantland : {
+    pictures : [ ["empire_bits",70] ]
+  }
+
+  world_goodcaravan : {
+    pictures : [ ["empire_panels", 25] ]
   }
 }

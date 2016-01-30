@@ -132,7 +132,7 @@ bool Reservoir::build( const city::AreaInfo& info )
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::CheckCorners );
 
   return perimetr.waters().size() > 0;  // tells if the factory is next to a mountain
 }

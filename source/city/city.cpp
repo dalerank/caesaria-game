@@ -474,8 +474,6 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( PlayerCity::constructorMode, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
-
-  _animation().clear();
 }
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }

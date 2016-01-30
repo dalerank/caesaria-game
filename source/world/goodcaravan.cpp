@@ -80,6 +80,16 @@ void GoodCaravan::timeStep(unsigned int time)
   MovableObject::timeStep( time );
 }
 
+std::string GoodCaravan::about(Object::AboutType type)
+{
+  switch( type )
+  {
+  case aboutEmtype: return "world_goodcaravan";
+  }
+
+  return "";
+}
+
 void GoodCaravan::save(VariantMap& stream) const
 {
   MovableObject::save( stream );
@@ -119,8 +129,6 @@ GoodCaravan::GoodCaravan( CityPtr city )
   _d->store.setCapacity( good::any(), defaultCapacity );
 
   setSpeed( deafaultSpeed );
-
-  setPicture( gfx::Picture( gui::rc.panel, 108 ) );
 }
 
 }//end namespace world

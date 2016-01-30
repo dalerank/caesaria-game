@@ -771,8 +771,6 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
   _d->states.birth = game::Date::current();
-
-  _initTextures();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->trade.delay <= 0; }
@@ -869,8 +867,6 @@ void ComputerCity::load( const VariantMap& options )
 
   _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::trSea : EmpireMap::trUnknown)
                   + (options.get( "land" ).toBool() ? EmpireMap::trLand : EmpireMap::trUnknown);
-
-  _initTextures();
 }
 
 const good::Store& ComputerCity::sells() const { return _d->realSells; }

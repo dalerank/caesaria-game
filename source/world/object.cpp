@@ -82,7 +82,6 @@ void Object::save( VariantMap& stream ) const
   stream[ "picture" ] = Variant( _d->pic.name() );
   VARIANT_SAVE_STR_D( stream, _d, name )    
   VARIANT_SAVE_STR_D( stream, _d, emtype )
-  VARIANT_SAVE_CLASS_D( stream, _d, animation )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
   stream[ "nation" ] = world::toString( _d->nation );
@@ -115,7 +114,6 @@ Object::Object(EmpirePtr empire) : _d( new Impl )
   _d->time = 0;
   _d->nation = nation::unknown;
   _d->empire = empire;
-  _d->pictures.resize( 2 );
   _d->emtype = "unknown";
   _d->isDeleted = false;
 }

@@ -49,15 +49,11 @@ public:
 Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
-  setPicture( gfx::Picture( "roma", 1 ) );
-
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
   _d->states.age = 500;
   _setNation( nation::roman );
   _d->states.population = defaultPopulation;
-
-  _animation().load( "world_roma" );
 }
 
 CityPtr Rome::create(EmpirePtr empire)
@@ -125,9 +121,6 @@ void Rome::addObject(ObjectPtr obj)
 void Rome::load(const VariantMap& stream)
 {
   City::load( stream );
-  _animation().clear();
-  _animation().load( "world_roma" );
-  _animation().addOffset( {-4,7} );
 }
 
 DateTime Rome::lastAttack() const { return _d->lastAttack; }

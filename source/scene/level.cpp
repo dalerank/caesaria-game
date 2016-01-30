@@ -320,6 +320,7 @@ void Level::initialize()
 
   //connect elements
 
+  city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
   CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
