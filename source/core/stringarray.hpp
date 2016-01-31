@@ -95,9 +95,9 @@ public:
 class ColoredString : public std::string
 {
 public:
-  NColor color = ColorList::black;
+  NColor color;
 
-  ColoredString( const std::string& r, NColor c)
+  ColoredString( const std::string& r, NColor c=ColorList::black)
     : std::string( r )
   { color = c; }
 };

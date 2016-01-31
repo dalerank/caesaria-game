@@ -32,23 +32,39 @@
   }
 
   world_othercity : {
-    pictures : [ [ ] ]
-    animation : { rc : "empire_bits", start : 21,  frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
+    pictures : [ ["empire_bits",8] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 15,  frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
   }
 
   world_distantcity : {
-    pictures : [ [ ] ]
-    animation : { rc : "empire_bits", start : 28,  frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
+    pictures : [ ["empire_bits",15] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 21,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [18,5],  loop : true }
+  }
+
+  world_seatradecity : {
+    pictures : [ ["empire_bits",22] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 28,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [15,10],  loop : true }
+  }
+
+  world_landtradecity : {
+    pictures : [ ["empire_bits",15] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 21,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [18,5],  loop : true }
   }
 
   world_romancapital : {
-    pictures : [ [ ] ]
-    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
+    pictures : [ ["roma",1] ]
+    offset : [ -20, 30 ]
+    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [5,-5], loop : true }
   }
 
   world_romancity : {
-    pictures : [ [ ] ]
-    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
+    pictures : [ ["empire_bits",22] ]
+    offset : [ -5, 23 ]
+    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [16, 10 ], loop : true }
   }
 
   world_army : {
@@ -56,10 +72,11 @@
   }
 
   world_barbarian : {
-    animation : { rc : "empire_bits", start : 53,  frames : 16, delay : 1,  step : 1, offset : "center",  loop : true }
+    animation : { rc : "empire_brb", start : 1,  frames : 12, delay : 1,  step : 1, offset : "center",  loop : true }
   }
 
   world_playerarmy : {
+    pictures : [ ["empire_bits",1] ]
     animation : { rc : "empire_bits", start : 72,  frames : 6,  delay : 1,  step : 1, offset : "center",  loop : true }
   }
 

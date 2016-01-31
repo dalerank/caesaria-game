@@ -1009,8 +1009,10 @@ std::string ComputerCity::about(Object::AboutType type)
     if( nation() == world::nation::roman )
       return "world_romancity";
 
-    if( tradeType() != EmpireMap::trUnknown )
-      return "world_distantcity";
+    if( tradeType() != EmpireMap::trSea )
+      return "world_seatradecity";
+    else if( tradeType() != EmpireMap::trLand )
+      return "world_landtradecity";
 
     return "world_othercity";
   break;

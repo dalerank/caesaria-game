@@ -74,7 +74,7 @@ const city::States& Rome::states() const { return _d->states; }
 std::string Rome::about(Object::AboutType type)
 {
   if( type == aboutEmtype )
-    "world_romancapital";
+    return "world_romancapital";
 
   return "##empiremap_capital##";
 }

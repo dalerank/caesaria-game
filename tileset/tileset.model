@@ -239,6 +239,13 @@
           files : [ "empire_bits_*" ]
         }
 
+        barbarians :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "empire_brb_*" ]
+        }
+
         empirepanels :
         {
           type : "atlas"

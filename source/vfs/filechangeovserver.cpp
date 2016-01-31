@@ -134,6 +134,7 @@ int watchDirectory(const char* lpFile)
 namespace  internal {
 int watchDirectory(const char* lpDir)
 {
+  return 1;
 }
 }//end namespace internal
 #endif
@@ -153,7 +154,7 @@ FileChangeObserver::FileChangeObserver()
 FileChangeObserver::~FileChangeObserver()
 {
   if( _d->thread.isValid() )
-    _d->thread->abort();
+    _d->thread->stop();
 }
 
 void FileChangeObserver::watch(Path path)

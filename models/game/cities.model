@@ -31,7 +31,6 @@
     location : [ 760, 420 ]
     
     sea : true
-    land : true
     nation : "gaul"
     
     resources : [ "wheat", "vegetable", "wine", "fish",
@@ -109,7 +108,6 @@
     location : [ 970, 1160 ]
     
     sea : true
-    land : true
     
     resources : [ "wheat", "olive", "wine", "fish",
                   "timber", "clay", "marble", "iron" ]
@@ -118,7 +116,6 @@
   Sarmizegetusa : {
     location : [ 1350, 720 ]
     
-    sea : true
     land : true
   }
 	
@@ -146,8 +143,7 @@
   
   Hierosolyma : {
     location : [ 1920, 1230 ]
-    
-    sea : true
+
     land : true
     
     sells : { olive : 40, furniture : 25, pottery : 25 }
@@ -160,7 +156,6 @@
     location : [ 1820, 1270 ]
 
     sea : true
-    land : true
 
     resources : [ "wheat", "fruit", "fish", "clay" ]
 

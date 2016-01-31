@@ -89,13 +89,16 @@ public:
     if( !objectOptions.empty() )
     {
       VariantList vPictures = objectOptions.get( "pictures" ).toList();
+      VARIANT_INIT_ANY( Point, offset, objectOptions );
       for( const auto& item : vPictures )
       {
         VariantList picName = item.toList();
         pictures.append( picName.get( 0 ).toString(), picName.get( 1 ).toInt() );
+        pictures.back().addOffset( offset );
       }
 
-      VARIANT_LOAD_CLASS( animation, objectOptions )
+      animation.simple( objectOptions.get( "animation" ).toMap() );
+      animation.addOffset( offset );
     }
   }
 
@@ -107,17 +110,14 @@ public:
     pipe.draw( pictures )
         .draw( animation.currentFrame() );
 
+    Lines lines;
+    Point mappos = object->location();
+    internal::addCell( lines, ColorList::red, offset - Point(10,10) + object->location(), 20 );
     if( movable )
     {
       world::MovableObjectPtr mobject = object.as<world::MovableObject>();
 
-      Point mappos = mobject->location();
-
 #ifdef DEBUG
-      Lines lines;
-
-      internal::addCell( lines, ColorList::red, offset + object->location(), 20 );
-
       int distance = mobject->searchRange();
       if( distance > 0 )
       {
@@ -141,9 +141,9 @@ public:
           lastPos = way[ k ];
         }
       }
-      internal::drawLines( painter, lines );
 #endif
     }
+    internal::drawLines( painter, lines );
   }
 };
 
@@ -151,6 +151,9 @@ class EmpireMapObjects : public std::vector<EmpireMapObjectView>
 {
 public:
   VariantMap options;
+  bool dirty;
+
+  void reset() { dirty = true; }
 
   void loadConfig( vfs::Path path )
   {
@@ -159,6 +162,7 @@ public:
 
   void init( world::EmpirePtr empire )
   {
+    clear();
     auto objects = empire->objects()
                           .exclude<world::MovableObject>()
                           .exclude<world::City>();
@@ -169,9 +173,11 @@ public:
     for( auto obj : mobjects )
       emplace_back( obj.as<world::Object>(), options );
 
-    auto cities = empire->objects().select<world::City>();
+    auto cities = empire->cities();
     for( auto obj : cities )
       emplace_back( obj.as<world::Object>(), options );
+
+    dirty = false;
   }
 };
 
@@ -310,11 +316,6 @@ void EmpireMapWindow::_showTradeAdvisor()
 {
   events::dispatch<ShowAdvisorWindow>( true, advisor::trading );
   deleteLater();
-}
-
-void EmpireMapWindow::_reloadConfig()
-{
-
 }
 
 void EmpireMapWindow::Impl::initBorder( Widget* p )
@@ -590,10 +591,11 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
     _d->setTitleText.connect( lbTitle, &Label::setText );
 
   setFlag( showCityInfo, true );
+  _d->objects.reset();
 
 #ifdef DEBUG
-   _d->mapObserver.watch( ":/empire_animation.model" );
-   _d->mapObserver.onFileChangeSignal.connect( this, &EmpireMapWindow::_reloadConfig );
+   _d->mapObserver.watch( ":/empire_gfx.model" );
+   _d->mapObserver.onFileChangeSignal.connect( &_d->objects, &EmpireMapObjects::reset );
 #endif
 }
 
@@ -631,6 +633,11 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
 void EmpireMapWindow::beforeDraw(Engine& painter)
 {
+  if( _d->objects.dirty )
+  {
+    _d->objects.loadConfig( ":/empire_gfx.model" );
+    _d->objects.init( _d->city.base->empire() );
+  }
   Widget::beforeDraw( painter );
 }
 
