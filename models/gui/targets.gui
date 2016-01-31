@@ -16,7 +16,7 @@
   }
 
   btnExit#TexturedButton : {
-    geometry : [ "pw-110", "ph-40", "pw-83", "ph-13" ]
+    geometry : [ "100%-110", "100%-40", "100%-83", "100%-13" ]
     normal : [ "paneling", 179 ]
     hovered : [ "paneling", 180 ]
     pressed : [ "paneling", 181 ]
@@ -24,14 +24,14 @@
   }
 
   gbox#GroupBox : {
-    geometry : [ 16, 64, "pw-64", 144 ]
+    geometry : [ 16, 64, "100%-64", 144 ]
     bgtype : "blackFrame"
 
     lbTargets#Label : {
-      geometry : [ 15, 0, "pw-15", 28 ]
+      geometry : [ 15, 0, "100%-15", 28 ]
       text : "##mission_wnd_targets_title##"
       font : "FONT_1_WHITE"
-      text.align : [ "upperLeft", "upperLeft" ]
+      text.align : [ "upperLeft", "lowerRight" ]
     }
 
     lbPopulation#Label : {

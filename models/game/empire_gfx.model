@@ -63,7 +63,7 @@
 
   world_romancity : {
     pictures : [ ["empire_bits",22] ]
-    offset : [ -5, 23 ]
+    offset : [ -5, 17 ]
     animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [16, 10 ], loop : true }
   }
 

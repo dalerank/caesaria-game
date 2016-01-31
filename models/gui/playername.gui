@@ -10,6 +10,7 @@
     textAlign : [ "upperLeft", "center" ]
     font : "FONT_2_WHITE"
     textOffset : [ 20, 0 ]
+    tooltip : "##enter_dinasty_name_here##"
     text : "##new_governor##"
   }
 

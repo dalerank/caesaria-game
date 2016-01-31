@@ -40,6 +40,8 @@ typedef std::map<Ui::Flag, int> Flags;
 struct UiTooltipWorker
 {
   WidgetPtr element;
+  Point lastPos;
+  Point offset;
   unsigned int lastTime;
   unsigned int enterTime;
   unsigned int launchTime;
@@ -89,6 +91,7 @@ Ui::Ui(Engine& painter )
   _d->engine = &painter;
   _dfunc()->environment = this;
   _d->tooltip.element;
+  _d->tooltip.offset = Point( 0, 5 );
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;
   _d->tooltip.launchTime = 1000;
@@ -102,6 +105,7 @@ Ui::Ui(Engine& painter )
   _d->console = 0;
 
   setFlag( drawDebugArea, 0 );
+  setFlag( showTooltips, 1 );
 }
 
 //! Returns if the element has focus
@@ -568,10 +572,7 @@ Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
     elm.setWordwrap( true );
   }
 
-  Rect rect( cursor, tooltipSize );
-
-  rect -= Point( tooltipSize.width() + 20, -20 );
-  elm.setGeometry( rect );
+  elm.setGeometry( Rect( cursor + offset, tooltipSize ) );
 
   return &elm;
 }
@@ -581,7 +582,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
 {
   // launch tooltip
   if( element.isNull()
-      && hovered.isValid() && hovered.object() != &rootWidget
+      && hovered.isValid()
+      && hovered.object() != &rootWidget
       && (time - enterTime >= launchTime
       || (time - lastTime >= relaunchTime && time - lastTime < launchTime))
       && hovered->tooltipText().size()
@@ -610,6 +612,11 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   {
     lastTime = time;
 
+    if( lastPos != cursor )
+    {
+      element->setPosition( cursor + offset );
+    }
+
     // got invisible or removed in the meantime?
     if( hovered.isNull()
         || !hovered->visible()
@@ -619,6 +626,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
       element = WidgetPtr();
     }
   }
+
+  lastPos = cursor;
 }
 
 }//end namespace gui
