@@ -311,7 +311,8 @@ public:
    *	\return Returns the first element with the given id. If no element
    *	with this id was found, 0 is returned.
    */
-  virtual Widget* findChild(int id, bool searchChildren=false) const;
+  Widget* findChild(int id, bool searchChildren=false) const;
+  Widget* findChild(const std::string& internalName, bool searchChildren) const;
 
   template<class T>
   T* findChild(int id, bool searchChildren=false) const

@@ -16,6 +16,10 @@
     items : [
       "1. Fixed crash when switch to empire map from trade advisor"
       "2. Venus now killing only citizens when wrath"
+      "3. Improved city borders, now black tiles draw with textures"
+      "4. Venus now killing only citizens on wrath"
+      "5. Redesign empire map view, correct animations and trade flags"
+      "6. Fixed loading desert tileset"
     ]
   }
 }

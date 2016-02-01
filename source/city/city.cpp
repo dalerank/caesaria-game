@@ -17,75 +17,23 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
-#include "objects/construction.hpp"
-#include "gfx/tile.hpp"
-#include "pathway/path_finding.hpp"
-#include "core/position.hpp"
-#include "pathway/astarpathfinding.hpp"
-#include "core/safetycast.hpp"
-#include "core/variant_map.hpp"
-#include "gfx/tilemap.hpp"
-#include "objects/road.hpp"
-#include "core/time.hpp"
-#include "core/variant.hpp"
-#include "core/utils.hpp"
-#include "walker/walkers_factory.hpp"
-#include "core/gettext.hpp"
-#include "build_options.hpp"
-#include "game/funds.hpp"
-#include "world/city.hpp"
-#include "world/empire.hpp"
-#include "trade_options.hpp"
-#include "good/storage.hpp"
-#include "world/trading.hpp"
-#include "walker/merchant_land.hpp"
-#include "game/gamedate.hpp"
-#include "events/event.hpp"
-#include "victoryconditions.hpp"
-#include "core/logger.hpp"
-#include "objects/constants.hpp"
-#include "world/merchant.hpp"
-#include "city/statistic.hpp"
-#include "objects/forum.hpp"
-#include "objects/senate.hpp"
-#include "objects/house.hpp"
-#include "world/empiremap.hpp"
-#include "walker/merchant_sea.hpp"
-#include "cityservice_factory.hpp"
-#include "world/emperor.hpp"
-#include "game/resourcegroup.hpp"
-#include "world/romechastenerarmy.hpp"
-#include "walker/chastener_elephant.hpp"
-#include "walker/chastener.hpp"
-#include "world/barbarian.hpp"
-#include "objects/fort.hpp"
-#include "events/showinfobox.hpp"
-#include "world/relations.hpp"
-#include "walker/helper.hpp"
+#include <GameObjects>
+#include <GameGfx>
+#include <GamePathway>
+#include <GameCore>
+#include <GameWalkers>
+#include <GameCity>
+#include <GameApp>
+#include <GameWorld>
+#include <GameGood>
+#include <GameEvents>
+#include <GameLogger>
+
 #include "walkergrid.hpp"
-#include "events/showinfobox.hpp"
-#include "game/difficulty.hpp"
 #include "active_points.hpp"
-#include "game/player.hpp"
-#include "scribes.hpp"
-#include "statistic.hpp"
-#include "states.hpp"
-#include "city/states.hpp"
-#include "core/flowlist.hpp"
 #include "economy.hpp"
 #include "city_impl.hpp"
-#include "sentiment.hpp"
-#include "cityservice_timers.hpp"
-#include "cityservice_military.hpp"
-#include "core/requirements.hpp"
-#include "cityservice_prosperity.hpp"
-#include "cityservice_culture.hpp"
-#include "events/warningmessage.hpp"
-#include "cityservice_peace.hpp"
-#include "city_option.hpp"
-#include "gfx/tile_config.hpp"
 #include "ambientsound.hpp"
-#include "core/osystem.hpp"
 
 #include <set>
 
@@ -185,6 +133,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( soldiersHaveSalary, 1 );
   setOption( housePersonalTaxes, 1 );
   setOption( ironInRocks, 1 );
+  setOption( farmUseMeadows, 1 );
 
   _setNation( world::nation::roman );
 }

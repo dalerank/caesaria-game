@@ -29,7 +29,7 @@
     class : "road"
     c3logic : true
     checkWalkersOnBuild : false
-    image : [ "roadBlock", 1 ]
+    image : [ "roadBlockC3", 1 ]
   }
 
   tree : {

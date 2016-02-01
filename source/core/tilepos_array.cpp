@@ -40,6 +40,12 @@ TilePosArray& TilePosArray::append(const TilePos &pos)
   return *this;
 }
 
+TilePosArray&TilePosArray::append(int i, int j)
+{
+  push_back( TilePos( i, j ) );
+  return *this;
+}
+
 TilePos TilePosArray::valueOrEmpty(unsigned int index)
 {
   return index < size() ? at( index ) : TilePos();

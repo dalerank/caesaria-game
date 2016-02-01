@@ -1,2 +1,16 @@
 #include "city/states.hpp"
 #include "city/statistic.hpp"
+#include "city/build_options.hpp"
+#include "city/scribes.hpp"
+#include "city/sentiment.hpp"
+#include "city/cityservice_timers.hpp"
+#include "city/cityservice_military.hpp"
+#include "city/cityservice_prosperity.hpp"
+#include "city/cityservice_culture.hpp"
+#include "city/cityservice_peace.hpp"
+#include "city/city_option.hpp"
+#include "city/trade_options.hpp"
+#include "city/victoryconditions.hpp"
+#include "city/cityservice_factory.hpp"
+
+

@@ -13,7 +13,7 @@
     
   lbTitle#Label : 
   {
-    geometryf : [ 0.10 , 0.02, 0.9, 0.13 ]
+    geometry : [ 12, 12, "100%-12", "12+30" ]
     text : "##title##"
     font : "FONT_5"
     textAlign : [ "center", "center" ]

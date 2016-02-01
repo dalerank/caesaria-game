@@ -1,3 +1,6 @@
 #include "events/showinfobox.hpp"
+#include "events/event.hpp"
 #include "events/fundissue.hpp"
+#include "events/warningmessage.hpp"
+#include "events/dispatcher.hpp"
 #include "events/showadvisorwindow.hpp"
