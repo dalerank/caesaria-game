@@ -5,9 +5,17 @@
 #include "core/flagholder.hpp"
 #include "core/color_list.hpp"
 #include "core/line.hpp"
+#include "core/flowlist.hpp"
+#include "core/requirements.hpp"
+#include "core/osystem.hpp"
 #include "core/foreach.hpp"
 #include "core/event.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
+#include "core/position.hpp"
 #include "core/gettext.hpp"
+#include "core/safetycast.hpp"
+#include "core/variant_map.hpp"
+#include "core/variant.hpp"
+
 

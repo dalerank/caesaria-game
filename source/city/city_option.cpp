@@ -65,6 +65,7 @@ public:
     _O(cutForest2timber)
     _O(ironInRocks)
     _O(svkBorderEnabled)
+    _O(farmUseMeadows)
 #undef _O
   }
 };
