@@ -21,6 +21,9 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "objects/engineer_post.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -39,16 +42,27 @@ static const char* damageLevelName[maxDamageLevel] = {
                                          "##very_high_damage_risk##", "##extreme_damage_risk##"
                                        };
 
+class Damage::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
+
 int Damage::type() const {  return citylayer::damage; }
 
-void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -68,7 +82,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
@@ -79,38 +93,32 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
         damageLevel = (int)building->state( pr::damage );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( damageLevel >= 0 )
     {
-      drawColumn( engine, screenPos, damageLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, damageLevel );
     }
   }
 
   tile.setRendered();
 }
 
-LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
+void Damage::onEvent( const NEvent& event)
 {
-  LayerPtr ret( new Damage( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Damage::handleEvent(NEvent& event)
-{
+  __D_REF(d,Damage)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -122,9 +130,21 @@ void Damage::handleEvent(NEvent& event)
           int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );
           text = damageLevelName[ damageLevel ];
         }
+
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( text );
+    }
+    break;
+
+    case NEvent::Mouse::btnLeftPressed:
+    {
+      if( d.overlay.underMouse.is<EngineerPost>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -132,11 +152,41 @@ void Damage::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
+}
+
+void Damage::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Damage::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _dfunc()->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Damage::_updatePaths()
+{
+  __D_REF(d,Damage)
+  auto wbuilding = d.overlay.selected.as<EngineerPost>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      d.ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 Damage::Damage( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, damageColumnIndex )
+  : Info( camera, city, damageColumnIndex ), __INIT_IMPL(Damage)
 {
   _addWalkerType( walker::engineer );
   _initialize();

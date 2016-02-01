@@ -53,6 +53,7 @@ public signals:
   Signal1<int>& onZoomChange();
 
 private:
+  virtual bool _onMousePressed( const NEvent::Mouse& event);
   class Impl;
   ScopedPtr< Impl > _d;
 };

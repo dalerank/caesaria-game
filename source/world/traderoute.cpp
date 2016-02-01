@@ -22,6 +22,7 @@
 #include "city.hpp"
 #include "good/storage.hpp"
 #include "core/utils.hpp"
+#include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
@@ -80,7 +81,8 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto&& it : *this ) it->timeStep( time );
+    for( auto& it : *this )
+      it->timeStep( time );
     utils::eraseIfDeleted( *this );
     merge();
   }
@@ -111,6 +113,11 @@ CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin 
 CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
 std::string Traderoute::name() const{  return _d->begin + "<->" + _d->end;}
 
+bool Traderoute::isMyCity(CityPtr city) const
+{
+  return beginCity() == city || endCity() == city;
+}
+
 CityPtr Traderoute::partner(const std::string& name) const
 {
   return _d->empire->findCity( _d->begin == name ? _d->end : _d->begin );
@@ -118,7 +125,8 @@ CityPtr Traderoute::partner(const std::string& name) const
 
 void Traderoute::timeStep( unsigned int time )
 {
-  _d->merchants.update( time );
+  if( game::Date::isDayChanged() )
+    _d->merchants.update( time );
 }
 
 PointsArray Traderoute::points( bool reverse ) const
@@ -162,7 +170,7 @@ MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell,
 {
   if( _d->points.empty() )
   {
-    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [{0}<->{1}]", _d->begin, _d->end );
+    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [{}<->{}]", _d->begin, _d->end );
     return MerchantPtr();
   }
 
@@ -270,7 +278,8 @@ void Traderoute::Impl::updatePictures()
     }
 
     Picture pic( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
-    pic.setOffset( offset );
+    Point randOffset( math::random(3), math::random(3) );
+    pic.setOffset( offset + randOffset );
     pictures.push_back( pic );
   }
 }

@@ -50,35 +50,11 @@ END_NAMEDTYPE(Product)
 class Products : public std::set<Product>
 {
 public:
-  inline Products& operator<<(const Product& a)
-  {
-    insert( a );
-    return *this;
-  }
-
-  inline Products& operator<<(const Products& other)
-  {
-    for( auto& goodType : other )
-      this->insert( goodType );
-
-    return *this;
-  }
-
-  inline bool contain( const Product& type ) const
-  {
-    return this->count( type ) > 0;
-  }
-
-  Products& exclude( const Products& types)
-  {
-    for( auto& goodType : types )
-    {
-      if( this->count( goodType ) )
-        this->erase( goodType );
-    }
-
-    return *this;
-  }
+  Products& operator<<(const Product& a);
+  Products& operator<<(const Products& other);
+  bool contain( const Product& type ) const;
+  Products& exclude( const Product& type);
+  Products& exclude( const Products& types);
 };
 
 const Product& any();
@@ -86,8 +62,10 @@ const Products& foods();
 inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
+const Products& tradable();
 
 Product getMaterial( const Product& pr );
+Product toType( const std::string& typeName );
 
 class Stock;
 class ProductMap;

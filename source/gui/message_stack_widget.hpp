@@ -37,9 +37,9 @@ public:
 
   void addMessage( const std::string& text, MsgLevel lvl );
  
-private:
   WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
 
+private:
   void _update();
 };
 

@@ -26,13 +26,17 @@ namespace citylayer
 class Tax : public Info
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-  virtual void handleEvent(NEvent& event);
-private:
   Tax( gfx::Camera& camera, PlayerCityPtr city );
+  virtual int type() const;
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void onEvent( const NEvent& event);
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
+private:
+  void _updatePaths();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

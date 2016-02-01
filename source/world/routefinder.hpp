@@ -21,9 +21,7 @@
 #include "core/smartptr.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "core/position.hpp"
-
-class TilePosArray;
+#include "core/tilepos_array.hpp"
 
 namespace world
 {
@@ -35,7 +33,7 @@ public:
 
   TraderouteFinder( const EmpireMap& empiremap );
 
-  bool findRoute( TilePos start, TilePos stop, TilePosArray& way, int flags );
+  bool findRoute( TilePos start, TilePos stop, Locations& way, int flags );
   void setTerrainType( TilePos pos, unsigned int type );
 
   ~TraderouteFinder();
@@ -44,6 +42,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}
+}//end namespace world
 
 #endif //__CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__

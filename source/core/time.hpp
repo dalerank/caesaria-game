@@ -62,6 +62,9 @@ public:
   DateTime date() const;
   DateTime time() const;
 
+  unsigned int hashdate() const;
+  static DateTime fromhash( unsigned int hash );
+
   int daysTo( const DateTime& future ) const;
   int equale( const DateTime& b );
   int monthsTo( const DateTime& end ) const;
@@ -75,6 +78,7 @@ public:
   static const char* dayName( unsigned char d );
   static const char* monthName(Month d );
   static const char* shortMonthName( Month d );
+  static int daysInMonth(int year, int d );
   int daysInMonth() const;
   const char* age() const;
 

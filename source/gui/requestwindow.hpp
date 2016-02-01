@@ -38,9 +38,11 @@ public:
   virtual void setText(const std::string& text);
   virtual void setTitle(const std::string& text);
   virtual bool onEvent(const NEvent &event);
+  void setVideo( const std::string& video );
 
 private:
   EmperrorRequestWindow( Widget* parent, city::RequestPtr request );
+  void _openEmperrorAdvisor();
 
   class Impl;
   ScopedPtr< Impl > _d;

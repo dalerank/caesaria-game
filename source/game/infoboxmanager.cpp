@@ -27,6 +27,7 @@
 #include "gfx/tilemap.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
 #include "gui/infobox_working.hpp"
+#include "core/common.hpp"
 #include <map>
 
 using namespace gui;
@@ -101,10 +102,10 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl={0}", tile.param( Tile::pDesirability ) );
+    Logger::warning( "Tile debug info: dsrbl={}", tile.param( Tile::pDesirability ) );
   }
 
-  type = overlay.isNull() ? object::unknown : overlay->type();
+  type = object::typeOrDefault( overlay );
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
@@ -133,6 +134,11 @@ void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
   std::string name = object::toString( type );
   bool alreadyHaveConstructor = _d->name2typeMap.find( name ) != _d->name2typeMap.end();
 
+  if( name == "unknown" )
+  {
+    Logger::warning( "InfoboxManager: added default infobox constructor" );
+  }
+
   if( !alreadyHaveConstructor )
   {
     _d->name2typeMap[ name ] = type;
@@ -157,19 +163,19 @@ StaticInfoboxCreator::StaticInfoboxCreator(const std::string &caption, const std
 
 Infobox* StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
-  Size  size = parent->size();
-  Infobox* infoBox = new Infobox( parent, Infobox::defaultRect );
-  infoBox->setPosition( Point( ( size.width() - infoBox->width()) / 2,
-                                 size.height() - infoBox->height()) );
+  Size size = parent->size();
+  Infobox& infoBox = parent->add<Infobox>( Infobox::defaultRect );
+  infoBox.setPosition( Point( ( size.width() - infoBox.width()) / 2,
+                                 size.height() - infoBox.height()) );
   OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()
                                   ? overlay->info().prettyName()
                                   : title;
 
-  infoBox->setTitle( _( caption ) );
-  infoBox->setText( _( text ) );
-  return infoBox;
+  infoBox.setTitle( _( caption ) );
+  infoBox.setText( _( text ) );
+  return &infoBox;
 }
 
 ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const std::string &descr, bool drawWorkers)
@@ -183,12 +189,12 @@ Infobox* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TileP
   auto workBuilding = city->getOverlay( pos ).as<WorkingBuilding>();
   if( workBuilding.isValid() )
   {
-    AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, workBuilding );
-    infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->height()) );
+    AboutWorkingBuilding& infoBox = parent->add<AboutWorkingBuilding>( workBuilding );
+    infoBox.setPosition( Point( (size.width() - infoBox.width()) / 2, size.height() - infoBox.height()) );
 
-    if( !title.empty() ) { infoBox->setTitle( title ); }
-    if( !text.empty() ) { infoBox->setText( text ); }
-    return infoBox;
+    if( !title.empty() ) { infoBox.setTitle( title ); }
+    if( !text.empty() ) { infoBox.setText( text ); }
+    return &infoBox;
   }
 
   return 0;

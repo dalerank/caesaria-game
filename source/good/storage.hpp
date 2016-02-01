@@ -28,17 +28,19 @@ public:
   Storage();
   virtual ~Storage();
 
+  virtual void setCapacity(const good::Product& goodType, const int maxQty);
   virtual void setCapacity(const int maxQty);
-  virtual int capacity() const;
-  virtual int qty() const;
+
+  virtual int  capacity() const;
+  virtual int  capacity(const good::Product& goodType) const;
+
+  virtual int  qty(const good::Product& goodType) const;
+  virtual int  qty() const;
 
   void resize( const Store& other );
 
   good::Stock& getStock(const good::Product &goodType);
   virtual ProductMap details() const;
-  virtual int qty(const good::Product& goodType) const;
-  virtual int capacity(const good::Product& goodType) const;
-  virtual void setCapacity(const good::Product& goodType, const int maxQty);
 
   void setQty(const good::Product& goodType, const int currentQty);
 
@@ -46,8 +48,9 @@ public:
   int getMaxStore(const good::Product goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID);
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID);
+  virtual bool applyStorageReservation(good::Stock &stock, const int reservationID);
+  virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID);
+  virtual void confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time );
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );

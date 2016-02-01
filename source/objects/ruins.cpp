@@ -50,7 +50,7 @@ BurningRuins::BurningRuins()
   setState( pr::collapsibility, 0 );
   setState( pr::spreadFire, 0 );
 
-  _picture().load( ResourceGroup::land2a, 187 );
+  _picture().load( config::rc.land2a, 187 );
   _animation() = AnimationBank::instance().simple( AnimationBank::animFire+2 );
   _fgPictures().resize(1);
 }
@@ -67,7 +67,7 @@ void BurningRuins::timeStep(const unsigned long time)
     bool needSpread = ( state( pr::spreadFire ) == 0 && state( pr::fire ) < 50 );
     if( needSpread )
     {
-      OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
+      OverlayList overlays = _map().getNeighbors( pos() ).overlays();
 
       setState( pr::spreadFire, 1 );
       for( unsigned int i=0; i < overlays.size(); ++i )
@@ -92,12 +92,12 @@ void BurningRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        _picture().load( ResourceGroup::land2a, 214 );
+        _picture().load( config::rc.land2a, 214 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
       }
       else if( state( pr::fire ) == 25 )
       {
-        _picture().load( ResourceGroup::land2a, 223 );
+        _picture().load( config::rc.land2a, 223 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
       }
     }
@@ -130,13 +130,8 @@ void BurningRuins::destroy()
     fire->rmLocation( pos() );
   }
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
-
-void BurningRuins::collapse() {}
-
-void BurningRuins::burn(){}
 
 bool BurningRuins::build( const city::AreaInfo& info)
 {
@@ -164,6 +159,13 @@ bool BurningRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
 bool BurningRuins::canDestroy() const { return (state( pr::fire ) == 0); }
 
+bool BurningRuins::getMinimapColor(int& color1, int& color2) const
+{
+  color1 = ColorList::red.color;
+  color2 = ColorList::red.color;
+  return true;
+}
+
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->serviceType() )
@@ -188,7 +190,7 @@ void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 {
-  _picture().load( ResourceGroup::land2a, 111 + rand() % 8 );
+  _picture().load( config::rc.land2a, 111 + rand() % 8 );
 }
 
 bool BurnedRuins::build( const city::AreaInfo& info )
@@ -220,8 +222,6 @@ CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
   _fgPictures().resize(1);
 }
 
-void CollapsedRuins::burn() {}
-
 bool CollapsedRuins::build( const city::AreaInfo& info )
 {  
   bool built = Ruins::build( info );
@@ -230,7 +230,7 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  _picture().load( ResourceGroup::land2a, 111 + math::random( 7 ) );
+  _picture().load( config::rc.land2a, 111 + math::random( 7 ) );
 
   if( !_alsoBuilt )
   {
@@ -240,7 +240,6 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
   return true;
 }
 
-void CollapsedRuins::collapse() {}
 bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoad() const{  return false;}
@@ -250,7 +249,7 @@ PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
   setState( pr::fire, 99 );
   setState( pr::collapsibility, 0 );
 
-  _picture().load( ResourceGroup::land2a, 187 );
+  _picture().load( config::rc.land2a, 187 );
   _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
 
   _fgPictures().resize(2);
@@ -270,12 +269,12 @@ void PlagueRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        _picture().load( ResourceGroup::land2a, 214 );
+        _picture().load( config::rc.land2a, 214 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
       }
       else if( state( pr::fire ) == 25 )
       {
-        _picture().load( ResourceGroup::land2a, 223 );
+        _picture().load( config::rc.land2a, 223 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
       }
     }
@@ -296,12 +295,10 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( pinfo() );
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}
-void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 bool PlagueRuins::build( const city::AreaInfo& info )
@@ -349,4 +346,11 @@ bool Ruins::build(const city::AreaInfo& info)
   }
 
   return Building::build( info );
+}
+
+bool Ruins::getMinimapColor(int& color1, int color2) const
+{
+  color1 = ColorList::darkSlateGray.color;
+  color2 = ColorList::grey.color;
+  return true;
 }

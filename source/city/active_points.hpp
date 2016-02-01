@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SAVED_POINTS_H_INCLUDED__
-#define __CAESARIA_SAVED_POINTS_H_INCLUDED__
+#ifndef __CAESARIA_ACTIVE_POINTS_H_INCLUDED__
+#define __CAESARIA_ACTIVE_POINTS_H_INCLUDED__
 
 #include "core/tilepos_array.hpp"
 
@@ -43,4 +43,4 @@ public:
 };
 
 }//end namespace city
-#endif //__CAESARIA_SAVED_POINTS_H_INCLUDED__
+#endif //__CAESARIA_ACTIVE_POINTS_H_INCLUDED__

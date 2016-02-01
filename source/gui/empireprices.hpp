@@ -35,8 +35,9 @@ public:
   EmpirePrices( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  );
 
   virtual void draw( gfx::Engine& painter );
-
-  virtual bool onEvent(const NEvent& event);
+  virtual void setupUI(const VariantMap &ui);
+private:
+  __DECLARE_IMPL(EmpirePrices)
 };
 
 }

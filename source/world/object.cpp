@@ -42,6 +42,7 @@ public:
   Pictures pictures;
   unsigned int time;
   bool isDeleted;
+  Nation nation;
 };
 
 ObjectPtr Object::create( EmpirePtr empire)
@@ -53,7 +54,7 @@ ObjectPtr Object::create( EmpirePtr empire)
 }
 
 bool Object::isDeleted() const { return _d->isDeleted; }
-std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+std::string Object::type() const { return TEXT(Object); }
 void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
@@ -62,7 +63,7 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: {0} added to {1}", obj->name(), name() );
+  Logger::warning( "WorldObjects: {} added to {}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
@@ -83,20 +84,19 @@ void Object::setPicture(Picture pic)
 }
 
 bool Object::isMovable() const { return false; }
+Nation Object::nation() const {  return _d->nation; }
+std::string Object::about(Object::AboutType) { return ""; }
 
-std::string Object::about(Object::AboutType)
-{
-  return "";
-}
 
 void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
-  VARIANT_SAVE_STR_D( stream, _d, name )
+  VARIANT_SAVE_STR_D( stream, _d, name )    
   VARIANT_SAVE_CLASS_D( stream, _d, animation )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
+  stream[ "nation" ] = world::toString( _d->nation );
 }
 
 void Object::load(const VariantMap& stream)
@@ -109,8 +109,10 @@ void Object::load(const VariantMap& stream)
   std::string picName = stream.get( "picture" ).toString();
   if( !picName.empty() )
     setPicture( Picture( picName )  );
+
   VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
+  _d->nation = world::toNation( stream.get( "nation" ).toString() );
 }
 
 void Object::attach()
@@ -121,15 +123,17 @@ void Object::attach()
 
 Object::~Object() {}
 
-Object::Object( EmpirePtr empire) : _d( new Impl )
+Object::Object(EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
+  _d->nation = nation::unknown;
   _d->empire = empire;
   _d->pictures.resize( 2 );
   _d->isDeleted = false;
 }
 
 void Object::deleteLater() { _d->isDeleted = true; }
+void Object::_setNation(Nation nation) { _d->nation = nation; }
 Animation& Object::_animation() { return _d->animation; }
 Pictures&  Object::_pictures()  { return _d->pictures; }
 

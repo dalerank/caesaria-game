@@ -64,7 +64,7 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
 : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->autopause.activate();
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   // create the title
   setupUI( ":/gui/infobox.gui" );
@@ -135,12 +135,7 @@ bool Infobox::onEvent( const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }
@@ -159,7 +154,7 @@ void Infobox::setTitle( const std::string& title )
   {
     Size s = _d->lbTitle->font().getTextSize( title );
     if( s.width() > (int)_d->lbTitle->width() )
-      _d->lbTitle->setFont( Font::create( FONT_2 ) );
+      _d->lbTitle->setFont( FONT_2 );
 
     _d->lbTitle->setText( title );
   }
@@ -186,8 +181,8 @@ void Infobox::addCallback(const std::string& name, Callback callback)
   INIT_WIDGET_FROM_UI( VLayout*, layout )
   if( layout )
   {
-    auto button = new PushButton( this, Rect(), name );
-    button->onClicked() += callback;
+    auto& button = add<PushButton>( Rect(), name );
+    button.onClicked() += callback;
   }
 }
 
@@ -205,10 +200,11 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
     return;
 
   // number of workers
-  std::string text = utils::format( 0xff, "%d %s (%d %s)",
-                                    have, _("##employers##"),
-                                    need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
+  std::string text = fmt::format( "{} {} ({} {})",
+                                  have, _("##employers##"),
+                                  need, _("##requierd##") );
+  _d->lbBlackFrame->setIcon( gui::rc.panel, picId );
+  _d->lbBlackFrame->setIconOffset( { 20, 10 } );
   _d->lbBlackFrame->setText( text );
 }
 

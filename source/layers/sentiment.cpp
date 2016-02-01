@@ -42,17 +42,11 @@ static const char* sentimentLevelName[maxSentimentLevel] = {
 
 int Sentiment::type() const {  return citylayer::sentiment; }
 
-void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Sentiment::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -73,49 +67,42 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( sentimentLevel > 0 )
     {
-      drawColumn( engine, screenPos, 100 - sentimentLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, 100 - sentimentLevel );
     }
   }
 
   tile.setRendered();
 }
 
-LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Sentiment( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Sentiment::handleEvent(NEvent& event)
+void Sentiment::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay<House>();
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
@@ -131,7 +118,7 @@ void Sentiment::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Sentiment::Sentiment( Camera& camera, PlayerCityPtr city)

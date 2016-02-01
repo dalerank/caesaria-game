@@ -20,6 +20,10 @@
     }
   }
 
+  riverWave : {
+    class : "water"
+  }
+
   roadBlock : {
     cost : 10
     class : "road"
@@ -33,6 +37,25 @@
     image.ext : {
       type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
       type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
+    }
+  }
+
+  plateau : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "plateau", start : 1, count : 44 }
+    }
+  }
+
+  rock : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "land1a", start : 290, count : 8 }
+      type_1a : { size:1, rc : "land3a", start : 71, count : 8 }
+      type_2 : { size:2, rc : "land1a", start : 298, count : 4 }
+      type_2a : { size:2, rc : "land3a", start : 79, count : 4 }
+      type_3 : { size:3, rc : "land1a", start : 302, count : 2 }
+      type_3 : { size:3, rc : "land3a", start : 83, count : 2 }
     }
   }
 
@@ -591,6 +614,9 @@
     employers : 0
     mayBurn : false
     class : "water"
+    image.ext : {
+      t1 : { size:3, rc : "utilitya", start : 34, count : 1 }
+    }
     fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
@@ -682,6 +708,7 @@
   wheat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "wheat"
@@ -693,6 +720,7 @@
   vegetable_farm :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
     output : "vegetable"
@@ -704,6 +732,7 @@
   fig_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "fruit"
@@ -714,6 +743,7 @@
   olive_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "olive"
@@ -725,6 +755,7 @@
   vinard :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "grape"
@@ -736,6 +767,7 @@
   meat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
@@ -800,6 +832,7 @@
     productRate : 4.8
     class : "industry"
     sound : [ "winery", 1 ]
+    image : [ "commerce", 86 ]
     animation : { rc : "commerce", start : 87, count : 12, offset : [ 14, 36 ], delay : 4 }
   },
 
@@ -812,6 +845,8 @@
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
+    image : [ "commerce", 99 ]
+    animation : { rc : "commerce", start : 100, count : 8, offset : [ 0, 0 ], delay : 4 }
   },
   
   weapons_workshop :

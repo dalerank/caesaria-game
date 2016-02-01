@@ -23,7 +23,7 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "city/statistic.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "name_generator.hpp"
@@ -42,7 +42,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
 
 namespace  {
-CAESARIA_LITERALCONST(peoples)
+GAME_LITERALCONST(peoples)
 const int maxFailedWayCount = 10;
 const int populationOverVillage=300;
 const int minDesirability4settle=-10;
@@ -58,36 +58,39 @@ public:
   bool cartBackward;
   bool leaveCity;
   float stamina;
+};
 
-public:
-  void mayWalk( const Tile* tile, bool& ret )
+struct EmigrantWayCondition
+{
+  void tryWalk( const Tile* tile, bool& ret )
   {
-    HousePtr f = tile->overlay<House>();
-    ret = ( tile->isWalkable( true ) || f.isValid() );
-  }  
+    bool isHouse = tile->overlay().is<House>();
+    ret = ( tile->isWalkable( true ) || isHouse );
+  }
+
+  TilePossibleCondition mayWalk() { return makeDelegate( this, &EmigrantWayCondition::tryWalk ); }
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::emigrant ), _d( new Impl )
 {
-  _setType( walker::emigrant );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
   _d->leaveCity = false;
   _d->cartBackward = true;
-  _d->housePosLock = gfx::tilemap::invalidLocation();
+  _d->housePosLock = TilePos::invalid();
 }
 
 void Emigrant::_lockHouse( HousePtr house )
 {
   if( _d->housePosLock.i() >= 0 )
   {
-    auto oldHouse = _map().overlay( _d->housePosLock ).as<House>();
+    auto oldHouse = _map().overlay<House>( _d->housePosLock );
     if( oldHouse.isValid() )
     {
-      _d->housePosLock = gfx::tilemap::invalidLocation();
+      _d->housePosLock = TilePos::invalid();
       oldHouse->setState( pr::settleLock, 0 );
     }
   }
@@ -95,16 +98,14 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( pr::settleLock, tile::hash( _d->housePosLock ) );
+    house->setState( pr::settleLock, _d->housePosLock.hash() );
   }
 }
 
 HousePtr Emigrant::_findBlankHouse()
 {
   HousePtr blankHouse;
-
-  TilePos offset( 5, 5 );
-  HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+  HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), 5 );
 
   _checkHouses( houses );
 
@@ -130,11 +131,11 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   Pathway pathway;
   if( house.isValid() )
   {    
-    pathway = PathwayHelper::create( startPoint, house->pos(), PathwayHelper::roadFirst  );
+    pathway = PathwayHelper::create( startPoint, house->pos(), PathwayHelper::roadFirst );
 
     if( !pathway.isValid() )
     {
-      pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
+      pathway = PathwayHelper::create( startPoint, house,
                                        PathwayHelper::roadFirst  );
     }
 
@@ -147,7 +148,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   if( !pathway.isValid() || _d->failedWayCount > maxFailedWayCount )
   {    
     pathway = PathwayHelper::create( startPoint,
-                                     _city()->borderInfo().roadExit,
+                                     _city()->getBorderInfo( PlayerCity::roadExit ).pos(),
                                      PathwayHelper::allTerrain );
   }
 
@@ -159,7 +160,7 @@ void Emigrant::_reachedPathway()
   bool gooutCity = true;
   Walker::_reachedPathway();
 
-  if( pos() == _city()->borderInfo().roadExit )
+  if( pos() == _city()->getBorderInfo( PlayerCity::roadExit ).epos() )
   {
     auto migration = _city()->statistic().services.find<city::Migration>();
 
@@ -172,7 +173,7 @@ void Emigrant::_reachedPathway()
     return;
   }
 
-  auto house = _city()->getOverlay( pos() ).as<House>();
+  auto house = _map().overlay<House>( pos() );
   if( house.isValid() )
   {
     _append2house( house );
@@ -217,10 +218,10 @@ void Emigrant::_append2house( HousePtr house )
 
 bool Emigrant::_checkNearestHouse()
 {
+  EmigrantWayCondition condition;
   for( int k=1; k < 3; k++ )
   {
-    TilePos offset( k, k );
-    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos()-offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), k );
 
     std::map< int, HousePtr > vacantRoomPriority;
     for( auto house : houses )
@@ -234,7 +235,7 @@ bool Emigrant::_checkNearestHouse()
       int freeRoom = item.second->capacity() - item.second->habitants().count();
       if( freeRoom > 0 )
       {
-        Pathway pathway = PathwayHelper::create( pos(), item.second->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+        Pathway pathway = PathwayHelper::create( pos(), item.second->pos(), condition.mayWalk() );
 
         _updatePathway( pathway );
         go();
@@ -325,7 +326,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->states().population > populationOverVillage;
-  unsigned int houseLockId = tile::hash( _d->housePosLock );
+  unsigned int houseLockId = _d->housePosLock.hash();
 
   while( itHouse != hlist.end() )
   {
@@ -376,23 +377,16 @@ void Emigrant::_checkHouses(HouseList &hlist)
   }
 }
 
-EmigrantPtr Emigrant::create(PlayerCityPtr city )
-{
-  EmigrantPtr ret( new Emigrant( city ) );
-  ret->drop(); //delete automatically
-  return ret;
-}
-
 EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
                                  const Tile& startTile, std::string thinks )
 {
   if( peoples.count() > 0 )
   {
-    EmigrantPtr im = Emigrant::create( city );
-    im->setPeoples( peoples );
-    im->send2city( startTile );
-    im->setThinks( thinks );
-    return im;
+    auto emigrant = Walker::create<Emigrant>( city );
+    emigrant->setPeoples( peoples );
+    emigrant->send2city( startTile );
+    emigrant->setThinks( thinks );
+    return emigrant;
   }
 
   return EmigrantPtr();
@@ -420,7 +414,7 @@ void Emigrant::leaveCity( const Tile& tile )
 {
   setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),
-                                           _city()->borderInfo().roadExit,
+                                           _city()->getBorderInfo( PlayerCity::roadExit ).epos(),
                                            PathwayHelper::allTerrain );
 
   if( !pathway.isValid() )

@@ -39,7 +39,7 @@ class BaseServiceCreator : public ServiceCreator
 public:
   virtual SrvcPtr create( PlayerCityPtr city )
   {
-    return T::create( city );
+    return Srvc::create<T>( city );
   }
 
   virtual std::string serviceName() const { return T::defaultName(); }

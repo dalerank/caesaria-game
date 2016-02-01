@@ -36,7 +36,7 @@
     cities :
     {    
       Miletus : {
-        location : [ 1340, 760 ]
+        nation : "roman"
 
         land : true
         sea : true
@@ -47,7 +47,7 @@
       }
 
       Alexandria : {
-        location : [ 1450, 960 ]
+        nation : "roman"
 
         sea : true
         land : true
@@ -58,7 +58,7 @@
       }
 
       Hierosolyma : {
-        location : [ 1740, 920 ]
+        nation : "roman"
 
         sea : true
         land : true

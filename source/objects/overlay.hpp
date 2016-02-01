@@ -30,9 +30,9 @@
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
 #include "param.hpp"
+#include "metadata.hpp"
 #include "constants.hpp"
 
-namespace object{ class Info; }
 namespace ovconfig
 {
 enum { idxType=0, idxTypename, idxLocation, ixdCount };
@@ -41,6 +41,24 @@ enum { idxType=0, idxTypename, idxLocation, ixdCount };
 class Overlay : public Serializable, public ReferenceCounted
 {
 public:
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->initialize( object::Info::find( instance->type() ) );
+    instance->drop();
+
+    return instance;
+  }
+
+  template<typename ObjClass>
+  static SmartPtr<ObjClass> create( object::Type type )
+  {
+    return ptr_cast<ObjClass>( create( type ));
+  }
+
+  static OverlayPtr create( object::Type type );
+
   Overlay( const object::Type type, const Size& size=Size(1));
   virtual ~Overlay();
 
@@ -56,7 +74,6 @@ public:
   virtual bool isDestructible() const;
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
-
   virtual std::string errorDesc() const;
 
   virtual bool build( const city::AreaInfo& info );
@@ -70,10 +87,11 @@ public:
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
   virtual void changeDirection( gfx::Tile *masterTile, Direction direction);
+  virtual bool getMinimapColor( int& color1, int& color2 ) const;
 
   // graphic
   virtual void setPicture(gfx::Picture picture);
-  virtual void setPicture(const char* resource, const int index);
+  virtual void setPicture(const std::string& resource, const int index);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual const gfx::Picture& picture() const;
@@ -83,7 +101,7 @@ public:
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
-  virtual Desirability desirability() const;
+  virtual const Desirability& desirability() const;
 
   virtual void setState( Param name, double value );
 

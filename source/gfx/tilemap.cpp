@@ -18,10 +18,13 @@
 
 #include "tilemap.hpp"
 
-#include "gfx/helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tile_config.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
@@ -31,6 +34,34 @@ using namespace direction;
 
 namespace gfx
 {
+
+class SvkBorderConfig
+{
+public:
+  static SvkBorderConfig& instance() { static SvkBorderConfig inst; return inst; }
+
+  void init()
+  {
+    bordermaps = config::load( ":/svk_borders.model" );
+    coast_west = bordermaps.get( "coast_west" ).toMap();
+    coast_north = bordermaps.get( "coast_north" ).toMap();
+    coast_south = bordermaps.get( "coast_south" ).toMap();
+    coast_east = bordermaps.get( "coast_east" ).toMap();
+  }
+
+  Tile* addTile(const TilePos& pos, const Tilemap& tmap , int size);
+
+  VariantMap bordermaps;
+  VariantMap coast_west;
+  VariantMap coast_north;
+  VariantMap coast_south;
+  VariantMap coast_east;
+  VariantMap coast_00;
+  VariantMap coast_x0;
+  VariantMap coast_xx;
+  VariantMap coast_0x;
+};
+
 
 class TileRow : public TilesArray
 {
@@ -56,8 +87,12 @@ public:
   };
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
-  TilesArray svkBorder;
   TilesArray mapBorder;
+
+  struct {
+    std::map<int,Tile*> tiles;
+    bool enabled = true;
+  } svk;
 
   int size;  
   Direction direction;
@@ -82,7 +117,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = direction::north;
-  _d->virtWidth = tilemap::cellSize().width() * 2;
+  _d->virtWidth = config::tilemap.cell.size().width() * 2;  
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -153,39 +188,45 @@ TilesArray Tilemap::allTiles() const
 }
 
 const TilesArray& Tilemap::border() const { return _d->mapBorder; }
-const TilesArray& Tilemap::svkBorderTiles() const { return _d->svkBorder; }
-
-void Tilemap::addSvkBorder()
+void Tilemap::setSvkBorderEnabled(bool enabled)
 {
-  if( !_d->svkBorder.empty() )
-    return;
+  _d->svk.enabled = enabled;
+  clearSvkBorder();
+}
 
-  Rect r;
-  r.addInternalPoint( Tile( TilePos(-1, -1) ).mappos() );
-  r.addInternalPoint( Tile( TilePos(0, _d->size+1) ).mappos() );
-  r.addInternalPoint( Tile( TilePos(_d->size+1, _d->size+1) ).mappos() );
-  r.addInternalPoint( Tile( TilePos(_d->size+1, 0) ).mappos() );
+int findSvkBorderIndex( const Tile& tile, const VariantMap& items )
+{
+  const std::string& name = tile.picture().name();
+  int limiterIndex = name.find( "_" );
+  std::string str = name.substr( limiterIndex+1 );
 
-  for( int u=0; u < _d->size/2; u++ )
+  return items.get( str ).toInt();
+}
+
+void Tilemap::clearSvkBorder()
+{
+  _d->svk.tiles.clear();
+  SvkBorderConfig::instance().init();
+}
+
+Tile* Tilemap::svk_at(int i, int j) const
+{
+  if( !_d->svk.enabled )
+    return nullptr;
+
+  TilePos tpos( i, j );
+  SvkBorderConfig& svk = SvkBorderConfig::instance();
+
+  auto it = _d->svk.tiles.find( tpos.hash() );
+  if( it != _d->svk.tiles.end() )
   {
-    for( int i=0; i < _d->size; i++ )
-    {
-      TilePos tpos[4] = { TilePos( -_d->size/2 + u, _d->size-i ), TilePos( i, -u),
-                          TilePos( i, _d->size + _d->size/2 - 1 - u ), TilePos( _d->size + u, _d->size-1-i) };
-      Picture pics[4] = { at( 0, _d->size-i ).picture(), at( i, 0 ).picture(),
-                          at( i, _d->size -1 ).picture(), at( _d->size-1,  _d->size-1-i).picture() };
-
-      for( int idx=0; idx < 4; idx++ )
-      {
-        Tile t( tpos[idx] );
-
-        if( r.isPointInside( t.mappos() ) )
-        {
-          _d->svkBorder.push_back( new Tile( tpos[idx] ) );
-          _d->svkBorder.back()->setPicture( pics[idx] );
-        }
-      }
-    }
+    return it->second;
+  }
+  else
+  {
+    Tile* tl = svk.addTile( tpos, *this, _d->size );
+    _d->svk.tiles[ tpos.hash() ] = tl;
+    return tl;
   }
 }
 
@@ -510,7 +551,7 @@ void Tilemap::turnLeft()
   {
     const Impl::TurnInfo& ti = it.second;
 
-    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
+    const Picture& pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / _d->virtWidth;
 
     pSize = math::clamp<int>( pSize, 1, 10);
@@ -567,6 +608,7 @@ void Tilemap::Impl::resize(const int s)
 
   // resize the tile array
   TileGrid::resize( size );
+  SvkBorderConfig::instance().init();
 
   for( int i = 0; i < size; ++i )
   {
@@ -639,6 +681,100 @@ void Tilemap::Impl::checkCoastAfterTurn()
         tmp->changeDirection( 0, direction );
     }
   }
+}
+
+Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int size)
+{
+  Picture pic;
+  int i = tpos.i();
+  int j = tpos.j();
+  Tile* tl = nullptr;
+  if( i < 0 && j >= 0 && j < size )
+  {
+    const Tile& tile = tmap.at( 0, j );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_west ) );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i >= 0 && i < size && j < 0 )
+  {
+    const Tile& tile = tmap.at( i, 0 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_south ) );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i >= 0 && i < size && j >= size )
+  {
+    const Tile& tile = tmap.at( i, size-1 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_north ) );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i >= size && j >=0 && j < size )
+  {
+    const Tile& tile = tmap.at( size-1, j );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_east )  );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i < 0 && j < 0 )
+  {
+    const Tile& tile = tmap.at( 0, 0 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_00 )  );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i < 0 && j >= size )
+  {
+    const Tile& tile = tmap.at( 0, 0 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_0x )  );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i >= size && j >= size )
+  {
+    const Tile& tile = tmap.at( 0, 0 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_xx )  );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+  else if( i >= size && j < 0 )
+  {
+    const Tile& tile = tmap.at( 0, 0 );
+    tl = new Tile( tpos );
+
+    if( tile.terrain().coast ) pic.load( "land1a", findSvkBorderIndex( tile, coast_x0 )  );
+    else if( tile.terrain().road ) pic = pic.load( "land2a", 84 );
+    else if( tile.terrain().water ) pic.load( "land1a", 120 );
+    else pic.load( "land1a", math::clamp( math::random(61), 10, 61 ) );
+  }
+
+  if( pic.height() > config::tilemap.cell.picSize().height() )
+      tl->setFlag( Tile::tlTree, true );
+
+  tl->setPicture( pic );
+  return tl;
 }
 
 }//end namespace gfx

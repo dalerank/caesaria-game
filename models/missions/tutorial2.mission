@@ -1,6 +1,6 @@
 {
   version : 1
-  map : ":/maps/Brundisium.sav"
+  map : ":/maps/Tutorial2.sav"
   funds : 8000
   city.name : "Brundisium"
   player.rank : 1
@@ -25,7 +25,6 @@
     title : "##engineer##"
     may_continue : false
     short : "##tt2_short##"
-    maxHouseLevel : "hut"
     win.text : "##tt2_win_text##"
     sound.overview : "tutorial2_speech"
     sound.win      : "tutorial2_win_speech"
@@ -93,14 +92,21 @@
        enabled : true
        cities : {
           Capua : {
-            location : [ 820, 560 ]
-
             land : true
             sea : true
             available : true
 
+            nation : "roman"
+
             sells : { iron : 25 }
             buys : { wheat: 25, weapon: 15, pottery : 15 }
+          }
+
+          Londinium : {
+            available : true
+            nation : "gaul"
+            sea : false
+            available : false
           }
         }
       }

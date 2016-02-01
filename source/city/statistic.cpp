@@ -30,15 +30,19 @@
 #include "core/common.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
+#include "objects/religion.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "cityservice_disorder.hpp"
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
+#include "objects/fort.hpp"
 #include "objects/farm.hpp"
+#include "objects/education.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
+#include "world/trading.hpp"
 #include "city/states.hpp"
 #include <map>
 
@@ -61,7 +65,7 @@ float Statistic::_Balance::koeff() const
 int Statistic::_Entertainment::coverage(Service::Type service) const
 {
   int need = 0, have = 0;
-  HouseList houses = _parent.rcity.statistic().houses.find();
+  auto houses = _parent.rcity.statistic().houses.all();
   for( auto house : houses )
   {
     if( house->isEntertainmentNeed( service ) )
@@ -112,6 +116,32 @@ HouseList Statistic::_Houses::habitable() const
   return houses;
 }
 
+HouseList Statistic::_Houses::patricians( bool habitabl ) const
+{
+  HouseList houses = habitabl ? habitable() : all();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( !(*it)->spec().isPatrician() ) it = houses.erase( it );
+    else ++it;
+  }
+
+  return houses;
+}
+
+HouseList Statistic::_Houses::plebs(bool habitabl) const
+{
+  HouseList houses = habitabl ? habitable() : all();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( (*it)->spec().isPatrician() ) it = houses.erase( it );
+    else ++it;
+  }
+
+  return houses;
+}
+
 #if _MSC_VER >= 1300
 #define INIT_SUBSTAT(a) a({*this})
 #else
@@ -119,36 +149,30 @@ HouseList Statistic::_Houses::habitable() const
 #endif
 Statistic::Statistic(PlayerCity& c)
     : INIT_SUBSTAT(walkers),
-    INIT_SUBSTAT(objects),
-    INIT_SUBSTAT(tax),
-    INIT_SUBSTAT(workers),
-    INIT_SUBSTAT(population),
-    INIT_SUBSTAT(food),
-    INIT_SUBSTAT(services),
-    INIT_SUBSTAT(festival),
-    INIT_SUBSTAT(crime),
-    INIT_SUBSTAT(goods),
-    INIT_SUBSTAT(health),
-    INIT_SUBSTAT(military),
-    INIT_SUBSTAT(map),
-    INIT_SUBSTAT(houses),
-    INIT_SUBSTAT(entertainment),
-    INIT_SUBSTAT(balance),
-    rcity( c )
+      INIT_SUBSTAT(objects),
+      INIT_SUBSTAT(tax),
+      INIT_SUBSTAT(workers),
+      INIT_SUBSTAT(population),
+      INIT_SUBSTAT(food),
+      INIT_SUBSTAT(services),
+      INIT_SUBSTAT(festival),
+      INIT_SUBSTAT(crime),
+      INIT_SUBSTAT(goods),
+      INIT_SUBSTAT(health),
+      INIT_SUBSTAT(military),
+      INIT_SUBSTAT(map),
+      INIT_SUBSTAT(houses),
+      INIT_SUBSTAT(religion),
+      INIT_SUBSTAT(entertainment),
+      INIT_SUBSTAT(education),
+      INIT_SUBSTAT(balance),
+      rcity( c )
 {
 
 }
 
-void Statistic::update(const unsigned long time)
-{
-   walkers.cached.clear();
-}
-
-unsigned int Statistic::_Crime::level() const
-{
-  DisorderPtr ds = _parent.services.find<Disorder>();
-  return ds.isValid() ? ds->value() : 0;
-}
+void Statistic::update(const unsigned long time) { walkers.cached.clear(); }
+unsigned int Statistic::_Crime::level() const { return _parent.services.value<Disorder>(); }
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 {
@@ -170,17 +194,15 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   return wl;
 }
 
-int Statistic::_Walkers::count(walker::Type type, TilePos start, TilePos stop) const
+int Statistic::_Walkers::count(walker::Type type, const TilePos& start, const TilePos& stop) const
 {
   int result = 0;
-  TilePos stopPos = stop;
-
-  if( start == gfx::tilemap::invalidLocation() )
+  if( start == TilePos::invalid() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     result = utils::countByType( all, type );
   }
-  else if( stopPos == gfx::tilemap::invalidLocation() )
+  else if( stop == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     result = utils::countByType( wlkOnTile, type );
@@ -237,14 +259,16 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>( object::any );
+  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>();
 
   ret.current = 0;
   ret.need = 0;
   for( auto bld : buildings )
-    {
-      ret.current += bld->numberWorkers();
+  {
+    ret.current += bld->numberWorkers();
     ret.need += bld->maximumWorkers();
+
+    ret.map[ bld->workerType() ] += bld->numberWorkers();
   }
 
   return ret;
@@ -336,7 +360,7 @@ size_t Statistic::_Objects::count(object::Type type) const
   const OverlayList& buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && bld->type() == type )
+    if( object::typeOrDefault( bld ) == type )
       ret++;
   }
 
@@ -349,7 +373,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
     return OverlayList();
 
   Size size = overlay->size();
-  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
+  TilePos start = overlay->pos() - config::tilemap.unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
@@ -362,6 +386,22 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
       checked.insert( ov );
       ret.push_back( ov );
     }
+  }
+
+  return ret;
+}
+
+OverlayList Statistic::_Objects::neighbors(const TilePos& pos) const
+{
+  TilePos start = pos - config::tilemap.unitLocation();
+  TilePos stop = pos  + config::tilemap.unitLocation();
+  OverlayList ret;
+  gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
+  for( auto tile : tiles )
+  {
+    OverlayPtr ov = tile->overlay();
+    if( ov.isValid() && !ret.contain( ov ) )
+      ret.push_back( ov );
   }
 
   return ret;
@@ -502,13 +542,12 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   if( houses.size() > 0 )
     averageDistance /= houses.size();
 
-  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
+  return math::clamp<unsigned int>( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
 }
 
 unsigned int Statistic::_Health::value() const
 {
-  HealthCarePtr h = _parent.services.find<HealthCare>();
-  return h.isValid() ? h->value() : 100;
+  return _parent.services.value<HealthCare>( 100 );
 }
 
 int Statistic::_Military::months2lastAttack() const
@@ -517,10 +556,15 @@ int Statistic::_Military::months2lastAttack() const
   return ml.isValid() ? ml->monthFromLastAttack() : 0;
 }
 
+FortList Statistic::_Military::forts() const
+{
+  return _parent.objects.find<Fort>();
+}
+
 bool Statistic::_Goods::canImport(good::Product type) const
 {
   world::EmpirePtr empire = _parent.rcity.empire();
-  world::TraderouteList routes = empire->tradeRoutes( _parent.rcity.name() );
+  world::TraderouteList routes = empire->troutes().from( _parent.rcity.name() );
   bool haveImportWay = false;
   for( auto route : routes )
   {
@@ -569,6 +613,11 @@ unsigned int Statistic::_Houses::terribleNumber() const
   return ret;
 }
 
+HouseList Statistic::_Houses::all() const
+{
+  return _parent.objects.find<House>();
+}
+
 HouseList Statistic::_Houses::find(std::set<int> levels) const
 {
   HouseList houses = _parent.objects.find<House>();
@@ -582,6 +631,29 @@ HouseList Statistic::_Houses::find(std::set<int> levels) const
     {
       ret << it;
     }
+  }
+
+  return ret;
+}
+
+TempleList Statistic::_Religion::temples() const
+{
+  return _parent.objects.find<Temple>( object::group::religion );
+}
+
+TempleOracleList Statistic::_Religion::oracles() const
+{
+  return _parent.objects.find<TempleOracle>( object::oracle );
+}
+
+EducationBuildingList Statistic::_Education::find(Service::Type service) const
+{
+  EducationBuildingList ret = _parent.objects.find<EducationBuilding>();
+
+  for( auto it=ret.begin(); it != ret.end(); )
+  {
+    if( (*it)->serviceType() == service ) { ++it; }
+    else { it = ret.erase( it ); }
   }
 
   return ret;

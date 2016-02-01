@@ -61,7 +61,7 @@ public:
 
     if( event.EventType == sEventMouse  )
     {
-      if( event.mouse.type == mouseLbtnRelease )
+      if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
       {
         if( forbidenArea.isPointInside( event.mouse.pos() ) )
           return;
@@ -91,7 +91,7 @@ public signals:
 };
 
 ActionsBar::ActionsBar( Widget* parent)
-  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(CAESARIA_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(TEXT(AndroidActionsBar)), bgNone ), _d( new Impl )
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
@@ -132,7 +132,7 @@ bool ActionsBar::onEvent(const NEvent &event)
       return true;
     }
   }
-  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  else if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::moved )
   {
     return true;
   }
@@ -199,7 +199,7 @@ void ActionsHandler::_sendKeyboardEvent(int key, bool ctrl)
 
 void ActionsHandler::_showIngameMenu()
 {
-  IngameMenu* menu = IngameMenu::create( ui() );
+  IngameMenu* menu = &ui()->add<IngameMenu>();
   if( menu )
   {
     CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
@@ -232,8 +232,7 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  auto event = ShowTileInfo::create( _tilepos );
-  event->dispatch();
+  events::dispatch<ShowTileInfo>( _tilepos );
 }
 
 }//end namespace tablet

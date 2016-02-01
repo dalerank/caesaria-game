@@ -64,9 +64,9 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
   }
 
   VariantMap goodsVm = _options.get( "goods" ).toMap();
-  for( auto& it : goodsVm )
+  for( const auto& it : goodsVm )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::toType( it.first );
     if( gtype != good::none )
     {
       VariantMap goodInfo = it.second.toMap();

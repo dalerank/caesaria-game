@@ -30,6 +30,7 @@ enum AchievementType
   achievementNewVillage = 0,
   achievementNewGraphics = 1,
   achievementFirstWin = 2,
+  achievementClerkEscape = 3,
   achv_count
 };
 
@@ -43,12 +44,13 @@ void init();
 
 void evaluateAchievement( AchievementType achivId );
 void missionWin(const std::string& name);
+void missionLose(const std::string& name);
 bool isAchievementReached( AchievementType achivId );
 bool isStatsReceived();
 gfx::Picture achievementImage( AchievementType achivId );
 std::string achievementCaption( AchievementType achivId );
 std::string language();
-
+std::string ld_prefix();
 std::string userName();
 const gfx::Picture& userImage();
 

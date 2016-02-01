@@ -1,0 +1,16 @@
+{  
+  geometry : [ 0, 0, 540, 480 ]
+  bgtype : "whiteFrame"
+
+  lbTitle#Label : {
+    geometry : [ 10, 10, "100%-10", 40 ]
+    text : "##adv_salaries_title##"
+    text.align : [ "center", "center" ]
+    font : "FONT_5"
+  }
+
+  grayArea#Label : {
+    geometry : [ 15, 40, "100%-15", "100%-15" ]
+    bgtype : "blackFrame"
+  }
+}

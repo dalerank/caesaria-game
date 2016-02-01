@@ -27,9 +27,8 @@ namespace gfx { class CartAnimation; }
 /** This walker delivers goods */
 class CartSupplier : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static CartSupplierPtr create( PlayerCityPtr city );
-
   void setDestinationBuilding( BuildingPtr building );
   void setBaseBuilding( BuildingPtr building );
     

@@ -84,7 +84,7 @@ Renderer::ModePtr BuildMode::create(object::Type type)
 
   auto md = object::Info::find( type );
 
-  newCommand->_d->overlay = TileOverlayFactory::instance().create( type );
+  newCommand->_d->overlay = Overlay::create( type );
   newCommand->_setFlag( multibuild, false );
   newCommand->_setFlag( border, false );
   newCommand->_setFlag( assign2road, false );
@@ -127,15 +127,29 @@ Renderer::ModePtr EditorMode::create(object::Type type)
 {
   EditorMode* newCommand = new EditorMode();
 
-  newCommand->_d->overlay = TileOverlayFactory::instance().create( type );
+  newCommand->_d->overlay = Overlay::create( type );
   newCommand->_setFlag( multibuild, false );
   newCommand->_setFlag( border, false );
   newCommand->_setFlag( assign2road, false );
   newCommand->_setFlag( checkWalkers, false );
 
-  if( type == object::terrain )
+  switch( type )
   {
+  case object::terrain:
+  case object::tree:
+  case object::water:
+  case object::rock:
+  case object::meadow:
+  case object::plateau:
     newCommand->_setFlag( multibuild, true );
+  break;
+
+  case object::river:
+    newCommand->_setFlag( multibuild, true );
+    newCommand->_setFlag( border, true );
+  break;
+
+  default: break;
   }
 
   Renderer::ModePtr ret( newCommand );

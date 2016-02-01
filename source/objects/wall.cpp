@@ -68,16 +68,11 @@ void Wall::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
+    WallList walls = area.overlays<Wall>();
 
-    for( auto tile : area )
-    {
-      WallPtr wall = tile->overlay<Wall>();
-      if( wall.isValid()  )
-      {
-        wall->updatePicture( _city() );
-      }
-    }
+    for( auto wall : walls )
+      wall->updatePicture( _city() );
   }
 }
 

@@ -95,15 +95,15 @@ void Shipyard::timeStep(const unsigned long time)
 
   if( progress() >= 100.0 )
   {
-    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )
+    if( store().freeQty( produce().type() ) > 0
         && _d->boat.isNull() )
     {
       updateProgress( -100.f );
 
-      _d->boat = FishingBoat::create( _city() );
+      _d->boat = Walker::create<FishingBoat>( _city() );
       _d->boat->send2city( this, landingTile().pos() );
     }
-    }
+  }
 }
 
 bool Shipyard::build(const city::AreaInfo& info)

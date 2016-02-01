@@ -86,15 +86,25 @@ void Picture::save(const std::string& filename)
     IMG_SavePNG( filename.c_str(), _d->surface, -1 );
 }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
-void Picture::load( const std::string& group, const int id )
+#ifndef GAME_DISABLE_PICTUREBANK
+Picture& Picture::load( const std::string& group, const int id )
 {
   *this = PictureBank::instance().getPicture( group, id );
+  return *this;
 }
 
-void Picture::load( const std::string& filename )
+Picture& Picture::withFallback(const std::string& group, const int id)
+{
+  if( !isValid() )
+    load( group, id );
+
+  return *this;
+}
+
+Picture& Picture::load( const std::string& filename )
 {
   *this = PictureBank::instance().getPicture( filename );
+  return *this;
 }
 #endif
 
@@ -184,7 +194,7 @@ void Picture::update()
     return;
   }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
+#ifndef GAME_DISABLE_PICTUREBANK
   if( _d->surface && _d->opengltx > 0 )
   {    
     Engine::instance().loadPicture( *this, false );
@@ -230,7 +240,7 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
   }
 }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
+#ifndef GAME_DISABLE_PICTUREBANK
 Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
 {
   _d->drop();
@@ -239,20 +249,37 @@ Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
 
 Picture::Picture(const std::string& filename )  : _d( new PictureImpl )
 {
-   _d->drop();
+  _d->drop();
   load( filename );
 }
 #endif
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
 
-Picture& Picture::draw(gfx::Picture pic, const Point& point, const Size& size)
+Picture& Picture::draw(Picture pic, const Point& point, const Size& size)
 {
   if( pic.surface() && _d->surface && _d->texture )
   {
     SDL_Rect rect = { (short)point.x(), (short)point.y(),
                       (unsigned short)size.width(), (unsigned short)size.height() };
     SDL_BlitSurface( pic.surface(), nullptr, _d->surface, &rect );
+
+    update();
+  }
+
+  return *this;
+}
+
+Picture& Picture::draw(Picture pic, const Rect& src, const Rect& dst)
+{
+  if( pic.surface() && _d->surface && _d->texture )
+  {
+    SDL_Rect srcRect = { (short)src.left(), (short)src.top(),
+                         (unsigned short)src.width(), (unsigned short)src.height() };
+    SDL_Rect dstRect = { (short)dst.left(), (short)dst.top(),
+                         (unsigned short)dst.width(), (unsigned short)dst.height() };
+
+    SDL_BlitSurface( pic.surface(), &srcRect, _d->surface, dst.width() > 0 ? &dstRect : nullptr );
 
     update();
   }

@@ -27,13 +27,12 @@ class Desirability : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void beforeRender( gfx::Engine& engine );
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-  virtual void handleEvent(NEvent& event);
-private:
   Desirability( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void onEvent( const NEvent& event);
+private:
 
   class Impl;
   ScopedPtr<Impl> _d;

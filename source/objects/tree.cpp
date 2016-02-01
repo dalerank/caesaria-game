@@ -17,7 +17,7 @@
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
@@ -40,6 +40,11 @@ public:
   State state;
   bool spreadFire;
   DateTime lastTimeGrow;
+  struct {
+    enum { size=4 };
+    int itiles[size] = {0x6B8231, 0x103808, 0x103008, 0x737931};
+    int jtiles[size] = {0x102008, 0x737929, 0x526921, 0x084910};
+  } mmapColors;
 };
 
 Tree::Tree()
@@ -51,6 +56,8 @@ Tree::Tree()
   _d->state = State::well;
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
+
+  setPicture( info().randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -87,23 +94,21 @@ bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build( const city::AreaInfo& info )
+bool Tree::build( const city::AreaInfo& rinfo )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
-  auto& md = object::Info::find( object::tree );
-  if( md.isMyPicture( picname ) )
-  {
-    _picture().load( picname );
-  }
-  else
-  {
-    setPicture( md.randomPicture(1) );
-  }
-  _d->flat = (picture().height() <= tilemap::cellPicSize().height());
-  return Overlay::build( info );
+  std::string txName = imgid::toResource( rinfo.city->tilemap().at( rinfo.pos ).imgId() );
+  if( info().havePicture( txName ) )
+    _picture().load( txName );
+
+  if( !picture().isValid() )
+      setPicture( info().randomPicture(1) );
+
+  _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
+  return Overlay::build( rinfo );
 }
 
 void Tree::save(VariantMap& stream) const
@@ -164,8 +169,7 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
-                                    .overlays();
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
   for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
@@ -175,14 +179,14 @@ void Tree::_burnAround()
 
 void Tree::grow()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  TilesArray tiles = _map().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
   for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
         city::AreaInfo areainfo( _city(), tile->pos() );
@@ -213,4 +217,12 @@ void Tree::_die()
   _d->flat = false;
   _animation().clear();
   _fgPictures().clear();
+}
+
+bool Tree::getMinimapColor(int& color1, int& color2) const
+{
+  const int t = (pos().i() + pos().j()) % 3;
+  color1 = _d->mmapColors.itiles[ t ];
+  color2 = _d->mmapColors.jtiles[ t+1 ];
+  return true;
 }

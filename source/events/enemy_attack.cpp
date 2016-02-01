@@ -37,10 +37,10 @@ using namespace gfx;
 namespace events
 {
 
-CAESARIA_LITERALCONST(items)
-CAESARIA_LITERALCONST(target)
-CAESARIA_LITERALCONST(count)
-CAESARIA_LITERALCONST(random)
+GAME_LITERALCONST(items)
+GAME_LITERALCONST(target)
+GAME_LITERALCONST(count)
+GAME_LITERALCONST(random)
 
 REGISTER_EVENT_IN_FACTORY(EnemyAttack, "enemy_attack" )
 
@@ -85,7 +85,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   for( auto& item : _d->items )
   {
     VariantMap soldiers = item.second.toMap();
-    TilePos exitPos = game.city()->borderInfo().roadExit;
+    const Tile& exitTile = game.city()->getBorderInfo( PlayerCity::roadExit );
 
     std::string soldierType = soldiers.get( "type" ).toString();
     int soldierNumber = soldiers.get( literals::count );
@@ -111,14 +111,14 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
         if( tile )
           location = tile->pos();
 
-        Pathway path = PathwayHelper::create( location, exitPos, PathwayHelper::allTerrain );
+        Pathway path = PathwayHelper::create( location, exitTile.epos(), PathwayHelper::allTerrain );
         if( path.isValid() )
           break;
      }
 
       if( tryCount >= 10 )
       {
-        location = game.city()->borderInfo().roadEntry;
+        location = game.city()->getBorderInfo( PlayerCity::roadEntry ).epos();
       }
     }
     else
@@ -129,7 +129,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
     {
-      auto enemy = WalkerManager::instance().create<EnemySoldier>( wtype, game.city() );
+      EnemySoldierPtr enemy = Walker::create<EnemySoldier>( wtype, game.city() );
       if( enemy.isValid() )
       {
         enemy->send2City( location );
@@ -175,8 +175,7 @@ VariantMap EnemyAttack::save() const
 
 EnemyAttack::EnemyAttack() : __INIT_IMPL(EnemyAttack)
 {
-  __D_IMPL(_d,EnemyAttack)
-  _d->isDeleted = false;
+  _dfunc()->isDeleted = false;
 }
 
 }//end namespace events

@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 
 namespace gfx
 {
@@ -25,6 +25,17 @@ bool TilesArray::contain(const TilePos &tilePos) const
   for( auto tile : *this )
   {
     if( tile->epos() == tilePos )
+      return true;
+  }
+
+  return false;
+}
+
+bool TilesArray::contain(Tile* a) const
+{
+  for( auto tile : *this )
+  {
+    if( tile == a )
       return true;
   }
 
@@ -81,7 +92,7 @@ TilesArray::Corners TilesArray::corners() const
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( INT_MAX, 0 );
   for( auto tile : *this )
@@ -97,7 +108,7 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( 0, INT_MAX );
   for( auto tile : *this )
@@ -131,6 +142,15 @@ TilesArray &TilesArray::append(Tile *a)
 {
   push_back( a );
   return *this;
+}
+
+bool TilesArray::appendOnce(Tile* a)
+{
+  if( contain( a ) )
+    return false;
+
+  push_back( a );
+  return true;
 }
 
 TilesArray TilesArray::walkables(bool alllands) const
@@ -181,6 +201,26 @@ TilesArray TilesArray::terrains() const
   return ret;
 }
 
+TilesArray TilesArray::masters() const
+{
+  TilesArray masterTiles;
+  for( auto tile : *this )
+    if( tile->master() != 0 )
+      masterTiles.appendOnce( tile->master() );
+
+  return masterTiles;
+}
+
+TilesArray TilesArray::children(Tile* master) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->master() == master )
+      ret.push_back( tile );
+
+  return ret;
+}
+
 TilesArray TilesArray::waters() const
 {
   TilesArray ret;
@@ -204,9 +244,18 @@ TilesArray& TilesArray::remove( const TilePos& pos)
   return *this;
 }
 
-TilePosArray TilesArray::locations() const
+PointsArray TilesArray::mappositions() const
 {
-  TilePosArray ret;
+  PointsArray ret;
+  for( auto tile : *this )
+    ret << tile->mappos();
+
+  return ret;
+}
+
+Locations TilesArray::locations() const
+{
+  Locations ret;
   for( auto tile : *this )
     ret << tile->pos();
 
@@ -226,7 +275,7 @@ void TilesArray::pop_front() { erase( this->begin() ); }
 
 Tile* TilesArray::random() const
 {
-  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : 0;
+  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : nullptr;
 }
 
 }//end namespace

@@ -25,7 +25,7 @@ public:
 
   virtual std::string editText() const;
 
-  virtual void setFont( Font font );
+  virtual void setFont( const Font& font );
 
   virtual void setEditText(const std::string& text);
 

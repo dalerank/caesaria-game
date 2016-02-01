@@ -27,7 +27,7 @@
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
 #include "game/service.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilearea.hpp"
 #include "industry.hpp"
@@ -54,20 +54,28 @@ public:
     SmartPtr<T> find( walker::Type type, Walker::UniqueId id ) const;
 
     template<class T>
-    Pathway freeTile( TilePos target, TilePos currentPos, const int range ) const;
+    Pathway freeTile( TilePos target, const TilePos& currentPos, const int range ) const;
+
+    template<class T>
+    SmartList< T > neighbors( TilePos start, walker::Type type=walker::any ) const;
+
+    template<class T>
+    SmartList< T > find( walker::Type type,
+                         int radius,
+                         const TilePos& pos ) const;
 
     template< class T >
     SmartList< T > find( walker::Type type,
-                         TilePos start=gfx::tilemap::invalidLocation(),
-                         TilePos stop=gfx::tilemap::invalidLocation() ) const;
+                         const TilePos& start=TilePos::invalid(),
+                         const TilePos& stop=TilePos::invalid() ) const;
 
     template< class T >
-    int count( TilePos start=gfx::tilemap::invalidLocation(),
-               TilePos stop=gfx::tilemap::invalidLocation() ) const;
+    int count( TilePos start=TilePos::invalid(),
+               TilePos stop=TilePos::invalid() ) const;
 
     int count( walker::Type type,
-               TilePos start=gfx::tilemap::invalidLocation(),
-               TilePos stop=gfx::tilemap::invalidLocation() ) const;
+               const TilePos& start=TilePos::invalid(),
+               const TilePos& stop=TilePos::invalid() ) const;
 
 
     Statistic& _parent;
@@ -100,7 +108,13 @@ public:
     SmartList< T > find( object::TypeSet types ) const;
 
     template< class T >
-    SmartList< T > find( const object::Type type, TilePos start, TilePos stop ) const;
+    SmartList< T > find( const object::Type type, const TilePos& start, const TilePos& stop ) const;
+
+    template< class T >
+    SmartList< T > find( const TilePos& center, int radius ) const;
+
+    template< class T >
+    SmartList< T > find( const object::Type type, const TilePos& center, int radius ) const;
 
     template< class T >
     SmartPtr< T > next( SmartPtr< T > current ) const;
@@ -120,6 +134,7 @@ public:
     enum { maxLaborDistance=8 };
 
     OverlayList neighbors( OverlayPtr overlay, bool v ) const;
+    OverlayList neighbors(const TilePos& pos ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
     int laborAccess( WorkingBuildingPtr wb ) const;    
 
@@ -139,6 +154,7 @@ public:
   {
     int current = 0;
     int need = 0;
+    std::map<walker::Type,int> map;
   };
 
   struct _Workers
@@ -175,8 +191,8 @@ public:
 
   struct _Services
   {
-    template<class T>
-    SmartPtr<T> find() const;
+    template<class T> SmartPtr<T> find() const;
+    template<class Srvc> int value( int defaultValue = 0 ) const;
 
     Statistic& _parent;
   } services;
@@ -225,6 +241,7 @@ public:
   struct _Military
   {
     int months2lastAttack() const;
+    FortList forts() const;
 
     Statistic& _parent;
   } military;
@@ -249,14 +266,25 @@ public:
     static const int pop4shacksCalc=300;
     static const int minShacksDesirability =-10;
 
+    HouseList all() const;
     HouseList find( std::set<int> levels=std::set<int>() ) const;
     HouseList ready4evolve(const object::TypeSet& checkTypes) const;
     HouseList ready4evolve(const object::Type checkTypes) const;
     HouseList habitable() const;
+    HouseList patricians(bool habitabl) const;
+    HouseList plebs(bool habitabl) const;
     unsigned int terribleNumber() const;
 
     Statistic& _parent;
   } houses;
+
+  struct _Religion
+  {
+    TempleList temples() const;
+    TempleOracleList oracles() const;
+    Statistic& _parent;
+  } religion;
+
 
   struct _Entertainment
   {
@@ -264,6 +292,13 @@ public:
 
     Statistic& _parent;
   } entertainment;
+
+  struct _Education
+  {
+    EducationBuildingList find(Service::Type service) const;
+
+    Statistic& _parent;
+  } education;
 
   struct _Balance
   {
@@ -278,7 +313,22 @@ public:
 
 /** Implementations **/
 template< class T >
-inline SmartList< T > Statistic::_Objects::find( const object::Type type, TilePos start, TilePos stop ) const
+inline SmartList< T > Statistic::_Objects::find( const object::Type type, const TilePos& center, int radius ) const
+{
+  TilePos offset( radius, radius );
+  return find<T>( type, center - offset, center + offset );
+}
+
+template< class T >
+inline SmartList< T > Statistic::_Objects::find( const TilePos& center, int radius ) const
+{
+  TilePos offset( radius, radius );
+  return find<T>( object::any, center - offset, center + offset );
+}
+
+
+template< class T >
+inline SmartList< T > Statistic::_Objects::find( const object::Type type, const TilePos& start, const TilePos& stop ) const
 {
   SmartList< T > ret;
 
@@ -286,9 +336,9 @@ inline SmartList< T > Statistic::_Objects::find( const object::Type type, TilePo
   for( auto tile : area )
   {
     SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
-    if( obj.isValid() && (obj->type() == type || type == object::any) )
+    if( object::typeOrDefault( obj ) == type || type == object::any )
     {
-      ret.push_back( obj );
+      ret.addIfValid( obj );
     }
   }
 
@@ -321,7 +371,7 @@ inline SmartPtr<T> Statistic::_Walkers::find( walker::Type type, Walker::UniqueI
 }
 
 template<class T>
-inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos, const int range ) const
+inline Pathway Statistic::_Walkers::freeTile( TilePos target, const TilePos& currentPos, const int range ) const
 {
   for( int currentRange=1; currentRange <= range; currentRange++ )
   {
@@ -352,19 +402,31 @@ inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos
 }
 
 template< class T >
+inline SmartList<T> Statistic::_Walkers::neighbors( TilePos start, walker::Type type ) const
+{
+  static TilePos offset( 1, 1 );
+  return find<T>( type, start - offset, start + offset );
+}
+
+template< class T >
+SmartList<T> Statistic::_Walkers::find(walker::Type type, int radius, const TilePos& pos) const
+{
+  TilePos offset( radius, radius);
+  return find<T>( type, pos - offset, pos + offset );
+}
+
+template< class T >
 inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
-                                               TilePos start, TilePos stop ) const
+                                               const TilePos& start, const TilePos& stop ) const
 {
   WalkerList walkersInArea;
 
-  TilePos stopPos = stop;
-
-  if( start == gfx::tilemap::invalidLocation() )
+  if( start == TilePos::invalid() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
   }
-  else if( stopPos == gfx::tilemap::invalidLocation() )
+  else if( stop == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
@@ -395,12 +457,12 @@ inline int Statistic::_Walkers::count( TilePos start, TilePos stop ) const
   int result = 0;
   TilePos stopPos = stop;
 
-  if( start == gfx::tilemap::invalidLocation() )
+  if( start == TilePos::invalid() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     result = all.count<T>();
   }
-  else if( stopPos == gfx::tilemap::invalidLocation() )
+  else if( stopPos == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     result = wlkOnTile.count<T>();
@@ -512,7 +574,7 @@ inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
   auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && (bld->type() == type || type == object::any) )
+    if( object::typeOrDefault( bld ) == type || type == object::any )
       ret.addIfValid( bld.as<T>() );
   }
 
@@ -568,6 +630,13 @@ inline SmartPtr<T> Statistic::_Services::find() const
   return ptr_cast<T>( _parent.rcity.findService( T::defaultName() ) );
 }
 
+template<class Srvc>
+int Statistic::_Services::value( int defaultValue ) const
+{
+  auto ptr = find<Srvc>();
+  return ptr.isValid() ? ptr->value() : defaultValue;
+}
+
 template< class T >
 SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
 {
@@ -576,7 +645,7 @@ SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
   for( auto ov : overlays )
   {
     SmartPtr< T > b = ov.as<T>();
-    if( b.isValid() && b->produceGoodType() == goodtype )
+    if( b.isValid() && b->produce().type() == goodtype )
     {
       ret.push_back( b );
     }
@@ -626,7 +695,7 @@ inline bool Statistic::_Map::isTileBusy( const TilePos& p, WalkerPtr caller, boo
 template< class T >
 inline gfx::TilesArray Statistic::_Map::around( T overlay ) const
 {
-  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
+  TilePos start = overlay->pos() - config::tilemap.unitLocation();
   TilePos stop = start + TilePos( overlay->size().width(), overlay->size().height() );
   return perimetr( start, stop );
 }

@@ -1,913 +1,2227 @@
-{
-"##some_food_on_next_month##":"- Ai puțină mâncare pentru luna următoare"
-"##have_no_food_on_next_month##":"- Nu mai ai mâncare pentru luna următoare"
-"##small_food_on_next_month##":"- Foarte puțină hrană pentru luna următoare"
-"##city_barbarian_off_tlp##":"Barbarii nu vor ataca orașul tău"
-"##city_barbarian_off##":"Barbari : OPRIT"
-"##city_barbarian_on##":"Barbari : PORNIT"
-"##city_barbarian_on_tlp##":"Barbarii pot ataca orașul tău"
-"##city_c3rules_off_tlp##":"Folosește regulile Cezar III(și mai noi)"
-"##city_c3rules_on_tlp##":"Folosește doar regulile Caesar III"
-"##city_c3rules_off##":"regulile C3+ altele noi"
-"##city_c3rules_on##":"doar regurile C3"
-"##city_df_usual_tlp##":"Dificultate, crime și taxe normale"
-"##city_df_hard_tlp##":"Crește riscul de revoltă, taxe reduse"
-"##city_df_nicety_tlp##":"Risc crescut de răscoală, taxe reduse, Zeii sunt razbunători"
-"##city_df_impossible_tlp##":"Trebuie sa gândești atent fiecare pas, salvează fiecare dinar"
-"##city_df_fun_tlp##":"Fără revolte în oraș, Zeii sunt binevoitori și taxele sunt bineprimite"
-"##city_df_easy_tlp##":"Risc scăzut de revoltă, taxele sunt mari, zeii nu intervin în oraș"
-"##city_df_simple_tlp##":"Risc normal de răscoală, fără corupție, taxe normale"
-"##city_df_usual##":"Dificultate normală"
-"##city_df_hard##":"Greu de jucat"
-"##city_df_nicety##":"Foarte greu de jucat"
-"##city_df_impossible##":"Imposibil de jucat"
-"##city_df_fun##":"Pentru distracție"
-"##city_df_easy##":"Ușor de jucat"
-"##city_df_simple##":"Simplu de jucat"
-"##city_opts_god_on_tlp##":"Zeii interferează traiul orășenilor"
-"##city_opts_god_off_tlp##":"Zeii nu sunt interesați de orașul tău"
-"##city_chastener_on_tlp##":"Cezar ar putea trimite Legiune Morții"
-"##city_chastener_off_tlp##":"Cezar nu va trimite Legiune Morții"
-"##city_chastener_on##":"Legiunea lui Cezar: PORNIT"
-"##city_chastener_off##":"Legiunea lui Cezar : OPRIT"
-"##city_androidbar_on_tlp##":"Arată fereastra pentru dispozitive mobile"
-"##city_androidbar_off_tlp##":"Panoul pentru dispozitive mobile nu apare"
-"##city_androidbar_on##":"Reclame: ARATĂ"
-"##city_androidbar_off##":"Reclame: ASCUNDE"
-"##city_debug_on_tlp##":"Meniu trișare activ"
-"##city_debug_off_tlp##":"Meniu trișare ascuns"
-"##city_debug_on##":"Meriu trișare: ARATĂ"
-"##city_debug_off##":"Menis trișare: ASCUNS"
-"##city_destroy_epdh_off_tlp##":"Prefecții ard numai casele bolnavilor"
-"##city_destroy_epdh_on_tlp##":"Prefecții ard și casele vecinilor bolnavilor"
-"##city_forest_fire_on_tlp##":"Pădurea poate lua foc de la clădiri"
-"##city_forest_fire_off_tlp##":"Pădurea nu poate lua foc de la clădiri"
-"##city_forest_grow_off_tlp##":"Pădurea nu va crește"
-"##city_forest_grow_on_tlp##":"Pădurea va crește"
-"##city_highlight_bld_off_tlp##":"Clădirea selectată nu este evidențiată"
-"##city_highlight_bld_on_tlp##":"Clădirea selectată este evidențiată"
-"##city_destroy_epdh_off##":"Reguli de epidemie extinsă"
-"##city_destroy_epdh_on##":"Reguli de epidemie simplă"
-"##city_forest_fire_on##":"Pădurea : poate arde"
-"##city_forest_fire_off##":"Pădurea: nu arde"
-"##city_forest_grow_off##":"Pădurea : nu crește"
-"##city_forest_grow_on##":"Pădurea : crește"
-"##city_highlight_bld_off##":"Clădirea sel. : evidențiată"
-"##city_highlight_bld_on##":"Clădirea sel. : neevidențiată"
-"##city_zoominv_on_tlp##":"Zoom normal"
-"##city_zoominv_off_tlp##":"Zoom inversat"
-"##city_lockinfo_on_tlp##":"Ferestrele informative pot fi mutate"
-"##city_lockinfo_off_tlp##":"Ferestrele informative nu pot fi mutate"
-"##city_mapmoving_lmb_tlp##":"Plimbă-te pe hartă dacă ții apăsat click stânga"
-"##city_mapmoving_mmb_tlp##":"Plimbă-te pe hartă dacă ții apăsat click mijlociu"
-"##city_tooltips_on_tlp##":"Arată sugestii în oraș"
-"##city_tooltips_off_tlp##":"Nu arăta sugestii în oraș"
-"##city_batching_on_tlp##":"Include accelerarea extragerii texturilor pe ecran"
-"##city_batching_off_tlp##":"Desenează texturile jocului ca în Caesar III"
-"##city_ccuseai_on_tlp##":"Orașele romane se poat dezvolta"
-"##city_ccuseai_off_tlp##":"Dezvoltarea orașelor romane doar în secenariu limitat"
-"##city_lockinfo_on##":"Fereastră informativă : BLOCATĂ"
-"##city_lockinfo_off##":"Fereastră informativă : LIBERĂ"
-"##city_mapmoving_lmb##":"Mișcare pe hartă : Click stânga"
-"##city_mapmoving_mmb##":"Mișcare pe hartă : Click mijlociu"
-"##city_tooltips_on##":"Arată sugestii : PORNIT"
-"##city_tooltips_off##":"Arată sugestii : OPRIT"
-"##city_batching_on##":"Pachet : PORNIT"
-"##city_batching_off##":"Pachet : OPRIT"
-"##city_ccuseai_on##":"Inteligență artificială"
-"##city_ccuseai_off##":"Script"
-"##city_warnings_on_tlp##":"Include mesajele de depanare"
-"##city_warnings_off_tlp##":"Mesajele de depanare sunt dezactivate"
-"##city_zoom_on_tlp##":"Zoomul este activat"
-"##city_zoom_off_tlp##":"Zoomul este dezactivat"
-"##dn_for_open_trade##":"pentru a deschide rută comercială"
-"##target_population_is##":"(Populația țintă este"
-"##no_target_population##":"(Fără populație țintă)"
-"##mainmenu_mcmxcviii##":"MCMXCVIII"
-"##age_uc##":"UC"
-"##actor_gods_angry##":"Aaagh !! Zeii sunt supărat! Suntem condamnați cu toții!"
-"##ovrm_aborigen##":"indigen"
-"##month_8_short##":"Aug"
-"##mainmenu_credits##":"Mulțumiri"
-"##extm_administration_tlp##":"Administrație și Guvern"
-"##ovrm_academy##":"Academie"
-"##colleges##":"Academii"
-"##academy##":"Academie"
-"##aqueduct##":"Apeduct"
-"##aqueduct_info##":"Apeductele permit constructia rezervoarelor ce nu au o sursă de apă lângă, permițând fântânilor să ofere apă potabilă în diversele zone ale orașului"
-"##actor##":"Actor"
-"##advchief_haveprofit##":"În acest an activele au crescut cu"
-"##advchief_havedeficit##":"În acest an activele au scăzut cu"
-"##granery##":"Grânar"
-"##granary_holds##":"Grânarul deține"
-"##granaries_holds##":"Cereale deținute"
-"##amphitheater##":"Amfiteatru"
-"##amphitheatres##":"Amfiteatre"
-"##ovrm_amphitheater##":"Amfiteatre"
-"##amphitheaters##":"Amfiteatre"
-"##month_4_short##":"Apr"
-"##arabian_stallions##":"Armăsari arăbești"
-"##architect##":"Arhitect"
-"##balance##":"Balans"
-"##ballista##":"Balistă"
-"##ovrm_baths##":"Bai"
-"##baths##":"Baie publică"
-"##bathlady##":"Angajat al unei băi publice"
-"##bath_1##":"Baie publică"
-"##bath##":"Baie publică"
-"##tower_may_build_on_thick_walls##":"Puteți construi turnuri doar pe ziduri groase"
-"##tower##":"Turn"
-"##engineering_post_no_workers##":"Cu nici ingineri din personal, acest birou în sine este în pericol de prăbușire."
-"##chatioteer_school_no_workers##":"Fără nici un constructor, nici un car de curse nu poate fi produs. Hipodromul ar putea devini neoperațional"
-"##barracks_bad_weapons_bad_workers##":"Fără personal nu putem furniza armament, ne luptăm pentru a instrui chiar și cele mai de bază trupe."
-"##fort_legionaries_no_workers##":"Fără personal, nu putem antrena nici un singur recrut nou. Marte, ajută-ne în vremuri de război!"
-"##militaryAcademy_no_workers##":"Cu nici personal, suntem în imposibilitatea de a îmbunătății abilitățile de soldaților noi din oraș. Ei vor trebui să meargă la forturile lor și să spere pentru ce e mai bun."
-"##forum_no_workers##":"Fără personal, acest birou nu ajută deloc la finanțele orașului"
-"##prefecture_no_workers##":"Fără personal această stație este o tință pentru vandali."
-"##tower_no_workers##":"Fără soldați nu putem patrula pe zidurile orașului"
-"##gladiator_pit_no_workers##":"Fără antrenor, această școală nu poate antrena gladiatori noi."
-"##lion_pit_no_workers##":"Fără dresor, această groapă nu va avea lei pentru jocuri"
-"##idle_factory_in_city##":"Industrie inactivă în oraș"
-"##idle_factories_in_city##":"Industrii inactive în oraș."
-"##wt_homeless##":"Fără casă"
-"##extm_security_tlp##":"Securitate"
-"##senatepp_unemployment##":"Somaj"
-"##migration_lack_workless##":"Șomajul scade numărul dvs. de imigranți."
-"##priest_high_workless##":"Șomajul este îngrijor de mare aici"
-"##advemployer_panel_workless##":"Șomeri"
-"##rioter_in_city_title##":"Revoltă în oraș"
-"##rioter_in_city_text##":"Revoltă în oraș"
-"##library##":"Bibliotecă"
-"##wt_librarian##":"Bibliotecar"
-"##ovrm_library##":"Bibliotecă"
-"##libraries##":"Biblioteci"
-"##favor##":"Favoare"
-"##senatepp_favour_rating##":"Favoare"
-"##wndrt_favour##":"Favoare"
-"##thanks_to##":"Mulțumită lui:"
-"##rome_gratitude_request_title##":"Recunoștința Împăratului"
-"##carthago_win_text##":"Mulțumită extraordinarei performanțe, amenințarea Carthagienilor nu mai există de acum încolo. Vechii noștrii inamici sunt acum loiali Romei, cel puțin acei iși mai trag răsuflarea!"
-"##advemp_emperor_favour##":"Favor Imperial"
-"##blessing_of_venus_title##":"O binecuvântare de la Venus(zeița Frumuseții)"
-"##spirit_of_mars_title##":"O binecuvântare de la Marte(zeul Războiului)"
-"##blessing_of_mercury_title##":"O binecuvântare de la Mercurius(zeul Negustorilor, hoților)"
-"##blessing_of_neptune_title##":"O binecuvântare de la Neptun(zeul Mărilor)"
-"##blessing_of_ceres_title##":"O binecuvântare de la Ceres(zeița Agriculturii)"
-"##romeGuard_gods_angry##":"Zeii sunt mâniați de acest oraș!"
-"##barber_gods_angry##":"Zeii sunt mâniați. Mi-aș dori ca guvernatorul să construiască mai multe temple!"
-"##gods_wrathful_title##":"Zeii sunt mâniați!"
-"##doctor_gods_angry##":"Dacă nu respectăm mai mult zeii, vom simți mânia lor!"
-"##lionTamer_gods_angry##":"Zeii sunt atât de  mâniați încât leul a urle ca nebunul!"
-"##legion_morale##":"Moral"
-"##legion_morale_is_too_low##":"Moralul legiunii este prea scăzut ca să răspundă!"
-"##rladv_mood##":"Zeii sunt"
-"##hospital##":"Spital"
-"##hospitals##":"Spitale"
-"##big_villa##":"Vilă"
-"##big_shack##":"Baracă"
-"##big_tent##":"Cort mare"
-"##ruins_house04_text##":"Ruinele unui cort mare"
-"##statue_big##":"Statiue mare"
-"##big_hovel##":"Bordel mare"
-"##big_hut##":"Casă mare"
-"##citizens_like_chariot_races##":"Cetățenii nu iubesc nimic mai mult decât cursele cu care."
-"##large_temples##":"Templu mare"
-"##bldm_big_temple##":"Templu mare"
-"##large##":"mare"
-"##middle_festival##":"Festival grandios"
-"##big_palace##":"Palat grandios"
-"##big_domus##":"Conac"
-"##large_temple##":"Templu mare"
-"##briton##":"Un breton"
-"##britons##":"Bretoni"
-"##waiting_for_free_dock##":"Ancorat, așteaptă pentru un loc liber în doc."
-"##destroy_bridge_warning##":"Aveți grijă la poduri, cei  izolați sunt repede uitați dacă nu mai fac drumul Romei!"
-"##wt_rioter##":"Scandagiu"
-"##no_culture_building_in_city##":"Nu ai cultură deloc în oraș, ”ergo„ (vine din latină, ”prin urmare„) nu ai clasificare Culturală"
-"##have_less_academy_in_city_0##":"Ai prea puține academii care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură."
-"##have_less_library_in_city_0##":"Ai prea puține librării care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură."
-"##have_less_theater_in_city_0##":"Ai prea puține teatre care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură."
-"##have_less_school_in_city_0##":"Ai prea puține școli care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură."
-"##have_less_temple_in_city_0##":"Ai prea puține locuri de mulțumire pentru zei. Construiește mai multe ca să crești nivelul de credință ."
-"##god_exalted##":"Exaltat"
-"##mission_wnd_tocity##":"Spre oraș"
-"##education_awesome##":"Toată lumea care a solicitat facilități educaționale în orașul tău acum le are, nivelul educației în întregul orașul este perfect."
-"##no_people_in_city##":"Orașul e gol!"
-"##advchief_employers_ok##":"Orașul nu are probleme cu somerii"
-"##no_industries_in_city##":"Nu ai industrie în oraș"
-"##advchief_health_awesome##":"Sănătatea în oraș este extradinară"
-"##advchief_health_awesome_clinic##":"Sănătatea în oraș este extradinară, clinicile sunt foarte moderne."
-"##city_have##":"Trezoreria orașului conține"
-"##healthadv_not_need_health_service_now##":"Momentan nu există cereri pentru sănătate, dar odată cu dezvoltarea orașului, oamenii vor aștepta să aibă băi și alte facilităti sanitare. Mai târziu cetățenii vor cere bărbier și spitale."
-"##health_no_info##":"Nu există"
-"##working_have_some_labor_access##":"Această clădire are în prezent acces scăzut la oameni care să-i furnizeze forță de muncă."
-"##working_have_good_labor_access##":"Această clădire are în prezent acces crescut la oameni care să-i furnizeze forță de muncă."
-"##working_have_no_labor_access##":"Această clădire nu are acces la oameni care să-i furnizeze forță de muncă."
-"##working_have_awesome_labor_access##":"Această clădire are în prezent acces foarte bun la oameni care să-i furnizeze forță de muncă."
-"##entadv_small_city_not_need_entert##":"În acest moment oamenii nu au nevoie decât de accest la distracție. Odată cu creșterea orașului au nevoie de ceva care sa rupă monotonia de zi cu zi. "
-"##working_have_very_little_labor_access##":"Această clădire are în prezent acces foarte scăzut la oameni care să-i furnizeze forță de muncă."
-"##working_have_bad_labor_access##":"Această clădire are în prezent acces limitat la oameni care să-i furnizeze forță de muncă."
-"##its_very_peacefull_province##":"Imperiul nu a mai văzut un oraș atât de liniștit înainte!"
-"##to_empire_road##":"Către Imperiu"
-"##senate_save##":"în trezoreria orașului"
-"##senate_thisyear_tax##":"Orașul a colectat în acest an"
-"##some_amphitheaters_no_actors##":"Câteva amfiteatre nu au actori sau gladiatori. Mai mulți artiști vor crește nivelul de distracție în zonele care se plâng de monotonie"
-"##advchief_high_crime_in_district##":"Unele zone au nivel ridicat al crimei."
-"##advchief_which_crime_in_district##":"Unele zone au mici probleme"
-"##colege_access_perfectly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul studențiilor dintr-o serie dacă construiești mai multe academii."
-"##library_access_perfectrly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul cozilor dintr-o librărie dacă construiești mai multe."
-"##school_access_perfectly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul elevilor dintr-o clasă dacă construiești mai multe academii."
-"##none_crime_risk##":"Niciun semn de crimă prin zonă"
-"##lost_money_last_year##":"Anul trecut orașul a pierdut bani, asta duce la scăderea nivelului prosperității"
-"##no_food_stored_last_month##":"Niciun kg de mâncare nu a fost depozitat luna trecută!"
-"##to_rome_road##":"Către Roma"
-"##furniture_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de mobilier construită în acest an va fi foarte mică."
-"##clay_pit_bad_work##":"Având în vedere numărul de angajați ai acestei gropi, producția este practic oprită. Cantitatea de argilă săpată în acest an va fi foarte mică."
-"##lumber_mill_bad_work##":"Având în vedere numărul de angajați ai acestui ocol silvic, producția este practic oprită. Cantitatea de lemn tăiată în acest an va fi foarte mică."
-"##quarry_bad_work##":"Având în vedere numărul de angajați ai acestei cariere, producția este practic oprită. Cantitatea de marmură extrasă în acest an va fi foarte mică."
-"##iron_mine_bad_work##":"Având în vedere numărul de angajați ai acestei mine, producția este practic oprită. Cantitatea de fier obținută în acest an va fi foarte mică."
-"##fruit_farm_slow_work##":"Având în vedere numărul de angajați ai acestei livade, producția este practic oprită. Cantitatea de fructe recoltată în acest an va fi foarte mică."
-"##vegetable_farm_bad_work##":"Având în vedere numărul de angajați ai acestei ferme, producția este practic oprită. "
-"##vinard_bad_work##":"Având în vedere numărul de angajați ai acestei vi, producția este practic oprită. Cantitatea de struguri cultivată în acest an va fi foarte mică."
-"##olive_farm_bad_work##":"Având în vedere numărul de angajați ai acestei livade, producția este practic oprită. Cantitatea de măsline recoltată în acest an va fi foarte mică."
-"##wine_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de vin obținută în acest an va fi foarte mică."
-"##oil_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei prese, producția este practic oprită. Cantitatea de ulei de măsline stoarsă în acest an va fi foarte mică."
-"##weapons_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de arme construită în acest an va fi foarte mică."
-"##pottery_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei olării, producția este practic oprită. Cantitatea de vase modelate în acest an va fi foarte mică."
-"##meat_farm_bad_work##":"Având în vedere numărul de angajați ai acestei ferme, producția este practic oprită. Turma este foarte mică și se va înmulții încet"
-"##cartPusher_average_life##":"Să împingi cărucioare toată ziua nu e distractiv, dar să trăiești în acest oraș nu este rău deloc"
-"##sldr_terrified##":"Îngrozit"
-"##overall_people_are_leaving_city##":"Oamenii părăsesc orașul tău!"
-"##overall_people_are_coming_city##":"Oamenii vin sau își doresc să vină în oraș tău."
-"##overall_city_population_static##":"Populația orașului tău e statică."
-"##weapons_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce arme."
-"##furniture_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce mobilier."
-"##pottery_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce vase."
-"##furniture_workshop_patrly_workers##":"Acest atelier are nevoie de forță de muncă. Odată ce posturile vor fi ocupate, producția de mobilă va crește."
-"##furniture_workshop_need_some_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce mobilă într-un ritm prea lent."
-"##weapons_workshop_need_some_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce arme într-un ritm prea lent."
-"##pottery_workshop_need_som_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce vase într-un ritm prea lent."
-"##weapons_workshop_no_workers##":"Acest atelier are nici un angajat. Producția este oprită."
-"##furniture_workshop_no_workers##":"Acest atelier are nici un angajat. Producția a încetat."
-"##weapons_workshop_slow_work##":"Acest atelier are mare nevoie de forță de muncă. El produce arme într-un ritm prea lent."
-"##reservoir_info##":"Acesta este un rezervor gigant de apă potabilă curată. El distribuie apă prin conducte de lut pe o rază largă în oraș. Apeductele poat lega rezervoare între ele pe distanțe lungi."
-"##no_tax_in_this_year##":"În acest an nu s-a colectat nicio taxă de la această casă."
-"##how_to_grow_prosperity##":"Nu s-a modificat nivelul în acest an. Având profit în orașul tău în fiecare an este cea mai bună cale de a crește nivelul prosperității."
-"##citizen_low_entertainment4##":"Nu ai nimic de făcut dacă ieși seara în orașul acesta!"
-"##prefect_so_hungry##":"Nu ai destulă mâncare în oraș. Acest lucru încurajează crima."
-"##house_pay_tax##":"Dinari plătiți pe an"
-"##actor_need_workers##":"Nu sunt destui muncitori în oraș."
-"##house_food_only_for_month##":"Această casă are mâncare să se hrănească cel mult o lună."
-"##house_have_not_food##":"Această casă nu are mâncare deloc."
-"##house_have_some_food##":"Această casă o să iși epuizeze în curând stocurile de mâncare."
-"##trouble_colloseum_no_shows##":"Acest coloseu nu are spectacole. Este nevoie de gladiatori și lei ca să atragi publicul."
-"##legion_haveho_soldiers_and_barracks##":"Acest legiune nu are soldați. Ea există doar cu numele, și fără o cazarma operativă în oraș, nu poate primi trupe noi."
-"##legion_haveho_soldiers##":"Acest legiune nu are soldați. Ea există doar cu numele. Doar atunci noi soldați antrenați vor veni de la cazarmă, legiunea va fi gata de luptă."
-"##no_people_in_this_locality##":"Niciun locuitor în această localitate"
-"##low_crime_risk##":"În această zonă, criminalitatea este ocazaională."
-"##enemy_army_attack_city##":"În acest moment o armată inamică mărșăluiește spre orașul tău. Ei au jefuit satele din apropiere și ne așteptăm la atacul lor anul acesta. "
-"##weapons_workshop_need_resource##":"Este nevoie de fier în acest atelier pentru a produce arme."
-"##valencia_title##":"Valencia : destul de liniștită"
-"##low_desirability##":"Trebuie să îmbunătățești atractivitatea acestui sector, prin construirea grădini sau piețe."
-"##wn_barbarian##":"Barbar"
-"##barbarian_attack_title##":"Ne atacă Barbarii!"
-"##cant_calc_prosperity##":"Este noapte în orașul tău,  nu putem calcula prosperitatea orașului tau."
-"##big_fest_description##":"Festivalul de 2 zile s-a terminat. Zeul ales a fost onorat cum se cuvine. Oamenii sunt bucuroși și bunăvoința predomină."
-"##governor_palace_1_info##":"Casa ta este cea mai atractivă din oraș"
-"##not_enought_place_for_legion##":"Nu există spațiu suficient în cazărmi pentru alte legiuni."
-"##playerarmy_gone_to_home##":"Legiunea se întoarce în oraș"
-"##playerarmy_gone_to_location##":"Legiunea mărșăluiește pentru a ajuta un alt oraș al imperiului."
-"##trade_advisor_blocked_wine_production##":"Consilierul în Comerț, îți recomandă să oprești producția de vin"
-"##trade_advisor_blocked_oil_production##":"Consilierul în Comerț, îți recomandă să oprești producția de ulei de măsline."
-"##trade_advisor_blocked_furniture_production##":"Consilierul în Comerț, îți recomandă să oprești producția de mobilier."
-"##trade_advisor_blocked_weapon_production##":"Consilierul în Comerț, îți recomandă să oprești producția de arme."
-"##trade_advisor_blocked_grape_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea viței de vie."
-"##trade_advisor_blocked_vegetable_production##":"Consilierul în Comerț, îți recomandă să oprești producția de legume."
-"##trade_advisor_blocked_olive_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea măslinilor."
-"##trade_advisor_blocked_wheat_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea grâului"
-"##trade_advisor_blocked_meat_production##":"Consilierul în Comerț, îți recomandă să oprești creșterea de purcei."
-"##trade_advisor_blocked_fruit_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea pomilor fructiferi."
-"##trade_advisor_blocked_timber_production##":"Consilierul în Comerț, îți recomandă să oprești tăierea pădurilor."
-"##trade_advisor_blocked_clay_production##":"Consilierul în Comerț, îți recomandă să oprești săpatul după argilă."
-"##trade_advisor_blocked_marble_production##":"Consilierul în Comerț, îți recomandă să oprești producția de marmură."
-"##trade_advisor_blocked_iron_production##":"Consilierul în Comerț, îți recomandă să oprești extragerea fierului."
-"##trade_advisor_blocked_pottery_production##":"Consilierul în Comerț, îți recomandă să oprești modelarea de noi vase."
-"##your_salary_frowned_senate##":"Ai obrazul gros să îți stabilești un salariu mai mare decât se cuvine funcției tale. Nu ești văzut cu ochi buni la Roma."
-"##broke_empiretax_warning##":"Inabilitatea ta de a plătii Romei tributul anual, marcează orașul tău ca pe un eșec."
-"##broke_empiretax_with2years_warning##":"Inabilitatea ta de a plătii tributul Romei mai mulți ani la rând, face ca să îți scadă reputația."
-"##your_favour_increased_from_last_year##":"Aprecierea ta în ochii Romei a crescut anul trecut."
-"##your_favour_unchanged_from_last_year##":"Aprecierea ta în ochii Romei a râmas neschimbată"
-"##lugdunum_win_text##":"Tratamentul aplicat galilor din Lugdunum și splendoarea aceștui oraș-târg, este de bun augur pentru extinderea Romei în nordul sălbăticiei. Ai făcut trebă bună!"
-"##capua_win_text##":"Nivelul tău de management este excelent, mulți guvernatori nu au reușit să stabilească propriile lor colonii așa cum ai făcut tu. Lideri ca tine sunt destinul Romei. Poți repeta acest succes, sau a fost noroc?"
-"##city_need_workers_text##":"Orașul are nevoie de mai mulți muncitori"
-"##city_need_more_workers##":"Orașul are nevoie de mai mulți muncitori"
-"##more_0_month_from_festival##":"Câțiva cetățenii încă sunt mahmuri după ultima orgie, îți mulțumesc pentru generozitate."
-"##desirability_indiffirent_area##":"Cetățenii nu văd factori negativi sau pozitivi în această zonă."
-"##more_12_month_from_festival##":"Cetățenii sunt foarte nefericiti de faptul că mai trece un an fără un festival :("
-"##need_temples_for_city##":"Cetățenii vorbesc cu interes despre religie, iar faptul că nu ai destule locuri de închinare ține pe loc dezvoltarea orașului"
-"##gods_unhappy_text##":"Cetățenii tăi cred ca zeii sunt supărați, unii dintre ei au avut viziuni despre mânia zeilor și dezastrele ce se abat asupra orașului. Contruiește mai multe temple și organizează câteva festivaluri."
-"##small_colloseum_show##":"Coloseumul are nevoie de mai mulți spectatori! Angajează gladiatori sau cumpără lei, ei vor atrage din nou lumea la spectacole și va crește nivelul de distracție din zonă."
-"##send_legion_to_emperor##":"Spune-i consilierului militar ca să atribuie câteva legiuni operaționale în serviciul Imperiului Roman."
-"##venus##":"Venus"
-"##smcurse_of_venus_title##":"Venus este supărată."
-"##blessing_of_venus_description##":"Venus a trimis o adiere de voie bună peste orașul tău. Oamenii sunt mai fericiți azi :)"
-"##smcurse_of_venus_description##":"Venus, aducătorul de dragoste și armonie, este supărată. Nu sunt vești bune pentru prefecții orașului tău"
-"##return_2_fort##":"Întoarceți-vă la fort"
-"##return_to_main_map##":"Revino la harta jocului principal"
-"##shipyard##":"Port"
-"##wt_romeHorseman##":"Călăreț"
-"##wn_visigoth##":"Vizigoți"
-"##city_loathed_you##":"Sunteșu detestat de tot orașul"
-"##explosion##":"Explozie"
-"##varieties_food_eaten##":"Mai multe feluri de mâncare mâncate"
-"##governor_palace_2##":"Vila Guvernatorului"
-"##governorVilla##":"Vila Guvernatorului"
-"##wine##":"Vin"
-"##grape##":"Struguri"
-"##vinard_info##":"Strugurii din această vie sunt de viță nobilă, speciali pentru a face cel mai bun vin pentru aristocrați sau pentru export."
-"##vinard##":"Viță de vie"
-"##wine_workshop_info##":"Muncitorii fac vin din acești struguri, care este necesar pentru aristocrați dacă vrei ca ei să iși facă vile la tine în oraș. De asemenea vinul este căutat peste tot, așa că poți să-l și exporți."
-"##wine_workshop##":"Cramă"
-"##tradeadv_industrystate_tip##":"Pornește/Oprește producția pentru acestă activitate din oraș"
-"##city_opts_god_on##":"Zei : Pornit"
-"##city_opts_god_off##":"Zei : Oprit"
-"##warning##":"Atenție!"
-"##warehouse_gettinfull_warning##":"Atenție! Acest depozit este aproape plin. După ce este plin nu o să mai primească mărfuri."
-"##warehouse_full_warning##":"Atenție! Acest depozit este plin, el nu mai primește mărfuri."
-"##changesalary_greater_salary##":"Atenție! Având un salar mai mare decât meriți pentru funcția actuală nu o să dea bine în fața Împăratului."
-"##working_build_poor_labor_warning##":"Atenție! Acees limitat la angajați"
-"##working_building_need_road##":"Atenție! Aveastă clădire nu funcționează, ea nu este conectată la drum, astfel angajații nu au cum să ajungă la muncă."
-"##ovrm_water##":"Apă"
-"##water_caption##":"Apă"
-"##massilia_preview_mission##":"Aici apa se găsește doar în oaze, așadar fermele și rezervoarele concurează pe aceași bucată de pământ. Folosește spațiu într-un mod înțelept."
-"##water_info##":"Nu poți trece, dar poți construi poduri pe alocuri. Apa reprezintă o legătură importantă pentru comerțul cu imperiul, construirea de docuri te ajută să faci comerț. De asemenea gropile de unde sapi argila trebuie să se afle în preajma apei."
-"##water_supply##":"Apă"
-"##militaryAcademy##":"Academie militară"
-"##advchief_military##":"Armată"
-"##adve_military##":"Armată"
-"##high_salary_angers_senate##":"Salariul tău este ridicol de mare și nu face decât să infurie senatul. Toată Roma vorbește de tine cât ești de hapsân."
-"##charioteer##":"Vizitiu"
-"##citychart_census##":"Recensământ"
-"##wn_helveti_soldier##":"Un războinic din Helvetii"
-"##barbarian_warrior##":"Un războinic barbar"
-"##wn_visigoth_soldier##":"Un războinic vizigot"
-"##wn_gaul_soldier##":"un războinic gal"
-"##goth_warrior##":"un războinic got"
-"##hun_warrior##":"un războinic hun"
-"##wn_celt_soldier##":"un războinic celt"
-"##wt_pict_soldier##":"un războinic picthis"
-"##mars_desc##":"război"
-"##migration_war_deterring##":"Războiul descurajează imigranții"
-"##RomeChastenerArmy_troops_at_our_gates##":"Trupele Imperiului sunt la porțile orașului!"
-"##wt_wolf##":"Lup"
-"##lgn_wolves##":"Lupii"
-"##request_failed##":"Ai ratat să îndeplinești cererea Imperiului. Dacă ai fi dus la bun sfârșit misiunea ai fi crecut în ochii Romei."
-"##market_kid_say_1##":"Doamna grasă din față mi-a zis să car asta și să o urmez."
-"##sldr_encouraged##":"încurajat"
-"##gatehouse##":"Poartă"
-"##more_8_month_from_festival##":"Amintirile festivalului se risipesc din mintea oamenilor."
-"##east##":"Este nevoie de fier în acest atelier pentru a produce arme."
-"##delighted##":"încântat"
-"##lionTamer_average_life##":"uite aici niște carne din import pentru tine, Leo."
-"##100_citizens_in_city##":"Populația orașului tău a ajuns la 100 de locuitori pentru prima dată în istorie."
-"##1000_citizens_in_city##":"Populația orașului tău a ajuns la 1.000 de locuitori pentru prima dată în istorie."
-"##10000_citizens_in_city##":"Populația orașului tău a ajuns la 10.000 de locuitori pentru prima dată în istorie."
-"##15000_citizens_in_city##":"Populația orașului tău a ajuns la 15.000 de locuitori pentru prima dată în istorie."
-"##2000_citizens_in_city##":"Populația orașului tău a ajuns la 2.000 de locuitori pentru prima dată în istorie."
-"##20000_citizens_in_city##":"Populația orașului tău a ajuns la 20.000 de locuitori pentru prima dată în istorie."
-"##25000_citizens_in_city##":"Populația orașului tău a ajuns la 25.000 de locuitori pentru prima dată în istorie."
-"##3000_citizens_in_city##":"Populația orașului tău a ajuns la 3.000 de locuitori pentru prima dată în istorie."
-"##500_citizens_in_city##":"Populația orașului tău a ajuns la 500 de locuitori pentru prima dată în istorie."
-"##5000_citizens_inc_city##":"Populația orașului tău a ajuns la 5.000 de locuitori pentru prima dată în istorie."
-"##enemies_attack_title##":"Inamicii atacă orașul"
-"##city_have_defence##":"Defensiva orașului n-ar fi trebui să permită inamicilor să treacă de ziduri."
-"##enemies_at_the_door##":"Inamicii sunt la ușa"
-"##barbarian_are_closing_city##":"Inamicii se apropie de oraș"
-"##barbarian_attack_text##":"Dușmanii Romei sunt la marginea orașului, așteaptă-te ca ei sa vină pentru o ulcică, două de vin...și alte nebunii care le trec prin cap"
-"##enemy_army_threating_a_city##":"O armată inamică amenință un oraș al Imperiului"
-"##city_under_barbarian_attack##":"Oameni sunt neliniștiți de prezența soldaților inamici în oraș. Nivelul de pace al orașului a scăzut,"
-"##time_since_last_gift##":"Timp de la ultimul cadou"
-"##ovrm_education##":"Toate"
-"##ovrm_entrertainment##":"Toate"
-"##religionadv_need_basic_religion##":"Tot mai mulți cetățeni cer cel puțin un loc de închinare în cartier, pentru ca zeii să aibă o părere mai bună despre ei."
-"##healthadv_some_regions_need_doctors_2##":"Toți mai mulți oameni vor o îmbunătățire a sectorului medical. Asigură acces la clinicile medicale pentru a ajuta populația să crească."
-"##for_second_year_broke_tribute##":"Pentru al doilea an la rând nu ai plătit tributul Romei, Aceasta devine o problemă majoră în privința viitorului tău."
-"##tarsus_win_text##":"Foarte repede ai devenit cel mai valoros om al meu. Capcitățile tale de a face comerț au făcut din Tarsus exact orașul pe care îl vroiam. Provinciile din Est sunt mai loiale Romei, datorită ție."
-"##tutorial2_win_text##":"Înveți repede! Ai dobândit abilitățile pentru a face față unei provocări reale. De acum înainte poți să-ți alegi drumul pe care să mergi. Alege provinciile mai liniștite pentru a te concentra pe guvernare, sau alege o provincie mai periculoasă pentru a confrunta inamicii Romei."
-"##taxCollector_high_tax##":"Taxele sunt prea mari. Cetățenii sunt nemulțumiți."
-"##can_build_only_one_of_building##":"Poți să ai doar o singură clădire de felul acesta."
-"##emperor_anger_text##":"Intenționat refuzi să îmi trimiți ce ți-am cerut? Vrei să mă insulți?"
-"##imperial_reminder_text##":"Ai uitat despre cererea mea? Aștept cu nerăbdare pachetul tău."
-"##emigrant_high_workless##":"Cunoști pe cineva să mă angajeze? Am nevoie de lucru."
-"##current_year_notpay_tribute_warning##":"Nu ai reușit să plătești tribut anul acesta. Ai scăzut în ochii Romei. Păstrează bani în trezoreria orașului, astfel încât să poți plăti tributul anual Romei."
-"##ive_asked_senate_proclaim_you_a_god##":"Ai depășit fiecare obstacol în fiecare misiune, chiar și atunci când eu am pariat împotriva ta. Nimeni nu poate nega dreptul tău de a conduce întreg imperiul. Am cerut senatului să te proclame drept zeu. Felicitări!!!"
-"##wrath_of_neptune_failed_description##":"Ai pornit mânia mea! Abia aștept ziua în care orașul tău va avea vapoare, atunci voi avea revanșa mea."
-"##sentiment_people_annoyed_you##":"Oamenii sunt enervati de prezența ta."
-"##city_has_runout_money_again##":"Ai terminat fondurile Romei. Cu greu Cezar a fost de acord să îți mai acorde 5.000 de dinari pentru 12 luni. Trebuie să faci profit din taxe și exporturi."
-"##damascus_win_text##":"Încă o dată ai obținut imposibilul. Tot Estul se uită cu uimire la ce ai realizat în Damasc. Acum pot să îmi chem acasă câteva legiuni din Siria."
-"##really_destroy_fort##":"Ești sigur că dorești să demolezi acest fort?"
-"##tingis_win_text##":"Ești un guvernator, sau un general?Realizările tale de la Tingis fac ca legiunile din Occident șă fie libere, ceea ce îmi permite să-mi urmăreasc alte ambiții. Devii o parte esențială în planul meu."
-"##enter_your_name##":"Alege un nume"
-"##select_location##":"Alege o locație"
-"##select_city_layer##":"Alege un model de oraș"
-"##priority_button_tolltip##":"Apasă pe un număr pentru a stabili prioritatea. Toate celelalte sarcini se vor ajusta în conformitate."
-"##select_this_graph##":"Alege grafica aceasta"
-"##mainmenu_language##":"Limbă"
-"##exit_without_saving_question##":"Ieșire fără salvare?"
-"##gmenu_file_mainmenu##":"Ieșire în meniul principal"
-"##gmenu_exit_game##":"Ieșire joc"
-"##gmenu_file_exit##":"Ieșire joc"
-"##mainmenu_quit##":"Ieșire joc"
-"##exit_salary_window##":"Închide fluturașul de salariu"
-"##donationwnd_exit_tip##":"Închide pagina cu donațiile"
-"##exit_this_panel##":"Ieșiti din acest panou"
-"##migration_broke_workless##":"RESTANT"
-"##quit##":"Ieșire"
-"##exit##":"Ieșire"
-"##chief_advisor##":"Consilier Principal"
-"##amphitheater_haveno_gladiator_bouts##":"Nici o luptă de gladiatori în sesfășurare"
-"##clay##":"Argilă"
-"##clay_pit##":"Mină de argilă"
-"##wrath_of_ceres_title##":"Wrath de Ceres"
-"##immigrant_much_food_here##":"Se spune că e mâncare aici. Este un loc bun pentru a trăi?"
-"##charioter_so_hungry##":"Dacă îmi e foame? Aș putea mânca un cal, atât de puțină mâncare se găsește!"
-"##city##":"Oraș"
-"##city_health##":"Starea sănătății în oraș"
-"##city_sounds_on##":"Sunetele orașului sunt activate"
-"##city_sounds_off##":"Sunetele orașului sunt dezactivate"
-"##burning_ruins##":"Arderea ruina"
-"##citizen_are_rioting##":"Cetățenii se revoltă!"
-"##patrician_low_entertainment##":"Cetățene! Nu este acesta cel mai plictisitor oraș din Imperiu?"
-"##citizen_low_salary##":"Nici câinele meu nu ar munci pentru salariile de aici! Plec!"
-"##city_damascus##":"Damasc"
-"##damascus_title##":"Damasc: provincia oarecum periculos"
-"##date_tooltip##":"Data"
-"##date##":"Data"
-"##scrw_date##":"Data"
-"##dn's##":"Dinari"
-"##dn_per_month##":"Dinari pe lună"
-"##dn_collected_this_year##":"dinari colectate până acum în acest an."
-"##day##":"Zi"
-"##children##":"Copii"
-"##advemployer_panel_denaries##":"dn"
-"##days##":"Zi"
-"##age_bc##":"î.Hr."
-"##bc##":"î.Hr."
-"##clay_pit_info##":"Argila e folosită pentru comerț sau ca materie primă pentru olari. Oamenii ce locuiesc in insulae au nevoie de vase de lut. De asemenea, vasele de lut pot fi vândute în alte provincii."
-"##iron_mine_info##":"Fier a mea pentru comerț, sau de a furniza arme ateliere. Echipați legionari cu arme de casă, sau să le exporte către alte provincii."
-"##quarry_info##":"Taie marmură din roci adiacente, si folositi-l pentru a construi oracole și temple mari. Marmura este de obicei un produs de export de valoare."
-"##city_has_debt##":"Orașul are o datorie către Roma de"
-"##marketBuyer_low_entertainment##":"Acesta trebuie să fie cel mai plictisitor oraș din Imperiu!"
-"##mainmenu_package##":"Adv. setări"
-"##package_options##":"Adv. setări"
-"##advanced_houseinfo##":"Informații avansate despre această casă"
-"##citizens_additional_rooms_for##":"Spațiu pentru încă"
-"##road_caption##":"Droga"
-"##bath_access##":"Acces la baie publică"
-"##barber_access##":"Acces la frizerie"
-"##teacher_gods_angry##":"Vom simți mânia zeilor dacă nu construim mai multe temple rapid!"
-"##this_fire_can_spread##":"Aceste incendii răspândit, dacă nu-i prindă destul de repede"
-"##citizen_high_workless2##":"Dacă nu găsesc de muncă în scurt timp, va trebui să mă mut în alt oraș."
-"##immigrant_so_hungry##":"Dacă mai stau aici cred că o să mor. Nu se găsește mâncare nicăieri."
-"##seamrchant_another_successful_voyage##":"Un alt călătorie de succes! Profitul face-boala mare suportabil!"
-"##architect_salary##":"Salariu de arhitect, in valoare de"
-"##citizen_salary##":"Salariu de cetățean în valoare de"
-"##clerk_salary##":"Salariu de funcționar, în valoare de"
-"##caesar_salary##":"Salariu de Caesar, in valoare de"
-"##more_salary_dispeasure_senate##":"Salariul pe care te plătiți, depasind cu mult rangul dumneavoastră, este o sursă de mare nemulțumire la Roma."
-"##priest_good_life##":"Viața e bună în acest oraș."
-"##actor_average_life##":"Viața aici e pur și simplu adorabilă"
-"##barber_average_life##":"Nu este acest oraș de par trimmingly minunat?"
-"##house_not_report_about_crimes##":"Locuitorii au raportat nicio crimă, la toate."
-"##advchief_employment##":"Ocuparea forței de muncă"
-"##clay_factory_stock##":"Argilă stocată,"
-"##advchief_food_stocks##":"Stoc de mâncare"
-"##mainmenu_dlc_articles##":"Articole"
-"##pay_to_open_trade_route?##":"Plăti pentru a deschide această cale?"
-"##emp_pay_open_this_route_question##":"Plăti pentru a deschide această cale?"
-"##captured_city##":"Un oraș capturat"
-"##lionTamer_high_workless##":"Există o mulțime de șomaj aici"
-"##teacher_so_hungry##":"Les gens sont mécontents. Ils n'ont pas assez à manger."
-"##gladiator_high_workless##":"Există atât de mult șomaj aici. Aș vrea să putem practica pe unele dintre ele!"
-"##scholar_high_workless##":"Foarte mulți oameni caută o slujbă aici"
-"##barber_high_workless##":"Șomajul e atât de mare îți stă părul măciucă!"
-"##actor_high_workless##":"Șomajul este atât de mară, nu mă pot concentra să îmi învăț replicile"
-"##romeGuard_average_life##":"Totul pare calm aici .."
-"##adve_health_education##":"Sănătate și Educație"
-"##angry##":"Furios"
-"##increase_trading_title##":"Schimbări cererii"
-"##mainmenu_plname##":"Schimbarea numelui"
-"##adjust_exact##":"Stabilește suma exactă pe care vrei să o donezi"
-"##adjust_tax_rate##":"Stabilește rata de taxare a orașului"
-"##adve_industry_and_trade##":"Industire și Comerț"
-"##adve_engineers##":"Inginerie"
-"##use_and_trade_resource##":"Utilizarea și comercializare această resursă"
-"##barracks##":"Barăci"
-"##patrician_high_workless##":"Ce dizgrațios! N-am văzut niciodată atâta plebe fără locuri de muncă!"
-"##capua_title##":"Capua: o provincie liniștită"
-"##carthago_title##":"Carthago: provincia periculos"
-"##carthaginian_soldier##":"Un soldat din Cartagina"
-"##quaestor##":"Chestor"
-"##caesarea_title##":"Caesarea: provincia destul de liniștită"
-"##city_cyrene##":"Cirene"
-"##clerk##":"Funcționar"
-"##colloseums##":"Colloseums"
-"##colloseum##":"Colloseum"
-"##colloseum_info##":"Colosseums și amfiteatre nevoie mereu de noi gladiatori pentru a înlocui învinși."
-"##ovrm_colloseum##":"Colloseum"
-"##well##":"Bine"
-"##mainmenu_dlc_concepts##":"Conceptos"
-"##corinthus##":"Corinthus"
-"##fortification##":"Fortificație"
-"##blood_sports_add_spice_to_life##":"Sporturi de sânge adăuga condiment la viata fiecaruia."
-"##actorColony_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot pregăti un actor în trei luni"
-"##chatioteer_school_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot produce un car de curse în trei luni"
-"##lumber_mill##":"șantier forestier"
-"##wharf_info##":"Barci naviga aici de la șantierul naval de a lua pe echipajelor și a începe pescuitul în apele locale. Fiecare debarcader poate deservi o barca de pescuit."
-"##meadow_caption##":"Fâneaţă"
-"##road_paved_title##":"Un tip mai bun de drum"
-"##animal_contests_run##":"Concursul de anumale se desfășoară pentru un alt"
-"##doctor_so_hungry##":"Toată lumea suferă de malnutriție, iar mâncare ca să tratez asta nu se găsește!"
-"##school_info##":"Copiii mici trebuie să participe școli de cartier pentru a afla rudimente de citire, scriere și retorica, dacă acestea sunt să crească în adulți productivi."
-"##army_marker##":"Marcaj militar"
-"##chatioteer_school_info##":"Meșterii care lucrează aici construi carele rapide, robuste și mecanicii de locomotivă lor. Curse în Hipodromul sunt extrem de popular."
-"##cartpusher_cant_unload_goods_in_factory##":"Destinația acestor bunuri nu le va accepta! Ei au nevoie de mai mulți lucrători."
-"##bldm_factory##":"Manufactori"
-"##balance_between_migration##":"Există un echilibru între oameni vin la și lăsând orașul."
-"##gmenu_file##":"Fișier"
-"##avesome_amphitheater_access##":"Această casă a fost vizitată recent de un actor sau de un gladiator. Va avea acces la amfiteatru o perioadă lungă de timp."
-"##avesome_theater_access##":"Acesastă casă a fost recent vizitată de un actor. Va avea acces la teatru o perioadă lungă de timp."
-"##avesome_library_access##":"Această casă a fost recent vizitată de un bibliotecar. Va avea acces la librarie o perioadă lungă de timp."
-"##avesome_hippodrome_access##":"Această casă a fost vizitată recent de un vizitiu de curse cu calești. Va avea acces la hipodrom o perioadă lungă de timp."
-"##avesome_clinic_access##":"Această casă a fost vizitată recent de un medic. Va avea acces la clinică o perioadă lungă de timp."
-"##awesome_barber_access##":"Acesastă casă a fost recent vizitată de un frizer. Va avea acces la frizerie o perioadă lungă de timp."
-"##avesome_colloseum_access##":"Această casă a fost vizitată recent de un îmblanzitor de lei sau de un gladiator. Va avea acces la coloseum o perioadă lungă de timp."
-"##avesome_college_access##":"Această casă a fost vizitată recent de un profesor. Va avea acces la academie o perioadă lungă de timp."
-"##avesome_hospital_access##":"Această casă a fost recent vizitată de un chirurg. Va avea acces la spital o perioadă lungă de timp."
-"##avesome_school_access##":"Acesastă casă a fost recent vizitată de un școlar. Va avea acces la școală o perioadă lungă de timp."
-"##awesome_baths_access##":"Acesastă casă a fost recent vizitată de un angajat al băii publice. Va avea acces la baie publică o perioadă lungă de timp."
-"##much_plebs##":"Concentratia mare de locuitori ai mahalalelor în orașul dumneavoastră apariția un sărac împrumută."
-"##bridge##":"Pod"
-"##bridges##":"Poduri"
-"##road_paved_caption##":"drum asfaltat"
-"##priest_gods_angry##":"Suntem în pericol! Acest oraș nu are respect pentru zei!"
-"##barracks_full_work##":"Antrenăm recuți noi la eficiență maximă și avem armele de care avem nevoie pentru a antrena orice tip de soldat."
-"##barracks_need_some_workers##":"Antrenam recruți la eficiență redusă din cauza lipsei de muncitori, dar avem armele de care avem nevoie pentru a antrena orice tip de soldat."
-"##lion_pit_work##":"Suntem încântați să anunțăm că, cu ocuparea deplină, putem oferi pana la patru lei noi în fiecare lună."
-"##actorColony_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, pregătim până la patru actori pe lună"
-"##charioteer_school_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, putem produce până la patru care de curse în fiecare lună."
-"##gladiator_pit_full_work##":"Suntem încântați să anunțăm că, cu ocuparea deplină, suntem de formare până la patru gladiatori noi în fiecare lună."
-"##build_fishing_boat##":"Construim o barca de pescuit pe comandă pentru un debarcader de pescuit din oraș"
-"##ad##":"d.Hr."
-"##age_ad##":"d.Hr."
-"##wine_workshop_full_work##":"Acest vinicole are toate angajații de care are nevoie, și este de lucru plat la producerea vinului."
-"##wine_workshops_need_some_workers##":"Acest Winery este personal suficient și durează mult mai mult pentru a produce vin decât ar trebui."
-"##wine_workshop_no_workers##":"Acest vinărie nu are angajați. Producția a încetat."
-"##lumber_mill_full_work##":"Acest curte are toți angajații de care are nevoie. Este de lucru plat la recoltare a lemnului."
-"##lumber_mill_patrly_workers##":"Acest curte este insuficient, și ia mai mult pentru a reduce cherestea decât ar trebui."
-"##lumber_mill_no_workers##":"Acest curte nu are angajați. Producția a încetat."
-"##fig_farm_full_work##":"Acest livada are toți angajații de care are nevoie. Copacii sunt grele cu fructe suculente."
-"##olive_farm_full_work##":"Acest livadă are toți angajații de care are nevoie. Crengile copacilor se deformeze în mod regulat sub sarcini grele de măsline."
-"##meat_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Turma sa este gras și numeroase."
-"##vegetable_farm_need_some_workers##":"Această fermă este insuficient. Prin urmare, legume sale va dura mai mult sa creasca."
-"##olive_farm_patrly_workers##":"Acest grove este insuficient. Acesta este de a lua mai mult timp pentru a produce măsline decât ar trebui."
-"##wheat_farm_need_some_workers##":"Această fermă este insuficient. Lucrătorilor săi sunt de a lua o lungă perioadă de timp să crească alimente aici."
-"##meat_farm_need_some_workers##":"Această fermă este insuficient. Porcine sa au pui mici, iar acestea cresc lent."
-"##fig_farm_need_some_workers##":"Acest livada este insuficient. Se produce fructe mai lent decât se putea."
-"##meat_farm_no_workers##":"Această fermă nu are angajați, și toate animalele au scăpat sau au murit."
-"##olive_farm_no_workers##":"Această fermă are toți angajații de care are nevoie. Legume cresc aici, în abundanceThis ferma nu are angajați. Nimic nu a fost plantat."
-"##vegetable_farm_no_workers##":"Această fermă nu are angajați. Nimic nu a fost plantat."
-"##wheat_farm_no_workers##":"Această fermă nu are angajați. Terenul se afla necultivat."
-"##fig_farm_no_workers##":"Acest livada nu are angajați. Producția a încetat."
-"##vegetable_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Legume cresc aici, în abundență."
-"##wheat_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Ea devine un randament maxim pentru suprafața acesteia."
-"##vinard_full_work##":"Acest vie are toți angajații de care are nevoie. Viță de vie sunt adesea greu de struguri de grăsime, suculent."
-"##vinard_need_some_workers##":"Acest podgorie este insuficient. Acesta este de a lua mai mult timp pentru a produce struguri decât ar trebui."
-"##vinard_no_workers##":"Acest vie nu are angajați. Producția a încetat."
-"##trouble_hippodrome_no_charioters##":"Acest hipodrom nu are curse. Este nevoie de călăreți pentru a distra mulțimea."
-"##trouble_hippodrome_full_work##":"Acest hipodrom conduce frecvente, curse incitante, spre deliciul populației locale."
-"##clay_pit_full_work##":"Această mină are toți angajații de care are nevoie, și se lucrează din greu pentru a produce argilă"
-"##clay_pit_patrly_workers##":"Această mină nu are toți muncitorii de care are nevoie, producția de argilă este redusă"
-"##clay_pit_no_workers##":"Această mină nu are nici un muncitor. Producția s-a oprit complet."
-"##oil_workshop_full_work##":"Aceasta presa de măsline este personal complet, și produce ample ulei de înaltă calitate."
-"##oil_workshop_need_some_workers##":"Această presă de măsline ar putea folosi mai mulți lucrători pentru a ajunge la întregul său potențial pentru producția de ulei."
-"##oil_workshop_no_workers##":"Acest presa de măsline nu are angajați, și va da nici un ulei."
-"##market_search_food_source##":"Această piață are comercianți, dar acestea sunt în prezent în căutarea pentru o sursă de hrană pentru a vinde."
-"##teacher_high_workless##":"Sper să nu fiu dat afară; șomajul e așa de mare, nu cred că aș mai găsi de muncă!"
-"##advice_at_culture##":"Clic aici pentru sfaturi despre Nivelul de Cultură"
-"##having_some_slums_lack_migration##":"Având niște mahalale previne imigrația"
-"##chatioteer_school_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să producem un car de curse in următoarele două luni."
-"##actorColony_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să pregătim un actor in următoarele două luni."
-"##actorColony_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem pregăti cel mult doi actori pe lună."
-"##charioteer_school_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem produce cel mult două care de curse pe lună."
-"##people##":"Oameni"
-"##peoples##":"Oameni"
-"##advlegion_norequest##":"Nu avem înregistrată nici o cerere de ajutor din Imperiu"
-"##mission_wnd_population##":"Populație"
-"##population##":"Populație"
-"##advpopulation_title_census##":"Populație - Recensământul"
-"##advpopulation_title_society##":"Populație - Societatea"
-"##advpopulation_title_population##":"Populație - Istoric"
-"##population_registered_as_taxpayers##":"din populație sunt înregistrate pentru impozitul"
-"##gmenu_options##":"Opțiuni"
-"##mainmenu_options##":"Opțiuni"
-"##mainmenu_video##":"Setări de afișare"
-"##screen_settings##":"Setări de afișare"
-"##replay_game##":"Harta Replay"
-"##devastate_warehouse##":"START golire depozit"
-"##reject##":"Refuza bunuri"
-"##abwrk_not_working##":"no muncă"
-"##imperial_request_cance_badly_affected##":"Solicitarea Imperial ați anulat recent a afectat grav picioare în Roma."
-"##ceres_badmood_info##":"Nemulțumirea lui Ceres este periculoasă, întrucât ea protejază oamenii de recolte proaste și foamete."
-"##city_fire_text##":"Măsuri de prevenire inadecvate au permis incendii pentru a începe. Chiar și acum, flăcările sunt zdrobitoare prin părți ale orașului."
-"##edadv_need_better_access_school_or_colege##":"Școală mai bună sau academie și acces biblioteca ar spori unele zone ale orașului. Oamenii nu ar trebui să aibă de a merge până în prezent pentru a învăța!"
-"##god_poor##":"Sărac"
-"##migration_lessfood_granary##":"Lipsa de alimente în hambare dumneavoastra va reduce imigrația."
-"##migration_empty_granary##":"Lipsa de alimente previne imigrației"
-"##migration_people_away##":"Lipsa locurilor de muncă este de conducere oameni departe."
-"##migration_middle_lack_workless##":"Lipsa locurilor de muncă previne imigrației"
-"##migration_lack_empty_house##":"Lipsa de locuințe goale limitează imigrația."
-"##barber_info##":"Nici un om civilizat nu poate apărea neras in public! Toți cetățenii au nevoie să fie tunși de frizeri profesioniști în mod regulat, pentru a putea avansa în societate."
-"##below_average##":"Sub medie"
-"##prefect_high_workless##":"Nu am văzut niciodată atâția oameni fără slujbă!"
-"##barracks_info##":"Nimeni nu poate intra în legiunile romane fără a trece întâi pe aici; este școala unde sunt antrenați noii recruți în acest oraș."
-"##barber_so_hungry##":"O tunsoare îți ia mintea de la foame. Și toată lumea este înfometată aici."
-"##new_governor##":"Noul guvernator"
-"##wndrt_need##":"Necesar"
-"##advemployer_panel_needworkers##":"nevoie"
-"##city_need_workers_title##":"Are nevoie de mai mulți lucrători"
-"##greatPalace_info##":"Locuitorii din acest palat sunt la apogeul societatea romană. Ei vor nimic. Doar păstrarea nevoile lor satisfăcute este o realizare remarcabilă!"
-"##mainmenu_dlc_wallpapers##":"Tapet"
-"##academy_trained##":"Studii academice."
-"##bad_house_quality##":"Calitatea generală a locuințelor orașul dumneavoastră are această evaluare înapoi. Îmbunătățirea locuințe în orașul tău pentru a ridica această evaluare."
-"##extm_water_tlp##":"Structuri legate de apă"
-"##health_advisor##":"Structuri legate de sănătate"
-"##empmap_distant_romecity_tip##":"Orasul Roman Distant"
-"##cancel##":"Anulează"
-"##extm_cancel_tlp##":"Anulează această operație"
-"##god_charmed##":"Fermecat"
-"##barber_shop##":"Frizerie"
-"##ovrm_barber##":"Bărbier"
-"##barbers##":"Frizerii"
-"##barber##":"Frizer"
-"##extm_reorient_map_to_north_tlp##":"Re-orienteze opinia dumneavoastră la nord"
-"##poor_housing_discourages_migration##":"Săraci locuințe, în ciuda averea orașul tău, descurajează imigranți."
-"##ovrm_fire##":"Foc"
-"##fire##":"Foc"
-"##cant_demolish_bridge_with_people##":"Nu poți demola un pod cu oameni pe el"
-"##btn_showprice_tooltip##":"Arată prețul de import/export pentru toate bunurile, după cum a fost decretat de Roma"
-"##native_field##":"Câmp nativ"
-"##visit_military_advisor##":"Vizitați consilier militară"
-"##visit_chief_advisor##":"Vizitați șef consilier dvs."
-"##visit_imperial_advisor##":"Vizitați Imperial Consilier dumneavoastră"
-"##visit_health_advisor##":"Vizitați Sănătate Advisor dvs."
-"##visit_population_advisor##":"Vizitați Consilier dumneavoastră Populație"
-"##visit_education_advisor##":"Vizitați Educație Consilier dumneavoastră"
-"##visit_entertainment_advisor##":"Vizitați Entertainment Consilier dumneavoastră"
-"##visit_rating_advisor##":"Visit your Entertainment Advisor"
-"##visit_religion_advisor##":"Visit your Ratings Advisor"
-"##visit_trade_advisor##":"Vizitați Consilier dumneavoastră Trade"
-"##visit_labor_advisor##":"Vizitați Consilier dumneavoastră Muncii"
-"##visit_financial_advisor##":"Vizitați consilier dvs. financiare"
-"##engineer_low_entertainment##":"După o zi lungă de lucru, tot ce vreau să văd e o piesă de teatru. Nici o șansă în orașul acesta!"
-"##barber_need_colloseum##":"După o zi lungă de lucrat în frizerie, tot ce vreau e să văd o luptă de lei. Nici o șansă în orașul acesta!"
-"##barber_good_life##":"Un ras sau un tuns? Cetățene? Viața aici e bună, nu?"
-"##extm_road_tlp##":"Construiește drumuri"
-"##extm_housing_tlp##":"Construieste locuințe"
-"##need_vines_farm##":"Construi o fermă viță de vie"
-"##need_iron_mine##":"Build an olive farm"
-"##need_timber_mill##":"Construi o curte din lemn"
-"##need_lionnursery##":"Construi o casă leu la stadiul de concursuri de animale"
-"##need_olive_farm##":"Construi o fermă de măsline"
-"##need_actor_colony##":"Construi o colonie actor pentru a trimite artiștilor interpreți sau executanți aici"
-"##need_charioter_school##":"Construi o școală vizitiu la stadiul de curse"
-"##colloseum_haveno_gladiatorpit##":"Build an iron mine"
-"##cartPusher_normal_life##":"Lucrurile par a fi de lucru bine aici"
-"##engineer_average_life##":"Totul pare să funcționeze bine aici"
-"##scholar_average_life##":"Acest oraș pare în regulă"
-"##win_syracusae_text##":"Guvernator, care a fost un spectacol delicat. Convinge pe greci să renunțe la proiectele lor pe Syracusae deschide întreaga Mediterană la planurile Romei. Și după aceea performante impresionante, va juca un rol major în ele."
-"##ovrm_crime##":"Crimă"
-"##wt_criminal##":"Penal"
-"##prefect_low_entertainment##":"Infractorii Am închid avea mai mult de divertisment acest oraș!"
-"##advchief_crime##":"Crimă"
-"##layer_crime##":"Crimă"
-"##advchief_which_crime##":"Crimă devine o problemă."
-"##adve_prefectures##":"Preferințe"
-"##engineer_high_workless##":"Sunt norocos să am o slujbă, cu un nivel de șomaj atât de mare"
-"##city_under_rome_attack##":"Cele apropie legiuni Imperial sunt înspăimântătoare cetățeni tale, și va face nici un bine pentru rating pace."
-"##doctor_need_workers##":"Este nevoie de mai mulți muncitori"
-"##workers_yearly_wages_is##":"Factura anuală estimată de"
-"##accepting##":"Acceptare"
-"##accept_goods##":"Acceptă bunurile"
-"##accept##":"Acceptă"
-"##accept_promotion##":"Acceptă promovarea"
-"##accept_deity_status##":"Acceptă statutul de zeu!"
-"##advemployer_panel_priority##":"prioritate"
-"##migration_low_food_stocks##":"Stocurile reduse de alimente sunt o problemă"
-"##new_festival##":"Țineți nou festival"
-"##hold_venus_festival##":"Țineți festival la Venus"
-"##hold_mars_festival##":"Țineți festival la Mars"
-"##hold_mercury_festival##":"Țineți festival la Mercury"
-"##hold_neptune_festival##":"Țineți festival la Nepune"
-"##hold_ceres_festival##":"Țineți festival la Ceres"
-"##arrange_festiable_for_this_god##":"Aranja un festival în onoarea acestui zeu"
-"##adve_food##":"Prodicție Alimentară"
-"##wt_rprotestor##":"Protestatar"
-"##clear_land_caption##":"Teren liber"
-"##engineer_gods_angry##":"Zeii să aibe milă de mine! Nu e vina mea că guvernatorul își bate joc de ei!"
-"##advemployer_panel_haveworkers##":"muncă"
-"##abwrk_working##":"muncă"
-"##advemployer_panel_workers##":"muncitori"
-"##employers##":"Forței de muncă Angajat"
-"##adve_entertainment##":"Amuzament"
-"##entertainment_advisor_title##":"Amuzament"
-"##advemployer_panel_title##":"Alocarea forței de muncă"
-"##smallcurse_of_ceres_description##":"Nemulțumit cu lipsa de respect, Ceres distruge toate culturile în creștere ca un avertisment pentru tine."
-"##extm_clear_tlp##":"Eliberează terenul"
-"##advemployer_panel_romepay##":"Roma plătește"
-"##prosperity_lack_that_you_pay_less_rome##":"Plăti salarii mai mici decât în Roma pătează imaginea orașul ca unul prosper."
-"##marketBuyer_high_workless##":"Cu șomajul așa de mare, muncesc din greu să îmi păstrez slujba!"
-"##theater_full_work##":"Acest teatru este în prezent de așteptare piese din actori locali, care trage de obicei o audiență bună."
-"##well_haveno_houses_inarea##":"Acest bine nu este necesară în acest moment, ca nu exista case în gama de servicii."
-"##advemployer_panel_sector##":"Sector"
-"##city_have_goods_for_request##":"Depozitele au raportat că ai suficiente bunuri pentru a îndeplini cerea împăratului."
-"##fountain_will_soon_be_hooked##":"Această fântână va fi în curând prins în rețeaua de conducte subterane."
-"##egift_modest##":"Modest:"
-"##gladiator_low_entertainment##":"Plictisitor! Asta se zice despre acest loc!"
-"##emperor_changed_title##":"Schimbarea împăratului"
-"##bolt##":"Proiectil"
-"##taxСollector_low_tax_collected##":"Colectarea taxelor de la aceste persoane aduce aproape o lacrimă pentru ochiul meu; dar nu destul!"
-"##advisors##":"Consilieri"
-"##advlegion_noalarm##":"Nu avem raportată nici o amenințare impotriva orașului"
-"##advpopulation_text_census##":"Compoziția populației de vârstă (în ani)"
-"##advpopulation_text_society##":"Compoziția populației de venituri"
-"##amphitheater_haveno_shows##":"Nici o piesă de teatru în desfășurare"
-"##advlegion_window_title##":"Statusul Legiunii"
-"##become_trade_center##":"Transformă în centru de comerț"
-"##arrow##":"Săgeată"
-"##ovrm_build##":"Clădire"
-"##buildings##":"Construcție"
-"##clay_pit_need_close_to_water##":"Construiește mine de argilă aproape de apă"
-"##timber_mill_need_trees##":"Construi Superb lemn de lângă copaci"
-"##build_markets_to_distribute_food##":"Construiește piețe pentru a distribui mâncarea stocată aici"
-"##farm_need_farmland##":"Construi ferme pe terenurile agricole (look pentru iarbă galbenă)"
-"##egift_chest_of_sapphire##":"Un cufăr de safire"
-"##bldm_raw_material##":"Materii prime"
-"##population_tooltip##":"Populația orașului curent"
-"##scrw_subject##":"Subiect"
-"##mediolanum_win_text##":"Că Hannibal ar putea traversa Alpii cu elefantii sai a fost uimitor. Care Mediolanum ar prospera în ciuda asalt lui este un miracol. Succesul tau se transformă valul războiului punic în favoarea Romei. Toate vă mulțumesc Roma."
-"##emperor_send_money_to_you_nearest_time##":"Faptul că împăratul a avut recent să vă salva de necazuri lovește greu la reputatia orașul ca unul prosper."
-"##cartPusher_low_entertainment##":"Nu mă deranjază să împing un cărucior; e mai distractiv decât restul orașului!"
-"##no_working_dock##":"Atenție!"
-"##trading_goods##":"Mărfuri de tranzacționare"
-"##requierd##":"Nevoie"
-"##labor##":"Muncă"
-"##city_has_runout_debt##":"Orașul tău a rămas fără bani. Caesar a decis să îți mai acorde fonduri, dar nu va mai fi la fel de generos a doua oară. Exportă bunuri pentru a genera bani pentru oraș."
-"##actorColony_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem pregăti doar un actor în luna ce urmează."
-"##charioteer_school_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem produce doar un car de curse în luna ce urmează."
-"##recruter_gods_angry7##":"Suntem în încurcătură! Am enervat zeii!"
-"##amphitheater_no_access##":"Această casă nu are acces la un amfiteatru"
-"##barber_no_access##":"Acestă casă nu are acces la frizerie."
-"##bath_no_access##":"Această casă nu are acces la o baie publică funcțională"
-"##awesome_entertainment_access##":"Această locuință are acces la mai multe locuri de divertisment"
-"##9_entertainment_access##":"Această locuință are acces la toate de divertisment ar putea dori vreodată"
-"##2_entertainment_access##":"Această locuință are unele acces la locuri de divertisment"
-"##1_entertainment_access##":"Această locuință are abia acces la orice divertisment"
-"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
-"##5_entertainment_access##":"Această locuință are acces limitat la locuri de divertisment"
-"##8_entertainment_access##":"Această locuință are acces excelent la locuri de divertisment"
-"##3_entertainment_access##":"Această locuință are acces foarte limitat la locuri de divertisment"
-"##7_entertainment_access##":"Această locuință are acces foarte bun la locuri de divertisment"
-"##4_entertainment_access##":"Această locuință are acces rezonabil la locuri de divertisment"
-"##6_entertainment_access##":"Această locuință are acces bun la locuri de divertisment"
-"##trouble_most_damage##":"Această clădire are multe defecte structurale și fisuri"
-"##very_low_damage_risk##":"Această clădire are unele defecte structurale"
-"##some_low_fire_risk##":"This farm is understaffed. Its swine have small litters, and they grow slowly."
-"##trouble_some_damage##":"Această clădire are un risc neglijabil de colaps"
-"##middle_file_risk##":"Această clădire are un anumit risc de incendiu"
-"##trouble_have_damage##":"Această clădire are un risc redus de epuizare"
-"##fired##":"Concediat!"
-"##access_ramp##":"Rampă de acces"
-"##adve_administration_religion##":"Guvernare/Religie"
-"##doctor_high_workless##":"Somajul e foarte mare aici; mă gândesc sa plec"
-"##cartPusher_high_workless##":"Șomajul e așa de mare, nici soția nu mă mai bate la cap să gasesc o slujbă!"
-"##citizen_high_workless10##":"Șomajul e așa de mare, întregul oraș devine nefericit"
-"##adve_water##":"Servicii de apă"
-"##file##":"Fișier"
-"##bldm_farm##":"Ferme"
-"##hospital_info##":"Deși nimeni nu vrea să trăiască lângă un, spitale salva vieți atunci când greve boală. Orașul ar trebui să aibă suficiente paturi pentru toți cetățenii săi."
-"##small_ceres_temple##":"Templu Ceres"
-"##сaesar##":"Cezar"
-"##caesar_assign_new_title##":"Caesar te-a promovat la rangul de"
-"##emperoradv_caesar_has_high_respect_for_you##":"Cezar are respect mai mare pentru tine decât pentru oricare alt guvernator vreodată!"
-"##god_ceres_short##":"Ceres"
-"##ceres_goodmood_info##":"Ceres aduce fertilitate pământului și face recoltele să crească. Mulțumește-o, sau pregătește-te să fii înfometat."
-"##smallcurse_of_ceres_title##":"Ceres este supărat"
-"##baths_info##":"Oamenii civilizați fac baie măcar o dată pe zi. Pe lângă avantajele pentru sănătate, băile publice sunt un centru pentru comunitate, oferind o serie de metode de relaxare."
-"##person##":"Oameni"
-"##more_people##":"mai mult persoana"
-"##more_person##":"mai mult persoana"
-"##cartPusher_so_hungry##":"Împinsul carucioarelor toată ziua necesită energie; nu se găsește sificientă mâncare aici pentru energie"
-"##actorColony##":"Colonie de actori"
-"##chatioteer_school##":"Producător de care de curse"
-"##chatiotSchool##":"Producător de care de curse"
-"##aedile##":"Edil"
-"##academy_no_workers##":"Această academie nu este operațională, și nu aduce nici un folos comunității locale."
-"##academy_full_work##":"Aceasă academie este operațională. Tinerii din zonă invață despre bunele maniere."
-"##wine_workshops_patrly_workers##":"Acest vinărie lucrează sub capacitatea maximă. Ieșire Vinul este ușor mai lent decât ar putea fi."
-"##clinic_no_workers##":"Aceasta clinica nu este operațional, iar este de nici un folos pentru comunitatea locală."
-"##clinic_full_work##":"Aceasta clinica este operațional și este service comunității locale."
-"##lumber_mill_need_some_workers##":"Acest curte este de lucru sub capacitatea maximă. Productia de cherestea va fi ușor mai lent, ca rezultat."
-"##wine_workshop_need_resource##":"Acest atelier nu poate produce vin până când primește o livrare de struguri de la un depozit sau o fermă."
-"##oil_workshop_need_resource##":"Acest atelier va produce nici un ulei fără un transport de măsline, fie de la un depozit sau o fermă."
-"##weapons_workshop_patrly_workers##":"Acest atelier este de lucru sub capacitatea maximă, producția de arme va fi ușor mai lent, ca rezultat."
-"##barber_no_workers##":"Frizeria nu este deschisă și nu aduce nici un serviciu comunității locale."
-"##barber_full_work##":"Frizeria este deschisa, iar comunitatea locală este bine aranjată"
-"##province_has_peace_a_short_time##":"Această provincie a fost liniștit pentru o perioadă scurtă de timp, dar cetățenii dumneavoastră încă nu se simt foarte sigur. Ani mai pașnice va îmbunătăți acest lucru."
-"##vegetable_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Producția de legume va fi ușor mai lent, ca rezultat."
-"##fig_farm_patrly_workers##":"Acest livada este de lucru sub capacitatea maximă. Producția de fructe va fi usor mai lent, ca rezultat."
-"##meat_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Producția de carne va fi ușor mai flexibil ca un rezultat."
-"##olive_farm_need_some_workers##":"Acest grove lucrează sub capacitatea maximă. Producția de măsline ar putea fi mai bine cu mai mulți lucrători."
-"##wheat_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Ar putea fi mai productiv cu mai mulți lucrători."
-"##school_no_workers##":"Această școală nu este operațional, iar este de nici un folos pentru comunitatea locală."
-"##actorColony_no_workers##":"Această colonie este părăsită. Fără mentory angajați, nici un actor nu poate fi pregătit."
-"##school_full_work##":"Această școală este operațional. Copii locale sunt alfabetizați și bine vorbit."
-"##baths_no_workers##":"Această baie publică nu este operațională. Fără angajați, cine ar putea face baie aici?"
-"##baths_full_work##":"Această baie publică este operatțională, iar comunitatea locală este curată și relaxată."
-"##baths_need_reservoir##":"Această baie publică are nevoie să fie connectată la rețeaua de apă, prin plasarea unui rezervor în apropiere."
-"##taxCollector_very_little_tax##":"Aceste incendii răspândit, dacă nu prind le postească Aceste case plătească atât de puțin impozit se nu pare deloc în valoare de timpul meu!"
-"##marketBuyer_return##":"Aceste coșuri sunt atât de grele! Sunt plin de noi bunuri de a vinde!"
-"##engineer_have_trouble_buildings##":"Aceste structuri au fost în stare proastă; Am venit de-a lungul la timp"
-"##collapsed_ruins_info##":"Aceste resturi prabusite de clădiri vechi, reduce dorința de teren în apropierea acestora."
-"##these_rift_info##":"Aceste chasms au fost cauzate de cutremure. Acestea nu pot fi transmise sau completate, iar oamenii preferă să nu să trăiască alături de ei."
-"##these_goods_import_only##":"Aceste bunuri sunt disponibile de import numai"
-"##citizen_gods_angry##":"Acesta este un oraș păgân! E nevoie de mai multe temple!"
-"##inland_lake_text##":"Acest lac interior nu are acces la mare."
-"##priest_average_life##":"Acest oras este un loc rezonabil"
-"##trouble_most_fire##":"Această clădire este o capcană de foc"
-"##trouble_low_fire_risk##":"Această clădire nu are risc de capturare foc"
-"##no_space_for_evolve##":"Această locuință ar evolua în curând la o mai mare statură, dacă a avut mai mult spațiu să se extindă în."
-"##moment_fire_risk##":"Această clădire ar putea lua foc în orice moment!"
-"##trouble_some_fire##":"Această clădire are un risc de incendiu"
-"##trouble_no_damage##":"Aceasta cladire este in stare perfecta"
-"##very_high_damage_risk##":"Această clădire este instabilă, și este probabil să se prăbușească în curând"
-"##trouble_need_road_access##":"Această clădire are nevoie de acces rutier"
-"##house_evolves_at##":"Această locuință va evolua curând la unul mai mare statură, ca urmare a condițiilor locale imbunatatirea."
-"##trouble_too_far_from_water##":"Această clădire nu se află lângă apă!"
-"##this_province_feels_peaceful##":"Această provincie se simte destul de liniștită, un sentiment care va îmbunătăți cu timpul."
-"##garden_info##":"Acest lot plăcut oferă scutirea cetățenilor de zgomot, căldură și murdăria din oraș cu o oază rece de spațiu verde. Toată lumea vrea o grădină alături."
-"##gladiator_need_workers##":"Este groaznic. Nu am văzut niciodată atâtea posturi neumplute."
-"##oil_workshop_patrly_workers##":"Aceasta presa de măsline este personal suficient, și produce ulei mai lent decât ar trebui."
-"##taxCollector_need_workers##":"Acest oraș are nevoie disperată de muncitori"
-"##citizen_need_workers3##":"Acest oraș are nevoie mare de muncitori"
-"##citizen_need_workers5##":"Acest oraș are nevoie de mai mulți muncitori"
-"##priest_need_workers##":"Acest oraș chiar are nevoie de mai mulți muncitori"
-"##romeGuard_need_workers##":"Acest oraș are nevoie de mult mai mulți muncitori"
-"##lionTamer_need_workers##":"Acest oraș are nevoie de lucrători. Mă întreb dacă aș putea antrena Leo să facă mai mult de lucru?"
-"##need_grape##":"Această clădire are nevoie de struguri"
-"##building_need_road_access##":"Această clădire are nevoie de acces la drum"
-"##need_clay_pit##":"Această clădire are nevoie de lut"
-"##trouble_need_timber##":"Această clădire are nevoie de lemn"
-"##need_iron_for_work##":"Această clădire are nevoie de minereu de fier"
-"##trouble_need_olive##":"Această clădire are nevoie de măsline"
-"##aqueduct_no_water##":"Aceast apeduct nu transoirtă apă între rezervoare, deoarece nu are nici o sursă de apă care să o alimenteze"
-"##aqueduct_work##":"Acest apeduct transportă apă între rezervoare."
-"##amphitheater_have_never_show##":"Acest amfiteatru nu are nici un spectacol. Are nevoie de actori sau gladiatori pentru a oferi amuzament"
-"##amphitheater_full_work##":"Acest amfiteatru oferă comunității locale atât lupte spectaculoase de gladiatori, cât și piese de teatru jucate de actori."
-"##amphitheater_have_only_battles##":"Acest amfiteatru gâzduiește lupte de gladiatori pentru amuzamentul comunității locale. Se caută actori pentru a pune în scenă piese de teatru"
-"##amphitheater_no_workers##":"Acest amfiteatru este pustiu. Fără muncitori, nu oferă servicii de amuzament comunității locale"
-"##amphitheater_have_only_shows##":"Acest amfiteatru pune în scenă piese de teatru jucate de actori locali. Ar putea amuza publicul mai bine dacă ar avea gladiatori pentru a organiza lupte"
-"##vinard_patrly_workers##":"Acest podgorie este de lucru sub capacitatea maximă. Producția de struguri va fi ușor mai lent, ca rezultat."
-"##engineer_need_workers##":"Acest oraș ar merge mult mai bine dacă ar avea mai mulți muncitori"
-"##citizen_good_education##":"Nivelul de cultură a acestui oraș este cel mai ridicat din Imperiu!"
-"##prefect_need_workers##":"Acest oraș are nevoie disperata de mai mulți lucrători!"
-"##teacher_good_life##":"10 sur 10 ! Cette cité est vraiment fantastique !"
-"##scholar_good_life##":"This city isn't too bad"
-"##actor_good_life##":"Acest oraș nu este prea rău"
-"##teacher_low_entertainment##":"Lecțiile mele sunt mai distractive decât acest oraș!"
-"##scholar_low_entertainment##":"Acest oraș e plictisitor! Vreau să văd mai multe spectacole!"
-"##priest_low_entertainment##":"Acest oraș este atât de plictisitor. Chiar preoții ca un gladiator lupta din cand in cand!"
-"##marketBuyer_average_life##":"Acest oraș nu este prea rău, într-adevăr."
-"##clay_pit_need_some_workers##":"Această mină funcționează sub capacitatea maximă. Drept rezultat, producția de argilă va fi mai mica."
-"##also_fountain_in_well_area##":"Aceast puț este redundant, toate casele pe care le servește își iau apa dintr-o fântână din zonă"
-"##bridge_extends_city_area##":"Acest pod extinde meleagurile noastre, dar permite trecerea nu numai cetățenilor noștri, ci și vrăjmașii noștri!"
-"##citizen_gods_angry3##":"Acest guvernator nu are respect pentru zei"
-"##reservoir_no_water##":"Acest rezervor trebuie să fie adiacentă la apă, sau conectat prin apeduct la un rezervor de lucru, înainte de a va funcționa."
-"##market_no_workers##":"Această piață nu este operațional, iar livrările nu produc pentru comunitatea locală."
-"##market_full_work##":"Această piață este operațional."
-"##enemies_hard_to_me##":"Acest soldat este prea puternic pentru mine!"
-"##mopup_formation_text##":"Acest ordin este cel mai eficient mod de a face cu resturile unei armate învins."
-"##theater_no_have_any_shows##":"This theater is currently staging plays from local actors, who usually draw a good audience."
-"##need_reservoir_for_work##":"Această fântână nu va funcționa dacă nu are acces la conducta de un rezervor din apropiere."
-"##fountain_not_work##":"Această fântână nu funcționează. Consilier dumneavoastră Muncii ar trebui să atribuie mai mulți lucrători la serviciile de apă."
-"##teacher_average_life##":"Je donnerais à cette cité... 8 sur 10"
-"##cartPusher_cantfind_destination##":"Ar fi mai rapid să împing aceste bunuri până la Roma decât până unde trebuie să le duc!"
-"##cartPusher_gods_angry##":"Nu sunt un om religios, dar nici măcar eu nu aș trata zeii atât de rău!"
-"##citizen_high_workless4##":"Nu am mai trecut niciodată pe lângă atâția cetățeni fără slujbă!"
-"##actor_so_hungry##":"Pur și simplu nu pot performa fără mai multă mâncare"
-"##actor_low_entertainment##":"Muncest cât de mult pot, dar tot nu sunt suficiente surse de amuzament aici"
-"##immigrant_want_to_be_liontamer##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!"
-"##teacher_need_workers##":"Este uimitor câte posturi nu sunt umplute aici"
-"##scholar_so_hungry##":"Sunt lihnit de foame!"
-"##build_senate_for_advisors##":"Construi Senat înainte"
+{"##some_food_on_next_month##":"- Ai puțină mâncare pentru luna următoare",
+"##have_no_food_on_next_month##":"- Nu mai ai mâncare pentru luna următoare",
+"##small_food_on_next_month##":"- Foarte puțină hrană pentru luna următoare",
+"##city_barbarian_off_tlp##":"Barbarii nu vor ataca orașul tău",
+"##city_barbarian_off##":"Barbari : OPRIT",
+"##city_roadblock_off##":"",
+"##city_warf_timber_on##":"",
+"##city_warf_timber_off##":"",
+"##city_warf_timber_on_tlp##":"",
+"##city_warf_timber_off_tlp##":"",
+"##window_changes_title##":"",
+"##sldr_wages_on##":"",
+"##sldr_wages_off##":"",
+"##sldr_wages_on_tlp##":"",
+"##sldr_wages_off_tlp##":"",
+"##rightMenu_on##":"",
+"##rightMenu_off##":"",
+"##rightMenu_on_tlp##":"",
+"##rightMenu_off_tlp##":"",
+"##personal_tax_on##":"",
+"##personal_tax_off##":"",
+"##personal_tax_on_tlp##":"",
+"##personal_tax_off_tlp##":"",
+"##cut_forest_on#":"",
+"##cut_forest_off#":"",
+"##cut_forest_on_tlp#":"",
+"##cut_forest_off_tlp#":"",
+"##city_border_on##":"",
+"##city_border_off##":"",
+"##city_border_on_tlp##":"",
+"##city_border_off_tlp##":"",
+"##city_claypit_collapse_on##":"",
+"##city_claypit_collapse_off##":"",
+"##city_claypit_collapse_on_tlp##":"",
+"##city_claypit_collapse_off_tlp##":"",
+"##city_mines_collapse_on##":"",
+"##city_mines_collapse_off##":"",
+"##city_mines_collapse_on_tlp##":"",
+"##city_mines_collapse_off_tlp##":"",
+"##mainmenu_showlog##":"",
+"##mainmenu_changes##":"",
+"##city_constr_mode##":"",
+"##city_metric##":"",
+"##city_roadblock_on##":"",
+"##quantity##":"",
+"##history_gift##":"",
+"##kilogram##":"",
+"##modius##":"",
+"##city_buildoverdraw_on##":"",
+"##city_buildoverdraw_off##":"",
+"##city_barbarian_on##":"Barbari : PORNIT",
+"##river_side_well_on##":"",
+"##river_side_well_off##":"",
+"##river_side_well_on_tlp##":"",
+"##river_side_well_off_tlp##":"",
+"##city_barbarian_on_tlp##":"Barbarii pot ataca orașul tău",
+"##city_c3rules_off_tlp##":"Folosește regulile Cezar III(și mai noi)",
+"##city_c3rules_on_tlp##":"Folosește doar regulile Caesar III",
+"##city_c3rules_off##":"regulile C3+ altele noi",
+"##city_c3rules_on##":"doar regurile C3",
+"##city_df_usual_tlp##":"Dificultate, crime și taxe normale",
+"##city_df_hard_tlp##":"Crește riscul de revoltă, taxe reduse",
+"##mainmenu_constructor##":"",
+"##city_df_nicety_tlp##":"Risc crescut de răscoală, taxe reduse, Zeii sunt razbunători",
+"##city_df_impossible_tlp##":"Trebuie sa gândești atent fiecare pas, salvează fiecare dinar",
+"##city_df_fun_tlp##":"Fără revolte în oraș, Zeii sunt binevoitori și taxele sunt bineprimite",
+"##city_df_easy_tlp##":"Risc scăzut de revoltă, taxele sunt mari, zeii nu intervin în oraș",
+"##city_df_simple_tlp##":"Risc normal de răscoală, fără corupție, taxe normale",
+"##city_df_usual##":"Dificultate normală",
+"##city_df_hard##":"Greu de jucat",
+"##city_df_nicety##":"Foarte greu de jucat",
+"##city_df_impossible##":"Imposibil de jucat",
+"##city_df_fun##":"Pentru distracție",
+"##city_df_easy##":"Ușor de jucat",
+"##city_df_simple##":"Simplu de jucat",
+"##city_opts_god_on_tlp##":"Zeii interferează traiul orășenilor",
+"##city_opts_god_off_tlp##":"Zeii nu sunt interesați de orașul tău",
+"##city_chastener_on_tlp##":"Cezar ar putea trimite Legiune Morții",
+"##city_chastener_off_tlp##":"Cezar nu va trimite Legiune Morții",
+"##city_chastener_on##":"Legiunea lui Cezar: PORNIT",
+"##city_chastener_off##":"Legiunea lui Cezar : OPRIT",
+"##city_androidbar_on_tlp##":"Arată fereastra pentru dispozitive mobile",
+"##city_androidbar_off_tlp##":"Panoul pentru dispozitive mobile nu apare",
+"##city_androidbar_on##":"Reclame: ARATĂ",
+"##city_androidbar_off##":"Reclame: ASCUNDE",
+"##city_debug_on_tlp##":"Meniu trișare activ",
+"##city_debug_off_tlp##":"Meniu trișare ascuns",
+"##city_debug_on##":"Meriu trișare: ARATĂ",
+"##city_debug_off##":"Menis trișare: ASCUNS",
+"##city_destroy_epdh_off_tlp##":"Prefecții ard numai casele bolnavilor",
+"##city_destroy_epdh_on_tlp##":"Prefecții ard și casele vecinilor bolnavilor",
+"##city_forest_fire_on_tlp##":"Pădurea poate lua foc de la clădiri",
+"##city_forest_fire_off_tlp##":"Pădurea nu poate lua foc de la clădiri",
+"##city_forest_grow_off_tlp##":"Pădurea nu va crește",
+"##city_forest_grow_on_tlp##":"Pădurea va crește",
+"##city_highlight_bld_off_tlp##":"Clădirea selectată nu este evidențiată",
+"##city_highlight_bld_on_tlp##":"Clădirea selectată este evidențiată",
+"##city_destroy_epdh_off##":"Reguli de epidemie extinsă",
+"##city_destroy_epdh_on##":"Reguli de epidemie simplă",
+"##city_forest_fire_on##":"Pădurea : poate arde",
+"##city_forest_fire_off##":"Pădurea: nu arde",
+"##city_forest_grow_off##":"Pădurea : nu crește",
+"##city_forest_grow_on##":"Pădurea : crește",
+"##city_highlight_bld_off##":"Clădirea sel. : evidențiată",
+"##city_highlight_bld_on##":"Clădirea sel. : neevidențiată",
+"##city_zoominv_on_tlp##":"Zoom normal",
+"##city_zoominv_off_tlp##":"Zoom inversat",
+"##city_lockinfo_on_tlp##":"Ferestrele informative pot fi mutate",
+"##city_lockinfo_off_tlp##":"Ferestrele informative nu pot fi mutate",
+"##city_mapmoving_lmb_tlp##":"Plimbă-te pe hartă dacă ții apăsat click stânga",
+"##city_mapmoving_mmb_tlp##":"Plimbă-te pe hartă dacă ții apăsat click mijlociu",
+"##city_tooltips_on_tlp##":"Arată sugestii în oraș",
+"##city_tooltips_off_tlp##":"Nu arăta sugestii în oraș",
+"##city_batching_on_tlp##":"Include accelerarea extragerii texturilor pe ecran",
+"##city_batching_off_tlp##":"Desenează texturile jocului ca în Caesar III",
+"##city_ccuseai_on_tlp##":"Orașele romane se poat dezvolta",
+"##city_ccuseai_off_tlp##":"Dezvoltarea orașelor romane doar în secenariu limitat",
+"##city_lockinfo_on##":"Fereastră informativă : BLOCATĂ",
+"##city_lockinfo_off##":"Fereastră informativă : LIBERĂ",
+"##city_mapmoving_lmb##":"Mișcare pe hartă : Click stânga",
+"##city_mapmoving_mmb##":"Mișcare pe hartă : Click mijlociu",
+"##city_tooltips_on##":"Arată sugestii : PORNIT",
+"##city_tooltips_off##":"Arată sugestii : OPRIT",
+"##city_batching_on##":"Pachet : PORNIT",
+"##city_batching_off##":"Pachet : OPRIT",
+"##city_ccuseai_on##":"Inteligență artificială",
+"##city_ccuseai_off##":"Script",
+"##city_warnings_on_tlp##":"Include mesajele de depanare",
+"##city_warnings_off_tlp##":"Mesajele de depanare sunt dezactivate",
+"##city_zoom_on_tlp##":"Zoomul este activat",
+"##city_zoom_off_tlp##":"Zoomul este dezactivat",
+"##dn_for_open_trade##":"pentru a deschide rută comercială",
+"##target_population_is##":"(Populația țintă este",
+"##no_target_population##":"(Fără populație țintă)",
+"##mainmenu_mcmxcviii##":"MCMXCVIII",
+"Variable":"ROMANIAN(v1.1)",
+"##age_uc##":"UC",
+"##actor_gods_angry##":"Aaagh !! Zeii sunt supărat! Suntem condamnați cu toții!",
+"##ovrm_aborigen##":"indigen",
+"##ovrm_sentiment##":"",
+"##month_8_short##":"Aug",
+"##mainmenu_credits##":"Mulțumiri",
+"##extm_administration_tlp##":"Administrație și Guvern",
+"##ovrm_academy##":"Academie",
+"##colleges##":"Academii",
+"##academy##":"Academie",
+"##aqueduct##":"Apeduct",
+"##aqueduct_info##":"Apeductele permit constructia rezervoarelor ce nu au o sursă de apă lângă, permițând fântânilor să ofere apă potabilă în diversele zone ale orașului",
+"##actor##":"Actor",
+"##water_text##":"",
+"##advchief_haveprofit##
+":"În acest an activele au crescut cu",
+"##advchief_havedeficit##":"În acest an activele au scăzut cu",
+"##granery##":"Grânar",
+"##granary_holds##":"Grânarul deține",
+"##granaries_holds##":"Cereale deținute",
+"##amphitheater##":"Amfiteatru",
+"##amphitheatres##":"Amfiteatre",
+"##ovrm_amphitheater##":"Amfiteatre",
+"##amphitheaters##":"Amfiteatre",
+"##month_4_short##":"Apr",
+"##arabian_stallions##":"Armăsari arăbești",
+"##architect##":"Arhitect",
+"##balance##":"Balans",
+"##ballista##":"Balistă",
+"##ovrm_baths##":"Bai",
+"##baths##":"Baie publică",
+"##bathlady##":"Angajat al unei băi publice",
+"##bath_1##":"Baie publică",
+"##bath##":"Baie publică",
+"##tower_may_build_on_thick_walls##":"Puteți construi turnuri doar pe ziduri groase",
+"##tower##":"Turn",
+"##engineering_post_no_workers##":"Cu nici ingineri din personal, acest birou în sine este în pericol de prăbușire.",
+"##chatioteer_school_no_workers##":"Fără nici un constructor, nici un car de curse nu poate fi produs. Hipodromul ar putea devini neoperațional",
+"##barracks_bad_weapons_bad_workers##":"Fără personal nu putem furniza armament, ne luptăm pentru a instrui chiar și cele mai de bază trupe.",
+"##fort_legionaries_no_workers##":"Fără personal, nu putem antrena nici un singur recrut nou. Marte, ajută-ne în vremuri de război!",
+"##militaryAcademy_no_workers##":"Cu nici personal, suntem în imposibilitatea de a îmbunătății abilitățile de soldaților noi din oraș. Ei vor trebui să meargă la forturile lor și să spere pentru ce e mai bun.",
+"##forum_no_workers##":"Fără personal, acest birou nu ajută deloc la finanțele orașului",
+"##prefecture_no_workers##":"Fără personal această stație este o tință pentru vandali.",
+"##tower_no_workers##":"Fără soldați nu putem patrula pe zidurile orașului",
+"##gladiator_pit_no_workers##":"Fără antrenor, această școală nu poate antrena gladiatori noi.",
+"##lion_pit_no_workers##":"Fără dresor, această groapă nu va avea lei pentru jocuri",
+"##idle_factory_in_city##":"Industrie inactivă în oraș",
+"##idle_factories_in_city##":"Industrii inactive în oraș.",
+"##wt_homeless##":"Fără casă",
+"##extm_security_tlp##":"Securitate",
+"##senatepp_unemployment##":"Somaj",
+"##advchief_workless##":"",
+"##migration_lack_workless##":"Șomajul scade numărul dvs. de imigranți.",
+"##priest_high_workless##":"Șomajul este îngrijor de mare aici",
+"##advemployer_panel_workless##":"Șomeri",
+"##ovrn_unemployed##":"Șomeri",
+"##srt_by_date##":"",
+"##srt_by_fast##":"",
+"##srt_by_auto##":"",
+"##srt_by_user##":"",
+"##srt_by_name##":"",
+"##rioter_in_city_title##":"Revoltă în oraș",
+"##ovrm_comturnover##":"",
+"##ovrm_products##":"",
+"##rioter_in_city_text##":"Revoltă în oraș",
+"##library##":"Bibliotecă",
+"##wt_librarian##":"Bibliotecar",
+"##ovrm_library##":"Bibliotecă",
+"##libraries##":"Biblioteci",
+"##favor##":"Favoare",
+"##senatepp_favour_rating##":"Favoare",
+"##wndrt_favour##":"Favoare",
+"##thanks_to##":"Mulțumită lui:",
+"##rome_gratitude_request_title##":"Recunoștința Împăratului",
+"##carthago_win_text##":"Mulțumită extraordinarei performanțe, amenințarea Carthagienilor nu mai există de acum încolo. Vechii noștrii inamici sunt acum loiali Romei, cel puțin acei iși mai trag răsuflarea!",
+"##advemp_emperor_favour##":"Favor Imperial",
+"##blessing_of_venus_title##":"O binecuvântare de la Venus(zeița Frumuseții)",
+"##spirit_of_mars_title##":"O binecuvântare de la Marte(zeul Războiului)",
+"##blessing_of_mercury_title##":"O binecuvântare de la Mercurius(zeul Negustorilor, hoților)",
+"##blessing_of_neptune_title##":"O binecuvântare de la Neptun(zeul Mărilor)",
+"##blessing_of_ceres_title##":"O binecuvântare de la Ceres(zeița Agriculturii)",
+"##romeGuard_gods_angry##":"Zeii sunt mâniați de acest oraș!",
+"##barber_gods_angry##":"Zeii sunt mâniați. Mi-aș dori ca guvernatorul să construiască mai multe temple!",
+"##gods_wrathful_title##":"Zeii sunt mâniați!",
+"##doctor_gods_angry##":"Dacă nu respectăm mai mult zeii, vom simți mânia lor!",
+"##lionTamer_gods_angry##":"Zeii sunt atât de  mâniați încât leul a urle ca nebunul!",
+"##legion_morale##":"Moral",
+"##legion_morale_is_too_low##":"Moralul legiunii este prea scăzut ca să răspundă!",
+"##rladv_mood##":"Zeii sunt",
+"##hospital##":"Spital",
+"##hospitals##":"Spitale",
+"##big_villa##":"Vilă",
+"##big_shack##":"Baracă",
+"##big_tent##":"Cort mare",
+"##ruins_house04_text##":"Ruinele unui cort mare",
+"##statue_big##":"Statiue mare",
+"##big_hovel##":"Bordel mare",
+"##big_hut##":"Casă mare",
+"##citizens_like_chariot_races##":"Cetățenii nu iubesc nimic mai mult decât cursele cu care.",
+"##large_temples##":"Templu mare",
+"##bldm_big_temple##":"Templu mare",
+"##large##":"mare",
+"##middle_festival##":"Festival grandios",
+"##big_palace##":"Palat grandios",
+"##big_domus##":"Conac",
+"##large_temple##":"Templu mare",
+"##briton##":"Un breton",
+"##britons##":"Bretoni",
+"##waiting_for_free_dock##":"Ancorat, așteaptă pentru un loc liber în doc.",
+"##destroy_bridge_warning##":"Aveți grijă la poduri, cei  izolați sunt repede uitați dacă nu mai fac drumul Romei!",
+"##wt_rioter##":"Scandagiu",
+"##no_culture_building_in_city##":"Nu ai cultură deloc în oraș, ”ergo„ (vine din latină, ”prin urmare„) nu ai clasificare Culturală",
+"##have_less_academy_in_city_0##":"Ai prea puține academii care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură.",
+"##have_less_library_in_city_0##":"Ai prea puține librării care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură.",
+"##have_less_theater_in_city_0##":"Ai prea puține teatre care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură.",
+"##have_less_school_in_city_0##":"Ai prea puține școli care funcționează în oraș, Contruind mai multe vei crește nivelul de cultură.",
+"##have_less_temple_in_city_0##":"Ai prea puține locuri de mulțumire pentru zei. Construiește mai multe ca să crești nivelul de credință .",
+"##god_exalted##":"Exaltat",
+"##mission_wnd_tocity##":"Spre oraș",
+"##education_awesome##":"Toată lumea care a solicitat facilități educaționale în orașul tău acum le are, nivelul educației în întregul orașul este perfect.",
+"##no_people_in_city##":"Orașul e gol!",
+"##advchief_employers_ok##":"Orașul nu are probleme cu somerii",
+"##no_industries_in_city##":"Nu ai industrie în oraș",
+"##advchief_health_awesome##":"Sănătatea în oraș este extradinară",
+"##advchief_health_awesome_clinic##":"Sănătatea în oraș este extradinară, clinicile sunt foarte moderne.",
+"##city_have##":"Trezoreria orașului conține",
+"##healthadv_not_need_health_service_now##":"Momentan nu există cereri pentru sănătate, dar odată cu dezvoltarea orașului, oamenii vor aștepta să aibă băi și alte facilităti sanitare. Mai târziu cetățenii vor cere bărbier și spitale.",
+"##health_no_info##":"Nu există",
+"##working_have_some_labor_access##":"Această clădire are în prezent acces scăzut la oameni care să-i furnizeze forță de muncă.",
+"##working_have_good_labor_access##":"Această clădire are în prezent acces crescut la oameni care să-i furnizeze forță de muncă.",
+"##working_have_no_labor_access##":"Această clădire nu are acces la oameni care să-i furnizeze forță de muncă.",
+"##working_have_awesome_labor_access##":"Această clădire are în prezent acces foarte bun la oameni care să-i furnizeze forță de muncă.",
+"##entadv_small_city_not_need_entert##":"În acest moment oamenii nu au nevoie decât de accest la distracție. Odată cu creșterea orașului au nevoie de ceva care sa rupă monotonia de zi cu zi. ",
+"##working_have_very_little_labor_access##":"Această clădire are în prezent acces foarte scăzut la oameni care să-i furnizeze forță de muncă.",
+"##working_have_bad_labor_access##":"Această clădire are în prezent acces limitat la oameni care să-i furnizeze forță de muncă.",
+"##its_very_peacefull_province##":"Imperiul nu a mai văzut un oraș atât de liniștit înainte!",
+"##to_empire_road##":"Către Imperiu",
+"##senate_save##":"în trezoreria orașului",
+"##senate_thisyear_tax##":"Orașul a colectat în acest an",
+"##some_amphitheaters_no_actors##":"Câteva amfiteatre nu au actori sau gladiatori. Mai mulți artiști vor crește nivelul de distracție în zonele care se plâng de monotonie",
+"##advchief_high_crime_in_district##":"Unele zone au nivel ridicat al crimei.",
+"##advchief_which_crime_in_district##":"Unele zone au mici probleme",
+"##colege_access_perfectly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul studențiilor dintr-o serie dacă construiești mai multe academii.",
+"##library_access_perfectrly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul cozilor dintr-o librărie dacă construiești mai multe.",
+"##school_access_perfectly##":"Toate cartiere care cer sa aibă mai multe facilităti educaționale, vor reduce numărul elevilor dintr-o clasă dacă construiești mai multe academii.",
+"##none_crime_risk##":"Niciun semn de crimă prin zonă",
+"##lost_money_last_year##":"Anul trecut orașul a pierdut bani, asta duce la scăderea nivelului prosperității",
+"##no_food_stored_last_month##":"Niciun kg de mâncare nu a fost depozitat luna trecută!",
+"##to_rome_road##":"Către Roma",
+"##furniture_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de mobilier construită în acest an va fi foarte mică.",
+"##clay_pit_bad_work##":"Având în vedere numărul de angajați ai acestei gropi, producția este practic oprită. Cantitatea de argilă săpată în acest an va fi foarte mică.",
+"##lumber_mill_bad_work##":"Având în vedere numărul de angajați ai acestui ocol silvic, producția este practic oprită. Cantitatea de lemn tăiată în acest an va fi foarte mică.",
+"##quarry_bad_work##":"Având în vedere numărul de angajați ai acestei cariere, producția este practic oprită. Cantitatea de marmură extrasă în acest an va fi foarte mică.",
+"##iron_mine_bad_work##":"Având în vedere numărul de angajați ai acestei mine, producția este practic oprită. Cantitatea de fier obținută în acest an va fi foarte mică.",
+"##fruit_farm_slow_work##":"Având în vedere numărul de angajați ai acestei livade, producția este practic oprită. Cantitatea de fructe recoltată în acest an va fi foarte mică.",
+"##vegetable_farm_bad_work##":"Având în vedere numărul de angajați ai acestei ferme, producția este practic oprită. ",
+"##vinard_bad_work##":"Având în vedere numărul de angajați ai acestei vi, producția este practic oprită. Cantitatea de struguri cultivată în acest an va fi foarte mică.",
+"##olive_farm_bad_work##":"Având în vedere numărul de angajați ai acestei livade, producția este practic oprită. Cantitatea de măsline recoltată în acest an va fi foarte mică.",
+"##wine_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de vin obținută în acest an va fi foarte mică.",
+"##oil_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei prese, producția este practic oprită. Cantitatea de ulei de măsline stoarsă în acest an va fi foarte mică.",
+"##weapons_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei fabrici, producția este practic oprită. Cantitatea de arme construită în acest an va fi foarte mică.",
+"##pottery_workshop_bad_work##":"Având în vedere numărul de angajați ai acestei olării, producția este practic oprită. Cantitatea de vase modelate în acest an va fi foarte mică.",
+"##meat_farm_bad_work##":"Având în vedere numărul de angajați ai acestei ferme, producția este practic oprită. Turma este foarte mică și se va înmulții încet",
+"##cartPusher_average_life##":"Să împingi cărucioare toată ziua nu e distractiv, dar să trăiești în acest oraș nu este rău deloc",
+"##sldr_terrified##":"Îngrozit",
+"##overall_people_are_leaving_city##":"Oamenii părăsesc orașul tău!",
+"##overall_people_are_coming_city##":"Oamenii vin sau își doresc să vină în oraș tău.",
+"##overall_city_population_static##":"Populația orașului tău e statică.",
+"##weapons_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce arme.",
+"##furniture_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce mobilier.",
+"##pottery_workshop_full_work##":"Acest atelier de lucru este dotat cu toate angajații de care are nevoie, ei muncesc din greu pentru a  produce vase.",
+"##furniture_workshop_patrly_workers##":"Acest atelier are nevoie de forță de muncă. Odată ce posturile vor fi ocupate, producția de mobilă va crește.",
+"##furniture_workshop_need_some_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce mobilă într-un ritm prea lent.",
+"##weapons_workshop_need_some_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce arme într-un ritm prea lent.",
+"##pottery_workshop_need_som_workers##":"Acest atelier are mare nevoie de forță de muncă. El produce vase într-un ritm prea lent.",
+"##weapons_workshop_no_workers##":"Acest atelier are nici un angajat. Producția este oprită.",
+"##furniture_workshop_no_workers##":"Acest atelier are nici un angajat. Producția a încetat.",
+"##weapons_workshop_slow_work##":"Acest atelier are mare nevoie de forță de muncă. El produce arme într-un ritm prea lent.",
+"##reservoir_info##":"Acesta este un rezervor gigant de apă potabilă curată. El distribuie apă prin conducte de lut pe o rază largă în oraș. Apeductele poat lega rezervoare între ele pe distanțe lungi.",
+"##no_tax_in_this_year##":"În acest an nu s-a colectat nicio taxă de la această casă.",
+"##how_to_grow_prosperity##":"Nu s-a modificat nivelul în acest an. Având profit în orașul tău în fiecare an este cea mai bună cale de a crește nivelul prosperității.",
+"##citizen_low_entertainment4##":"Nu ai nimic de făcut dacă ieși seara în orașul acesta!",
+"##prefect_so_hungry##":"Nu ai destulă mâncare în oraș. Acest lucru încurajează crima.",
+"##house_pay_tax##":"Dinari plătiți pe an",
+"##actor_need_workers##":"Nu sunt destui muncitori în oraș.",
+"##house_food_only_for_month##":"Această casă are mâncare să se hrănească cel mult o lună.",
+"##house_have_not_food##":"Această casă nu are mâncare deloc.",
+"##house_have_some_food##":"Această casă o să iși epuizeze în curând stocurile de mâncare.",
+"##trouble_colloseum_no_shows##":"Acest coloseu nu are spectacole. Este nevoie de gladiatori și lei ca să atragi publicul.",
+"##legion_haveho_soldiers_and_barracks##":"Acest legiune nu are soldați. Ea există doar cu numele, și fără o cazarma operativă în oraș, nu poate primi trupe noi.",
+"##legion_haveho_soldiers##":"Acest legiune nu are soldați. Ea există doar cu numele. Doar atunci noi soldați antrenați vor veni de la cazarmă, legiunea va fi gata de luptă.",
+"##no_people_in_this_locality##":"Niciun locuitor în această localitate",
+"##low_crime_risk##":"În această zonă, criminalitatea este ocazaională.",
+"##enemy_army_attack_city##":"În acest moment o armată inamică mărșăluiește spre orașul tău. Ei au jefuit satele din apropiere și ne așteptăm la atacul lor anul acesta. ",
+"##weapons_workshop_need_resource##":"Este nevoie de fier în acest atelier pentru a produce arme.",
+"##valencia_title##":"Valencia : destul de liniștită",
+"##low_desirability##":"Trebuie să îmbunătățești atractivitatea acestui sector, prin construirea grădini sau piețe.",
+"##wn_barbarian##":"Barbar",
+"##barbarian_attack_title##":"Ne atacă Barbarii!",
+"##cant_calc_prosperity##":"Este noapte în orașul tău,  nu putem calcula prosperitatea orașului tau.",
+"##big_fest_description##":"Festivalul de 2 zile s-a terminat. Zeul ales a fost onorat cum se cuvine. Oamenii sunt bucuroși și bunăvoința predomină.",
+"##governor_palace_1_info##":"Casa ta este cea mai atractivă din oraș",
+"##not_enought_place_for_legion##":"Nu există spațiu suficient în cazărmi pentru alte legiuni.",
+"##playerarmy_gone_to_home##":"Legiunea se întoarce în oraș",
+"##playerarmy_gone_to_location##":"Legiunea mărșăluiește pentru a ajuta un alt oraș al imperiului.",
+"##trade_advisor_blocked_wine_production##":"Consilierul în Comerț, îți recomandă să oprești producția de vin",
+"##trade_advisor_blocked_oil_production##":"Consilierul în Comerț, îți recomandă să oprești producția de ulei de măsline.",
+"##trade_advisor_blocked_furniture_production##":"Consilierul în Comerț, îți recomandă să oprești producția de mobilier.",
+"##trade_advisor_blocked_weapon_production##":"Consilierul în Comerț, îți recomandă să oprești producția de arme.",
+"##trade_advisor_blocked_grape_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea viței de vie.",
+"##trade_advisor_blocked_vegetable_production##":"Consilierul în Comerț, îți recomandă să oprești producția de legume.",
+"##trade_advisor_blocked_olive_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea măslinilor.",
+"##trade_advisor_blocked_wheat_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea grâului",
+"##trade_advisor_blocked_meat_production##":"Consilierul în Comerț, îți recomandă să oprești creșterea de purcei.",
+"##trade_advisor_blocked_fruit_production##":"Consilierul în Comerț, îți recomandă să oprești plantarea pomilor fructiferi.",
+"##trade_advisor_blocked_timber_production##":"Consilierul în Comerț, îți recomandă să oprești tăierea pădurilor.",
+"##trade_advisor_blocked_clay_production##":"Consilierul în Comerț, îți recomandă să oprești săpatul după argilă.",
+"##trade_advisor_blocked_marble_production##":"Consilierul în Comerț, îți recomandă să oprești producția de marmură.",
+"##trade_advisor_blocked_iron_production##":"Consilierul în Comerț, îți recomandă să oprești extragerea fierului.",
+"##trade_advisor_blocked_pottery_production##":"Consilierul în Comerț, îți recomandă să oprești modelarea de noi vase.",
+"##your_salary_frowned_senate##":"Ai obrazul gros să îți stabilești un salariu mai mare decât se cuvine funcției tale. Nu ești văzut cu ochi buni la Roma.",
+"##broke_empiretax_warning##":"Inabilitatea ta de a plătii Romei tributul anual, marcează orașul tău ca pe un eșec.",
+"##broke_empiretax_with2years_warning##":"Inabilitatea ta de a plătii tributul Romei mai mulți ani la rând, face ca să îți scadă reputația.",
+"##your_favour_increased_from_last_year##":"Aprecierea ta în ochii Romei a crescut anul trecut.",
+"##your_favour_unchanged_from_last_year##":"Aprecierea ta în ochii Romei a râmas neschimbată",
+"##lugdunum_win_text##":"Tratamentul aplicat galilor din Lugdunum și splendoarea aceștui oraș-târg, este de bun augur pentru extinderea Romei în nordul sălbăticiei. Ai făcut trebă bună!",
+"##capua_win_text##":"Nivelul tău de management este excelent, mulți guvernatori nu au reușit să stabilească propriile lor colonii așa cum ai făcut tu. Lideri ca tine sunt destinul Romei. Poți repeta acest succes, sau a fost noroc?",
+"##city_need_workers_text##":"Orașul are nevoie de mai mulți muncitori",
+"##city_need_more_workers##":"Orașul are nevoie de mai mulți muncitori",
+"##more_0_month_from_festival##":"Câțiva cetățenii încă sunt mahmuri după ultima orgie, îți mulțumesc pentru generozitate.",
+"##desirability_indiffirent_area##":"Cetățenii nu văd factori negativi sau pozitivi în această zonă.",
+"##more_12_month_from_festival##":"Cetățenii sunt foarte nefericiti de faptul că mai trece un an fără un festival :(",
+"##need_temples_for_city##":"Cetățenii vorbesc cu interes despre religie, iar faptul că nu ai destule locuri de închinare ține pe loc dezvoltarea orașului",
+"##gods_unhappy_text##":"Cetățenii tăi cred ca zeii sunt supărați, unii dintre ei au avut viziuni despre mânia zeilor și dezastrele ce se abat asupra orașului. Contruiește mai multe temple și organizează câteva festivaluri.",
+"##small_colloseum_show##":"Coloseumul are nevoie de mai mulți spectatori! Angajează gladiatori sau cumpără lei, ei vor atrage din nou lumea la spectacole și va crește nivelul de distracție din zonă.",
+"##send_legion_to_emperor##":"Spune-i consilierului militar ca să atribuie câteva legiuni operaționale în serviciul Imperiului Roman.",
+"##venus##":"Venus",
+"##smcurse1_of_venus_description#":"Venus a aruncat un nor negru asupra orașului tău. ",
+"##smcurse2_of_venus_description#":"Venus a aruncat un nor negru asupra orașului tău. ",
+"##smcurse_of_venus_title##":"Venus este supărată.",
+"##blessing_of_venus_description##":"Venus a trimis o adiere de voie bună peste orașul tău. Oamenii sunt mai fericiți azi :)",
+"##smcurse_of_venus_description##":"Venus, aducătorul de dragoste și armonie, este supărată. Nu sunt vești bune pentru prefecții orașului tău",
+"##return_2_fort##":"Întoarceți-vă la fort",
+"##return_to_main_map##":"Revino la harta jocului principal",
+"##shipyard##":"Port",
+"##wt_romeHorseman##":"Călăreț",
+"##wn_visigoth##":"Vizigoți",
+"##city_loathed_you##":"Sunteșu detestat de tot orașul",
+"##explosion##":"Explozie",
+"##varieties_food_eaten##":"Mai multe feluri de mâncare mâncate",
+"##governor_palace_2##":"Vila Guvernatorului",
+"##governorVilla##":"Vila Guvernatorului",
+"##wine##":"Vin",
+"##prettyWine##":"Falern Vin",
+"##grape##":"Struguri",
+"##vinard_info##":"Strugurii din această vie sunt de viță nobilă, speciali pentru a face cel mai bun vin pentru aristocrați sau pentru export.",
+"##vinard##":"Viță de vie",
+"##wine_workshop_info##":"Muncitorii fac vin din acești struguri, care este necesar pentru aristocrați dacă vrei ca ei să iși facă vile la tine în oraș. De asemenea vinul este căutat peste tot, așa că poți să-l și exporți.",
+"##wine_workshop##":"Cramă",
+"##tradeadv_industrystate_tip##":"Pornește/Oprește producția pentru acestă activitate din oraș",
+"##city_opts_god_on##":"Zei : Pornit",
+"##city_opts_god_off##":"Zei : Oprit",
+"##warning##":"Atenție!",
+"##warehouse_gettinfull_warning##":"Atenție! Acest depozit este aproape plin. După ce este plin nu o să mai primească mărfuri.",
+"##warehouse_full_warning##":"Atenție! Acest depozit este plin, el nu mai primește mărfuri.",
+"##changesalary_greater_salary##":"Atenție! Având un salar mai mare decât meriți pentru funcția actuală nu o să dea bine în fața Împăratului.",
+"##working_build_poor_labor_warning##":"Atenție! Acees limitat la angajați",
+"##working_building_need_road##":"Atenție! Aveastă clădire nu funcționează, ea nu este conectată la drum, astfel angajații nu au cum să ajungă la muncă.",
+"##ovrm_water##":"Apă",
+"##water_caption##":"Apă",
+"##massilia_preview_mission##":"Aici apa se găsește doar în oaze, așadar fermele și rezervoarele concurează pe aceași bucată de pământ. Folosește spațiu într-un mod înțelept.",
+"##water_info##":"Nu poți trece, dar poți construi poduri pe alocuri. Apa reprezintă o legătură importantă pentru comerțul cu imperiul, construirea de docuri te ajută să faci comerț. De asemenea gropile de unde sapi argila trebuie să se afle în preajma apei.",
+"##water_supply##":"Apă",
+"##militaryAcademy##":"Academie militară",
+"##advchief_military##":"Armată",
+"##adve_military##":"Armată",
+"##high_salary_angers_senate##":"Salariul tău este ridicol de mare și nu face decât să infurie senatul. Toată Roma vorbește de tine cât ești de hapsân.",
+"##charioteer##":"Vizitiu",
+"##citychart_census##":"Recensământ",
+"##wn_helveti_soldier##":"Un războinic din Helvetii",
+"##barbarian_warrior##":"Un războinic barbar",
+"##wn_visigoth_soldier##":"Un războinic vizigot",
+"##wn_gaul_soldier##":"un războinic gal",
+"##goth_warrior##":"un războinic got",
+"##hun_warrior##":"un războinic hun",
+"##wn_celt_soldier##":"un războinic celt",
+"##wt_pict_soldier##":"un războinic picthis",
+"##mars_desc##":"război",
+"##migration_war_deterring##":"Războiul descurajează imigranții",
+"##RomeChastenerArmy_troops_at_our_gates##":"Trupele Imperiului sunt la porțile orașului!",
+"##chariotScholl##":"",
+"##wt_wolf##":"Lup",
+"##lgn_wolves##":"Lupii",
+"##request_failed##":"Ai ratat să îndeplinești cererea Imperiului. Dacă ai fi dus la bun sfârșit misiunea ai fi crecut în ochii Romei.",
+"##market_kid_say_1##":"Doamna grasă din față mi-a zis să car asta și să o urmez.",
+"##sldr_encouraged##":"încurajat",
+"##gatehouse##":"Poartă",
+"##more_8_month_from_festival##
+":"Amintirile festivalului se risipesc din mintea oamenilor.",
+"##east##":"Este nevoie de fier în acest atelier pentru a produce arme.",
+"##delighted##":"încântat",
+"##lionTamer_average_life##":"uite aici niște carne din import pentru tine, Leo.",
+"##100_citizens_in_city##":"Populația orașului tău a ajuns la 100 de locuitori pentru prima dată în istorie.",
+"##1000_citizens_in_city##":"Populația orașului tău a ajuns la 1.000 de locuitori pentru prima dată în istorie.",
+"##10000_citizens_in_city##":"Populația orașului tău a ajuns la 10.000 de locuitori pentru prima dată în istorie.",
+"##15000_citizens_in_city##":"Populația orașului tău a ajuns la 15.000 de locuitori pentru prima dată în istorie.",
+"##2000_citizens_in_city##":"Populația orașului tău a ajuns la 2.000 de locuitori pentru prima dată în istorie.",
+"##20000_citizens_in_city##":"Populația orașului tău a ajuns la 20.000 de locuitori pentru prima dată în istorie.",
+"##25000_citizens_in_city##":"Populația orașului tău a ajuns la 25.000 de locuitori pentru prima dată în istorie.",
+"##3000_citizens_in_city##":"Populația orașului tău a ajuns la 3.000 de locuitori pentru prima dată în istorie.",
+"##500_citizens_in_city##":"Populația orașului tău a ajuns la 500 de locuitori pentru prima dată în istorie.",
+"##5000_citizens_inc_city##":"Populația orașului tău a ajuns la 5.000 de locuitori pentru prima dată în istorie.",
+"##enemies_attack_title##":"Inamicii atacă orașul",
+"##city_have_defence##":"Defensiva orașului n-ar fi trebui să permită inamicilor să treacă de ziduri.",
+"##enemies_at_the_door##":"Inamicii sunt la ușa",
+"##barbarian_are_closing_city##":"Inamicii se apropie de oraș",
+"##barbarian_attack_text##":"Dușmanii Romei sunt la marginea orașului, așteaptă-te ca ei sa vină pentru o ulcică, două de vin...și alte nebunii care le trec prin cap",
+"##enemy_army_threating_a_city##":"O armată inamică amenință un oraș al Imperiului",
+"##city_under_barbarian_attack##":"Oameni sunt neliniștiți de prezența soldaților inamici în oraș. Nivelul de pace al orașului a scăzut,",
+"##time_since_last_gift##":"Timp de la ultimul cadou",
+"##ovrm_education##":"Toate",
+"##ovrm_entertainment##":"Toate",
+"##religionadv_need_basic_religion##":"Tot mai mulți cetățeni cer cel puțin un loc de închinare în cartier, pentru ca zeii să aibă o părere mai bună despre ei.",
+"##healthadv_some_regions_need_doctors_2##":"Toți mai mulți oameni vor o îmbunătățire a sectorului medical. Asigură acces la clinicile medicale pentru a ajuta populația să crească.",
+"##for_second_year_broke_tribute##":"Pentru al doilea an la rând nu ai plătit tributul Romei, Aceasta devine o problemă majoră în privința viitorului tău.",
+"##tarsus_win_text##":"Foarte repede ai devenit cel mai valoros om al meu. Capcitățile tale de a face comerț au făcut din Tarsus exact orașul pe care îl vroiam. Provinciile din Est sunt mai loiale Romei, datorită ție.",
+"##tutorial2_win_text##":"Înveți repede! Ai dobândit abilitățile pentru a face față unei provocări reale. De acum înainte poți să-ți alegi drumul pe care să mergi. Alege provinciile mai liniștite pentru a te concentra pe guvernare, sau alege o provincie mai periculoasă pentru a confrunta inamicii Romei.",
+"##taxCollector_high_tax##":"Taxele sunt prea mari. Cetățenii sunt nemulțumiți.",
+"##can_build_only_one_of_building##":"Poți să ai doar o singură clădire de felul acesta.",
+"##emperor_anger_text##":"Intenționat refuzi să îmi trimiți ce ți-am cerut? Vrei să mă insulți?",
+"##imperial_reminder_text##":"Ai uitat despre cererea mea? Aștept cu nerăbdare pachetul tău.",
+"##emigrant_high_workless##":"Cunoști pe cineva să mă angajeze? Am nevoie de lucru.",
+"##current_year_notpay_tribute_warning##":"Nu ai reușit să plătești tribut anul acesta. Ai scăzut în ochii Romei. Păstrează bani în trezoreria orașului, astfel încât să poți plăti tributul anual Romei.",
+"##request_faild_text#":"Mă sfidezi? Uită despre cererea mea, voi căuta în altă parte. Dacă ești norocos aș putea apela din nou la tine.",
+"##ive_asked_senate_proclaim_you_a_god##":"Ai depășit fiecare obstacol în fiecare misiune, chiar și atunci când eu am pariat împotriva ta. Nimeni nu poate nega dreptul tău de a conduce întreg imperiul. Am cerut senatului să te proclame drept zeu. Felicitări!!!",
+"##wrath_of_neptune_failed_description##":"Ai pornit mânia mea! Abia aștept ziua în care orașul tău va avea vapoare, atunci voi avea revanșa mea.",
+"##sentiment_people_annoyed_you##":"Oamenii sunt enervati de prezența ta.",
+"##city_has_runout_money_again##":"Ai terminat fondurile Romei. Cu greu Cezar a fost de acord să îți mai acorde 5.000 de dinari pentru 12 luni. Trebuie să faci profit din taxe și exporturi.",
+"##damascus_win_text##":"Încă o dată ai obținut imposibilul. Tot Estul se uită cu uimire la ce ai realizat în Damasc. Acum pot să îmi chem acasă câteva legiuni din Siria.",
+"##really_destroy_fort##":"Ești sigur că dorești să demolezi acest fort?",
+"##tingis_win_text##":"Ești un guvernator, sau un general?Realizările tale de la Tingis fac ca legiunile din Occident șă fie libere, ceea ce îmi permite să-mi urmăreasc alte ambiții. Devii o parte esențială în planul meu.",
+"##enter_your_name##":"Alege un nume",
+"##select_location##":"Alege o locație",
+"##select_city_layer##":"Alege un model de oraș",
+"##priority_button_tolltip##":"Apasă pe un număr pentru a stabili prioritatea. Toate celelalte sarcini se vor ajusta în conformitate.",
+"##select_this_graph##":"Alege grafica aceasta",
+"##mainmenu_language##":"Limbă",
+"##exit_without_saving_question##":"Ieșire fără salvare?",
+"##gmenu_file_mainmenu##":"Ieșire în meniul principal",
+"##gmenu_exit_game##":"Ieșire joc",
+"##gmenu_file_exit##":"Ieșire joc",
+"##mainmenu_quit##":"Ieșire joc",
+"##exit_salary_window##":"Închide fluturașul de salariu",
+"##donationwnd_exit_tip##":"Închide pagina cu donațiile",
+"##exit_this_panel##":"Ieșiti din acest panou",
+"##migration_broke_workless##":"RESTANT",
+"##migration_broke_tax##":"",
+"##migration_middle_lack_tax##":"",
+"##high_fire_risk##":"",
+"##high_damage_risk##":"",
+"##migration_lack_crime##":"",
+"##quit##":"Ieșire",
+"##exit##":"Ieșire",
+"##wn_gaul##":"",
+"##egift_gaulish_bodyguards##":"",
+"##egift_gepards_and_giraffes##":"",
+"##lgn_heroes##":"",
+"##lgn_hydras##":"",
+"##chief_advisor##":"Consilier Principal",
+"##wt_gladiator##":"",
+"##gladiator_bouts_runs_for_another##":"",
+"##amphitheater_haveno_gladiator_bouts##":"Nici o luptă de gladiatori în sesfășurare",
+"##colloseum_haveno_gladiator_bouts##":"",
+"##clay##":"Argilă",
+"##clay_pit##":"Mină de argilă",
+"##gods_unhappy_title##":"",
+"##wrath_of_venus_title##":"",
+"##emperor_anger##":"",
+"##wrath_of_mars_title##":"",
+"##smallcurse_of_mars_failed_title##":"",
+"##wrath_of_mercury_title##":"",
+"##wrath_of_neptune_title##":"",
+"##wrath_of_ceres_title##":"Wrath de Ceres",
+"##immigrant_much_food_here##":"Se spune că e mâncare aici. Este un loc bun pentru a trăi?",
+"##year##":"",
+"##charioter_so_hungry##":"Dacă îmi e foame? Aș putea mânca un cal, atât de puțină mâncare se găsește!",
+"##hippodrome_haveno_races##":"",
+"##current_races_runs_for_another##":"",
+"##pottery_workshop##":"",
+"##city##":"Oraș",
+"##city_in_debt##":"",
+"##city_fire_title##":"",
+"##city_still_in_debt##":"",
+"##pestilent_event_text##":"",
+"##city_is_besieged##":"",
+"##city_in_debt_again##":"",
+"##city_health##":"Starea sănătății în oraș",
+"##city_sounds_on##":"Sunetele orașului sunt activate",
+"##city_sounds_off##":"Sunetele orașului sunt dezactivate",
+"##advchief_needworkers##":"",
+"##citizens_enjoy_drama_and_comedy##":"",
+"##citizens_here_are_bored_for_chariot_races##":"",
+"##burning_ruins##":"Arderea ruina",
+"##ovrm_hospital##":"",
+"##wn_goth##":"",
+"##not_need_education##":"",
+"##gods_wrathful_text##":"",
+"##citizen_are_rioting##":"Cetățenii se revoltă!",
+"##doctor_good_life##":"",
+"##well_info##":"",
+"##patrician_gods_angry##":"",
+"##patrician_low_entertainment##":"Cetățene! Nu este acesta cel mai plictisitor oraș din Imperiu?",
+"##recruter_need_workers##":"",
+"##gladiator_perfect_life##":"",
+"##citizen##":"",
+"##great_festival##":"",
+"##mopup_formation_title##":"",
+"##wn_graeci##":"",
+"##egift_gree_manuscript##":"",
+"##greek_soldier##":"",
+"##gmsndwnd_game_volume##":"",
+"##yes##":"",
+"##citizen_low_salary##":"Nici câinele meu nu ar munci pentru salariile de aici! Plec!",
+"##city_damascus##":"Damasc",
+"##damascus_title##":"Damasc: provincia oarecum periculos",
+"##donation_is##":"",
+"##date_tooltip##":"Data",
+"##date##":"Data",
+"##scrw_date##":"Data",
+"##governor_palace_3##":"",
+"##governorPalace##":"",
+"##month_12_short##":"",
+"##dn's##":"Dinari",
+"##dn_per_month##":"Dinari pe lună",
+"##dn_collected_this_year##":"dinari colectate până acum în acest an.",
+"##dn##":"",
+"##day##":"Zi",
+"##funds_tooltip##":"",
+"##trees_and_forest_caption##":"",
+"##children##":"Copii",
+"##srcw_no_messages##":"",
+"##need_barracks_for_work##":"",
+"##tower_need_wall_for_patrol##":"",
+"##need_marble_for_large_temple##":"",
+"##oracle_need_2_cart_marble##":"",
+"##furniture_workshop_need_resource##":"",
+"##pottery_workshop_need_resource##":"",
+"##need_access_to_full_reservoir##":"",
+"##haveno_trade_routes_for_goods##":"",
+"##advemployer_panel_denaries##":"dn",
+"##denarii_short##":"",
+"##days##":"Zi",
+"##age_bc##":"î.Hr.",
+"##bc##":"î.Hr.",
+"##marketBuyer_good_life##":"",
+"##clay_pit_info##":"Argila e folosită pentru comerț sau ca materie primă pentru olari. Oamenii ce locuiesc in insulae au nevoie de vase de lut. De asemenea, vasele de lut pot fi vândute în alte provincii.",
+"##iron_mine_info##":"Fier a mea pentru comerț, sau de a furniza arme ateliere. Echipați legionari cu arme de casă, sau să le exporte către alte provincii.",
+"##quarry_info##":"Taie marmură din roci adiacente, si folositi-l pentru a construi oracole și temple mari. Marmura este de obicei un produs de export de valoare.",
+"##god_pleased##":"",
+"##sld_quite_daring##":"",
+"##blessing_of_neptune_description##":"",
+"##dock##":"",
+"##wt_docker##":"",
+"##ovrm_clinic##":"",
+"##clinic_info##":"",
+"##city_has_debt##":"Orașul are o datorie către Roma de",
+"##lutetia_win_text##":"",
+"##marketBuyer_low_entertainment##":"Acesta trebuie să fie cel mai plictisitor oraș din Imperiu!",
+"##governor_palace_1##":"",
+"##governorHouse##":"",
+"##houseBtnTooltip##":"",
+"##mainmenu_package##":"Adv. setări",
+"##package_options##":"Adv. setări",
+"##graphics##":"",
+"##advanced_houseinfo##":"Informații avansate despre această casă",
+"##citizens_additional_rooms_for##":"Spațiu pentru încă",
+"##road_caption##":"Droga",
+"##road_text##":"",
+"##citychart_society##":"",
+"##bath_access##":"Acces la baie publică",
+"##barber_access##":"Acces la frizerie",
+"##ovrm_market##":"",
+"##formation_available_for_trained_troops##
+":"",
+"##debet##":"",
+"##timber##":"",
+"##spirit_of_mars_text##":"",
+"##wn_eygptian_soldier##":"",
+"##egift_egyptian_glassware##":"",
+"##wn_eygptians##":"",
+"##ovrm_food##":"",
+"##units##":"",
+"##unit##":"",
+"##gmspdwnd_autosave_interval##":"",
+"##warning_theater_access##":"",
+"##warning_baths_access##":"",
+"##warning_library_access##":"",
+"##taxCollector_low_entertainment##":"",
+"##romeGuard_low_entertainment##":"",
+"##seamerchant_noany_trade##":"",
+"##lionTamer_so_hungry##":"",
+"##engineer_so_hungry##":"",
+"##taxCollector_so_hungry##":"",
+"##warning_doctor_access##":"",
+"##tamer_normal_life##":"",
+"##taxCollector_gods_angry##":"",
+"##teacher_gods_angry##":"Vom simți mânia zeilor dacă nu construim mai multe temple rapid!",
+"##warning_barber_access##":"",
+"##this_fire_can_spread##":"Aceste incendii răspândit, dacă nu-i prindă destul de repede",
+"##warning_college_access##":"",
+"##warning_hospital_access##":"",
+"##rioter_say_3##":"",
+"##warning_school_access##":"",
+"##citizen_high_workless2##":"Dacă nu găsesc de muncă în scurt timp, va trebui să mă mut în alt oraș.",
+"##immigrant_so_hungry##":"Dacă mai stau aici cred că o să mor. Nu se găsește mâncare nicăieri.",
+"##day_longer_in_that_tent##":"",
+"##seamrchant_another_successful_voyage##":"Un alt călătorie de succes! Profitul face-boala mare suportabil!",
+"##architect_salary##":"Salariu de arhitect, in valoare de",
+"##citizen_salary##":"Salariu de cetățean în valoare de",
+"##engineer_salary##":"",
+"##quaestor_salary##":"",
+"##clerk_salary##":"Salariu de funcționar, în valoare de",
+"##consul_salary##":"",
+"##praetor_salary##":"",
+"##proconsoul_salary##":"",
+"##procurator_salary##":"",
+"##caesar_salary##":"Salariu de Caesar, in valoare de",
+"##edil_salary##":"",
+"##more_salary_dispeasure_senate##":"Salariul pe care te plătiți, depasind cu mult rangul dumneavoastră, este o sursă de mare nemulțumire la Roma.",
+"##prefect_fight_fire##":"",
+"##iron_mine##":"",
+"##iron##":"",
+"##lgn_stallion##":"",
+"##meat_farm##":"",
+"##priest_good_life##":"Viața e bună în acest oraș.",
+"##actor_average_life##":"Viața aici e pur și simplu adorabilă",
+"##barber_average_life##":"Nu este acest oraș de par trimmingly minunat?",
+"##occupants##":"",
+"##money_stolen_title##":"",
+"##sentiment_people_pleased_you##":"",
+"##sentiment_people_extr_pleased_you##":"",
+"##house_not_report_about_crimes##":"Locuitorii au raportat nicio crimă, la toate.",
+"##sentiment_people_upset_you##":"",
+"##sentiment_people_love_you##":"",
+"##sentiment_people_verypleased_you##":"",
+"##sentiment_people_veryupset_you##":"",
+"##sentiment_people_veryangry_you##":"",
+"##house_provide_food_themselves##":"",
+"##fountain_info##":"",
+"##sentiment_people_idolize_you##":"",
+"##sentiment_people_indiffirent_you##":"",
+"##sentiment_people_angry_you##":"",
+"##wt_priest##":"",
+"##hlth_care_of##":"",
+"##load_this_game##":"",
+"##mainmenu_load##":"",
+"##mainmenu_loadgame##":"",
+"##mainmenu_loadcampaign##":"",
+"##mainmenu_loadmap##":"",
+"##Load_save##":"",
+"##mainmenu_playmission##":"",
+"##fileload_load_tlp##":"",
+"##initialize_animations##":"",
+"##initialize_names##":"",
+"##initialize_walkers##":"",
+"##initialize_constructions##":"",
+"##initialize_religion##":"",
+"##loading_offsets##":"",
+"##initialize_house_specification##":"",
+"##meat_farm_info##":"",
+"##close##":"",
+"##infobox_tooltip_exit##":"",
+"##wt_marketBuyer##":"",
+"##advchief_employment##":"Ocuparea forței de muncă",
+"##west##":"",
+"##grape_factory_stock##":"",
+"##clay_factory_stock##":"Argilă stocată,",
+"##timber_factory_stock##":"",
+"##iron_factory_stock##":"",
+"##olive_factory_stock##":"",
+"##weapon_store_of##":"",
+"##advchief_food_stocks##":"Stoc de mâncare",
+"##have_food_for##":"",
+"##mainmenu_dlc_articles##":"Articole",
+"##pay_to_open_trade_route?##":"Plăti pentru a deschide această cale?",
+"##emp_pay_open_this_route_question##":"Plăti pentru a deschide această cale?",
+"##contaminted_water##":"",
+"##advemployer_panel_salary##":"",
+"##wages##":"",
+"##captured_city##":"Un oraș capturat",
+"##collapsed_building_title##":"",
+"##destroyed_building_title##":"",
+"##pottery_workshop_info##":"",
+"##barber_need_workers##":"",
+"##some_crime_risk##":"",
+"##nativeHut_info##":"",
+"##lionTamer_high_workless##":"Există o mulțime de șomaj aici",
+"##marketBuyer_so_hungry##":"",
+"##teacher_so_hungry##":"Les gens sont mécontents. Ils n'ont pas assez à manger.",
+"##high_crime_risk##":"",
+"##landmerchart_noany_trade2##":"",
+"##oil_workshop_info##":"",
+"##wheat_farm_bad_work##":"",
+"##furniture_workshop_slow_work##":"",
+"##olive_farm_slow_work##":"",
+"##pottery_bad_work##":"",
+"##vegetable_farm_slow_work##":"",
+"##fig_farm_bad_work##":"",
+"##advchief_low_crime##":"",
+"##scholar_need_workers##":"",
+"##gladiator_high_workless##":"Există atât de mult șomaj aici. Aș vrea să putem practica pe unele dintre ele!",
+"##scholar_high_workless##":"Foarte mulți oameni caută o slujbă aici",
+"##barber_high_workless##":"Șomajul e atât de mare îți stă părul măciucă!",
+"##actor_high_workless##":"Șomajul este atât de mară, nu mă pot concentra să îmi învăț replicile",
+"##library_info##":"",
+"##romeGuard_average_life##":"Totul pare calm aici ..",
+"##advchief_health##":"",
+"##health##":"",
+"##ovrm_healthAll##":"",
+"##ovrm_health##":"",
+"##advchief_health_low##":"",
+"##advchief_health_lower##":"",
+"##advchief_health_high##":"",
+"##advchief_health_high_clinic##":"",
+"##advchief_health_middle##":"",
+"##advchief_health_middle_clinic##":"",
+"##advchief_health_verygood##":"",
+"##advchief_health_verygood_clinic##":"",
+"##advchief_health_less##":"",
+"##advchief_health_less_clinic##":"",
+"##advchief_health_good##":"",
+"##advchief_health_good_clinic##":"",
+"##advchief_health_perfect##":"",
+"##advchief_health_perfect_clinic##":"",
+"##advchief_health_terrible_clinic##":"",
+"##advchief_health_terrible##":"",
+"##adve_health_education##":"Sănătate și Educație",
+"##soldiers_health##":"",
+"##extm_health_tlp##":"",
+"##ceres_desc##":"",
+"##earthquake_title##":"",
+"##wheat##":"",
+"##wheat_farm_info##":"",
+"##angry##":"Furios",
+"##lgn_snakes##":"",
+"##egift_golden_chariot##":"",
+"##wn_iberian_soldier##":"",
+"##developers##":"",
+"##testers##":"",
+"##showing_agamemnon_aeschylus##":"",
+"##showing_antigone_sophocles##":"",
+"##showing_thecrito_plato##":"",
+"##showing_lisistrata_aristopanes##":"",
+"##showing_odyssey_homer##":"",
+"##shipyard_info##":"",
+"##patrician_average_life##":"",
+"##current_game_speed_is##":"",
+"##increase_trading_title##":"Schimbări cererii",
+"##a_price_rise_title##":"",
+"##a_price_rise_text##":"",
+"##mainmenu_plname##":"Schimbarea numelui",
+"##adjust_exact##":"Stabilește suma exactă pe care vrei să o donezi",
+"##adjust_tax_rate##":"Stabilește rata de taxare a orașului",
+"##wharf_full_work##":"",
+"##dock_full_work##":"",
+"##wt_immigrant##":"",
+"##emperor_favour_20##":"",
+"##city_still_in_debt_text##":"",
+"##emperor_favour_18##":"",
+"##emperor_favour_17##":"",
+"##emperor_favour_00##":"",
+"##emperor_favour_12##":"",
+"##emperor_favour_14##":"",
+"##emperor_favour_05##":"",
+"##emperor_favour_02##":"",
+"##emperor_favour_07##":"",
+"##emperor_favour_09##":"",
+"##emperor_favour_08##":"",
+"##emperor_limit_houseupgrade##":"",
+"##emperor_favour_13##":"",
+"##emperor_favour_06##":"",
+"##emperor_favour_03##":"",
+"##emperor_favour_16##":"",
+"##emperor_favour_11##":"",
+"##emperor_favour_04##":"",
+"##emperor_favour_15##":"",
+"##emperor_favour_01##":"",
+"##emperor_favour_19##":"",
+"##imperial_reminder##":"",
+"##emperor_request_money##":"",
+"##emperor_request##":"",
+"##emperor##":"",
+"##import_fn##":"",
+"##import##":"",
+"##trade_btn_import_text##":"",
+"##city_zoominv_on##":"",
+"##city_zoominv_off##":"",
+"##adve_industry_and_trade##":"Industire și Comerț",
+"##engineer##":"",
+"##wt_engineer##":"",
+"##adve_engineers##":"Inginerie",
+"##extm_engineering_tlp##":"",
+"##engineering_post##":"",
+"##engineering_post_info##":"",
+"##ready_to_game##":"",
+"##hippodrome##":"",
+"##ovrm_hippodrome##":"",
+"##hippodromes##":"",
+"##use_and_trade_resource##":"Utilizarea și comercializare această resursă",
+"##citychart_population##":"",
+"##caesarea_win_text##":"",
+"##this_year##":"",
+"##wn_judaean##":"",
+"##judaean_warrior##":"",
+"##etertadv_as_city_grow_you_need_more_entert##":"",
+"##month_7_short##":"",
+"##month_6_short##":"",
+"##to_trade_advisor##":"",
+"##walls_need_a_gatehouse##":"",
+"##barracks##":"Barăci",
+"##mainmenu_dlc_main##":"",
+"##romeGuard_so_hungry##":"",
+"##miletus_win_text##":"",
+"##patrician_high_workless##":"Ce dizgrațios! N-am văzut niciodată atâta plebe fără locuri de muncă!",
+"##capua_title##":"Capua: o provincie liniștită",
+"##extm_empire_tlp##":"",
+"##empire_map##":"",
+"##carthago_title##":"Carthago: provincia periculos",
+"##carthaginian_soldier##":"Un soldat din Cartagina",
+"##wn_carthaginians##":"",
+"##earthquake_text##":"",
+"##quaestor##":"Chestor",
+"##wn_celts##":"",
+"##caesarea_title##":"Caesarea: provincia destul de liniștită",
+"##wrath_of_mercury_description##":"",
+"##city_cyrene##":"Cirene",
+"##clerk##":"Funcționar",
+"##clinic##":"",
+"##ovrm_doctor##":"",
+"##clinics##":"",
+"##londinium_win_text##":"",
+"##smcurse2_of_venus_description##":"",
+"##military_academy_patrly_workers##":"",
+"##middle_fest_description##":"",
+"##colloseums##":"Colloseums",
+"##colloseum##":"Colloseum",
+"##colloseum_info##":"Colosseums și amfiteatre nevoie mereu de noi gladiatori pentru a înlocui învinși.",
+"##ovrm_colloseum##":"Colloseum",
+"##well##":"Bine",
+"##column_info##":"",
+"##ovrm_commerce##":"",
+"##consul##":"",
+"##mainmenu_dlc_concepts##":"Conceptos",
+"##spear##":"",
+"##fort_javelin##":"",
+"##high_bridge##":"",
+"##corinthus##":"Corinthus",
+"##extreme_fire_risk##":"",
+"##sldr_extremely_scared##":"",
+"##sldh_health_strongest##":"",
+"##extm_mission_tlp##":"",
+"##fortification##":"Fortificație",
+"##blood_sports_add_spice_to_life##":"Sporturi de sânge adăuga condiment la viata fiecaruia.",
+"##lgn_rabbits##":"",
+"##gladiator_pit_bad_work##":"",
+"##lion_pit_bad_work##":"",
+"##actorColony_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot pregăti un actor în trei luni",
+"##chatioteer_school_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot produce un car de curse în trei luni",
+"##cartPusher_need_workers##":"",
+"##senatepp_clt_rating##":"",
+"##wndrt_culture##":"",
+"##emw_bought##":"",
+"##romechastener_attack_title##":"",
+"##emperror_legion_at_out_gates##":"",
+"##wt_legioanry##":"",
+"##lumber_mill##":"șantier forestier",
+"##years##":"",
+"##lindum_title##":"",
+"##line_formation_title##":"",
+"##prefecture_full_work##":"",
+"##governor_salary_title##":"",
+"##pn_salary##":"",
+"##no_room_for_citizens##":"",
+"##wharf_info##":"Barci naviga aici de la șantierul naval de a lua pe echipajelor și a începe pescuitul în apele locale. Fiecare debarcader poate deservi o barca de pescuit.",
+"##londinium_title##":"",
+"##meadow_caption##":"Fâneaţă",
+"##lugdunum_title##":"",
+"##lutetia_title##":"",
+"##road_paved_title##":"Un tip mai bun de drum",
+"##animal_contests_run##":"Concursul de anumale se desfășoară pentru un alt",
+"##colloseum_haveno_animal_bouts##":"",
+"##lionNusery##":"",
+"##lgn_lions##":"",
+"##venus_desc##":"",
+"##dock_no_workers##":"",
+"##bathlady_so_hungry##":"",
+"##more_4_month_from_festival##":"",
+"##citizens_grumble_lack_festivals_held##":"",
+"##doctor_so_hungry##":"Toată lumea suferă de malnutriție, iar mâncare ca să tratez asta nu se găsește!",
+"##more_16_month_from_festival##":"",
+"##more_31_month_from_festival##":"",
+"##people_leave_city_some##":"",
+"##people_leave_city_low_wage##":"",
+"##people_leave_city_insane_tax##":"",
+"##road_paved_text##":"",
+"##migration_peoples_arrived_in_city##":"",
+"##we_produce_less_than_eat##":"",
+"##month_5_short##":"",
+"##macedonian_soldier##":"",
+"##small_villa##":"",
+"##small_mansion##":"",
+"##big_mansion##":"",
+"##small_shack##":"",
+"##small_tent##":"",
+"##status_small##":"",
+"##small_hovel##":"",
+"##small_hut##":"",
+"##school_info##":"Copiii mici trebuie să participe școli de cartier pentru a afla rudimente de citire, scriere și retorica, dacă acestea sunt să crească în adulți productivi.",
+"##small_temples##":"",
+"##bldm_temple##":"",
+"##small_palace##":"",
+"##small_domus##":"",
+"##small_festival##":"",
+"##small##":"",
+"##delivery_boy##":"",
+"##month_3_short##":"",
+"##army_marker##":"Marcaj militar",
+"##god_mars_short##":"",
+"##wrath_of_mars_text##":"",
+"##smallcurse_of_mars_failed_text##":"",
+"##smallcurse_of_mars_title##":"",
+"##smallcurse_of_mars_text##":"",
+"##smallcurse_of_mars_text##":"",
+"##oil##":"",
+"##oil_factory_stock##":"",
+"##oil_workshop##":"",
+"##massilia_title##":"",
+"##chatioteer_school_info##":"Meșterii care lucrează aici construi carele rapide, robuste și mecanicii de locomotivă lor. Curse în Hipodromul sunt extrem de popular.",
+"##cartpusher_cant_unload_goods_in_factory##":"Destinația acestor bunuri nu le va accepta! Ei au nevoie de mai mulți lucrători.",
+"##bldm_factory##":"Manufactori",
+"##furniture##":"",
+"##furniture_workshop##":"",
+"##mediolanum_title##":"",
+"##balance_between_migration##":"Există un echilibru între oameni vin la și lăsând orașul.",
+"##gmenu_file##":"Fișier",
+"##emigrant_thrown_from_house##":"",
+"##mercury##":"",
+"##smcurse_of_mercury_title##":"",
+"##smallcurse_of_mercury_failed_title##":"",
+"##smallcurse_of_mercury_title##":"",
+"##smallcurse_of_mercury_description##":"",
+"##native_center_info##":"",
+"##month##":"",
+"##month_to_comply##":"",
+"##months##":"",
+"##rqst_month_2_comply##":"",
+"##months_to_comply##":"",
+"##months_until_victory##":"",
+"##months_until_defeat##":"",
+"##wt_romeSpearman##":"",
+"##advcheif_migration##":"",
+"##miletus_title##":"",
+"##warning_hippodrome_access##":"",
+"##warning_amphitheater_access##":"",
+"##warning_colloseum_access##":"",
+"##avesome_amphitheater_access##":"Această casă a fost vizitată recent de un actor sau de un gladiator. Va avea acces la amfiteatru o perioadă lungă de timp.",
+"##avesome_theater_access##":"Acesastă casă a fost recent vizitată de un actor. Va avea acces la teatru o perioadă lungă de timp.",
+"##avesome_library_access##":"Această casă a fost recent vizitată de un bibliotecar. Va avea acces la librarie o perioadă lungă de timp.",
+"##avesome_hippodrome_access##":"Această casă a fost vizitată recent de un vizitiu de curse cu calești. Va avea acces la hipodrom o perioadă lungă de timp.",
+"##avesome_clinic_access##":"Această casă a fost vizitată recent de un medic. Va avea acces la clinică o perioadă lungă de timp.",
+"##awesome_barber_access##":"Acesastă casă a fost recent vizitată de un frizer. Va avea acces la frizerie o perioadă lungă de timp.",
+"##avesome_colloseum_access##":"Această casă a fost vizitată recent de un îmblanzitor de lei sau de un gladiator. Va avea acces la coloseum o perioadă lungă de timp.",
+"##avesome_college_access##":"Această casă a fost vizitată recent de un profesor. Va avea acces la academie o perioadă lungă de timp.",
+"##avesome_hospital_access##":"Această casă a fost recent vizitată de un chirurg. Va avea acces la spital o perioadă lungă de timp.",
+"##avesome_school_access##":"Acesastă casă a fost recent vizitată de un școlar. Va avea acces la școală o perioadă lungă de timp.",
+"##awesome_baths_access##":"Acesastă casă a fost recent vizitată de un angajat al băii publice. Va avea acces la baie publică o perioadă lungă de timp.",
+"##senatepp_peace_rating##":"",
+"##wt_missionary##":"",
+"##missionaryPost##":"",
+"##taxCollector_high_workless##":"",
+"##emigrant_no_work_for_me##":"",
+"##emigrant_no_home##":"",
+"##taxСollector_much_tax##":"",
+"##legionary_low_salary##":"",
+"##healthadv_some_regions_need_barbers##":"",
+"##much_plebs##":"Concentratia mare de locuitori ai mahalalelor în orașul dumneavoastră apariția un sărac împrumută.",
+"##max_available##":"",
+"##centurion_send_army_to_player##":"",
+"##freespace_for##":"",
+"##my_rome##":"",
+"##pestilence_event_title##":"",
+"##neptune_desc##":"",
+"##neptune_despleasure_tip##":"",
+"##bridge##":"Pod",
+"##bridges##":"Poduri",
+"##road_paved_caption##":"drum asfaltat",
+"##plaza_caption##":"",
+"##plaza_text##":"",
+"##plaza##":"",
+"##marble##":"",
+"##quarry##":"",
+"##gmsndwnd_theme_sound##":"",
+"##mainmenu_dlc_soundtrack##":"",
+"##music##":"",
+"##floatsam_enabled##":"",
+"##priest_gods_angry##":"Suntem în pericol! Acest oraș nu are respect pentru zei!",
+"##wait_for_fishing_boat##":"",
+"##prefecture_bad_work##":"",
+"##missionaryPost_full_work##":"",
+"##barracks_no_weapons##":"",
+"##dock_busy_patrly_workers##":"",
+"##dock_busy_bad_work##":"",
+"##barracks_full_work##":"Antrenăm recuți noi la eficiență maximă și avem armele de care avem nevoie pentru a antrena orice tip de soldat.",
+"##barracks_need_some_workers##":"Antrenam recruți la eficiență redusă din cauza lipsei de muncitori, dar avem armele de care avem nevoie pentru a antrena orice tip de soldat.",
+"##getting_reports_about_enemies##":"",
+"##restocking_fishing_boat##":"",
+"##we_eat_more_thie_produce##":"",
+"##we_eat_much_then_produce##":"",
+"##we_eat_some_then_produce##":"",
+"##we_produce_some_than_eat##":"",
+"##we_produce_much_than_eat##":"",
+"##we_produce_more_than_eat##":"",
+"##engineering_post_bad_work##":"",
+"##lion_pit_work##":"Suntem încântați să anunțăm că, cu ocuparea deplină, putem oferi pana la patru lei noi în fiecare lună.",
+"##actorColony_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, pregătim până la patru actori pe lună",
+"##charioteer_school_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, putem produce până la patru care de curse în fiecare lună.",
+"##gladiator_pit_full_work##":"Suntem încântați să anunțăm că, cu ocuparea deplină, suntem de formare până la patru gladiatori noi în fiecare lună.",
+"##enemies_very_easy##":"",
+"##enemies_very_hard##":"",
+"##lionTamer_low_entertainment##":"",
+"##build_fishing_boat##":"Construim o barca de pescuit pe comandă pentru un debarcader de pescuit din oraș",
+"##militaryAcademy_full_work##":"",
+"##meat##":"",
+"##ad##":"d.Hr.",
+"##age_ad##":"d.Hr.",
+"##need_trainee_charioteer##":"",
+"##no_goods_for_request##":"",
+"##scholar_gods_angry##":"",
+"##marketLady_no_food_on_market##":"",
+"##wine_workshop_full_work##":"Acest vinicole are toate angajații de care are nevoie, și este de lucru plat la producerea vinului.",
+"##wine_workshops_need_some_workers##":"Acest Winery este personal suficient și durează mult mai mult pentru a produce vin decât ar trebui.",
+"##wine_workshop_no_workers##":"Acest vinărie nu are angajați. Producția a încetat.",
+"##wine_workshop_slow_work##":"",
+"##clear_land_text##":"",
+"##lumber_mill_full_work##":"Acest curte are toți angajații de care are nevoie. Este de lucru plat la recoltare a lemnului.",
+"##lumber_mill_patrly_workers##":"Acest curte este insuficient, și ia mai mult pentru a reduce cherestea decât ar trebui.",
+"##lumber_mill_no_workers##":"Acest curte nu are angajați. Producția a încetat.",
+"##lumber_mill_slow_work##":"",
+"##oil_workshop_slow_work##":"",
+"##fig_farm_full_work##":"Acest livada are toți angajații de care are nevoie. Copacii sunt grele cu fructe suculente.",
+"##olive_farm_full_work##":"Acest livadă are toți angajații de care are nevoie. Crengile copacilor se deformeze în mod regulat sub sarcini grele de măsline.",
+"##meat_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Turma sa este gras și numeroase.",
+"##vegetable_farm_need_some_workers##":"Această fermă este insuficient. Prin urmare, legume sale va dura mai mult sa creasca.",
+"##olive_farm_patrly_workers##":"Acest grove este insuficient. Acesta este de a lua mai mult timp pentru a produce măsline decât ar trebui.",
+"##wheat_farm_need_some_workers##":"Această fermă este insuficient. Lucrătorilor săi sunt de a lua o lungă perioadă de timp să crească alimente aici.",
+"##meat_farm_need_some_workers##":"Această fermă este insuficient. Porcine sa au pui mici, iar acestea cresc lent.",
+"##fig_farm_need_some_workers##":"Acest livada este insuficient. Se produce fructe mai lent decât se putea.",
+"##meat_farm_no_workers##":"Această fermă nu are angajați, și toate animalele au scăpat sau au murit.",
+"##olive_farm_no_workers##":"Această fermă are toți angajații de care are nevoie. Legume cresc aici, în abundanceThis ferma nu are angajați. Nimic nu a fost plantat.",
+"##vegetable_farm_no_workers##":"Această fermă nu are angajați. Nimic nu a fost plantat.",
+"##wheat_farm_no_workers##":"Această fermă nu are angajați. Terenul se afla necultivat.",
+"##fig_farm_no_workers##":"Acest livada nu are angajați. Producția a încetat.",
+"##meat_farm_slow_work##":"",
+"##vegetable_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Legume cresc aici, în abundență.",
+"##wheat_farm_full_work##":"Această fermă are toți angajații de care are nevoie. Ea devine un randament maxim pentru suprafața acesteia.",
+"##vinard_full_work##":"Acest vie are toți angajații de care are nevoie. Viță de vie sunt adesea greu de struguri de grăsime, suculent.",
+"##vinard_need_some_workers##":"Acest podgorie este insuficient. Acesta este de a lua mai mult timp pentru a produce struguri decât ar trebui.",
+"##vinard_no_workers##":"Acest vie nu are angajați. Producția a încetat.",
+"##vinard_slow_work##":"",
+"##trouble_hippodrome_no_charioters##":"Acest hipodrom nu are curse. Este nevoie de călăreți pentru a distra mulțimea.",
+"##trouble_hippodrome_full_work##":"Acest hipodrom conduce frecvente, curse incitante, spre deliciul populației locale.",
+"##clay_pit_full_work##":"Această mină are toți angajații de care are nevoie, și se lucrează din greu pentru a produce argilă",
+"##quarry_full_work##":"",
+"##clay_pit_patrly_workers##":"Această mină nu are toți muncitorii de care are nevoie, producția de argilă este redusă",
+"##quarry_patrly_workers##":"",
+"##clay_pit_no_workers##":"Această mină nu are nici un muncitor. Producția s-a oprit complet.",
+"##quarry_no_workers##":"",
+"##quarry_slow_work##":"",
+"##quarry_patrly_workers##":"",
+"##oil_workshop_full_work##":"Aceasta presa de măsline este personal complet, și produce ample ulei de înaltă calitate.",
+"##oil_workshop_need_some_workers##":"Această presă de măsline ar putea folosi mai mulți lucrători pentru a ajunge la întregul său potențial pentru producția de ulei.",
+"##oil_workshop_no_workers##":"Acest presa de măsline nu are angajați, și va da nici un ulei.",
+"##iron_mine_full_work##":"",
+"##iron_mine_patrly_workers##":"",
+"##iron_mine_no_workers##":"",
+"##iron_mine_slow_work##":"",
+"##market_search_food_source##":"Această piață are comercianți, dar acestea sunt în prezent în căutarea pentru o sursă de hrană pentru a vinde.",
+"##water_srvc_fountain_and_well##":"",
+"##teacher_high_workless##":"Sper să nu fiu dat afară; șomajul e așa de mare, nu cred că aș mai găsi de muncă!",
+"##fort_horse##":"",
+"##press_escape_to_exit##":"",
+"##restart_mission_tip##":"",
+"##set_mayor_salary##":"",
+"##click_here_that_use_it##":"",
+"##legion_formation_tooltip##":"",
+"##click_here_that_stacking##":"",
+"##request_btn_tooltip##":"",
+"##give_money_tip##":"",
+"##go_to_problem##":"",
+"##click_here_to_talk_person##":"",
+"##advice_at_culture##":"Clic aici pentru sfaturi despre Nivelul de Cultură",
+"##wndrt_favor_tooltip##":"",
+"##wndrt_peace_tooltip##":"",
+"##wndrt_prosperity_tooltip##":"",
+"##empbutton_tooltip##":"",
+"##land_route##":"",
+"##having_some_slums_lack_migration##":"Având niște mahalale previne imigrația",
+"##taxes##":"",
+"##ovrm_tax##":"",
+"##engineering_post_slow_work##":"",
+"##forum_1_slow_work##":"",
+"##chatioteer_school_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să producem un car de curse in următoarele două luni.",
+"##actorColony_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să pregătim un actor in următoarele două luni.",
+"##prefecture_patrly_workers##":"",
+"##barracks_bad_weapons_slow_workers##":"",
+"##engineering_post_patrly_workers##":"",
+"##actorColony_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem pregăti cel mult doi actori pe lună.",
+"##lion_pit_need_some_workers##":"",
+"##gladiator_pit_need_some_workers##":"",
+"##charioteer_school_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem produce cel mult două care de curse pe lună.",
+"##barracks_bad_weapons_need_some_workers##":"",
+"##prefecture_need_some_workers##":"",
+"##gladiator_pit_slow_work##":"",
+"##lion_pit_slow_work##":"",
+"##heading_to_city_warehouses##":"",
+"##people##":"Oameni",
+"##peoples##":"Oameni",
+"##pop##":"",
+"##advlegion_norequest##":"Nu avem înregistrată nici o cerere de ajutor din Imperiu",
+"##mission_wnd_population##":"Populație",
+"##population##":"Populație",
+"##winning_population##":"",
+"##advpopulation_title_census##":"Populație - Recensământul",
+"##advpopulation_title_society##":"Populație - Societatea",
+"##advpopulation_title_population##":"Populație - Istoric",
+"##lowgrade_housing_want_better_conditions##":"",
+"##population_registered_as_taxpayers##":"din populație sunt înregistrate pentru impozitul",
+"##advchief_sentiment##":"",
+"##gmenu_options##":"Opțiuni",
+"##mainmenu_options##":"Opțiuni",
+"##options##":"",
+"##city_options##":"",
+"##mainmenu_sound##":"",
+"##sound_settings##":"",
+"##game_sound_options##":"",
+"##city_settings##":"",
+"##speed_settings##":"",
+"##game_speed_options##":"",
+"##mainmenu_video##":"Setări de afișare",
+"##screen_settings##":"Setări de afișare",
+"##start_condition##":"",
+"##replay_game##":"Harta Replay",
+"##start_this_map##":"",
+"##mainmenu_startcareer##":"",
+"##devastate_warehouse##":"START golire depozit",
+"##empiremap_our_city##":"",
+"##engineering_post_ready_for_work##":"",
+"##engineering_post_on_patrol##":"",
+"##out_legion_back_to_city##":"",
+"##out_legion_go_to_location##":"",
+"##prefecture_ready_for_work##":"",
+"##prefecture_on_patrol##":"",
+"##forum_1_ready_for_work##":"",
+"##forum_1_on_patrol##":"",
+"##wharf_our_boat_fishing##":"",
+"##wharf_our_boat_return##":"",
+"##wharf_out_boat_ready_fishing##":"",
+"##wharf_out_boat_return_with_fish##":"",
+"##dock_cart_returning_from":"",
+"##dock_cart_taking_goods##":"",
+"##dock_cart_wait##":"",
+"##our_enemies_near_city##":"",
+"##our_foods_level_are_low##":"",
+"##no_fishplace_in_city##":"",
+"##market_about##":"",
+"##not_available##":"",
+"##landmerchant_noany_trade##":"",
+"##merchant_wait_for_deal##":"",
+"##no_visited_by_taxman##":"",
+"##reject##":"Refuza bunuri",
+"##donot_organize_festival##":"",
+"##abwrk_not_working##":"no muncă",
+"##warehouse_low_personal_warning##":"",
+"##unable_fullfill_request##":"",
+"##need_build_on_free_area##":"",
+"##last_riots_bad_for_peace_rating##":"",
+"##imperial_request_cance_badly_affected##":"Solicitarea Imperial ați anulat recent a afectat grav picioare în Roma.",
+"##several_crimes_but_area_secure##":"",
+"##rioter_in_city_text##":"",
+"##god_displeased##":"",
+"##ceres_badmood_info##":"Nemulțumirea lui Ceres este periculoasă, întrucât ea protejază oamenii de recolte proaste și foamete.",
+"##out_of_credit##":"",
+"##city_fire_text##":"Măsuri de prevenire inadecvate au permis incendii pentru a începe. Chiar și acum, flăcările sunt zdrobitoare prin părți ale orașului.",
+"##some_fire_risk##":"",
+"##little_damage_risk##":"",
+"##god_indifferent##":"",
+"##some_houses_inadequate_entertainment##":"",
+"##religionadv_need_third_religion##":"",
+"##academy_info##":"",
+"##have_no_access_school_colege##":"",
+"##advchief_some_need_baths##":"",
+"##religionadv_need_second_religion##":"",
+"##advchief_some_need_library##":"",
+"##advchief_some_need_academy##":"",
+"##advchief_some_need_doctors##":"",
+"##advchief_some_need_hospital##":"",
+"##advchief_some_need_barber##":"",
+"##healthadv_some_regions_need_bath_2##":"",
+"##have_no_access_to_library##":"",
+"##healthadv_some_regions_need_doctors##":"",
+"##some_houses_need_library_or_colege_access##":"",
+"##some_houses_need_better_library_access##":"",
+"##edadv_need_better_access_school_or_colege##":"Școală mai bună sau academie și acces biblioteca ar spori unele zone ale orașului. Oamenii nu ar trebui să aibă de a merge până în prezent pentru a învăța!",
+"##healthadv_some_regions_need_bath##":"",
+"##some_soldiers_need_weapon##":"",
+"##advchief_some_need_education##":"",
+"##cartpusher_cantfind_destination##":"",
+"##scribemessages_unread##":"",
+"##smallcurse_of_neptune##":"",
+"##god_neptune_short##":"",
+"##smallcurse_of_neptune_title##":"",
+"##god_poor##":"Sărac",
+"##advchief_no_crime##":"",
+"##advchief_education_ok##":"",
+"##no_priority##":"",
+"##no_fire_risk##":"",
+"##none_damage_risk##":"",
+"##trade_btn_notrade_text##":"",
+"##migration_lessfood_granary##":"Lipsa de alimente în hambare dumneavoastra va reduce imigrația.",
+"##migration_empty_granary##":"Lipsa de alimente previne imigrației",
+"##migration_people_away##":"Lipsa locurilor de muncă este de conducere oameni departe.",
+"##migration_middle_lack_workless##":"Lipsa locurilor de muncă previne imigrației",
+"##migration_lack_empty_house##":"Lipsa de locuințe goale limitează imigrația.",
+"##migration_lack_indesrb_houses##":"",
+"##barber_info##":"Nici un om civilizat nu poate apărea neras in public! Toți cetățenii au nevoie să fie tunși de frizeri profesioniști în mod regulat, pentru a putea avansa în societate.",
+"##shipyard_notneed_ours_boat##":"",
+"##below_average##":"Sub medie",
+"##low_wage_broke_migration##":"",
+"##low_wage_midlle_migration##":"",
+"##low_bridge##":"",
+"##low_fire_risk##":"",
+"##low_damage_risk##":"",
+"##prefect_high_workless##":"Nu am văzut niciodată atâția oameni fără slujbă!",
+"##freehouse_text_noroad##":"",
+"##barracks_info##":"Nimeni nu poate intra în legiunile romane fără a trece întâi pe aici; este școala unde sunt antrenați noii recruți în acest oraș.",
+"##no_citizens_desire_live_here##":"",
+"##ovrm_simple##":"",
+"##plname_start_new_game##":"",
+"##mainmenu_newgame##":"",
+"##new_map##":"",
+"##valencia_win_text##":"",
+"##barber_so_hungry##":"O tunsoare îți ia mintea de la foame. Și toată lumea este înfometată aici.",
+"##newcomer_this_month##":"",
+"##new_governor##":"Noul guvernator",
+"##new_ruler##":"",
+"##newcomers_this_month##":"",
+"##wt_cartPusher##":"",
+"##month_11_short##":"",
+"##wndrt_need##":"Necesar",
+"##advemployer_panel_needworkers##":"nevoie",
+"##city_need_workers_title##":"Are nevoie de mai mulți lucrători",
+"##furniture_need##":"",
+"##numidian_warrior##":"",
+"##wn_numidian##":"",
+"##amazing_prosperity_this_city##":"",
+"##gmenu_about##":"",
+"##smcurse_of_mercury_description##":"",
+"##greatPalace_info##":"Locuitorii din acest palat sunt la apogeul societatea romană. Ei vor nimic. Doar păstrarea nevoile lor satisfăcute este o realizare remarcabilă!",
+"##floatsam##":"",
+"##mainmenu_dlc_wallpapers##":"Tapet",
+"##legion##":"",
+"##blessing_of_mercury_text##
+":"",
+"##blessing_of_mercury_description##":"",
+"##advchief_education##":"",
+"##education_advisor_title##":"",
+"##education##":"",
+"##educationBtnTooltip##":"",
+"##ovrm_educations##":"",
+"##egift_educated_slave##":"",
+"##extm_education_tlp##":"",
+"##collapse_immitent##":"",
+"##iron_mine_collapse##":"",
+"##academy_trained##":"Studii academice.",
+"##bad_house_quality##":"Calitatea generală a locuințelor orașul dumneavoastră are această evaluare înapoi. Îmbunătățirea locuințe în orașul tău pentru a ridica această evaluare.",
+"##extm_water_tlp##":"Structuri legate de apă",
+"##health_advisor##":"Structuri legate de sănătate",
+"##vegetable##":"",
+"##vegetable_farm_info##":"",
+"##vegetable_farm##":"",
+"##wt_sheep##":"",
+"##beatyfull_insula##":"",
+"##ok##":"",
+"##fullscreen_off##":"",
+"##month_10_short##":"",
+"##olive##":"",
+"##olive_farm_info##":"",
+"##olive_farm##":"",
+"##export_btn_tooltip##":"",
+"##distribution_center##":"",
+"##devastate_granary##":"",
+"##oracle##":"",
+"##oracles_in_city##":"",
+"##oracles##":"",
+"##original_game##":"",
+"##weapons_workshop##":"",
+"##weapons_workshop_info##":"",
+"##weapon##":"",
+"##wrath_of_ceres_description##":"",
+"##landmerchant_say_about_store_goods##":"",
+"##sdlr_bold##":"",
+"##empmap_distant_romecity_tip##":"Orasul Roman Distant",
+"##some_houses_need_amph_for_grow##":"",
+"##entertainment_need_for_upgrade##":"",
+"##healthadv_some_regions_need_barbers_2##":"",
+"##setup_traderoute_to_import##":"",
+"##new_trade_route_to##":"",
+"##mainmenu_randommap##":"",
+"##open_formation_title##":"",
+"##open_formation_text##":"",
+"##maximizeBtnTooltip##":"",
+"##open_trade_route##":"",
+"##emp_open_trade_route##":"",
+"##god_excellent##":"",
+"##cancel##":"Anulează",
+"##extm_cancel_tlp##":"Anulează această operație",
+"##disabled_draw_salary_for_free_reign##":"",
+"##empire_service_tip##":"",
+"##dispatch_force##":"",
+"##dispatch_goods?##":"",
+"##legions##":"",
+"##blessing_of_ceres_description##":"",
+"##blessing_of_ceres_text##":"",
+"##very_high_fire_risk##":"",
+"##collapse_available_damage_risk##":"",
+"##god_veryangry##":"",
+"##sldr_very_frightened##":"",
+"##god_quitepoor##":"",
+"##very_low_fire_risk##":"",
+"##some_defects_damage_risk##":"",
+"##sldr_very_bold##":"",
+"##god_verypoor##":"",
+"##edu_poor##":"",
+"##non_cvrg##":"",
+"##god_charmed##":"Fermecat",
+"##god_verygood##":"",
+"##edu_awesome##":"",
+"##statue_big_info##":"",
+"##barber_shop##":"Frizerie",
+"##ovrm_barber##":"Bărbier",
+"##barbers##":"Frizerii",
+"##barber##":"Frizer",
+"##wt_patrician##":"",
+"##game_is_paused##":"",
+"##patients#":"",
+"##localization##":"",
+"##send_to_city##":"",
+"##give_money##":"",
+"##send_money_to_city##":"",
+"##send_money##":"",
+"##need_restart_for_apply_changes##":"",
+"##goto##":"",
+"##goto_empire_map##":"",
+"##extm_troubles_tlp##":"",
+"##extm_reorient_map_to_north_tlp##":"Re-orienteze opinia dumneavoastră la nord",
+"##egift_persian_carpets##":"",
+"##wn_picts##":"",
+"##furniture_workshop_info##":"",
+"##empbutton_low_work##":"",
+"##poor_housing_discourages_migration##":"Săraci locuințe, în ciuda averea orașul tău, descurajează imigranți.",
+"##sailing_to_city_docks##":"",
+"##desirability_pretty_area##":"",
+"##mission_win##":"",
+"##coast_caption##":"",
+"##rotateRightBtnTooltip##":"",
+"##extm_rotate_map_clockwise_tlp##":"",
+"##extm_rotate_map_counter_clockwise_tlp##":"",
+"##rotateLeftBtnTooltip##":"",
+"##ovrm_damage##":"",
+"##rioter_rampaging_accross_city##":"",
+"##empire_tax##":"",
+"##prepare_to_festival##":"",
+"##tooltip_full##":"",
+"##tooltip_some##":"",
+"##ovrm_fire##":"Foc",
+"##fire##":"Foc",
+"##donations##":"",
+"##congratulations##":"",
+"##tutorial_win_text##":"",
+"##this_time_you_city_not_need_religion##":"",
+"##freehouse_text##":"",
+"##cant_demolish_bridge_with_people##":"Nu poți demola un pod cu oameni pe el",
+"##have_no_requests##":"",
+"##extm_show_bigpanel_tlp##":"",
+"##infobox_tooltip_help##":"",
+"##show_prices##":"",
+"##btn_showprice_tooltip##":"Arată prețul de import/export pentru toate bunurile, după cum a fost decretat de Roma",
+"##show##":"",
+"##leave_empire?##":"",
+"##coverage##":"",
+"##emw_buy##":"",
+"##native_field##":"Câmp nativ",
+"##library_no_workers##":"",
+"##granary_info##":"",
+"##fullscreen_on##":"",
+"##deliver##":"",
+"##no_dock_for_sea_trade_routes##":"",
+"##gmenu_help##":"",
+"##help##":"",
+"##gmenu_shortkeys##":"",
+"##forum_information##":"",
+"##dock_info##":"",
+"##dedicate_fectival_venus##":"",
+"##dedicate_fectival_mars##":"",
+"##dedicate_fectival_mercury##":"",
+"##dedicate_fectival_neptune##":"",
+"##dedicate_fectival_ceres##":"",
+"##visit_military_advisor##":"Vizitați consilier militară",
+"##visit_chief_advisor##":"Vizitați șef consilier dvs.",
+"##visit_imperial_advisor##":"Vizitați Imperial Consilier dumneavoastră",
+"##visit_health_advisor##":"Vizitați Sănătate Advisor dvs.",
+"##visit_population_advisor##":"Vizitați Consilier dumneavoastră Populație",
+"##visit_education_advisor##":"Vizitați Educație Consilier dumneavoastră",
+"##visit_entertainment_advisor##":"Vizitați Entertainment Consilier dumneavoastră",
+"##visit_rating_advisor##":"Visit your Entertainment Advisor",
+"##visit_religion_advisor##":"Visit your Ratings Advisor",
+"##visit_trade_advisor##":"Vizitați Consilier dumneavoastră Trade",
+"##visit_labor_advisor##":"Vizitați Consilier dumneavoastră Muncii",
+"##visit_financial_advisor##":"Vizitați consilier dvs. financiare",
+"##message_from_centurion##":"",
+"##dispatch_gift##":"",
+"##dispatch_gift_title##":"",
+"##send_lavish_gift##":"",
+"##send_modest_gift##":"",
+"##send_generous_gift##":"",
+"##engineer_low_entertainment##":"După o zi lungă de lucru, tot ce vreau să văd e o piesă de teatru. Nici o șansă în orașul acesta!",
+"##barber_need_colloseum##":"După o zi lungă de lucrat în frizerie, tot ce vreau e să văd o luptă de lei. Nici o șansă în orașul acesta!",
+"##show_spots_of_city_troubles_tip##":"",
+"##barber_good_life##":"Un ras sau un tuns? Cetățene? Viața aici e bună, nu?",
+"##extm_road_tlp##":"Construiește drumuri",
+"##extm_housing_tlp##":"Construieste locuințe",
+"##need_vines_farm##":"Construi o fermă viță de vie",
+"##need_iron_mine##":"Build an olive farm",
+"##need_timber_mill##":"Construi o curte din lemn",
+"##need_lionnursery##":"Construi o casă leu la stadiul de concursuri de animale",
+"##need_olive_farm##":"Construi o fermă de măsline",
+"##need_actor_colony##":"Construi o colonie actor pentru a trimite artiștilor interpreți sau executanți aici",
+"##need_charioter_school##":"Construi o școală vizitiu la stadiul de curse",
+"##colloseum_haveno_gladiatorpit##":"Build an iron mine",
+"##pottery##":"",
+"##pottery_factory_stock##":"",
+"##advchief_food_consumption##":"",
+"##sldr_shaken##":"",
+"##cartPusher_normal_life##":"Lucrurile par a fi de lucru bine aici",
+"##engineer_average_life##":"Totul pare să funcționeze bine aici",
+"##scholar_average_life##":"Acest oraș pare în regulă",
+"##taxCollector_average_life##":"",
+"##favor_rating##":"",
+"##valentia_preview_mission##":"",
+"##win_syracusae_text##":"Guvernator, care a fost un spectacol delicat. Convinge pe greci să renunțe la proiectele lor pe Syracusae deschide întreaga Mediterană la planurile Romei. Și după aceea performante impresionante, va juca un rol major în ele.",
+"##rioter_say_1##":"",
+"##festivals##":"",
+"##barracks_have_weapons_bad_workers##":"",
+"##city_warnings_on##":"",
+"##city_warnings_off##":"",
+"##stop_granary_devastation##":"",
+"##stop_warehouse_devastation##":"",
+"##desirability##":"",
+"##ovrm_desirability##":"",
+"##ovrm_crime##":"Crimă",
+"##wt_criminal##":"Penal",
+"##prefect_low_entertainment##":"Infractorii Am închid avea mai mult de divertisment acest oraș!",
+"##advchief_crime##":"Crimă",
+"##layer_crime##":"Crimă",
+"##advchief_high_crime##":"",
+"##advchief_which_crime##":"Crimă devine o problemă.",
+"##praetor##":"",
+"##wt_prefect##":"",
+"##prefecture##":"",
+"##adve_prefectures##":"Preferințe",
+"##prefecture_info##":"",
+"##burning_ruins_info##":"",
+"##engineer_high_workless##":"Sunt norocos să am o slujbă, cu un nivel de șomaj atât de mare",
+"##romeGuard_high_workless##":"",
+"##city_under_rome_attack##":"Cele apropie legiuni Imperial sunt înspăimântătoare cetățeni tale, și va face nici un bine pentru rating pace.",
+"##city_zoom_on##":"",
+"##city_zoom_off##":"",
+"##centurion_new_order_to_save_player##":"",
+"##marketKid_say_3##":"",
+"##recruter_high_workless##":"",
+"##gladiator_gods_angry##":"",
+"##gladiator_good_life##":"",
+"##doctor_need_workers##":"Este nevoie de mai mulți muncitori",
+"##patrician_so_hungry##":"",
+"##wt_missioner_average_life##":"",
+"##missioner_high_barbarian_risk##":"",
+"##engineer_good_life##":"",
+"##partician_good_life##":"",
+"##taxCollector_good_life##":"",
+"##priest_so_hungry##":"",
+"##lionTamer_good_education##":"",
+"##recruter_good_life##":"",
+"##recruter_normal_life##":"",
+"##workers_yearly_wages_is##":"Factura anuală estimată de",
+"##accepting##":"Acceptare",
+"##accept_goods##":"Acceptă bunurile",
+"##may_collect_about##":"",
+"##accept##":"Acceptă",
+"##accept_promotion##":"Acceptă promovarea",
+"##accept_deity_status##":"Acceptă statutul de zeu!",
+"##advemployer_panel_priority##":"prioritate",
+"##fishing_wharf##":"",
+"##wharf##":"",
+"##docked_buying_selling_goods##":"",
+"##migration_lack_tax##":"",
+"##migration_high_lack_workless##":"",
+"##low_wage_lack_migration##":"",
+"##migration_low_food_stocks##":"Stocurile reduse de alimente sunt o problemă",
+"##ovrm_troubles##":"",
+"##new_festival##":"Țineți nou festival",
+"##hold_venus_festival##":"Țineți festival la Venus",
+"##hold_mars_festival##":"Țineți festival la Mars",
+"##hold_mercury_festival##":"Țineți festival la Mercury",
+"##hold_neptune_festival##":"Țineți festival la Nepune",
+"##hold_ceres_festival##":"Țineți festival la Ceres",
+"##arrange_festiable_for_this_god##":"Aranja un festival în onoarea acestui zeu",
+"##emw_sell##":"",
+"##emw_sold##":"",
+"##continue##":"",
+"##mainmenu_continueplay##":"",
+"##plname_continue##":"",
+"##continue_2_years##":"",
+"##continue_5_years##":"",
+"##operations_manager##":"",
+"##industry_enabled##":"",
+"##industry_disabled##":"",
+"##adve_food##":"Prodicție Alimentară",
+"##rawm_production_complete_m##":"",
+"##cursed_by_mars##":"",
+"##proconsul##":"",
+"##procurator##":"",
+"##line_formation_text##":"",
+"##wt_rprotestor##":"Protestatar",
+"##senatepp_prsp_rating##":"",
+"##wndrt_prosperity##":"",
+"##percents##":"",
+"##month_from_last_festival##":"",
+"##last_year##":"",
+"##clear_land_caption##":"Teren liber",
+"##engineer_gods_angry##":"Zeii să aibe milă de mine! Nu e vina mea că guvernatorul își bate joc de ei!",
+"##wheat_farm##":"",
+"##warehouse_devastation_mode_text##":"",
+"##granary_devastation_mode_text##":"",
+"##work##":"",
+"##advemployer_panel_haveworkers##":"muncă",
+"##abwrk_working##":"muncă",
+"##advemployer_panel_workers##":"muncitori",
+"##empbutton_simple_work##":"",
+"##working_industry##":"",
+"##working_industries##":"",
+"##forum_full_work##":"",
+"##employee##":"",
+"##employees##":"",
+"##warehouseman##":"",
+"##dock_bad_work##":"",
+"##employers##":"Forței de muncă Angajat",
+"##healthadv_some_regions_need_hospital##":"",
+"##entertainment_short##":"",
+"##entertainmentBtnTooltip##":"",
+"##adve_entertainment##":"Amuzament",
+"##entertainment_advisor_title##":"Amuzament",
+"##advchief_entertainment##":"",
+"##extm_entertainment_tlp##":"",
+"##entertainment##":"",
+"##ovrm_entertainments##":"",
+"##advcheif_entertainment##":"",
+"##smallcurse_of_neptune_description##":"",
+"##smallcurse_of_mars_description##":"",
+"##god_wrathful##":"",
+"##god_irriated##":"",
+"##other##":"",
+"##damage##":"",
+"##lawless_area##":"",
+"##loading_resources##":"",
+"##advemployer_panel_title##":"Alocarea forței de muncă",
+"##smallcurse_of_ceres_description##":"Nemulțumit cu lipsa de respect, Ceres distruge toate culturile în creștere ca un avertisment pentru tine.",
+"##credit##":"",
+"##extm_clear_tlp##":"Eliberează terenul",
+"##reservoir##":"",
+"##need_connect_to_other_reservoir##":"",
+"##your_prosperity_raising##":"",
+"##wndrt_peace##":"",
+"##peace_rating_text##":"",
+"##rating##":"",
+"##wnd_ratings_title##":"",
+"##religion_advisor##":"",
+"##advchief_religion##":"",
+"##ovrm_religion##":"",
+"##religion##":"",
+"##advcheif_religion##":"",
+"##religion_in_your_city_is_flourishing##":"",
+"##gmenu_file_restart##":"",
+"##rome_gratitude_request_text##":"",
+"##your_favor_is_dropping_catch_it##":"",
+"##advemployer_panel_romepay##":"Roma plătește",
+"##rome_raises_wages##":"",
+"##try_reduce_your_high_salary##":"",
+"##try_reduce_your_salary##":"",
+"##rome_lowers_wages##":"",
+"##roman_city##":"",
+"##romechastener_attack_text##":"",
+"##rome_need_some_goods##":"",
+"##ovrm_risks##":"",
+"##beatifull_villa##":"",
+"##luxury_palace##":"",
+"##egift_lavish##":"",
+"##lumber_mill_info##":"",
+"##collapsed_building_text##":"",
+"##fish##":"",
+"##fishing_boat##":"",
+"##fishing_waters##":"",
+"##market##":"",
+"##wt_marketLady##":"",
+"##prosperity_lack_that_you_pay_less_rome##":"Plăti salarii mai mici decât în Roma pătează imaginea orașul ca unul prosper.",
+"##marketBuyer_high_workless##":"Cu șomajul așa de mare, muncesc din greu să îmi păstrez slujba!",
+"##factory_need_more_workers##":"",
+"##partician_need_workers##":"",
+"##garden##":"",
+"##gardens_info##":"",
+"##samnite_soldier##":"",
+"##wn_samnites##":"",
+"##sarmizegetusa_title##":"",
+"##wt_taxCollector##":"",
+"##lgn_pigs##":"",
+"##free##":"",
+"##freehouse_caption##":"",
+"##burned_ruins##":"",
+"##north##":"",
+"##northBtnTooltip##":"",
+"##small_fest_description##":"",
+"##theater_full_work##":"Acest teatru este în prezent de așteptare piese din actori locali, care trage de obicei o audiență bună.",
+"##merchant_just_unloading_my_goods##":"",
+"##barracks_city_not_need_soldiers##":"",
+"##dockers_taking_our_goods##":"",
+"##engineering_post_full_work##":"",
+"##well_haveno_houses_inarea##":"Acest bine nu este necesară în acest moment, ca nu exista case în gama de servicii.",
+"##merchant_little_busy_now##":"",
+"##advemployer_panel_sector##":"Sector",
+"##seleucid_soldier##":"",
+"##wn_selecids##":"",
+"##month_9_short##":"",
+"##senate_1##":"",
+"##extm_senate_tlp##":"",
+"##senate##":"",
+"##senate_1_info##":"",
+"##warning_full##":"",
+"##warning_some##":"",
+"##sldh_health_strong##":"",
+"##sldr_badly_shaken##":"",
+"##rome_need_some_money##":"",
+"##syracusae_title##":"",
+"##rock_caption##":"",
+"##warehouse##":"",
+"##stacking##":"",
+"##stacking_resource##":"",
+"##warehouses##":"",
+"##city_have_goods_for_request##":"Depozitele au raportat că ai suficiente bunuri pentru a îndeplini cerea împăratului.",
+"##fountain_will_soon_be_hooked##":"Această fântână va fi în curând prins în rețeaua de conducte subterane.",
+"##gmspdwnd_game_speed##":"",
+"##gmspdwnd_scroll_speed##":"",
+"##egift_modest##":"Modest:",
+"##minimizeBtnTooltip##":"",
+"##hide_bigpanel##":"",
+"##sldh_health_sparse##":"",
+"##gladiator_low_entertainment##":"Plictisitor! Asta se zice despre acest loc!",
+"##too_close_to_enemy_troops##":"",
+"##difficulty##":"",
+"##overlays##":"",
+"##ovrm_text##":"",
+"##sldr_daring##":"",
+"##emperor_changed_title##":"Schimbarea împăratului",
+"##bolt##":"Proiectil",
+"##taxСollector_low_tax_collected##":"Colectarea taxelor de la aceste persoane aduce aproape o lacrimă pentru ochiul meu; dar nu destul!",
+"##sldr_totally_distraught##":"",
+"##infobox_construction_comma_tip##":"",
+"##trade_advisor##":"",
+"##advisors##":"Consilieri",
+"##gmenu_advisors##":"",
+"##soldier##":"",
+"##soldiers_in_legion##":"",
+"##egift_soldier_from_pergamaum##":"",
+"##soldiers##":"",
+"##message##":"",
+"##no_warning_for_us##":"",
+"##advlegion_noalarm##":"Nu avem raportată nici o amenințare impotriva orașului",
+"##messages##":"",
+"##extm_message_tlp##":"",
+"##scribe_messages_title##":"",
+"##nearby_building_negative_effect##":"",
+"##advpopulation_text_census##":"Compoziția populației de vârstă (în ani)",
+"##advpopulation_text_society##":"Compoziția populației de venituri",
+"##save_already_exist##":"",
+"##savedlg_continue##":"",
+"##gmenu_file_save##":"",
+"##save_city##":"",
+"##save_map##":"",
+"##save_game_here##":"",
+"##current_play_runs_for_another##":"",
+"##amphitheater_haveno_shows##":"Nici o piesă de teatru în desfășurare",
+"##special_orders##":"",
+"##demand##":"",
+"##middle_palace##":"",
+"##middle_insula##":"",
+"##middle_villa##":"",
+"##statue_middle##":"",
+"##tax_rate##":"",
+"##advlegion_window_title##":"Statusul Legiunii",
+"##become_trade_center##":"Transformă în centru de comerț",
+"##wall##":"",
+"##wall_info##":"",
+"##fortification_info##":"",
+"##cost##":"",
+"##cost_2_open##":"",
+"##costs##":"",
+"##wrath_of_venus_description##":"",
+"##arrow##":"Săgeată",
+"##ovrm_build##":"Clădire",
+"##buildings##":"Construcție",
+"##need_build_on_cleared_area##":"",
+"##clay_pit_need_close_to_water##":"Construiește mine de argilă aproape de apă",
+"##timber_mill_need_trees##":"Construi Superb lemn de lângă copaci",
+"##build_markets_to_distribute_food##":"Construiește piețe pentru a distribui mâncarea stocată aici",
+"##farm_need_farmland##":"Construi ferme pe terenurile agricole (look pentru iarbă galbenă)",
+"##students##":"",
+"##egift_chest_of_sapphire##":"Un cufăr de safire",
+"##god_happy##":"",
+"##bldm_raw_material##":"Materii prime",
+"##tarentum_title##":"",
+"##tarentum_slightly_dangerous_province##":"",
+"##tarraco_title##":"",
+"##tarsus_title##":"",
+"##theater##":"",
+"##ovrm_theater##":"",
+"##theaters##":"",
+"##theater_need_actors##":"",
+"##population_tooltip##":"Populația orașului curent",
+"##finance_advisor##":"",
+"##scrw_subject##":"Subiect",
+"##tingis_title##":"",
+"##your_province_quiet_and_secure##":"",
+"##mediolanum_win_text##":"Că Hannibal ar putea traversa Alpii cu elefantii sai a fost uimitor. Care Mediolanum ar prospera în ciuda asalt lui este un miracol. Succesul tau se transformă valul războiului punic în favoarea Romei. Toate vă mulțumesc Roma.",
+"##emperor_send_money_to_you_nearest_time##":"Faptul că împăratul a avut recent să vă salva de necazuri lovește greu la reputatia orașul ca unul prosper.",
+"##warehouse_info##":"",
+"##cartPusher_low_entertainment##":"Nu mă deranjază să împing un cărucior; e mai distractiv decât restul orașului!",
+"##mercury_desc##":"",
+"##trade##":"",
+"##small_mercury_temple_info##":"",
+"##dock_about##":"",
+"##no_working_dock##":"Atenție!",
+"##trading_city##":"",
+"##trade_caravan_from##":"",
+"##trade_ship_from##":"",
+"##trade_center##":"",
+"##trading_goods##":"Mărfuri de tranzacționare",
+"##exit_point##":"",
+"##grass##":"",
+"##imperial_request##":"",
+"##requierd##":"Nevoie",
+"##demands_3_religion##":"",
+"##need_population##":"",
+"##crack##":"",
+"##rift_info##":"",
+"##triumphal_arch##":"",
+"##labor##":"Muncă",
+"##land_trade_problem_title##":"",
+"##egift_troupe_preforming_slaves##":"",
+"##wt_indigene##":"",
+"##wn_indigene##":"",
+"##recruter_so_hungry##":"",
+"##nomoney_for_gift_text##":"",
+"##legionadv_no_legions##":"",
+"##have_no_legions##":"",
+"##city_has_runout_debt##":"Orașul tău a rămas fără bani. Caesar a decis să îți mai acorde fonduri, dar nu va mai fi la fel de generos a doua oară. Exportă bunuri pentru a genera bani pentru oraș.",
+"##healthadv_noproblem_small_city##":"",
+"##city_has_runout_money##":"",
+"##emperor_favour_10##":"",
+"##tower_have_workers_no_soldiers##":"",
+"##engineering_post_need_some_workers##":"",
+"##barracks_have_weapons_slow_workers##":"",
+"##lion_pit_patrly_workers##":"",
+"##actorColony_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem pregăti doar un actor în luna ce urmează.",
+"##gladiator_pit_patrly_workers##":"",
+"##charioteer_school_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem produce doar un car de curse în luna ce urmează.",
+"##forum_patrly_workers##":"",
+"##dock_need_some_workers##":"",
+"##recruter_gods_angry7##":"Suntem în încurcătură! Am enervat zeii!",
+"##prefecture_slow_work##":"",
+"##forum_need_some_workers##":"",
+"##education_have_academy_access##":"",
+"##awesome_amphitheater_access##":"",
+"##baths_full_access##":"",
+"##library_full_access##":"",
+"##hospital_full_access##":"",
+"##hippodrome_full_access##":"",
+"##awesome_doctor_access##":"",
+"##awesome_colloseum_access##":"",
+"##religion_access_full##":"",
+"##barber_full_access##":"",
+"##theater_full_access##":"",
+"##religion_access_5_temple##":"",
+"##religion_access_2_temple##":"",
+"##religion_access_3_temple##":"",
+"##religion_access_4_temple##":"",
+"##religion_access_1_temple##":"",
+"##school_full_access##":"",
+"##education_full_access##":"",
+"##education_have_school_or_library_access##":"",
+"##education_have_school_library_access##":"",
+"##no_academy_access##":"",
+"##amphitheater_no_access##":"Această casă nu are acces la un amfiteatru",
+"##library_no_access##":"",
+"##hospital_no_access##":"",
+"##hippodrome_no_access##":"",
+"##doctor_no_access##":"",
+"##colosseum_no_access##":"",
+"##barber_no_access##":"Acestă casă nu are acces la frizerie.",
+"##bath_no_access##":"Această casă nu are acces la o baie publică funcțională",
+"##theater_no_access##":"",
+"##religion_no_access##":"",
+"##school_no_access##":"",
+"##education_have_no_access##":"",
+"##house_no_troubles_with_food##":"",
+"##awesome_entertainment_access##":"Această locuință are acces la mai multe locuri de divertisment",
+"##9_entertainment_access##":"Această locuință are acces la toate de divertisment ar putea dori vreodată",
+"##2_entertainment_access##":"Această locuință are unele acces la locuri de divertisment",
+"##1_entertainment_access##":"Această locuință are abia acces la orice divertisment",
+"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament",
+"##5_entertainment_access##":"Această locuință are acces limitat la locuri de divertisment",
+"##8_entertainment_access##":"Această locuință are acces excelent la locuri de divertisment",
+"##3_entertainment_access##":"Această locuință are acces foarte limitat la locuri de divertisment",
+"##7_entertainment_access##":"Această locuință are acces foarte bun la locuri de divertisment",
+"##4_entertainment_access##":"Această locuință are acces rezonabil la locuri de divertisment",
+"##6_entertainment_access##":"Această locuință are acces bun la locuri de divertisment",
+"##trouble_most_damage##":"Această clădire are multe defecte structurale și fisuri",
+"##very_low_damage_risk##":"Această clădire are unele defecte structurale",
+"##some_low_fire_risk##":"This farm is understaffed. Its swine have small litters, and they grow slowly.",
+"##trouble_some_damage##":"Această clădire are un risc neglijabil de colaps",
+"##middle_file_risk##":"Această clădire are un anumit risc de incendiu",
+"##trouble_have_damage##":"Această clădire are un risc redus de epuizare",
+"##fired##":"Concediat!",
+"##distant_city##":"",
+"##delete##":"",
+"##delete_game##":"",
+"##delete_object##":"",
+"##delete_this_message##":"",
+"##granary_orders##":"",
+"##warehouse_orders##":"",
+"##access_ramp##":"Rampă de acces",
+"##wt_lion_tamer##":"",
+"##destroy_bridge##":"",
+"##destroy_fort##":"",
+"##poor_city_mood_lack_migration##":"",
+"##adve_administration_religion##":"Guvernare/Religie",
+"##doctor_high_workless##":"Somajul e foarte mare aici; mă gândesc sa plec",
+"##cartPusher_high_workless##":"Șomajul e așa de mare, nici soția nu mă mai bate la cap să gasesc o slujbă!",
+"##citizen_high_workless10##":"Șomajul e așa de mare, întregul oraș devine nefericit",
+"##advchief_health_simple_clinic##":"",
+"##advchief_health_simple##":"",
+"##advchief_health_bad##":"",
+"##advchief_health_bad_clinic##":"",
+"##priority_level##":"",
+"##adve_water##":"Servicii de apă",
+"##wage_level_tip##":"",
+"##set_amount_to_donate##":"",
+"##wt_teacher##":"",
+"##file##":"Fișier",
+"##month_2_short##":"",
+"##wt_surgeon##":"",
+"##farm##":"",
+"##bldm_farm##":"Ferme",
+"##advchief_finance##":"",
+"##finance_title##":"",
+"##finances##":"",
+"##fountain##":"",
+"##fort##":"",
+"##fort_legionaries##":"",
+"##fort_info##":"",
+"##forum##":"",
+"##fig_farm##":"",
+"##fruit##":"",
+"##fig_farm_info##":"",
+"##qty##":"",
+"##native_hut##":"",
+"##god_good##":"",
+"##hospital_info##":"Deși nimeni nu vrea să trăiască lângă un, spitale salva vieți atunci când greve boală. Orașul ar trebui să aibă suficiente paturi pentru toți cetățenii săi.",
+"##small_venus_temple##":"",
+"##small_mars_temple##":"",
+"##small_mercury_temple##":"",
+"##small_neptune_temple##":"",
+"##small_ceres_temple##":"Templu Ceres",
+"##temples##":"",
+"##extm_temples_tlp##":"",
+"##units_in_stock##":"",
+"##qty_stacked_in_city_warehouse##":"",
+"##сaesar##":"Cezar",
+"##caesar_assign_new_title##":"Caesar te-a promovat la rangul de",
+"##emperoradv_caesar_has_high_respect_for_you##":"Cezar are respect mai mare pentru tine decât pentru oricare alt guvernator vreodată!",
+"##mission_wnd_targets_title##":"",
+"##buy_price##":"",
+"##sell_price##":"",
+"##native_center##":"",
+"##rome_prices##":"",
+"##god_ceres_short##":"Ceres",
+"##ceres_goodmood_info##":"Ceres aduce fertilitate pământului și face recoltele să crească. Mulțumește-o, sau pregătește-te să fii înfometat.",
+"##smallcurse_of_ceres_title##":"Ceres este supărat",
+"##baths_info##":"Oamenii civilizați fac baie măcar o dată pe zi. Pe lângă avantajele pentru sănătate, băile publice sunt un centru pentru comunitate, oferind o serie de metode de relaxare.",
+"##wt_endeavor##":"",
+"##wt_romeGuard##":"",
+"##money_stolen_text##":"",
+"##person##":"Oameni",
+"##more_people##":"mai mult persoana",
+"##more_person##":"mai mult persoana",
+"##trees_and_forest_text##":"",
+"##rock_text##":"",
+"##profit##":"",
+"##defensive_formation_text##":"",
+"##overall_city_become_a_sleepy_province##":"",
+"##cartPusher_so_hungry##":"Împinsul carucioarelor toată ziua necesită energie; nu se găsește sificientă mâncare aici pentru energie",
+"##school##":"",
+"##actorColony##":"Colonie de actori",
+"##chatioteer_school##":"Producător de care de curse",
+"##chatiotSchool##":"Producător de care de curse",
+"##gladiator_pit##":"",
+"##gladiatorSchool##":"",
+"##ovrm_school##":"",
+"##schools##":"",
+"##scholar##":"",
+"##scholars##":"",
+"##roadBlock##":"",
+"##warehouse_no_workers##":"",
+"##egift_generous##":"",
+"##minimap_tooltip##":"",
+"##click_item_for_start_trade##":"",
+"##click_on_city_for_info##":"",
+"##click_on_rating_for_info##":"",
+"##right_click_to_exit##":"",
+"##left_click_open_right_erase##":"",
+"##aedile##":"Edil",
+"##extm_comerce_tlp##":"",
+"##commerce##":"",
+"##export##":"",
+"##tarraco_win_text##":"",
+"##exports_over##":"",
+"##trade_btn_export_text##":"",
+"##trade_btn_qty##":"",
+"##wt_emigrant##":"",
+"##emigrant##":"",
+"##academy_no_workers##":"Această academie nu este operațională, și nu aduce nici un folos comunității locale.",
+"##academy_full_work##":"Aceasă academie este operațională. Tinerii din zonă invață despre bunele maniere.",
+"##library_full_work##":"",
+"##hospital_no_workers##":"",
+"##hospital_full_work##":"",
+"##wine_workshops_patrly_workers##":"Acest vinărie lucrează sub capacitatea maximă. Ieșire Vinul este ușor mai lent decât ar putea fi.",
+"##road_from_rome##":"",
+"##this_lawab_province_become_very_peacefull##":"",
+"##clinic_no_workers##":"Aceasta clinica nu este operațional, iar este de nici un folos pentru comunitatea locală.",
+"##clinic_full_work##":"Aceasta clinica este operațional și este service comunității locale.",
+"##marketKid_say_2##":"",
+"##lumber_mill_need_some_workers##":"Acest curte este de lucru sub capacitatea maximă. Productia de cherestea va fi ușor mai lent, ca rezultat.",
+"##wine_workshop_need_resource##":"Acest atelier nu poate produce vin până când primește o livrare de struguri de la un depozit sau o fermă.",
+"##oil_workshop_need_resource##":"Acest atelier va produce nici un ulei fără un transport de măsline, fie de la un depozit sau o fermă.",
+"##weapons_workshop_patrly_workers##":"Acest atelier este de lucru sub capacitatea maximă, producția de arme va fi ușor mai lent, ca rezultat.",
+"##pottery_workshop_patrly_workers##":"",
+"##barber_no_workers##":"Frizeria nu este deschisă și nu aduce nici un serviciu comunității locale.",
+"##barber_full_work##":"Frizeria este deschisa, iar comunitatea locală este bine aranjată",
+"##nativeCenter_info##":"",
+"##province_has_peace_a_short_time##":"Această provincie a fost liniștit pentru o perioadă scurtă de timp, dar cetățenii dumneavoastră încă nu se simt foarte sigur. Ani mai pașnice va îmbunătăți acest lucru.",
+"##trouble_farm_was_blighted_by_locust##":"",
+"##vegetable_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Producția de legume va fi ușor mai lent, ca rezultat.",
+"##fig_farm_patrly_workers##":"Acest livada este de lucru sub capacitatea maximă. Producția de fructe va fi usor mai lent, ca rezultat.",
+"##meat_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Producția de carne va fi ușor mai flexibil ca un rezultat.",
+"##olive_farm_need_some_workers##":"Acest grove lucrează sub capacitatea maximă. Producția de măsline ar putea fi mai bine cu mai mulți lucrători.",
+"##wheat_farm_patrly_workers##":"Această fermă este de lucru sub capacitatea maximă. Ar putea fi mai productiv cu mai mulți lucrători.",
+"##school_no_workers##":"Această școală nu este operațional, iar este de nici un folos pentru comunitatea locală.",
+"##actorColony_no_workers##":"Această colonie este părăsită. Fără mentory angajați, nici un actor nu poate fi pregătit.",
+"##school_full_work##":"Această școală este operațional. Copii locale sunt alfabetizați și bine vorbit.",
+"##population_milestone##":"",
+"##baths_no_workers##":"Această baie publică nu este operațională. Fără angajați, cine ar putea face baie aici?",
+"##baths_full_work##":"Această baie publică este operatțională, iar comunitatea locală este curată și relaxată.",
+"##baths_need_reservoir##":"Această baie publică are nevoie să fie connectată la rețeaua de apă, prin plasarea unui rezervor în apropiere.",
+"##taxCollector_very_little_tax##":"Aceste incendii răspândit, dacă nu prind le postească Aceste case plătească atât de puțin impozit se nu pare deloc în valoare de timpul meu!",
+"##marketBuyer_return##":"Aceste coșuri sunt atât de grele! Sunt plin de noi bunuri de a vinde!",
+"##nativeField_info##":"",
+"##engineer_have_trouble_buildings##":"Aceste structuri au fost în stare proastă; Am venit de-a lungul la timp",
+"##collapsed_ruins_info##":"Aceste resturi prabusite de clădiri vechi, reduce dorința de teren în apropierea acestora.",
+"##these_rift_info##":"Aceste chasms au fost cauzate de cutremure. Acestea nu pot fi transmise sau completate, iar oamenii preferă să nu să trăiască alături de ei.",
+"##these_goods_import_only##":"Aceste bunuri sunt disponibile de import numai",
+"##marketBuyer_gods_angry##":"",
+"##citizen_gods_angry##":"Acesta este un oraș păgân! E nevoie de mai multe temple!",
+"##cartSupplier_good_life##":"",
+"##triumphal_arch_info##":"",
+"##inland_lake_text##":"Acest lac interior nu are acces la mare.",
+"##priest_average_life##":"Acest oras este un loc rezonabil",
+"##road_to_distant_region##":"",
+"##very_low_crime_risk##":"",
+"##doctor_average_life##":"",
+"##trouble_most_fire##":"Această clădire este o capcană de foc",
+"##trouble_low_fire_risk##":"Această clădire nu are risc de capturare foc",
+"##no_space_for_evolve##":"Această locuință ar evolua în curând la o mai mare statură, dacă a avut mai mult spațiu să se extindă în.",
+"##moment_fire_risk##":"Această clădire ar putea lua foc în orice moment!",
+"##trouble_some_fire##":"Această clădire are un risc de incendiu",
+"##trouble_no_damage##":"Aceasta cladire este in stare perfecta",
+"##very_high_damage_risk##":"Această clădire este instabilă, și este probabil să se prăbușească în curând",
+"##edu_very_bad##":"",
+"##edu_bad##":"",
+"##edu_simple##":"",
+"##edu_above_simple##":"",
+"##trouble_need_road_access##":"Această clădire are nevoie de acces rutier",
+"##edu_good##":"",
+"##edu_very_good##":"",
+"##edu_pretty##":"",
+"##edu_not_bad##":"",
+"##house_evolves_at##":"Această locuință va evolua curând la unul mai mare statură, ca urmare a condițiilor locale imbunatatirea.",
+"##trouble_too_far_from_water##":"Această clădire nu se află lângă apă!",
+"##peaceful_crime_risk##":"",
+"##prefect_good_life##":"",
+"##this_province_feels_peaceful##":"Această provincie se simte destul de liniștită, un sentiment care va îmbunătăți cu timpul.",
+"##garden_info##":"Acest lot plăcut oferă scutirea cetățenilor de zgomot, căldură și murdăria din oraș cu o oază rece de spațiu verde. Toată lumea vrea o grădină alături.",
+"##this_is_ruins##":"",
+"##averange_crime_risk##":"",
+"##few_crime_risk##":"",
+"##lionTamer_good_life##":"",
+"##gladiator_need_workers##":"Este groaznic. Nu am văzut niciodată atâtea posturi neumplute.",
+"##cartSupplier_average_life##":"",
+"##oil_workshop_patrly_workers##":"Aceasta presa de măsline este personal suficient, și produce ulei mai lent decât ar trebui.",
+"##taxCollector_need_workers##":"Acest oraș are nevoie disperată de muncitori",
+"##citizen_need_workers3##":"Acest oraș are nevoie mare de muncitori",
+"##citizen_need_workers5##":"Acest oraș are nevoie de mai mulți muncitori",
+"##priest_need_workers##":"Acest oraș chiar are nevoie de mai mulți muncitori",
+"##romeGuard_need_workers##":"Acest oraș are nevoie de mult mai mulți muncitori",
+"##lionTamer_need_workers##":"Acest oraș are nevoie de lucrători. Mă întreb dacă aș putea antrena Leo să facă mai mult de lucru?",
+"##need_grape##":"Această clădire are nevoie de struguri",
+"##building_need_road_access##":"Această clădire are nevoie de acces la drum",
+"##need_clay_pit##":"Această clădire are nevoie de lut",
+"##trouble_need_timber##":"Această clădire are nevoie de lemn",
+"##need_iron_for_work##":"Această clădire are nevoie de minereu de fier",
+"##trouble_need_olive##":"Această clădire are nevoie de măsline",
+"##aqueduct_no_water##":"Aceast apeduct nu transoirtă apă între rezervoare, deoarece nu are nici o sursă de apă care să o alimenteze",
+"##aqueduct_work##":"Acest apeduct transportă apă între rezervoare.",
+"##amphitheater_have_never_show##":"Acest amfiteatru nu are nici un spectacol. Are nevoie de actori sau gladiatori pentru a oferi amuzament",
+"##amphitheater_full_work##":"Acest amfiteatru oferă comunității locale atât lupte spectaculoase de gladiatori, cât și piese de teatru jucate de actori.",
+"##amphitheater_have_only_battles##":"Acest amfiteatru gâzduiește lupte de gladiatori pentru amuzamentul comunității locale. Se caută actori pentru a pune în scenă piese de teatru",
+"##amphitheater_no_workers##":"Acest amfiteatru este pustiu. Fără muncitori, nu oferă servicii de amuzament comunității locale",
+"##amphitheater_have_only_shows##":"Acest amfiteatru pune în scenă piese de teatru jucate de actori locali. Ar putea amuza publicul mai bine dacă ar avea gladiatori pentru a organiza lupte",
+"##vinard_patrly_workers##":"Acest podgorie este de lucru sub capacitatea maximă. Producția de struguri va fi ușor mai lent, ca rezultat.",
+"##engineer_need_workers##":"Acest oraș ar merge mult mai bine dacă ar avea mai mulți muncitori",
+"##citizen_good_education##":"Nivelul de cultură a acestui oraș este cel mai ridicat din Imperiu!",
+"##prefect_need_workers##":"Acest oraș are nevoie disperata de mai mulți lucrători!",
+"##teacher_good_life##":"10 sur 10 ! Cette cité est vraiment fantastique !",
+"##scholar_good_life##":"This city isn't too bad",
+"##actor_good_life##":"Acest oraș nu este prea rău",
+"##doctor_low_entertainment##":"",
+"##teacher_low_entertainment##":"Lecțiile mele sunt mai distractive decât acest oraș!",
+"##scholar_low_entertainment##":"Acest oraș e plictisitor! Vreau să văd mai multe spectacole!",
+"##priest_low_entertainment##":"Acest oraș este atât de plictisitor. Chiar preoții ca un gladiator lupta din cand in cand!",
+"##marketBuyer_average_life##":"Acest oraș nu este prea rău, într-adevăr.",
+"##cartPusher_good_life##":"",
+"##house_not_registered_for_taxes##":"",
+"##missing_entertainment##":"",
+"##missing_entertainment_amph##":"",
+"##missing_entertainment_also##":"",
+"##missing_library##":"",
+"##missing_school##":"",
+"##missing_college##":"",
+"##missing_second_food##":"",
+"##missing_third_food##":"",
+"##missing_hospital##":"",
+"##missing_doctor##":"",
+"##missing_food##":"",
+"##missing_entertainment_patrician##":"",
+"##missing_entertainment_colloseum##":"",
+"##missing_third_religion##":"",
+"##missing_second_religion##":"",
+"##missing_water##":"",
+"##missing_market##":"",
+"##missing_bath##":"",
+"##missing_school_or_library##":"",
+"##missing_barber##":"",
+"##missing_religion##":"",
+"##missing_fountain##":"",
+"##missing_doctor_or_hospital##":"",
+"##missing_entertainment_need_more##":"",
+"##missing_second_wine##":"",
+"##missing_wine##":"",
+"##missing_oil##":"",
+"##missing_furniture##":"",
+"##missing_pottery##":"",
+"##missing_food_from_market##":"",
+"##missing_furniture_degrade##":"",
+"##missing_oil_degrade##":"",
+"##missing_entertainment_degrade##":"",
+"##missing_entertainment_degrade##":"",
+"##missing_doctor_or_hospital_degrade##":"",
+"##missing_hospital_degrade##":"",
+"##missing_wine_degrade##":"",
+"##missing_food_degrade##":"",
+"##missing_school_or_library_degrade##":"",
+"##missing_religion_degrade##":"",
+"##missing_bath_degrade##":"",
+"##missing_barber_degrade##":"",
+"##missing_third_food_degrade##":"",
+"##missing_second_food_degrade##":"",
+"##missing_water_degrade##":"",
+"##missing_fountain_degrade##":"",
+"##missing_pottery_degrade##":"",
+"##missing_entertainment_amph_degrade##":"",
+"##missing_entertainment_also_degrade##":"",
+"##missing_second_religion_degrade##":"",
+"##missing_library_degrade##":"",
+"##missing_school_degrade##":"",
+"##missing_third_religion_degrade##":"",
+"##missing_college_degrade##":"",
+"##low_desirability_degrade##":"",
+"##missing_entertainment_colloseum_degrade##":"",
+"##missing_food_degrade##":"",
+"##missing_market_degrade##":"",
+"##missing_doctor__degrade##":"",
+"##hippodrome_no_workers##":"",
+"##quarry_need_some_workers##":"",
+"##clay_pit_need_some_workers##":"Această mină funcționează sub capacitatea maximă. Drept rezultat, producția de argilă va fi mai mica.",
+"##colloseum_no_workers##":"",
+"##trouble_colloseum_have_only_gladiatros##":"",
+"##trouble_colloseum_full_work##":"",
+"##trouble_colloseum_have_only_lions##":"",
+"##also_fountain_in_well_area##":"Aceast puț este redundant, toate casele pe care le servește își iau apa dintr-o fântână din zonă",
+"##bridge_extends_city_area##":"Acest pod extinde meleagurile noastre, dar permite trecerea nu numai cetățenilor noștri, ci și vrăjmașii noștri!",
+"##oracle_info##":"",
+"##citizen_gods_angry3##":"Acest guvernator nu are respect pentru zei",
+"##dangerous_crime_risk##":"",
+"##extreme_crime_risk##":"",
+"##reservoir_no_water##":"Acest rezervor trebuie să fie adiacentă la apă, sau conectat prin apeduct la un rezervor de lucru, înainte de a va funcționa.",
+"##iron_mine_need_some_workers##":"",
+"##market_no_workers##":"Această piață nu este operațional, iar livrările nu produc pentru comunitatea locală.",
+"##market_full_work##":"Această piață este operațional.",
+"##enemies_hard_to_me##":"Acest soldat este prea puternic pentru mine!",
+"##mopup_formation_text##":"Acest ordin este cel mai eficient mod de a face cu resturile unei armate învins.",
+"##theater_no_have_any_shows##":"This theater is currently staging plays from local actors, who usually draw a good audience.",
+"##theater_no_workers##":"",
+"##water_srvc_well##":"",
+"##water_srvc_reservoir##":"",
+"##need_reservoir_for_work##":"Această fântână nu va funcționa dacă nu are acces la conducta de un rezervor din apropiere.",
+"##fountain_not_work##":"Această fântână nu funcționează. Consilier dumneavoastră Muncii ar trebui să atribuie mai mulți lucrători la serviciile de apă.",
+"##fort_has_been_cursed_by_mars##":"",
+"##tarentum_win_text##":"",
+"##wn_etruscan_soldier##":"",
+"##effciency##":"",
+"##gmsndwnd_ambient_sound##":"",
+"##south##":"",
+"##southEast##":"",
+"##southWest##":"",
+"##prefect_gods_angry##":"",
+"##legionary_average_life##":"",
+"##teacher_average_life##":"Je donnerais à cette cité... 8 sur 10",
+"##merchant_notbad_city##":"",
+"##cartPusher_cantfind_destination##":"Ar fi mai rapid să împing aceste bunuri până la Roma decât până unde trebuie să le duc!",
+"##engineer_building_allok##":"",
+"##immigrant_where_my_home##":"",
+"##emperor_wrath_by_debt_text##":"",
+"##landmerchant_good_deals##":"",
+"##recruter_low_entertainment##":"",
+"##cartPusher_gods_angry##":"Nu sunt un om religios, dar nici măcar eu nu aș trata zeii atât de rău!",
+"##marketBuyer_need_workers##":"",
+"##citizen_high_workless4##":"Nu am mai trecut niciodată pe lângă atâția cetățeni fără slujbă!",
+"##marketBuyer_find_goods##":"",
+"##actor_so_hungry##":"Pur și simplu nu pot performa fără mai multă mâncare",
+"##romeGuard_good_live##":"",
+"##actor_low_entertainment##":"Muncest cât de mult pot, dar tot nu sunt suficiente surse de amuzament aici",
+"##immigrant_want_to_be_liontamer##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!",
+"##gladiator_so_hungry##":"",
+"##wt_missioner_normal_life##":"",
+"##teacher_need_workers##":"Este uimitor câte posturi nu sunt umplute aici",
+"##scholar_so_hungry##":"Sunt lihnit de foame!",
+"##month_1_short##":"",
+"##build_senate_for_advisors##":"Construi Senat înainte",
+"##click_on_city_for_info_tlp##":"",
+"##farm_working_bad##":"",
+"##farm_working_normally##":"",
+"##god_mercury_short##":"",
+"##statue_desc##":"",
+"##ruins_house02_text##":"",
 }

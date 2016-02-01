@@ -27,11 +27,13 @@
 #include "gfx/decorator.hpp"
 #include "widgetpositionanimator.hpp"
 #include "label.hpp"
+#include "gfx/drawstate.hpp"
 #include "core/gettext.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/engine.hpp"
+#include "city/scribes.hpp"
 #include "overlays_menu.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
@@ -43,6 +45,7 @@
 #include "extented_date_info.hpp"
 #include "core/saveadapter.hpp"
 #include "core/osystem.hpp"
+#include "game/settings.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -58,15 +61,63 @@ enum class AdvToolMode
   removeTool = 0xff00 + 1,
   terrainTool,
   maximizeTool,
+  undoAction,
+  messages,
+  disaster,
   toolCount
 };
 
 enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
+static Signal0<> invalidAction;
+
+class MessageAnnotation : public Widget
+{
+public:
+  MessageAnnotation( Widget* parent, const Rect& rect )
+    : Widget( parent, -1, rect )
+  {
+    active = false;
+    pic = Picture( gui::rc.panel, 114 );
+    setSubElement( true );    
+  }
+
+  void messagesChanged(int number)
+  {
+    active = number > 0;
+  }
+
+  virtual void draw(Engine& painter)
+  {
+    unsigned int time = DateTime::elapsedTime() ;
+    if( enabled() && active && (time % 1000 < 500) )
+    {
+      Rect rect( Point(), pic.size() );
+      painter.draw( pic, rect, absoluteRect(),  &absoluteClippingRectRef() );
+    }
+  }
+
+  bool active;
+  Picture pic;
+};
 
 struct Menu::Link
 {
-  typedef enum { buildHouse, clearLand,
-                 editTerrain, editForest } Name;
+  typedef enum { buildHouse,  editTerrain,
+                 clearLand, editForest,
+                 buildRoad,   editWater,
+                 buildWater,  editRocks,
+                 buildHealth, editMeadow,
+                 buildTemple, editPlateau,
+                 buildEducation, editRift,
+                 buildEntertainment, editRiver,
+                 buildGovt, editIndigene,
+                 buildEngineering, editRoads,
+                 buildSecurity, editBorders,
+                 buildCommerce, editAttacks,
+                 undoAction,
+                 messages,
+                 disaster
+               } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
@@ -76,11 +127,14 @@ struct Menu::Link
   int midPicID;
   bool isPushBtn;
   bool submenu;
-  Rect rect;
   std::string sound;
   PushButton* button;
   std::string tooltip;
   VisibleMode visibleMode;
+  Rect rect;
+
+  void setEnabled(bool enabled) { if( button ) button->setEnabled(enabled); }
+  Signal0<>& action() { return button ? button->onClicked() : invalidAction; }
 };
 
 struct Menu::Model
@@ -93,23 +147,121 @@ struct Menu::Model
   bool fitToScreen;  
   std::map<Link::Name, Menu::Link> actions;
 
+  void setEnabled( Link::Name name, bool enabled )
+  {
+    if( actions[ name ].button )
+      actions[ name ].button->setEnabled( enabled );
+  }
+
   void initDefaultActions()
   {
-    actions[ Link::buildHouse  ] = { Point( 13,  277 ), config::id.menu.house, object::house, 0,
-                                     object::house, config::id.middle.house, pushButton,
-                                     noSubMenu, Rect(), "housing", nullptr, "", Link::inGame };
+    actions[ Link::buildHouse  ] = { {13,277}, gui::button.house, object::house, 0,
+                                     object::house, gui::miniature.house, pushButton,
+                                     noSubMenu, "housing", nullptr, "housing", Link::inGame };
 
-    actions[ Link::editTerrain ] = { Point( 13,  277 ), config::id.menu.terrain, object::terrain, 0,
-                                     object::terrain, config::id.middle.clear, pushButton,
-                                     noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
+    actions[ Link::editTerrain ] = { {13,277}, gui::button.terrain, object::terrain, 0,
+                                     object::terrain, gui::miniature.clear, pushButton,
+                                     noSubMenu, "terrain", nullptr, "terrain", Link::inEditor };
 
-    actions[ Link::clearLand   ] = { Point( 63,  277 ), config::id.menu.clear, (int)AdvToolMode::removeTool, 1,
-                                     (int)AdvToolMode::removeTool, config::id.middle.clear, pushButton,
-                                     noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
+    actions[ Link::clearLand   ] = { {63,277}, gui::button.clear, (int)AdvToolMode::removeTool, 1,
+                                     (int)AdvToolMode::removeTool, gui::miniature.clear, pushButton,
+                                     noSubMenu, "clear_land", nullptr, "clear", Link::inGame };
 
-    actions[ Link::editForest  ] = { Point( 63,  277 ), config::id.menu.forest, object::tree, 0,
-                                     object::tree, config::id.middle.clear, pushButton,
-                                     noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
+    actions[ Link::editForest  ] = { {63,277}, gui::button.forest, object::tree, 0,
+                                     object::tree, gui::miniature.clear, pushButton,
+                                     noSubMenu, "forest", nullptr, "forest", Link::inEditor };
+
+    actions[ Link::buildRoad   ] = { {113,277}, gui::button.road, object::road,  2,
+                                     object::road, gui::miniature.road, pushButton,
+                                     noSubMenu, "road", nullptr, "road", Link::inGame };
+
+    actions[ Link::editWater   ] = { {113,277}, gui::button.water, object::water,  2,
+                                     object::water, gui::miniature.clear, pushButton,
+                                     noSubMenu, "water", nullptr, "water", Link::inEditor};
+
+    actions[ Link::buildWater  ] = { {13,313}, gui::button.waterSupply, development::water,  3,
+                                     development::water, gui::miniature.water, pushButton,
+                                     haveSubMenu, "water", nullptr, "water", Link::inGame };
+
+    actions[ Link::editRocks ] = { {13,313}, gui::button.rocks, object::rock,  3,
+                                     object::rock, gui::miniature.clear, pushButton,
+                                     noSubMenu, "smRock", nullptr, "smRock", Link::inEditor};
+
+    actions[ Link::buildHealth  ] = { {63,313}, gui::button.health, development::health,  4,
+                                      development::health, gui::miniature.health, pushButton,
+                                      haveSubMenu, "health", nullptr, "health", Link::inGame };
+
+    actions[ Link::editMeadow ] = { {63,313}, gui::button.meadow, object::meadow,  4,
+                                     object::meadow, gui::miniature.clear, pushButton,
+                                     noSubMenu, "meadow", nullptr, "meadow", Link::inEditor};
+
+    actions[ Link::buildTemple  ] = { {113,313}, gui::button.temple, development::religion,  5,
+                                      development::religion, gui::miniature.religion, pushButton,
+                                      haveSubMenu, "temples", nullptr, "temples", Link::inGame };
+
+    actions[ Link::editPlateau ] = { {113,313}, gui::button.plateau, object::plateau,  5,
+                                     object::plateau, gui::miniature.clear, pushButton,
+                                     noSubMenu, "plateau", nullptr, "plateau", Link::inEditor};
+
+    actions[ Link::buildEducation]={ {13,349}, gui::button.education, development::education,  6,
+                                      development::education, gui::miniature.education, pushButton,
+                                      haveSubMenu, "education", nullptr, "education", Link::inGame };
+
+    actions[ Link::editRift ] = { {13,349}, gui::button.rift, object::rift,  6,
+                                   object::rift, gui::miniature.clear, pushButton,
+                                   noSubMenu, "rift", nullptr, "rift", Link::inEditor};
+
+    actions[ Link::buildEntertainment]={ {63,349}, gui::button.entertainment, development::entertainment,  7,
+                                         development::entertainment, gui::miniature.entertainment, pushButton,
+                                         haveSubMenu, "entertainment", nullptr, "entertainment", Link::inGame };
+
+    actions[ Link::editRiver ] = { {63,349}, gui::button.river, object::river,  7,
+                                  object::river, gui::miniature.clear, pushButton,
+                                  noSubMenu, "river", nullptr, "river", Link::inEditor};
+
+    actions[ Link::buildGovt ]={ {113,349}, gui::button.govt, development::administration, 8,
+                                 development::administration, gui::miniature.administration, pushButton,
+                                 haveSubMenu, "administration", nullptr, "administration", Link::inGame };
+
+    actions[ Link::editIndigene ] = { {113,349}, gui::button.indigene, object::native_hut,  8,
+                                  object::native_hut, gui::miniature.clear, pushButton,
+                                  noSubMenu, "indigene", nullptr, "indigene", Link::inEditor};
+
+    actions[ Link::buildEngineering ]={ {13,385}, gui::button.engineering, development::engineering, 9,
+                                 development::engineering, gui::miniature.engineering, pushButton,
+                                 haveSubMenu, "engineering", nullptr, "engineering", Link::inGame };
+
+    actions[ Link::editRoads ] = { {13,385}, gui::button.broad, object::road,  9,
+                                  object::road, gui::miniature.clear, pushButton,
+                                  noSubMenu, "road", nullptr, "road", Link::inEditor};
+
+    actions[ Link::buildSecurity ]={ {63,385}, gui::button.security, development::security, 10,
+                                 development::security, gui::miniature.security, pushButton,
+                                 haveSubMenu, "security", nullptr, "security", Link::inGame };
+
+    actions[ Link::editBorders ] = { {63,385}, gui::button.waymark, object::waymark,  10,
+                                  object::waymark, gui::miniature.clear, pushButton,
+                                  noSubMenu, "waymark", nullptr, "waymark", Link::inEditor};
+
+    actions[ Link::buildCommerce ]={ {113,385}, gui::button.commerce, development::commerce, 11,
+                                 development::commerce, gui::miniature.commerce, pushButton,
+                                 haveSubMenu, "comerce", nullptr, "comerce", Link::inGame };
+
+    actions[ Link::editAttacks ] = { {113,385}, gui::button.attacks, object::attackTrigger,  11,
+                                  object::attackTrigger, gui::miniature.clear, pushButton,
+                                  noSubMenu, "attackTrigger", nullptr, "attackTrigger", Link::inEditor};
+
+    actions[ Link::messages   ] = { {63, 421}, gui::button.messages, (int)AdvToolMode::messages, 12,
+                                    (int)AdvToolMode::messages, gui::miniature.clear, pushButton,
+                                    noSubMenu, "message", nullptr, "message", Link::inGame };
+
+    actions[ Link::disaster   ] = { {113, 421}, gui::button.disaster, (int)AdvToolMode::disaster, 13,
+                                    (int)AdvToolMode::disaster, gui::miniature.clear, pushButton,
+                                    noSubMenu, "troubles", nullptr, "troubles", Link::inGame };
+
+    actions[ Link::undoAction ] = { {13,421}, gui::button.undo, (int)AdvToolMode::undoAction, 14,
+                                    (int)AdvToolMode::undoAction, gui::miniature.clear, pushButton,
+                                    noSubMenu, "cancel", nullptr, "cancel", Link::inGame};
   }
 
   bool isLinkValid( Link::Name name ) const
@@ -125,8 +277,11 @@ struct Menu::Model
   void setConstructoMode( bool enabled )
   {
     Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
-    for( auto&& item : actions )
-      item.second.button->setVisible( item.second.visibleMode == mode );
+    for( auto& item : actions )
+    {
+      if( item.second.button )
+        item.second.button->setVisible( item.second.visibleMode == mode );
+    }
   }
 
   Model( Widget* parent, bool fit, const std::string& name, MenuType mode )
@@ -140,10 +295,10 @@ struct Menu::Model
     mtype = mode;
 
     if( !background.isValid() )
-      background.load( ResourceGroup::panelBackground, mode == smallMenu ? 16 : 17 );
+      background.load( gui::rc.panel, mode == smallMenu ? 16 : 17 );
 
     if( !bottom.isValid() )
-      bottom.load( ResourceGroup::panelBackground, mode == smallMenu ? 21 : 20 );
+      bottom.load( gui::rc.panel, mode == smallMenu ? 21 : 20 );
 
     scale = 1;
     if( fitToScreen )
@@ -158,17 +313,17 @@ class Menu::Impl
 {
 public:
   struct {
-    Pictures pics;
+    Pictures fallback;
     Rects rects;
     Batch batch;
 
     void add( Picture pic, const Rect& r )
     {
-      pics.push_back( pic );
+      fallback.push_back( pic );
       rects.push_back( r );
 
       batch.destroy();
-      batch.load( pics, rects );
+      batch.load( fallback, rects );
     }
 
     void update( const Point& move )
@@ -177,21 +332,18 @@ public:
       if( move == Point( 0, 0) )
         return;
 
-      for( auto&& r : rects )
+      for( auto& r : rects )
         r += move;
 
       batch.destroy();
-      batch.load( pics, rects );
+      batch.load( fallback, rects );
     }
   } bg;
 
   Widget* lastPressed;
 
   struct {
-    PushButton* forest;
-    PushButton* menu;
     PushButton* minimize;
-
   } button;
 
   PushButton* senateButton;
@@ -200,31 +352,18 @@ public:
   PushButton* northButton;
   PushButton* rotateLeftButton;
   PushButton* rotateRightButton;
-  PushButton* messageButton;
-  PushButton* disasterButton;
-  PushButton* waterButton;
-  PushButton* roadButton;
-  PushButton* administrationButton;
-  PushButton* entertainmentButton;
-  PushButton* educationButton;
-  PushButton* templeButton;
-  PushButton* commerceButton;
-  PushButton* securityButton;
-  PushButton* healthButton;
-  PushButton* engineerButton;
-  PushButton* cancelButton;
   PushButton* overlaysButton;
 
   Image* middleLabel;
   OverlaysMenu* overlaysMenu; 
   float koeff;
+  Menu::Side side;
   PlayerCityPtr city;
   ScopedPtr<Menu::Model> model;
 
   struct {
     Signal1<int> onCreateConstruction;
     Signal1<int> onCreateObject;
-    Signal0<> onRemoveTool;
     Signal0<> onHide;
   } signal;
 
@@ -236,7 +375,7 @@ public:
 
 Signal1<int>& Menu::onCreateConstruction(){  return _d->signal.onCreateConstruction;}
 Signal1<int>& Menu::onCreateObject(){  return _d->signal.onCreateObject;}
-Signal0<>& Menu::onRemoveTool(){  return _d->signal.onRemoveTool;}
+Signal0<>& Menu::onRemoveTool(){  return _d->model->actions[ Link::clearLand ].action();}
 
 class MenuButton : public TexturedButton
 {
@@ -248,7 +387,7 @@ public:
     setIsPushButton( pushBtn );
   }
 
-  int midPicId() const { return _midIconId; }
+  int miniatureIndex() const { return _midIconId; }
   void setMidPicId( int id ) { _midIconId = id; }
   void setSound( const std::string& name ) { addProperty( "sound", name ); }
 private:
@@ -260,41 +399,45 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 {
   setupUI( ":/gui/shortmenu.gui" );
   _d->city = city;
+  _d->side = rightSide;
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
 }
 
 void Menu::_updateButtons()
 {
-  _d->button.minimize = _addButton( config::id.menu.maximize, false, 0, (int)AdvToolMode::maximizeTool,
-                                    noSubMenu, config::id.middle.empty, "show_bigpanel",
+  _d->button.minimize = _addButton( gui::button.maximize, false, 0, (int)AdvToolMode::maximizeTool,
+                                    noSubMenu, gui::miniature.empty, "show_bigpanel",
                                     Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
   _createLink( _d->model->actions[ Link::buildHouse ] );
   _createLink( _d->model->actions[ Link::clearLand  ] );
+  _createLink( _d->model->actions[ Link::buildRoad  ] );
+  _createLink( _d->model->actions[ Link::buildWater ] );
+  _createLink( _d->model->actions[ Link::buildHealth ]);
+  _createLink( _d->model->actions[ Link::buildTemple ]);
+  _createLink( _d->model->actions[ Link::buildEducation ]);
+  _createLink( _d->model->actions[ Link::buildEntertainment ]);
+  _createLink( _d->model->actions[ Link::buildGovt ]);
+  _createLink( _d->model->actions[ Link::buildEngineering ]);
+  _createLink( _d->model->actions[ Link::buildSecurity]);
+  _createLink( _d->model->actions[ Link::buildCommerce]);
+  _createLink( _d->model->actions[ Link::undoAction ] );
+  _createLink( _d->model->actions[ Link::messages ] );
+  _createLink( _d->model->actions[ Link::disaster ] );
 
-  _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, config::id.middle.road, "road" );
-  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, config::id.middle.water, "water" );
-  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, config::id.middle.health, "health" );
-  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, config::id.middle.religion, "temples" );
-  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, config::id.middle.education, "education" );
+  Rect rect( 2, 2, 23, 20 );
+  auto messagesButton = _d->model->actions[ Link::messages ].button;
+  if( !_d->city->getOption( PlayerCity::c3gameplay ) )
+    rect = Rect( Point(0,0), messagesButton->size() );
 
-  _d->entertainmentButton = _addButton( 143, true, 7, development::entertainment, haveSubMenu,
-                                        config::id.middle.entertainment, "entertainment" );
+  auto& notification = messagesButton->add<MessageAnnotation>( rect );
 
-  _d->administrationButton = _addButton( 139, true, 8, development::administration, haveSubMenu,
-                                         config::id.middle.administration, "administration" );
+  CONNECT( &_d->city->scribes(), onChangeMessageNumber(), &notification, MessageAnnotation::messagesChanged )
+  CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize )
 
-  _d->engineerButton = _addButton( 167, true, 9, development::engineering, haveSubMenu,
-                                   config::id.middle.engineer, "engineering" );
-
-  _d->securityButton = _addButton( 159, true, 10, development::security, haveSubMenu,
-                                   config::id.middle.security, "security" );
-
-  _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
-                                   config::id.middle.comerce, "comerce" );
-
-  CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
+  _d->model->actions[ Link::undoAction ].setEnabled( false );
+  _d->model->actions[ Link::disaster ].setEnabled( false );
 }
 
 void Menu::_setModel( Model* model )
@@ -346,25 +489,25 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   Point offset( 1, 32 );
   int dy = 35;
 
-  MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
-  ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+  MenuButton& ret = add<MenuButton>( Point( 0, 0 ), -1, -1, startPic, pushBtn );
+  ret.setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
   Point temp = offset + Point( 0, dy * yMul );
   if( _d->koeff != 1 )
   {
     temp.setX( ceil( temp.x() * _d->koeff) );
     temp.setY( temp.y() * _d->koeff );
-    ret->setWidth( ceil( ret->width() * _d->koeff ) );
-    ret->setHeight( ceil( ret->height() * _d->koeff ) );
+    ret.setWidth( ceil( ret.width() * _d->koeff ) );
+    ret.setHeight( ceil( ret.height() * _d->koeff ) );
   }
-  ret->setPosition( temp );
-  ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
-  ret->setSound( "extm_" + ident );
-  ret->setMidPicId( midPic );
+  ret.setPosition( temp );
+  ret.setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
+  ret.setSound( "extm_" + ident );
+  ret.setMidPicId( midPic );
 
   if( rect.width() > 0 )
-    _setChildGeometry( ret, rect );
+    _setChildGeometry( &ret, rect );
 
-  return ret;
+  return &ret;
 }
 
 /* here will be helper functions for minimap generation */
@@ -373,10 +516,9 @@ void Menu::draw(gfx::Engine& painter)
   if( !visible() )
     return;
 
-  if( _d->bg.batch.valid() )
-    painter.draw( _d->bg.batch, &absoluteClippingRectRef() );
-  else
-    painter.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->bg.batch )
+      .fallback( _d->bg.fallback, _d->bg.rects );
     
   Widget::draw( painter );
 }
@@ -402,7 +544,10 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
-    else if( id == object::terrain || id == object::tree )
+    else if( id == object::terrain || id == object::tree
+             || id == object::water || id == object::rock
+             || id == object::meadow || id == object::plateau
+             || id == object::river )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -412,7 +557,19 @@ bool Menu::onEvent(const NEvent& event)
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
-      emit _d->signal.onRemoveTool();
+      emit onRemoveTool();
+    }
+    else if( id == (int)AdvToolMode::undoAction )
+    {
+      _d->lastPressed = event.gui.caller;
+      _createBuildMenu( -1, this );
+      emit onUndo();
+    }
+    else if( id == (int)AdvToolMode::messages )
+    {
+      _d->lastPressed = event.gui.caller;
+      _createBuildMenu( -1, this );
+      emit onMessagesShow();
     }
     else
     {
@@ -450,13 +607,13 @@ bool Menu::onEvent(const NEvent& event)
   {
     switch( event.mouse.type )
     {
-    case mouseRbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
       _createBuildMenu( -1, this );
-     cancel();
+      cancel();
     return true;
 
-    case mouseLbtnPressed:
-    case mouseLbtnRelease:
+    case NEvent::Mouse::btnLeftPressed:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
       //lock movement for tilemap
       if( findChildren<BuildMenu*>().size() > 0 )
@@ -468,6 +625,17 @@ bool Menu::onEvent(const NEvent& event)
     }
   }
 
+  if( event.EventType == sEventKeyboard )
+  {
+    if( event.keyboard.key == KEY_ESCAPE )
+    {
+      auto menus = findChildren<BuildMenu*>();
+      for( auto m : menus ) m->deleteLater();
+    }
+
+    return true;
+  }
+
   return Widget::onEvent( event );
 }
 
@@ -475,43 +643,56 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen 
 {
   auto model = new Model( parent, fitToScreen, ":/menu.model", Model::smallMenu );
 
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
+  Menu& ret = parent->add<Menu>( id, Rect( 0, 0, model->width, parent->height() ), city );
 
-  ret->_setModel( model );
-  ret->_updateButtons();
-  ret->_updateBuildOptions();
+  ret._setModel( model );
+  ret._updateButtons();
+  ret._updateBuildOptions();
 
-  CONNECT( city, onChangeBuildingOptions(), ret, Menu::_updateBuildOptions );
+  CONNECT( city, onChangeBuildingOptions(), &ret, Menu::_updateBuildOptions );
 
-  return ret;
+  return &ret;
 }
 
 void Menu::minimize()
 {
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
-  Point stopPos = lefttop() + Point( width(), 0 );
-  auto animator = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
-  CONNECT( animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
+  Point stopPos = lefttop() + Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
+  auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
+  CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
-  auto event = PlaySound::create( "panel", 3, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( "panel", 3, 100 );
 }
 
 void Menu::maximize()
 {
-  Point stopPos = lefttop() - Point( width(), 0 );
+  Point stopPos = lefttop() - Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   show();
-  new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
+  add<PositionAnimator>( WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  auto event = PlaySound::create( "panel", 3, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( "panel", 3, 100 );
 }
 
 void Menu::cancel()
 {
   unselectAll();
   _d->lastPressed = 0;
+}
+
+void Menu::setSide(Menu::Side side, const Point& offset)
+{
+  _d->side = side;
+  switch( _d->side )
+  {
+  case leftSide:
+    setPosition( {static_cast<int>(offset.x() - (visible()?0:1) * width()), offset.y()} );
+  break;
+
+  case rightSide:
+    setPosition( {static_cast<int>(offset.x() - (visible()?1:0) * width()), offset.y()} );
+  break;
+  }
 }
 
 bool Menu::unselectAll()
@@ -530,7 +711,8 @@ bool Menu::unselectAll()
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
    auto menus = findChildren<BuildMenu*>();
-   for( auto m : menus ) { m->deleteLater(); }
+   for( auto m : menus )
+     m->deleteLater();
 
    BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,
                                              _d->city->getOption( PlayerCity::c3gameplay ) );
@@ -539,6 +721,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    {
      buildMenu->setNotClipped( true );
      buildMenu->setBuildOptions( _d->city->buildOptions() );
+     buildMenu->setModel( SETTINGS_RC_PATH( buildMenuModel ).toString() );
      buildMenu->initialize();
 
      int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );
@@ -547,6 +730,9 @@ void Menu::_createBuildMenu( int type, Widget* parent )
 }
 
 Signal0<>& Menu::onHide() { return _d->signal.onHide; }
+Signal0<>& Menu::onMessagesShow()  { return _d->model->actions[ Link::messages ].action(); }
+Signal0<>& Menu::onUndo() { return _d->model->actions[ Link::undoAction ].action(); }
+Signal0<>& Menu::onSwitchAlarm(){  return _d->model->actions[ Link::disaster].action(); }
 
 void Menu::Impl::initActionButton(PushButton* btn, const Point& pos, bool pushBtn )
 {
@@ -565,38 +751,36 @@ void Menu::Impl::playSound( Widget* widget )
     index = math::random( 2 ) + 1;
   }
 
-  auto event = PlaySound::create( sound, index, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( sound, index, 100 );
 }
 
 void Menu::Impl::updateBuildingOptions()
 {
   const development::Options& options = city->buildOptions();
-  waterButton->setEnabled( options.isGroupAvailable( development::water ));
-  administrationButton->setEnabled( options.isGroupAvailable( development::administration ));
-  entertainmentButton->setEnabled( options.isGroupAvailable( development::entertainment ));
-  educationButton->setEnabled( options.isGroupAvailable( development::education ));
-  templeButton->setEnabled( options.isGroupAvailable( development::religion ));
-  commerceButton->setEnabled( options.isGroupAvailable( development::commerce ));
-  securityButton->setEnabled( options.isGroupAvailable( development::security ));
-  healthButton->setEnabled( options.isGroupAvailable( development::health ));
-  engineerButton->setEnabled( options.isGroupAvailable( development::engineering ));
+  model->setEnabled( Link::buildWater, options.isGroupAvailable( development::water ));
+  model->setEnabled( Link::buildGovt, options.isGroupAvailable( development::administration ));
+  model->setEnabled( Link::buildEntertainment, options.isGroupAvailable( development::entertainment ));
+  model->setEnabled( Link::buildEducation, options.isGroupAvailable( development::education ));
+  model->setEnabled( Link::buildTemple, options.isGroupAvailable( development::religion ));
+  model->setEnabled( Link::buildCommerce, options.isGroupAvailable( development::commerce ));
+  model->setEnabled( Link::buildSecurity, options.isGroupAvailable( development::security ));
+  model->setEnabled( Link::buildHealth, options.isGroupAvailable( development::health ));
+  model->setEnabled( Link::buildEngineering, options.isGroupAvailable( development::engineering ));
 }
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool fitToScreen)
 {
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
-  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
+  ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
+  ret.setID( Hash( TEXT(ExtentMenu)) );
+  ret._setModel( model );
+  ret._updateButtons();
+  ret._updateBuildOptions();
 
-  ret->_setModel( model );
-  ret->_updateButtons();
-  ret->_updateBuildOptions();
+  CONNECT( city, onChangeBuildingOptions(), &ret, ExtentMenu::_updateBuildOptions );
 
-  CONNECT( city, onChangeBuildingOptions(), ret, ExtentMenu::_updateBuildOptions );
-
-  return ret;
+  return &ret;
 }
 
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr city )
@@ -611,21 +795,10 @@ void ExtentMenu::_updateButtons()
   Menu::_updateButtons();
 
   _d->button.minimize->deleteLater();
-  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, config::id.middle.empty,
+  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, gui::miniature.empty,
                                    "hide_bigpanel" );
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
-
-  _d->initActionButton( _d->roadButton,           Point( 113, 277 ) );
-  _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
-  _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
-  _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
-  _d->initActionButton( _d->educationButton,      Point( 13,  349 ) );
-  _d->initActionButton( _d->entertainmentButton,  Point( 63,  349 ) );
-  _d->initActionButton( _d->administrationButton, Point( 113, 349 ) );
-  _d->initActionButton( _d->engineerButton,       Point( 13,  385 ) );
-  _d->initActionButton( _d->securityButton,       Point( 63,  385 ) );
-  _d->initActionButton( _d->commerceButton,       Point( 113, 385 ) );
 
   //header
   _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
@@ -644,27 +817,16 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->rotateLeftButton, Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
 
   _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
-  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
+  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );   
 
-  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, "cancel" );
-  _setChildGeometry( _d->cancelButton, Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
-  _d->cancelButton->setEnabled( false );
-
-  _d->messageButton = _addButton( 115, false, 0, -1, false, -1, "message" );
-  _setChildGeometry( _d->messageButton, Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
-
-  _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, "troubles" );
-  _setChildGeometry( _d->disasterButton, Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
-  _d->disasterButton->setEnabled( false );
-
-  _d->middleLabel = new Image( this, Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
+  _d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
   _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, config::id.middle.empty ) );
+  _d->middleLabel->setPicture( gui::miniature.rc, gui::miniature.empty );
 
-  _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
+  _d->overlaysMenu = &parent()->add<OverlaysMenu>( Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
+  _d->overlaysButton = &add<PushButton>( Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
@@ -680,8 +842,8 @@ bool ExtentMenu::onEvent(const NEvent& event)
     MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller );
     if( btn )
     {
-      int picId = btn->midPicId() > 0 ? btn->midPicId() : config::id.middle.empty;
-      _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
+      int picId = btn->miniatureIndex() > 0 ? btn->miniatureIndex() : gui::miniature.empty;
+      _d->middleLabel->setPicture( gui::miniature.rc, picId );
     }
   }
 
@@ -707,7 +869,8 @@ void ExtentMenu::setConstructorMode(bool enabled)
   PushButton* btns1[] = { _d->senateButton, _d->empireButton,
                           _d->missionButton, _d->northButton,
                           _d->rotateLeftButton, _d->rotateRightButton,
-                          _d->messageButton, _d->disasterButton };
+                          _d->model->actions[ Link::messages ].button,
+                          _d->model->actions[ Link::disaster ].button };
 
   for( auto btn : btns1 )
     btn->setEnabled( !enabled );
@@ -715,16 +878,23 @@ void ExtentMenu::setConstructorMode(bool enabled)
   if( !_d->model->isLinkValid( Link::editTerrain ) )
   {
     _createLink( _d->model->actions[ Link::editTerrain ] );
-    _createLink( _d->model->actions[ Link::editForest ] );
+    _createLink( _d->model->actions[ Link::editForest  ] );
+    _createLink( _d->model->actions[ Link::editWater   ] );
+    _createLink( _d->model->actions[ Link::editRocks    ] );
+    _createLink( _d->model->actions[ Link::editMeadow  ] );
+    _createLink( _d->model->actions[ Link::editPlateau ] );
+    _createLink( _d->model->actions[ Link::editRift    ] );
+    _createLink( _d->model->actions[ Link::editRiver   ] );
+    _createLink( _d->model->actions[ Link::editIndigene] );
+    _createLink( _d->model->actions[ Link::editRoads   ] );
+    _createLink( _d->model->actions[ Link::editBorders ] );
+    _createLink( _d->model->actions[ Link::editAttacks ] );
   }
 
-  _d->model->setConstructoMode( true );
+  _d->model->setConstructoMode( enabled );
 }
 
-void ExtentMenu::resolveUndoChange(bool enabled)
-{
-  _d->cancelButton->setEnabled( enabled );
-}
+void ExtentMenu::resolveUndoChange(bool enabled) { _d->model->actions[ Link::undoAction ].setEnabled( enabled ); }
 
 void ExtentMenu::changeOverlay(int ovType)
 {
@@ -734,11 +904,11 @@ void ExtentMenu::changeOverlay(int ovType)
 
 void ExtentMenu::showInfo(int type)
 {
-  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  int hash = Hash( TEXT(ExtentedDateInfo));
   ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
   if( !window )
   {
-    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+    window = &add<ExtentedDateInfo>( Rect( Point(), size() ), hash );
   }
   else
   {
@@ -750,11 +920,10 @@ void ExtentMenu::setAlarmEnabled( bool enabled )
 {
   if( enabled )
   {
-    auto event = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
-    event->dispatch();
+    events::dispatch<PlaySound>( "extm_alarm", 1, 100, audio::effects );
   }
 
-  _d->disasterButton->setEnabled( enabled );
+  _d->model->actions[ Link::disaster ].setEnabled( enabled );
 }
 
 Rect ExtentMenu::getMinimapRect() const
@@ -766,11 +935,8 @@ Rect ExtentMenu::getMinimapRect() const
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
-Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
-Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
-Signal0<>& ExtentMenu::onUndo() { return _d->cancelButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 }//end namespace gui

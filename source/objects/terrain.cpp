@@ -21,8 +21,9 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "core/foreach.hpp"
+#include "coast.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -42,7 +43,25 @@ bool Terrain::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
   tile().setPicture( picture() );
+  tile().setImgId( imgid::fromResource( picture().name() ) );
+  tile().setOverlay( nullptr );
+  tile().setAnimation( Animation() );
   deleteLater();
+
+  TilesArray tiles = _map().getNeighbors(pos(), Tilemap::AllNeighbors);
+  for( auto tile : tiles )
+  {
+    bool isWater = tile->getFlag( Tile::tlWater );
+    isWater |= tile->getFlag( Tile::tlDeepWater );
+    //bool isCoast = tile->getFlag( Tile::tlCoast );
+    if( isWater /* && !isCoast */ )
+    {
+      tile->setPicture( Picture::getInvalid() );
+      OverlayPtr ov = Overlay::create( object::coast );
+      city::AreaInfo binfo( info.city, tile->epos() );
+      ov->build( binfo );
+    }
+  }
 
   return true;
 }
@@ -50,15 +69,11 @@ bool Terrain::build( const city::AreaInfo& info )
 void Terrain::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlWater, true );
 }
 
 Picture Terrain::computePicture()
 {
-  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-  int imgId = math::random( 58-1 );
-
-  return Picture( ResourceGroup::land1a, startOffset + imgId );
+  return randomPicture();
 }
 
 bool Terrain::isWalkable() const{ return true;}
@@ -66,6 +81,14 @@ bool Terrain::isFlat() const { return true;}
 void Terrain::destroy() {}
 bool Terrain::isDestructible() const { return false;}
 Renderer::PassQueue Terrain::passQueue() const {  return riftPassQueue; }
+
+Picture Terrain::randomPicture()
+{
+  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+  int imgId = math::random( 58-1 );
+
+  return Picture( config::rc.land1a, startOffset + imgId );
+}
 
 void Terrain::updatePicture()
 {

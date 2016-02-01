@@ -35,19 +35,17 @@
     cities :
     {
       Brundisium : {
-        location : [ 940, 560 ]
-        romecity : true
+        nation : "roman"
         sea : true
         land : true
         available : true
       }
 
       "Leptis Magna" : {
-        location : [ 820, 920 ]
+        nation : "greek"
 
         sea : true
         land : true
-        distant : true
         available : true
 
         resources : [ "wheat", "vegetable", "olive", "fish",
@@ -55,7 +53,7 @@
       }
 
       Capua : {
-        location : [ 820, 560 ]
+        nation : "roman"
 
         sea : true
         land : true

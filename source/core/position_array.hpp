@@ -29,6 +29,11 @@ public:
     return ret;
   }
 
+  void move( const Point& offset )
+  {
+    for( auto&& p : *this ) p += offset;
+  }
+
   PointsArray& operator<<(const Point& point)
   {
     push_back( point );

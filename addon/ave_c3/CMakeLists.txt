@@ -6,7 +6,7 @@ SET (LIB_TYPE SHARED)
 set(BASE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 
-add_definitions(-DCAESARIA_ADDON_DEFINED)
+add_definitions(-DGAME_ADDON_DEFINED)
 
 aux_source_directory(. SOURCES_LIST)
 file(GLOB HEADERS_LIST "*.hpp")
