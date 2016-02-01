@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 480, 480 ]
+  geometry : [ 0, 0, 480, 540 ]
   bgtype : "whiteFrame"
 
   lbTitle#Label :
@@ -72,6 +72,8 @@
       btnClaypitCollapse#OptionButton:{base:"city_claypit_collapse",states:{off:0,on:1 }, link : [ "city", "claypitMayCollapse" ] }
       btnMinesCollapse#OptionButton:{base:"city_mines_collapse",states:{off:0,on:1 }, link : [ "city", "minesMayCollapse" ] }
       btnDrawSvkBorder#OptionButton:{base:"draw_svk_border",states:{off:0,on:1 }, link : [ "city", "svkBorderEnabled" ] }
+      btnFarmUseMeadow#OptionButton:{base:"city_farm_use_meadow",states:{off:0,on:1 }, link : [ "city", "farmUseMeadows" ] }
+
 
 
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
