@@ -24,6 +24,7 @@
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/climate.hpp"
 
 namespace gfx
 {
@@ -42,6 +43,9 @@ public:
 
   Tile& at( const int i, const int j );
   Tile& at( const TilePos& ij );
+
+  void setClimate( ClimateType climate);
+  ClimateType climate() const;
 
   OverlayPtr overlay( const TilePos& ij );
   template<class T>

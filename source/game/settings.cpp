@@ -334,7 +334,7 @@ void Settings::checkC3present()
                                               {houseModel,        "house"},
                                               {constructionModel, "construction"},
                                               {citiesModel,       "cities"},
-                                              {climateModel,      "climateModel"},
+                                              {climateModel,      "climate"},
                                               {walkerModel,       "walker"},
                                               {animationsModel,   "animations"},
                                               {empireObjectsModel,"empire_objects"},

@@ -49,7 +49,7 @@ public:
     coast_east = bordermaps.get( "coast_east" ).toMap();
   }
 
-  Tile* addTile(const TilePos& pos, const Tilemap& tmap, int size, bool addGround);
+  Tile* addTile(const TilePos& pos, const Tilemap& tmap, int size, bool addGround, bool desert);
 
   VariantMap bordermaps;
   VariantMap coast_west;
@@ -88,6 +88,7 @@ public:
 
   typedef std::map<Tile*, TurnInfo> MasterTiles;
   TilesArray mapBorder;
+  ClimateType climate;
 
   struct {
     std::map<int,Tile*> tiles;
@@ -173,6 +174,8 @@ TilePos Tilemap::p2tp(const Point &pos)
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
 Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
+void Tilemap::setClimate(ClimateType climate) { _d->climate = climate; }
+ClimateType Tilemap::climate() const { return _d->climate; }
 OverlayPtr Tilemap::overlay(const TilePos& ij) { return _d->at( ij ).overlay(); }
 const Tile& Tilemap::at( const TilePos& ij) const {  return this->at( ij.i(), ij.j() ); }
 
@@ -225,7 +228,9 @@ Tile* Tilemap::svk_at(int i, int j) const
   }
   else
   {
-    Tile* tl = svk.addTile( tpos, *this, _d->size, _d->svk.addGround );
+    Tile* tl = svk.addTile( tpos, *this, _d->size,
+                            _d->svk.addGround,
+                            _d->climate == game::climate::desert );
     _d->svk.tiles[ tpos.hash() ] = tl;
     return tl;
   }
@@ -692,7 +697,8 @@ void Tilemap::Impl::checkCoastAfterTurn()
   }
 }
 
-Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int size, bool addGround)
+Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int size,
+                               bool addGround, bool desert)
 {
   Picture pic;
   int i = tpos.i();
@@ -798,12 +804,17 @@ Tile* SvkBorderConfig::addTile(const TilePos& tpos, const Tilemap& tmap, int siz
       Picture ground( "land1a", math::clamp( 62+math::random(56), 62, 118 ) );
       tl->setPicture( ground );
 
-      Animation animation;
-      animation.addFrame( pic );
-      tl->setAnimation( animation );
+      if( !desert )
+      {
+        Animation animation;
+        animation.addFrame( pic );
+        tl->setAnimation( animation );
+      }
     }
     else
+    {
       tl->setPicture( pic );
+    }
   }
   else
   {

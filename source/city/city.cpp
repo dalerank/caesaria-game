@@ -519,7 +519,7 @@ city::trade::Options& PlayerCity::tradeOptions()            { return _d->tradeOp
 void PlayerCity::delayTrade(unsigned int month)             {  }
 const good::Store& PlayerCity::sells() const                { return _d->tradeOptions.sells(); }
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
-ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
+ClimateType PlayerCity::climate() const                     { return _d->tilemap.climate(); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::trSea | world::EmpireMap::trLand; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
@@ -545,10 +545,13 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ cutForest2timber ] = !value;
     _d->options[ ironInRocks      ] = !value;
   }
-
-  if( opt == svkBorderEnabled )
+  else if( opt == svkBorderEnabled )
   {
     _d->tilemap.setSvkBorderEnabled( value );
+  }
+  else if( opt == climateType )
+  {
+    _d->tilemap.setClimate( (ClimateType)value );
   }
 }
 
