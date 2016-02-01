@@ -206,7 +206,7 @@ void UserStats::clearAchievement( Achievement &achievement )
 
   // mark it down
 #ifdef  GAME_PLATFORM_WIN
-  //sth_clearAchievement( achievement.uniqueName );
+  sth_clearAchievement( achievement.steamName );
 #else
   if( xclient.stats )
   {
@@ -797,6 +797,17 @@ std::string ld_prefix()
             : "";
 }
 
+void resetPrefs()
+{
+  glbUserStats.stats[ stat_num_wins ].count = 0;
+  glbUserStats.stats[ stat_num_games ].count = 0;
+  glbUserStats.stats[ stat_num_lose ].count = 0;
+  glbUserStats.clearAchievement( glbAchievements[achievementNewVillage] );
+  glbUserStats.clearAchievement( glbAchievements[achievementFirstWin] );
+  glbUserStats.clearAchievement( glbAchievements[achievementClerkEscape] );
+  glbUserStats.storeStatsIfNecessary();
+}
+
 #else
 
 bool available() { return false; }
@@ -805,6 +816,7 @@ bool connect() { return true; }
 void missionWin( const std::string& name ) {}
 void missionLose( const std::string& name ) {}
 void close() {}
+void resetPrefs() {}
 bool isAchievementReached(steamapi::AchievementType) { return true; }
 gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
 void init() {}

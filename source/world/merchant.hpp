@@ -37,6 +37,7 @@ public:
   virtual ~Merchant();
 
   virtual void timeStep( unsigned int time );
+  virtual std::string about(AboutType type);
 
   std::string baseCity() const;
   std::string destinationCity() const;

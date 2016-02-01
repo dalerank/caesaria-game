@@ -34,6 +34,7 @@ public:
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
   virtual std::string type() const;
+  virtual std::string about(AboutType type);
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
   virtual void setStrength( int value );

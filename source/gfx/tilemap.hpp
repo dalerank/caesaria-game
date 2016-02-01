@@ -32,7 +32,7 @@ namespace gfx
 class Tilemap : public Serializable
 {
 public:  
-  static const bool checkCorners = true;
+  typedef enum { fSvkGround=0x1 } Flag;
 
   Tilemap();
   virtual ~Tilemap();
@@ -66,6 +66,7 @@ public:
 
   enum TileNeighbors
   {
+    CheckCorners=1,
     FourNeighbors,
     //Corners,
     AllNeighbors
@@ -87,6 +88,8 @@ public:
 
   void turnRight();
   void turnLeft();
+
+  void setFlag(Flag flag, bool enabled);
 
   Direction direction() const;
 

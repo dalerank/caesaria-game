@@ -188,21 +188,21 @@
           files : [ "europe02_*" ]
         }       
 
-		sprites :
+        sprites :
         {
           type : "atlas"
           folder : "/resources/sprites"
           files : [ "sprites_*" ]
         }     
 
-		sprites_stub :
+        sprites_stub :
         {
           type : "file"
           folder : "/resources/sprites_stub"
           files : [ "*" ]
         }   
 
-		gui_stub :
+        gui_stub :
         {
           type : "file"
           folder : "/resources/gui_stub"
@@ -211,7 +211,7 @@
 					"mapback_00001.png" ]
         }   
 
-		taxcolumn :
+        taxcolumn :
         {
           type : "atlas"
           folder : "/resources/sprites"

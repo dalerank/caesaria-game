@@ -25,7 +25,7 @@
 class Propagator;
 
 /** This walker goes to work */
-class TraineeWalker : public Human
+class TraineeWalker : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

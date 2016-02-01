@@ -63,6 +63,7 @@ std::string Barbarian::about(Object::AboutType type)
   switch(type)
   {
   case aboutEmpireMap: ret = "##enemy_army_threating_a_city##";      break;
+  case aboutEmtype: ret = "world_barbarian"; break;
   default:        ret = "##enemy_army_unknown_about##";  break;
   }
 
@@ -235,8 +236,6 @@ Barbarian::Barbarian( EmpirePtr empire )
   _d->mode = Impl::findAny;
   _d->minPop4attack = 1000;
   setSpeed( 4.f );
-
-  _animation().load( "world_barbarian" );
 }
 
 }//end namespace world

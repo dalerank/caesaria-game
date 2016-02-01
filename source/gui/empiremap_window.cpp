@@ -16,54 +16,43 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "empiremap_window.hpp"
-#include "gfx/picturesarray.hpp"
-#include "core/event.hpp"
-#include "gfx/engine.hpp"
-#include "texturedbutton.hpp"
-#include "objects/dock.hpp"
-#include "core/color_list.hpp"
-#include "world/empire.hpp"
-#include "world/computer_city.hpp"
-#include "city/statistic.hpp"
-#include "gfx/decorator.hpp"
-#include "core/line.hpp"
-#include "label.hpp"
-#include "core/utils.hpp"
-#include "world/empiremap.hpp"
-#include "core/gettext.hpp"
-#include "dialogbox.hpp"
-#include "good/store.hpp"
-#include "world/trading.hpp"
-#include "game/funds.hpp"
-#include "good/helper.hpp"
-#include "game/settings.hpp"
-#include "events/showinfobox.hpp"
-#include "core/logger.hpp"
-#include "world/merchant.hpp"
-#include "core/foreach.hpp"
-#include "world/object.hpp"
-#include "events/fundissue.hpp"
-#include "events/showadvisorwindow.hpp"
-#include "widgetescapecloser.hpp"
-#include "gameautopause.hpp"
-#include "gui/environment.hpp"
-#include "widget_helper.hpp"
-#include "world/movableobject.hpp"
-#include "world/barbarian.hpp"
-#include "core/flagholder.hpp"
-#include "world/playerarmy.hpp"
-#include "dictionary.hpp"
-#include "core/spring.hpp"
-#include "core/metric.hpp"
-#include "core/saveadapter.hpp"
-#include "game/resourcegroup.hpp"
-#include "city/states.hpp"
-#include "gfx/maskstate.hpp"
+#include <GameWorld>
+#include <GameDictionary>
+#include <GameGfx>
+#include <GameEvents>
+#include <GameCity>
+#include <GameApp>
+#include <GameCore>
+#include <GameLogger>
+#include <GameGui>
+#include <GameGood>
+#include <GameDialogs>
+#include <GameObjects>
+#include <GameVfs>
 
 using namespace gfx;
 using namespace metric;
 using namespace events;
 using namespace gui::dialog;
+
+namespace internal
+{
+
+void drawLines(Engine &painter, const Lines& lines)
+{
+  for( auto line : lines )
+    painter.drawLine( line.color, line.begin, line.end );
+}
+
+void addCell( Lines& lines, NColor color, const Point& start, int side )
+{
+  lines.add( color, start, start + Point( side, 0 ) );
+  lines.add( color, start + Point( side, 0 ), start + Point( side, side ) );
+  lines.add( color, start + Point( side, side ), start + Point( 0, side ) );
+  lines.add( color, start + Point( 0, side ), start );
+}
+
+}
 
 namespace gui
 {
@@ -74,6 +63,116 @@ struct Dragging
   bool active;
   Point start;
   Point last;
+};
+
+class EmpireMapObjectView
+{
+public:
+  enum { idxPicture=0, idxAnimation=1 };
+
+  world::ObjectPtr object;
+  bool movable;
+  gfx::Animation animation;
+  gfx::Pictures  pictures;
+
+  EmpireMapObjectView( world::ObjectPtr ptr, const VariantMap& options )
+  {
+    object = ptr;
+    movable = object.is<world::MovableObject>();
+
+    std::string emType = object->about( world::Object::aboutEmtype );
+
+    VariantMap objectOptions = options.get( emType ).toMap();
+    if( objectOptions.empty() )
+      objectOptions = options.get( "unknown" ).toMap();
+
+    if( !objectOptions.empty() )
+    {
+      VariantList vPictures = objectOptions.get( "pictures" ).toList();
+      for( const auto& item : vPictures )
+      {
+        VariantList picName = item.toList();
+        pictures.append( picName.get( 0 ).toString(), picName.get( 1 ).toInt() );
+      }
+
+      VARIANT_LOAD_CLASS( animation, objectOptions )
+    }
+  }
+
+  void draw( gfx::Engine& painter, const Point& offset, int time )
+  {
+    animation.update( time );
+
+    DrawState pipe( painter, offset + object->location(), nullptr );
+    pipe.draw( pictures )
+        .draw( animation.currentFrame() );
+
+    if( movable )
+    {
+      world::MovableObjectPtr mobject = object.as<world::MovableObject>();
+
+      Point mappos = mobject->location();
+
+#ifdef DEBUG
+      Lines lines;
+
+      internal::addCell( lines, ColorList::red, offset + object->location(), 20 );
+
+      int distance = mobject->searchRange();
+      if( distance > 0 )
+      {
+        Point lastPos = Point::polar( distance, 0 );
+        for( int i=1; i <= 16; i++ )
+        {
+          Point curPos = Point::polar( distance, math::DEGTORAD * (math::DEGREE360 * i / 16) );
+
+          lines.add( ColorList::blue, offset + mappos + lastPos, offset + mappos + curPos );
+          lastPos = curPos;
+        }
+      }
+
+      const world::Route& way = mobject->way();
+      if( !way.empty() )
+      {
+        Point lastPos = way[ way.step ];
+        for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
+        {
+          lines.add( ColorList::aliceBlue, offset + lastPos, offset + way[ k ] );
+          lastPos = way[ k ];
+        }
+      }
+      internal::drawLines( painter, lines );
+#endif
+    }
+  }
+};
+
+class EmpireMapObjects : public std::vector<EmpireMapObjectView>
+{
+public:
+  VariantMap options;
+
+  void loadConfig( vfs::Path path )
+  {
+    options = config::load( path );
+  }
+
+  void init( world::EmpirePtr empire )
+  {
+    auto objects = empire->objects()
+                          .exclude<world::MovableObject>()
+                          .exclude<world::City>();
+    for( auto obj : objects )
+      emplace_back( obj, options );
+
+    auto mobjects = empire->objects().select<world::MovableObject>();
+    for( auto obj : mobjects )
+      emplace_back( obj.as<world::Object>(), options );
+
+    auto cities = empire->objects().select<world::City>();
+    for( auto obj : cities )
+      emplace_back( obj.as<world::Object>(), options );
+  }
 };
 
 class EmpireMapWindow::Impl
@@ -92,14 +191,20 @@ public:
   } city;
 
   bool editorMode;
+  EmpireMapObjects objects;
   Dragging drag;
   Picture empireMap;
   Point offset;
   Label* tooltipLabel;
-  Lines lines;
   Widget* gbox;
+  int time;
   math::SpringI highlight;
   unsigned int bottonMargin;
+
+#ifdef DEBUG
+  vfs::FileChangeObserver mapObserver;
+  vfs::FileChangeObserver guiObserver;
+#endif
 
   void checkCityOnMap( const Point& pos );
   void showOpenRouteRequestWindow();
@@ -109,14 +214,9 @@ public:
   void drawCityInfo();
   void resetInfoPanel();
   void updateCityInfo();
-  void drawCities( Engine& painter );
-  void drawStatic( Engine& painter );
   void drawTradeRoutes( Engine& painter );
-  void drawMovable( Engine& painter );
   void initBorder(Widget* p);
-  void drawLines( Engine& painter );
   void drawDebugTiles( Engine& painter );
-  void drawCell(Engine& e, Point start, int side , NColor color);
   world::ObjectPtr findObject( Point pos );
 
   Signal1<const std::string&> setTitleText;
@@ -174,46 +274,11 @@ void EmpireMapWindow::Impl::updateCityInfo()
   }
 }
 
-void EmpireMapWindow::Impl::drawCities(Engine& painter)
-{
-  world::CityList cities = city.base->empire()->cities();
-  Point location;
-  Picture pic;
-
-  highlight.update();
-  NColor hlColor = NColor::ashade( 0xff, highlight.value() );
-  painter.resetColorMask();
-
-  for( auto pcity : cities )
-  {
-    MaskState mask( painter, pcity == city.current
-                                ? hlColor
-                                : ColorList::clear );
-    location = pcity->location();
-    pic = pcity->picture();
-    painter.draw( pcity->pictures(), offset + location - Point( pic.width(), pic.height() ) / 2 );
-
-#ifdef DEBUG
-    drawCell( painter, offset + location - Point( 10, 10 ), 20, ColorList::red );
-#endif
-  }
-}
-
-void EmpireMapWindow::Impl::drawStatic(Engine& painter)
-{
-  for( auto obj : city.base->empire()->objects() )
-  {
-    if( !obj->isMovable() )
-    {
-      painter.draw( obj->pictures(), offset + obj->location() );
-    }
-  }
-}
-
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city.base->empire()->troutes().all();
   NColor hlColor = NColor::ashade( 0xff, highlight.value() );
+  Lines lines;
   for( auto route : routes )
   {
     const PointsArray& points = route->points();
@@ -225,7 +290,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
       Point pos1 = offset + points[ index-1 ];
       Point pos2 = offset + points[ index ];
       lines.add( ColorList::blue, pos1, pos2 );
-      drawCell( painter, pos1, 20, ColorList::green );
+      internal::addCell( lines, ColorList::green, pos1, 20);
     }
 #endif
 
@@ -236,64 +301,20 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
       Point pos = offset + points[ index ] + Point( 0, 10 );
       painter.draw( pictures[ index ], pos );
     }
-
-    world::MerchantList merchants = route->merchants();
-    for( auto merchant : merchants )
-    {
-      painter.draw( merchant->picture(), offset + merchant->location() );
-    }
   }
-}
 
-void EmpireMapWindow::Impl::drawMovable(Engine& painter)
-{
-  for( auto obj : city.base->empire()->objects() )
-  {
-    if( obj->isMovable() )
-    {
-      auto movableObject = obj.as<world::MovableObject>();
-      if( !movableObject.isValid() )
-      {
-        Logger::warning( "Object {} not movable", obj->name() );
-        continue;
-      }
-
-      Point mappos = movableObject->location();
-      painter.draw( movableObject->pictures(), offset + movableObject->location() );
-
-#ifdef DEBUG
-      int distance = movableObject->searchRange();
-      if( distance > 0 )
-      {
-        Point lastPos = Point::polar( distance, 0 );
-        for( int i=1; i <= 16; i++ )
-        {
-          Point curPos = Point::polar( distance, math::DEGTORAD * (math::DEGREE360 * i / 16) );
-
-          lines.add( ColorList::blue, offset + mappos + lastPos, offset + mappos + curPos );
-          lastPos = curPos;
-        }
-      }
-
-      const world::Route& way = movableObject->way();
-      if( !way.empty() )
-      {
-        Point lastPos = way[ way.step ];
-        for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
-        {
-          lines.add( ColorList::aliceBlue, offset + lastPos, offset + way[ k ] );
-          lastPos = way[ k ];
-        }
-      }
-#endif
-    }
-  }
+  internal::drawLines( painter, lines );
 }
 
 void EmpireMapWindow::_showTradeAdvisor()
 {
   events::dispatch<ShowAdvisorWindow>( true, advisor::trading );
   deleteLater();
+}
+
+void EmpireMapWindow::_reloadConfig()
+{
+
 }
 
 void EmpireMapWindow::Impl::initBorder( Widget* p )
@@ -353,12 +374,6 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
     border.nobatch = pics;
 }
 
-void EmpireMapWindow::Impl::drawLines(Engine &painter)
-{
-  for( auto line : lines )
-    painter.drawLine( line.color, line.begin, line.end );
-}
-
 void EmpireMapWindow::Impl::drawDebugTiles(Engine& painter)
 {
   if( !KILLSWITCH( showEmpireMapTiles ) )
@@ -390,16 +405,6 @@ void EmpireMapWindow::Impl::drawDebugTiles(Engine& painter)
       if( screenRect.isRectCollided( area + offset ) )
         painter.fillRect( terrainColor[type], area + offset );
     }
-}
-
-void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor color)
-{
-#ifdef DEBUG
-  lines.add( color, start, start + Point( side, 0 ) );
-  lines.add( color, start + Point( side, 0 ), start + Point( side, side ) );
-  lines.add( color, start + Point( side, side ), start + Point( 0, side ) );
-  lines.add( color, start + Point( 0, side ), start );
-#endif
 }
 
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
@@ -562,6 +567,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->city.base = city;
   _d->editorMode = false;
   _d->tooltipLabel = 0;
+  _d->time = 0;
   _d->highlight.setCondition( 100, 254, 4 );
   _d->empireMap.load( "the_empire", 1 );
   _d->drag.active = false;
@@ -584,6 +590,11 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
     _d->setTitleText.connect( lbTitle, &Label::setText );
 
   setFlag( showCityInfo, true );
+
+#ifdef DEBUG
+   _d->mapObserver.watch( ":/empire_animation.model" );
+   _d->mapObserver.onFileChangeSignal.connect( this, &EmpireMapWindow::_reloadConfig );
+#endif
 }
 
 void EmpireMapWindow::draw(gfx::Engine& engine )
@@ -593,14 +604,21 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
   engine.draw( _d->empireMap, _d->offset );
 
-  //draw static objects
-  _d->drawStatic( engine );
-  _d->drawTradeRoutes( engine );
-  _d->drawCities( engine );
+  _d->time++;
+  _d->highlight.update();
+  NColor hlColor = NColor::ashade( 0xff, _d->highlight.value() );
+  engine.resetColorMask();
 
-  //draw movable objects
-  _d->drawMovable( engine );
-  _d->drawLines( engine );
+  for( auto& obj : _d->objects )
+  {
+    MaskState mask( engine, obj.object == _d->city.current.object()
+                                ? hlColor
+                                : ColorList::clear );
+
+    obj.draw( engine, _d->offset, _d->time );
+  }
+
+  _d->drawTradeRoutes( engine );
 
   _d->border.batch.valid()
     ? engine.draw( _d->border.batch, &absoluteClippingRectRef() )
@@ -613,7 +631,6 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
 void EmpireMapWindow::beforeDraw(Engine& painter)
 {
-  _d->lines.clear();
   Widget::beforeDraw( painter );
 }
 

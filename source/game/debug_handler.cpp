@@ -72,6 +72,7 @@
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
 #include "city/build_options.hpp"
+#include "steam.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -95,7 +96,8 @@ enum {
   options,
   house,
   draw,
-  empire
+  empire,
+  steam
 };
 
 enum {
@@ -210,7 +212,8 @@ enum {
   fill_random_claypit,
   empire_toggle_capua,
   empire_toggle_londinium,
-  next_theme
+  next_theme,
+  reset_steam_prefs
 };
 
 class DebugHandler::Impl
@@ -378,6 +381,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 
   ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
+
+  ADD_DEBUG_EVENT( steam, reset_steam_prefs )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -628,6 +633,13 @@ void DebugHandler::Impl::handleEvent(int event)
     events::dispatch<WarningMessage>( "DEBUG: House max level is " + levelName,
                                       events::WarningMessage::neitral );
   }
+  break;
+
+  case reset_steam_prefs:
+    if( steamapi::available() )
+    {
+      steamapi::resetPrefs();
+    }
   break;
 
   case increase_house_level:

@@ -11,6 +11,7 @@ include_directories(
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
   ${STEAM_API_DIR}/public/opensteam
+  include
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")

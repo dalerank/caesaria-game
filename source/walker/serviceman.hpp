@@ -95,7 +95,7 @@ public:
   }
 };
 
-class ServiceWalker : public Human
+class ServiceWalker : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

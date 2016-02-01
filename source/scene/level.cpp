@@ -320,6 +320,7 @@ void Level::initialize()
 
   //connect elements
 
+  city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
   CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
@@ -363,13 +364,11 @@ void Level::initialize()
   _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
-  _d->dhandler.setVisible( false );
+  _d->dhandler.setVisible( KILLSWITCH(debugMenu) );
 
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  if( KILLSWITCH(debugMenu) )
-    _d->dhandler.setVisible( true );
 
   if( !OSystem::isAndroid() )
   {

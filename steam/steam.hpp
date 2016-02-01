@@ -45,6 +45,7 @@ void init();
 void evaluateAchievement( AchievementType achivId );
 void missionWin(const std::string& name);
 void missionLose(const std::string& name);
+void resetPrefs();
 bool isAchievementReached( AchievementType achivId );
 bool isStatsReceived();
 gfx::Picture achievementImage( AchievementType achivId );

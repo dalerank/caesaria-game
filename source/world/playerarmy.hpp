@@ -61,6 +61,6 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace world
 
 #endif //__CAESARIA_WORLD_PLAYERARMY_H_INCLUDED__

@@ -6,6 +6,7 @@
     
     sells : { vegetable : 40, marble : 40 }
     buys : { wine : 25, oil : 15, pottery : 25 }    
+    nation : "gaul"
     
     resources : [ "wheat", "vegetable", "fish", "iron", "timber", "marble" ] 
   }
@@ -14,6 +15,7 @@
     location : [ 1020, 810 ]
     sea : false
     land : false
+    nation : "roman"
   }
   
   Corinthus : {
@@ -30,6 +32,7 @@
     
     sea : true
     land : true
+    nation : "gaul"
     
     resources : [ "wheat", "vegetable", "wine", "fish",
                   "timber", "clay", "marble" ] 
@@ -43,18 +46,20 @@
     
     sea : true
     land : true
+    nation : "roman"
     
     resources : [ "wheat", "pigs", "timber", "clay" ]
     
     sells : { olive : 40, clay : 40, wine : 40 }
     buys : { vegetable : 40, oil : 25, pottery : 25 }     
-	}
+  }
 	
-	Lindum : { 
+  Lindum : {
     location : [ 810, 290 ]
     
     sea : true
     land : true
+    nation : "roman"
     
     sells : { wheat : 40, clay : 40 }
     buys : { wine : 25, oil : 40, furniture : 40 } 
@@ -68,6 +73,8 @@
     
 		sea : true
 		land : true
+
+    nation : "roman"
 		
 		resources : [ "wheat", "vegetable", "fish",
 		              "timber", "clay", "iron" ]
@@ -91,6 +98,8 @@
     
     sea : true
     land : true
+
+    nation : "roman"
     
     resources : [ "wheat", "fruit", "olive", "wine", "fish",
                   "timber", "clay", "marble" ]
@@ -174,6 +183,8 @@
     
     sea : true
     land : true
+
+    nation : "roman"
     
     resources : [ "wheat", "iron", "fish", "timber", "marble" ]
 	}
@@ -232,6 +243,8 @@
     
     sea : true
     land : true
+
+    nation : "greek"
 	}
 	
 	Brundisium : {
@@ -239,6 +252,8 @@
     
     sea : true
     land : true
+
+    nation : "roman"
 	}
   
   Damascus : {
@@ -256,6 +271,8 @@
     
     sea : true
     land : true
+
+    nation : "roman"
     
     sells : { fruit : 25, iron : 25 }
     buys : { oil : 25, furniture : 25 }
@@ -273,6 +290,8 @@
     
     land : true
     sea : true
+
+    nation : "roman"
     
 		sells : {	fruit : 25, olive : 25, timber : 25 }	
 		buys : { pottery : 25, vegetable : 25, wheat : 40 }

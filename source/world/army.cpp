@@ -51,7 +51,6 @@ Army::Army( EmpirePtr empire )
 {
   __D_REF(d,Army)
 
-  _animation().load( "world_army" );
   d.strength = 0;
 }
 
@@ -118,6 +117,16 @@ void Army::load(const VariantMap& stream)
 }
 
 std::string Army::type() const { return TEXT(Army); }
+
+std::string Army::about(Object::AboutType type)
+{
+  switch( type )
+  {
+  case aboutEmtype: return "world_army";
+  }
+
+  return "";
+}
 
 void Army::setBase(CityPtr base) { _dfunc()->base = utils::objNameOrDefault( base ); }
 

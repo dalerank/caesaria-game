@@ -1,0 +1,7 @@
+#include "gui/widget_helper.hpp"
+#include "gui/label.hpp"
+#include "gui/gameautopause.hpp"
+#include "gui/texturedbutton.hpp"
+#include "gui/widget.hpp"
+#include "gui/environment.hpp"
+#include "gui/widgetescapecloser.hpp"

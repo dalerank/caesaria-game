@@ -1,0 +1,13 @@
+#include "core/signals.hpp"
+#include "core/saveadapter.hpp"
+#include "core/spring.hpp"
+#include "core/metric.hpp"
+#include "core/flagholder.hpp"
+#include "core/color_list.hpp"
+#include "core/line.hpp"
+#include "core/foreach.hpp"
+#include "core/event.hpp"
+#include "core/time.hpp"
+#include "core/utils.hpp"
+#include "core/gettext.hpp"
+
