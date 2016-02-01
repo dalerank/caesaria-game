@@ -133,8 +133,11 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
 
   _d->lastProgress = 0;
   _d->meadowsCoverage = 1.f;
-  _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
-              << TilePos( 2, 1) << TilePos( 1, 0) << TilePos( 2, 0);
+  _d->sublocs.append(0, 0)
+             .append(2, 2)
+             .append(2, 1)
+             .append(1, 0)
+             .append(2, 0);
 
   Picture mainPic = _getMainPicture();
   mainPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
@@ -336,7 +339,7 @@ TilesArray Farm::meadows() const
 TilesArray Farm::area() const
 {
   TilesArray ret;
-  ret.append( area() );
+  ret.append( Factory::area() );
   for( const auto& st : _d->sublocs )
     ret.append( &_map().at( st ) );
 
