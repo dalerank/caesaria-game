@@ -365,7 +365,7 @@ void Tilemap::save( VariantMap& stream ) const
   std::vector<short> idInfo;
 
   const TilesArray& tiles = allTiles();
-  for( auto tile : tiles )
+  for( const auto& tile : tiles )
   {
     bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );

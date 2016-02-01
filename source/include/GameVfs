@@ -1,2 +1,6 @@
 #include "vfs/path.hpp"
+#include "vfs/filesystem.hpp"
+#include "vfs/directory.hpp"
+#include "vfs/archive_sg2.hpp"
+#include "vfs/archive_zip.hpp"
 #include "vfs/filechangeovserver.hpp"

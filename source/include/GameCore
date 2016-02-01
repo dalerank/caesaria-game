@@ -8,6 +8,7 @@
 #include "core/flowlist.hpp"
 #include "core/requirements.hpp"
 #include "core/osystem.hpp"
+#include "core/locale.hpp"
 #include "core/foreach.hpp"
 #include "core/event.hpp"
 #include "core/time.hpp"

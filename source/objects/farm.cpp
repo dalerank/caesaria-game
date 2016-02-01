@@ -157,13 +157,9 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
 bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool on_meadow = false;
 
   TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
-  for( auto tile : area )
-  {
-    on_meadow |= tile->getFlag( Tile::tlMeadow );
-  }
+  bool on_meadow = area.count( Tile::tlMeadow ) > 0;
 
   Farm* non_const_this = const_cast< Farm* >( this );
   non_const_this->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
