@@ -184,6 +184,7 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
+  void changeShowNotification(bool value);
   void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
@@ -369,11 +370,11 @@ void Level::initialize()
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-
   if( !OSystem::isAndroid() )
   {
     gui::Ui& ui = *_d->game->gui();
-    dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
+    auto& dlg = dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished.", true );
+    dlg.onNever().connect( _d.data(), &Impl::changeShowNotification );
   }
 
   if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
@@ -427,6 +428,11 @@ void Level::Impl::showSoundOptionsWindow()
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
+
+void Level::Impl::changeShowNotification(bool value)
+{
+  SETTINGS_SET_VALUE(showStartAware, value);
+}
 
 void Level::Impl::showMessagesWindow()
 {
@@ -731,10 +737,10 @@ void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  auto dialog = dialog::Confirmation( _d->game->gui(),
+  auto& dialog = dialog::Confirmation( _d->game->gui(),
                                       "", _("##exit_without_saving_question##"),
                                       dialog::Dialog::pauseGame );
-  CONNECT( dialog, onOk(), this, Level::_quit );
+  dialog.onOk().connect( this, &Level::_quit );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)

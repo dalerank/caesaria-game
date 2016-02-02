@@ -13,4 +13,12 @@
     textAlign : [ "center", "upperLeft" ]
     multiline : true
   }
+
+  btnActionNever#PushButton : {
+    geometry : [ 13, "100%-42", "13+26", "100%-16" ]
+    bgtype : "whiteBorderUp"
+    text : "X"
+    tooltip : "##show_this_message_again##"
+    font : "FONT_1"
+  }
 }

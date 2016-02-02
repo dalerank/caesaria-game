@@ -444,8 +444,8 @@ void Lobby::Impl::showAdvancedMaterials()
   vfs::Directory dir( ":/dlc" );
   if( !dir.exist() )
   {
-    auto infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
-    infoDialog->show();
+    auto& infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
+    infoDialog.show();
     showMainMenu();
     return;
   }

@@ -115,6 +115,7 @@ public:
   __GS_PROPERTY(showLastChanges)
   __GS_PROPERTY(lastChangesNumber)
   __GS_PROPERTY(citiesIdModel)
+  __GS_PROPERTY(showStartAware)
 #undef __GS_PROPERTY
 
   static Settings& instance();

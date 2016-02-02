@@ -47,29 +47,30 @@ signals public:
   Signal1<int>& onResult();
   Signal0<>& onOk();
   Signal0<>& onCancel();
-  Signal0<> &onNever();
+  Signal1<bool>& onNever();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-Dialog* Information(  Ui* ui,
+Dialog& Information(Ui* ui,
                       const std::string& title,
-                      const std::string& text );
+                      const std::string& text,
+                      bool showNever=false);
 
-Dialog* Confirmation( Ui* ui,
+Dialog& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
                       bool pauseGame = false);
 
-Dialog* Confirmation( Ui* ui,
+Dialog& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
                       Callback callback,
                       bool pauseGame = false);
 
-Dialog* Confirmation( Ui* ui,
+Dialog& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
                       Callback callbackOk,
