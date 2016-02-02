@@ -222,9 +222,9 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
     }
   }
 
-  for (int i = 0; i < map_size; ++i)
+  for (uint16_t i = 0; i < map_size; ++i)
   {
-    for (int j = 0; j < map_size; ++j)
+    for (uint16_t j = 0; j < map_size; ++j)
     {
       unsigned char ed = edgeData[ i ][ j ];
       if( ed == 0x00)

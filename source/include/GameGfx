@@ -7,3 +7,5 @@
 #include "gfx/picture_bank.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/drawstate.hpp"
+#include "gfx/animation.hpp"
+

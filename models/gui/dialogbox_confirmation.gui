@@ -1,0 +1,10 @@
+{  
+  btnAction#TexturedButton : {
+    geometry : [ "50%-20", "100%-50", "50%+19", "100%-24" ]
+    tooltip : "##close_this_window##"
+    normal : [ "paneling", 239 ]
+    hovered : [ "paneling", 240 ]
+    pressed : [ "paneling", 241 ]
+    disabled : [ "paneling", 242 ]
+  }
+}

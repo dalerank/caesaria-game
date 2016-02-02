@@ -236,6 +236,15 @@ Tile* Tilemap::svk_at(int i, int j) const
   }
 }
 
+TilesArray Tilemap::svkTiles() const
+{
+  TilesArray ret;
+  for( const auto& tile : _d->svk.tiles )
+    ret.push_back( tile.second );
+
+  return ret;
+}
+
 int Tilemap::size() const { return _d->size; }
 
 TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
@@ -248,6 +257,8 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
 
   case FourNeighbors:
     return rect(pos - offset, pos + offset, !CheckCorners);
+
+  default: break;
   }
 
   Logger::warning( "CRITICAL: Unexpected type {} in Tilemap::getNeighbors", type );

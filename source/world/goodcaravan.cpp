@@ -85,6 +85,7 @@ std::string GoodCaravan::about(Object::AboutType type)
   switch( type )
   {
   case aboutEmtype: return "world_goodcaravan";
+  defautt: break;
   }
 
   return "";

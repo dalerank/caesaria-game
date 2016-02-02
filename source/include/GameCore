@@ -12,6 +12,7 @@
 #include "core/foreach.hpp"
 #include "core/event.hpp"
 #include "core/time.hpp"
+#include "core/common.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
 #include "core/gettext.hpp"

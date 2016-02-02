@@ -23,6 +23,8 @@ class SizeF;
 class Size : Vector2<int>
 {
 public:
+  static const Size zero;
+
   Size( const int w, const int h ) : Vector2<int>( w, h ) {}
   Size() : Vector2<int>( 0, 0 ) {}
   explicit Size( const int s ) : Vector2<int>( s, s ) {}

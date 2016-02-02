@@ -231,7 +231,7 @@ bool Window::onEvent(const NEvent& event)
         {
             // send close event to parent
             // if the event was not absorbed
-            if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
+            if( !parent()->onEvent( NEvent::ev_gui( this, 0, guiElementClosed ) ) )
                 deleteLater();
             return true;
         }

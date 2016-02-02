@@ -184,7 +184,7 @@ bool Ui::setFocus( Widget* element )
   {
     currentFocus = _d->focusedElement;
 
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
+    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
     {
       return false;
     }
@@ -197,7 +197,7 @@ bool Ui::setFocus( Widget* element )
     currentFocus = _d->focusedElement;
 
     // send focused event
-    if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), guiElementFocused ) ))
+    if( element->onEvent( NEvent::ev_gui( element, _d->focusedElement.object(), guiElementFocused ) ))
     {
       currentFocus = WidgetPtr();
 
@@ -320,12 +320,12 @@ void Ui::_updateHovered( const Point& mousePos )
   {
     if( lastHovered.isValid() )
     {
-      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
+      lastHovered->onEvent( NEvent::ev_gui( lastHovered.object(), 0, guiElementLeft ) );
     }
 
     if( _d->hovered.current.isValid() )
     {
-      _d->hovered.current->onEvent( NEvent::Gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
+      _d->hovered.current->onEvent( NEvent::ev_gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
     }
   }
 
@@ -535,7 +535,7 @@ bool Ui::removeFocus( Widget* element)
 {
   if( _d->focusedElement.isValid() && _d->focusedElement == element )
   {
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
+    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
     {
       return false;
     }
@@ -591,8 +591,7 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   {
     if( hovered.isValid() )
     {
-      NEvent e;
-      hovered->onEvent( e );
+      hovered->onEvent( NEvent::ev_none() );
     }
 
     element = standart( rootWidget, hovered.object(), cursor );

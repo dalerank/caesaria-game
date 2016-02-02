@@ -479,7 +479,7 @@ bool PushButton::onEvent(const NEvent& event)
 void PushButton::_btnClicked()
 {
   __D_REF(d,PushButton)
-  parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, guiButtonClicked ) );
 
   emit d.signal.onClicked();
   emit d.signal.onClickedEx( this );

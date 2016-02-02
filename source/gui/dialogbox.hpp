@@ -39,9 +39,9 @@ public:
   Dialog( Ui* ui, const Rect& rectangle, const std::string& title,
              const std::string& text, int buttons, bool lockGame=false );
 
-  bool onEvent(const NEvent& event);
-
-  void draw( gfx::Engine& painter );
+  virtual bool onEvent(const NEvent& event);
+  virtual void setupUI(const VariantMap &ui);
+  virtual void draw( gfx::Engine& painter );
 
 signals public:  
   Signal1<int>& onResult();

@@ -16,15 +16,10 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
-#include "gfx/picture.hpp"
-#include "gfx/decorator.hpp"
-#include "gui/label.hpp"
-#include "texturedbutton.hpp"
-#include "core/event.hpp"
-#include "gfx/engine.hpp"
-#include "environment.hpp"
-#include "gameautopause.hpp"
-#include "core/logger.hpp"
+#include <GameGfx>
+#include <GameEvents>
+#include <GameLogger>
+#include <GameGui>
 
 using namespace gfx;
 
@@ -43,6 +38,8 @@ class Dialog::Impl
 {
 public:
   GameAutoPause locker;
+  Label* lbText;
+  Label* lbTitle;
 
   struct {
     Signal1<int> onResult;
@@ -56,14 +53,21 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
                       const std::string& text, int buttons, bool lockGame)
                       : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
-  Font font = Font::create( FONT_3 );
+  Window::setupUI( ":/gui/dialogbox.gui" );
 
   button( buttonClose )->hide();
   button( buttonMin )->hide();
   button( buttonMax )->hide();
 
+  GET_DWIDGET_FROM_UI( _d, lbText )
+  GET_DWIDGET_FROM_UI( _d, lbTitle )
+
+  Font font = _d->lbText
+                ? _d->lbText->font()
+                : Font::create( FONT_3 );
+
   int titleHeight = font.getTextSize( "A" ).height();
-  if( rectangle.size() == Size( 0, 0 ) )
+  if( rectangle.size() == Size::zero )
   {    
     Size size = font.getTextSize( text );
 
@@ -80,22 +84,26 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
     size += Size( 0, 30 ); //borders
 
     setGeometry( Rect( Point( 0, 0 ), size ) );
-    setCenter( parent()->center() );
+    moveTo( Widget::parentCenter );
   }
   
-  auto& lbTitle = add<Label>( Rect( 10, 10, width() - 10, 10 + titleHeight), title );
-  lbTitle.setFont( Font::create( FONT_5 ) );
-  lbTitle.setTextAlignment( align::center, align::center );
+  if( _d->lbText )
+    _d->lbText->setText( text );
 
-  auto& lbText = add<Label>( Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
-  lbText.setTextAlignment( align::center, align::upperLeft );
-  lbText.setWordwrap( true );
+  if( _d->lbTitle )
+    _d->lbTitle->setText( title );
+
 
   if( (buttons == btnOk) || (buttons == btnCancel) )
   {
-    add<TexturedButton>( Point( width() / 2 - 20, height() - 50),
-                         Size( 39, 26 ), buttons,
-                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
+    Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
+    INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
+    if( btnAction )
+    {
+      TexturedButton::States states( buttons == btnOk ? okBtnPicId : cancelBtnPicId );
+      btnAction->changeImageSet( states );
+      btnAction->setID( buttons );
+    }
   }
   else if( buttons & (btnOk | btnCancel) )
   {
@@ -164,6 +172,11 @@ bool Dialog::onEvent( const NEvent& event )
   }
 
   return Widget::onEvent( event );
+}
+
+void Dialog::setupUI(const VariantMap& ui)
+{
+  Window::setupUI( ui );
 }
 
 Signal0<>& Dialog::onOk() {  return _d->signal.onOk;}

@@ -575,6 +575,13 @@ void Widget::setupUI( const VariantMap& options )
                       ahelper.findType( textAlign.back().toString() ) );
   }
 
+  Variant vAlignBottom = options.get( "aling.bottom" );
+  if( vAlignBottom.isValid() )
+  {
+    auto bottomAlign = ahelper.findType( vAlignBottom.toString() );
+    setAlignment( _d.align.left, _d.align.right, _d.align.top, bottomAlign );
+  }
+
   Variant tmp;
   setID( (int)options.get( "id", _d.id ) );
   setText( _( options.get( "text" ).toString() ) );
