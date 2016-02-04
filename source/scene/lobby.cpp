@@ -18,12 +18,10 @@
 
 #include "lobby.hpp"
 
-#include "core/gettext.hpp"
-#include "gui/loadgamedialog.hpp"
-#include "gfx/engine.hpp"
-#include "core/exception.hpp"
-#include "gui/startmenu.hpp"
-#include "gui/environment.hpp"
+#include "game/scripting.hpp"
+#include <GameCore>
+#include <GameGui>
+#include <GameGfx>
 #include "game/game.hpp"
 #include "game/player.hpp"
 #include "gui/pushbutton.hpp"
@@ -309,7 +307,8 @@ void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::str
 
 void Lobby::Impl::startCareer()
 {
-  menu->clear();
+  game::Scripting::instance().doFile( ":/gui/winmission.js");
+  /*menu->clear();
 
   std::string playerName = SETTINGS_STR( playerName );
 
@@ -319,6 +318,7 @@ void Lobby::Impl::startCareer()
   CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
   CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
   CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
+  */
 }
 
 void Lobby::Impl::handleNewGame()

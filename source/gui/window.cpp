@@ -28,11 +28,14 @@
 #include "gfx/decorator.hpp"
 #include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Window)
 
 class WindowBackgroundHelper : public EnumsHelper<Window::BackgroundType>
 {
@@ -108,6 +111,12 @@ public:
 };
 
 //! constructor
+Window::Window(Widget* parent)
+  : Window( parent, Rect( 0, 0, 1, 1), "" )
+{
+
+}
+
 Window::Window( Widget* parent, const Rect& rectangle, const std::string& title, int id, BackgroundType type )
 	: Widget( parent, id, rectangle ),
 	  _d( new Impl )

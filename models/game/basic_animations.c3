@@ -83,5 +83,6 @@
   fire_small  : { type : 700, rc : "land2a", start : 224, frames : 8, delay : 1, step : 1, offset : [14, 18] }
   fire_middle : { type : 701, rc : "land2a", start : 215, frames : 8, delay : 1, step : 1, offset : [14, 26] }
   fire_big    : { type : 702, rc : "land2a", start : 188, frames : 8, delay : 1, step : 1, offset : [14, 26] }
+  river_wave :  {             rc : "sprites",start : 109, frames : 5,  delay : 4,  step : 1,                     loop : false }
 }
 

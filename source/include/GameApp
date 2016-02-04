@@ -4,3 +4,4 @@
 #include "game/gamedate.hpp"
 #include "game/difficulty.hpp"
 #include "game/player.hpp"
+#include "game/game.hpp"

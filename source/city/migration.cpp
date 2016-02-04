@@ -399,7 +399,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
   int migrants_n = city->walkers().count<Emigrant>();
 
-  if( freeRooms <= migrants_n * 5 )
+  if( (int)freeRooms <= migrants_n * 5 )
   {
     return;
   }

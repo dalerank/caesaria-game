@@ -18,9 +18,10 @@
 #ifndef _CAESARIA_SCRIPTING_INCLUDE_H_
 #define _CAESARIA_SCRIPTING_INCLUDE_H_
 
-#include "core/scopedptr.hpp"
 #include "core/namedtype.hpp"
 #include <string>
+
+class Game;
 
 namespace game
 {
@@ -30,13 +31,10 @@ class Scripting
 public:
   static Scripting& instance();
   static void doFile( const std::string& path );
-  void registerFunctions();
+  void registerFunctions(Game& game);
 
 private:
   Scripting();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 } //end namespace advisor

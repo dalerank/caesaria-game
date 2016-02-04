@@ -403,8 +403,7 @@ void Game::Impl::initAddons(bool& isOk, std::string& result)
 
 void Game::Impl::initScripting(bool& isOk, std::string& result)
 {
-  auto& script = game::Scripting::instance();
-  script.registerFunctions();
+  game::Scripting::instance();
 }
 
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
@@ -614,6 +613,8 @@ void Game::initialize()
     }
     catch(...) { exit(-1); }
   }
+
+  game::Scripting::instance().registerFunctions( *this );
 
   d.nextScreen = SCREEN_MENU;
   d.engine->setFlag( gfx::Engine::showMetrics, 1 );

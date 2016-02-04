@@ -12,5 +12,6 @@
   fire_middle :     { type : 701, rc : "fire",        start : 51,  frames : 50, delay : 1,  step : 1, offset : [15, 60],              }
   fire_big :        { type : 702, rc : "fire",        start : 1,   frames : 50, delay : 1,  step : 1, offset : [15, 60],              }
   temple_fire :     {             rc : "fireanim",    start : 1,   frames : 12, delay : 2,  step : 1,                     loop : true }
+  river_wave :      {             rc : "sprites",     start : 109, frames : 5,  delay : 4,  step : 1,                     loop : false }
 }
 
