@@ -26,6 +26,7 @@
 #include "dialogbox.hpp"
 #include "environment.hpp"
 #include "sound/engine.hpp"
+#include "game/scripting.hpp"
 
 namespace gui
 {
@@ -50,7 +51,8 @@ WinMission::WinMission( Widget* parent, const std::string& newTitle,
                         const std::string& speech, bool mayContinue )
   : Window( parent, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
-  setupUI( ":/gui/winmission.gui" );
+  game::Scripting::doFile( ":/gui/winmission.js" );
+  //setupUI( ":/gui/winmission.gui" );
 
   Logger::warning( "dialog::WinMission show" );
 

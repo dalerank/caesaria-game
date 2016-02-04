@@ -20,30 +20,27 @@
 #include <GameScene>
 #include <GameCore>
 #include <GameGfx>
+#include <GameCity>
 #include <GameLogger>
 #include <GameEvents>
 #include <GameVfs>
+#include <GameObjects>
+#include <GameApp>
+#include <GameScene>
 
-#include "city/build_options.hpp"
-#include "objects/construction.hpp"
-#include "game/player.hpp"
+#include "scripting.hpp"
 #include "sound/engine.hpp"
-#include "core/variant_map.hpp"
-#include "scene/lobby.hpp"
-#include "scene/level.hpp"
+
 #include "gui/environment.hpp"
 #include "settings.hpp"
-#include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
-#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
 #include "religion/pantheon.hpp"
 #include "scene/briefing.hpp"
@@ -98,6 +95,7 @@ public:
   void initPictures(bool& isOk, std::string& result);
   void initGameConfigs(bool& isOk, std::string& result);
   void initAddons(bool& isOk, std::string& result);
+  void initScripting(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
   void initMovie(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
@@ -403,6 +401,12 @@ void Game::Impl::initAddons(bool& isOk, std::string& result)
   am.load( vfs::Directory( std::string( ":/addons" ) ) );
 }
 
+void Game::Impl::initScripting(bool& isOk, std::string& result)
+{
+  auto& script = game::Scripting::instance();
+  script.registerFunctions();
+}
+
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
@@ -586,7 +590,8 @@ void Game::initialize()
     ADD_STEP( &d, Impl::loadObjectsMetadata ),
     ADD_STEP( &d, Impl::loadWalkersMetadata ),
     ADD_STEP( &d, Impl::loadReligionConfig ),
-    ADD_STEP( &d, Impl::fadeSplash )
+    ADD_STEP( &d, Impl::fadeSplash ),
+    ADD_STEP( &d, Impl::initScripting )
   };
 
   #undef ADD_STEP

@@ -8,4 +8,5 @@
 #include "gfx/tilemap.hpp"
 #include "gfx/drawstate.hpp"
 #include "gfx/animation.hpp"
+#include "gfx/animation_bank.hpp"
 

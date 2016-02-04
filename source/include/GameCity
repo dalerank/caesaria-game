@@ -12,5 +12,6 @@
 #include "city/trade_options.hpp"
 #include "city/victoryconditions.hpp"
 #include "city/cityservice_factory.hpp"
+#include "city/build_options.hpp"
 
 

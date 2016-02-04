@@ -29,7 +29,7 @@ file(GLOB OBJECTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/objects/*.*")
 file(GLOB WALKER_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/walker/*.*")
 file(GLOB WORLD_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/world/*.*")
 file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.*")
-file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
+file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.*")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
@@ -76,6 +76,8 @@ target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
+
+target_link_libraries(${PROJECT_NAME} ${PICOC_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DGAME_USE_FRAMEBUFFER )
