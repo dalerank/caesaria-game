@@ -1,25 +1,34 @@
-/*function Window(x1,y1,x2,y2)
+function OnMissionContinue2Year()
 {
-  this.cptr = engine.addWidget(0,"Window",x1,y1,x2,y2);
-    engine.log( this.cptr );
+  engine.log( "asdasasdasd" );
 }
 
-Window.prototype.setText = function(text)
+function OnMissionWin()
 {
-    engine.log( this.cptr );
-    //engine.widgetSetText( this.cptr, tex );
-};
-//Window.prototype.setTitle = function(title) { engine.windowSetTitle( this.cptr, title ); };
+  var window = new Window( 0 );
+  window.setGeometry( 0, 0, 540, 240 );
+  window.setText( "##test_text##" );
 
-var window = new Window( 0, 0, 540, 240 );
-//window.setTitle( "##mission_win##" );
-window.setText( "##test_text##" );
+  var btn = new PushButton( window );
+  btn.setGeometry( 35, 140, window.width()-35, 160 );
+  btn.setText( "##continue_2_years##" );
+  btn.setFont( "FONT_2" );
+  btn.setCallback( OnMissionContinue2Year );
+  btn.checkCallback();
 
-engine.log( "" );*/
+      //bgtype : "whiteBorderUp"
 
-var window = new Window( 0 );
-window.setGeometry( 0, 0, 540, 240 );
-window.setText( "##test_text##" );
+    //id : 2
+    /*
+    btnContinue5years#PushButton : {
+      geometry : [ 35, 165, "pw-35", 185 ]
+      bgtype : "whiteBorderUp"
+      text : "##continue_5_years##"
+      font : "FONT_2"
+      id : 5
+    }
+    */
+  engine.log( "bbbbbbbbbb" );
+}
 
-engine.log( "asdasasdasd" );
-
+OnMissionWin();

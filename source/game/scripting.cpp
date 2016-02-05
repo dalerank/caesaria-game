@@ -33,21 +33,12 @@ Game* game = nullptr;
 js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
+inline void push(js_State* J, int value) { js_pushnumber(J,value); }
 
 inline Rect to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
                js_toint32(J, n+2), js_toint32(J, n+3) ); }
-}
-
-void widgetSetText(js_State *J)
-{
-  Widget* parent = (Widget*)js_touserdata(J, 0, "userdata");
-  std::string text = js_tostring(J, 1);
-  if( parent )
-    parent->setText( text );
-
-  js_pushundefined(J);
 }
 
 void engineLog(js_State *J)
@@ -75,30 +66,89 @@ void Scripting::doFile(const std::string& path)
   js_dofile( internal::J, rpath.toCString() );
 }
 
-#define DEFINE_OBJECT_FUNCTION_1(name,rettype,funcname,paramType) rettype name##_##funcname(js_State *J) \
+#define DEFINE_OBJECT_FUNCTION_0(name,rettype,funcname) rettype name##_##funcname(js_State *J) \
                                 { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  if( parent ) parent->funcname(); \
+                                  js_pushundefined(J); \
+                                }
+
+//#define DEFINE_OBJECT_CALLBACK_0(name,callback) void name##_##callback()
+
+void ButtonClicked(Widget* widget)
+{
+  if(widget)
+  {
+    int index = widget->getProperty( "js_callback");
+    js_pcall(internal::J,index);
+  }
+}
+
+void PushButton_setCallback(js_State *J)
+{
+  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
+  if (parent && js_iscallable(J,1))
+  {
+    int index = js_gettop(J);
+    parent->onClickedEx().connect( &ButtonClicked );
+    parent->addProperty( "js_callback", index );
+  }
+
+  js_pushundefined(J);
+}
+
+void PushButton_checkCallback(js_State *J)
+{
+  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
+  if (parent)
+  {
+    ButtonClicked(parent);
+  }
+
+  js_pushundefined(J);
+}
+
+
+#define DEFINE_OBJECT_GETTER(name,funcname) void name##_##funcname(js_State* J) { \
+                              name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                              if (parent) internal::push(J,parent->funcname()); \
+                              js_pushundefined(J); \
+                            }
+
+#define DEFINE_OBJECT_FUNCTION_1(name,rettype,funcname,paramType) rettype name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType paramValue = internal::to( J, 1, paramType() ); \
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
 
-//#define DEFINE_WIDGET_CONSTRUCTOR(name)
-void constructor_Window(js_State *J)
-{
-  Widget* parent = (Widget*)js_touserdata(J, 1, "userdata");
-  if( parent == 0 )
-    parent = internal::game->gui()->rootWidget();
+#define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
+                                  js_getproperty(internal::J, -1, "prototype"); \
+                                  js_newuserdata(internal::J, "userdata", nullptr, nullptr);
 
-  auto* widget = internal::game->gui()->createWidget( "Window", parent );
+#define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
+                                  js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", widget, nullptr);
+
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, TEXT(name), 6); \
+                                        js_defglobal(internal::J, TEXT(name), JS_DONTENUM);
+
+#define SCRIPT_OBJECT_END(name)
+
+#define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { \
+  Widget* parent = nullptr; \
+  if( js_isuserdata( J, 1, "userdata" ) ) \
+    parent = (Widget*)js_touserdata(J, 1, "userdata"); \
+  if( parent == 0 ) \
+    parent = internal::game->gui()->rootWidget(); \
+  auto* widget = internal::game->gui()->createWidget( TEXT(name), parent ); \
+  js_currentfunction(J); \
+  js_getproperty(J, -1, "prototype"); \
+  js_newuserdata(J, "userdata", widget, nullptr); \
 }
 
-DEFINE_OBJECT_FUNCTION_1(Window,void,setText,std::string)
-DEFINE_OBJECT_FUNCTION_1(Window,void,setGeometry,Rect)
+#include "scripting/window.implementation"
+#include "scripting/button.implementation"
 
 void Scripting::registerFunctions( Game& game )
 {
@@ -111,21 +161,8 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineLog,"log",1);
 REGISTER_GLOBAL_OBJECT(engine)
 
-#define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
-                                  js_getproperty(internal::J, -1, "prototype"); \
-                                  js_newuserdata(internal::J, "userdata", nullptr, nullptr);
-
-#define SCRIPT_OBJECT_FUNCTION_1(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
-                                  js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
-
-
-#define SCRIPT_OBJECT_END(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, TEXT(name), 6); \
-                                js_defglobal(internal::J, TEXT(name), JS_DONTENUM);
-
-SCRIPT_OBJECT_BEGIN(Window)
-  SCRIPT_OBJECT_FUNCTION_1(Window,setText,1)
-  SCRIPT_OBJECT_FUNCTION_1(Window,setGeometry,1)
-SCRIPT_OBJECT_END(Window)
+#include "scripting/window.interface"
+#include "scripting/button.interface"
 }
 
 Scripting::Scripting()

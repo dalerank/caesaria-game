@@ -1,0 +1,5 @@
+DEFINE_OBJECT_FUNCTION_0(Window,void,deleteLater)
+DEFINE_OBJECT_GETTER(Window,width)
+DEFINE_OBJECT_FUNCTION_1(Window,void,setText,std::string)
+DEFINE_OBJECT_FUNCTION_1(Window,void,setGeometry,Rect)
+DEFINE_WIDGET_CONSTRUCTOR(Window)

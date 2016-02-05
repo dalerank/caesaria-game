@@ -105,7 +105,7 @@ public:
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
   virtual void setFont( const Font& font );
-
+  virtual void setFont( const std::string& font );
   virtual void setFont( FontType type, NColor color=0 );
 
   //! Gets the override font (if any)
