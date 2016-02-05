@@ -21,7 +21,7 @@
 #include <GameVfs>
 #include <GameGui>
 #include <GameLogger>
-
+#include <GameCore>
 using namespace gui;
 
 namespace game
@@ -48,6 +48,13 @@ void engineLog(js_State *J)
   js_pushundefined(J);
 }
 
+void engineTranslate(js_State *J)
+{
+  std::string text = js_tostring(J, 1);
+  text = Locale::translate(text);
+  js_pushstring(J,text.c_str());
+}
+
 Scripting& Scripting::instance()
 {
   static Scripting inst;
@@ -63,7 +70,18 @@ void Scripting::doFile(const std::string& path)
     return;
   }
 
-  js_dofile( internal::J, rpath.toCString() );
+  int error = js_ploadfile(internal::J, rpath.toCString());
+  if (!error)
+  {
+    js_getglobal(internal::J, "main" );
+    error = js_pcall(internal::J,0);
+  }
+
+  if (error)
+  {
+    std::string str = js_tostring(internal::J,-1);
+    Logger::warning( str );
+  }
 }
 
 #define DEFINE_OBJECT_FUNCTION_0(name,rettype,funcname) rettype name##_##funcname(js_State *J) \
@@ -73,46 +91,30 @@ void Scripting::doFile(const std::string& path)
                                   js_pushundefined(J); \
                                 }
 
-//#define DEFINE_OBJECT_CALLBACK_0(name,callback) void name##_##callback()
-
-void ButtonClicked(Widget* widget)
-{
-  if(widget)
-  {
-    int index = widget->getProperty( "js_callback");
-    js_pcall(internal::J,index);
-  }
-}
-
-void PushButton_setCallback(js_State *J)
-{
-  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
-  if (parent && js_iscallable(J,1))
-  {
-    int index = js_gettop(J);
-    parent->onClickedEx().connect( &ButtonClicked );
-    parent->addProperty( "js_callback", index );
-  }
-
-  js_pushundefined(J);
-}
-
-void PushButton_checkCallback(js_State *J)
-{
-  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
-  if (parent)
-  {
-    ButtonClicked(parent);
-  }
-
-  js_pushundefined(J);
-}
-
+#define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_##callback(Widget* widget) {\
+                                                  if(widget) { \
+                                                    std::string index = widget->getProperty( "js_callback"); \
+                                                    js_getregistry(internal::J,index.c_str()); \
+                                                    js_pushnull(internal::J); \
+                                                    js_pcall(internal::J,0); \
+                                                    js_pop(internal::J,1); \
+                                                  } \
+                                                } \
+                                                void name##_setCallback(js_State *J) { \
+                                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                                  if (parent && js_iscallable(J,1)) { \
+                                                    js_copy(J,1); \
+                                                    std::string index = js_ref(J); \
+                                                    parent->callback().connect( &name##_##callback ); \
+                                                    parent->addProperty( "js_callback", Variant(index) ); \
+                                                  } \
+                                                  js_pushundefined(J); \
+                                                }
 
 #define DEFINE_OBJECT_GETTER(name,funcname) void name##_##funcname(js_State* J) { \
                               name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                               if (parent) internal::push(J,parent->funcname()); \
-                              js_pushundefined(J); \
+                              else js_pushundefined(J); \
                             }
 
 #define DEFINE_OBJECT_FUNCTION_1(name,rettype,funcname,paramType) rettype name##_##funcname(js_State *J) { \
@@ -130,8 +132,8 @@ void PushButton_checkCallback(js_State *J)
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
 
-#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, TEXT(name), 6); \
-                                        js_defglobal(internal::J, TEXT(name), JS_DONTENUM);
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 6); \
+                                        js_defglobal(internal::J, "_"#name, JS_DONTENUM);
 
 #define SCRIPT_OBJECT_END(name)
 
@@ -149,6 +151,18 @@ void PushButton_checkCallback(js_State *J)
 
 #include "scripting/window.implementation"
 #include "scripting/button.implementation"
+#include "scripting/label.implementation"
+
+void PushButton_checkCallback(js_State *J)
+{
+  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
+  if (parent)
+  {
+    PushButton_onClickedEx(parent);
+  }
+
+  js_pushundefined(J);
+}
 
 void Scripting::registerFunctions( Game& game )
 {
@@ -158,11 +172,15 @@ void Scripting::registerFunctions( Game& game )
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
 
 DEF_GLOBAL_OBJECT(engine)
-  REGISTER_FUNCTION(engineLog,"log",1);
+  REGISTER_FUNCTION(engineLog,"log",1);  
+  REGISTER_FUNCTION(engineTranslate,"translate",1);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "scripting/window.interface"
 #include "scripting/button.interface"
+#include "scripting/label.interface"
+
+  doFile(":/gui/gui_init.js");
 }
 
 Scripting::Scripting()
