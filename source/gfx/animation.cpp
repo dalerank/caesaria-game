@@ -170,11 +170,13 @@ void Animation::simple(const VariantMap& stream)
   VARIANT_INIT_STR( rc, stream )
   VARIANT_INIT_ANY( int, start, stream )
   VARIANT_INIT_ANY( int, frames, stream )
-  VARIANT_LOAD_ANY_D( d, delay, stream )
   VARIANT_INIT_ANY( bool, reverse, stream )
   VARIANT_INIT_ANY( Point, offset, stream )
   load( rc, start, frames, reverse );
   addOffset( offset );
+
+  VARIANT_LOAD_ANY_D( d, delay, stream )
+  VARIANT_LOAD_ANY_D( d, loop, stream )
 }
 
 void Animation::clear() { _pictures.clear();}

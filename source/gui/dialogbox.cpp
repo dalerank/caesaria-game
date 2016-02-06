@@ -34,7 +34,7 @@ class Dialog::Impl
 public:
   enum { okPicId=239, cancelPicId=243 };
   GameAutoPause locker;
-  bool never;
+  bool never=true;
 
   struct {
     Signal1<int> onResult;
@@ -148,7 +148,7 @@ bool Dialog::onEvent( const NEvent& event )
         case btnNever:
         {
           _d->never = !_d->never;
-          event.gui.caller->setText( _d->never ? " " : "X" );
+          event.gui.caller->setText( _d->never ? "X" : " " );
           emit _d->signal.onNever( _d->never );
         }
         break;

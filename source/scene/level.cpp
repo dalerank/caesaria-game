@@ -370,7 +370,8 @@ void Level::initialize()
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  if( !OSystem::isAndroid() )
+  bool showAware = KILLSWITCH(showStartAware);
+  if( !OSystem::isAndroid() && showAware )
   {
     gui::Ui& ui = *_d->game->gui();
     auto& dlg = dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished.", true );
