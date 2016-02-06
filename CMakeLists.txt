@@ -24,11 +24,9 @@ option( USE_STEAM "Build steam" OFF)
 option( SYSTEM_DEPS "Use system-installed dependencies (if found)" OFF)
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
-set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
-set(LOCALE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/locale" )
+set(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set(GAME_CONFIG_DIR "${WORK_DIR}/resources" )
 set(STEAM_API_DIR "${CMAKE_CURRENT_SOURCE_DIR}/steam" )
-get_filename_component(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
-set(WORK_DIR ${WORK_DIR}/caesaria-test)
 
 if(USE_STEAM)
   add_definitions(-DGAME_USE_STEAM)

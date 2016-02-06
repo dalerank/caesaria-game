@@ -103,7 +103,7 @@ endif(UNIX)
 if(UNIX)
   message("Get locales from server")
   execute_process(COMMAND ${DEP_SOURCE_DIR}/localeconv/loadtable.py)
-  set(RPATH ${CMAKE_SOURCE_DIR}/locale/caesar.)
+  set(RPATH ${GAME_CONFIG_DIR}/locale/caesar.)
   message("Move files to locale folder")
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/2.csv ${RPATH}en)
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/3.csv ${RPATH}de)
@@ -223,60 +223,6 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/game" "${WORK_DIR}/resources"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/gui" "${WORK_DIR}/resources/gui"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/missions" "${WORK_DIR}/resources/missions"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/help" "${WORK_DIR}/resources/help"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/tutorial" "${WORK_DIR}/resources/tutorial"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/changes" "${WORK_DIR}/resources/changes"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/maps" "${WORK_DIR}/resources/maps"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/shaders" "${WORK_DIR}/resources/shaders"
 )
 
 if(USE_STEAM)
