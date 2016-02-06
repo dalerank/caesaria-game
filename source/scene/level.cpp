@@ -740,7 +740,7 @@ void Level::_requestExitGame()
   auto& dialog = dialog::Confirmation( _d->game->gui(),
                                       "", _("##exit_without_saving_question##"),
                                       dialog::Dialog::pauseGame );
-  dialog.onOk().connect( this, &Level::_quit );
+  dialog.onYes().connect( this, &Level::_quit );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)

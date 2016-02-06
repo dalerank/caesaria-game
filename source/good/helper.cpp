@@ -123,7 +123,12 @@ Picture Info::picture(bool emp) const
 
 Helper::~Helper() {}
 
-const std::string& Helper::name(Product type )
+const std::string& Helper::name(Product type)
+{
+  return instance()._d->findName( type );
+}
+
+const std::string& Helper::utname(Product type)
 {
   Impl::GoodNames::iterator it = instance()._d->goodName.find( type );
   return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
@@ -165,10 +170,8 @@ Product Helper::random()
 Info::Info() : _type( none ) {}
 Info::Info(Product type) : _type( type ) {}
 
-const std::string& Info::name() const
-{
-  return Helper::name( _type );
-}
+const std::string& Info::name() const {  return Helper::name( _type ); }
+const std::string&Info::utname() const { return Helper::utname( _type); }
 
 float Info::price( PlayerCityPtr city, Info::PriceType inOut) const
 {

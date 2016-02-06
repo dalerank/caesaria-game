@@ -11,6 +11,7 @@
     font : "FONT_3"
     geometry : [ 12, "12+30", "100%-12", "100%-50" ]
     textAlign : [ "center", "upperLeft" ]
+    anchor.bottom : "lowerRight"
     multiline : true
   }
 

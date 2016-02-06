@@ -931,9 +931,9 @@
     productRate : 2.4
     output : "furniture"
     sound : [ "furniture", 1 ]
-    image : [ "commerce", 117 ]
+    image : [ "commerce", 118 ]
     inflammability : 1.3
-    animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
+    animation : { rc : "commerce", start : 119, count : 11, offset : [ 112, -11 ], delay : 3 }
   },
   
   pottery_workshop :

@@ -178,13 +178,14 @@ enum {
   all_vegetablefarms_ready,
   all_claypit_ready,
   all_timberyard_ready,
-  all_ironmin_ready,
+  all_ironmine_ready,
   all_marblequarry_ready,
   all_potteryworkshtp_ready,
   all_furnitureworksop_ready,
   all_weaponworkshop_ready,
   all_wineworkshop_ready,
   all_oilworkshop_ready,
+  all_furnitureworksop_fillstock,
   decrease_sentiment,
   increase_sentiment,
   reload_buildings_config,
@@ -231,6 +232,7 @@ public:
   void runScript(std::string filename);
   void toggleBuildOptions(object::Type type);
   void toggleEmpireCityEnable(const std::string &name);
+  void fillFactoryStock(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -305,9 +307,10 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( factories, all_vegetablefarms_ready )
   ADD_DEBUG_EVENT( factories, all_claypit_ready )
   ADD_DEBUG_EVENT( factories, all_timberyard_ready )
-  ADD_DEBUG_EVENT( factories, all_ironmin_ready )
+  ADD_DEBUG_EVENT( factories, all_ironmine_ready )
   ADD_DEBUG_EVENT( factories, all_marblequarry_ready )
   ADD_DEBUG_EVENT( factories, all_potteryworkshtp_ready )
+  ADD_DEBUG_EVENT( factories, all_furnitureworksop_fillstock )
   ADD_DEBUG_EVENT( factories, all_furnitureworksop_ready )
   ADD_DEBUG_EVENT( factories, all_weaponworkshop_ready )
   ADD_DEBUG_EVENT( factories, all_wineworkshop_ready )
@@ -475,6 +478,15 @@ Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.wi
 DebugHandler::DebugHandler() : _d(new Impl)
 {
   _d->debugMenu = 0;
+}
+
+void DebugHandler::Impl::fillFactoryStock( object::Type type )
+{
+  auto factories = game->city()->statistic().objects.find<Factory>( type );
+  for( auto factory : factories )
+  {
+    factory->inStock().push( 100 );
+  }
 }
 
 void DebugHandler::Impl::setFactoryReady( object::Type type )
@@ -700,13 +712,15 @@ void DebugHandler::Impl::handleEvent(int event)
   case all_vegetablefarms_ready: setFactoryReady( object::vegetable_farm ); break;
   case all_claypit_ready: setFactoryReady( object::clay_pit ); break;
   case all_timberyard_ready: setFactoryReady( object::lumber_mill ); break;
-  case all_ironmin_ready: setFactoryReady( object::iron_mine ); break;
+  case all_ironmine_ready: setFactoryReady( object::iron_mine ); break;
   case all_marblequarry_ready: setFactoryReady( object::quarry ); break;
   case all_potteryworkshtp_ready: setFactoryReady( object::pottery_workshop ); break;
   case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
   case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
   case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
   case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;    
+
+  case all_furnitureworksop_fillstock: fillFactoryStock( object::furniture_workshop ); break;
 
   case decrease_sentiment: updateSentiment( -10 ); break;
   case increase_sentiment: updateSentiment( +10 ); break;

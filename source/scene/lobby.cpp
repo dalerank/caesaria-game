@@ -307,8 +307,7 @@ void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::str
 
 void Lobby::Impl::startCareer()
 {
-  game::Scripting::instance().doFile( ":/gui/winmission.js");
-  /*menu->clear();
+  menu->clear();
 
   std::string playerName = SETTINGS_STR( playerName );
 
@@ -318,7 +317,6 @@ void Lobby::Impl::startCareer()
   CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
   CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
   CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
-  */
 }
 
 void Lobby::Impl::handleNewGame()
@@ -587,10 +585,10 @@ void Lobby::initialize()
       Rect dialogRect = Rect( 0, 0, 400, 150 );
       auto& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
                                                     "Information", "Is need autofit screen resolution?",
-                                                    dialog::Dialog::btnOkCancel );
-      CONNECT( &dialog, onOk(),     &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onCancel(), &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onOk(),     _d.data(), Impl::fitScreenResolution );
+                                                    dialog::Dialog::btnYesNo );
+      CONNECT( &dialog, onYes(),     &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onNo(), &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 
       dialog.show();

@@ -35,6 +35,7 @@ public:
   static Helper& instance();
 
   static const std::string& name(Product type);
+  static const std::string& utname(Product type);
   static good::Product type( const std::string& name );
 
   static float exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty);
@@ -57,6 +58,7 @@ public:
   Info( good::Product type );
 
   const std::string& name() const;
+  const std::string& utname() const;
   gfx::Picture picture(bool emp=false) const;
   inline Product type() const { return _type; }
 

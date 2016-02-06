@@ -88,34 +88,36 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
   if( lbTitle )
     lbTitle->setText( title );
 
-  if( (buttons & btnOk) == btnOk || (buttons & btnCancel) == btnCancel )
+  if( (buttons & btnYesNo) == btnYesNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
+  }
+  else if( (buttons & btnYes) == btnYes || (buttons & btnNo) == btnNo )
   {
     Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
     INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
     if( btnAction )
     {
-      TexturedButton::States states( (buttons & btnOk)== btnOk ? Impl::okPicId : Impl::cancelPicId );
+      TexturedButton::States states( (buttons & btnYes)== btnYes ? Impl::okPicId : Impl::cancelPicId );
       btnAction->changeImageSet( states );
-      btnAction->setID( btnOk );
+      btnAction->setID( btnYes );
     }
   }
-  else if( (buttons & btnOkCancel) == btnOkCancel )
-    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
   INIT_WIDGET_FROM_UI( TexturedButton*, btnActionYes )
   INIT_WIDGET_FROM_UI( TexturedButton*, btnActionNo )
   if( btnActionNever )
   {
-    btnActionNever->setVisible( buttons & btnNever );
+    btnActionNever->setVisible( (buttons & btnNever) == btnNever );
     btnActionNever->setID( btnNever );
   }
 
   if( btnActionYes )
-    btnActionYes->setID( btnOk );
+    btnActionYes->setID( btnYes );
 
   if( btnActionNo )
-    btnActionNo->setID( btnCancel );
+    btnActionNo->setID( btnNo );
 
   if( lockGame )
     _d->locker.activate();
@@ -141,8 +143,8 @@ bool Dialog::onEvent( const NEvent& event )
 
         switch( id )
         {
-        case btnOk: emit _d->signal.onOk(); break;
-        case btnCancel: emit _d->signal.onCancel(); break;
+        case btnYes: emit _d->signal.onOk(); break;
+        case btnNo: emit _d->signal.onCancel(); break;
         case btnNever:
         {
           _d->never = !_d->never;
@@ -181,8 +183,8 @@ void Dialog::setupUI(const VariantMap& ui)
   Window::setupUI( ui );
 }
 
-Signal0<>& Dialog::onOk() {  return _d->signal.onOk;}
-Signal0<>& Dialog::onCancel(){  return _d->signal.onCancel;}
+Signal0<>& Dialog::onYes() {  return _d->signal.onOk;}
+Signal0<>& Dialog::onNo(){  return _d->signal.onCancel;}
 Signal1<bool>& Dialog::onNever() { return _d->signal.onNever; }
 
 void Dialog::draw(gfx::Engine& painter )
@@ -197,10 +199,10 @@ void Dialog::draw(gfx::Engine& painter )
 
 Dialog& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
 {
-  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnOk | (showNever ? Dialog::btnNever : 0) );
+  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnYes | (showNever ? Dialog::btnNever : 0) );
 
-  ret.onOk().connect( &ret, &Dialog::deleteLater );
-  ret.onCancel().connect( &ret, &Dialog::deleteLater );
+  ret.onYes().connect( &ret, &Dialog::deleteLater );
+  ret.onNo().connect( &ret, &Dialog::deleteLater );
 
   return ret;
 }
@@ -208,7 +210,7 @@ Dialog& Information(Ui* ui, const std::string &title, const std::string &text, b
 Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback, bool pauseGame)
 {
   auto& dialog = Confirmation( ui, title, text, pauseGame );
-  dialog.onOk().connect( callback );
+  dialog.onYes().connect( callback );
 
   return dialog;
 }
@@ -217,18 +219,18 @@ Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text,
                      Callback callbackOk, Callback callbackCancel, bool pauseGame)
 {
   auto& dialog = Confirmation( ui, title, text, pauseGame );
-  dialog.onOk().connect( callbackOk );
-  dialog.onCancel().connect( callbackCancel );
+  dialog.onYes().connect( callbackOk );
+  dialog.onNo().connect( callbackCancel );
 
   return dialog;
 }
 
 Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
-  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnOkCancel, pauseGame );
+  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnYesNo, pauseGame );
 
-  ret.onOk().connect( &ret, &Dialog::deleteLater );
-  ret.onCancel().connect( &ret, &Dialog::deleteLater );
+  ret.onYes().connect( &ret, &Dialog::deleteLater );
+  ret.onNo().connect( &ret, &Dialog::deleteLater );
 
   return ret;
 }

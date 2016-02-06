@@ -575,10 +575,10 @@ void Widget::setupUI( const VariantMap& options )
                       ahelper.findType( textAlign.back().toString() ) );
   }
 
-  Variant vAlignBottom = options.get( "aling.bottom" );
-  if( vAlignBottom.isValid() )
+  Variant vAnchorBottom = options.get( "anchor.bottom" );
+  if( vAnchorBottom.isValid() )
   {
-    auto bottomAlign = ahelper.findType( vAlignBottom.toString() );
+    auto bottomAlign = ahelper.findType( vAnchorBottom.toString() );
     setAlignment( _d.align.left, _d.align.right, _d.align.top, bottomAlign );
   }
 

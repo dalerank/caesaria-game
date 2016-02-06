@@ -207,8 +207,8 @@
           type : "file"
           folder : "/resources/gui_stub"
           files : [ "remake_pack1.atlas"
-					"remake_pack1.png"
-					"mapback_00001.png" ]
+                    "remake_pack1.png"
+                    "mapback_00001.png" ]
         }   
 
         taxcolumn :
@@ -368,6 +368,13 @@
           type : "atlas"
           folder : "/resources/fountain"
           files : [ "utilitya_*" ]
+        }
+
+        furniture_workshop :
+        {
+          type : "atlas"
+          folder : "/resources/furniture_workshop"
+          files : [ "*" ]
         }
 
         quarry :
