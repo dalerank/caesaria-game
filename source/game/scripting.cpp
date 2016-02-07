@@ -153,17 +153,6 @@ void Scripting::doFile(const std::string& path)
 #include "scripting/button.implementation"
 #include "scripting/label.implementation"
 
-void PushButton_checkCallback(js_State *J)
-{
-  PushButton* parent = (PushButton*)js_touserdata(J, 0, "userdata");
-  if (parent)
-  {
-    PushButton_onClickedEx(parent);
-  }
-
-  js_pushundefined(J);
-}
-
 void Scripting::registerFunctions( Game& game )
 {
   internal::game = &game;

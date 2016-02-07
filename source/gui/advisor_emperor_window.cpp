@@ -137,7 +137,7 @@ public:
        listbox.addItem( text );
     }
 
-    moveTo( Widget::parentCenter );
+    moveToCenter();
     setModal();
   }
 };
@@ -221,7 +221,7 @@ public:
        }
      }
 
-    moveTo( Widget::parentCenter );
+    moveToCenter();
     setModal();
   }
 };

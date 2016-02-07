@@ -29,6 +29,11 @@ Window.prototype = {
     var button = new Button( this.widget );
     button.geometry = { x:rx, y:ry, w:rw, h:rh };
     return button;
+  },
+  addLabel : function(rx,ry,rw,rh) {
+    var button = new Label( this.widget );
+    button.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return button;
   }
 }
 
@@ -41,6 +46,7 @@ Button.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.setCallback(func); },
+  set style (sname) { this.widget.setBackgroundStyle(sname); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }

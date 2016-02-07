@@ -146,8 +146,7 @@ public:
 
   virtual int bottom() const;
 
-  typedef enum { parentCenter } DefinedPosition;
-  virtual void moveTo( DefinedPosition pos );
+  virtual void moveToCenter();
 
   virtual Point center() const;
 

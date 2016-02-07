@@ -52,7 +52,7 @@ CityDonation::CityDonation( Widget* p, int money )
   _linkButtons2Actions();
   _updateDonationText();
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

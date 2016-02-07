@@ -965,13 +965,7 @@ void Widget::setRight( int newRight )
   setGeometry( r );
 }
 
-void Widget::moveTo(Widget::DefinedPosition pos)
-{
-  switch( pos )
-  {
-  case parentCenter: setCenter( parent()->center() );
-  }
-}
+void Widget::moveToCenter() { setCenter( parent()->center() ); }
 
 void Widget::addProperty(const std::string& name, const Variant& value)
 {

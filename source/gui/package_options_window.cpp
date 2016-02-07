@@ -69,7 +69,7 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT_LOCAL( _d->edScreenshots,   onTextChanged(), PackageOptions::_setScreenshotsDir )
 
   WidgetClose::insertTo( this );
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 
