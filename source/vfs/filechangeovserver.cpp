@@ -130,7 +130,7 @@ int watchDirectory(const char* lpFile)
 }
 
 }//end namespace internal
-#elif defined(GAME_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_MACOS)
 namespace  internal {
 int watchDirectory(const char* lpDir)
 {
