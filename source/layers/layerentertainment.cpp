@@ -214,6 +214,10 @@ void Entertainment::afterRender(Engine& engine)
 void Entertainment::_updatePaths()
 {
   auto entBuilding = _d->overlay.selected.as<EntertainmentBuilding>();
+
+  if( !entBuilding.isValid() )
+    return;
+
   if( _d->flags.count( object::typeOrDefault( entBuilding ) ) )
   {
     _d->ways.clear();

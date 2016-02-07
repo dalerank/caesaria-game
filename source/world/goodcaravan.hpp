@@ -36,6 +36,7 @@ public:
   virtual std::string type() const;
 
   virtual void timeStep( unsigned int time );
+  virtual std::string about(AboutType type);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

@@ -175,8 +175,8 @@ public:
   void initRows( Widget* parent, int width );
 };
 
-Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
-  : Base( parent, city ), __INIT_IMPL( Chief )
+Chief::Chief(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::main ), __INIT_IMPL( Chief )
 {
   __D_REF(_d, Chief )
   Base::setupUI( ":/gui/chiefadv.gui" );

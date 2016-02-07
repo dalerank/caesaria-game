@@ -202,9 +202,9 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   // loads the graphics map
   int border_size = (config::tilemap.maxSide - map_size) / 2;
 
-  for (int itA = 0; itA < map_size; ++itA)
+  for (uint16_t itA = 0; itA < map_size; ++itA)
   {
-    for (int itB = 0; itB < map_size; ++itB)
+    for (uint16_t itB = 0; itB < map_size; ++itB)
     {
       int i = itB;
       int j = map_size - itA - 1;
@@ -222,9 +222,9 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
     }
   }
 
-  for (int i = 0; i < map_size; ++i)
+  for (uint16_t i = 0; i < map_size; ++i)
   {
-    for (int j = 0; j < map_size; ++j)
+    for (uint16_t j = 0; j < map_size; ++j)
     {
       unsigned char ed = edgeData[ i ][ j ];
       if( ed == 0x00)

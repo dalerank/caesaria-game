@@ -76,7 +76,7 @@ public:
   }
 
   template< class X, class Y >
-  void connect( Y * obj, void (X::*func)() const )
+  void connect( Y* obj, void (X::*func)() const )
   {
     delegateList.push_back( makeDelegate( obj, func ) );
   }

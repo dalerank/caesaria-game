@@ -137,8 +137,8 @@ public:
   void updateAlarms( PlayerCityPtr city );
 };
 
-Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+Legion::Legion(Widget* parent, PlayerCityPtr city, FortList forts )
+: Base( parent, city, advisor::military ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/legionadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );

@@ -23,7 +23,7 @@
 #include "objects/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
-class Patrician : public Human
+class Patrician : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

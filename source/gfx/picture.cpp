@@ -121,7 +121,7 @@ void Picture::setAlpha(unsigned char value)
   }
 }
 
-unsigned int* Picture::lock()
+uint32_t* Picture::lock()
 {
   /*if( _d->texture )
   {

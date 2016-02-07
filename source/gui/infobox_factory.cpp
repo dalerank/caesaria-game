@@ -86,9 +86,9 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _lbEffciency->setFont( FONT_2 );
 
 
-  if( factory->produceGoodType() != good::none )
+  if( factory->produce().type() != good::none )
   {
-    add<Image>( Point( 10, 10), good::Info( factory->produceGoodType() ).picture() );
+    add<Image>( Point( 10, 10), factory->produce().picture() );
   }
 
   // paint picture of in good
@@ -97,8 +97,8 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     Label& lbStockInfo = add<Label>( Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo.setIcon( good::Info( factory->inStock().type() ).picture() );
 
-    std::string whatStock = fmt::format( "##{0}_factory_stock##", good::Helper::name( factory->consumeGoodType() ) );
-    std::string typeOut = fmt::format( "##{0}_factory_stock##", good::Helper::name( factory->produceGoodType() ) );
+    std::string whatStock = fmt::format( "##{0}_factory_stock##", factory->consume().name() );
+    std::string typeOut = fmt::format( "##{0}_factory_stock##", factory->produce().name() );
     std::string text = utils::format( 0xff, "%d %s %d %s",
                                       factory->inStock().qty() / 100,
                                       _(whatStock),

@@ -185,6 +185,16 @@ TilesArray TilesArray::select(Tile::Param param) const
   return ret;
 }
 
+int TilesArray::count(Tile::Type flag) const
+{
+  int result=0;
+  for( auto tile : *this )
+    if( tile->getFlag( flag ) )
+      result++;
+
+  return result;
+}
+
 TilesArray TilesArray::terrains() const
 {
   TilesArray ret;

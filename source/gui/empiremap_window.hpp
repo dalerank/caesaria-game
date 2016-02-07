@@ -45,6 +45,7 @@ public:
 
 protected:
   void _changePosition();
+  void _showTradeAdvisor();
   virtual bool _onMousePressed( const NEvent::Mouse& event);
   const Point& _offset() const;
 

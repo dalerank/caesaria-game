@@ -38,14 +38,19 @@ struct Config
 class Base : public Window
 {
 public:
-  Base( Widget* parent, PlayerCityPtr city, int id=-1 )
-    : Window( parent, Rect( 0, 0, 1, 1 ), "", id )
+  Base( Widget* parent, PlayerCityPtr city, advisor::Type type,
+        const Rect& rect = Rect( 0, 0, 1, 1 )  )
+    : Window( parent, rect, "", type ), _type( type )
   {
     _city = city;
-    setPosition( Point( (parent->width() - Config::width ), (parent->height() - Config::height) )/2 );
+    if( rect.width() < 10)
+      setPosition( Point( (parent->width() - Config::width ), (parent->height() - Config::height) )/2 );
   }
 
+  advisor::Type type() const { return _type; }
+
 protected:
+  advisor::Type _type;
   PlayerCityPtr _city;
 };
 

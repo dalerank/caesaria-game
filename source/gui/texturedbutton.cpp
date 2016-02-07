@@ -37,10 +37,7 @@ TexturedButton::TexturedButton(Widget* parent, const Point& pos, const TexturedB
 TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &size, int id, const States& states)
   : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
 {
-  setPicture( gui::rc.panel, states.normal, stNormal );
-  setPicture( gui::rc.panel, (states.hover == -1) ? states.normal+1 : states.hover, stHovered );
-  setPicture( gui::rc.panel, (states.pressed == -1) ? states.normal+2 : states.pressed, stPressed );
-  setPicture( gui::rc.panel, (states.disabled == -1) ? states.normal+3 : states.disabled, stDisabled );
+  changeImageSet( states );
   setTextVisible( false );
 }
 
@@ -48,16 +45,22 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
                                const std::string& resourceGroup, const States& states)
   : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
 {
-  setPicture( resourceGroup, states.normal, stNormal );
-  setPicture( resourceGroup, (states.hover == -1) ? states.normal+1 : states.hover, stHovered  );
-  setPicture( resourceGroup, (states.pressed == -1) ? states.normal+2 : states.pressed, stPressed  );
-  setPicture( resourceGroup, (states.disabled == -1) ? states.normal+3 : states.disabled, stDisabled );
+  changeImageSet( states, resourceGroup );
   setTextVisible( false );
 }
 
 gui::TexturedButton::TexturedButton(gui::Widget *parent) : PushButton( parent )
 {
   setTextVisible( false );
+}
+
+void TexturedButton::changeImageSet( const States& states, const std::string& rc )
+{
+  const std::string r = rc.empty() ? gui::rc.panel : rc;
+  setPicture( r, states.normal, stNormal );
+  setPicture( r, (states.hover == -1) ? states.normal+1 : states.hover, stHovered );
+  setPicture( r, (states.pressed == -1) ? states.normal+2 : states.pressed, stPressed );
+  setPicture( r, (states.disabled == -1) ? states.normal+3 : states.disabled, stDisabled );
 }
 
 HelpButton::HelpButton(Widget* parent)

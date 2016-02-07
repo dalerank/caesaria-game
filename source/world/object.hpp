@@ -30,8 +30,7 @@ namespace world
 class Object : public ReferenceCounted
 {
 public:
-  enum { idxPicture=0, idxAnimation=1 };
-  typedef enum { aboutEmpireMap=0, aboutEmpireAdvInfo } AboutType;
+  typedef enum { aboutEmpireMap=0, aboutEmpireAdvInfo, aboutEmtype } AboutType;
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;
@@ -44,10 +43,6 @@ public:
   virtual Point location() const;
   virtual void addObject( ObjectPtr );
   virtual void setLocation( const Point& location );
-  virtual gfx::Picture picture() const;
-  virtual const gfx::Pictures& pictures() const;
-  virtual void setPicture( gfx::Picture pic );
-  virtual bool isMovable() const;
   virtual std::string about( AboutType type );
   Nation nation() const;
 
@@ -61,8 +56,6 @@ public:
 protected:
   void _setNation( world::Nation nation );
   Object(EmpirePtr empire );
-  gfx::Animation& _animation();
-  gfx::Pictures& _pictures();
 
 private:
   class Impl;

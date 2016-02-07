@@ -321,10 +321,8 @@ void CityOptions::Impl::toggleC3gameplay()
   value = !value;
   if( value )
   {
-    auto dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?", true );
-    dlg->show();
-
-    CONNECT( dlg, onOk(), this, Impl::enableC3gameplay )
+    auto& dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?", true );
+    CONNECT( &dlg, onYes(), this, Impl::enableC3gameplay )
   }
 }
 
@@ -402,14 +400,14 @@ void CityOptions::Impl::update()
   if( btnDifficulty )
   {
     int value = city->getOption( PlayerCity::difficulty );
-    std::string text = fmt::format( "##city_df_%s##", game::difficulty::name[ value ] );
+    std::string text = fmt::format( "##city_df_{}##", game::difficulty::name[ value ] );
     _setAutoText( btnDifficulty, text );
   }
 
   if( btnC3Gameplay )
   {
     int value = city->getOption( PlayerCity::c3gameplay );
-    std::string text = fmt::format( "##city_c3rules_%s##", value ? "on" : "off" );
+    std::string text = fmt::format( "##city_c3rules_{}##", value ? "on" : "off" );
     _setAutoText( btnDifficulty, text );
   }
 

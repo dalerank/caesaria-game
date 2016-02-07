@@ -72,7 +72,7 @@ public:
 };
 
 CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
-  : Human( city, walker::cartPusher  ), _d( new Impl )
+  : Citizen( city, walker::cartPusher  ), _d( new Impl )
 {
   _d->producerBuilding = nullptr;
   _d->consumerBuilding = nullptr;

@@ -83,8 +83,8 @@ void PackageOptions::_close()
 {
   if( _d->needRestart )
   {
-    Dialog* dlg = Information( ui(), "Note", "Please restart game to apply change" );
-    dlg->show();
+    Dialog& dlg = Information( ui(), "Note", "Please restart game to apply change" );
+    dlg.show();
   }
 
   vfs::Directory screenDir = SETTINGS_STR( screenshotDir );

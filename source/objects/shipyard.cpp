@@ -95,7 +95,7 @@ void Shipyard::timeStep(const unsigned long time)
 
   if( progress() >= 100.0 )
   {
-    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )
+    if( store().freeQty( produce().type() ) > 0
         && _d->boat.isNull() )
     {
       updateProgress( -100.f );

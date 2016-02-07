@@ -515,7 +515,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
-const ObjectList& Empire::objects() const{  return _d->objects; }
+const ObjectList& Empire::objects() const{ return _d->objects; }
 
 ObjectList Empire::findObjects( Point location, int deviance ) const
 {

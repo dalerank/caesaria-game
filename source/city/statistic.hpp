@@ -69,6 +69,9 @@ public:
                          const TilePos& start=TilePos::invalid(),
                          const TilePos& stop=TilePos::invalid() ) const;
 
+    template<class T>
+    SmartList< T > random( int numner ) const;
+
     template< class T >
     int count( TilePos start=TilePos::invalid(),
                TilePos stop=TilePos::invalid() ) const;
@@ -416,6 +419,12 @@ SmartList<T> Statistic::_Walkers::find(walker::Type type, int radius, const Tile
 }
 
 template< class T >
+SmartList<T> Statistic::_Walkers::random(int number) const
+{
+  return find<T>().random( number );
+}
+
+template< class T >
 inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
                                                const TilePos& start, const TilePos& stop ) const
 {
@@ -645,7 +654,7 @@ SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
   for( auto ov : overlays )
   {
     SmartPtr< T > b = ov.as<T>();
-    if( b.isValid() && b->produceGoodType() == goodtype )
+    if( b.isValid() && b->produce().type() == goodtype )
     {
       ret.push_back( b );
     }

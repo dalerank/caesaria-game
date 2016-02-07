@@ -18,12 +18,10 @@
 
 #include "lobby.hpp"
 
-#include "core/gettext.hpp"
-#include "gui/loadgamedialog.hpp"
-#include "gfx/engine.hpp"
-#include "core/exception.hpp"
-#include "gui/startmenu.hpp"
-#include "gui/environment.hpp"
+#include "game/scripting.hpp"
+#include <GameCore>
+#include <GameGui>
+#include <GameGfx>
 #include "game/game.hpp"
 #include "game/player.hpp"
 #include "gui/pushbutton.hpp"
@@ -149,6 +147,9 @@ void Lobby::Impl::showLogFile()
 {
   vfs::Directory logfile = SETTINGS_STR( workDir );
   logfile = logfile/SETTINGS_STR( logfile );
+  if( !logfile.exist() )
+      dialog::Information( &ui(), "", "Cant found logfile");
+
   OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
 }
 
@@ -156,6 +157,7 @@ void Lobby::Impl::showChanges()
 {
   SETTINGS_SET_VALUE(showLastChanges, true);
   SETTINGS_SET_VALUE(lastChangesNumber, 0 );
+  internal::wasChangesShow = false;
   showChangesWindowIfNeed();
 }
 
@@ -171,7 +173,7 @@ void Lobby::Impl::showChangesWindowIfNeed()
   if( !internal::wasChangesShow && KILLSWITCH(showLastChanges) )
   {
     internal::wasChangesShow = true;
-    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), _("##window_changes_title##"), lastChanges );
+    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), lastChanges );
   }
 }
 
@@ -440,8 +442,8 @@ void Lobby::Impl::showAdvancedMaterials()
   vfs::Directory dir( ":/dlc" );
   if( !dir.exist() )
   {
-    auto infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
-    infoDialog->show();
+    auto& infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
+    infoDialog.show();
     showMainMenu();
     return;
   }
@@ -583,10 +585,10 @@ void Lobby::initialize()
       Rect dialogRect = Rect( 0, 0, 400, 150 );
       auto& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
                                                     "Information", "Is need autofit screen resolution?",
-                                                    dialog::Dialog::btnOkCancel );
-      CONNECT( &dialog, onOk(),     &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onCancel(), &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onOk(),     _d.data(), Impl::fitScreenResolution );
+                                                    dialog::Dialog::btnYesNo );
+      CONNECT( &dialog, onYes(),     &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onNo(), &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 
       dialog.show();

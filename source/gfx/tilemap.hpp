@@ -24,6 +24,7 @@
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/climate.hpp"
 
 namespace gfx
 {
@@ -32,7 +33,7 @@ namespace gfx
 class Tilemap : public Serializable
 {
 public:  
-  static const bool checkCorners = true;
+  typedef enum { fSvkGround=0x1 } Flag;
 
   Tilemap();
   virtual ~Tilemap();
@@ -43,6 +44,9 @@ public:
   Tile& at( const int i, const int j );
   Tile& at( const TilePos& ij );
 
+  void setClimate( ClimateType climate);
+  ClimateType climate() const;
+
   OverlayPtr overlay( const TilePos& ij );
   template<class T>
   SmartPtr<T> overlay(const TilePos &ij) { return ptr_cast<T>( overlay( ij ) ); }
@@ -52,8 +56,10 @@ public:
   TilesArray allTiles() const;
   const TilesArray& border() const;
 
-  const TilesArray& svkBorderTiles() const;
-  void addSvkBorder();
+  void clearSvkBorder();
+  void setSvkBorderEnabled( bool enabled );
+  Tile* svk_at( int i, int j ) const;
+  TilesArray svkTiles() const;
 
   // returns all tiles on a rectangular perimeter
   // (i1, j1) : left corner of the rectangle (minI, minJ)
@@ -65,6 +71,7 @@ public:
 
   enum TileNeighbors
   {
+    CheckCorners=1,
     FourNeighbors,
     //Corners,
     AllNeighbors
@@ -86,6 +93,8 @@ public:
 
   void turnRight();
   void turnLeft();
+
+  void setFlag(Flag flag, bool enabled);
 
   Direction direction() const;
 

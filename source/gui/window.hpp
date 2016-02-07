@@ -31,6 +31,7 @@ public:
   typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
   typedef enum { bgNone, bgWhiteFrame } BackgroundType;
   //! constructor
+  Window( Widget* parent );
   Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1, BackgroundType style=bgWhiteFrame );
 
   //! destructor

@@ -48,6 +48,8 @@ public:
                   const States& states );
 
   TexturedButton( Widget* parent );
+
+  void changeImageSet(const States& states, const std::string& rc="");
 };
 
 class HelpButton : public TexturedButton

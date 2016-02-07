@@ -32,7 +32,7 @@ namespace advisorwnd
 class Finance : public Base
 {
 public:
-  Finance( PlayerCityPtr city, Widget* parent, int id );
+  Finance( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
   virtual bool onEvent(const NEvent &event);

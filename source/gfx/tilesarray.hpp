@@ -60,6 +60,8 @@ public:
   TilesArray select( Tile::Type flag ) const;
   TilesArray select( Tile::Param param ) const;
 
+  int count( Tile::Type flag ) const;
+
   TilesArray terrains() const;
   TilesArray masters() const;
   TilesArray children( Tile* master ) const;

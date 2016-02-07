@@ -221,8 +221,8 @@ void Tree::_die()
 
 bool Tree::getMinimapColor(int& color1, int& color2) const
 {
-  const int size = _d->mmapColors.size;
-  color1 = _d->mmapColors.itiles[ pos().i() % size ];
-  color2 = _d->mmapColors.itiles[ pos().j() % size ];
+  const int t = (pos().i() + pos().j()) % 3;
+  color1 = _d->mmapColors.itiles[ t ];
+  color2 = _d->mmapColors.jtiles[ t+1 ];
   return true;
 }

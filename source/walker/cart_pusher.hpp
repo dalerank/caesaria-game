@@ -24,7 +24,7 @@
 #include "objects/predefinitions.hpp"
 
 /** This walker delivers goods */
-class CartPusher : public Human
+class CartPusher : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

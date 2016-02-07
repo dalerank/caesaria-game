@@ -1,0 +1,12 @@
+#include "gfx/engine.hpp"
+#include "gfx/maskstate.hpp"
+#include "gfx/decorator.hpp"
+#include "gfx/picturesarray.hpp"
+#include "gfx/tile.hpp"
+#include "gfx/tile_config.hpp"
+#include "gfx/picture_bank.hpp"
+#include "gfx/tilemap.hpp"
+#include "gfx/drawstate.hpp"
+#include "gfx/animation.hpp"
+#include "gfx/animation_bank.hpp"
+

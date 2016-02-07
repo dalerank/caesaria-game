@@ -148,7 +148,7 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
     if (!tilemap.isInside(tp_to))
       tp_to = areaInfo.pos;
 
-    TilesArray perimetr = tilemap.rect(tp_from, tp_to, !Tilemap::checkCorners);
+    TilesArray perimetr = tilemap.rect(tp_from, tp_to, !Tilemap::CheckCorners);
     for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;

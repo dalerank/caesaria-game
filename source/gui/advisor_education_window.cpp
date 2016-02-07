@@ -199,8 +199,8 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
   if( lbTroubleInfo ) { lbTroubleInfo->setText( _(trouble) ); }
 }
 
-Education::Education(PlayerCityPtr city, Widget* parent, int id )
-  : Base( parent, city, id ),
+Education::Education(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::education ),
   __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );

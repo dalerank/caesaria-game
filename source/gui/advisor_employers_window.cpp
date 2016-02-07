@@ -347,8 +347,8 @@ EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startP
   return &employeeBtn;
 }
 
-Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
-  : Base( parent, city, id ), _d( new Impl )
+Employer::Employer(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::employers ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/employersadv.gui" );
 

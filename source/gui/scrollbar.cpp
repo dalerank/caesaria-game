@@ -70,7 +70,7 @@ ScrollBar::~ScrollBar(){}
 
 void ScrollBar::_resolvePositionChanged()
 {
-  parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, guiScrollbarChanged ) );
   emit _d->onPositionChanged( _d->value );
 }
 
@@ -257,7 +257,7 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 
     if (_d->value != oldPos )
 		{
-			parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
+			parent()->onEvent( NEvent::ev_gui( this, 0, guiScrollbarChanged ) );
 		}
 	}
 }

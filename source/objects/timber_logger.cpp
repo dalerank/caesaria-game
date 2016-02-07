@@ -125,9 +125,9 @@ const gfx::Tile& TimberLogger::_findNearestForest( const city::AreaInfo& areaInf
   TilesArray trees;
   if( areaInfo.city->getOption( PlayerCity::cutForest2timber ) )
     trees = tilemap.rect( areaInfo.pos + TilePos( _d->workRange, _d->workRange ),
-                         size() + Size( 2 + _d->workRange ), Tilemap::checkCorners );
+                         size() + Size( 2 + _d->workRange ), Tilemap::CheckCorners );
   else
-    trees = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
+    trees = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::CheckCorners );
 
   trees = trees.select( Tile::tlTree );
 

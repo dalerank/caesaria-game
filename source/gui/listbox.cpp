@@ -271,7 +271,7 @@ void ListBox::setSelected( const std::string& item )
 
 void ListBox::_indexChanged( unsigned int eventType )
 {
-  parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, GuiEventType( eventType ) ) );
 
   switch( eventType )
   {

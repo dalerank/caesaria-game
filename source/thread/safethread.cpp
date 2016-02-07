@@ -42,6 +42,9 @@ void _THKERNEL(SafeThread* ptr)
 {
   do
   {
+    if( ptr->_d->abortFlag )
+      break;
+
     ptr->_d->onTask();
     std::this_thread::sleep_for( std::chrono::milliseconds( ptr->_d->delay ) );
 
@@ -67,7 +70,6 @@ SafeThread::SafeThread(WorkFunction function) : _d( new Impl )
 SafeThreadPtr SafeThread::create(WorkFunction function)
 {
   SafeThreadPtr p( new SafeThread( function ) );
-  p->drop();
 
   return p;
 }
@@ -99,9 +101,15 @@ void SafeThread::join()
     _d->thread.join();
 }
 
+void SafeThread::stop()
+{
+  _d->running = false;
+}
+
 void SafeThread::abort()
 {
   _d->abortFlag = true;
+  _d->running = false;
 }
 
 void SafeThread::setDelay(int ms)

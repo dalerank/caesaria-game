@@ -1,0 +1,7 @@
+#include "game/resourcegroup.hpp"
+#include "game/funds.hpp"
+#include "game/settings.hpp"
+#include "game/gamedate.hpp"
+#include "game/difficulty.hpp"
+#include "game/player.hpp"
+#include "game/game.hpp"

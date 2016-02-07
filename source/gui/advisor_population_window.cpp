@@ -127,8 +127,8 @@ public:
   void switch2nextChart( int change );
 };
 
-Population::Population(PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ),
+Population::Population(PlayerCityPtr city, Widget* parent)
+: Base( parent, city, advisor::population ),
   __INIT_IMPL(Population)
 {
   setupUI( ":/gui/populationadv.gui" );

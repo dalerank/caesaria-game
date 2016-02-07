@@ -25,7 +25,7 @@
 namespace gfx { class CartAnimation; }
 
 /** This is an emigrant coming with his stuff */
-class Emigrant : public Human
+class Emigrant : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

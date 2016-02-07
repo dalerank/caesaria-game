@@ -28,15 +28,12 @@ RiverWave::RiverWave(PlayerCityPtr city )
   : Walker( city, walker::riverWave )
 {
   _delay = math::random( 100 );
-  _animation.load( ResourceGroup::sprites, 109, 5 );
-  _animation.setDelay( Animation::slow );
-  _animation.setOffset( Point( 0, 0) );
-  _animation.start( false );
+  _animation.load( "river_wave" );
 
   setFlag( vividly, false );
 }
 
-void RiverWave::send2City(const TilePos& location )
+void RiverWave::send2City(const TilePos& location)
 {
   setPos( location );
   attach();

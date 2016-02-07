@@ -184,6 +184,7 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
+  void changeShowNotification(bool value);
   void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
@@ -320,6 +321,7 @@ void Level::initialize()
 
   //connect elements
 
+  city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
   CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
@@ -363,18 +365,17 @@ void Level::initialize()
   _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
-  _d->dhandler.setVisible( false );
+  _d->dhandler.setVisible( KILLSWITCH(debugMenu) );
 
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  if( KILLSWITCH(debugMenu) )
-    _d->dhandler.setVisible( true );
-
-  if( !OSystem::isAndroid() )
+  bool showAware = KILLSWITCH(showStartAware);
+  if( !OSystem::isAndroid() && showAware )
   {
     gui::Ui& ui = *_d->game->gui();
-    dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
+    auto& dlg = dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished.", true );
+    dlg.onNever().connect( _d.data(), &Impl::changeShowNotification );
   }
 
   if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
@@ -428,6 +429,11 @@ void Level::Impl::showSoundOptionsWindow()
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
+
+void Level::Impl::changeShowNotification(bool value)
+{
+  SETTINGS_SET_VALUE(showStartAware, value);
+}
 
 void Level::Impl::showMessagesWindow()
 {
@@ -669,6 +675,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 
       window.moveTo( Widget::parentCenter );
       window.setModal();
+
+      events::dispatch<MissionLose>( pcity->victoryConditions().name() );
     }
   }
 }
@@ -730,10 +738,10 @@ void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  auto dialog = dialog::Confirmation( _d->game->gui(),
+  auto& dialog = dialog::Confirmation( _d->game->gui(),
                                       "", _("##exit_without_saving_question##"),
                                       dialog::Dialog::pauseGame );
-  CONNECT( dialog, onOk(), this, Level::_quit );
+  dialog.onYes().connect( this, &Level::_quit );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)

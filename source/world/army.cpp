@@ -16,16 +16,11 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "army.hpp"
-#include "game/gamedate.hpp"
-#include "empire.hpp"
-#include "core/logger.hpp"
-#include "city.hpp"
-#include "empiremap.hpp"
-#include "gfx/tilesarray.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/common.hpp"
-#include "core/variant_map.hpp"
-#include "config.hpp"
+#include <GameApp>
+#include <GameCore>
+#include <GameWorld>
+#include <GameLogger>
+#include <GameGfx>
 
 using namespace gfx;
 
@@ -51,7 +46,6 @@ Army::Army( EmpirePtr empire )
 {
   __D_REF(d,Army)
 
-  _animation().load( "world_army" );
   d.strength = 0;
 }
 
@@ -118,6 +112,17 @@ void Army::load(const VariantMap& stream)
 }
 
 std::string Army::type() const { return TEXT(Army); }
+
+std::string Army::about(Object::AboutType type)
+{
+  switch( type )
+  {
+  case aboutEmtype: return "world_army";
+  default: break;
+  }
+
+  return "";
+}
 
 void Army::setBase(CityPtr base) { _dfunc()->base = utils::objNameOrDefault( base ); }
 
