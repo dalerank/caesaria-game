@@ -22,6 +22,7 @@
 #include <string>
 
 class Game;
+class VariantList;
 
 namespace game
 {
@@ -30,7 +31,10 @@ class Scripting
 {
 public:
   static Scripting& instance();
-  static void doFile( const std::string& path );
+  static void loadModule( const std::string& path );
+  static void execFunction(const std::string& funcname);
+  static void execFunction(const std::string& funcname,
+                           const VariantList& params);
   void registerFunctions(Game& game);
 
 private:

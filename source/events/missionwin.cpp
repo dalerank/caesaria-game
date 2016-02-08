@@ -16,6 +16,8 @@
 #include "missionwin.hpp"
 #include "game/game.hpp"
 #include "steam.hpp"
+#include "city/city.hpp"
+#include "city/victoryconditions.hpp"
 #include "game/scripting.hpp"
 #include "core/variant_list.hpp"
 
@@ -32,10 +34,7 @@ GameEventPtr MissionWin::create(bool force)
 
 void MissionWin::_exec(Game& game, unsigned int)
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionWin( name );
-#endif
-
+  const auto& conditions = game.city()->victoryConditions();
   VariantList vl;
   vl << conditions.newTitle()
      << conditions.winText()
@@ -43,14 +42,17 @@ void MissionWin::_exec(Game& game, unsigned int)
      << conditions.mayContinue();
 
   game::Scripting::execFunction( "OnMissionWin", vl );
+
+  if( !_force )
+    steamapi::missionWin( conditions.name() );
 }
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
-MissionWin::MissionWin( const std::string& name ) : _name( name ) {}
+MissionWin::MissionWin( bool force ) : _force(force) {}
 
-GameEventPtr MissionLose::create(const std::string& name)
+GameEventPtr MissionLose::create(bool force)
 {
-  GameEventPtr ret( new MissionLose( name ) );
+  GameEventPtr ret( new MissionLose(force) );
   ret->drop();
 
   return ret;
@@ -58,12 +60,12 @@ GameEventPtr MissionLose::create(const std::string& name)
 
 void MissionLose::_exec(Game& game, unsigned int)
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionLose( name );
-#endif
+  auto missionName = game.city()->victoryConditions().name();
+  if (!_force)
+    steamapi::missionLose( missionName );
 }
 
 bool MissionLose::_mayExec(Game&, unsigned int) const{  return true; }
 
-MissionLose::MissionLose( const std::string& name ) : _name( name ) {}
+MissionLose::MissionLose( bool force ) : _force(force) {}
 }

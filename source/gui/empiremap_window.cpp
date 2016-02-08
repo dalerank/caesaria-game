@@ -207,11 +207,6 @@ public:
   math::SpringI highlight;
   unsigned int bottonMargin;
 
-#ifdef DEBUG
-  vfs::FileChangeObserver mapObserver;
-  vfs::FileChangeObserver guiObserver;
-#endif
-
   void checkCityOnMap( const Point& pos );
   void showOpenRouteRequestWindow();
   void createTradeRoute();
@@ -592,11 +587,6 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
 
   setFlag( showCityInfo, true );
   _d->objects.reset();
-
-#ifdef DEBUG
-   _d->mapObserver.watch( ":/empire_gfx.model" );
-   _d->mapObserver.onFileChangeSignal.connect( &_d->objects, &EmpireMapObjects::reset );
-#endif
 }
 
 void EmpireMapWindow::draw(gfx::Engine& engine )

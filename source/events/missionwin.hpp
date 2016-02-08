@@ -31,22 +31,22 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  MissionWin(const std::string &name);
+  MissionWin(bool force);
   bool _force;
 };
 
 class MissionLose : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& name);
+  static GameEventPtr create(bool force);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  MissionLose(const std::string &name);
-  std::string _name;
+  MissionLose(bool force);
+  bool _force;
 };
 
 }

@@ -37,6 +37,11 @@ Info::Info(Path path) : _path( path )
 
 }
 
+Info::Info(const Info& other)
+{
+  _path = other._path;
+}
+
 DateTime Info::modified() const
 {
 #ifndef GAME_PLATFORM_WIN

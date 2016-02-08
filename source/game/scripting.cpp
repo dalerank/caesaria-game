@@ -18,12 +18,13 @@
 #include "scripting.hpp"
 #include "picoc/mujs.h"
 #include <GameApp>
+#include <GameObjects>
 #include <GameVfs>
 #include <GameGui>
 #include <GameLogger>
 #include <GameCore>
-
 #include <GameCity>
+
 using namespace gui;
 
 namespace game
@@ -34,6 +35,7 @@ class Session
 public:
   Game* _game;
   Session(Game* game) { _game = game; }
+
   void continuePlay(int years)
   {
     city::VictoryConditions vc;
@@ -44,27 +46,43 @@ public:
   }
 };
 
-
 namespace internal
 {
 Game* game = nullptr;
+std::set<std::string> files;
+vfs::FileChangeObserver* observers = nullptr;
 Session* session = nullptr;
 js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
+inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline void push(js_State* J, int value) { js_pushnumber(J,value); }
 
 inline Rect to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
                js_toint32(J, n+2), js_toint32(J, n+3) ); }
-}
+} //end namespace internal
 
 void engineLog(js_State *J)
 {
   const char *text = js_tostring(J, 1);
   Logger::warning( text );
   js_pushundefined(J);
+}
+
+void engineReloadFile(vfs::Path path)
+{
+  if( internal::files.count( path.toString() ) )
+  {
+    Scripting::loadModule( path.toString() );
+  }
+}
+
+void engineLoadModule(js_State *J)
+{
+  vfs::Path scriptName = js_tostring(J, 1);
+  internal::files.insert( scriptName.toString() );
 }
 
 void engineTranslate(js_State *J)
@@ -80,7 +98,7 @@ Scripting& Scripting::instance()
   return inst;
 }
 
-void Scripting::doFile(const std::string& path)
+void Scripting::loadModule(const std::string& path)
 {
   vfs::Path rpath( path );
   if( !rpath.exist() )
@@ -90,17 +108,74 @@ void Scripting::doFile(const std::string& path)
   }
 
   int error = js_ploadfile(internal::J, rpath.toCString());
-  if (!error)
-  {
-    js_getglobal(internal::J, "main" );
-    error = js_pcall(internal::J,0);
-  }
-
   if (error)
   {
     std::string str = js_tostring(internal::J,-1);
     Logger::warning( str );
   }
+
+  js_getglobal(internal::J,"");
+  error = js_pcall(internal::J,0);
+  if (error)
+  {
+    std::string str = js_tostring(internal::J,-1);
+    Logger::warning( str );
+  }
+  js_pop(internal::J,-1);
+}
+
+void Scripting::execFunction(const std::string& funcname)
+{
+  execFunction( funcname, VariantList() );
+}
+
+void Scripting::execFunction(const std::string& funcname, const VariantList& params)
+{
+  js_getglobal(internal::J, funcname.c_str() );
+  js_pushnull(internal::J);
+  for( const auto& param : params )
+  {
+    switch( param.type() )
+    {
+    case Variant::Bool:
+      js_pushboolean( internal::J, param.toBool() );
+    break;
+
+    case Variant::Int:
+    case Variant::UInt:
+    case Variant::LongLong:
+    case Variant::ULongLong:
+    case Variant::Double:
+    case Variant::Ushort:
+    case Variant::Ulong:
+    case Variant::Long:
+    case Variant::Float:
+    case Variant::Uchar:
+    case Variant::Short:
+      js_pushnumber(internal::J, param.toDouble());
+    break;
+
+    case Variant::Char:
+    case Variant::String:
+      js_pushstring(internal::J, param.toString().c_str());
+    break;
+
+    default:
+      Logger::warning( "WARNING !!! Undefined value for js.pcall " + funcname );
+      js_pushnull(internal::J);
+    break;
+    }
+  }
+  int error = js_pcall(internal::J,params.size());
+
+  if (error)
+  {
+    Logger::warning( "WARNING !!! Some errors in js.pcall " + funcname );
+    std::string str = js_tostring(internal::J,-1);
+    Logger::warning( str );
+  }
+  else
+    js_pop(internal::J,1);
 }
 
 void constructor_Session(js_State *J)
@@ -190,15 +265,21 @@ void Scripting::registerFunctions( Game& game )
 
 DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineLog,"log",1);  
+  REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
   REGISTER_FUNCTION(engineTranslate,"translate",1);   
-REGISTER_GLOBAL_OBJECT(session)
-
+REGISTER_GLOBAL_OBJECT(engine)
 
 #include "scripting/window.interface"
 #include "scripting/button.interface"
 #include "scripting/label.interface"
+#include "scripting/session.interface"
 
-  doFile(":/gui/gui_init.js");
+  loadModule(":/system/modules.js");
+  {
+    internal::observers = new vfs::FileChangeObserver();
+    internal::observers->watch( ":/system" );
+    internal::observers->onFileChange().connect( &engineReloadFile );
+  }
 }
 
 Scripting::Scripting()
@@ -206,5 +287,4 @@ Scripting::Scripting()
   internal::J = js_newstate(NULL, NULL, JS_STRICT);
 }
 
-
-} //end namespace advisor
+} //end namespace game

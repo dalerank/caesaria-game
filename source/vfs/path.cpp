@@ -20,6 +20,7 @@
 #include "filesystem.hpp"
 #include "entries.hpp"
 #include "directory.hpp"
+#include "fileinfo.hpp"
 #include "core/utils.hpp"
 
 #ifdef GAME_PLATFORM_WIN
@@ -512,6 +513,8 @@ Path Path::canonical() const
 {
   return utils::localeLower( _d->path );
 }
+
+Info Path::info() const { return Info( *this ); }
 
 } //end namespace vfs
 

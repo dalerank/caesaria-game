@@ -220,6 +220,11 @@ unsigned int DateTime::hashdate() const
   return math::signnum( year() ) * ( math::abs( year() ) * 1000 + (int)month() * 50 + day() );
 }
 
+unsigned int DateTime::hashtime() const
+{
+  return hour() * 10000 + minutes() * 100  + seconds();
+}
+
 DateTime DateTime::fromhash(unsigned int hash)
 {
   int y = hash / 1000;

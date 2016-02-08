@@ -19,6 +19,8 @@
 #include <GameThreads>
 #include <GameLogger>
 
+#include "vfs/fileinfo.hpp"
+
 #ifdef GAME_PLATFORM_WIN
 #include "windows.h"
 #endif
@@ -29,7 +31,7 @@ namespace vfs
 #ifdef GAME_PLATFORM_WIN
 namespace internal
 {
-int watchDirectory(const char* lpFile)
+int watchDirectory(const char* lpDir)
 {
    DWORD dwWaitStatus;
    HANDLE dwChangeHandles[2];
@@ -38,26 +40,26 @@ int watchDirectory(const char* lpFile)
    // Watch the directory for file creation and deletion.
 
    dwChangeHandles[0] = FindFirstChangeNotification(
-      lpFile,                         // directory to watch
+      lpDir,                         // directory to watch
       FALSE,                         // do not watch subtree
-      FILE_ACTION_MODIFIED); // watch file modify
+      FILE_NOTIFY_CHANGE_SIZE); // watch file modify
 
    if (dwChangeHandles[0] == INVALID_HANDLE_VALUE)
    {
-     Logger::warning("ERROR: FindFirstChangeNotification function failed.");
+     Logger::warning("ERROR: FindFirstChangeNotification function failed er={}", GetLastError() );
      return 0;
    }
 
 // Watch the subtree for directory creation and deletion.
 
    dwChangeHandles[1] = FindFirstChangeNotification(
-      lpFile,                         // directory to watch
-      TRUE,                          // watch the subtree
-      FILE_NOTIFY_CHANGE_SIZE);  // watch file size change
+      lpDir,                         // directory to watch
+      FALSE,                          // watch the subtree
+      FILE_NOTIFY_CHANGE_LAST_WRITE);  // watch file size change
 
    if (dwChangeHandles[1] == INVALID_HANDLE_VALUE)
    {
-     Logger::warning("ERROR: FindFirstChangeNotification function failed.");
+     Logger::warning("ERROR: FindFirstChangeNotification function failed er={}", GetLastError());
      return 0;
    }
 
@@ -66,7 +68,7 @@ int watchDirectory(const char* lpFile)
 
    if ((dwChangeHandles[0] == NULL) || (dwChangeHandles[1] == NULL))
    {
-     Logger::warning("ERROR: Unexpected NULL from FindFirstChangeNotification.");
+     Logger::warning("ERROR: Unexpected NULL from FindFirstChangeNotification er={}", GetLastError());
      return 0;
    }
 
@@ -90,7 +92,7 @@ int watchDirectory(const char* lpFile)
 
              if ( FindNextChangeNotification(dwChangeHandles[0]) == FALSE )
              {
-               Logger::warning("ERROR: FindNextChangeNotification function failed.");
+               Logger::warning("ERROR: FindNextChangeNotification function failed er={}", GetLastError());
                return 0;
              }
              return 2;
@@ -103,7 +105,7 @@ int watchDirectory(const char* lpFile)
 
              if (FindNextChangeNotification(dwChangeHandles[1]) == FALSE )
              {
-               Logger::warning("ERROR: FindNextChangeNotification function failed.");
+               Logger::warning("ERROR: FindNextChangeNotification function failed er={}", GetLastError());
                return 0;
              }
              return 3;
@@ -142,13 +144,19 @@ int watchDirectory(const char* lpDir)
 class FileChangeObserver::Impl
 {
 public:
-  vfs::Path path;
+  std::map<std::string,int> files;
+  vfs::Directory dir;
   threading::SafeThreadPtr thread;
+  Signal1<vfs::Path> onFileChangeSignalA;
+
+  void createSnapshot();
+  void checkSnapshot();
 };
 
 FileChangeObserver::FileChangeObserver()
-  : _d( new Impl )
+  : _d(new Impl)
 {
+
 }
 
 FileChangeObserver::~FileChangeObserver()
@@ -157,25 +165,66 @@ FileChangeObserver::~FileChangeObserver()
     _d->thread->stop();
 }
 
-void FileChangeObserver::watch(Path path)
+void FileChangeObserver::watch(const std::string& dir)
 {
+  watch( Directory(dir) );
+}
+
+void FileChangeObserver::watch(Directory dir)
+{
+  _d->dir = dir;
+  _d->createSnapshot();
+
   _d->thread = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &FileChangeObserver::run ) );
   _d->thread->setDelay( 500 );
 }
 
 void FileChangeObserver::run(bool& continues)
 {
-  int result = internal::watchDirectory( _d->path.toCString() );
+  int result = internal::watchDirectory( _d->dir.toCString() );
   switch( result )
   {
-  case 0 : continues = false; break;
-  case 2 :
-    emit onFileChangeSignal();
+  case 0:
+    continues = false;
+  break;
+
+  case 3:
+  case 2:
+    _d->checkSnapshot();
     continues = true;
   break;
 
   default : continues = true; break;
   }
+}
+
+Signal1<Path>&FileChangeObserver::onFileChange() { return _d->onFileChangeSignalA; }
+
+void FileChangeObserver::Impl::checkSnapshot()
+{
+  vfs::Entries::Items items = dir.entries().items();
+  for( const auto& item : items )
+  {
+    auto it = files.find( item.fullpath.toString() );
+    if( it != files.end() )
+    {
+      unsigned int newTime = item.fullpath.info().modified().hashtime();
+      unsigned int oldTime = files[ item.fullpath.toString() ];
+      if( newTime != oldTime )
+      {
+        files[ item.fullpath.toString() ] = newTime;
+        emit onFileChangeSignalA( item.fullpath );
+      }
+    }
+  }
+}
+
+void FileChangeObserver::Impl::createSnapshot()
+{
+  files.clear();
+  vfs::Entries::Items items = dir.entries().items();
+  for( const auto& item : items )
+    files[ item.fullpath.toString() ] = item.fullpath.info().modified().hashtime();
 }
 
 

@@ -3,6 +3,7 @@ CMakeLists.txt.user
 *~
 \#*#
 stdout.txt
+bin/resources/settings.model
 caesar3
 .travis.yml
 

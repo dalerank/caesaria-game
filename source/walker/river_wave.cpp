@@ -29,6 +29,7 @@ RiverWave::RiverWave(PlayerCityPtr city )
 {
   _delay = math::random( 100 );
   _animation.load( "river_wave" );
+  _animation.setLoop( Animation::isOnce );
 
   setFlag( vividly, false );
 }

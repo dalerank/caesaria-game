@@ -219,6 +219,11 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
       Animation& animation = simpleAnimations[ type ];
       animation.load( rc, start, frames, reverse, step );
       animation.setDelay( delay );
+
+      Variant vLoop = stageInfo.get( "loop" );
+      if( vLoop.isValid() )
+        animation.setLoop( vLoop.toBool() );
+
       if( offset.isValid() )
       {
         if( offset.type() == Variant::String )

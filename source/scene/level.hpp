@@ -54,8 +54,6 @@ public:
   void setCameraPos( TilePos pos, bool force=false );
   void switch2layer( int layer );
 
-  void resolveSuccess();
-
 public slots:
   void loadStage(std::string filename);
   void restart();

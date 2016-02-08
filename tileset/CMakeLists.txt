@@ -27,6 +27,7 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
+      "${BASE_SOURCE_DIR}/vfs/fileinfo.cpp"
       "${BASE_SOURCE_DIR}/gfx/batch.cpp"
       "${BASE_SOURCE_DIR}/gfx/picture.cpp"
       "${BASE_SOURCE_DIR}/gfx/engine.cpp"

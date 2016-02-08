@@ -384,9 +384,8 @@ void Level::initialize()
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
-
-void Level::Impl::showSaveDialog() {  events::dispatch<ShowSaveDialog>(); }
-void Level::Impl::setVideoOptions(){  events::dispatch<SetVideoSettings>(); }
+void Level::Impl::showSaveDialog() { events::dispatch<ShowSaveDialog>(); }
+void Level::Impl::setVideoOptions(){ events::dispatch<SetVideoSettings>(); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
@@ -525,14 +524,6 @@ std::string Level::Impl::getScreenshotName()
   return (screenDir/filename).toString();
 }
 
-void Level::loadStage( std::string filename )
-{
-  _d->mapToLoad = filename.empty()
-                      ? _d->createFastSaveName().toString()
-                      : filename;
-  _resolveSwitchMap();
-}
-
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
   std::string typesave = type.empty() ? SETTINGS_STR( fastsavePostfix ) : type;
@@ -659,7 +650,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       window.moveToCenter();
       window.setModal();
 
-      events::dispatch<MissionLose>( pcity->victoryConditions().name() );
+      events::dispatch<MissionLose>(forceFailed);
     }
   }
 }
@@ -691,9 +682,9 @@ void Level::setConstructorMode(bool enabled)
   _d->extMenu->setConstructorMode( enabled );
 }
 
-void Level::resolveSuccess()
+void Level::loadStage(std::string filename)
 {
-  _d->mapToLoad = _d->game->city()->victoryConditions().nextMission();
+  _d->mapToLoad = filename;
   bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
   _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
   stop();
@@ -799,7 +790,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F9:
-      loadStage( "" );
+      loadStage( _d->createFastSaveName().toString() );
       handled = true;
     break;
 
