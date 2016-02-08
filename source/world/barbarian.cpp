@@ -16,19 +16,15 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "barbarian.hpp"
-#include "empire.hpp"
-#include "good/storage.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/logger.hpp"
-#include "merchant.hpp"
-#include "gfx/animation.hpp"
-#include "city.hpp"
-#include "core/variant_map.hpp"
-#include "game/gamedate.hpp"
-#include "events/notification.hpp"
-#include "city/states.hpp"
-#include "config.hpp"
-#include "objects_factory.hpp"
+#include <GameWorld>
+#include <GameGood>
+#include <GameApp>
+#include <GameLogger>
+#include <GameObjects>
+#include <GameGfx>
+#include <GameCore>
+#include <GameEvents>
+#include <GameCity>
 
 namespace world
 {
@@ -63,6 +59,7 @@ std::string Barbarian::about(Object::AboutType type)
   switch(type)
   {
   case aboutEmpireMap: ret = "##enemy_army_threating_a_city##";      break;
+  case aboutEmtype: ret = "world_barbarian"; break;
   default:        ret = "##enemy_army_unknown_about##";  break;
   }
 
@@ -235,8 +232,6 @@ Barbarian::Barbarian( EmpirePtr empire )
   _d->mode = Impl::findAny;
   _d->minPop4attack = 1000;
   setSpeed( 4.f );
-
-  _animation().load( "world_barbarian" );
 }
 
 }//end namespace world

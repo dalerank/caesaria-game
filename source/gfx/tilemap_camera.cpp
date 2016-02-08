@@ -277,17 +277,6 @@ const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.visible.empty() )
   {
-
-  /*const TilesArray& tl = tmap->svkBorderTiles();
-  Rect viewRect( Point( -config::tilemap.cell.picSize().width(), -config::tilemap.cell.size().height() ),
-                 size.virtuals + config::tilemap.cell.picSize() * 2 );
-  for( auto i : tl )
-  {
-    if( viewRect.isPointInside( i->mappos() + Point( config::tilemap.cell.picSize().width()/2, 0 ) + offset)  )
-    {
-      tiles.ground.push_back( i );
-    }
-  }*/
     _d->offset = _d->getOffset( _d->centerMapXZ );    
 
     int mapSize = _d->tmap->size();

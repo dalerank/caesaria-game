@@ -30,7 +30,7 @@ namespace advisorwnd
 class Emperor : public Base
 {
 public:
-  Emperor( PlayerCityPtr city, Widget* parent, int id );
+  Emperor( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
 

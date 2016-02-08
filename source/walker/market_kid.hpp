@@ -22,7 +22,7 @@
 #include "good/good.hpp"
 #include "objects/predefinitions.hpp"
 
-class MarketKid : public Human
+class MarketKid : public Citizen
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:

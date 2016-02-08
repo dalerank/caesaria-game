@@ -22,6 +22,7 @@
 #include "position.hpp"
 #include "gfx/tilepos.hpp"
 #include "objects/param.hpp"
+#include <set>
 
 namespace utils
 {

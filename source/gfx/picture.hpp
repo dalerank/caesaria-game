@@ -85,7 +85,7 @@ public:
   Picture& draw(Picture pic, const Point& point, const Size& size );
   Picture& draw(Picture pic, const Rect& src, const Rect& dst=Rect());
 
-  unsigned int* lock();
+  uint32_t* lock();
   void unlock();
 
   Size size() const;

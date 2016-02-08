@@ -35,7 +35,7 @@ namespace events
 {
 
 GAME_LITERALCONST(type)
-GAME_LITERALCONST(name)
+GAME_LITERALCONST(name) 
 
 bool GameEvent::tryExec(Game& game, unsigned int time)
 {

@@ -266,8 +266,8 @@ void GoodOrderManageWindow::toggleIndustryEnable()
 
   if( !industryEnabled )
   {
-    auto* dialog = dialog::Confirmation( ui(), "Note", "Do you want fire workers from industry?",
-                                         makeDelegate( this, &GoodOrderManageWindow::_fireWorkers ) );
+    dialog::Confirmation( ui(), "Note", "Do you want fire workers from industry?",
+                          makeDelegate( this, &GoodOrderManageWindow::_fireWorkers ) );
   }
 
   updateIndustryState();

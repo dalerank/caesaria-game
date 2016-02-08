@@ -771,8 +771,6 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
   _d->states.birth = game::Date::current();
-
-  _initTextures();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->trade.delay <= 0; }
@@ -869,8 +867,6 @@ void ComputerCity::load( const VariantMap& options )
 
   _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::trSea : EmpireMap::trUnknown)
                   + (options.get( "land" ).toBool() ? EmpireMap::trLand : EmpireMap::trUnknown);
-
-  _initTextures();
 }
 
 const good::Store& ComputerCity::sells() const { return _d->realSells; }
@@ -1009,6 +1005,18 @@ std::string ComputerCity::about(Object::AboutType type)
       ret = "";
   break;
 
+  case aboutEmtype:
+    if( nation() == world::nation::roman )
+      return "world_romancity";
+
+    if( tradeType() != EmpireMap::trSea )
+      return "world_seatradecity";
+    else if( tradeType() != EmpireMap::trLand )
+      return "world_landtradecity";
+
+    return "world_othercity";
+  break;
+
   default:
     ret = "##compcity_unknown_about##";
   }
@@ -1018,27 +1026,6 @@ std::string ComputerCity::about(Object::AboutType type)
 
 unsigned int ComputerCity::tradeType() const { return _d->terrain; }
 int ComputerCity::strength() const { return _d->strength; }
-
-void ComputerCity::_initTextures()
-{
-  std::map<int,std::string> rconfig = { {config::id.empire.otherCity, "world_othercity" },
-                                        {config::id.empire.distantCity, "world_distantcity" },
-                                        {config::id.empire.romeCity, "wolrd_romecity"} };
-
-  int index = config::id.empire.otherCity;
-  if( nation() == world::nation::roman ) { index = config::id.empire.romeCity; }
-  else
-  {
-    if( tradeType() == EmpireMap::trLand ||
-        tradeType() == EmpireMap::trSea ||
-        tradeType() == EmpireMap::trCity )
-     index = config::id.empire.distantCity;
-  }
-
-  setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().clear();
-  _animation().load( rconfig[ index ] );
-}
 
 void ComputerCity::_resetGoodState(good::Product pr)
 {

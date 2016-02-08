@@ -161,7 +161,7 @@ class ParlorModel::Impl
 {
 public:
   Widget* parent;
-  Widget* advisorPanel;
+  Base* advisorPanel;
 
   Point offset;
   PlayerCityPtr city;
@@ -224,26 +224,58 @@ void ParlorModel::switchAdvisor(Advisor type)
 
   if( d.advisorPanel )
   {
+    if( type == d.advisorPanel->type() )
+      return;
+
     d.advisorPanel->deleteLater();
     d.advisorPanel = nullptr;
   }
 
-  if( type == advisor::employers )  { d.advisorPanel = new advisorwnd::Employer( d.city, d.parent, advisor::employers );  }
-  else if( type == advisor::military )
+  switch( type )
+  {
+  case advisor::employers:
+    d.advisorPanel = new advisorwnd::Employer( d.city, d.parent );
+  break;
+  case advisor::military:
   {
     auto forts = d.city->statistic().objects.find<Fort>();
-    d.advisorPanel = new advisorwnd::Legion( d.parent, advisor::military, d.city, forts );
+    d.advisorPanel = new advisorwnd::Legion( d.parent, d.city, forts );
   }
-  else if( type == advisor::population ) { d.advisorPanel = new advisorwnd::Population( d.city, d.parent, advisor::population ); }
-  else if( type == advisor::empire )     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent, advisor::empire );
-  else if( type == advisor::ratings )     d.advisorPanel = new advisorwnd::Ratings( d.parent, advisor::ratings, d.city );
-  else if( type == advisor::trading )     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city, advisor::trading );
-  else if( type == advisor::education )    d.advisorPanel = new advisorwnd::Education( d.city, d.parent, -1 );
-  else if( type == advisor::health ) d.advisorPanel = new advisorwnd::Health( d.city, d.parent, -1 );
-  else if( type == advisor::entertainment ) d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent, -1 );
-  else if( type == advisor::religion ) d.advisorPanel = new advisorwnd::Religion( d.city, d.parent, -1 );
-  else if( type == advisor::finance ) d.advisorPanel = new advisorwnd::Finance( d.city, d.parent, -1 );
-  else if( type == advisor::main ) d.advisorPanel = new advisorwnd::Chief( d.city, d.parent, -1 );
+  break;
+  case advisor::population:
+    d.advisorPanel = new advisorwnd::Population( d.city, d.parent );
+  break;
+  case advisor::empire:
+    d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent );
+  break;
+  case advisor::ratings:
+    d.advisorPanel = new advisorwnd::Ratings( d.parent, d.city );
+  break;
+  case advisor::trading:
+    d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );
+  break;
+  case advisor::education:
+    d.advisorPanel = new advisorwnd::Education( d.city, d.parent );
+  break;
+  case advisor::health:
+    d.advisorPanel = new advisorwnd::Health( d.city, d.parent );
+  break;
+  case advisor::entertainment:
+    d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
+  break;
+  case advisor::religion:
+    d.advisorPanel = new advisorwnd::Religion( d.city, d.parent );
+  break;
+  case advisor::finance:
+    d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );
+  break;
+  case advisor::main:
+    d.advisorPanel = new advisorwnd::Chief( d.city, d.parent );
+  break;
+
+  default:
+  break;
+  }
 }
 
 }//end namespace advisorwnd

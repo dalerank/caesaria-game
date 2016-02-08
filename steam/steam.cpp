@@ -36,7 +36,7 @@ namespace steamapi
 #ifdef GAME_USE_STEAM
 
 #define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
-enum MissionName { n2_nvillage=0, nx_count };
+enum MissionName { n2_nvillage=0, n2_nexthope, nx_count };
 enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 
 static const AppId_t GAME_STEAM_APPID=0x04ffd8;
@@ -92,7 +92,8 @@ Achievement glbAchievements[achv_count] =
 {
   _ACH_ID( achievementFirstWin     ),
   _ACH_ID( achievementNewGraphics  ),
-  _ACH_ID( achievementNewVillage   )
+  _ACH_ID( achievementNewVillage   ),
+  _ACH_ID( achievementClerkEscape   ),
 };
 
 class UserStats
@@ -137,6 +138,7 @@ public:
     #define _INIT_MISSION( id ) missions[ id ] = MissionInfo( id, #id, 0 );
 
     _INIT_MISSION( n2_nvillage )
+    _INIT_MISSION( n2_nexthope )
 
     #undef _INIT_MISSION
 
@@ -204,7 +206,7 @@ void UserStats::clearAchievement( Achievement &achievement )
 
   // mark it down
 #ifdef  GAME_PLATFORM_WIN
-  //sth_clearAchievement( achievement.uniqueName );
+  sth_clearAchievement( achievement.steamName );
 #else
   if( xclient.stats )
   {
@@ -253,6 +255,10 @@ void UserStats::evaluateAchievement( Achievement& achievement )
   {
   case achievementNewVillage:
       if(missions[n2_nvillage].count>0){unlockAchievement(achievement);}
+  break;
+
+  case achievementClerkEscape:
+      if(missions[n2_nexthope].count>0){unlockAchievement(achievement);}
   break;
 
   case achievementFirstWin:
@@ -767,6 +773,14 @@ void missionWin( const std::string& name )
   evaluateAchievements();
 }
 
+void missionLose(const std::string& name)
+{
+  glbUserStats.stats[ stat_num_lose ].count++;
+  glbUserStats.stats[ stat_num_games ].count++;
+  glbUserStats.checkMissions( name );
+  evaluateAchievements();
+}
+
 void evaluateAchievement( AchievementType achivId )
 {
   glbUserStats.evaluateAchievement( glbAchievements[achivId] );
@@ -783,12 +797,26 @@ std::string ld_prefix()
             : "";
 }
 
+void resetPrefs()
+{
+  glbUserStats.stats[ stat_num_wins ].count = 0;
+  glbUserStats.stats[ stat_num_games ].count = 0;
+  glbUserStats.stats[ stat_num_lose ].count = 0;
+  glbUserStats.clearAchievement( glbAchievements[achievementNewVillage] );
+  glbUserStats.clearAchievement( glbAchievements[achievementFirstWin] );
+  glbUserStats.clearAchievement( glbAchievements[achievementClerkEscape] );
+  glbUserStats.storeStatsIfNecessary();
+}
+
 #else
 
 bool available() { return false; }
 bool checkSteamRunning() { return true; }
 bool connect() { return true; }
+void missionWin( const std::string& name ) {}
+void missionLose( const std::string& name ) {}
 void close() {}
+void resetPrefs() {}
 bool isAchievementReached(steamapi::AchievementType) { return true; }
 gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
 void init() {}

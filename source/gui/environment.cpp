@@ -40,6 +40,8 @@ typedef std::map<Ui::Flag, int> Flags;
 struct UiTooltipWorker
 {
   WidgetPtr element;
+  Point lastPos;
+  Point offset;
   unsigned int lastTime;
   unsigned int enterTime;
   unsigned int launchTime;
@@ -89,6 +91,7 @@ Ui::Ui(Engine& painter )
   _d->engine = &painter;
   _dfunc()->environment = this;
   _d->tooltip.element;
+  _d->tooltip.offset = Point( 0, 5 );
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;
   _d->tooltip.launchTime = 1000;
@@ -102,6 +105,7 @@ Ui::Ui(Engine& painter )
   _d->console = 0;
 
   setFlag( drawDebugArea, 0 );
+  setFlag( showTooltips, 1 );
 }
 
 //! Returns if the element has focus
@@ -180,7 +184,7 @@ bool Ui::setFocus( Widget* element )
   {
     currentFocus = _d->focusedElement;
 
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
+    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
     {
       return false;
     }
@@ -193,7 +197,7 @@ bool Ui::setFocus( Widget* element )
     currentFocus = _d->focusedElement;
 
     // send focused event
-    if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), guiElementFocused ) ))
+    if( element->onEvent( NEvent::ev_gui( element, _d->focusedElement.object(), guiElementFocused ) ))
     {
       currentFocus = WidgetPtr();
 
@@ -221,9 +225,7 @@ Widget* Ui::findWidget(int id)
 
 Widget* Ui::findWidget(const Point &p)
 {
-  const Widgets& widgets = children();
-
-  for( auto widget : widgets )
+  for( auto widget : children() )
   {
     if( widget->visible() && widget->isPointInside( p ) )
       return widget;
@@ -318,12 +320,12 @@ void Ui::_updateHovered( const Point& mousePos )
   {
     if( lastHovered.isValid() )
     {
-      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
+      lastHovered->onEvent( NEvent::ev_gui( lastHovered.object(), 0, guiElementLeft ) );
     }
 
     if( _d->hovered.current.isValid() )
     {
-      _d->hovered.current->onEvent( NEvent::Gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
+      _d->hovered.current->onEvent( NEvent::ev_gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
     }
   }
 
@@ -533,7 +535,7 @@ bool Ui::removeFocus( Widget* element)
 {
   if( _d->focusedElement.isValid() && _d->focusedElement == element )
   {
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
+    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
     {
       return false;
     }
@@ -570,10 +572,7 @@ Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
     elm.setWordwrap( true );
   }
 
-  Rect rect( cursor, tooltipSize );
-
-  rect -= Point( tooltipSize.width() + 20, -20 );
-  elm.setGeometry( rect );
+  elm.setGeometry( Rect( cursor + offset, tooltipSize ) );
 
   return &elm;
 }
@@ -583,7 +582,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
 {
   // launch tooltip
   if( element.isNull()
-      && hovered.isValid() && hovered.object() != &rootWidget
+      && hovered.isValid()
+      && hovered.object() != &rootWidget
       && (time - enterTime >= launchTime
       || (time - lastTime >= relaunchTime && time - lastTime < launchTime))
       && hovered->tooltipText().size()
@@ -591,8 +591,7 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   {
     if( hovered.isValid() )
     {
-      NEvent e;
-      hovered->onEvent( e );
+      hovered->onEvent( NEvent::ev_none() );
     }
 
     element = standart( rootWidget, hovered.object(), cursor );
@@ -612,6 +611,11 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   {
     lastTime = time;
 
+    if( lastPos != cursor )
+    {
+      element->setPosition( cursor + offset );
+    }
+
     // got invisible or removed in the meantime?
     if( hovered.isNull()
         || !hovered->visible()
@@ -621,6 +625,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
       element = WidgetPtr();
     }
   }
+
+  lastPos = cursor;
 }
 
 }//end namespace gui

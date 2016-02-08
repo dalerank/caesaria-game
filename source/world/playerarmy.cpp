@@ -72,6 +72,8 @@ std::string PlayerArmy::about(Object::AboutType type)
                   : "##playerarmy_gone_to_location##";
   break;
 
+  case aboutEmtype: return "world_playerarmy"; break;
+
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 
@@ -338,13 +340,6 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
 {
   _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
-
-  Picture pic( ResourceGroup::empirebits, 37 );
-  Size size = pic.size();
-  pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  setPicture( pic );
-
-  _animation().load( "world_playerarmy" );
 }
 
 void PlayerArmy::Impl::updateStrength()

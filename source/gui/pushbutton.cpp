@@ -479,7 +479,7 @@ bool PushButton::onEvent(const NEvent& event)
 void PushButton::_btnClicked()
 {
   __D_REF(d,PushButton)
-  parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, guiButtonClicked ) );
 
   emit d.signal.onClicked();
   emit d.signal.onClickedEx( this );
@@ -641,6 +641,7 @@ void PushButton::setFont( const Font& font )
   d.bg.dirty = true;
 }
 
+void PushButton::setFont(const std::string& fname) { setFont( Font::create( fname ) ); }
 void PushButton::setFont(FontType type, NColor color) { Widget::setFont(type,color); }
 Picture& PushButton::_textPicture() { return _dfunc()->text.picture; }
 Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font; }

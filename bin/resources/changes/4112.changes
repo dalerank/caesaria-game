@@ -1,0 +1,27 @@
+{  
+  revision : 4112
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 12, 40, "100%-11", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_2"
+
+    items : [
+      "1. Fixed crash when switch to empire map from trade advisor"
+      "2. Venus now killing only citizens when wrath"
+      "3. Improved city borders, now black tiles draw with textures"
+      "4. Venus now killing only citizens on wrath"
+      "5. Redesign empire map view, correct animations and trade flags"
+      "6. Fixed loading desert tileset"
+      "7. Added textures for furniture workshop"
+      "8. Added river wave animation"
+    ]
+  }
+}

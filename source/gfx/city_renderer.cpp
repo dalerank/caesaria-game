@@ -205,8 +205,8 @@ void CityRenderer::Impl::awareExperimental()
 #endif
   if( city->tilemap().direction() != direction::north )
   {
-    auto dlg = gui::dialog::Information( guienv, "Note", "Sorry, rotated map yet expiremental mode\ngame may work incorrect." );
-    dlg->show();
+    auto& dlg = gui::dialog::Information( guienv, "Note", "Sorry, rotated map yet expiremental mode\ngame may work incorrect." );
+    dlg.show();
   }
 }
 

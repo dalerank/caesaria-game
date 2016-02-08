@@ -238,8 +238,8 @@ void Emperor::_showRequestsHistory()
 PlayerPtr Emperor::_mayor() {  return _city->mayor(); }
 world::Emperor& Emperor::_emperor() { return _city->empire()->emperor(); }
 
-Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ), __INIT_IMPL(Emperor)
+Emperor::Emperor(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::empire ), __INIT_IMPL(Emperor)
 {
   __D_IMPL(_d,Emperor)
   GameAutoPause::insertTo( this );

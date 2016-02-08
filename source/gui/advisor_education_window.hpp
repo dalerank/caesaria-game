@@ -30,7 +30,7 @@ class Education : public Base
 {
   __DECLARE_IMPL(Education)
 public:
-  Education( PlayerCityPtr city, Widget* parent, int id );
+  Education( PlayerCityPtr city, Widget* parent );
   virtual void draw( gfx::Engine& painter );
   virtual void showDetails(Widget* widget);
 };

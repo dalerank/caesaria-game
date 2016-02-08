@@ -1502,7 +1502,7 @@ void EditBox::_setTextMarkers(int begin, int end)
 //! send some gui event to parent
 void EditBox::_sendGuiEvent( unsigned int type)
 {
-    parent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
+    parent()->onEvent( NEvent::ev_gui( this, 0, (GuiEventType)type ));
 }
 
 NColor EditBox::overrideColor() const

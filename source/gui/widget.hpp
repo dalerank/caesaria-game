@@ -105,7 +105,7 @@ public:
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
   virtual void setFont( const Font& font );
-
+  virtual void setFont( const std::string& font );
   virtual void setFont( FontType type, NColor color=0 );
 
   //! Gets the override font (if any)
@@ -311,7 +311,8 @@ public:
    *	\return Returns the first element with the given id. If no element
    *	with this id was found, 0 is returned.
    */
-  virtual Widget* findChild(int id, bool searchChildren=false) const;
+  Widget* findChild(int id, bool searchChildren=false) const;
+  Widget* findChild(const std::string& internalName, bool searchChildren) const;
 
   template<class T>
   T* findChild(int id, bool searchChildren=false) const

@@ -738,6 +738,11 @@ void Label::setFont( const Font& font )
   _d->is.needUpdate = true;
 }
 
+void Label::setFont(const string& fontname)
+{
+  Widget::setFont( fontname );
+}
+
 void Label::setFont(FontType type, NColor color)
 {
   Widget::setFont(type, color);

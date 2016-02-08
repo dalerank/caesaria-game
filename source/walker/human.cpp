@@ -39,3 +39,15 @@ void Human::_initHumabOptions()
 }
 
 Human::~Human() {}
+
+Citizen::Citizen(PlayerCityPtr city)
+  : Human( city )
+{
+
+}
+
+Citizen::Citizen(PlayerCityPtr city, walker::Type type)
+  : Human( city, type )
+{
+
+}

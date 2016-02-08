@@ -175,7 +175,7 @@ void Construction::computeRoadside()
   {
     TilesArray tiles = _map().rect( pos() + TilePos( -dst, -dst ),
                                      pos() + TilePos( s+dst-1, s+dst-1 ),
-                                     !Tilemap::checkCorners );
+                                     !Tilemap::CheckCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
@@ -294,7 +294,7 @@ TilesArray Construction::enterArea() const
   int s = size().width();
   TilesArray near = _city()->tilemap().rect( pos() - TilePos(1, 1),
                                              pos() + TilePos(s, s),
-                                             !Tilemap::checkCorners );
+                                             !Tilemap::CheckCorners );
 
   return near.walkables( true );
 }

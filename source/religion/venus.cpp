@@ -52,9 +52,9 @@ object::Type Venus::templeType(Divinity::TempleSize size) const
 void Venus::_doWrath( PlayerCityPtr city )
 {
   events::dispatch<ShowInfobox>( _("##wrath_of_venus_title##"),
-                                            _("##wrath_of_venus_description##"),
-                                            true,
-                                            "god_venus");
+                                 _("##wrath_of_venus_description##"),
+                                 true,
+                                 "god_venus");
 
   SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
@@ -78,10 +78,9 @@ void Venus::_doBlessing(PlayerCityPtr city)
   int rndCount = math::random( houses.size() / 5 );
   if (rndCount > 0)
   {
-    HouseList list = houses.random((size_t) rndCount);
-    foreach(it, list)
+    HouseList randomHouses = houses.random((size_t) rndCount);
+    for( auto house : randomHouses)
     {
-      HousePtr house = *it;
       ConstructionParamUpdater::assignTo(house.as<Construction>(),
                                          pr::healthBuff, true, 8, DateTime::weekInMonth * 5);
     }
@@ -117,8 +116,8 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     // Reduce health by 8 in <=20% of houses for 5 month
     HouseList houses = city->statistic().houses.find();
 
-    HouseList list = houses.random( houses.size() / 5 );
-    for( auto house : list)
+    HouseList randomHouses = houses.random( houses.size() / 5 );
+    for( auto house : randomHouses)
     {
       ConstructionParamUpdater::assignTo( house.as<Construction>(),
                                           pr::healthBuff, true, -8, DateTime::weekInMonth * 5);

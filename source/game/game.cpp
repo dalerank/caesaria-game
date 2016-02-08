@@ -17,43 +17,33 @@
 // Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #include "game.hpp"
-#include "scene/logo.hpp"
-#include "city/build_options.hpp"
-#include "core/utils.hpp"
-#include "objects/construction.hpp"
-#include "game/player.hpp"
-#include "gfx/picture.hpp"
-#include "gfx/gl_engine.hpp"
+#include <GameScene>
+#include <GameCore>
+#include <GameGfx>
+#include <GameCity>
+#include <GameLogger>
+#include <GameEvents>
+#include <GameVfs>
+#include <GameObjects>
+#include <GameApp>
+#include <GameScene>
+
+#include "scripting.hpp"
 #include "sound/engine.hpp"
-#include "core/variant_map.hpp"
-#include "gfx/picture_bank.hpp"
-#include "scene/lobby.hpp"
-#include "scene/level.hpp"
+
 #include "gui/environment.hpp"
 #include "settings.hpp"
-#include "vfs/filesystem.hpp"
-#include "gfx/animation_bank.hpp"
 #include "vfs/entries.hpp"
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
-#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
-#include "core/saveadapter.hpp"
-#include "events/dispatcher.hpp"
-#include "core/logger.hpp"
-#include "vfs/directory.hpp"
-#include "core/locale.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
 #include "religion/pantheon.hpp"
-#include "vfs/archive_sg2.hpp"
-#include "vfs/archive_zip.hpp"
 #include "scene/briefing.hpp"
-#include "gfx/logo.hpp"
 #include "walker/helper.hpp"
 #include "core/osystem.hpp"
 #include "freeplay_finalizer.hpp"
@@ -105,6 +95,7 @@ public:
   void initPictures(bool& isOk, std::string& result);
   void initGameConfigs(bool& isOk, std::string& result);
   void initAddons(bool& isOk, std::string& result);
+  void initScripting(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
   void initMovie(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
@@ -410,6 +401,11 @@ void Game::Impl::initAddons(bool& isOk, std::string& result)
   am.load( vfs::Directory( std::string( ":/addons" ) ) );
 }
 
+void Game::Impl::initScripting(bool& isOk, std::string& result)
+{
+  game::Scripting::instance();
+}
+
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
@@ -593,7 +589,8 @@ void Game::initialize()
     ADD_STEP( &d, Impl::loadObjectsMetadata ),
     ADD_STEP( &d, Impl::loadWalkersMetadata ),
     ADD_STEP( &d, Impl::loadReligionConfig ),
-    ADD_STEP( &d, Impl::fadeSplash )
+    ADD_STEP( &d, Impl::fadeSplash ),
+    ADD_STEP( &d, Impl::initScripting )
   };
 
   #undef ADD_STEP
@@ -616,6 +613,8 @@ void Game::initialize()
     }
     catch(...) { exit(-1); }
   }
+
+  game::Scripting::instance().registerFunctions( *this );
 
   d.nextScreen = SCREEN_MENU;
   d.engine->setFlag( gfx::Engine::showMetrics, 1 );
@@ -708,7 +707,7 @@ void Game::clear()
 
 void Game::destroy()
 {
-  audio::Engine::instance().exit();
+  //audio::Engine::instance().exit();
 }
 
 void Game::setNextScreen(ScreenType screen) { _dfunc()->nextScreen = screen;}

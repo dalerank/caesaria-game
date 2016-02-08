@@ -190,7 +190,6 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
   if (overlay == NULL)
     return;
 
-  object::Type type = overlay->type();  
   bool colorFound = overlay->getMinimapColor( c1, c2 );
 
   if( !colorFound )
@@ -431,25 +430,23 @@ void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
   int c1, c2;
   int mmapWidth = canvas.width();
   int mmapHeight = canvas.height();
-  unsigned int* pixels = canvas.lock();
+  uint32_t* pixels = canvas.lock();
 
-  for( int i = 0; i < mapSize; i++)
+  TilesArray tiles = tmap.allTiles();
+  tiles.append( tmap.svkTiles() );
+
+  for( auto tile : tiles )
   {
-    for (int j = 0; j < mapSize; j++)
-    {
-      const Tile& tile = tmap.at(i, j);
+    getTerrainColours( *tile, true, c1, c2);
+    Point pnt = getBitmapCoordinates( tile->i(), tile->j(), mapSize);
 
-      Point pnt = getBitmapCoordinates(i, j, mapSize);
-      getTerrainColours( tile, true, c1, c2);
+    if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight-1 )
+      continue;
 
-      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight-1 )
-        continue;
-
-      unsigned int* bufp32;
-      bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
-      *bufp32 = c1;
-      *(bufp32+1) = c2;
-    }
+    unsigned int* bufp32;
+    bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
+    *bufp32 = c1;
+    *(bufp32+1) = c2;
   }
 
   canvas.unlock();

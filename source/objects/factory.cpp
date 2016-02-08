@@ -96,11 +96,10 @@ public:
     good::Info out;
   } goods;
 
-  Picture stockPicture; // stock of input good
   FactoryStorage goodStore;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
-  bool produceGood;
+  bool produceGood;  
   unsigned int finishedQty;
 
 public:
@@ -348,7 +347,7 @@ void Factory::initialize(const object::Info& mdata)
     good::Product pr = good::Helper::type( outputProduct.toString() );
     if( pr != good::none )
       _d->goods.out = pr;
-    }
+  }
 }
 
 void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)

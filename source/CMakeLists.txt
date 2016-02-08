@@ -11,6 +11,7 @@ include_directories(
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
   ${STEAM_API_DIR}/public/opensteam
+  include
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -28,7 +29,8 @@ file(GLOB OBJECTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/objects/*.*")
 file(GLOB WALKER_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/walker/*.*")
 file(GLOB WORLD_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/world/*.*")
 file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.*")
-file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
+file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.*")
+file(GLOB SCRIPT_INTERFACE_LIST "${DEP_SOURCE_DIR}/scripting/*.*")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
@@ -47,7 +49,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST})
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST} ${SCRIPT_INTERFACE_LIST})
 
 include_directories(${SDL2MINI_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
@@ -76,6 +78,8 @@ target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
+target_link_libraries(${PROJECT_NAME} ${PICOC_LIBRARY})
+
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DGAME_USE_FRAMEBUFFER )
 add_definitions( -DGAME_USE_SHADERS )
@@ -99,7 +103,7 @@ endif(UNIX)
 if(UNIX)
   message("Get locales from server")
   execute_process(COMMAND ${DEP_SOURCE_DIR}/localeconv/loadtable.py)
-  set(RPATH ${CMAKE_SOURCE_DIR}/locale/caesar.)
+  set(RPATH ${GAME_CONFIG_DIR}/locale/caesar.)
   message("Move files to locale folder")
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/2.csv ${RPATH}en)
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/3.csv ${RPATH}de)
@@ -219,60 +223,6 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/game" "${WORK_DIR}/resources"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/gui" "${WORK_DIR}/resources/gui"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/missions" "${WORK_DIR}/resources/missions"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/help" "${WORK_DIR}/resources/help"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/tutorial" "${WORK_DIR}/resources/tutorial"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/changes" "${WORK_DIR}/resources/changes"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/maps" "${WORK_DIR}/resources/maps"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/shaders" "${WORK_DIR}/resources/shaders"
 )
 
 if(USE_STEAM)

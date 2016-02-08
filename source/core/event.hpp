@@ -394,16 +394,8 @@ struct NEvent
     struct _AppEvent app;
   };
 
-  static NEvent Gui( gui::Widget* caller, gui::Widget* elm, GuiEventType type )
-  {
-    NEvent ret;
-    ret.gui.caller = caller;
-    ret.gui.element = elm;
-    ret.gui.type = type;
-    ret.EventType = sEventGui;
-
-    return ret;
-  }
+  static NEvent ev_gui( gui::Widget* caller, gui::Widget* elm, GuiEventType type );
+  static NEvent ev_none();
 };
 
 #endif //__CAESARIA_EVENT_H_INCLUDED__

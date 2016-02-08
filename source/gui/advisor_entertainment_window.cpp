@@ -142,8 +142,8 @@ public:
 };
 
 
-Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ), _d( new Impl )
+Entertainment::Entertainment(PlayerCityPtr city, Widget* parent)
+: Base( parent, city, advisor::entertainment ), _d( new Impl )
 {
   _d->city = city;
   FestivalPtr fest = city->statistic().services.find<Festival>();

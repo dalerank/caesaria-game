@@ -115,6 +115,7 @@ __REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
+__REG_PROPERTY(showStartAware)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -191,6 +192,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ mmb_moving          ] = false;
   _d->options[ tooltipEnabled      ] = true;
   _d->options[ ccUseAI             ] = false;
+  _d->options[ showStartAware      ] = true;
   _d->options[ c3gfx               ] = std::string( "" );
   _d->options[ c3video             ] = std::string( "" );
   _d->options[ c3music             ] = std::string( "" );
@@ -334,7 +336,7 @@ void Settings::checkC3present()
                                               {houseModel,        "house"},
                                               {constructionModel, "construction"},
                                               {citiesModel,       "cities"},
-                                              {climateModel,      "climateModel"},
+                                              {climateModel,      "climate"},
                                               {walkerModel,       "walker"},
                                               {animationsModel,   "animations"},
                                               {empireObjectsModel,"empire_objects"},

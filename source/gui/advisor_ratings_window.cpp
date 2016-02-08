@@ -291,8 +291,8 @@ void Ratings::Impl::checkFavourRating()
   lbRatingInfo->setText( _(problems.random()) );
 }
 
-Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
-  : Base( parent, city, id ), _d( new Impl )
+Ratings::Ratings(Widget* parent, PlayerCityPtr city )
+  : Base( parent, city, advisor::ratings ), _d( new Impl )
 {
   _d->city = city;
   setupUI( ":/gui/ratingsadv.gui" );

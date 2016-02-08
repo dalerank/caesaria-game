@@ -399,7 +399,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
   int migrants_n = city->walkers().count<Emigrant>();
 
-  if( freeRooms <= migrants_n * 5 )
+  if( (int)freeRooms <= migrants_n * 5 )
   {
     return;
   }
@@ -433,8 +433,8 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
   if( !houses.empty() )
   {
     int number = math::random( houses.size() );
-    HouseList randHouses = houses.random( number );
-    for( auto house : randHouses )
+    HouseList randomHouses = houses.random( number );
+    for( auto house : randomHouses )
     {
       ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
       if( emigrant.isValid() )

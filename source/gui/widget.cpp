@@ -438,7 +438,7 @@ bool Widget::sendToBack()
 	return false;
 }
 
-Widget* Widget::findChild(int id, bool searchChildren/*=false*/ ) const
+Widget* Widget::findChild(int id, bool searchChildren) const
 {
   Widget* e = 0;
 
@@ -449,6 +449,25 @@ Widget* Widget::findChild(int id, bool searchChildren/*=false*/ ) const
 
     if( searchChildren )
       e = child->findChild(id, true);
+
+    if( e )
+      return e;
+  }
+
+  return e;
+}
+
+Widget*Widget::findChild(const std::string& internalName, bool searchChildren) const
+{
+  Widget* e = 0;
+
+  for( auto child : _dfunc()->children )
+  {
+    if( child->internalName() == internalName)
+      return child;
+
+    if( searchChildren )
+      e = child->findChild(internalName, true);
 
     if( e )
       return e;
@@ -556,6 +575,13 @@ void Widget::setupUI( const VariantMap& options )
                       ahelper.findType( textAlign.back().toString() ) );
   }
 
+  Variant vAnchorBottom = options.get( "anchor.bottom" );
+  if( vAnchorBottom.isValid() )
+  {
+    auto bottomAlign = ahelper.findType( vAnchorBottom.toString() );
+    setAlignment( _d.align.left, _d.align.right, _d.align.top, bottomAlign );
+  }
+
   Variant tmp;
   setID( (int)options.get( "id", _d.id ) );
   setText( _( options.get( "text" ).toString() ) );
@@ -610,8 +636,8 @@ void Widget::setupUI( const VariantMap& options )
     if( item.second.type() != Variant::Map )
       continue;
 
-    VariantMap tmp = item.second.toMap();
-    tmp[ literals::vars ] = vars;
+    VariantMap newWidgetOptions = item.second.toMap();
+    newWidgetOptions[ literals::vars ] = vars;
 
     std::string widgetName = item.first;
     std::string widgetType;
@@ -623,26 +649,35 @@ void Widget::setupUI( const VariantMap& options )
     }
     else
     {
-      widgetType = tmp.get( "type" ).toString();
-    }
+      widgetType = newWidgetOptions.get( "type" ).toString();
+    }       
 
     if( !widgetType.empty() )
     {
-      Widget* child = ui()->createWidget( widgetType, this );
-      if( child )
+      Widget* child = findChild( widgetName, true );
+      if( child != nullptr )
       {
-        child->setupUI( tmp );
-        if( child->internalName().empty() )
+        child->setupUI( newWidgetOptions );
+      }
+      else
+      {
+        child = ui()->createWidget( widgetType, this );
+        if( child != nullptr && child->internalName().empty() )
         {
+          child->setupUI( newWidgetOptions );
           child->setInternalName( widgetName );
         }
       }
     }
   }
 
-  Variant positionV = options.get( "position" );
-  if( positionV.isValid() )
-    move( positionV.toPoint() );
+  VariantList positionV = options.get( "position" ).toList();
+  if( !positionV.empty() )
+  {
+    Point poisition( __convStr2RelPos( this, vars, positionV.get( 0 ).toString(), parent()->width() ),
+                     __convStr2RelPos( this, vars, positionV.get( 1 ).toString(), parent()->height() ) );
+    move( poisition );
+  }
 
   _d.properties = options.get( "properties" ).toMap();
 }
@@ -880,6 +915,7 @@ bool Widget::isHovered() const{  return ui()->isHovered( this );}
 bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFont(const Font& font) {}
+void Widget::setFont(const std::string& font) { setFont( Font::create( font ) ); }
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }

@@ -63,7 +63,7 @@ public:
 };
 
 CartSupplier::CartSupplier( PlayerCityPtr city )
-  : Human( city, walker::supplier ), _d( new Impl )
+  : Citizen( city, walker::supplier ), _d( new Impl )
 {
   _d->storageBuildingPos = TilePos::invalid();
   _d->baseBuildingPos = TilePos::invalid();

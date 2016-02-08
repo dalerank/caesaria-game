@@ -35,6 +35,20 @@ private:
   std::string _name;
 };
 
+class MissionLose : public GameEvent
+{
+public:
+  static GameEventPtr create(const std::string& name);
+
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+
+private:
+  MissionLose(const std::string &name);
+  std::string _name;
+};
+
 }
 
 #endif //_CAESARIA_EVENT_MISSIONWIN_H_INCLUDE_

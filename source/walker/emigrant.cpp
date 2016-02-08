@@ -72,7 +72,7 @@ struct EmigrantWayCondition
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
-  : Human( city, walker::emigrant ), _d( new Impl )
+  : Citizen( city, walker::emigrant ), _d( new Impl )
 {
   setName( NameGenerator::rand( NameGenerator::plebMale ) );
 

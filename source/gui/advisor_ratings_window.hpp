@@ -29,7 +29,7 @@ namespace advisorwnd
 class Ratings : public Base
 {
 public:
-  Ratings( Widget* parent, int id, const PlayerCityPtr city );
+  Ratings( Widget* parent, PlayerCityPtr city );
 
   virtual void draw( gfx::Engine& painter );
 
