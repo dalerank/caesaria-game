@@ -424,9 +424,10 @@ SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string
 {
   if( !ui.empty() )
     setupUI(ui);
+
   add<ExitButton>(Point(width() - 34, height() - 34));
 
-  moveTo(Widget::parentCenter);
+  moveToCenter();
   WidgetClose::insertTo(this, KEY_RBUTTON);
 }
 

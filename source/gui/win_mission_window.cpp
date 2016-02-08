@@ -72,8 +72,8 @@ WinMission::WinMission( Widget* parent, const std::string& newTitle,
     audio::Engine::instance().play( speech, 100, audio::speech );
   }
 
-  GameAutoPause::insertTo( this );
-  moveTo( Widget::parentCenter );
+  GameAutoPauseWidget::insertTo( this );
+  moveToCenter();
 }
 
 WinMission::~WinMission(){}

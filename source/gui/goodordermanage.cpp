@@ -169,7 +169,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   CONNECT_LOCAL( _d->btnIndustryState, onClicked(),           GoodOrderManageWindow::toggleIndustryEnable );
   CONNECT_LOCAL( _d->btnStackingState, onClicked(),           GoodOrderManageWindow::toggleStackingGoods );
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

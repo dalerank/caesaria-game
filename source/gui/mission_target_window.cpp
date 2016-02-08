@@ -84,8 +84,8 @@ MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, cons
 
 
   WidgetClose::insertTo( this, KEY_RBUTTON );
-  GameAutoPause::insertTo( this );
-  moveTo( Widget::parentCenter );
+  GameAutoPauseWidget::insertTo( this );
+  moveToCenter();
   setModal();
 }
 

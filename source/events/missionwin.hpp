@@ -24,7 +24,7 @@ namespace events
 class MissionWin : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& name);
+  static GameEventPtr create(bool force);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -32,7 +32,7 @@ protected:
 
 private:
   MissionWin(const std::string &name);
-  std::string _name;
+  bool _force;
 };
 
 class MissionLose : public GameEvent

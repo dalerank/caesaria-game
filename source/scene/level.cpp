@@ -190,7 +190,6 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
-  void extendReign( int years );
   void saveScrollSpeed( int speed );
   void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
@@ -511,15 +510,6 @@ void Level::Impl::makeFullScreenshot()
   PictureConverter::save( fullPic, filename, "PNG" );
 }
 
-void Level::Impl::extendReign(int years)
-{
-  VictoryConditions vc;
-  vc = game->city()->victoryConditions();
-  vc.addReignYears( years );
-
-  game->city()->setVictoryConditions( vc );
-}
-
 void Level::Impl::handleDirectionChange(Direction direction)
 {
   events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
@@ -554,13 +544,6 @@ vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::st
   vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   return saveDir/filename;
-}
-
-void Level::_resolveSwitchMap()
-{
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
-  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
-  stop();
 }
 
 void Level::Impl::showEmpireMapWindow()
@@ -673,7 +656,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
       CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
 
-      window.moveTo( Widget::parentCenter );
+      window.moveToCenter();
       window.setModal();
 
       events::dispatch<MissionLose>( pcity->victoryConditions().name() );
@@ -695,18 +678,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success || force )
   {
-    auto& winDialog = game->gui()->add<dialog::WinMission>( conditions.newTitle(), conditions.winText(),
-                                                            conditions.winSpeech(), conditions.mayContinue() );
-
-    mapToLoad = conditions.nextMission();
-
-    CONNECT( &winDialog, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
-    CONNECT( &winDialog, onContinueRules(), this, Impl::extendReign )
-  }
-
-  if( success )
-  {
-    events::dispatch<MissionWin>( conditions.name() );
+    events::dispatch<MissionWin>( force );
   }
 }
 
@@ -719,9 +691,16 @@ void Level::setConstructorMode(bool enabled)
   _d->extMenu->setConstructorMode( enabled );
 }
 
+void Level::resolveSuccess()
+{
+  _d->mapToLoad = _d->game->city()->victoryConditions().nextMission();
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
+  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
+  stop();
+}
+
 void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
-
 void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }

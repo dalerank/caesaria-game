@@ -149,7 +149,7 @@ void TopMenu::Impl::showShortKeyInfo()
   shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
   shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
 
-  shortKeyInfo.moveTo( Widget::parentCenter );
+  shortKeyInfo.moveToCenter();
   WidgetClose::insertTo( &shortKeyInfo, KEY_RBUTTON );
 }
 

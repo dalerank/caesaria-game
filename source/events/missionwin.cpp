@@ -16,40 +16,53 @@
 #include "missionwin.hpp"
 #include "game/game.hpp"
 #include "steam.hpp"
+#include "game/scripting.hpp"
+#include "core/variant_list.hpp"
 
 namespace events
 {
 
-GameEventPtr MissionWin::create(const std::string& name)
+GameEventPtr MissionWin::create(bool force)
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionWin( name );
-#endif
-
-  GameEventPtr ret( new MissionWin( name ) );
+  GameEventPtr ret( new MissionWin( force ) );
   ret->drop();
 
   return ret;
 }
 
-void MissionWin::_exec(Game& game, unsigned int) {}
+void MissionWin::_exec(Game& game, unsigned int)
+{
+#ifdef CAESARIA_USE_STEAM
+  steamapi::missionWin( name );
+#endif
+
+  VariantList vl;
+  vl << conditions.newTitle()
+     << conditions.winText()
+     << conditions.winSpeech()
+     << conditions.mayContinue();
+
+  game::Scripting::execFunction( "OnMissionWin", vl );
+}
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
 MissionWin::MissionWin( const std::string& name ) : _name( name ) {}
 
 GameEventPtr MissionLose::create(const std::string& name)
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionLose( name );
-#endif
-
   GameEventPtr ret( new MissionLose( name ) );
   ret->drop();
 
   return ret;
 }
 
-void MissionLose::_exec(Game& game, unsigned int) {}
+void MissionLose::_exec(Game& game, unsigned int)
+{
+#ifdef CAESARIA_USE_STEAM
+  steamapi::missionLose( name );
+#endif
+}
+
 bool MissionLose::_mayExec(Game&, unsigned int) const{  return true; }
 
 MissionLose::MissionLose( const std::string& name ) : _name( name ) {}

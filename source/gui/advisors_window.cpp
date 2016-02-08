@@ -101,7 +101,7 @@ Parlor::Parlor( Widget* parent, int id )
 {
   setupUI( ":/gui/advisors.gui" );
 
-  GameAutoPause::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
   WidgetClose::insertTo( this );
 
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )

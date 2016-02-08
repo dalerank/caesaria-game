@@ -63,9 +63,9 @@ SoundOptions::SoundOptions(Widget* parent)
   for( auto wdg : widgets )
     CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )  
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   WidgetClose::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
 }
 
 SoundOptions::~SoundOptions( void ) {}

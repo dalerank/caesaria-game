@@ -64,8 +64,8 @@ SpeedOptions::SpeedOptions( Widget* parent,
 
   _update();
 
-  moveTo( Widget::parentCenter );
-  GameAutoPause::insertTo( this );
+  moveToCenter();
+  GameAutoPauseWidget::insertTo( this );
 }
 
 SpeedOptions::~SpeedOptions( void ) {}

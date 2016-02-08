@@ -22,14 +22,33 @@
 #include <GameGui>
 #include <GameLogger>
 #include <GameCore>
+
+#include <GameCity>
 using namespace gui;
 
 namespace game
 {
 
+class Session
+{
+public:
+  Game* _game;
+  Session(Game* game) { _game = game; }
+  void continuePlay(int years)
+  {
+    city::VictoryConditions vc;
+    vc = _game->city()->victoryConditions();
+    vc.addReignYears( years );
+
+    _game->city()->setVictoryConditions( vc );
+  }
+};
+
+
 namespace internal
 {
 Game* game = nullptr;
+Session* session = nullptr;
 js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
@@ -83,6 +102,14 @@ void Scripting::doFile(const std::string& path)
     Logger::warning( str );
   }
 }
+
+void constructor_Session(js_State *J)
+{
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", &internal::session, nullptr);
+}
+
 
 #define DEFINE_OBJECT_FUNCTION_0(name,rettype,funcname) rettype name##_##funcname(js_State *J) \
                                 { \
@@ -152,6 +179,7 @@ void Scripting::doFile(const std::string& path)
 #include "scripting/window.implementation"
 #include "scripting/button.implementation"
 #include "scripting/label.implementation"
+#include "scripting/session.implementation"
 
 void Scripting::registerFunctions( Game& game )
 {
@@ -162,8 +190,9 @@ void Scripting::registerFunctions( Game& game )
 
 DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineLog,"log",1);  
-  REGISTER_FUNCTION(engineTranslate,"translate",1);
-REGISTER_GLOBAL_OBJECT(engine)
+  REGISTER_FUNCTION(engineTranslate,"translate",1);   
+REGISTER_GLOBAL_OBJECT(session)
+
 
 #include "scripting/window.interface"
 #include "scripting/button.interface"

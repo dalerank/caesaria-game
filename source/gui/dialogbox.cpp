@@ -33,7 +33,6 @@ class Dialog::Impl
 {
 public:
   enum { okPicId=239, cancelPicId=243 };
-  GameAutoPause locker;
   bool never=true;
 
   struct {
@@ -79,7 +78,7 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
     size += Size( 0, 30 ); //borders
 
     setGeometry( Rect( Point( 0, 0 ), size ) );
-    moveTo( Widget::parentCenter );
+    moveToCenter();
   }
   
   if( lbText )
@@ -120,9 +119,9 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
     btnActionNo->setID( btnNo );
 
   if( lockGame )
-    _d->locker.activate();
+    GameAutoPauseWidget::insertTo( this );
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

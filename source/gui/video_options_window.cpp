@@ -52,7 +52,7 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   WidgetClose::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );  

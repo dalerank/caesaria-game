@@ -576,7 +576,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->offset = game::Settings::get( empMapOffset ).toPoint();
 
   WidgetClose::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
 
   _d->initBorder( this );
 

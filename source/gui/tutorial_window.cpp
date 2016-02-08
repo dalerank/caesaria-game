@@ -37,7 +37,7 @@ namespace gui
 TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   : Window( p, Rect( 0, 0, 590, 450 ), "" )
 {
-  _locker.activate();
+  GameAutoPauseWidget::insertTo( this );
 
   setupUI( ":/gui/tutorial_window.gui" );
 
@@ -89,7 +89,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     }
   }
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

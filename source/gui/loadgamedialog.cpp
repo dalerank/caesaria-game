@@ -138,7 +138,7 @@ void LoadGame::_fillFiles()
     item.setData( "image", imgpath.toString() );
   }
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
 }
 
 void LoadGame::_showPreview(const ListBoxItem &item)

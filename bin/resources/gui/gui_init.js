@@ -51,7 +51,7 @@ Button.prototype = {
   deleteLater : function() { this.widget.deleteLater(); }
 }
 
-var gui = {
+var g_ui = {
   addWindow : function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };

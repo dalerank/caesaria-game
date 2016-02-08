@@ -237,7 +237,7 @@ public:
       }
     }
 
-    moveTo( Widget::parentCenter );
+    moveToCenter();
     setModal();
   }
 };

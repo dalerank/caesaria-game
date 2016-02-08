@@ -53,7 +53,7 @@ LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::strin
   CONNECT      ( &btnSelect, onClicked(),      &onContinue, Signal0<>::_emit   )
 
   listbox.setFocus();
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   WidgetClose::insertTo( this, KEY_RBUTTON );
 }
 

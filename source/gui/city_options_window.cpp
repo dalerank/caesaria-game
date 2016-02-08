@@ -141,7 +141,6 @@ namespace dialog
 class CityOptions::Impl
 {
 public:
-  GameAutoPause locker;
   Widget* widget;  
   PushButton* btnToggleBatching;
   PushButton* btnDifficulty;
@@ -179,8 +178,8 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
-  _d->locker.activate();
   _d->widget = this;
+  GameAutoPauseWidget::insertTo( this );
   Window::setupUI( ":/gui/cityoptions.gui" );
 
   GET_DWIDGET_FROM_UI( _d, sbFireRisk )
@@ -217,7 +216,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   _d->update();
 
   WidgetClose::insertTo( this, KEY_RBUTTON );
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 
