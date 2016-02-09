@@ -39,6 +39,7 @@ public:
     Signal0<> onOk;
     Signal0<> onCancel;
     Signal1<bool> onNever;
+    Signal2<Widget*,bool> onNeverEx;
   } signal;
 };
 
@@ -83,6 +84,7 @@ bool Dialogbox::onEvent( const NEvent& event )
           _d->never = !_d->never;
           event.gui.caller->setText( _d->never ? "X" : " " );
           emit _d->signal.onNever( _d->never );
+          emit _d->signal.onNeverEx( this, _d->never );
         }
         break;
         }
@@ -119,6 +121,7 @@ void Dialogbox::setupUI(const VariantMap& ui)
 Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
 Signal0<>& Dialogbox::onNo(){  return _d->signal.onCancel;}
 Signal1<bool>& Dialogbox::onNever() { return _d->signal.onNever; }
+Signal2<Widget*, bool>&Dialogbox::onNeverEx() { return _d->signal.onNeverEx; }
 
 void Dialogbox::_initSimpleDialog()
 {

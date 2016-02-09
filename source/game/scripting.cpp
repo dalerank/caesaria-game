@@ -70,6 +70,43 @@ inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline void push(js_State* J, int value) { js_pushnumber(J,value); }
 
+int pushValue(js_State* J,const Variant& param)
+{
+  switch( param.type() )
+  {
+  case Variant::Bool:
+    js_pushboolean(J, param.toBool() );
+    return 0;
+  break;
+
+  case Variant::Int:
+  case Variant::UInt:
+  case Variant::LongLong:
+  case Variant::ULongLong:
+  case Variant::Double:
+  case Variant::Ushort:
+  case Variant::Ulong:
+  case Variant::Long:
+  case Variant::Float:
+  case Variant::Uchar:
+  case Variant::Short:
+    js_pushnumber(J, param.toDouble());
+    return 0;
+  break;
+
+  case Variant::Char:
+  case Variant::String:
+    js_pushstring(J, param.toString().c_str());
+    return 0;
+  break;
+
+  default:
+    js_pushnull(J);
+  break;
+  }
+  return 1;
+}
+
 inline Rect to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
@@ -103,6 +140,15 @@ void engineTranslate(js_State *J)
   std::string text = js_tostring(J, 1);
   text = Locale::translate(text);
   js_pushstring(J,text.c_str());
+}
+
+void engineGetOption(js_State *J)
+{
+  std::string name = js_tostring(J, 1);
+  Variant value = game::Settings::get(name);
+  int error = internal::pushValue(J, value);
+  if (error)
+    Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption" );
 }
 
 Scripting& Scripting::instance()
@@ -148,36 +194,9 @@ void Scripting::execFunction(const std::string& funcname, const VariantList& par
   js_pushnull(internal::J);
   for( const auto& param : params )
   {
-    switch( param.type() )
-    {
-    case Variant::Bool:
-      js_pushboolean( internal::J, param.toBool() );
-    break;
-
-    case Variant::Int:
-    case Variant::UInt:
-    case Variant::LongLong:
-    case Variant::ULongLong:
-    case Variant::Double:
-    case Variant::Ushort:
-    case Variant::Ulong:
-    case Variant::Long:
-    case Variant::Float:
-    case Variant::Uchar:
-    case Variant::Short:
-      js_pushnumber(internal::J, param.toDouble());
-    break;
-
-    case Variant::Char:
-    case Variant::String:
-      js_pushstring(internal::J, param.toString().c_str());
-    break;
-
-    default:
+    int error = internal::pushValue(internal::J,param);
+    if (error)
       Logger::warning( "WARNING !!! Undefined value for js.pcall " + funcname );
-      js_pushnull(internal::J);
-    break;
-    }
   }
   int error = js_pcall(internal::J,params.size());
 
@@ -206,25 +225,47 @@ void constructor_Session(js_State *J)
                                   js_pushundefined(J); \
                                 }
 
-#define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_##callback(Widget* widget) {\
+#define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_handle_##callback(Widget* widget) {\
                                                   if(widget) { \
-                                                    std::string index = widget->getProperty( "js_callback"); \
+                                                    std::string index = widget->getProperty( "js_"#callback); \
                                                     js_getregistry(internal::J,index.c_str()); \
                                                     js_pushnull(internal::J); \
                                                     js_pcall(internal::J,0); \
                                                     js_pop(internal::J,1); \
                                                   } \
                                                 } \
-                                                void name##_setCallback(js_State *J) { \
+                                                void name##_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                                   if (parent && js_iscallable(J,1)) { \
                                                     js_copy(J,1); \
                                                     std::string index = js_ref(J); \
-                                                    parent->callback().connect( &name##_##callback ); \
-                                                    parent->addProperty( "js_callback", Variant(index) ); \
+                                                    parent->callback().connect( &name##_handle_##callback ); \
+                                                    parent->addProperty( "js_"#callback, Variant(index) ); \
                                                   } \
                                                   js_pushundefined(J); \
                                                 }
+
+#define DEFINE_WIDGET_CALLBACK_1(name,callback,type) void name##_handle_##callback(Widget* widget,type value) {\
+                                                  if(widget) { \
+                                                    std::string index = widget->getProperty( "js_"#callback); \
+                                                    js_getregistry(internal::J,index.c_str()); \
+                                                    js_pushnull(internal::J); \
+                                                    internal::push(internal::J, value); \
+                                                    js_pcall(internal::J,0); \
+                                                    js_pop(internal::J,1); \
+                                                  } \
+                                                } \
+                                                void name##_##callback(js_State *J) { \
+                                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                                  if (parent && js_iscallable(J,1)) { \
+                                                    js_copy(J,1); \
+                                                    std::string index = js_ref(J); \
+                                                    parent->callback().connect( &name##_handle_##callback ); \
+                                                    parent->addProperty( "js_"#callback, Variant(index) ); \
+                                                  } \
+                                                  js_pushundefined(J); \
+                                                }
+
 
 #define DEFINE_OBJECT_GETTER(name,funcname) void name##_##funcname(js_State* J) { \
                               name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -251,6 +292,9 @@ void constructor_Session(js_State *J)
 #define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
                                   js_getproperty(internal::J, -1, "prototype"); \
                                   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
+
+#define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_handle_##funcname, TEXT(funcname), params); \
+                                  js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
@@ -291,6 +335,7 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineLog,"log",1);  
   REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
   REGISTER_FUNCTION(engineTranslate,"translate",1);   
+  REGISTER_FUNCTION(engineGetOption,"getOption",1);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "scripting/window.interface"

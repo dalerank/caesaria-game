@@ -35,20 +35,6 @@ private:
   bool _force;
 };
 
-class MissionLose : public GameEvent
-{
-public:
-  static GameEventPtr create(bool force);
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  MissionLose(bool force);
-  bool _force;
-};
-
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_MISSIONWIN_H_INCLUDE_

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "missionwin.hpp"
+#include "missionlose.hpp"
 #include "game/game.hpp"
 #include "steam.hpp"
 #include "city/city.hpp"
@@ -24,30 +24,23 @@
 namespace events
 {
 
-GameEventPtr MissionWin::create(bool force)
+GameEventPtr MissionLose::create(bool force)
 {
-  GameEventPtr ret( new MissionWin( force ) );
+  GameEventPtr ret( new MissionLose(force) );
   ret->drop();
 
   return ret;
 }
 
-void MissionWin::_exec(Game& game, unsigned int)
+void MissionLose::_exec(Game& game, unsigned int)
 {
-  const auto& conditions = game.city()->victoryConditions();
-  VariantList vl;
-  vl << conditions.newTitle()
-     << conditions.winText()
-     << conditions.winSpeech()
-     << conditions.mayContinue();
-
-  game::Scripting::execFunction( "OnMissionWin", vl );
-
-  if( !_force )
-    steamapi::missionWin( conditions.name() );
+  auto missionName = game.city()->victoryConditions().name();
+  if (!_force)
+    steamapi::missionLose( missionName );
 }
-bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
-MissionWin::MissionWin( bool force ) : _force(force) {}
+bool MissionLose::_mayExec(Game&, unsigned int) const{  return true; }
 
-}//end namespace events
+MissionLose::MissionLose( bool force ) : _force(force) {}
+
+}//end namepsace events

@@ -58,6 +58,7 @@ Dialogbox.prototype = {
 	set title (str) { this.widget.setTitle( engine.translate(str) ); },
 	set text  (str) { this.widget.setText( engine.translate(str) ); },
 	set buttons (flags) { this.widget.setButtons(flags); }
+	set onNeverCallback (func) { this.widget.setNeverCallback(func); }
 }
 
 function Ui() {

@@ -12,35 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCRIPTING_INCLUDE_H_
-#define _CAESARIA_SCRIPTING_INCLUDE_H_
+#ifndef _CAESARIA_EVENT_MISSIONLOSE_H_INCLUDE_
+#define _CAESARIA_EVENT_MISSIONLOSE_H_INCLUDE_
 
-#include "core/namedtype.hpp"
-#include <string>
+#include "event.hpp"
 
-class Game;
-class VariantList;
-
-namespace game
+namespace events
 {
 
-class Scripting
+class MissionLose : public GameEvent
 {
 public:
-  static Scripting& instance();
-  static void loadModule( const std::string& path );
-  static void execFunction(const std::string& funcname);
-  static void execFunction(const std::string& funcname,
-                           const VariantList& params);                           
-  void registerFunctions(Game& game);
+  static GameEventPtr create(bool force);
+
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Scripting();
+  MissionLose(bool force);
+  bool _force;
 };
 
-} //end namespace advisor
+}//end namespace events
 
-#endif  //_CAESARIA_SCRIPTING_INCLUDE_H_
+#endif //_CAESARIA_EVENT_MISSIONLOSE_H_INCLUDE_

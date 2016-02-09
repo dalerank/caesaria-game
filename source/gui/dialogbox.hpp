@@ -47,6 +47,7 @@ signals public:
   Signal0<>& onYes();
   Signal0<>& onNo();
   Signal1<bool>& onNever();
+  Signal2<Widget*,bool>& onNeverEx();
 
 private:
   void _initSimpleDialog();

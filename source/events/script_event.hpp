@@ -12,35 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCRIPTING_INCLUDE_H_
-#define _CAESARIA_SCRIPTING_INCLUDE_H_
+#ifndef _CAESARIA_EVENT_SCRIPTFUNC_H_INCLUDE_
+#define _CAESARIA_EVENT_SCRIPTFUNC_H_INCLUDE_
 
-#include "core/namedtype.hpp"
-#include <string>
+#include "event.hpp"
+#include "core/variant_list.hpp"
 
-class Game;
-class VariantList;
-
-namespace game
+namespace events
 {
 
-class Scripting
+class SciptFunc : public GameEvent
 {
 public:
-  static Scripting& instance();
-  static void loadModule( const std::string& path );
-  static void execFunction(const std::string& funcname);
-  static void execFunction(const std::string& funcname,
-                           const VariantList& params);                           
-  void registerFunctions(Game& game);
+  static GameEventPtr create(const std::string& funcname,
+                             const VariantList& params = VariantList());
+
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Scripting();
+  SciptFunc(const std::string& funcname, const VariantList& params);
+  std::string _funcname;
+  VariantList _params;
 };
 
-} //end namespace advisor
+}//end namespace events
 
-#endif  //_CAESARIA_SCRIPTING_INCLUDE_H_
+#endif //_CAESARIA_EVENT_SCRIPTFUNC_H_INCLUDE_

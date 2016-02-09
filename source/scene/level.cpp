@@ -17,7 +17,9 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
-#include "gfx/engine.hpp"
+#include <GameEvents>
+#include <GameGfx>
+
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
@@ -26,12 +28,10 @@
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
-#include "events/changespeed.hpp"
 #include "core/event.hpp"
 #include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
-#include "gfx/renderermode.hpp"
 #include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
@@ -39,7 +39,6 @@
 #include "gui/empiremap_window.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
-#include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "game/funds.hpp"
@@ -48,30 +47,21 @@
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
-#include "gfx/tilemap_config.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
-#include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
-#include "gfx/tilemap_camera.hpp"
 #include "city/ambientsound.hpp"
 #include "gui/win_mission_window.hpp"
-#include "events/showempiremapwindow.hpp"
-#include "events/showadvisorwindow.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
 #include "events/setsoundoptions.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "events/warningmessage.hpp"
-#include "events/postpone.hpp"
-#include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/timer.hpp"
@@ -81,13 +71,9 @@
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
-#include "events/movecamera.hpp"
-#include "events/missionwin.hpp"
-#include "events/savegame.hpp"
 #include "core/tilerect.hpp"
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
-#include "events/loadgame.hpp"
 #include "sound/themeplayer.hpp"
 #include "core/osystem.hpp"
 #include "city/states.hpp"
@@ -369,13 +355,7 @@ void Level::initialize()
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  bool showAware = KILLSWITCH(showStartAware);
-  if( !OSystem::isAndroid() && showAware )
-  {
-    gui::Ui& ui = *_d->game->gui();
-    auto& dlg = dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished.", true );
-    dlg.onNever().connect( _d.data(), &Impl::changeShowNotification );
-  }
+  events::dispatch<events::SciptFunc>( "OnMissionStart" );
 
   if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
   {

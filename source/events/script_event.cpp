@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "missionwin.hpp"
+#include "script_event.hpp"
 #include "game/game.hpp"
 #include "steam.hpp"
 #include "city/city.hpp"
@@ -24,30 +24,22 @@
 namespace events
 {
 
-GameEventPtr MissionWin::create(bool force)
+GameEventPtr SciptFunc::create(const std::string& funcname,
+                               const VariantList& params)
 {
-  GameEventPtr ret( new MissionWin( force ) );
+  GameEventPtr ret( new SciptFunc(funcname,params) );
   ret->drop();
-
   return ret;
 }
 
-void MissionWin::_exec(Game& game, unsigned int)
+void SciptFunc::_exec(Game& game, unsigned int)
 {
-  const auto& conditions = game.city()->victoryConditions();
-  VariantList vl;
-  vl << conditions.newTitle()
-     << conditions.winText()
-     << conditions.winSpeech()
-     << conditions.mayContinue();
-
-  game::Scripting::execFunction( "OnMissionWin", vl );
-
-  if( !_force )
-    steamapi::missionWin( conditions.name() );
+  game::Scripting::execFunction( _funcname, _params );
 }
-bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
-MissionWin::MissionWin( bool force ) : _force(force) {}
+bool SciptFunc::_mayExec(Game&, unsigned int) const{ return true; }
+
+SciptFunc::SciptFunc(const std::string& funcname,
+                     const VariantList& params) : _funcname(funcname), _params(params) {}
 
 }//end namespace events
