@@ -18,11 +18,14 @@ function Window(parent) {
 Window.prototype = {
   set title (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+	set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); }	
   get width () { return this.widget.width(); },
 
+	moveToCenter : function() { this.widget.moveToCenter(); },
+	setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
   addLabel : function(rx,ry,rw,rh) {
-    var label = new Label( this.widget );
+    var label = new Label( this.widget ); 
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label;
   },
@@ -47,12 +50,18 @@ Button.prototype = {
   deleteLater : function() { this.widget.deleteLater(); }
 }
 
-function ConfirmationDialog(parent) {
-  this.widget = new _Dialogbox(parent);
+function Dialogbox(parent) {
+	this.widget = new _Dialogbox(parent);
+}
+
+Dialogbox.prototype = {
+	set title (str) { this.widget.setTitle( engine.translate(str) ); },
+	set text  (str) { this.widget.setText( engine.translate(str) ); },
+	set buttons (flags) { this.widget.setButtons(flags); }
 }
 
 function Ui() {
-}
+}    
 
 Ui.prototype = {
   addWindow : function(rx,ry,rw,rh) {
@@ -62,10 +71,11 @@ Ui.prototype = {
   },
 
   addInformationDialog : function(title, text) {
-    var dialog = new ConfirmationDialog(0);
-    dialog.setTitle(title);
-    dialog.setText(text);
-    return dialog;
+    var dialog = new Dialogbox(0);
+    dialog.title = title;
+    dialog.text = text;
+		dialog.buttons = 1;
+    return dialog; 
   },
 
   elog : function(a) { engine.log(a); }

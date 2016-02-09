@@ -8,4 +8,5 @@
 #include "gui/startmenu.hpp"
 #include "gui/dialogbox.hpp"
 #include "gui/environment.hpp"
+#include "gui/widget_factory.hpp"
 #include "gui/widgetescapecloser.hpp"

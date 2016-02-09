@@ -1,5 +1,6 @@
 {  
   geometry : [ 0, 0, 480, 150 ]
+  static : true
 
   lbText#Label : {
     font : "FONT_3"

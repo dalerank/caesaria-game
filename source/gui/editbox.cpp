@@ -285,13 +285,13 @@ bool EditBox::onEvent(const NEvent& event)
 		case sEventKeyboard:
 			if (_processKey(event))
 				return true;
-			break;
+
 		case sEventMouse:
 			if (_processMouse(event))
 				return true;
-			break;
+
 		default:
-			break;
+    break;
 		}
 	}
 

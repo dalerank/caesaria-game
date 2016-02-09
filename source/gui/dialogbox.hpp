@@ -49,6 +49,8 @@ signals public:
   Signal1<bool>& onNever();
 
 private:
+  void _initSimpleDialog();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

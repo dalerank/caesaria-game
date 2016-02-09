@@ -22,6 +22,7 @@
 #include <GameVfs>
 #include <GameGui>
 #include <GameLogger>
+#include <GameScene>
 #include <GameCore>
 #include <GameCity>
 
@@ -43,6 +44,17 @@ public:
     vc.addReignYears( years );
 
     _game->city()->setVictoryConditions( vc );
+  }
+
+  void loadNextMission()
+  {
+    city::VictoryConditions vc;
+    vc = _game->city()->victoryConditions();
+    scene::Level* level = safety_cast<scene::Level*>(_game->scene());
+    if( level )
+    {
+      level->loadStage( vc.nextMission() );
+    }
   }
 };
 
@@ -81,9 +93,9 @@ void engineReloadFile(vfs::Path path)
 
 void engineLoadModule(js_State *J)
 {
-  const char* scriptName = js_tostring(J, 1);
-  internal::files.insert( scriptName );
-  Scripting::loadModule(scriptName);
+  vfs::Path scriptName = js_tostring(J, 1);
+  internal::files.insert(scriptName.toString());
+  Scripting::loadModule(scriptName.toString());
 }
 
 void engineTranslate(js_State *J)

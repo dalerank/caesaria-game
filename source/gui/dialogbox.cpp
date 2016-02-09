@@ -26,6 +26,8 @@ using namespace gfx;
 namespace gui
 {
 
+REGISTER_CLASS_IN_WIDGETFACTORY(Dialogbox)
+
 class Dialogbox::Impl
 {
 public:
@@ -43,27 +45,18 @@ public:
 Dialogbox::Dialogbox(Widget* parent)
  : Window( parent->ui()->rootWidget() ), _d( new Impl )
 {
-  Window::setupUI(":/gui/dialogbox.gui");
-  _setSystemButtonsVisible(false);
-  GameAutoPauseWidget::insertTo(this);
+  _initSimpleDialog();
 }
 
 Dialogbox::Dialogbox( Ui *ui, const Rect& rectangle, const std::string& title,
                       const std::string& text, int buttons)
                       : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
-  Window::setupUI(":/gui/dialogbox.gui");
-
-  _setSystemButtonsVisible(false);
+  _initSimpleDialog();
 
   setText(text);
   setTitle(title);
   setButtons(buttons);
-
-  GameAutoPauseWidget::insertTo(this);
-
-  moveToCenter();
-  setModal();
 }
 
 Signal1<int>& Dialogbox::onResult()
@@ -126,6 +119,18 @@ void Dialogbox::setupUI(const VariantMap& ui)
 Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
 Signal0<>& Dialogbox::onNo(){  return _d->signal.onCancel;}
 Signal1<bool>& Dialogbox::onNever() { return _d->signal.onNever; }
+
+void Dialogbox::_initSimpleDialog()
+{
+  Window::setupUI(":/gui/dialogbox.gui");
+  _setSystemButtonsVisible(false);
+  GameAutoPauseWidget::insertTo(this);
+  onYes().connect( this, &Dialogbox::deleteLater );
+  onNo().connect( this, &Dialogbox::deleteLater );
+
+  moveToCenter();
+  setModal();
+}
 
 void Dialogbox::draw(gfx::Engine& painter )
 {
@@ -215,10 +220,6 @@ namespace dialog
 Dialogbox& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
 {
   Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYes | (showNever ? Dialogbox::btnNever : 0) );
-
-  ret.onYes().connect( &ret, &Dialogbox::deleteLater );
-  ret.onNo().connect( &ret, &Dialogbox::deleteLater );
-
   return ret;
 }
 
@@ -243,10 +244,6 @@ Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &tex
 Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text)
 {
   Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYesNo );
-
-  ret.onYes().connect( &ret, &Dialogbox::deleteLater );
-  ret.onNo().connect( &ret, &Dialogbox::deleteLater );
-
   return ret;
 }
 

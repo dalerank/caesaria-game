@@ -1,1 +1,2 @@
 DEFINE_OBJECT_FUNCTION_1(Session,void,continuePlay,int)
+DEFINE_OBJECT_FUNCTION_0(Session,void,loadNextMission)

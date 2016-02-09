@@ -1,20 +1,25 @@
-//var g_session = new _Session();
-
 function OnMissionWin(newTitle,winText,speech,mayContinue)
 {
   var g_ui = new Ui();
-  g_ui.elog( "JS:OnMissionWin" );
+	var g_session = new _Session();
+	
+  engine.log( "JS:OnMissionWin" );
 
   var wnd = g_ui.addWindow(30,30,540,240)
   wnd.geometry = { x:0, y:0, w:540, h:240 };
   wnd.title = "##mission_win##";
   wnd.font = "FONT_5";
 
-  var lbNewTitle = wnd.addLabel( 10, 40, wnd.width-20, 20 );
+  var lbCaesarAssign = wnd.addLabel( 10, 40, wnd.width-20, 25 );
+  lbCaesarAssign.text = "##caesar_assign_new_title##";
+  lbCaesarAssign.font = "FONT_2";
+  lbCaesarAssign.textAlign = { h:"center", v:"center" }
+	
+	var lbNewTitle = wnd.addLabel( 10, 70, wnd.width-20, 30 );
   lbNewTitle.text = newTitle;
-  lbNewTitle.font = "FONT_2";
+  lbNewTitle.font = "FONT_5";
   lbNewTitle.textAlign = { h:"center", v:"center" }
-
+	
   if( mayContinue )
   {
       var btn2years = wnd.addButton( 35, 140, wnd.width-70, 20 );
@@ -44,16 +49,17 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   btnAccept.style = "whiteBorderUp";
   btnAccept.callback = function() {
             engine.log( "accept_promotion" );
-            g_session.load( session.nextMission );
+            //g_session.loadNextMission();
             wnd.deleteLater();
         }
 
-  if (winText.length > 0)
-    g_ui.addInformationDialog( "", winText );
-
-  if (speech.length > 0)
-    sound.play(speech);
+  /*if (speech.length > 0)
+    sound.play(speech);*/
 
   wnd.moveToCenter();
   wnd.setModal();
+	wnd.mayMove = false;
+	
+	if (winText.length > 0)
+    g_ui.addInformationDialog( "", winText );
 }

@@ -394,6 +394,17 @@ void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
   _d->flags.setFlag( flag, enabled );
 }
 
+void Window::setWindowFlag(const std::string& flagname, bool enabled)
+{
+  if( flagname == TEXT(fdraggable) ) setWindowFlag(fdraggable,enabled);
+  else if( flagname == TEXT(fbackgroundVisible) ) setWindowFlag(fbackgroundVisible,enabled);
+  else if( flagname == TEXT(ftitleVisible) ) setWindowFlag(ftitleVisible,enabled);
+  else
+  {
+    Logger::warning( "WARNING !!! Cant find flag with name " + flagname );
+  }
+}
+
 void Window::setupUI(const VariantMap &ui)
 {
   Widget::setupUI( ui );

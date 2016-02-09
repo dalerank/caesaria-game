@@ -71,6 +71,7 @@ public:
   virtual void setModal();
 
   virtual void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( const std::string& flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 
