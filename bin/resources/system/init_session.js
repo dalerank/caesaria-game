@@ -2,7 +2,7 @@ function Session() {
 	this.session = new _Session();
 }
 
-Label.prototype = {
+Session.prototype = {
 	continuePlay : function(years) { this.session.continuePlay(years); },
-	loadNextMission : function() { this.session.loadNextMission(); }
-}
+	loadNextMission : function() { this.session.loadNextMission(); } 
+} 

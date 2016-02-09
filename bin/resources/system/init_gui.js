@@ -13,12 +13,12 @@ Label.prototype = {
 
 function Window(parent) {
   this.widget = new _Window(parent);
-}
+} 
 
 Window.prototype = {
   set title (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-	set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); }	
+	set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); },
   get width () { return this.widget.width(); },
 
 	moveToCenter : function() { this.widget.moveToCenter(); },
@@ -80,4 +80,4 @@ Ui.prototype = {
 
   elog : function(a) { engine.log(a); }
 }
-
+  

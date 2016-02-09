@@ -1,7 +1,7 @@
 function OnMissionWin(newTitle,winText,speech,mayContinue)
 {
   var g_ui = new Ui();
-	var g_session = new _Session();
+	var g_session = new Session();
 	
   engine.log( "JS:OnMissionWin" );
 
@@ -49,8 +49,8 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   btnAccept.style = "whiteBorderUp";
   btnAccept.callback = function() {
             engine.log( "accept_promotion" );
-            //g_session.loadNextMission();
             wnd.deleteLater();
+            g_session.loadNextMission();
         }
 
   /*if (speech.length > 0)

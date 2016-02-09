@@ -195,7 +195,7 @@ void constructor_Session(js_State *J)
 {
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", &internal::session, nullptr);
+  js_newuserdata(J, "userdata", internal::session, nullptr);
 }
 
 
@@ -282,6 +282,7 @@ void constructor_Session(js_State *J)
 void Scripting::registerFunctions( Game& game )
 {
   internal::game = &game;
+  internal::session = new Session(&game);
 #define DEF_GLOBAL_OBJECT(name) js_newobject(internal::J);
 #define REGISTER_FUNCTION(func,name,params) js_newcfunction(internal::J, func, name, params); js_setproperty( internal::J, -2, name);
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
