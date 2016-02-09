@@ -709,8 +709,7 @@ void Level::exit() { _d->result = Level::res_menu; stop(); }
 void Level::_requestExitGame()
 {
   auto& dialog = dialog::Confirmation( _d->game->gui(),
-                                      "", _("##exit_without_saving_question##"),
-                                      dialog::Dialog::pauseGame );
+                                      "", _("##exit_without_saving_question##") );
   dialog.onYes().connect( this, &Level::_quit );
 }
 

@@ -52,3 +52,6 @@ Win32
 *.suo
 *.opensdf
 *.user
+
+# exclude ignore
+!bin/resources

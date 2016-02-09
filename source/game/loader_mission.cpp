@@ -111,7 +111,7 @@ bool Mission::load( const std::string& filename, Game& game )
       game::Loader mapLoader;
       if( !vfs::Path( mapToLoad ).exist() )
       {
-        Logger::warning( "WARNING !!! Cant find map {} for mission {}", mapToLoad );
+        Logger::warning( "WARNING !!! Cant find map {} for mission {}", mapToLoad, filename );
         return false;
       }
       mapLoader.load( mapToLoad, game );

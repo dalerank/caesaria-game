@@ -81,8 +81,9 @@ void engineReloadFile(vfs::Path path)
 
 void engineLoadModule(js_State *J)
 {
-  vfs::Path scriptName = js_tostring(J, 1);
-  internal::files.insert( scriptName.toString() );
+  const char* scriptName = js_tostring(J, 1);
+  internal::files.insert( scriptName );
+  Scripting::loadModule(scriptName);
 }
 
 void engineTranslate(js_State *J)
@@ -226,6 +227,15 @@ void constructor_Session(js_State *J)
                                   js_pushundefined(J); \
                                 }
 
+#define DEFINE_OBJECT_FUNCTION_2(name,rettype,funcname,paramType1,paramType2) rettype name##_##funcname(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2 ); \
+                                  js_pushundefined(J); \
+                                }
+
+
 #define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
                                   js_getproperty(internal::J, -1, "prototype"); \
                                   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
@@ -255,6 +265,7 @@ void constructor_Session(js_State *J)
 #include "scripting/button.implementation"
 #include "scripting/label.implementation"
 #include "scripting/session.implementation"
+#include "scripting/dialogbox.implementation"
 
 void Scripting::registerFunctions( Game& game )
 {
@@ -272,7 +283,8 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "scripting/window.interface"
 #include "scripting/button.interface"
 #include "scripting/label.interface"
-#include "scripting/session.interface"
+#include "scripting/session.interface"  
+#include "scripting/dialogbox.interface"
 
   loadModule(":/system/modules.js");
   {

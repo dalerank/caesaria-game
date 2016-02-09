@@ -6,5 +6,6 @@
 #include "gui/widget.hpp"
 #include "gui/window.hpp"
 #include "gui/startmenu.hpp"
+#include "gui/dialogbox.hpp"
 #include "gui/environment.hpp"
 #include "gui/widgetescapecloser.hpp"

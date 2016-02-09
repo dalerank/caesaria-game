@@ -583,11 +583,11 @@ void Lobby::initialize()
     if( !screenFitted )
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
-      auto& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
+      auto& dialog = _d->ui().add<Dialogbox>( dialogRect,
                                                     "Information", "Is need autofit screen resolution?",
-                                                    dialog::Dialog::btnYesNo );
-      CONNECT( &dialog, onYes(),     &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onNo(), &dialog, dialog::Dialog::deleteLater );
+                                                    Dialogbox::btnYesNo );
+      CONNECT( &dialog, onYes(),     &dialog, Dialogbox::deleteLater );
+      CONNECT( &dialog, onNo(), &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 
