@@ -308,8 +308,8 @@ void AboutHouse::_showHbtInfo()
                                                   _house->habitants().mature_n(),
                                                   _house->habitants().aged_n() );
 
-  Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnYes );
-  CONNECT( &dialog, onYes(), &dialog, Dialog::deleteLater )
+  Dialogbox& dialog = ui()->add<Dialogbox>( Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialogbox::btnYes );
+  CONNECT( &dialog, onYes(), &dialog, Dialogbox::deleteLater )
 }
 
 void AboutHouse::_showSrvcInfo()
@@ -317,8 +317,8 @@ void AboutHouse::_showSrvcInfo()
   std::string srvcState = fmt::format( "Health={}",
                                         (int)_house->state( pr::health ));
 
-  Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnYes );
-  CONNECT( &dialog, onYes(), &dialog, Dialog::deleteLater )
+  Dialogbox& dialog = ui()->add<Dialogbox>( Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialogbox::btnYes );
+  CONNECT( &dialog, onYes(), &dialog, Dialogbox::deleteLater )
 }
 
 }

@@ -320,7 +320,7 @@ void CityOptions::Impl::toggleC3gameplay()
   value = !value;
   if( value )
   {
-    auto& dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?", true );
+    auto& dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?");
     CONNECT( &dlg, onYes(), this, Impl::enableC3gameplay )
   }
 }

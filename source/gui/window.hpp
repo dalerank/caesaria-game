@@ -78,14 +78,17 @@ public:
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-  virtual void setText( const std::string& text );
-  virtual void setTitleRect( const Rect& rect );
+  virtual void setText(const std::string& text);
+  virtual void setTitleRect(const Rect& rect);
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();
+  void _setSystemButtonsVisible(bool visible);
   virtual void _finalizeResize();
   virtual void _updateBackground();
+
+  Widget* _titleWidget() const;
 
 private:
   class Impl;

@@ -130,6 +130,7 @@ public:
   virtual void setColor( NColor color );
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment( const std::string& horizontal, const std::string& vertical );
 
   virtual void setLineIntervalOffset( const int offset );
 

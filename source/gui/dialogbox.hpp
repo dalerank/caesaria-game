@@ -25,22 +25,22 @@
 namespace  gui
 {
 
-namespace dialog
-{
-
-class Dialog : public Window
+class Dialogbox : public Window
 {
 public:
-  enum { stillPlay=0, pauseGame=1 };
   enum { btnYes=0x1, btnNo=0x2, btnYesNo=btnYes|btnNo,
          btnNever=0x10 };
 
-  Dialog( Ui* ui, const Rect& rectangle, const std::string& title,
-             const std::string& text, int buttons, bool lockGame=false );
+  Dialogbox( Widget* parent );
+  Dialogbox( Ui* ui, const Rect& rectangle, const std::string& title,
+             const std::string& text, int buttons);
 
   virtual bool onEvent(const NEvent& event);
   virtual void setupUI(const VariantMap &ui);
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
+  virtual void setTitle(const std::string& title);
+  virtual void setText(const std::string &text);
+  void setButtons(int buttons);
 
 signals public:  
   Signal1<int>& onResult();
@@ -53,28 +53,28 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-Dialog& Information(Ui* ui,
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui,
                       const std::string& title,
                       const std::string& text,
                       bool showNever=false);
 
-Dialog& Confirmation( Ui* ui,
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text);
+
+Dialogbox& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
-                      bool pauseGame = false);
+                      Callback callback);
 
-Dialog& Confirmation( Ui* ui,
-                      const std::string& title,
-                      const std::string& text ,
-                      Callback callback,
-                      bool pauseGame = false);
-
-Dialog& Confirmation( Ui* ui,
+Dialogbox& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
                       Callback callbackOk,
-                      Callback callbackCancel,
-                      bool pauseGame = false);
+                      Callback callbackCancel);
 
 
 }//end namespace dialog

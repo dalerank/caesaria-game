@@ -150,7 +150,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
   setText( text );
 }
 
-void Label::_updateTexture(gfx::Engine& painter )
+void Label::_updateTexture(gfx::Engine& painter)
 {
   if( _d->text.picture.isValid() && _d->text.picture.size() != size() )
   {
@@ -764,6 +764,11 @@ void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
   Widget::setTextAlignment( horizontal, vertical );
   _d->is.needUpdate = true;
+}
+
+void Label::setTextAlignment(const string& horizontal, const string& vertical)
+{
+  Widget::setTextAlignment(horizontal,vertical);
 }
 
 void Label::_finalizeResize() {  _d->is.needUpdate = true; }

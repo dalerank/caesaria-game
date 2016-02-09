@@ -186,6 +186,13 @@ void Window::_init()
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
+void Window::_setSystemButtonsVisible(bool visible)
+{
+  button( buttonClose )->setVisible(visible);
+  button( buttonMin )->setVisible(visible);
+  button( buttonMax )->setVisible(visible);
+}
+
 void Window::_finalizeResize()
 {
   Widget::_finalizeResize();
@@ -211,6 +218,8 @@ void Window::_updateBackground()
   default: break;
   }
 }
+
+Widget* Window::_titleWidget() const { return _d->title; }
 
 Window::~Window()
 {

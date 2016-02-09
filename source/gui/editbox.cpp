@@ -261,12 +261,6 @@ void EditBox::setupUI(const VariantMap& ui)
 	_d->needUpdateTexture = true;
 }
 
-//! Sets text justification
-void EditBox::setTextAlignment(Alignment horizontal, Alignment vertical)
-{
-	Widget::setTextAlignment( horizontal, vertical );
-}
-
 //! called if an event happened.
 bool EditBox::onEvent(const NEvent& event)
 {

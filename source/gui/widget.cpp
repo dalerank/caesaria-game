@@ -557,6 +557,14 @@ static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s, i
   return wcalc.eval( s );
 }
 
+void Widget::setTextAlignment(const std::string& horizontal, const std::string& vertical)
+{
+  align::Helper ahelper;
+
+  setTextAlignment( ahelper.findType( horizontal ),
+                    ahelper.findType( vertical ) );
+}
+
 void Widget::setupUI( const VariantMap& options )
 {
   __D_REF(_d,Widget)
@@ -582,10 +590,17 @@ void Widget::setupUI( const VariantMap& options )
     setAlignment( _d.align.left, _d.align.right, _d.align.top, bottomAlign );
   }
 
+  Variant vAnchorTop = options.get( "anchor.top" );
+  if( vAnchorTop.isValid() )
+  {
+    auto topAlign = ahelper.findType( vAnchorBottom.toString() );
+    setAlignment( _d.align.left, _d.align.right, topAlign, _d.align.bottom );
+  }
+
   Variant tmp;
   setID( (int)options.get( "id", _d.id ) );
-  setText( _( options.get( "text" ).toString() ) );
-  setTooltipText( _( options.get( "tooltip" ).toString() ) );
+  if( options.has( "text" ) ) setText( _( options.get( "text" ).toString() ) );
+  if( options.has( "tooltip" ) ) setTooltipText( _( options.get( "tooltip" ).toString() ) );
   setVisible( options.get( "visible", true ).toBool() );
   setEnabled( options.get( "enabled", true ).toBool() );
   _d.flag.tabStop = options.get( "tabStop", false ).toBool();
@@ -950,6 +965,8 @@ void Widget::show() {  setVisible( true ); }
 Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textAlign.horizontal; }
 Alignment Widget::verticalTextAlign() const{  return _dfunc()->textAlign.vertical;}
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
+Font Widget::font() const { return Font(); }
+
 void Widget::setFont(FontType type, NColor color)
 {
   Font font = Font::create( type );
@@ -957,6 +974,7 @@ void Widget::setFont(FontType type, NColor color)
     font.setColor( color );
   setFont( font );
 }
+
 
 void Widget::setRight( int newRight )
 {

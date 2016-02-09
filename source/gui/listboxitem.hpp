@@ -113,7 +113,7 @@ public:
   };
 
 	//!sets the item text alignment
-	void setTextAlignment( Alignment horizontal, Alignment vertical );
+  void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   OverrideColor overrideColors[ count ];
 

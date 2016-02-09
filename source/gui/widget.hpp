@@ -108,6 +108,8 @@ public:
   virtual void setFont( const std::string& font );
   virtual void setFont( FontType type, NColor color=0 );
 
+  virtual Font font() const;
+
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
@@ -120,7 +122,9 @@ public:
 	*	\param vertical: ALIGN_UPPERLEFT to align with top edge,
 	*					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
 	*/
-  virtual void setTextAlignment( align::Type horizontal, align::Type vertical );
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
+
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
 
   virtual Alignment horizontalTextAlign() const;
 
@@ -342,7 +346,7 @@ public:
   /** \param r The absolute position to set */
   void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
   void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
-  void setGeometry(float left, float top, float rigth, float bottom );
+  void setGeometry(float left, float top, float rigth, float bottom);
 
   //! 
   void setLeft( int newLeft );

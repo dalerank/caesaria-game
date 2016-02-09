@@ -26,10 +26,7 @@ using namespace gfx;
 namespace gui
 {
 
-namespace dialog
-{
-
-class Dialog::Impl
+class Dialogbox::Impl
 {
 public:
   enum { okPicId=239, cancelPicId=243 };
@@ -43,94 +40,38 @@ public:
   } signal;
 };
 
-Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
-                      const std::string& text, int buttons, bool lockGame)
+Dialogbox::Dialogbox(Widget* parent)
+ : Window( parent->ui()->rootWidget() ), _d( new Impl )
+{
+  Window::setupUI(":/gui/dialogbox.gui");
+  _setSystemButtonsVisible(false);
+  GameAutoPauseWidget::insertTo(this);
+}
+
+Dialogbox::Dialogbox( Ui *ui, const Rect& rectangle, const std::string& title,
+                      const std::string& text, int buttons)
                       : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
-  Window::setupUI( ":/gui/dialogbox.gui" );
+  Window::setupUI(":/gui/dialogbox.gui");
 
-  button( buttonClose )->hide();
-  button( buttonMin )->hide();
-  button( buttonMax )->hide();
+  _setSystemButtonsVisible(false);
 
-  INIT_WIDGET_FROM_UI( Label*, lbText )
-  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  setText(text);
+  setTitle(title);
+  setButtons(buttons);
 
-  Font font = lbText
-                ? lbText->font()
-                : Font::create( FONT_3 );
-
-  int titleHeight = font.getTextSize( "A" ).height();
-  if( rectangle.size() == Size::zero )
-  {    
-    Size size = font.getTextSize( text );
-
-    if( size.width() > 440 )
-    {
-      size.setHeight( size.width() / 440 * 40 );
-      size.setWidth( 480 );
-    }
-    else
-      size = Size( 480, 60 );
-
-    size += Size( 0, titleHeight ); //title
-    size += Size( 0, 50 ); //buttons
-    size += Size( 0, 30 ); //borders
-
-    setGeometry( Rect( Point( 0, 0 ), size ) );
-    moveToCenter();
-  }
-  
-  if( lbText )
-    lbText->setText( text );
-
-  if( lbTitle )
-    lbTitle->setText( title );
-
-  if( (buttons & btnYesNo) == btnYesNo )
-  {
-    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
-  }
-  else if( (buttons & btnYes) == btnYes || (buttons & btnNo) == btnNo )
-  {
-    Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
-    INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
-    if( btnAction )
-    {
-      TexturedButton::States states( (buttons & btnYes)== btnYes ? Impl::okPicId : Impl::cancelPicId );
-      btnAction->changeImageSet( states );
-      btnAction->setID( btnYes );
-    }
-  }
-
-  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionYes )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionNo )
-  if( btnActionNever )
-  {
-    btnActionNever->setVisible( (buttons & btnNever) == btnNever );
-    btnActionNever->setID( btnNever );
-  }
-
-  if( btnActionYes )
-    btnActionYes->setID( btnYes );
-
-  if( btnActionNo )
-    btnActionNo->setID( btnNo );
-
-  if( lockGame )
-    GameAutoPauseWidget::insertTo( this );
+  GameAutoPauseWidget::insertTo(this);
 
   moveToCenter();
   setModal();
 }
 
-Signal1<int>& Dialog::onResult()
+Signal1<int>& Dialogbox::onResult()
 {
   return _d->signal.onResult;
 }
 
-bool Dialog::onEvent( const NEvent& event )
+bool Dialogbox::onEvent( const NEvent& event )
 {
   switch( event.EventType )
   {
@@ -177,59 +118,134 @@ bool Dialog::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-void Dialog::setupUI(const VariantMap& ui)
+void Dialogbox::setupUI(const VariantMap& ui)
 {
   Window::setupUI( ui );
 }
 
-Signal0<>& Dialog::onYes() {  return _d->signal.onOk;}
-Signal0<>& Dialog::onNo(){  return _d->signal.onCancel;}
-Signal1<bool>& Dialog::onNever() { return _d->signal.onNever; }
+Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
+Signal0<>& Dialogbox::onNo(){  return _d->signal.onCancel;}
+Signal1<bool>& Dialogbox::onNever() { return _d->signal.onNever; }
 
-void Dialog::draw(gfx::Engine& painter )
+void Dialogbox::draw(gfx::Engine& painter )
 {
   if( !visible() )
-  {
     return;
-  }
 
   Window::draw( painter );
 }
 
-Dialog& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
+void Dialogbox::setTitle(const std::string& title)
 {
-  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnYes | (showNever ? Dialog::btnNever : 0) );
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  if( lbTitle )
+      lbTitle->setText( title );
+}
 
-  ret.onYes().connect( &ret, &Dialog::deleteLater );
-  ret.onNo().connect( &ret, &Dialog::deleteLater );
+void Dialogbox::setText(const std::string& text)
+{
+  INIT_WIDGET_FROM_UI( Label*, lbText )
+
+  Font titleFont = _titleWidget() ? _titleWidget()->font() : Font::create( FONT_4 );
+
+  Font textFont = lbText
+                ? lbText->font()
+                : Font::create( FONT_3 );
+
+  int titleHeight = titleFont.getTextSize( "A" ).height();
+  int textLineHeight = textFont.getTextSize( "A" ).height() + textFont.kerningHeight();
+  Size size = textFont.getTextSize( text );
+
+  if( size.width() > 440 )
+  {
+    size.setHeight( size.width() / 440 * textLineHeight );
+    size.setWidth( 480 );
+  }
+  else
+    size = Size( 480, 40 );
+
+  size += Size( 0, titleHeight ); //title
+  size += Size( 0, 50 ); //buttons
+  size += Size( 0, 30 ); //borders
+
+  if( lbText )
+    lbText->setText(text);
+
+  setGeometry( Rect( Point( 0, 0 ), size ) );
+  moveToCenter();
+}
+
+void Dialogbox::setButtons(int buttons)
+{
+  if( (buttons & btnYesNo) == btnYesNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
+  }
+  else if( (buttons & btnYes) == btnYes || (buttons & btnNo) == btnNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
+    INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
+    if( btnAction )
+    {
+      TexturedButton::States states( (buttons & btnYes)== btnYes ? Impl::okPicId : Impl::cancelPicId );
+      btnAction->changeImageSet( states );
+      btnAction->setID( btnYes );
+    }
+  }
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionYes )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionNo )
+  if( btnActionNever )
+  {
+    btnActionNever->setVisible( (buttons & btnNever) == btnNever );
+    btnActionNever->setID( btnNever );
+  }
+
+  if( btnActionYes )
+    btnActionYes->setID( btnYes );
+
+  if( btnActionNo )
+    btnActionNo->setID( btnNo );
+}
+
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
+{
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYes | (showNever ? Dialogbox::btnNever : 0) );
+
+  ret.onYes().connect( &ret, &Dialogbox::deleteLater );
+  ret.onNo().connect( &ret, &Dialogbox::deleteLater );
 
   return ret;
 }
 
-Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback, bool pauseGame)
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback)
 {
-  auto& dialog = Confirmation( ui, title, text, pauseGame );
+  auto& dialog = Confirmation( ui, title, text);
   dialog.onYes().connect( callback );
 
   return dialog;
 }
 
-Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text,
-                     Callback callbackOk, Callback callbackCancel, bool pauseGame)
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel)
 {
-  auto& dialog = Confirmation( ui, title, text, pauseGame );
+  auto& dialog = Confirmation( ui, title, text);
   dialog.onYes().connect( callbackOk );
   dialog.onNo().connect( callbackCancel );
 
   return dialog;
 }
 
-Dialog& Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text)
 {
-  Dialog& ret = ui->add<Dialog>( Rect(), title, text, Dialog::btnYesNo, pauseGame );
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYesNo );
 
-  ret.onYes().connect( &ret, &Dialog::deleteLater );
-  ret.onNo().connect( &ret, &Dialog::deleteLater );
+  ret.onYes().connect( &ret, &Dialogbox::deleteLater );
+  ret.onNo().connect( &ret, &Dialogbox::deleteLater );
 
   return ret;
 }

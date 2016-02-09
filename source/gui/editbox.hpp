@@ -99,9 +99,6 @@ public:
   //! \return Returns the size in pixels of the text
   virtual Size textDimension();
 
-  //! Sets text justification
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
-
   //! called if an event happened.
   virtual bool onEvent( const NEvent& event );
 

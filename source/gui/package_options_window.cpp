@@ -83,7 +83,7 @@ void PackageOptions::_close()
 {
   if( _d->needRestart )
   {
-    Dialog& dlg = Information( ui(), "Note", "Please restart game to apply change" );
+    Dialogbox& dlg = Information( ui(), "Note", "Please restart game to apply change" );
     dlg.show();
   }
 
