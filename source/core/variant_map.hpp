@@ -21,23 +21,64 @@
 #include "variant.hpp"
 #include "delegate.hpp"
 
+/**
+ * @brief Simple [string,variant] map container
+ */
 class VariantMap : public std::map<std::string, Variant>
 {
 public:
   typedef Delegate2< const std::string&, const Variant& > Visitor;
 
-  VariantMap() {}
+  /**
+   * @brief default constructor
+   */
+  VariantMap();
 
+  /**
+   * @brief copy constructor
+   * @param parent container
+   */
   VariantMap( const VariantMap& other );
 
+  /**
+   * @brief will add values from other container
+   * @param other container
+   * @return ref to self
+   */
   VariantMap& operator+=(const VariantMap& other );
 
+  /**
+   * @brief Do function for each element in container
+   * @param function
+   */
   void visitEach( Visitor visitor );
 
+  /**
+   * @brief replace values from other cotainer
+   * @param other container
+   * @return ref to self
+   */
   VariantMap& operator=(const VariantMap& other );
 
+  /**
+   * @brief find and return value by key or empty value
+   * @param key
+   * @param default value which returns if key not found
+   * @return variant
+   */
   Variant get( const std::string& name, Variant defaultVal=Variant() ) const;
 
+  /**
+   * @brief check this key contains in container
+   * @param key
+   * @return true if found
+   */
+  bool has( const std::string& name ) const;
+
+  /**
+   * @brief Convert container to variant
+   * @return variant
+   */
   Variant toVariant() const;
 };
 
