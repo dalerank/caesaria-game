@@ -42,7 +42,6 @@ en/*
 *.a
 
 # MSVC ignore
-bin
 /MSVC/CaesarIA-game/Win32
 /MSVC/CaesarIA-game/source
 /MSVC/updater/Win32

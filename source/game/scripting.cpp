@@ -234,7 +234,7 @@ void constructor_Session(js_State *J)
                                                     js_pop(internal::J,1); \
                                                   } \
                                                 } \
-                                                void name##_##callback(js_State *J) { \
+                                                void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                                   if (parent && js_iscallable(J,1)) { \
                                                     js_copy(J,1); \
@@ -255,7 +255,7 @@ void constructor_Session(js_State *J)
                                                     js_pop(internal::J,1); \
                                                   } \
                                                 } \
-                                                void name##_##callback(js_State *J) { \
+                                                void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                                   if (parent && js_iscallable(J,1)) { \
                                                     js_copy(J,1); \
@@ -293,7 +293,7 @@ void constructor_Session(js_State *J)
                                   js_getproperty(internal::J, -1, "prototype"); \
                                   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
 
-#define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_handle_##funcname, TEXT(funcname), params); \
+#define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_set_##funcname, TEXT(funcname), params); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \

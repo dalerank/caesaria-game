@@ -132,13 +132,74 @@ int watchDirectory(const char* lpDir)
 }
 
 }//end namespace internal
-#elif defined(GAME_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_ANDROID)
+#include <sys/inotify.h>
+#include <unistd.h>
 namespace  internal {
+
+#define EVENT_SIZE  ( sizeof (struct inotify_event) )
+#define BUF_LEN     ( 1024 * ( EVENT_SIZE + 16 ) )
+int watchDirectory(const char* lpDir)
+{
+  int length, i = 0;
+  int fd;
+  int wd;
+  char buffer[BUF_LEN];
+
+  fd = inotify_init();
+
+  if ( fd < 0 )
+  {
+    Logger::warning( "WARNING !!! Cant init inotify for {}", lpDir );
+    return 0;
+  }
+
+  wd = inotify_add_watch( fd, lpDir, IN_MODIFY );
+  length = read( fd, buffer, BUF_LEN );
+
+  if ( length < 0 )
+  {
+    Logger::warning( "WARNING !!! Cant read inotify event {}", lpDir );
+    return 0;
+  }
+
+  int result = 1;
+  while ( i < length )
+  {
+    struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
+    if ( event->len )
+    {
+      if ( event->mask & IN_MODIFY )
+      {
+        if ( event->mask & IN_ISDIR )
+        {
+          Logger::warning( "WARNING !!! The directory {} was modified.", event->name );
+        }
+        else
+        {
+          Logger::warning( "WARNING !!! The file {} was modified.", event->name );
+          result = 2;
+          break;
+        }
+      }
+    }
+    i += EVENT_SIZE + event->len;
+  }
+
+  inotify_rm_watch( fd, wd );
+  close( fd );
+
+  return result;
+}
+}//end namespace internal
+#elif defined(GAME_PLATFORM_MACOSX)
+namespace internal {
+
 int watchDirectory(const char* lpDir)
 {
   return 1;
 }
-}//end namespace internal
+}
 #endif
 
 class FileChangeObserver::Impl

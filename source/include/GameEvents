@@ -14,4 +14,5 @@
 #include "events/script_event.hpp"
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
+#include "events/missionlose.hpp"
 #include "events/savegame.hpp"

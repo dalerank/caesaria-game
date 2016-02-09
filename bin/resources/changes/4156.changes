@@ -1,0 +1,20 @@
+{  
+  revision : 4156
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 12, 40, "100%-11", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_2"
+
+    items : [
+      ""
+    ]
+  }
+}
