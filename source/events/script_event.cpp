@@ -18,7 +18,7 @@
 #include "steam.hpp"
 #include "city/city.hpp"
 #include "city/victoryconditions.hpp"
-#include "game/scripting.hpp"
+#include "scripting/core.hpp"
 #include "core/variant_list.hpp"
 
 namespace events
@@ -34,7 +34,7 @@ GameEventPtr SciptFunc::create(const std::string& funcname,
 
 void SciptFunc::_exec(Game& game, unsigned int)
 {
-  game::Scripting::execFunction( _funcname, _params );
+  script::Core::execFunction( _funcname, _params );
 }
 
 bool SciptFunc::_mayExec(Game&, unsigned int) const{ return true; }

@@ -57,7 +57,8 @@ function Dialogbox(parent) {
 Dialogbox.prototype = {
 	set title (str) { this.widget.setTitle( engine.translate(str) ); },
 	set text  (str) { this.widget.setText( engine.translate(str) ); },
-	set buttons (flags) { this.widget.setButtons(flags); }
+    set buttons (flags) { this.widget.setButtons(flags); },
+    set onYesCallback (func) { this.widget.setYesCallback(func); },
 	set onNeverCallback (func) { this.widget.setNeverCallback(func); }
 }
 

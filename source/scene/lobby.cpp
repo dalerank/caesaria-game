@@ -18,26 +18,22 @@
 
 #include "lobby.hpp"
 
-#include "game/scripting.hpp"
+#include "scripting/core.hpp"
 #include <GameCore>
 #include <GameGui>
 #include <GameGfx>
+#include <GameVfs>
+#include <GameLogger>
 #include "game/game.hpp"
 #include "game/player.hpp"
-#include "gui/pushbutton.hpp"
-#include "gui/label.hpp"
+
 #include "game/settings.hpp"
-#include "core/color_list.hpp"
 #include "gui/playername_window.hpp"
-#include "core/logger.hpp"
-#include "core/foreach.hpp"
-#include "vfs/directory.hpp"
+
 #include "gui/fade.hpp"
-#include "gui/listbox.hpp"
+
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
-#include "gui/smkviewer.hpp"
-#include "gui/dialogbox.hpp"
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"

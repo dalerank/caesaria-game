@@ -26,7 +26,7 @@
 #include "dialogbox.hpp"
 #include "environment.hpp"
 #include "sound/engine.hpp"
-#include "game/scripting.hpp"
+#include "scripting/core.hpp"
 
 namespace gui
 {

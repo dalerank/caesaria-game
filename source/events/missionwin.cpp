@@ -18,7 +18,7 @@
 #include "steam.hpp"
 #include "city/city.hpp"
 #include "city/victoryconditions.hpp"
-#include "game/scripting.hpp"
+#include "scripting/core.hpp"
 #include "core/variant_list.hpp"
 
 namespace events
@@ -41,7 +41,7 @@ void MissionWin::_exec(Game& game, unsigned int)
      << conditions.winSpeech()
      << conditions.mayContinue();
 
-  game::Scripting::execFunction( "OnMissionWin", vl );
+  script::Core::execFunction( "OnMissionWin", vl );
 
   if( !_force )
     steamapi::missionWin( conditions.name() );

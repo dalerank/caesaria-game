@@ -15,32 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCRIPTING_INCLUDE_H_
-#define _CAESARIA_SCRIPTING_INCLUDE_H_
-
-#include "core/namedtype.hpp"
+#include "session.hpp"
+#include <GameCity>
+#include <GameApp>
+#include <GameObjects>
+#include <GameScene>
 #include <string>
 
 class Game;
 class VariantList;
 
-namespace game
+namespace script
 {
 
-class Scripting
+void Session::continuePlay(int years)
 {
-public:
-  static Scripting& instance();
-  static void loadModule( const std::string& path );
-  static void execFunction(const std::string& funcname);
-  static void execFunction(const std::string& funcname,
-                           const VariantList& params);                           
-  void registerFunctions(Game& game);
+  city::VictoryConditions vc;
+  vc = _game->city()->victoryConditions();
+  vc.addReignYears( years );
 
-private:
-  Scripting();
-};
+  _game->city()->setVictoryConditions( vc );
+}
 
-} //end namespace advisor
+void Session::loadNextMission()
+{
+  city::VictoryConditions vc;
+  vc = _game->city()->victoryConditions();
+  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
+  if( level )
+  {
+    level->loadStage( vc.nextMission() );
+  }
+}
 
-#endif  //_CAESARIA_SCRIPTING_INCLUDE_H_
+
+} //end namespace script

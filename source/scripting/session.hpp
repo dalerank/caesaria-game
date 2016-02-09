@@ -12,35 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "missionlose.hpp"
-#include "game/game.hpp"
-#include "steam.hpp"
-#include "city/city.hpp"
-#include "city/victoryconditions.hpp"
-#include "scripting/core.hpp"
-#include "core/variant_list.hpp"
+#ifndef _CAESARIA_SCRIPT_SESSION_INCLUDE_H_
+#define _CAESARIA_SCRIPT_SESSION_INCLUDE_H_
 
-namespace events
+#include "core/namedtype.hpp"
+#include <string>
+
+class Game;
+class VariantList;
+
+namespace script
 {
 
-GameEventPtr MissionLose::create(bool force)
+class Session
 {
-  GameEventPtr ret( new MissionLose(force) );
-  ret->drop();
+public:
+  Session(Game* game) { _game = game; }
+  void continuePlay(int years);
+  void loadNextMission();
 
-  return ret;
-}
+private:
+  Game* _game;
+};
 
-void MissionLose::_exec(Game& game, unsigned int)
-{
-  auto missionName = game.city()->victoryConditions().name();
-  if (!_force)
-    steamapi::missionLose( missionName );
-}
+} //end namespace script
 
-bool MissionLose::_mayExec(Game&, unsigned int) const{  return true; }
-
-MissionLose::MissionLose( bool force ) : _force(force) {}
-
-}//end namepsace events
+#endif  //_CAESARIA_SCRIPT_SESSION_INCLUDE_H_

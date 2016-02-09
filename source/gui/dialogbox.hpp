@@ -45,7 +45,9 @@ public:
 signals public:  
   Signal1<int>& onResult();
   Signal0<>& onYes();
+  Signal1<Widget*>& onYesEx();
   Signal0<>& onNo();
+  Signal1<Widget*>& onNoEx();
   Signal1<bool>& onNever();
   Signal2<Widget*,bool>& onNeverEx();
 
