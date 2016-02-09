@@ -6,6 +6,7 @@ Label.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
+  set textAlign (align) { this.widget.setTextAlignment(align.h,align.h); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
@@ -41,15 +42,32 @@ Button.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.setCallback(func); },
-  set style (sname) { this.widget.setBackgroundStyle(sname); },
+  set style (sname) { this.widget.setBackgroundStyle(sname); },    
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
 
-var g_ui = {
+function ConfirmationDialog(parent) {
+  this.widget = new _Dialogbox(parent);
+}
+
+function Ui() {
+}
+
+Ui.prototype = {
   addWindow : function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
     return window;
-  }
+  },
+
+  addInformationDialog : function(title, text) {
+    var dialog = new ConfirmationDialog(0);
+    dialog.setTitle(title);
+    dialog.setText(text);
+    return dialog;
+  },
+
+  elog : function(a) { engine.log(a); }
 }
+

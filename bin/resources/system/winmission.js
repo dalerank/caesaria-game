@@ -1,8 +1,10 @@
-s
-var g_session = new _Session();
+//var g_session = new _Session();
 
-var OnMissionWin = function(newTitle,winText,speech,mayContinue)
+function OnMissionWin(newTitle,winText,speech,mayContinue)
 {
+  var g_ui = new Ui();
+  g_ui.elog( "JS:OnMissionWin" );
+
   var wnd = g_ui.addWindow(30,30,540,240)
   wnd.geometry = { x:0, y:0, w:540, h:240 };
   wnd.title = "##mission_win##";
@@ -46,12 +48,12 @@ var OnMissionWin = function(newTitle,winText,speech,mayContinue)
             wnd.deleteLater();
         }
 
-   if (winText.length > 0)
-       gui.addDialogInformation( winText );
+  if (winText.length > 0)
+    g_ui.addInformationDialog( "", winText );
 
-   if (speech.length > 0)
-       sound.play(speech);
+  if (speech.length > 0)
+    sound.play(speech);
 
-   wnd.moveToCenter();
-   wnd.setModal();
+  wnd.moveToCenter();
+  wnd.setModal();
 }
