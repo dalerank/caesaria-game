@@ -42,6 +42,13 @@ en/*
 *.a
 
 # MSVC ignore
+/MSVC/Debug
+bin/*.exe
+bin/saves
+bin/tools
+bin/*.dll
+dep/*/lib
+bin/steam_appid.txt
 /MSVC/CaesarIA-game/Win32
 /MSVC/CaesarIA-game/source
 /MSVC/updater/Win32
