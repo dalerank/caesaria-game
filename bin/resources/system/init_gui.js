@@ -18,16 +18,17 @@ function Window(parent) {
 Window.prototype = {
   set title (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-	set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); },
+  set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); },
+  set onClose (func) { this.widget.onCloseEx(func); },
   get width () { return this.widget.width(); },
 
-	moveToCenter : function() { this.widget.moveToCenter(); },
-	setModal : function() { this.widget.setModal(); },
+  moveToCenter : function() { this.widget.moveToCenter(); },
+  setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
   addLabel : function(rx,ry,rw,rh) {
     var label = new Label( this.widget ); 
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
+    return label; 
   },
   addButton : function(rx,ry,rw,rh) {
     var button = new Button( this.widget );
@@ -44,7 +45,7 @@ Button.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
-  set callback (func) { this.widget.setCallback(func); },
+  set callback (func) { this.widget.onClickedEx(func); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },    
 
   deleteLater : function() { this.widget.deleteLater(); }
@@ -59,7 +60,8 @@ Dialogbox.prototype = {
 	set text  (str) { this.widget.setText( engine.translate(str) ); },
     set buttons (flags) { this.widget.setButtons(flags); },
     set onYesCallback (func) { this.widget.setYesCallback(func); },
-	set onNeverCallback (func) { this.widget.setNeverCallback(func); }
+    set neverValue (enabled) { this.widget.setNeverValue(enabled); },
+    set onNeverCallback (func) { this.widget.onNeverEx(func); }
 }
 
 function Ui() {
@@ -76,7 +78,7 @@ Ui.prototype = {
     var dialog = new Dialogbox(0);
     dialog.title = title;
     dialog.text = text;
-		dialog.buttons = 1;
+    dialog.buttons = 1;
     return dialog; 
   },
 

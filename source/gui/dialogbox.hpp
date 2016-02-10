@@ -40,6 +40,7 @@ public:
   virtual void draw(gfx::Engine& painter);
   virtual void setTitle(const std::string& title);
   virtual void setText(const std::string &text);
+  void setNeverValue(bool value);
   void setButtons(int buttons);
 
 signals public:  

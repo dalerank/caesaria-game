@@ -5,4 +5,4 @@ function Session() {
 Session.prototype = {
 	continuePlay : function(years) { this.session.continuePlay(years); },
 	loadNextMission : function() { this.session.loadNextMission(); } 
-} 
+}  

@@ -15,41 +15,32 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
-#define _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
+#ifndef _CAESARIA_SCRIPTING_INCLUDE_H_
+#define _CAESARIA_SCRIPTING_INCLUDE_H_
 
-#include "window.hpp"
-#include "gameautopause.hpp"
-#include "core/signals.hpp"
+#include "core/namedtype.hpp"
+#include <string>
 
-namespace gui
+class Game;
+class VariantList;
+
+namespace script
 {
 
-namespace dialog
-{
-
-class WinMission : public Window
+class Core
 {
 public:
-  WinMission( Widget* parent, const std::string& newTitle,
-              const std::string& winText, const std::string &speech,
-              bool mayContinue);
-
-  virtual ~WinMission();
-
-public signals:
-  Signal0<>& onAcceptAssign();
-  Signal1<int>& onContinueRules();
-
-protected:
-  virtual bool _onButtonClicked(Widget *sender);
+  static Core& instance();
+  static void loadModule( const std::string& path );
+  static void execFunction(const std::string& funcname);
+  static void execFunction(const std::string& funcname,
+                           const VariantList& params);                           
+  static void registerFunctions(Game& game);
 
 private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  Core();
 };
 
-}//end namespace dialog
+} //end namespace game
 
-}//end namespace gui
-#endif //_CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
+#endif  //_CAESARIA_SCRIPTING_INCLUDE_H_

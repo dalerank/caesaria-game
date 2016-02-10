@@ -82,6 +82,9 @@ public:
   virtual void setText(const std::string& text);
   virtual void setTitleRect(const Rect& rect);
 
+public signals:
+  Signal1<Widget*>& onCloseEx();
+
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();

@@ -28,7 +28,6 @@
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
-#include "gui/win_mission_window.hpp"
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"

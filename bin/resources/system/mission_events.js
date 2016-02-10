@@ -1,7 +1,7 @@
 function OnMissionWin(newTitle,winText,speech,mayContinue)
-{
+{ 
   var g_ui = new Ui();
-	var g_session = new Session();
+  var g_session = new Session();
 	
   engine.log( "JS:OnMissionWin" );
 
@@ -58,18 +58,21 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
 
   wnd.moveToCenter();
   wnd.setModal();
-	wnd.mayMove = false;
+  wnd.mayMove = false;
 	
-	if (winText.length > 0)
+  if (winText.length > 0)
     g_ui.addInformationDialog( "", winText );
 }
 
-function OnMissionStart() {
-	var showAware = engine.getOption("showStartAware");
+function OnMissionStart()
+{
+  var g_ui = new Ui();
+  var showAware = engine.getOption("showStartAware");
   if( showAware )
   {
     var dialog = g_ui.addInformationDialog( "Please note", "Black object are not done yet and will be added as soon as finished." );
-		dialog.onNeverCallback = function(value) {
+    dialog.neverValue = true;
+    dialog.onNeverCallback = function(value) {
 				engine.setOption( "showStartAware", value );
 			}
   }

@@ -196,6 +196,17 @@ void Dialogbox::setText(const std::string& text)
   moveToCenter();
 }
 
+void Dialogbox::setNeverValue(bool value)
+{
+  _d->never = value;
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  if( btnActionNever )
+  {
+    btnActionNever->show();
+    btnActionNever->setText(_d->never ? "X" : " ");
+  }
+}
+
 void Dialogbox::setButtons(int buttons)
 {
   if( (buttons & btnYesNo) == btnYesNo )

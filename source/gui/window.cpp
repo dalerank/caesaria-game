@@ -107,6 +107,10 @@ public:
     NColor current;
   } colors;
 
+  struct {
+    Signal1<Widget*> onCloseEx;
+  } signal;
+
 	FlagHolder<Window::FlagName> flags;
 };
 
@@ -141,6 +145,8 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
   setTaborder(-1);
   setText( title );
 }
+
+Signal1<Widget*>& Window::onCloseEx() { return _d->signal.onCloseEx; }
 
 void Window::setText(const std::string& text )
 {
@@ -223,6 +229,7 @@ Widget* Window::_titleWidget() const { return _d->title; }
 
 Window::~Window()
 {
+  emit _d->signal.onCloseEx(this);
   Logger::warning( "Window ID={} was removed", ID() );
 }
 
