@@ -195,6 +195,17 @@ void Emperor::_updateRequests()
   _d.isRequestsUpdated = false;
 }
 
+void Emperor::_updatePrimaryFunds()
+{
+  INIT_WIDGET_FROM_UI( Label*, lbPrimaryFunds)
+  if( lbPrimaryFunds )
+  {
+    lbPrimaryFunds->setText( fmt::format( "{} {} {}", _("##primary_funds##"),
+                                                      _city->mayor()->money(),
+                                                      _("##denarii_short##")) );
+  }
+}
+
 class RqHistoryDetails : public Window
 {
 public:
@@ -266,6 +277,8 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
     lbTitle->setText( text );
   }
 
+  _updatePrimaryFunds();
+
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnChangeSalary, onClicked(), Emperor::_showChangeSalaryWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow )
@@ -290,6 +303,8 @@ void Emperor::_sendMoney( int money )
 {
   _mayor()->appendMoney( -money );
   events::dispatch<Payment>( econ::Issue::donation, money );
+
+  _updatePrimaryFunds();
 }
 
 void Emperor::_sendGift(int money)
@@ -304,6 +319,8 @@ void Emperor::_sendGift(int money)
 
   _mayor()->appendMoney( -money );
   _city->empire()->emperor().sendGift( Gift( _city->name(), "gift", money, game::Date::current() ) );
+
+  _updatePrimaryFunds();
 }
 
 void Emperor::_changeSalary( int money )

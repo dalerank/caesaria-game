@@ -53,7 +53,6 @@
 #include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
 #include "city/ambientsound.hpp"
-#include "gui/win_mission_window.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
 #include "gui/androidactions.hpp"
