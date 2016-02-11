@@ -22,7 +22,7 @@
 namespace events
 {
 
-class SciptFunc : public GameEvent
+class ScriptFunc : public GameEvent
 {
 public:
   static GameEventPtr create(const std::string& funcname,
@@ -33,7 +33,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  SciptFunc(const std::string& funcname, const VariantList& params);
+  ScriptFunc(const std::string& funcname, const VariantList& params);
   std::string _funcname;
   VariantList _params;
 };

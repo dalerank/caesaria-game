@@ -29,7 +29,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::weapons_workshop, WeaponsWorkshop)
 
 WeaponsWorkshop::WeaponsWorkshop()
-  : Factory(good::iron, good::weapon, object::weapons_workshop, Size(2) )
+  : Factory(good::iron, good::weapon, object::weapons_workshop, Size::square(2) )
 {
   setPicture( info().randomPicture( size() ) );
 

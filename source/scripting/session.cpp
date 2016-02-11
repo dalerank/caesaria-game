@@ -20,6 +20,7 @@
 #include <GameApp>
 #include <GameObjects>
 #include <GameScene>
+#include <GameGfx>
 #include <string>
 
 class Game;
@@ -41,6 +42,12 @@ int Session::lastChangesNum()
 {
   return game::Settings::findLastChanges();
 }
+
+int Session::videoModesCount() { return _game->engine()->modes().size(); }
+Size Session::getVideoMode(int index) { return _game->engine()->modes().at(index); }
+void Session::setResolution(Size size){SETTINGS_SET_VALUE(resolution, size);}
+Size Session::getResolution() { return _game->engine()->screenSize(); }
+void Session::saveSettings() { game::Settings::save(); }
 
 void Session::loadNextMission()
 {

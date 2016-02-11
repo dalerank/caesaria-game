@@ -34,7 +34,7 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Water::Water() : Overlay( object::water, Size(1) )
+Water::Water() : Overlay( object::water, Size::square(1) )
 {
   setPicture( computePicture() );
 }

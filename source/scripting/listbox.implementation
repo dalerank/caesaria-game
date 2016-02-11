@@ -1,0 +1,7 @@
+DEFINE_OBJECT_FUNCTION_0(ListBox,void,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(ListBox,void,setGeometry,Rect)
+DEFINE_OBJECT_FUNCTION_2(ListBox,void,setTextAlignment,std::string,std::string)
+DEFINE_OBJECT_FUNCTION_3(ListBox,void,setItemData,int,std::string,std::string)
+DEFINE_OBJECT_GETTER_2(ListBox,getItemData,int,std::string)
+DEFINE_WIDGET_CALLBACK_1(ListBox,onIndexSelectedEx,int)
+DEFINE_WIDGET_CONSTRUCTOR(ListBox)

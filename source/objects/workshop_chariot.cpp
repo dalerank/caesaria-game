@@ -31,7 +31,7 @@
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::chariotSchool, WorkshopChariot)
 
 WorkshopChariot::WorkshopChariot()
-  : TrainingBuilding( object::chariotSchool, Size(3) )
+  : TrainingBuilding( object::chariotSchool, Size::square(3) )
 {
   _fgPictures().resize(1);
 }

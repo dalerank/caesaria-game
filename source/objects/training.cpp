@@ -67,7 +67,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 }
 
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size::square(3))
 {
   _fgPictures().resize(1);
 }
@@ -84,7 +84,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
   TrainingBuilding::timeStep( time );
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size::square(3) )
 {
    _fgPictures().resize(1);
 }

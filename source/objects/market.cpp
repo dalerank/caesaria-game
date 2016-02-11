@@ -71,7 +71,7 @@ public:
   }
 };
 
-Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
+Market::Market() : ServiceBuilding(Service::market, object::market, Size(2,2) ),
   _d( new Impl )
 {
   _fgPictures().resize(1);  // animation

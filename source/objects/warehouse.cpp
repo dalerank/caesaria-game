@@ -140,7 +140,7 @@ static Picture strafePic(const std::string& rc, int index, int i, int j )
   return ret;
 }
 
-Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new Impl )
+Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size::square( 3 )), _d( new Impl )
 {
   setPicture( strafePic( ResourceGroup::warehouse, 19, 0, 2 ) );
 

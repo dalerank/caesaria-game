@@ -58,7 +58,7 @@ struct WallCondition
 };
 
 Tower::Tower()
-  : ServiceBuilding( Service::guard, object::tower, Size( 2 ) ), _d( new Impl )
+  : ServiceBuilding( Service::guard, object::tower, Size::square( 2 ) ), _d( new Impl )
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );

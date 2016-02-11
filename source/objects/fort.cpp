@@ -272,7 +272,7 @@ public:
   bool isFlat;
 };
 
-FortArea::FortArea() : Building( object::fortArea, Size(4) ),
+FortArea::FortArea() : Building( object::fortArea, Size(4,4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
@@ -310,11 +310,11 @@ FortPtr FortArea::base() const
   return _map().overlay( _d->basePos ).as<Fort>();
 }
 
-Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
-  _d( new Impl )
+Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3,3) ),
+  _d(new Impl)
 {
   Picture logo(ResourceGroup::security, picIdLogo );
-  logo.setOffset( Point( 80, 10 ) );
+  logo.setOffset(80, 10);
 
   Picture area(ResourceGroup::security, 13 );
   area.addOffset( TilePos( 3, 0).toScreenCoordinates() );

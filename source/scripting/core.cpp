@@ -45,6 +45,15 @@ inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline void push(js_State* J, int value) { js_pushnumber(J,value); }
 
+void push(js_State* J,Size size)
+{
+  js_newobject(J);
+  js_pushnumber(J, size.width());
+  js_setproperty(J, -2, "w");
+  js_pushboolean(J, size.height());
+  js_setproperty(J, -2, "h");
+}
+
 int pushValue(js_State* J,const Variant& param)
 {
   switch( param.type() )
@@ -82,10 +91,8 @@ int pushValue(js_State* J,const Variant& param)
   return 1;
 }
 
-inline Point to(js_State *J, int n, Point)
-{
-  return Point( js_toint32(J, n), js_toint32(J, n+1) );
-}
+inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
+inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
 
 inline Rect to(js_State *J, int n, Rect)
 {
@@ -266,6 +273,21 @@ void constructor_Session(js_State *J)
                               else js_pushundefined(J); \
                             }
 
+#define DEFINE_OBJECT_GETTER_1(name,funcname,paramType) void name##_##funcname(js_State* J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType paramValue = internal::to( J, 1, paramType() ); \
+  if (parent) internal::push(J,parent->funcname(paramValue)); \
+  else js_pushundefined(J); \
+}
+
+#define DEFINE_OBJECT_GETTER_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State* J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+  if (parent) internal::push(J,parent->funcname(paramValue1,paramValue2)); \
+  else js_pushundefined(J); \
+}
+
 #define DEFINE_OBJECT_FUNCTION_1(name,rettype,funcname,paramType) rettype name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType paramValue = internal::to( J, 1, paramType() ); \
@@ -280,6 +302,15 @@ void constructor_Session(js_State *J)
                                   if( parent ) parent->funcname( paramValue1, paramValue2 ); \
                                   js_pushundefined(J); \
                                 }
+
+#define DEFINE_OBJECT_FUNCTION_3(name,rettype,funcname,paramType1,paramType2,paramType3) rettype name##_##funcname(js_State *J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+  paramType3 paramValue3 = internal::to( J, 3, paramType2() ); \
+  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
+  js_pushundefined(J); \
+}
 
 
 #define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
@@ -316,6 +347,7 @@ void constructor_Session(js_State *J)
 #include "session.implementation"
 #include "dialogbox.implementation"
 #include "exitbutton.implementation"
+#include "listbox.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -339,6 +371,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "session.interface"
 #include "dialogbox.interface"
 #include "exitbutton.interface"
+#include "listbox.interface"
 
   Core::loadModule(":/system/modules.js");
   {

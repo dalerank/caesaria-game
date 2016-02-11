@@ -41,7 +41,7 @@ public:
 };
 
 Forum::Forum()
-  : ServiceBuilding(Service::forum, object::forum, Size(2)),
+  : ServiceBuilding(Service::forum, object::forum, Size(2,2)),
    __INIT_IMPL(Forum)
 {
   _dfunc()->taxValue = 0;

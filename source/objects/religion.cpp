@@ -267,7 +267,7 @@ BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), obj
 
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
 {
-  setSize( Size( 2 ) );
+  setSize( Size::square( 2 ) );
   _animation().load( ResourceGroup::security, 56, 6);
   _animation().setOffset( Point( 9, 30 ) );
   _fgPictures().resize(1);
@@ -289,7 +289,7 @@ bool TempleOracle::build( const city::AreaInfo& info )
 }
 
 SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
-  : Temple( divinity, type, imgId, Size(2) )
+  : Temple( divinity, type, imgId, Size::square(2) )
 {
   setMaximumWorkers( 2 );  
   _ground().append( "ground", 2 );
@@ -298,7 +298,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
 unsigned int SmallTemple::currentVisitors() const { return 750; }
 
 BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
-  : Temple( divinity, type, imgId, Size(3) )
+  : Temple( divinity, type, imgId, Size::square(3) )
 {
   setMaximumWorkers( 8 );
   _ground().append( "ground", 3 );

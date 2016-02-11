@@ -64,15 +64,15 @@ namespace gui
 namespace advisorwnd
 {
 
-PushButton* Parlor::_addButton( Advisor advisorName, int picId, std::string tooltip )
+PushButton& Parlor::_addButton( Advisor advisorName, int picId, std::string tooltip )
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  auto& btn = add<TexturedButton>( tabButtonPos + Point( 48, 0 ) * (advisorName-1), Size( 40 ),
+  auto& btn = add<TexturedButton>( tabButtonPos + Point( 48, 0 ) * (advisorName-1), Size(40, 40),
                                    advisorName, TexturedButton::States( picId, picId, picId + 13 ) );
   btn.setIsPushButton( true );
   btn.setTooltipText( tooltip );
-  return &btn;
+  return btn;
 }
 
 void Parlor::_initButtons()
@@ -90,10 +90,10 @@ void Parlor::_initButtons()
   for( auto& item : _model->items() )
     _addButton( item.type, item.pic, _( fmt::format( "##visit_{}_advisor##", item.tooltip ) ) );
 
-  PushButton* btn = _addButton( advisor::unknown, 609 );
-  btn->setIsPushButton( false );
+  auto& btn = _addButton( advisor::unknown, 609 );
+  btn.setIsPushButton( false );
 
-  CONNECT_LOCAL( btn, onClicked(), Parlor::deleteLater );
+  CONNECT_LOCAL( &btn, onClicked(), Parlor::deleteLater );
 }
 
 Parlor::Parlor( Widget* parent, int id )

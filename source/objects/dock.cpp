@@ -116,19 +116,19 @@ public:
   Animation animation;
 };
 
-Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
+Dock::Dock(): WorkingBuilding( object::dock, Size(3,3) ), _d( new Impl )
 {
   // dock pictures
   // transport 5        animation = 6~16
   // transport 17       animation = 18~28
   // transport 29       animation = 30~40
   // transport 41       animation = 42~51
-  setPicture( ResourceGroup::transport, 5 );
+  setPicture(ResourceGroup::transport, 5);
 
   _d->initStores();
   _fgPictures().resize(1);
-  _animation().setDelay( 5 );
-  _setClearAnimationOnStop( false );
+  _animation().setDelay(5);
+  _setClearAnimationOnStop(false);
 }
 
 bool Dock::canBuild( const city::AreaInfo& areaInfo ) const

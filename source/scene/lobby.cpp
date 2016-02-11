@@ -22,38 +22,14 @@
 #include <GameCore>
 #include <GameGui>
 #include <GameGfx>
+#include <GameEvents>
 #include <GameVfs>
 #include <GameLogger>
-#include "game/game.hpp"
-#include "game/player.hpp"
+#include <GameApp>
 
-#include "game/settings.hpp"
-#include "gui/playername_window.hpp"
-
-#include "gui/fade.hpp"
-
-#include "core/locale.hpp"
-#include "core/saveadapter.hpp"
-#include "core/osystem.hpp"
-#include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "events/setvideooptions.hpp"
-#include "events/setsoundoptions.hpp"
-#include "gui/widgetpositionanimator.hpp"
-#include "gui/loadmissiondialog.hpp"
-#include "gui/widgetescapecloser.hpp"
-#include "core/event.hpp"
-#include "gui/package_options_window.hpp"
-#include "core/timer.hpp"
-#include "core/variant_map.hpp"
-#include "events/dispatcher.hpp"
-#include "core/utils.hpp"
-#include "walker/name_generator.hpp"
-#include "gui/image.hpp"
-#include "vfs/directory.hpp"
-#include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
-#include "gui/window_language_select.hpp"
+#include "walker/name_generator.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -450,7 +426,7 @@ void Lobby::Impl::showAdvancedMaterials()
 
 void Lobby::Impl::showVideoOptions()
 {
-  events::dispatch<events::SetVideoSettings>();
+  events::dispatch<events::ScriptFunc>( "OnShowVideoSettings" );
 }
 
 void Lobby::Impl::showMissionSelector()
@@ -544,10 +520,10 @@ void Lobby::initialize()
   _d->menu = &_d->ui().add<gui::Lobby>();
 
   Size scrSize = _d->ui().vsize();
-  auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
+  auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size::square( 128 ), -1,
                                                     "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
 
-  auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+  auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size::square( 128 ), -1,
                                                      "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );

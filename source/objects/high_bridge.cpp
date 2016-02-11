@@ -44,7 +44,7 @@ public:
           liftingWestL=173, descentWestL=175,
           liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( object::high_bridge, Size( 1 ) )
+    : Construction( object::high_bridge, Size(1,1) )
   {
     _pos = pos;
     _index = index;
@@ -260,7 +260,7 @@ bool HighBridge::canBuild( const city::AreaInfo& areaInfo ) const
   return (_d->direction != direction::none );
 }
 
-HighBridge::HighBridge() : Construction( object::high_bridge, Size(1) ), _d( new Impl )
+HighBridge::HighBridge() : Construction( object::high_bridge, Size(1,1) ), _d( new Impl )
 {
   Picture tmp;
   setPicture( tmp );
@@ -484,7 +484,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
   TilePos endPos, startPos;
   _d->direction=direction::none;
 
-  setSize( Size(0) );
+  setSize(Size::zero);
   Construction::build( info );
 
   _d->subtiles.clear();

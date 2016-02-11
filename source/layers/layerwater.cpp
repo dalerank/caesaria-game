@@ -61,7 +61,7 @@ int Water::type() const{  return citylayer::water;}
 void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
   bool needDrawAnimations = false;
-  Size areaSize(1);
+  Size areaSize = Size::square(1);
 
   if( tile.overlay().isNull() )
   {
@@ -98,7 +98,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
 
         drawArea( rinfo, overlay->area(), config::layer.water, config::tile.constr + tileNumber );
 
-        areaSize = Size( 0 );
+        areaSize = Size::zero;
       }
     }
 
@@ -163,7 +163,7 @@ void Water::_drawLandTile(const RenderInfo& rinfo, Tile& tile, const Size& areaS
 void Water::drawPass( const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
   if( pass == Renderer::groundAnimation )
-    _drawLandTile( rinfo, tile, Size( 1 ) );
+    _drawLandTile( rinfo, tile, Size::square( 1 ) );
   else
     Layer::drawPass( rinfo, tile, pass );
 }

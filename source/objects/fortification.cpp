@@ -103,7 +103,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area(_map(), pos() - TilePos( 2, 2), Size(5,5));
 
     auto fortifications = area.overlays().select<Fortification>();
     for( auto f : fortifications )

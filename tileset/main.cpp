@@ -802,7 +802,7 @@ int main(int argc, char* argv[])
     engine->frame().start();
 
     engine->draw( bg, Point() );    
-    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
+    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800,800) ) );
 
     engine->frame().finish();
 

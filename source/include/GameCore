@@ -15,10 +15,9 @@
 #include "core/common.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
+#include "core/timer.hpp"
 #include "core/gettext.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant.hpp"
-
-

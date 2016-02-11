@@ -40,6 +40,11 @@ Window.prototype = {
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label; 
   },
+	addListbox : function(rx,ry,rw,rh) {
+    var listbox = new Listbox(this.widget);
+    listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return listbox;
+  },
   addButton : function(rx,ry,rw,rh) {
     var button = new Button(this.widget);
     button.geometry = { x:rx, y:ry, w:rw, h:rh };
@@ -64,6 +69,19 @@ Button.prototype = {
   set style (sname) { this.widget.setBackgroundStyle(sname); },    
 
   deleteLater : function() { this.widget.deleteLater(); }
+	setFocus : function() { this.widget.setFocus(); }
+}
+
+function Listbox(parent) {
+	this.widget = new _ListBox(parent);	
+}
+
+Listbox.prototype = {
+	set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+	set style (sname) { this.widget.setBackgroundStyle(sname); },    
+	
+	setItemData : function(index,data) { this.widget.setItemData(index,data); }
+	deleteLater : function() { this.widget.deleteLater(); }
 }
 
 function Dialogbox(parent) {
@@ -73,10 +91,10 @@ function Dialogbox(parent) {
 Dialogbox.prototype = {
 	set title (str) { this.widget.setTitle( engine.translate(str) ); },
 	set text  (str) { this.widget.setText( engine.translate(str) ); },
-    set buttons (flags) { this.widget.setButtons(flags); },
-    set onYesCallback (func) { this.widget.setYesCallback(func); },
-    set neverValue (enabled) { this.widget.setNeverValue(enabled); },
-    set onNeverCallback (func) { this.widget.onNeverEx(func); }
+  set buttons (flags) { this.widget.setButtons(flags); },
+  set onYesCallback (func) { this.widget.setYesCallback(func); },
+  set neverValue (enabled) { this.widget.setNeverValue(enabled); },
+  set onNeverCallback (func) { this.widget.onNeverEx(func); }
 }
 
 function Ui() {

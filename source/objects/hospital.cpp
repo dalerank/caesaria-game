@@ -29,6 +29,6 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
 
 Hospital::Hospital()
-  : HealthBuilding(Service::hospital, object::hospital, Size(3) )
+  : HealthBuilding(Service::hospital, object::hospital, Size(3,3) )
 {
 }

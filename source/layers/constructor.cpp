@@ -283,7 +283,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( config::tilemap.picWidth2CellSize( tile->picture().width() ) );
+         size = Size::square( config::tilemap.picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )

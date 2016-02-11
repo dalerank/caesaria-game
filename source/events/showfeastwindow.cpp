@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "showfeastwindow.hpp"
-#include "gui/video_options_window.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"

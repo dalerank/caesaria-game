@@ -33,7 +33,7 @@ namespace {
 const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, object::well, Size::square(1) )
 {
   setWorkers( 0 );
 }

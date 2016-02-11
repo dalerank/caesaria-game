@@ -77,7 +77,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   add<Label>( Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
 
-  TexturedButton& btnAdvisor = add<TexturedButton>( Point( 350, 215 ), Size(28), advisorBtnId, 289 );
+  TexturedButton& btnAdvisor = add<TexturedButton>( Point(350, 215), Size(28,28), advisorBtnId, 289 );
   CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::_showRatingAdvisor );
   CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::deleteLater );
 }

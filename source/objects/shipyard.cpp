@@ -43,7 +43,7 @@ public:
   WharfPtr findFreeWharf( PlayerCityPtr city );
 };
 
-Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size(2)),
+Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size::square(2)),
   _d( new Impl )
 {
   // transport 1 2 3 4

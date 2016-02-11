@@ -28,7 +28,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size::square(2))
 {
   _fgPictures().resize(2);
 

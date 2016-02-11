@@ -87,7 +87,7 @@ public:
   StateFlags flags;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size::square(5) ), _d( new Impl )
 {
   _picture().load( ResourceGroup::govt, 4 );
   _d->taxValue = 0;

@@ -57,7 +57,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
   if( cursorTile.getFlag( Tile::isDestructible ) )
   {
-    Size size( 1 );
+    Size size(1, 1);
     TilePos rPos = _pos;
 
     OverlayPtr overlay = cursorTile.overlay();

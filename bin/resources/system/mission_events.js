@@ -70,7 +70,7 @@ function OnMissionStart()
   var showAware = engine.getOption("showStartAware");
   if( showAware )
   {
-    var dialog = g_ui.addInformationDialog( "Please note", "Black object are not done yet and will be added as soon as finished." );
+    var dialog = g_ui.addInformationDialog( "##pls_note##", "##aware_black_objects##" );
     dialog.neverValue = true;
     dialog.onNeverCallback = function(value) {
 				engine.setOption( "showStartAware", value );

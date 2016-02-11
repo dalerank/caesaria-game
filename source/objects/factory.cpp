@@ -382,10 +382,10 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
+Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2,2) )
 {
   setPicture( info().randomPicture( size() ) );
-  _fgPictures().resize( 3 );
+  _fgPictures().resize(3);
 }
 
 bool Creamery::canBuild( const city::AreaInfo& areaInfo ) const

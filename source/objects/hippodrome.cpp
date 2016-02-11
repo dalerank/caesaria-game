@@ -52,7 +52,7 @@ const Point hippodromeSectionOffset[] = {
 };
 
 HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Type type )
-  : Building( object::fortArea, Size(5) )
+  : Building( object::fortArea, Size(5,5) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -218,7 +218,7 @@ bool Hippodrome::build( const city::AreaInfo& info )
 {
   _checkDirection( info );
 
-  setSize( Size( 5 ) );
+  setSize(Size(5, 5));
   EntertainmentBuilding::build( info );
 
   TilePos offset = _d->direction == direction::north ? TilePos( 0, 5 ) : TilePos( 5, 0 );

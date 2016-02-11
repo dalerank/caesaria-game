@@ -40,7 +40,7 @@ public:
 };
 
 TimberLogger::TimberLogger()
-  : Factory(good::none, good::timber, object::lumber_mill, Size(2) ), _d( new Impl )
+  : Factory(good::none, good::timber, object::lumber_mill, Size::square(2) ), _d( new Impl )
 {
   setPicture( info().randomPicture( size() ) );
 
@@ -125,9 +125,9 @@ const gfx::Tile& TimberLogger::_findNearestForest( const city::AreaInfo& areaInf
   TilesArray trees;
   if( areaInfo.city->getOption( PlayerCity::cutForest2timber ) )
     trees = tilemap.rect( areaInfo.pos + TilePos( _d->workRange, _d->workRange ),
-                         size() + Size( 2 + _d->workRange ), Tilemap::CheckCorners );
+                         size() + Size::square( 2 + _d->workRange ), Tilemap::CheckCorners );
   else
-    trees = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::CheckCorners );
+    trees = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size::square( 2 ), Tilemap::CheckCorners );
 
   trees = trees.select( Tile::tlTree );
 

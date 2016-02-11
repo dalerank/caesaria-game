@@ -39,7 +39,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::aqueduct, Aqueduct)
 
 static const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
 
-Aqueduct::Aqueduct() : WaterSource( object::aqueduct, Size(1) )
+Aqueduct::Aqueduct() : WaterSource( object::aqueduct, Size(1,1) )
 {
   _picture().load( config::rc.aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
@@ -96,7 +96,7 @@ void Aqueduct::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _map(), pos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos(2, 2), Size(5,5) );
     area.overlays()
         .select<Aqueduct>()
         .for_each( [this](AqueductPtr aq){ aq->updatePicture( _city() ); });

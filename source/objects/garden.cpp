@@ -29,7 +29,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::garden, Garden)
 
-Garden::Garden() : Construction( object::garden, Size(1) )
+Garden::Garden() : Construction(object::garden, Size(1,1))
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed
@@ -117,9 +117,9 @@ void Garden::setPicture(Picture picture)
 
 void Garden::update()
 {
-  TilesArea nearTiles( _map(), pos(), Size(2) );
+  TilesArea nearTiles(_map(), pos(), Size(2,2));
 
-  bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
+  bool canGrow2squareGarden = (nearTiles.size() == 4); // be carefull on map edges
   for( auto tile : nearTiles )
   {
     auto garden = tile->overlay<Garden>();
@@ -141,7 +141,7 @@ void Garden::update()
 
     Desirability::update( _city(), this, Desirability::off );
 
-    setSize( Size( 2 ) );
+    setSize(Size(2,2));
     city::AreaInfo areainfo( _city(), pos() );
     Construction::build( areainfo );
     setPicture( info().randomPicture( size() ) );

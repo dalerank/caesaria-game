@@ -563,7 +563,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 {
   if( size().width() == 1 )
   {
-    TilesArea area( _map(), pos(), Size(2) );
+    TilesArea area( _map(), pos(), Size(2,2) );
 
     bool mayGrow = true;
 
@@ -599,7 +599,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       TilesArray::iterator delIt=area.begin();
       auto selfHouse = (*delIt)->overlay<House>( );
 
-      _d->initGoodStore( Size( growSize ).area() );
+      _d->initGoodStore( Size(growSize, growSize).area() );
 
       ++delIt; //don't remove himself
       for( ; delIt != area.end(); ++delIt )
@@ -626,7 +626,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       //reset desirability level with old house size
       Desirability::update( _city(), this, Desirability::off );
 
-      setSize( Size( growSize ) );
+      setSize( Size(growSize, growSize) );
       //_update( false );
 
       city::AreaInfo info( _city(), pos() );
@@ -653,19 +653,19 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
   bool mayGrow = true;
   TilePos buildPos = tile().pos();
 
-  if( size() == Size( minSize-1 ) )
+  if( size() == Size( minSize-1,minSize-1 ) )
   {
     Tilemap& tmap = _map();
     std::map<TilePos, TilesArray> possibleAreas;
 
     TilePos sPos = tile().pos();
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 1, 0 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 1, 1 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 0, 1 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
 
     foreach( itArea, possibleAreas )
     {
@@ -708,8 +708,8 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
       {
         buildPos = itArea->first;
         Desirability::update( _city(), this, Desirability::off );
-        setSize( Size( minSize ) );
-        _update( true );
+        setSize(Size(minSize, minSize));
+        _update(true);
         city::AreaInfo info( _city(), buildPos );
         build( info );
 
@@ -841,7 +841,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
       tile->setOverlay( 0 );
     }
 
-    setSize( Size( rsize ) );
+    setSize(Size(rsize, rsize));
     city::AreaInfo info( _city(), bpos + moveVector );
     build( info );
   }
@@ -896,7 +896,7 @@ void House::_levelDown()
   {
     if( size().area() > 1 )
     {
-      TilesArray perimetr = _map().area( pos(), Size(2) );
+      TilesArray perimetr = _map().area( pos(), Size(2,2) );
       int peoplesPerHouse = habitants().count() / 4;
       for( auto tile : perimetr )
       {

@@ -34,7 +34,7 @@ namespace {
 }
 
 River::River()
-  : Overlay( object::river, Size(1) )
+  : Overlay( object::river, Size::square(1) )
 {
   setPicture( config::rc.land1a, 182 );
 }

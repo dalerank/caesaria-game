@@ -19,6 +19,7 @@
 #define _CAESARIA_SCRIPT_SESSION_INCLUDE_H_
 
 #include "core/namedtype.hpp"
+#include "core/size.hpp"
 #include <string>
 
 class Game;
@@ -34,6 +35,11 @@ public:
   void continuePlay(int years);
   void loadNextMission();
   int lastChangesNum();
+  int videoModesCount();
+  Size getVideoMode(int index);
+  void setResolution(Size size);
+  Size getResolution();
+  void saveSettings();
 
 private:
   Game* _game;

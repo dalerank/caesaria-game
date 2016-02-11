@@ -606,8 +606,8 @@ void Widget::setupUI( const VariantMap& options )
   _d.flag.tabStop = options.get( "tabStop", false ).toBool();
   _d.isTabGroup = options.get( "tabGroup", -1 ).toInt();
   _d.tabOrder = options.get( "tabOrder", -1 ).toInt();
-  setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
-  setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
+  setMaxSize( options.get( "maximumSize", Size::zero).toSize() );
+  setMinSize( options.get( "minimumSize", Size(1,1) ).toSize() );
   VariantMap vars = options.get( literals::vars ).toMap();
 
   VariantList aRectList = options.get( "geometry" ).toList();
@@ -626,9 +626,9 @@ void Widget::setupUI( const VariantMap& options )
   if( tmp.isValid() )
   {
     RectF r = tmp.toRectf();
-    if( r.width() > 1 && r.height() > 1)
+    if (r.width() > 1 && r.height() > 1)
     {
-      r = RectF( 0, 0, 1, 1 );
+      r = RectF(0, 0, 1, 1);
       Logger::warning( "Incorrect geometryf values [{}, {}, {}, {}]",
                        r.left(), r.top(), r.right(), r.bottom() );
     }
@@ -646,7 +646,7 @@ void Widget::setupUI( const VariantMap& options )
 
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( auto& item : options )
+  for( const auto& item : options )
   {
     if( item.second.type() != Variant::Map )
       continue;

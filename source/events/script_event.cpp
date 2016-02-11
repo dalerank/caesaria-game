@@ -24,22 +24,22 @@
 namespace events
 {
 
-GameEventPtr SciptFunc::create(const std::string& funcname,
+GameEventPtr ScriptFunc::create(const std::string& funcname,
                                const VariantList& params)
 {
-  GameEventPtr ret( new SciptFunc(funcname,params) );
+  GameEventPtr ret( new ScriptFunc(funcname,params) );
   ret->drop();
   return ret;
 }
 
-void SciptFunc::_exec(Game& game, unsigned int)
+void ScriptFunc::_exec(Game& game, unsigned int)
 {
   script::Core::execFunction( _funcname, _params );
 }
 
-bool SciptFunc::_mayExec(Game&, unsigned int) const{ return true; }
+bool ScriptFunc::_mayExec(Game&, unsigned int) const{ return true; }
 
-SciptFunc::SciptFunc(const std::string& funcname,
+ScriptFunc::ScriptFunc(const std::string& funcname,
                      const VariantList& params) : _funcname(funcname), _params(params) {}
 
 }//end namespace events

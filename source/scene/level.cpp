@@ -354,7 +354,7 @@ void Level::initialize()
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  events::dispatch<events::SciptFunc>( "OnMissionStart" );
+  events::dispatch<events::ScriptFunc>( "OnMissionStart" );
 
   if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
   {
@@ -364,7 +364,7 @@ void Level::initialize()
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
 void Level::Impl::showSaveDialog() { events::dispatch<ShowSaveDialog>(); }
-void Level::Impl::setVideoOptions(){ events::dispatch<SetVideoSettings>(); }
+void Level::Impl::setVideoOptions(){ events::dispatch<ScriptFunc>( "OnShowVideoSettings" ); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {

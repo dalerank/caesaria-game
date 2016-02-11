@@ -37,7 +37,6 @@ Engine& Engine::instance()
 
 Engine::Engine()
 {
-  _srcSize = Size( 0 );
   _instance = this;
 }
 

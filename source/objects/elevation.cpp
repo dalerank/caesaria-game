@@ -38,17 +38,17 @@ public:
 };
 
 Elevation::Elevation()
-  : Overlay( object::elevation, Size( 2 ) ), _d( new Impl )
+  : Overlay(object::elevation, Size(2,2)), _d( new Impl )
 {
-  setDebugName( TEXT(Elevation) );
+  setDebugName(TEXT(Elevation));
 }
 
 Elevation::~Elevation(){}
 
 void Elevation::initTerrain(Tile& terrain)
 {
-  terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlRoad, true );
+  terrain.setFlag(Tile::clearAll, true);
+  terrain.setFlag(Tile::tlRoad, true);
 
   terrain.setPicture( Picture::getInvalid() );
 }

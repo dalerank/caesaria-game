@@ -39,7 +39,7 @@ typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 
 }
 
 Road::Road()
-  : Construction( object::road, Size(1) )
+  : Construction( object::road, Size::square(1) )
 {
   _paved = 0;
 }
@@ -317,7 +317,7 @@ Plaza::Plaza()
 
   setType(object::plaza);
   _picture().load( ResourceGroup::entertainment, 102 ); // 102 ~ 107
-  setSize( Size( 1 ) );
+  setSize( Size::square( 1 ) );
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -407,7 +407,7 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArea nearTiles( _map(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size::square(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )
@@ -428,7 +428,7 @@ void Plaza::updatePicture()
     }
 
     Desirability::update( _city(), this, Desirability::off );
-    setSize( Size( 2 ) );
+    setSize( Size::square( 2 ) );
     city::AreaInfo areainfo( _city(), pos() );
     Construction::build( areainfo );
     setPicture( info().randomPicture( size() ) );

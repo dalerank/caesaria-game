@@ -36,11 +36,11 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rock::Rock() : Overlay( object::rock, Size(1) )
+Rock::Rock() : Overlay( object::rock, Size::square(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed
-  setPicture( info().randomPicture( Size(1) ) ); // 110 111 112 113
+  setPicture( info().randomPicture( Size::square(1) ) ); // 110 111 112 113
 }
 
 void Rock::initTerrain(Tile& tile)
@@ -84,7 +84,7 @@ void Rock::setPicture(Picture picture)
 
 bool Rock::update()
 {
-  TilesArea nearTiles9( _map(), pos(), Size(3) );
+  TilesArea nearTiles9( _map(), pos(), Size::square(3) );
 
   bool canGrow2hugeRock = ( nearTiles9.size() == 9 );
   for( auto tile : nearTiles9 )
@@ -106,7 +106,7 @@ bool Rock::update()
       }
     }
 
-    setSize( Size( 3 ) );
+    setSize( Size::square( 3 ) );
     city::AreaInfo areainfo( _city(), pos() );
     Overlay::build( areainfo );
     setPicture( info().randomPicture( size() ) );
@@ -114,7 +114,7 @@ bool Rock::update()
   }
 
 
-  TilesArea nearTiles( _map(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size::square(2) );
   bool canGrow2squareRock = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )
   {
@@ -135,7 +135,7 @@ bool Rock::update()
       }
     }
 
-    setSize( Size( 2 ) );
+    setSize( Size::square( 2 ) );
     city::AreaInfo areainfo( _city(), pos() );
     Overlay::build( areainfo );
     setPicture( info().randomPicture( size() ) );
@@ -156,7 +156,7 @@ SmartList<Rock> Rock::neighbors() const
 Plateau::Plateau()
 {
   setType( object::plateau );
-  setPicture( info().randomPicture( Size(1) ) );
+  setPicture( info().randomPicture( Size::square(1) ) );
 }
 
 bool Plateau::update() { return true; }

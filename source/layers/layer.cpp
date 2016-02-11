@@ -661,7 +661,7 @@ void Layer::afterRender(Engine& engine)
     Point pos = tile->mappos();
     int rwidth = config::tilemap.cell.picSize().width();
     int halfRWidth = rwidth / 2;
-    Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
+    Size size = Size::square( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
     if( _d.tilePosText.isValid() )
     {
@@ -678,7 +678,7 @@ void Layer::afterRender(Engine& engine)
     else if( tile->master() != 0 )
     {
       pos = tile->master()->mappos();
-      size = Size( (tile->master()->picture().width() + 2) / rwidth );
+      size = Size::square( (tile->master()->picture().width() + 2) / rwidth );
     }
 
     pos += offset;
@@ -716,7 +716,7 @@ Layer::Layer(Camera* camera, PlayerCityPtr city )
   _d.debugFont = Font::create( FONT_1_WHITE );
   _d.currentTile = 0;
   _d.posMode = 0;
-  _d.terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
+  _d.terraintPic = object::Info::find( object::terrain ).randomPicture( Size::square( 1 ) );
   _d.tilePosText = Picture( Size( 240, 80 ), 0, true );
 
   if( OSystem::isAndroid() )

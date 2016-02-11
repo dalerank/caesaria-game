@@ -317,7 +317,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
-  _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
+  _d->walkers.grid.resize( Size::square( _d->tilemap.size() ) );
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
@@ -528,7 +528,7 @@ void PlayerCity::clean()
 void PlayerCity::resize( unsigned int size)
 {
   _d->tilemap.resize( size );
-  _d->walkers.grid.resize( Size( size ) );
+  _d->walkers.grid.resize( Size::square( size ) );
 }
 
 const city::Statistic& PlayerCity::statistic() const { return *_d->statistic; }

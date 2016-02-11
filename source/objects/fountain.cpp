@@ -62,8 +62,8 @@ public:
 };
 
 Fountain::Fountain()
-  : ServiceBuilding(Service::fountain, object::fountain, Size(1)),
-    _d( new Impl )
+  : ServiceBuilding(Service::fountain, object::fountain, Size(1,1)),
+    _d(new Impl)
 {  
   _picture().load( ResourceGroup::utilitya, 10 );
   _d->haveReservoirWater = false;
