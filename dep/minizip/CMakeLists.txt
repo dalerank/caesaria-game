@@ -5,6 +5,8 @@ set(MINIZIP_SOURCES_LIST
     ioapi.c
 )
 
+include_directories(${ZLIB_INCLUDE_DIR})
+
 add_library(${PROJECT_NAME} STATIC ${MINIZIP_SOURCES_LIST})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 

@@ -9,12 +9,12 @@
   }
 
   lbxChanges#ListBox : {
-    geometry : [ 12, 40, "100%-11", "100%-36" ]
+    geometry : [ 15, 40, "100%-15", "100%-36" ]
     itemheight : 18
     items.font : "FONT_2"
 
     items : [
-      ""
+      "1. Added javascript engine for script support"
     ]
   }
 }

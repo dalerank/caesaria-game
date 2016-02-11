@@ -82,6 +82,11 @@ int pushValue(js_State* J,const Variant& param)
   return 1;
 }
 
+inline Point to(js_State *J, int n, Point)
+{
+  return Point( js_toint32(J, n), js_toint32(J, n+1) );
+}
+
 inline Rect to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
@@ -310,6 +315,7 @@ void constructor_Session(js_State *J)
 #include "label.implementation"
 #include "session.implementation"
 #include "dialogbox.implementation"
+#include "exitbutton.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -332,6 +338,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "label.interface"
 #include "session.interface"
 #include "dialogbox.interface"
+#include "exitbutton.interface"
 
   Core::loadModule(":/system/modules.js");
   {

@@ -37,6 +37,11 @@ void Session::continuePlay(int years)
   _game->city()->setVictoryConditions( vc );
 }
 
+int Session::lastChangesNum()
+{
+  return game::Settings::findLastChanges();
+}
+
 void Session::loadNextMission()
 {
   city::VictoryConditions vc;

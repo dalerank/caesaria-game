@@ -3,6 +3,7 @@ function Session() {
 } 
 
 Session.prototype = {
-	continuePlay : function(years) { this.session.continuePlay(years); },
-	loadNextMission : function() { this.session.loadNextMission(); } 
+    continuePlay : function(years) { this.session.continuePlay(years); },
+    loadNextMission : function() { this.session.loadNextMission(); } ,
+    get lastChangesNum () { return this.session.lastChangesNum(); }
 }  

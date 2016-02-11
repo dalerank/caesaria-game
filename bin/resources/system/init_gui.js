@@ -11,6 +11,14 @@ Label.prototype = {
   deleteLater : function() { this.widget.deleteLater(); }
 }
 
+function ExitButton(parent) {
+  this.widget = new _ExitButton(parent);
+}
+
+ExitButton.prototype = {
+  set position (point) { this.widget.setPosition(point.x,point.y); }
+}
+
 function Window(parent) {
   this.widget = new _Window(parent);
 } 
@@ -20,7 +28,9 @@ Window.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set mayMove (may) { this.widget.setWindowFlag("fdraggable",may); },
   set onClose (func) { this.widget.onCloseEx(func); },
+  set model (path) { this.widget.setupUI(path); },
   get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
 
   moveToCenter : function() { this.widget.moveToCenter(); },
   setModal : function() { this.widget.setModal(); },
@@ -31,9 +41,14 @@ Window.prototype = {
     return label; 
   },
   addButton : function(rx,ry,rw,rh) {
-    var button = new Button( this.widget );
+    var button = new Button(this.widget);
     button.geometry = { x:rx, y:ry, w:rw, h:rh };
     return button;
+  },
+  addExitButton : function(rx,ry) {
+    var btn = new ExitButton(this.widget);
+    btn.position = { x:rx, y:ry }
+    return btn;
   }
 }
 

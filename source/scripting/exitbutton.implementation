@@ -1,0 +1,5 @@
+DEFINE_OBJECT_FUNCTION_0(ExitButton,void,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(ExitButton,void,setGeometry,Rect)
+DEFINE_OBJECT_FUNCTION_1(ExitButton,void,setPosition,Point)
+DEFINE_WIDGET_CALLBACK_0(ExitButton,onClickedEx)
+DEFINE_WIDGET_CONSTRUCTOR(ExitButton)

@@ -33,6 +33,7 @@ public:
   Session(Game* game) { _game = game; }
   void continuePlay(int years);
   void loadNextMission();
+  int lastChangesNum();
 
 private:
   Game* _game;

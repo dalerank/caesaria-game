@@ -53,7 +53,6 @@
 #include "vfs/directory.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
-#include "gui/changes_window.hpp"
 #include "gui/window_language_select.hpp"
 
 using namespace gfx;
@@ -61,11 +60,6 @@ using namespace gui;
 
 namespace scene
 {
-
-namespace internal
-{
-	static bool wasChangesShow = false;
-}
 
 class Lobby::Impl
 {
@@ -151,26 +145,14 @@ void Lobby::Impl::showLogFile()
 
 void Lobby::Impl::showChanges()
 {
-  SETTINGS_SET_VALUE(showLastChanges, true);
-  SETTINGS_SET_VALUE(lastChangesNumber, 0 );
-  internal::wasChangesShow = false;
-  showChangesWindowIfNeed();
+  VariantList vl; vl << true;
+  script::Core::execFunction( "OnShowChanges", vl );
 }
 
 void Lobby::Impl::showChangesWindowIfNeed()
 {
-  int lastChanges = game::Settings::findLastChanges();
-  int currentChanges = SETTINGS_VALUE(lastChangesNumber);
-  SETTINGS_SET_VALUE(lastChangesNumber, lastChanges );
-
-  if( lastChanges != currentChanges )
-    SETTINGS_SET_VALUE(showLastChanges, true);
-
-  if( !internal::wasChangesShow && KILLSWITCH(showLastChanges) )
-  {
-    internal::wasChangesShow = true;
-    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), lastChanges );
-  }
+  VariantList vl; vl << false;
+  script::Core::execFunction( "OnShowChanges", vl );
 }
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
