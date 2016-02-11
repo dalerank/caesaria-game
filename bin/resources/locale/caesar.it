@@ -2,6 +2,7 @@
 "##have_no_food_on_next_month##":"-niente di cibo per il prossimo mese",
 "##small_food_on_next_month##":"-pochissimo cibo per il prossimo mese",
 "##build_your_rom##":"",
+"##primary_funds##":"",
 "##city_barbarian_off_tlp##":"I Barbari non attaccheranno la tua città",
 "##enter_dinasty_name_here##":"",
 "##city_barbarian_off##":"Barbari: OFF
@@ -410,6 +411,8 @@
 "##governorVilla##":"Villa del governatore",
 "##wine##":"Vino",
 "##prettyWine##":"Falern Vino",
+"##hide_this_msg##":"",
+"##show_this_msg##":"",
 "##grape##":"Viti",
 "##vinard_info##":"I grappoli di queste viti sono particolarmente adatti alla produzione di vino. Le botteghe produrranno ottimo vino per i tuoi patrizi o per l'esportazione.",
 "##vinard##":"Vigneto
@@ -820,6 +823,7 @@
 "##increase_trading_title##":"Cambio di domanda",
 "##a_price_rise_title##":"Cambio di prezzo",
 "##a_price_rise_text##":"Roma ha aumentato il prezzo di uno dei beni che puoi commerciare. L'importazione è ora più costosa, ma l'esportazione produrrà profitti più alti.",
+"##emperor_advisor_title##":"",
 "##mainmenu_plname##":"Cambia il nome",
 "##adjust_exact##":"Imposta l'esatto ammontare che vuoi donare",
 "##adjust_tax_rate##":"Imposta la percentuale di tassazione della città",
