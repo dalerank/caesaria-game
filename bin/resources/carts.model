@@ -10,6 +10,8 @@
 
   wheat : {
     small : { back : true, rc : "cartwheat", start : 1, frames : 7, step : 8, delay : 2 }
+    big : { back : true, rc : "cartwheatb", start : 1, frames : 7, step : 8, delay : 2 }
+    mega : { back : true, rc : "cartwheatm", start : 1, frames : 7, step : 8, delay : 2, addh : 40 }
   }
 
   wine : {

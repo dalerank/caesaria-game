@@ -733,7 +733,7 @@
         {
           type : "atlas"
           folder : "/resources/carts/wheat"
-          files : [ "cartwheat_*" ]
+          files : [ "*" ]
         }
 
         wine :
