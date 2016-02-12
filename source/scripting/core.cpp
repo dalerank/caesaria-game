@@ -43,9 +43,9 @@ js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
-inline void push(js_State* J, int value) { js_pushnumber(J,value); }
+inline void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 
-void push(js_State* J,Size size)
+void push(js_State* J,const Size& size)
 {
   js_newobject(J);
   js_pushnumber(J, size.width());
@@ -54,7 +54,7 @@ void push(js_State* J,Size size)
   js_setproperty(J, -2, "h");
 }
 
-int pushValue(js_State* J,const Variant& param)
+int push(js_State* J,const Variant& param)
 {
   switch( param.type() )
   {
@@ -133,7 +133,7 @@ void engineGetOption(js_State *J)
 {
   std::string name = js_tostring(J, 1);
   Variant value = game::Settings::get(name);
-  int error = internal::pushValue(J, value);
+  int error = internal::push(J, value);
   if (error)
     Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption" );
 }
@@ -194,7 +194,7 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   js_pushnull(internal::J);
   for( const auto& param : params )
   {
-    int error = internal::pushValue(internal::J,param);
+    int error = internal::push(internal::J,param);
     if (error)
       Logger::warning( "WARNING !!! Undefined value for js.pcall " + funcname );
   }
@@ -218,7 +218,7 @@ void constructor_Session(js_State *J)
 }
 
 
-#define DEFINE_OBJECT_FUNCTION_0(name,rettype,funcname) rettype name##_##funcname(js_State *J) \
+#define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) \
                                 { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   if( parent ) parent->funcname(); \
@@ -288,14 +288,14 @@ void constructor_Session(js_State *J)
   else js_pushundefined(J); \
 }
 
-#define DEFINE_OBJECT_FUNCTION_1(name,rettype,funcname,paramType) rettype name##_##funcname(js_State *J) { \
+#define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType paramValue = internal::to( J, 1, paramType() ); \
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
 
-#define DEFINE_OBJECT_FUNCTION_2(name,rettype,funcname,paramType1,paramType2) rettype name##_##funcname(js_State *J) { \
+#define DEFINE_OBJECT_FUNCTION_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
                                   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
@@ -303,7 +303,7 @@ void constructor_Session(js_State *J)
                                   js_pushundefined(J); \
                                 }
 
-#define DEFINE_OBJECT_FUNCTION_3(name,rettype,funcname,paramType1,paramType2,paramType3) rettype name##_##funcname(js_State *J) { \
+#define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
