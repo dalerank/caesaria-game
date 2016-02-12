@@ -128,7 +128,8 @@ public:
 
   static int findLastChanges();
 
-  static void load();
+  static bool haveLastConfig();
+  static void loadLastConfig();
   static void save();
 
   void setwdir( const std::string& wdir );

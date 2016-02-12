@@ -50,7 +50,7 @@ void push(js_State* J,const Size& size)
   js_newobject(J);
   js_pushnumber(J, size.width());
   js_setproperty(J, -2, "w");
-  js_pushboolean(J, size.height());
+  js_pushnumber(J, size.height());
   js_setproperty(J, -2, "h");
 }
 

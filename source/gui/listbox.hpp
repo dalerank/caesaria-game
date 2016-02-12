@@ -146,6 +146,8 @@ public:
   virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
   virtual ListBoxItem& addItem( gfx::Picture pic );
 
+  virtual int addLine(const std::string& text);
+
   virtual void fitText( const std::string& text );
 
   virtual void addItems( const StringArray& strings );
