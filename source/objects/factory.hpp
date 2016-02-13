@@ -81,6 +81,7 @@ protected:
   virtual void _removeSpoiledGoods();
   virtual void _productProgress();
   virtual void _productReady();
+  virtual const gfx::Picture& _getSctockImage(int qty);
 
   void _weekUpdate( unsigned int time );
   void _setConsumeGoodType( int index, good::Product product );
@@ -90,17 +91,6 @@ protected:
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-class Creamery : public Factory
-{
-public:
-  Creamery();
-
-  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
-  virtual bool build(const city::AreaInfo &info);
-protected:
-  virtual void _storeChanged();
 };
 
 #endif //_CAESARIA_FACTORY_BUILDING_H_INCLUDE_

@@ -847,6 +847,10 @@
     sound : [ "creamery", 1 ]
     image : [ "commerce", 99 ]
     animation : { rc : "commerce", start : 100, count : 8, offset : [ 0, 0 ], delay : 4 }
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "commerce", 154 ], offset : [40, -5] }
+      qty_200 : { qty : 200, image : [ "commerce", 154 ], offset : [40, -5] }
+    }
   },
   
   weapons_workshop :

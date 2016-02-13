@@ -41,8 +41,6 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
-
 class FactoryStorage : public good::Storage
 {
 public:
@@ -101,6 +99,7 @@ public:
   unsigned int maxUnworkingWeeks;
   bool produceGood;  
   unsigned int finishedQty;
+  std::map<int,Picture> stockImages;
 
 public:
   void productReady();
@@ -348,6 +347,16 @@ void Factory::initialize(const object::Info& mdata)
     if( pr != good::none )
       _d->goods.out = pr;
   }
+
+  VariantMap vStockImages = mdata.getOption( "stock.image" ).toMap();
+  for( const auto& item : vStockImages )
+  {
+    VariantMap stageVm = item.second.toMap();
+    int index = stageVm.get( "qty" ).toInt();
+    Picture image; VARIANT_LOAD_PICTURE(image, stageVm);
+    image.addOffset( stageVm.get("offset"));
+    _d->stockImages[ index ] = image;
+  }
 }
 
 void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)
@@ -382,38 +391,6 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2,2) )
-{
-  setPicture( info().randomPicture( size() ) );
-  _fgPictures().resize(3);
-}
-
-bool Creamery::canBuild( const city::AreaInfo& areaInfo ) const
-{
-  return Factory::canBuild( areaInfo );
-}
-
-bool Creamery::build( const city::AreaInfo& info )
-{
-  Factory::build( info );
-
-  bool haveOliveFarm = info.city->statistic()
-                                  .objects
-                                  .count( object::olive_farm ) > 0;
-
-  _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
-
-  return true;
-}
-
-void Creamery::_storeChanged()
-{
-  _fgPicture(1) = inStock().empty()
-                      ? Picture()
-                      : Picture( ResourceGroup::commerce, 154 );
-  _fgPicture(1).setOffset( 40, -5 );
-}
-
 void Factory::_productReady()
 {
   _d->produceGood = false;
@@ -426,6 +403,20 @@ void Factory::_productReady()
     good::Stock tmpStock( _d->goods.out.type(), qty, qty );
     _d->goodStore.store( tmpStock, qty );
   }
+}
+
+const Picture& Factory::_getSctockImage(int qty)
+{
+  if( qty == 0  )
+    return Picture::getInvalid();
+
+  qty = math::clamp( (qty / 100) * 100, 100, 1000);
+  auto it = _d->stockImages.find(qty);
+  if(it != _d->stockImages.end())
+    return it->second;
+
+  Logger::warning("WARNING !!! Cant find image for factory stock image {}", qty);
+  return Picture::getInvalid();
 }
 
 void Factory::_productProgress()
