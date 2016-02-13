@@ -7,7 +7,7 @@ Label.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.h); },
-  set tooltip (text) { this.widget.setTooltipText(sname); },
+  set tooltip (text) { this.widget.setTooltipText(text); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
@@ -32,7 +32,7 @@ TexturedButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
-  set tooltip (text) { this.widget.setTooltipText(sname); },
+  set tooltip (text) { this.widget.setTooltipText(text); },
   set callback (func) { this.widget.onClickedEx(func); },
 }
 
@@ -84,7 +84,7 @@ Button.prototype = {
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.onClickedEx(func); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },   
-  set tooltip (text) { this.widget.setTooltipText(sname); },
+  set tooltip (text) { this.widget.setTooltipText(text); },
 
   deleteLater : function() { this.widget.deleteLater(); },
   setFocus : function() { this.widget.setFocus(); }
