@@ -49,6 +49,7 @@ public:
 
   TexturedButton( Widget* parent );
 
+  void changeImageSet(const std::string& rc, int normal, int hover, int pressed, int disabled );
   void changeImageSet(const States& states, const std::string& rc="");
 };
 

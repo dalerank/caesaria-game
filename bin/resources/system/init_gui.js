@@ -7,6 +7,7 @@ Label.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.h); },
+  set tooltip (text) { this.widget.setTooltipText(sname); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
@@ -22,6 +23,22 @@ ExitButton.prototype = {
 function Window(parent) {
   this.widget = new _Window(parent);
 } 
+
+function TexturedButton(parent) {
+  this.widget = new _TexturedButton(parent);
+}
+
+TexturedButton.prototype = {
+  set position (point) { this.widget.setPosition(point.x,point.y); },
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
+  set tooltip (text) { this.widget.setTooltipText(sname); },
+  set callback (func) { this.widget.onClickedEx(func); },
+}
+
+function Window(parent) {
+  this.widget = new _Window(parent);
+}
 
 Window.prototype = {
   set title (str) { this.widget.setText( engine.translate(str) ); },
@@ -66,7 +83,8 @@ Button.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.onClickedEx(func); },
-  set style (sname) { this.widget.setBackgroundStyle(sname); },    
+  set style (sname) { this.widget.setBackgroundStyle(sname); },   
+  set tooltip (text) { this.widget.setTooltipText(sname); },
 
   deleteLater : function() { this.widget.deleteLater(); },
   setFocus : function() { this.widget.setFocus(); }
@@ -79,7 +97,7 @@ function Listbox(parent) {
 Listbox.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },
-  set background (enabled) { this.widget.setDrawBackground(enabled); }
+  set background (enabled) { this.widget.setDrawBackground(enabled); },
   get itemsCount () { return this.widget.itemsCount(); },
  
   addLine : function(text) { return this.widget.addLine(text); },
@@ -96,7 +114,8 @@ Dialogbox.prototype = {
   set title (str) { this.widget.setTitle( engine.translate(str) ); },
   set text  (str) { this.widget.setText( engine.translate(str) ); },
   set buttons (flags) { this.widget.setButtons(flags); },
-  set onYesCallback (func) { this.widget.setYesCallback(func); },
+  set onYesCallback (func) { this.widget.onYesEx(func); },
+  set onNoCallback (func) { this.widget.onNoEx(func); },
   set neverValue (enabled) { this.widget.setNeverValue(enabled); },
   set onNeverCallback (func) { this.widget.onNeverEx(func); }
 }
@@ -117,6 +136,14 @@ Ui.prototype = {
     dialog.text = text;
     dialog.buttons = 1;
     return dialog; 
+  },
+
+  addConfirmationDialog : function(title, text) {
+    var dialog = new Dialogbox(0);
+    dialog.title = title;
+    dialog.text = text;
+    dialog.buttons = 3;
+    return dialog;
   },
 
   elog : function(a) { engine.log(a); }

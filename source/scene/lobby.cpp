@@ -68,8 +68,6 @@ public:
   void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openSteamPage();
-  void openHomePage();
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -453,8 +451,6 @@ void Lobby::Impl::selectFile(std::string fileName)
 }
 
 void Lobby::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
-void Lobby::Impl::openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640", steamapi::ld_prefix() ); }
-void Lobby::Impl::openHomePage() { OSystem::openUrl( "http://www.caesaria.net", steamapi::ld_prefix() ); }
 
 void Lobby::Impl::showMapSelectDialog()
 {
@@ -519,15 +515,7 @@ void Lobby::initialize()
 
   _d->menu = &_d->ui().add<gui::Lobby>();
 
-  Size scrSize = _d->ui().vsize();
-  auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size::square( 128 ), -1,
-                                                    "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
-
-  auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size::square( 128 ), -1,
-                                                     "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
-
-  CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
-  CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
+  events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
 
   _d->showMainMenu();
 

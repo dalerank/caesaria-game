@@ -21,6 +21,8 @@
 #include <GameObjects>
 #include <GameScene>
 #include <GameGfx>
+#include "core/osystem.hpp"
+#include "steam.hpp"
 #include <string>
 
 class Game;
@@ -55,9 +57,19 @@ void Session::loadNextMission()
   vc = _game->city()->victoryConditions();
   scene::Level* level = safety_cast<scene::Level*>(_game->scene());
   if( level )
-  {
     level->loadStage( vc.nextMission() );
-  }
+}
+
+void Session::quitGame()
+{
+  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
+  if( level )
+    level->quit();
+}
+
+void Session::openUrl(const std::string& url)
+{
+  OSystem::openUrl( url, steamapi::ld_prefix() );
 }
 
 

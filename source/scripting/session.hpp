@@ -34,6 +34,8 @@ public:
   Session(Game* game) { _game = game; }
   void continuePlay(int years);
   void loadNextMission();
+  void quitGame();
+  void openUrl(const std::string& url);
   int lastChangesNum();
   int videoModesCount();
   Size getVideoMode(int index);

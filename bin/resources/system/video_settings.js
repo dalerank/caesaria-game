@@ -27,6 +27,7 @@ function OnShowVideoSettings()
      
   var lbxModes = wnd.addListbox( 25, 68, wnd.width-50, 160 );
   lbxModes.setTextAlignment( "center", "center" );
+  lbxModes.background = true;
   lbxModes.onSelectedCallback = function(index) {
 						var size = lbxModes.getItemData(index, "mode");
 						g_session.setResolution( size.w, size.h );

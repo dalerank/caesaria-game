@@ -303,6 +303,17 @@ void constructor_Session(js_State *J)
                                   js_pushundefined(J); \
                                 }
 
+#define DEFINE_OBJECT_FUNCTION_5(name,funcname,paramType1,paramType2,paramType3,paramType4,paramType5) void name##_##funcname(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+                                  paramType4 paramValue4 = internal::to( J, 4, paramType4() ); \
+                                  paramType5 paramValue5 = internal::to( J, 5, paramType5() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4, paramValue5 ); \
+                                  js_pushundefined(J); \
+                                }
+
 #define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
@@ -348,6 +359,7 @@ void constructor_Session(js_State *J)
 #include "dialogbox.implementation"
 #include "exitbutton.implementation"
 #include "listbox.implementation"
+#include "texturedbutton.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -372,6 +384,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "dialogbox.interface"
 #include "exitbutton.interface"
 #include "listbox.interface"
+#include "texturedbutton.interface"
 
   Core::loadModule(":/system/modules.js");
   {

@@ -49,9 +49,14 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
   setTextVisible( false );
 }
 
-gui::TexturedButton::TexturedButton(gui::Widget *parent) : PushButton( parent )
+TexturedButton::TexturedButton(Widget *parent) : PushButton( parent )
 {
   setTextVisible( false );
+}
+
+void TexturedButton::changeImageSet(const std::string& rc, int normal, int hover, int pressed, int disabled)
+{
+  changeImageSet(States(normal, hover, pressed, disabled), rc);
 }
 
 void TexturedButton::changeImageSet( const States& states, const std::string& rc )

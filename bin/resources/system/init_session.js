@@ -7,8 +7,9 @@ Session.prototype = {
     loadNextMission : function() { this.session.loadNextMission(); } ,
     setResolution : function(size) { return this.session.setResolution(size.w,size.h); },
     getVideoMode : function(index) { return this.session.getVideoMode(index); },
+    openUrl      : function(url) { return this.session.openUrl(url); },
 		
     get videoModesCount () { return this.session.videoModesCount(); },
-    get lastChangesNum () { return this.session.lastChangesNum(); }
+    get lastChangesNum () { return this.session.lastChangesNum(); },
     get resolution () { return this.session.getResolution(); }
 }  

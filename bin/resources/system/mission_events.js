@@ -77,3 +77,14 @@ function OnMissionStart()
 			}
   }
 }
+
+function OnRequestExitGame()
+{
+
+  var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question###" );
+  dialog.neverValue = true;
+  dialog.onYesCallback = function() {
+                var g_session = new Session();
+                g_session.quitGame();
+            }
+}

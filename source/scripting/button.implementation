@@ -1,6 +1,7 @@
 DEFINE_OBJECT_FUNCTION_0(PushButton,deleteLater)
 DEFINE_OBJECT_FUNCTION_0(PushButton,setFocus)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setText,std::string)
+DEFINE_OBJECT_FUNCTION_1(PushButton,setTooltipText,std::string)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setBackgroundStyle,std::string)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setFont,std::string)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setGeometry,Rect)

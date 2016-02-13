@@ -680,16 +680,14 @@ void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-void Level::_quit(){ _d->result = Level::res_quit; stop(); }
+void Level::quit(){ _d->result = Level::res_quit; stop(); }
 void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }
 void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  auto& dialog = dialog::Confirmation( _d->game->gui(),
-                                      "", _("##exit_without_saving_question##") );
-  dialog.onYes().connect( this, &Level::_quit );
+  events::dispatch<ScriptFunc>( "OnRequestExitGame" );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)

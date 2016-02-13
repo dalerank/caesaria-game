@@ -56,11 +56,11 @@ public:
 
 public slots:
   void loadStage(std::string filename);
+  void quit();
   void restart();
   void exit();
 
 private slots:
-  void _quit();
   void _resolveLoad();
   void _resolveEnterButton();
   void _requestExitGame();

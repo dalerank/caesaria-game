@@ -1,5 +1,6 @@
 DEFINE_OBJECT_FUNCTION_0(Label,deleteLater)
 DEFINE_OBJECT_FUNCTION_1(Label,setText,std::string)
+DEFINE_OBJECT_FUNCTION_1(Label,setTooltipText,std::string)
 DEFINE_OBJECT_FUNCTION_2(Label,setTextAlignment,std::string,std::string)
 DEFINE_OBJECT_FUNCTION_1(Label,setFont,std::string)
 DEFINE_OBJECT_FUNCTION_1(Label,setGeometry,Rect)
