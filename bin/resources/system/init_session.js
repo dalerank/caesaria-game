@@ -8,6 +8,7 @@ Session.prototype = {
     setResolution : function(size) { return this.session.setResolution(size.w,size.h); },
     getVideoMode : function(index) { return this.session.getVideoMode(index); },
     openUrl      : function(url) { return this.session.openUrl(url); },
+    quitGame     : function() { return this.session.quitGame(); },
 		
     get videoModesCount () { return this.session.videoModesCount(); },
     get lastChangesNum () { return this.session.lastChangesNum(); },

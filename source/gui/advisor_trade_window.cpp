@@ -89,6 +89,12 @@ void Trade::Impl::updateGoodsInfo()
     bool workState = getWorkState( gtype );
     int exportQty = copt.tradeLimit( trade::exporting, gtype ).ivalue();
     int importQty = copt.tradeLimit( trade::importing, gtype ).ivalue();
+
+    if( city->tradeOptions().isStacking( gtype ) )
+    {
+      exportQty = importQty = 0;
+      tradeState = trade::stacking;
+    }
     
     auto& btn = gbInfo->add<TradeGoodInfo>( Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );

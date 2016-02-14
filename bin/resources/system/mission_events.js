@@ -74,15 +74,14 @@ function OnMissionStart()
     dialog.neverValue = true;
     dialog.onNeverCallback = function(value) {
 				engine.setOption( "showStartAware", value );
-			}
+			} 
   }
 }
 
 function OnRequestExitGame()
 {
-
-  var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question###" );
-  dialog.neverValue = true;
+  var g_ui = new Ui();
+  var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
   dialog.onYesCallback = function() {
                 var g_session = new Session();
                 g_session.quitGame();
