@@ -9,4 +9,9 @@
 #include "gfx/drawstate.hpp"
 #include "gfx/animation.hpp"
 #include "gfx/animation_bank.hpp"
+#include "gfx/renderermode.hpp"
+#include "gfx/city_renderer.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tilemap_camera.hpp"
+#include "gfx/pictureconverter.hpp"
 

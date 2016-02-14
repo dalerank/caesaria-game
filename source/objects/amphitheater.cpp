@@ -47,7 +47,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3,3)), _d( new Impl )
 {
   _fgPictures().resize(2);
 

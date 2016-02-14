@@ -117,6 +117,9 @@ public:
 
   //! set the item at the given index
   virtual void setItem( unsigned int index, std::string text);
+  virtual void setItemData(unsigned int index, const std::string& name, Variant tag);
+
+  virtual Variant getItemData(unsigned int index, const std::string& name);
 
   //! Insert the item at the given index
   //! Return the index on success or -1 on failure.
@@ -143,6 +146,8 @@ public:
   virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
   virtual ListBoxItem& addItem( gfx::Picture pic );
 
+  virtual int addLine(const std::string& text);
+
   virtual void fitText( const std::string& text );
 
   virtual void addItems( const StringArray& strings );
@@ -160,6 +165,7 @@ public:
 
 signals public:
   Signal1<const ListBoxItem&>& onItemSelectedAgain();
+  Signal2<Widget*,int>& onIndexSelectedEx();
   Signal1<const ListBoxItem&>& onItemSelected();
 
 protected:

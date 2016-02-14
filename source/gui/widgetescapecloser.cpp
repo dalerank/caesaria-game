@@ -15,32 +15,40 @@
 
 #include "widgetescapecloser.hpp"
 #include "core/event.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
 
-WidgetClose::WidgetClose(Widget* parent)
+REGISTER_CLASS_IN_WIDGETFACTORY(WidgetClosers)
+
+WidgetClosers::WidgetClosers(Widget* parent)
   : Widget( parent, -1, Rect() )
 {
   parent->installEventHandler( this );
 }
 
-void WidgetClose::insertTo(Widget* parent, KeyCode code1, KeyCode code2)
+void WidgetClosers::addCloseCode(int code)
+{
+  _codes.insert(code);
+}
+
+void WidgetClosers::insertTo(Widget* parent, int code1, int code2)
 {
   if( parent )
   {
-    auto& widget = parent->add<WidgetClose>();
-    widget._codes.insert( code1 );
-    widget._codes.insert( code2 );
+    auto& widget = parent->add<WidgetClosers>();
+    widget.addCloseCode(code1);
+    widget.addCloseCode(code2);
   }
 }
 
-bool WidgetClose::onEvent(const NEvent& event)
+bool WidgetClosers::onEvent(const NEvent& event)
 {
   switch(event.EventType)
   {
   case sEventKeyboard:
-    if( !event.keyboard.pressed && _codes.count( event.keyboard.key ) )
+    if (!event.keyboard.pressed && _codes.count(event.keyboard.key))
     {
       parent()->deleteLater();
       return true;
@@ -48,9 +56,9 @@ bool WidgetClose::onEvent(const NEvent& event)
   break;
 
   case sEventMouse:
-    if(    (event.mouse.type == NEvent::Mouse::mouseLbtnRelease && _codes.count( KEY_LBUTTON ))
+    if ((event.mouse.type == NEvent::Mouse::mouseLbtnRelease && _codes.count( KEY_LBUTTON ))
         || (event.mouse.type == NEvent::Mouse::mouseMbtnRelease && _codes.count( KEY_MBUTTON ))
-        || (event.mouse.type == NEvent::Mouse::mouseRbtnRelease && _codes.count( KEY_RBUTTON ))  )
+        || (event.mouse.type == NEvent::Mouse::mouseRbtnRelease && _codes.count( KEY_RBUTTON )))
     {
       parent()->deleteLater();
       return true;

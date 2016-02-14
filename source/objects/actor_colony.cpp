@@ -25,7 +25,7 @@
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::actorColony, ActorColony)
 
 ActorColony::ActorColony()
-  : TrainingBuilding( object::actorColony, Size(3) )
+  : TrainingBuilding( object::actorColony, Size(3,3) )
 {
   _fgPictures().resize(1);
 }

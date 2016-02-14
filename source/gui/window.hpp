@@ -71,6 +71,7 @@ public:
   virtual void setModal();
 
   virtual void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( const std::string& flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 
@@ -78,14 +79,22 @@ public:
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-  virtual void setText( const std::string& text );
-  virtual void setTitleRect( const Rect& rect );
+  virtual void setText(const std::string& text);
+  virtual void setTitleRect(const Rect& rect);
+
+  void addCloseCode(int code);
+
+public signals:
+  Signal1<Widget*>& onCloseEx();
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();
+  void _setSystemButtonsVisible(bool visible);
   virtual void _finalizeResize();
   virtual void _updateBackground();
+
+  Widget* _titleWidget() const;
 
 private:
   class Impl;

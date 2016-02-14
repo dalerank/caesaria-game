@@ -32,7 +32,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 
 IronMine::IronMine()
-  : Factory(good::none, good::iron, object::iron_mine, Size(2) )
+  : Factory(good::none, good::iron, object::iron_mine, Size(2,2) )
 {
   _picture().load( ResourceGroup::commerce, 54 );
 

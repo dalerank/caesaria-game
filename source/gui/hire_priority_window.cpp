@@ -50,8 +50,8 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->type = type;
   _d->priority = priority;
 
-  WidgetClose::insertTo( this, KEY_RBUTTON );
-  GameAutoPause::insertTo( this );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
+  GameAutoPauseWidget::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
   lbTitle.setFont( FONT_5 );
@@ -77,7 +77,7 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->prButtons.insert( &noPr );
   noPr.setPressed( priority == 0 );
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

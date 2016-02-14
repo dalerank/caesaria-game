@@ -44,7 +44,7 @@ IngameMenu::IngameMenu(Widget *parent)
 {
   setupUI( ":/gui/ingamemenu_android.gui" );
   setCenter( parent->center() );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
 
   GET_DWIDGET_FROM_UI( _d, btnSave )
   GET_DWIDGET_FROM_UI( _d, btnLoad  )

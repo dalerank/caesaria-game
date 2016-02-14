@@ -79,6 +79,7 @@ public:
     Signal1<std::string> onTextSelected;
 
     Signal1<const ListBoxItem&> onItemSelectedAgain;
+    Signal2<Widget*,int> onIndexSelectedEx;
     Signal1<const ListBoxItem&> onItemSelected;
   } signal;
 };

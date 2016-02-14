@@ -29,13 +29,13 @@ REGISTER_CLASS_IN_WIDGETFACTORY(HelpButton)
 REGISTER_CLASS_IN_WIDGETFACTORY(ExitButton)
 
 TexturedButton::TexturedButton(Widget* parent, const Point& pos, const TexturedButton::States& states)
-  : TexturedButton( parent, pos, Size( defaultSize ), -1, states )
+  : TexturedButton( parent, pos, Size(defaultSize,defaultSize), -1, states )
 {
 
 }
 
 TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &size, int id, const States& states)
-  : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
+  : PushButton( parent, Rect(pos, size), "", id, false, noBackground )
 {
   changeImageSet( states );
   setTextVisible( false );
@@ -43,15 +43,20 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
 
 TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &size, int id,
                                const std::string& resourceGroup, const States& states)
-  : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
+  : PushButton( parent, Rect(pos, size), "", id, false, noBackground )
 {
   changeImageSet( states, resourceGroup );
   setTextVisible( false );
 }
 
-gui::TexturedButton::TexturedButton(gui::Widget *parent) : PushButton( parent )
+TexturedButton::TexturedButton(Widget *parent) : PushButton( parent )
 {
   setTextVisible( false );
+}
+
+void TexturedButton::changeImageSet(const std::string& rc, int normal, int hover, int pressed, int disabled)
+{
+  changeImageSet(States(normal, hover, pressed, disabled), rc);
 }
 
 void TexturedButton::changeImageSet( const States& states, const std::string& rc )
@@ -70,7 +75,7 @@ HelpButton::HelpButton(Widget* parent)
 }
 
 HelpButton::HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id)
-  : TexturedButton( parent, pos, Size( defaultSize ), id, States( gui::button.help ) )
+  : TexturedButton( parent, pos, Size(defaultSize,defaultSize), id, States( gui::button.help ) )
 {
   _helpid = helpId;
 }
@@ -94,7 +99,7 @@ ExitButton::ExitButton(Widget* parent)
 }
 
 ExitButton::ExitButton(Widget* parent, const Point& pos, int id)
-  : TexturedButton( parent, pos, Size( defaultSize ), id, States( gui::button.exit ) )
+  : TexturedButton( parent, pos, Size(defaultSize,defaultSize), id, States( gui::button.exit ) )
 {
 
 }

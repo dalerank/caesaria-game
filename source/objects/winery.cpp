@@ -28,7 +28,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
 
-Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size(2) )
+Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size::square(2) )
 {
   setPicture( info().randomPicture( size() ) );
 

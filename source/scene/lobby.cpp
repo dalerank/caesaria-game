@@ -18,58 +18,24 @@
 
 #include "lobby.hpp"
 
-#include "game/scripting.hpp"
+#include "scripting/core.hpp"
 #include <GameCore>
 #include <GameGui>
 #include <GameGfx>
-#include "game/game.hpp"
-#include "game/player.hpp"
-#include "gui/pushbutton.hpp"
-#include "gui/label.hpp"
-#include "game/settings.hpp"
-#include "core/color_list.hpp"
-#include "gui/playername_window.hpp"
-#include "core/logger.hpp"
-#include "core/foreach.hpp"
-#include "vfs/directory.hpp"
-#include "gui/fade.hpp"
-#include "gui/listbox.hpp"
-#include "core/locale.hpp"
-#include "core/saveadapter.hpp"
-#include "gui/smkviewer.hpp"
-#include "gui/dialogbox.hpp"
-#include "core/osystem.hpp"
-#include "gui/texturedbutton.hpp"
+#include <GameEvents>
+#include <GameVfs>
+#include <GameLogger>
+#include <GameApp>
+
 #include "sound/engine.hpp"
-#include "events/setvideooptions.hpp"
-#include "events/setsoundoptions.hpp"
-#include "gui/widgetpositionanimator.hpp"
-#include "gui/loadmissiondialog.hpp"
-#include "gui/widgetescapecloser.hpp"
-#include "core/event.hpp"
-#include "gui/package_options_window.hpp"
-#include "core/timer.hpp"
-#include "core/variant_map.hpp"
-#include "events/dispatcher.hpp"
-#include "core/utils.hpp"
-#include "walker/name_generator.hpp"
-#include "gui/image.hpp"
-#include "vfs/directory.hpp"
-#include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
-#include "gui/changes_window.hpp"
-#include "gui/window_language_select.hpp"
+#include "walker/name_generator.hpp"
 
 using namespace gfx;
 using namespace gui;
 
 namespace scene
 {
-
-namespace internal
-{
-	static bool wasChangesShow = false;
-}
 
 class Lobby::Impl
 {
@@ -102,8 +68,6 @@ public:
   void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openSteamPage();
-  void openHomePage();
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -155,26 +119,14 @@ void Lobby::Impl::showLogFile()
 
 void Lobby::Impl::showChanges()
 {
-  SETTINGS_SET_VALUE(showLastChanges, true);
-  SETTINGS_SET_VALUE(lastChangesNumber, 0 );
-  internal::wasChangesShow = false;
-  showChangesWindowIfNeed();
+  VariantList vl; vl << true;
+  script::Core::execFunction( "OnShowChanges", vl );
 }
 
 void Lobby::Impl::showChangesWindowIfNeed()
 {
-  int lastChanges = game::Settings::findLastChanges();
-  int currentChanges = SETTINGS_VALUE(lastChangesNumber);
-  SETTINGS_SET_VALUE(lastChangesNumber, lastChanges );
-
-  if( lastChanges != currentChanges )
-    SETTINGS_SET_VALUE(showLastChanges, true);
-
-  if( !internal::wasChangesShow && KILLSWITCH(showLastChanges) )
-  {
-    internal::wasChangesShow = true;
-    game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), lastChanges );
-  }
+  VariantList vl; vl << false;
+  script::Core::execFunction( "OnShowChanges", vl );
 }
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
@@ -335,7 +287,7 @@ void Lobby::Impl::showCredits()
  
   Size size = ui().vsize();
   Fade& frame = ui().add<Fade>( 0xA0 );
-  WidgetClose::insertTo( &frame, KEY_RBUTTON );
+  WidgetClosers::insertTo( &frame, KEY_RBUTTON );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {
@@ -472,7 +424,7 @@ void Lobby::Impl::showAdvancedMaterials()
 
 void Lobby::Impl::showVideoOptions()
 {
-  events::dispatch<events::SetVideoSettings>();
+  events::dispatch<events::ScriptFunc>( "OnShowVideoSettings" );
 }
 
 void Lobby::Impl::showMissionSelector()
@@ -499,8 +451,6 @@ void Lobby::Impl::selectFile(std::string fileName)
 }
 
 void Lobby::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
-void Lobby::Impl::openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640", steamapi::ld_prefix() ); }
-void Lobby::Impl::openHomePage() { OSystem::openUrl( "http://www.caesaria.net", steamapi::ld_prefix() ); }
 
 void Lobby::Impl::showMapSelectDialog()
 {
@@ -565,15 +515,7 @@ void Lobby::initialize()
 
   _d->menu = &_d->ui().add<gui::Lobby>();
 
-  Size scrSize = _d->ui().vsize();
-  auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                    "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
-
-  auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                     "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
-
-  CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
-  CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
+  events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
 
   _d->showMainMenu();
 
@@ -583,11 +525,11 @@ void Lobby::initialize()
     if( !screenFitted )
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
-      auto& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
+      auto& dialog = _d->ui().add<Dialogbox>( dialogRect,
                                                     "Information", "Is need autofit screen resolution?",
-                                                    dialog::Dialog::btnYesNo );
-      CONNECT( &dialog, onYes(),     &dialog, dialog::Dialog::deleteLater );
-      CONNECT( &dialog, onNo(), &dialog, dialog::Dialog::deleteLater );
+                                                    Dialogbox::btnYesNo );
+      CONNECT( &dialog, onYes(),     &dialog, Dialogbox::deleteLater );
+      CONNECT( &dialog, onNo(), &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 

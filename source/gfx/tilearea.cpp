@@ -32,7 +32,7 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& 
 TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
 {
   TilePos offset( distance, distance );
-  _size = Size( distance ) * 2;
+  _size = Size::square( distance ) * 2;
   append( tmap.area( center - offset, center + offset ) );
 }
 

@@ -28,7 +28,6 @@
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
-#include "gui/win_mission_window.hpp"
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
@@ -186,6 +185,7 @@ enum {
   all_wineworkshop_ready,
   all_oilworkshop_ready,
   all_furnitureworksop_fillstock,
+  all_creamery_fillstock,
   decrease_sentiment,
   increase_sentiment,
   reload_buildings_config,
@@ -315,6 +315,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( factories, all_weaponworkshop_ready )
   ADD_DEBUG_EVENT( factories, all_wineworkshop_ready )
   ADD_DEBUG_EVENT( factories, all_oilworkshop_ready )
+  ADD_DEBUG_EVENT( factories, all_creamery_fillstock )
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
@@ -721,6 +722,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;    
 
   case all_furnitureworksop_fillstock: fillFactoryStock( object::furniture_workshop ); break;
+  case all_creamery_fillstock: fillFactoryStock( object::oil_workshop ); break;
 
   case decrease_sentiment: updateSentiment( -10 ); break;
   case increase_sentiment: updateSentiment( +10 ); break;

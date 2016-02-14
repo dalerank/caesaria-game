@@ -34,7 +34,7 @@ namespace{
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : Overlay( object::rift, Size(1) )
+Rift::Rift() : Overlay( object::rift, Size::square(1) )
 {  
 }
 

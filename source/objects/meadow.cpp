@@ -33,9 +33,9 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Meadow::Meadow() : Overlay( object::meadow, Size(1) )
+Meadow::Meadow() : Overlay( object::meadow, Size(1,1) )
 {
-  setPicture( info().randomPicture( Size(1) ) ); // 110 111 112 113
+  setPicture( info().randomPicture( Size(1,1) ) ); // 110 111 112 113
 }
 
 Meadow::~Meadow() {}

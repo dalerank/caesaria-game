@@ -319,7 +319,7 @@ bool PlagueRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool PlagueRuins::isNeedRoad() const{  return false;}
 
 Ruins::Ruins(object::Type type)
-  : Building( type, Size(1) ), _alsoBuilt( true )
+  : Building( type, Size::square(1) ), _alsoBuilt( true )
 {
 
 }

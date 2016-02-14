@@ -176,8 +176,8 @@ const std::string&Info::utname() const { return Helper::utname( _type); }
 float Info::price( PlayerCityPtr city, Info::PriceType inOut) const
 {
   return (inOut == exporting)
-          ? Helper::exportPrice( city, _type, 1 )
-          : Helper::importPrice( city, _type, 1 );
+          ? Helper::exportPrice( city, _type, 100 )
+          : Helper::importPrice( city, _type, 100 );
 }
 
 }//end namespace good

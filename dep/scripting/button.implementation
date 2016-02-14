@@ -1,6 +1,0 @@
-DEFINE_OBJECT_FUNCTION_0(PushButton,void,deleteLater)
-DEFINE_OBJECT_FUNCTION_1(PushButton,void,setText,std::string)
-DEFINE_OBJECT_FUNCTION_1(PushButton,void,setFont,std::string)
-DEFINE_OBJECT_FUNCTION_1(PushButton,void,setGeometry,Rect)
-DEFINE_WIDGET_CALLBACK_0(PushButton,onClickedEx)
-DEFINE_WIDGET_CONSTRUCTOR(PushButton)

@@ -865,7 +865,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture land = object::Info::find( object::terrain ).randomPicture( Size(1) );
+        Picture land = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
         tile.setPicture( land );
 
         Picture tree( config::rc.land1a, start + math::random( rnd ) );

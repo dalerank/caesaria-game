@@ -107,7 +107,7 @@ void TradeGoodInfo::_updateTexture()
       if( _d->qty.importing == 0 )
         tradeStateText = _( ruleName[ _d->tradeOrder ] );
       else
-        tradeStateText = fmt::format( "{0} {1}", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
+        tradeStateText = fmt::format( "{} {}", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
     break;
 
     case trade::exporting:

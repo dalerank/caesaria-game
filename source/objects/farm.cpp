@@ -50,7 +50,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 class FarmTile : public Construction
 {
 public:
-  FarmTile() : Construction( object::farmtile, Size( 1 ) ) {}
+  FarmTile() : Construction( object::farmtile, Size(1,1) ) {}
   FarmTile(const good::Product outGood, const TilePos& farmpos);
   virtual ~FarmTile() {}
   Picture& getPicture();
@@ -68,7 +68,7 @@ private:
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
 FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
- : Construction( object::farmtile, Size( 1 ) )
+ : Construction( object::farmtile, Size(1,1) )
 {
   _farmpos = farmpos;
   setPicture( computePicture( outGood, 0 ) );
@@ -127,7 +127,7 @@ public:
 };
 
 Farm::Farm(const good::Product outGood, const object::Type farmType )
-  : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
+  : Factory( good::none, outGood, farmType, Size(3,3) ), _d( new Impl )
 {
   outStock().setCapacity( 100 );
 
@@ -273,7 +273,7 @@ void Farm::timeStep(const unsigned long time)
 
 bool Farm::build( const city::AreaInfo& info )
 {
-  setSize( Size( 2 ) );
+  setSize(Size(2,2));
   city::AreaInfo upInfo = info;
   if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
   {

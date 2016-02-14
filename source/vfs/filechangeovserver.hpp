@@ -30,10 +30,11 @@ public:
   FileChangeObserver();
   ~FileChangeObserver();
 
-  void watch( vfs::Path path );
+  void watch( vfs::Directory dir );
+  void watch( const std::string& dir );
   void run( bool& continues );
 
-  Signal0<> onFileChangeSignal;
+  Signal1<vfs::Path>& onFileChange();
 private:
   class Impl;
   ScopedPtr<Impl> _d;
@@ -41,4 +42,4 @@ private:
 
 }//end namespace vfs
 
-#endif //__CAESARIA_FILEINFO_H_INCLUDED__
+#endif //__CAESARIA_FILECHANGEOBSERVER_H_INCLUDED__

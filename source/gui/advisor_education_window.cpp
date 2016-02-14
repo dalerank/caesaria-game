@@ -286,8 +286,8 @@ public:
       CONNECT_LOCAL( &btn, onClickedA, EducationDetailsWindow::moveCamera )
     }
 
-    moveTo( Widget::parentCenter );
-    WidgetClose::insertTo( this, KEY_RBUTTON );
+    moveToCenter();
+    WidgetClosers::insertTo( this, KEY_RBUTTON );
     setFont( Font::create( FONT_1 ) );
     setModal();    
   }

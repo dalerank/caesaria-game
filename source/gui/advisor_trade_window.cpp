@@ -16,33 +16,23 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_trade_window.hpp"
-#include "gfx/picture.hpp"
-#include "gfx/decorator.hpp"
-#include "core/gettext.hpp"
-#include "good/helper.hpp"
-#include "pushbutton.hpp"
-#include "label.hpp"
+#include <GameEvents>
+#include <GameGfx>
+#include <GameGood>
+#include <GameCore>
+#include <GameGui>
+#include <GameLogger>
 #include "game/resourcegroup.hpp"
-#include "core/utils.hpp"
-#include "gfx/engine.hpp"
-#include "core/gettext.hpp"
-#include "groupbox.hpp"
 #include "objects/factory.hpp"
 #include "city/trade_options.hpp"
 #include "objects/warehouse.hpp"
 #include "good/store.hpp"
-#include "texturedbutton.hpp"
-#include "core/event.hpp"
-#include "core/foreach.hpp"
-#include "core/logger.hpp"
 #include "image.hpp"
 #include "objects/constants.hpp"
 #include "empireprices.hpp"
 #include "goodordermanage.hpp"
 #include "events/showempiremapwindow.hpp"
-#include "widget_helper.hpp"
 #include "city/statistic.hpp"
-#include "dictionary.hpp"
 #include "advisor_trade_infobutton.hpp"
 
 using namespace gfx;
@@ -89,6 +79,12 @@ void Trade::Impl::updateGoodsInfo()
     bool workState = getWorkState( gtype );
     int exportQty = copt.tradeLimit( trade::exporting, gtype ).ivalue();
     int importQty = copt.tradeLimit( trade::importing, gtype ).ivalue();
+
+    if( city->tradeOptions().isStacking( gtype ) )
+    {
+      exportQty = importQty = 0;
+      tradeState = trade::stacking;
+    }
     
     auto& btn = gbInfo->add<TradeGoodInfo>( Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
@@ -124,9 +120,7 @@ void Trade::Impl::showGoodOrderManageWindow(good::Product type)
 
 void Trade::_showGoodsPriceWindow()
 {
-  Size size( 610, 180 );
-  add<EmpirePrices>( -1, Rect( Point( ( width() - size.width() ) / 2,
-                     ( height() - size.height() ) / 2), size ), _d->city );
+  events::dispatch<events::ScriptFunc>( "OnShowEmpirePrices" );
 }
 
 Trade::Trade(Widget* parent, PlayerCityPtr city)

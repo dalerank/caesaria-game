@@ -61,7 +61,7 @@
 
   lbPrimaryFunds#Label : {
     geometry : [ 70, 370, 310, 390 ]
-    text : "Primary funds 0"
+    text : "##primary_funds##"
     font : "FONT_2"
   }
 

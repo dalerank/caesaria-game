@@ -133,7 +133,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 
       if( !tile->picture().isValid() )
       {
-        Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+        Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
         tile->setPicture( pic );
       }
       tile->setAnimation( meadowAnim );

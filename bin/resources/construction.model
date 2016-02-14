@@ -905,6 +905,11 @@
     sound : [ "creamery", 1 ]
     image : [ "oilworkshop", 1 ]
     animation : { rc : "oilworkshopa", start : 1, count : 8, offset : [ 78, 25 ], delay : 4 }
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "oilworkshops", 1 ], offset : [0,27] }
+      qty_200 : { qty : 200, image : [ "oilworkshops", 1 ], offset : [0,27] }
+      qty_300 : { qty : 300, image : [ "oilworkshops", 1 ], offset : [0,27] }
+    }
     inflammability : 1.2
   },
   

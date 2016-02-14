@@ -237,7 +237,7 @@ public:
       }
     }
 
-    moveTo( Widget::parentCenter );
+    moveToCenter();
     setModal();
   }
 };
@@ -274,9 +274,9 @@ void Finance::_initReportRows()
 
 void Finance::_initTaxManager()
 {
-  add<HelpButton>( Point( 12, height() - 39), "finance_advisor" );
-  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, gui::button.arrowDown );
-  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, gui::button.arrowUp );
+  add<HelpButton>( Point(12, height() - 39), "finance_advisor" );
+  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size(24,24), -1, gui::button.arrowDown );
+  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size(24, 24), -1, gui::button.arrowUp );
 
   CONNECT_LOCAL( &btnDecreaseTax, onClicked(), Finance::_decreaseTax );
   CONNECT_LOCAL( &btnIncreaseTax, onClicked(), Finance::_increaseTax );

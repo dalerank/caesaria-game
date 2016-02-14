@@ -40,6 +40,7 @@ Widget* WidgetFactory::create(const std::string& type, Widget* parent ) const
     return findConstructor->second->create( parent );
   }
 
+  Logger::warning( "WARNING !!! {} have not constructor in widget factory", type );
   return 0;
 }
 
@@ -59,7 +60,7 @@ void WidgetFactory::addCreator( const std::string& typeName, WidgetCreator* ctor
   }
   else
   {
-    Logger::warning( "already have constructor for this widget type" );
+    Logger::warning( "WARNING !!! Already have constructor for this widget type[{}] ", typeName );
   }
 }
 

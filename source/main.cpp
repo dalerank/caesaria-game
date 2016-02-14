@@ -57,7 +57,9 @@ int main(int argc, char* argv[])
   LOG.info("Setting workdir to " + SETTINGS_STR(workDir));
 
   LOG.info("Loading game settings");
-  options.load();
+  if( options.haveLastConfig() )
+    options.loadLastConfig();
+
   options.checkCmdOptions( argv, argc );
   options.checkC3present();
 

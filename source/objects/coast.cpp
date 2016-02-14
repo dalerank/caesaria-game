@@ -36,12 +36,12 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Coast::Coast() : Overlay( object::terrain, Size(1) )
+Coast::Coast() : Overlay( object::terrain, Size(1,1) )
 {
-  setPicture( config::rc.land1a, 199 );
+  setPicture(config::rc.land1a, 199);
 }
 
-bool Coast::build( const city::AreaInfo& info )
+bool Coast::build(const city::AreaInfo& info)
 {
   Overlay::build( info );
   updatePicture();

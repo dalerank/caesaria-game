@@ -17,7 +17,9 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
-#include "gfx/engine.hpp"
+#include <GameEvents>
+#include <GameGfx>
+
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
@@ -26,12 +28,10 @@
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
-#include "events/changespeed.hpp"
 #include "core/event.hpp"
 #include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
-#include "gfx/renderermode.hpp"
 #include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
@@ -39,7 +39,6 @@
 #include "gui/empiremap_window.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
-#include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "game/funds.hpp"
@@ -48,30 +47,20 @@
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
-#include "gfx/tilemap_config.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
-#include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
-#include "gfx/tilemap_camera.hpp"
 #include "city/ambientsound.hpp"
-#include "gui/win_mission_window.hpp"
-#include "events/showempiremapwindow.hpp"
-#include "events/showadvisorwindow.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
 #include "events/setsoundoptions.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "events/warningmessage.hpp"
-#include "events/postpone.hpp"
-#include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/timer.hpp"
@@ -81,13 +70,9 @@
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
-#include "events/movecamera.hpp"
-#include "events/missionwin.hpp"
-#include "events/savegame.hpp"
 #include "core/tilerect.hpp"
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
-#include "events/loadgame.hpp"
 #include "sound/themeplayer.hpp"
 #include "core/osystem.hpp"
 #include "city/states.hpp"
@@ -190,7 +175,6 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
-  void extendReign( int years );
   void saveScrollSpeed( int speed );
   void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
@@ -370,13 +354,7 @@ void Level::initialize()
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  bool showAware = KILLSWITCH(showStartAware);
-  if( !OSystem::isAndroid() && showAware )
-  {
-    gui::Ui& ui = *_d->game->gui();
-    auto& dlg = dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished.", true );
-    dlg.onNever().connect( _d.data(), &Impl::changeShowNotification );
-  }
+  events::dispatch<events::ScriptFunc>( "OnMissionStart" );
 
   if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
   {
@@ -385,9 +363,8 @@ void Level::initialize()
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
-
-void Level::Impl::showSaveDialog() {  events::dispatch<ShowSaveDialog>(); }
-void Level::Impl::setVideoOptions(){  events::dispatch<SetVideoSettings>(); }
+void Level::Impl::showSaveDialog() { events::dispatch<ShowSaveDialog>(); }
+void Level::Impl::setVideoOptions(){ events::dispatch<ScriptFunc>( "OnShowVideoSettings" ); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
@@ -511,15 +488,6 @@ void Level::Impl::makeFullScreenshot()
   PictureConverter::save( fullPic, filename, "PNG" );
 }
 
-void Level::Impl::extendReign(int years)
-{
-  VictoryConditions vc;
-  vc = game->city()->victoryConditions();
-  vc.addReignYears( years );
-
-  game->city()->setVictoryConditions( vc );
-}
-
 void Level::Impl::handleDirectionChange(Direction direction)
 {
   events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
@@ -535,14 +503,6 @@ std::string Level::Impl::getScreenshotName()
   return (screenDir/filename).toString();
 }
 
-void Level::loadStage( std::string filename )
-{
-  _d->mapToLoad = filename.empty()
-                      ? _d->createFastSaveName().toString()
-                      : filename;
-  _resolveSwitchMap();
-}
-
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
   std::string typesave = type.empty() ? SETTINGS_STR( fastsavePostfix ) : type;
@@ -554,13 +514,6 @@ vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::st
   vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   return saveDir/filename;
-}
-
-void Level::_resolveSwitchMap()
-{
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
-  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
-  stop();
 }
 
 void Level::Impl::showEmpireMapWindow()
@@ -673,10 +626,10 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
       CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
 
-      window.moveTo( Widget::parentCenter );
+      window.moveToCenter();
       window.setModal();
 
-      events::dispatch<MissionLose>( pcity->victoryConditions().name() );
+      events::dispatch<MissionLose>(forceFailed);
     }
   }
 }
@@ -695,18 +648,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success || force )
   {
-    auto& winDialog = game->gui()->add<dialog::WinMission>( conditions.newTitle(), conditions.winText(),
-                                                            conditions.winSpeech(), conditions.mayContinue() );
-
-    mapToLoad = conditions.nextMission();
-
-    CONNECT( &winDialog, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
-    CONNECT( &winDialog, onContinueRules(), this, Impl::extendReign )
-  }
-
-  if( success )
-  {
-    events::dispatch<MissionWin>( conditions.name() );
+    events::dispatch<MissionWin>( force );
   }
 }
 
@@ -719,9 +661,16 @@ void Level::setConstructorMode(bool enabled)
   _d->extMenu->setConstructorMode( enabled );
 }
 
+void Level::loadStage(std::string filename)
+{
+  _d->mapToLoad = filename;
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
+  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
+  stop();
+}
+
 void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
-
 void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
@@ -731,17 +680,14 @@ void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-void Level::_quit(){ _d->result = Level::res_quit; stop(); }
+void Level::quit(){ _d->result = Level::res_quit; stop(); }
 void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }
 void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  auto& dialog = dialog::Confirmation( _d->game->gui(),
-                                      "", _("##exit_without_saving_question##"),
-                                      dialog::Dialog::pauseGame );
-  dialog.onYes().connect( this, &Level::_quit );
+  events::dispatch<ScriptFunc>( "OnRequestExitGame" );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)
@@ -820,7 +766,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F9:
-      loadStage( "" );
+      loadStage( _d->createFastSaveName().toString() );
       handled = true;
     break;
 

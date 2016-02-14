@@ -62,8 +62,8 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   if( !helpId.empty() )
     load( helpId );
 
-  moveTo( Widget::parentCenter );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  moveToCenter();
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 

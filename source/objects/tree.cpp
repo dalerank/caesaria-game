@@ -48,7 +48,7 @@ public:
 };
 
 Tree::Tree()
-  : Overlay( object::tree, Size(1) ), _d( new Impl )
+  : Overlay( object::tree, Size::square(1) ), _d( new Impl )
 {
   _d->age = math::random( 15 );
   _d->flat = false;
@@ -198,7 +198,7 @@ void Tree::grow()
           auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
-            Picture pic = info().randomPicture( Size(1) );
+            Picture pic = info().randomPicture( Size::square(1) );
             newTree->setPicture( pic );
             newTree->_d->flat = pic.height() < pic.width() / 2;
             newTree->_d->health = 10;

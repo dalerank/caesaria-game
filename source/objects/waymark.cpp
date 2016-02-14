@@ -28,7 +28,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::waymark, Waymark)
 
 Waymark::Waymark()
-  : Overlay( object::waymark, Size(1) )
+  : Overlay( object::waymark, Size::square(1) )
 {
 }
 
@@ -60,7 +60,7 @@ bool Waymark::build( const city::AreaInfo& info )
   }
   else
   {
-    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     Tile& oTile = tmap.at( info.pos );
     oTile.setPicture( pic );
     oTile.setImgId( imgid::fromResource( pic.name() ) );

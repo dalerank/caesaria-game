@@ -86,7 +86,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
 {
   setupUI( ":/gui/loadmissiondialog.gui" );
 
-  WidgetClose::insertTo( this );
+  WidgetClosers::insertTo( this );
 
   _d->directory = dir;
 
@@ -104,7 +104,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   _d->fillFiles();
   if( _d->lbxFiles ) _d->lbxFiles->setFocus();
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
 }
 
 void LoadMission::Impl::fillFiles()

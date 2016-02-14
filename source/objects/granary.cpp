@@ -107,11 +107,11 @@ public:
   Pictures granarySprite;
 };
 
-Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( object::granery, Size(3,3) ), _d( new Impl )
 {
   _d->store.granary = this;
 
-  _picture().load( ResourceGroup::commerce, 140 );
+  _picture().load(ResourceGroup::commerce, 140);
   _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
   _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);

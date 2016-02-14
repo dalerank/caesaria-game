@@ -21,23 +21,16 @@
 
 using namespace events;
 
-class GameAutoPauseWidget : public gui::Widget
+namespace gui
 {
-public:
-  GameAutoPause locker;
-  GameAutoPauseWidget( gui::Widget* parent )
-    : gui::Widget( parent, -1, Rect() )
-  {
-    locker.activate();
-  }
-};
 
-GameAutoPause::GameAutoPause()
+GameAutoPauseWidget::GameAutoPauseWidget(Widget* parent)
+  : gui::Widget( parent, -1, Rect() )
 {
   _activated = false;
 }
 
-void GameAutoPause::activate()
+void GameAutoPauseWidget::activate()
 {
   if( !_activated )
   {
@@ -46,15 +39,18 @@ void GameAutoPause::activate()
   }
 }
 
-void GameAutoPause::insertTo(gui::Widget *parent)
+void GameAutoPauseWidget::insertTo(Widget *parent)
 {
-  parent->add<GameAutoPauseWidget>();
+  auto& pause = parent->add<GameAutoPauseWidget>();
+  pause.activate();
 }
 
-GameAutoPause::~GameAutoPause()
+GameAutoPauseWidget::~GameAutoPauseWidget()
 {
   if( !_activated )
     return;
 
   events::dispatch<Pause>( Pause::hideplay );
 }
+
+}// end namespace gui

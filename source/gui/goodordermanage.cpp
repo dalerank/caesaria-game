@@ -48,8 +48,8 @@ public:
   TradeStateButton( Widget* parent, const Rect& rectangle, int id )
     : PushButton( parent, rectangle, "", id, false, PushButton::whiteBorderUp )
   {
-    btnDecrease = &add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, 601 );
-    btnIncrease = &add<TexturedButton>(  Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
+    btnDecrease = &add<TexturedButton>( Point( 220, 3 ), Size(24, 24), -1, 601 );
+    btnIncrease = &add<TexturedButton>(  Point( 220 + 24, 3 ), Size(24, 24), -1, 605 );
     btnDecrease->hide();
     btnIncrease->hide();
 
@@ -139,7 +139,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
 
   _d->icon = good::Info( type ).picture();
 
@@ -169,7 +169,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   CONNECT_LOCAL( _d->btnIndustryState, onClicked(),           GoodOrderManageWindow::toggleIndustryEnable );
   CONNECT_LOCAL( _d->btnStackingState, onClicked(),           GoodOrderManageWindow::toggleStackingGoods );
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

@@ -28,7 +28,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::pottery_workshop, Pottery)
 
-Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size(2))
+Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size::square(2))
 {
   _fgPictures().resize( 3 );
 }

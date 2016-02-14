@@ -63,6 +63,7 @@ public:
   DateTime time() const;
 
   unsigned int hashdate() const;
+  unsigned int hashtime() const;
   static DateTime fromhash( unsigned int hash );
 
   int daysTo( const DateTime& future ) const;

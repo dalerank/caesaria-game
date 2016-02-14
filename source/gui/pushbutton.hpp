@@ -93,7 +93,7 @@ public:
   virtual void setFont( const std::string& fname );
   virtual void setFont( FontType type, NColor color=0 );
 
-  virtual Font font( ElementState state );
+  virtual Font font( ElementState state ) const;
 
   virtual bool isPushButton() const;
   virtual void setIsPushButton( bool value );

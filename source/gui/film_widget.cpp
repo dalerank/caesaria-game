@@ -35,7 +35,6 @@ namespace gui
 class FilmWidget::Impl
 {
 public:
-  GameAutoPause locker;
   Label* lbTitle;
   Label* lbTime;
   Label* lbReceiver;
@@ -50,7 +49,7 @@ public signals:
 FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPauseWidget::insertTo( this );
   _d->lbMessage = 0;
 
   setupUI( ":/gui/filmwidget.gui" );

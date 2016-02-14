@@ -23,13 +23,14 @@
 namespace gui
 {
 
-class WidgetClose : public Widget
+class WidgetClosers : public Widget
 {
-  std::set<KeyCode> _codes;
+  std::set<int> _codes;
 public:
-  WidgetClose( Widget* parent );
-  static void insertTo( Widget* parent, KeyCode code1=KEY_KEY_CODES_COUNT, KeyCode code2=KEY_ESCAPE );
-  virtual bool onEvent( const NEvent &event );
+  WidgetClosers( Widget* parent );
+  void addCloseCode(int code);
+  static void insertTo( Widget* parent, int code1=KEY_KEY_CODES_COUNT, int code2=KEY_ESCAPE );
+  virtual bool onEvent(const NEvent &event);
 };
 
 }//end namesapce gui

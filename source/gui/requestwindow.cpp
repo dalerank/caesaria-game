@@ -60,7 +60,7 @@ EmperrorRequestWindow::~EmperrorRequestWindow() {}
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
-  GameAutoPause::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
 
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
@@ -111,7 +111,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::deleteLater )
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::_openEmperrorAdvisor )
 
-  moveTo( Widget::parentCenter );
+  moveToCenter();
   setModal();
 }
 

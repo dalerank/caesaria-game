@@ -36,7 +36,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::gatehouse, Gatehouse)
 
 namespace {
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };
-static const Renderer::PassQueue gatehousePass = Renderer::PassQueue( rpass, rpass + 1 );
+static const Renderer::PassQueue gatehousePass = Renderer::PassQueue(rpass, rpass + 1);
 }
 
 class Gatehouse::Impl
@@ -50,7 +50,7 @@ public:
   void updateSprite();
 };
 
-Gatehouse::Gatehouse() : Building( object::gatehouse, Size( 2 ) ), _d( new Impl )
+Gatehouse::Gatehouse() : Building( object::gatehouse, Size(2,2) ), _d(new Impl)
 {
   _picture().load( config::rc.land2a, 150 );
   _d->gatehouseSprite.resize( 1 );

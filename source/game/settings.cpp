@@ -417,11 +417,27 @@ int Settings::findLastChanges()
   return maxFoundChanges;
 }
 
-void Settings::load()
+bool Settings::haveLastConfig()
 {
-  VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
+  vfs::Path lastConfig = SETTINGS_RC_PATH(settingsPath);
+  bool result = false;
+  if( lastConfig.exist() )
+  {
+    auto configMap = config::load( lastConfig );
+    result = !configMap.empty();
+  }
 
-  for( auto& v : settings ) { set( v.first, v.second ); }
+  return result;
+}
+
+void Settings::loadLastConfig()
+{
+  VariantMap settings = config::load( SETTINGS_RC_PATH( settingsPath ) );
+
+  if( !settings.empty() )
+  {
+    for( auto& v : settings ) { set( v.first, v.second ); }
+  }
 }
 
 void Settings::save()

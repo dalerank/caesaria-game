@@ -68,8 +68,8 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT_LOCAL( _d->edCaesar3Music,  onTextChanged(), PackageOptions::_setCaesar3Music )
   CONNECT_LOCAL( _d->edScreenshots,   onTextChanged(), PackageOptions::_setScreenshotsDir )
 
-  WidgetClose::insertTo( this );
-  moveTo( Widget::parentCenter );
+  WidgetClosers::insertTo( this );
+  moveToCenter();
   setModal();
 }
 
@@ -83,7 +83,7 @@ void PackageOptions::_close()
 {
   if( _d->needRestart )
   {
-    Dialog& dlg = Information( ui(), "Note", "Please restart game to apply change" );
+    Dialogbox& dlg = Information( ui(), "Note", "Please restart game to apply change" );
     dlg.show();
   }
 

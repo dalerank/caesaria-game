@@ -25,9 +25,9 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
 
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1) )
+EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1,1) )
 {
-  setPicture( info().randomPicture( size() ) );
+  setPicture(info().randomPicture(size()));
   _fgPictures().resize(1);
 }
 
@@ -38,7 +38,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( numberWorkers() > 0 && walkers().size() == 0 )
+  if (numberWorkers() > 0 && walkers().size() == 0)
   {
     ServiceBuilding::deliverService();
   }

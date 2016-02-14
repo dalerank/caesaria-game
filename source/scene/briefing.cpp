@@ -38,7 +38,7 @@ class MissionButton : public TexturedButton
 {
 public:
   MissionButton( Widget* parent, Point pos, std::string title, std::string mission )
-   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", TexturedButton::States( 5, 6, 4, 4 ) )
+   : TexturedButton( parent, pos, Size::square( 46 ), -1, "europe02", TexturedButton::States( 5, 6, 4, 4 ) )
   {
     setIsPushButton( true );
     _mission = mission;
@@ -166,7 +166,7 @@ void Briefing::initialize()
     _d->cityCaption->setFont( FONT_2 );
     _d->cityCaption->setText( _(briefingCaption) );
 
-    _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size( 27 ), -1, 179 );
+    _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size::square( 27 ), -1, 179 );
     _d->btnContinue->setEnabled( false );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }

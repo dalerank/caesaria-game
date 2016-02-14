@@ -107,6 +107,10 @@ public:
     NColor current;
   } colors;
 
+  struct {
+    Signal1<Widget*> onCloseEx;
+  } signal;
+
 	FlagHolder<Window::FlagName> flags;
 };
 
@@ -142,6 +146,8 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
   setText( title );
 }
 
+Signal1<Widget*>& Window::onCloseEx() { return _d->signal.onCloseEx; }
+
 void Window::setText(const std::string& text )
 {
 	Widget::setText( text );
@@ -153,6 +159,19 @@ void Window::setTitleRect(const Rect& rect)
 {
   if( _d->title )
     _d->title->setGeometry( rect );
+}
+
+void Window::addCloseCode(int code)
+{
+  auto list = findChildren<WidgetClosers*>();
+  WidgetClosers* closers = nullptr;
+  if (list.empty())
+    closers = &add<WidgetClosers>();
+  else
+    closers = list.front();
+
+  if (closers != nullptr)
+    closers->addCloseCode(code);
 }
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
@@ -186,6 +205,13 @@ void Window::_init()
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
+void Window::_setSystemButtonsVisible(bool visible)
+{
+  button( buttonClose )->setVisible(visible);
+  button( buttonMin )->setVisible(visible);
+  button( buttonMax )->setVisible(visible);
+}
+
 void Window::_finalizeResize()
 {
   Widget::_finalizeResize();
@@ -212,8 +238,11 @@ void Window::_updateBackground()
   }
 }
 
+Widget* Window::_titleWidget() const { return _d->title; }
+
 Window::~Window()
 {
+  emit _d->signal.onCloseEx(this);
   Logger::warning( "Window ID={} was removed", ID() );
 }
 
@@ -385,6 +414,17 @@ void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
   _d->flags.setFlag( flag, enabled );
 }
 
+void Window::setWindowFlag(const std::string& flagname, bool enabled)
+{
+  if( flagname == TEXT(fdraggable) ) setWindowFlag(fdraggable,enabled);
+  else if( flagname == TEXT(fbackgroundVisible) ) setWindowFlag(fbackgroundVisible,enabled);
+  else if( flagname == TEXT(ftitleVisible) ) setWindowFlag(ftitleVisible,enabled);
+  else
+  {
+    Logger::warning( "WARNING !!! Cant find flag with name " + flagname );
+  }
+}
+
 void Window::setupUI(const VariantMap &ui)
 {
   Widget::setupUI( ui );
@@ -424,10 +464,11 @@ SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string
 {
   if( !ui.empty() )
     setupUI(ui);
+
   add<ExitButton>(Point(width() - 34, height() - 34));
 
-  moveTo(Widget::parentCenter);
-  WidgetClose::insertTo(this, KEY_RBUTTON);
+  moveToCenter();
+  WidgetClosers::insertTo(this, KEY_RBUTTON);
 }
 
 }//end namespace gui

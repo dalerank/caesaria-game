@@ -32,6 +32,6 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::clinic, Doctor)
 
 Doctor::Doctor()
-  : HealthBuilding(Service::doctor, object::clinic, Size(1))
+  : HealthBuilding(Service::doctor, object::clinic, Size(1,1))
 {
 }

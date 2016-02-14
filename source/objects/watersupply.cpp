@@ -54,7 +54,7 @@ public:
 void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
-  TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size::square( 10 + 10 ) + size() );
 
   for( auto& tile : reachedTiles )
     tile->setParam( Tile::pReservoirWater, 0 );
@@ -101,7 +101,7 @@ void Reservoir::broke()
 }
 
 Reservoir::Reservoir()
-    : WaterSource( object::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size::square( 3 ) )
 {  
   _isWaterSource = false;
   setPicture( info().randomPicture( size() ) );
@@ -132,7 +132,7 @@ bool Reservoir::build( const city::AreaInfo& info )
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::CheckCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size::square( 2 ), !Tilemap::CheckCorners );
 
   return perimetr.waters().size() > 0;  // tells if the factory is next to a mountain
 }
@@ -182,7 +182,8 @@ void Reservoir::timeStep(const unsigned long time)
 
 TilesArray Reservoir::aquifer() const
 {
-  return TilesArea( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea r( _map(), pos() - TilePos( 10, 10 ), Size::square( 10 + 10 ) + size() );
+  return r;
 }
 
 bool Reservoir::getMinimapColor(int& color1, int& color2) const
@@ -281,7 +282,7 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
 void WaterSource::broke()
 {
-  TilesArray tiles = _map().rect( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = _map().rect( pos() - TilePos( 1, 1), size() + Size::square(2) );
 
   int saveWater = water();
   _d->water = 0;

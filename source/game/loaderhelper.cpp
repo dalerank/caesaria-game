@@ -132,14 +132,14 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = object::road;
-    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
     ovType = object::tree;
-    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
@@ -149,7 +149,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
   {
     ovType = object::aqueduct;
-    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
@@ -162,7 +162,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( imgId >= 863 && imgId <= 870 )
   {
-    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );    
     changeId = imgid::fromResource( pic.name() );

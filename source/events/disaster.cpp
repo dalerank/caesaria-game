@@ -92,7 +92,7 @@ void Disaster::_exec( Game& game, unsigned int )
 
   if( mayContinue )
   {
-    Size size( 1 );
+    Size size(1, 1);
 
     OverlayPtr overlay = tile.overlay();
     if( overlay.isValid() )

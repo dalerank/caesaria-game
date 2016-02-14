@@ -1,5 +1,0 @@
-DEFINE_OBJECT_FUNCTION_0(Label,void,deleteLater)
-DEFINE_OBJECT_FUNCTION_1(Label,void,setText,std::string)
-DEFINE_OBJECT_FUNCTION_1(Label,void,setFont,std::string)
-DEFINE_OBJECT_FUNCTION_1(Label,void,setGeometry,Rect)
-DEFINE_WIDGET_CONSTRUCTOR(Label)

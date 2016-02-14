@@ -1,5 +1,5 @@
 {
-  repository : "../../../caesaria"
+  repository : "../../../"
   output : "."
   archives :
   {
@@ -195,20 +195,11 @@
           files : [ "sprites_*" ]
         }     
 
-        sprites_stub :
-        {
-          type : "file"
-          folder : "/resources/sprites_stub"
-          files : [ "*" ]
-        }   
-
         gui_stub :
         {
           type : "file"
           folder : "/resources/gui_stub"
-          files : [ "remake_pack1.atlas"
-                    "remake_pack1.png"
-                    "mapback_00001.png" ]
+          files : [ "*" ]
         }   
 
         taxcolumn :
@@ -733,7 +724,7 @@
         {
           type : "atlas"
           folder : "/resources/carts/wheat"
-          files : [ "cartwheat_*" ]
+          files : [ "*" ]
         }
 
         wine :

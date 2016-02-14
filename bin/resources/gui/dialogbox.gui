@@ -1,11 +1,6 @@
 {  
   geometry : [ 0, 0, 480, 150 ]
-
-  lbTitle#Label : {
-    font : "FONT_5"
-    geometry : [ 12, 12, "100%-12", "12+30" ]
-    textAlign : [ "center", "center" ]
-  }
+  static : true
 
   lbText#Label : {
     font : "FONT_3"
@@ -16,9 +11,11 @@
   }
 
   btnActionNever#PushButton : {
-    geometry : [ 13, "100%-42", "13+26", "100%-16" ]
+    geometry : [ 13, "100%-40", "13+26", "100%-14" ]
     bgtype : "whiteBorderUp"
     text : "X"
+    anchor.bottom : "lowerRight"
+    anchor.top : "lowerRight"
     tooltip : "##show_this_message_again##"
     font : "FONT_1"
   }

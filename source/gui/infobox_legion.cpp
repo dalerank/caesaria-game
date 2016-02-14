@@ -271,7 +271,7 @@ bool AboutLegion::onEvent(const NEvent& event)
 void AboutLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
-  Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
+  Rect rect( Point( 16, 140 ) + offset * index, Size(83,83) );
   PushButton& btn = add<PushButton>( rect, "", id );
   btn.setBackgroundStyle( PushButton::whiteBorderUp );
   btn.setIcon( gui::miniature.rc, picId );

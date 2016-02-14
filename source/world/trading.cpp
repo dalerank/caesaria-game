@@ -62,7 +62,8 @@ public:
       if( gtype != good::none )
       {
         VariantList vl = it.second.toList();
-        setPrice( gtype, vl.get( idxBuyPrice, 0 ).toInt(), vl.get( idxSellPrice, 0 ).toInt() );
+        if( !vl.empty() )
+          setPrice( gtype, vl.get( idxBuyPrice, 0 ).toInt(), vl.get( idxSellPrice, 0 ).toInt() );
       }
     }
   }

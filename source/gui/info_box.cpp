@@ -49,7 +49,6 @@ public:
   PushButton* btnExit;
   PushButton* btnHelp;
   bool isAutoPosition;
-  GameAutoPause autopause;
   std::map<Widget*, Callback> callbacks;
 
   Impl() : lbBlackFrame(0), lbTitle(0),
@@ -63,8 +62,8 @@ public:
 Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
 : Window( parent, rect, "", id ), _d( new Impl )
 {
-  _d->autopause.activate();
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  GameAutoPauseWidget::insertTo( this );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
 
   // create the title
   setupUI( ":/gui/infobox.gui" );

@@ -271,7 +271,7 @@ bool LowBridge::build( const city::AreaInfo& info )
 {
   TilePos endPos, startPos;
   _d->direction=direction::none;
-  setSize( Size(0) );
+  setSize( Size::zero );
   Construction::build( info );
 
   _d->subtiles.clear();

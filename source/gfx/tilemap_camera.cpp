@@ -92,11 +92,11 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->size.tilemap = config::tilemap.cell.size();
   _d->tmap = NULL;
   _d->scrollSpeed = 30;
-  _d->size.viewport = Size( 0 );
-  _d->size.screen = Size( 0 );
-  _d->size.virtuals = Size( 0 );
+  _d->size.viewport = Size::zero;
+  _d->size.screen = Size::zero;
+  _d->size.virtuals = Size::zero;
   _d->centerMapXZ = PointF( 0, 0 );
-  _d->size.border = Size( config::tilemap.cell.size().width() * 4 );
+  _d->size.border = Size::square( config::tilemap.cell.size().width() * 4 );
   _d->tiles.visible.reserve( 2000 );
 }
 

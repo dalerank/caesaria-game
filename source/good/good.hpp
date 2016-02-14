@@ -23,6 +23,8 @@
 #include <set>
 #include <map>
 
+class StringArray;
+
 namespace good
 {
 
@@ -55,6 +57,7 @@ public:
   bool contain( const Product& type ) const;
   Products& exclude( const Product& type);
   Products& exclude( const Products& types);
+  StringArray names() const;
 };
 
 const Product& any();

@@ -28,6 +28,7 @@ class Info
 {
 public:
   Info( vfs::Path path );
+  Info( const Info& other );
 
   DateTime modified() const;
   DateTime created() const;

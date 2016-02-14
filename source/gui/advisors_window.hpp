@@ -58,7 +58,7 @@ protected:
   ScopedPtr<ParlorModel> _model;
 
   Parlor( Widget* parent, int id );
-  PushButton* _addButton(Advisor advisorName, int picId, std::string="" );
+  PushButton& _addButton(Advisor advisorName, int picId, std::string="" );
   void _initButtons();
 };
 

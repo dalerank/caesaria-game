@@ -35,7 +35,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::flooded_clay_pit, FloodedClayPit)
 
 ClayPit::ClayPit()
-  : Factory( good::none, good::clay, object::clay_pit, Size(2) )
+  : Factory( good::none, good::clay, object::clay_pit, Size(2,2) )
 {
   _fgPictures().resize(2);
   _setUnworkingInterval( 12 );
@@ -86,7 +86,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
     return false;
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::CheckCorners );
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos(-1, -1), size() + Size(2,2), Tilemap::CheckCorners );
 
   bool near_water = !perimetr.select( Tile::tlWater ).empty();
 
@@ -96,8 +96,8 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
 } 
 
 FloodedClayPit::FloodedClayPit()
-  : Ruins( object::flooded_clay_pit )
+  : Ruins(object::flooded_clay_pit)
 {
-  setSize( Size(2) );
+  setSize(Size(2,2));
   setPicture( info().randomPicture( size() ) );
 }

@@ -282,6 +282,7 @@ void ListBox::_indexChanged( unsigned int eventType )
     {
       emit _d->signal.onTextSelected( _d->items[ _d->index.selected ].text() );
       emit _d->signal.onItemSelected( _d->items[ _d->index.selected ] );
+      emit _d->signal.onIndexSelectedEx( this, _d->index.selected );
     }
   }
   break;
@@ -785,12 +786,28 @@ bool ListBox::isAutoScrollEnabled() const{	return isFlag( autoscroll );}
 
 void ListBox::setItem(unsigned int index, std::string text)
 {
-  if ( index >= _d->items.size() )
-	return;
+  if (index >= _d->items.size())
+    return;
 
-  _d->items[index].setText( text );
+  _d->items[index].setText(text);
   _d->needItemsRepackTextures = true;
-  _recalculateItemHeight( _d->font, height() );
+  _recalculateItemHeight(_d->font, height());
+}
+
+void ListBox::setItemData(unsigned int index, const std::string& name, Variant tag)
+{
+  if (index >= _d->items.size())
+    return;
+
+  _d->items[index].setData( name, tag );
+}
+
+Variant ListBox::getItemData(unsigned int index, const std::string& name)
+{
+  if (index >= _d->items.size())
+    return Variant();
+
+  return _d->items[index].data(name);
 }
 
 //! Insert the item at the given index
@@ -941,6 +958,12 @@ ListBoxItem& ListBox::addItem(Picture pic)
   return item;
 }
 
+int ListBox::addLine(const std::string& text)
+{
+  addItem(text);
+  return itemsCount()-1;
+}
+
 void ListBox::fitText(const std::string& text)
 {
   StringArray items = _d->font.breakText( text, width() - _d->scrollBar->width() );
@@ -965,25 +988,24 @@ void ListBox::addItems(const StringArray& strings)
 }
 
 Font ListBox::font() const{  return _d->font;}
-void ListBox::setDrawBackground(bool draw){    setFlag( drawBackground, draw );} //! Sets whether to draw the background
+void ListBox::setDrawBackground(bool draw) { setFlag( drawBackground, draw );} //! Sets whether to draw the background
 int ListBox::selected() {    return _d->index.selected; }
 Signal1<const ListBoxItem&>& ListBox::onItemSelectedAgain(){  return _d->signal.onItemSelectedAgain;}
+Signal2<Widget*, int>& ListBox::onIndexSelectedEx() {  return _d->signal.onIndexSelectedEx; }
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->signal.onItemSelected;}
 void ListBox::setItemFont( Font font ){ _d->font = font; }
 void ListBox::setItemTextOffset( Point p ) { _d->itemTextOffset = p; }
 
 void ListBox::setupUI(const VariantMap& ui)
 {
-  Widget::setupUI( ui );
+  Widget::setupUI(ui);
 
-  int itemheight = ui.get( "itemheight" );
-  if( itemheight != 0 ) setItemHeight( itemheight );
-  bool drawborder = ui.get( "border.visible", true );
+  int itemheight = ui.get("itemheight");
+  if( itemheight != 0 ) setItemHeight(itemheight);
 
-  setDrawBackground( drawborder );
+  setDrawBackground(ui.get("border.visible", true));
   std::string fontname = ui.get( "itemfont" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
-
 
   fontname = ui.get( "items.font" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );

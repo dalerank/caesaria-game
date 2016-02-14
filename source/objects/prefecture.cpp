@@ -44,7 +44,7 @@ public:
 };
 
 Prefecture::Prefecture()
-  : ServiceBuilding(Service::prefect, object::prefecture, Size(1)),
+  : ServiceBuilding(Service::prefect, object::prefecture, Size::square(1)),
     _d( new Impl )
 {
   _d->fireDetect = TilePos::invalid();

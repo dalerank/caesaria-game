@@ -34,7 +34,7 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Terrain::Terrain() : Overlay( object::terrain, Size(1) )
+Terrain::Terrain() : Overlay( object::terrain, Size::square(1) )
 {
   setPicture( computePicture() );
 }

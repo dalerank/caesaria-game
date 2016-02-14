@@ -1,0 +1,7 @@
+DEFINE_OBJECT_FUNCTION_0(TexturedButton,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(TexturedButton,setGeometry,Rect)
+DEFINE_OBJECT_FUNCTION_1(TexturedButton,setTooltipText,std::string)
+DEFINE_OBJECT_FUNCTION_1(TexturedButton,setPosition,Point)
+DEFINE_WIDGET_CALLBACK_0(TexturedButton,onClickedEx)
+DEFINE_OBJECT_FUNCTION_5(TexturedButton,changeImageSet,std::string,int,int,int,int)
+DEFINE_WIDGET_CONSTRUCTOR(TexturedButton)
