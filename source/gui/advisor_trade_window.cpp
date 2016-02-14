@@ -29,7 +29,6 @@
 #include "good/store.hpp"
 #include "image.hpp"
 #include "objects/constants.hpp"
-#include "empireprices.hpp"
 #include "goodordermanage.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "city/statistic.hpp"

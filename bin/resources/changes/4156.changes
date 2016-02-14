@@ -17,6 +17,8 @@
       "1. Added javascript engine for script support"
       "2. Added textures for big wheat carts"
       "3. Added maps for Massalia and Syracusae"
+      "4. Fixed empire prices shows in trade advisor window"
+      "5. Stockpile state shows correct in trade advisor window"
     ]
   }
 }
