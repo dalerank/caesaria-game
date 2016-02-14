@@ -26,14 +26,10 @@ namespace citylayer
 class Aborigens : public Info
 {
 public:
-  virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
   Aborigens( gfx::Camera& camera, PlayerCityPtr city );
+  virtual int type() const;
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void onEvent( const NEvent& event);
 };
 
 }//end namespace citylayer

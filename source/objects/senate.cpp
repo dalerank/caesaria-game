@@ -87,7 +87,7 @@ public:
   StateFlags flags;
 };
 
-Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
+Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size::square(5) ), _d( new Impl )
 {
   _picture().load( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
@@ -106,7 +106,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !areaInfo.city->statistic().objects.find<Building>( object::senate).empty();
+    bool isSenatePresent = areaInfo.city->statistic().objects.count( object::senate) > 0;
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -180,10 +180,10 @@ void Senate::initialize(const object::Info& mdata)
   ServiceBuilding::initialize( mdata );
 
   VariantMap ratings = mdata.getOption( "ratings" ).toMap();
-  _d->flags.set( culture,    ratings.get( CAESARIA_STR_A(culture   ) ).toMap() );
-  _d->flags.set( prosperity, ratings.get( CAESARIA_STR_A(prosperity) ).toMap() );
-  _d->flags.set( peace,      ratings.get( CAESARIA_STR_A(peace     ) ).toMap() );
-  _d->flags.set( favour,     ratings.get( CAESARIA_STR_A(favour    ) ).toMap() );
+  _d->flags.set( culture,    ratings.get( TEXT(culture   ) ).toMap() );
+  _d->flags.set( prosperity, ratings.get( TEXT(prosperity) ).toMap() );
+  _d->flags.set( peace,      ratings.get( TEXT(peace     ) ).toMap() );
+  _d->flags.set( favour,     ratings.get( TEXT(favour    ) ).toMap() );
 }
 
 void Senate::save(VariantMap& stream) const
@@ -221,7 +221,7 @@ void Senate::_updateUnemployers()
   }
 }
 
-float Senate::collectTaxes()
+float Senate::takeMoney()
 {
   int save = 0;
 
@@ -233,7 +233,7 @@ float Senate::collectTaxes()
   return save;
 }
 
-unsigned int Senate::funds()       const { return _city()->treasury().money(); }
+int Senate::funds()       const { return _city()->treasury().money(); }
 unsigned int Senate::thisYearTax() const { return _city()->treasury().getIssueValue( econ::Issue::taxIncome,
                                                                                      econ::Treasury::thisYear ); }
 std::string Senate::errorDesc()    const { return _d->errorStr; }
@@ -259,7 +259,7 @@ void Senate::deliverService()
 {
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( _city() );
+    TaxCollectorPtr walker = Walker::create<TaxCollector>( _city() );
     walker->send2City( this, TaxCollector::goServiceMaximum|TaxCollector::anywayWhenFailed );
 
     addWalker( walker.object() );

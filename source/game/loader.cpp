@@ -26,7 +26,7 @@
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
 #include "game.hpp"
@@ -61,6 +61,7 @@ public:
   void initTilesAnimation( Tilemap& tmap );
   void finalize(Game& game , bool needInitEnterExit);
   bool maySetSign( const Tile& tile );
+  void clearTile(Tile& tile);
 
 public signals:
   Signal1<std::string> onUpdateSignal;
@@ -94,13 +95,13 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "({0}, {1})", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "({0}, {1})", tlOffset.i(), tlOffset.j() );
+  Logger::warning( "({}, {})", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "({}, {})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
-    tile::clear( signTile );
-    OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
+    clearTile( signTile );
+    OverlayPtr waymark = Overlay::create( object::waymark );
     city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
@@ -132,7 +133,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 
       if( !tile->picture().isValid() )
       {
-        Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
+        Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
         tile->setPicture( pic );
       }
       tile->setAnimation( meadowAnim );
@@ -145,12 +146,10 @@ void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
-  const BorderInfo& border = game.city()->borderInfo();
-
   if( needInitEnterExit )
   {
-    initEntryExitTile( border.roadEntry, game.city() );
-    initEntryExitTile( border.roadExit,  game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos(), game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadExit ).epos(),  game.city() );
   }
 
   initTilesAnimation( tileMap );
@@ -159,6 +158,16 @@ void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
 bool Loader::Impl::maySetSign(const Tile &tile)
 {
   return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
+}
+
+void Loader::Impl::clearTile(Tile& tile)
+{
+  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+  int imgId = math::random( 58 );
+
+  Picture pic( config::rc.land1a, startOffset + imgId );
+  tile.setPicture( config::rc.land1a, startOffset + imgId );
+  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void Loader::Impl::initLoaders()
@@ -198,7 +207,7 @@ bool Loader::load(vfs::Path filename, Game& game)
     return loadok;
   }
 
-  Logger::warning( "GameLoader: not found loader for " + filename.toString() );
+  Logger::warning( "WARNING !!! GameLoader not found loader for " + filename.toString() );
 
   return false; // failed to load
 }

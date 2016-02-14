@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 
 namespace gfx
 {
@@ -92,7 +92,7 @@ TilesArray::Corners TilesArray::corners() const
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( INT_MAX, 0 );
   for( auto tile : *this )
@@ -108,7 +108,7 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( 0, INT_MAX );
   for( auto tile : *this )
@@ -185,6 +185,16 @@ TilesArray TilesArray::select(Tile::Param param) const
   return ret;
 }
 
+int TilesArray::count(Tile::Type flag) const
+{
+  int result=0;
+  for( auto tile : *this )
+    if( tile->getFlag( flag ) )
+      result++;
+
+  return result;
+}
+
 TilesArray TilesArray::terrains() const
 {
   TilesArray ret;
@@ -253,9 +263,9 @@ PointsArray TilesArray::mappositions() const
   return ret;
 }
 
-TilePosArray TilesArray::locations() const
+Locations TilesArray::locations() const
 {
-  TilePosArray ret;
+  Locations ret;
   for( auto tile : *this )
     ret << tile->pos();
 
@@ -275,7 +285,7 @@ void TilesArray::pop_front() { erase( this->begin() ); }
 
 Tile* TilesArray::random() const
 {
-  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : 0;
+  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : nullptr;
 }
 
 }//end namespace

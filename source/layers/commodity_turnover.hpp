@@ -26,18 +26,16 @@ namespace citylayer
 class CommodityTurnover : public Info
 {
 public:
+  CommodityTurnover( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void afterRender(gfx::Engine &engine);
   virtual void render(gfx::Engine &engine);
-  virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void onEvent( const NEvent& event);
 
 private:
-  void _renderPaths( const RenderInfo& rinfo );
+  void _renderPaths( const gfx::RenderInfo& rinfo );
   void _updateStorePath();
-  CommodityTurnover( gfx::Camera& camera, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

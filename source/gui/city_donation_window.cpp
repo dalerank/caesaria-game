@@ -33,87 +33,98 @@ namespace dialog
 class CityDonation::Impl
 {
 public:
-  int wantSend, maxMoney;
-  Label* lbDonation;
+  struct {
+    int current;
+    int available;
+  } money;
 
-  void updateDonationText();
-
-public slots:
-  void sendMoney() { emit sendMoneySignal( wantSend ); }
-
-public signals:
   Signal1<int> sendMoneySignal;
 };
 
 CityDonation::CityDonation( Widget* p, int money )
   : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(CityDonationWindow)
 {
-  __D_IMPL(d,CityDonationWindow)
-  d->maxMoney = money;
-  d->wantSend = 0;
+  __D_REF(d,CityDonationWindow)
+  d.money.available = money;
 
   setupUI( ":/gui/money2city.gui" );
-  setCenter( parent()->center() );
+  setAvailableMoney( money );
+  _linkButtons2Actions();
+  _updateDonationText();
 
-  INIT_WIDGET_FROM_UI( Label*, lbBlack )
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
-  GET_DWIDGET_FROM_UI( d, lbDonation )
-
-  d->updateDonationText();
-
-  CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendMoney );
-  CONNECT( btnSend, onClicked(), this, CityDonation::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, CityDonation::deleteLater );
-
-  if( money == 0 )
-  {
-    for( auto&& widget : lbBlack->children() ) widget->hide();
-
-    lbBlack->setText( _("##no_money_for_donation##") );
-    btnSend->hide();
-  }
+  moveToCenter();
+  setModal();
 }
 
 CityDonation::~CityDonation() {}
-
-bool CityDonation::onEvent(const NEvent& event)
-{
-  __D_IMPL(d,CityDonationWindow)
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
-  {
-    int id = event.gui.caller->ID();
-    if( id > 0 )
-    {
-      int maxMoney = d->maxMoney;
-      int wantSend = d->wantSend;
-      if( ((id & 0x0f00) == 0x0f00) )
-      {
-        int multiplier = id & 0xff;
-        wantSend = multiplier == 0xff ? maxMoney : (multiplier * 500);
-      }
-      else if( (id & 0x1000) == 0x1000 )
-      {
-        int offset = (id & 0xf) == 1 ? -10 : 10;
-        wantSend += offset;
-      }
-
-      d->wantSend =  math::clamp( wantSend, 0, maxMoney );
-      d->updateDonationText();
-    }
-
-    return true;
-  }
-
-  return Widget::onEvent( event );
-}
-
 Signal1<int>& CityDonation::onSendMoney() { return _dfunc()->sendMoneySignal; }
 
-void CityDonation::Impl::updateDonationText()
+void CityDonation::setAvailableMoney(int money)
 {
-  std::string text = utils::format( 0xff, "%s %d from %d dn", _("##donation_is##"), wantSend, maxMoney );
-  if( lbDonation ) lbDonation->setText( text );
+  INIT_WIDGET_FROM_UI( Label*, lbBlack )
+  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
+
+  _dfunc()->money.current = 0;
+
+  if( money == 0 )
+  {
+    for( auto& widget : lbBlack->children() )
+      widget->hide();
+
+    lbBlack->setText( _("##no_money_for_donation##") );
+  }
+
+  btnSend->setVisible( money != 0 );
+}
+
+bool CityDonation::_onButtonClicked(Widget* sender)
+{
+  __D_REF(d,CityDonationWindow)
+  int id = sender->ID();
+  if( id > 0 )
+  {
+    int maxMoney = d.money.available;
+    int wantSend = d.money.current;
+    if( ((id & 0x0f00) == 0x0f00) )
+    {
+      int multiplier = id & 0xff;
+      wantSend = multiplier == 0xff ? maxMoney : (multiplier * 500);
+    }
+    else if( (id & 0x1000) == 0x1000 )
+    {
+      int offset = (id & 0xf) == 1 ? -10 : 10;
+      wantSend += offset;
+    }
+
+    d.money.current = math::clamp( wantSend, 0, maxMoney );
+    _updateDonationText();
+  }
+
+  return true;
+}
+
+void CityDonation::_updateDonationText()
+{
+  __D_REF(d,CityDonationWindow)
+  INIT_WIDGET_FROM_UI( Label*, lbDonation )
+  if( lbDonation )
+  {
+    std::string text = fmt::format( "{} {} from {} dn", _("##donation_is##"), d.money.current, d.money.available );
+    lbDonation->setText( text );
+  }
+}
+
+void CityDonation::_linkButtons2Actions()
+{
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(),   CityDonation::_sendMoney )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(),   CityDonation::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), CityDonation::deleteLater )
+}
+
+void CityDonation::_sendMoney()
+{
+  __D_REF(d,CityDonationWindow)
+  emit d.sendMoneySignal( d.money.current );
 }
 
 }//end namespace dialog

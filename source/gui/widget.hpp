@@ -27,13 +27,11 @@
 #include "core/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/path.hpp"
+#include "core/event.hpp"
+#include "element_state.hpp"
 
-namespace gfx
-{
- class Engine;
-}
-struct NEvent;
+namespace gfx { class Engine; }
+namespace vfs { class Path; }
 
 namespace gui
 {
@@ -60,6 +58,13 @@ public:
       return ret;
     }
   };
+
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
 
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
@@ -99,7 +104,11 @@ public:
 	//! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
-  //virtual void setFont( Font font, u32 nA=0 );
+  virtual void setFont( const Font& font );
+  virtual void setFont( const std::string& font );
+  virtual void setFont( FontType type, NColor color=0 );
+
+  virtual Font font() const;
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
@@ -113,7 +122,9 @@ public:
 	*	\param vertical: ALIGN_UPPERLEFT to align with top edge,
 	*					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
 	*/
-  virtual void setTextAlignment( align::Type horizontal, align::Type vertical );
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
+
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
 
   virtual Alignment horizontalTextAlign() const;
 
@@ -138,6 +149,8 @@ public:
   virtual int screenLeft() const;
 
   virtual int bottom() const;
+
+  virtual void moveToCenter();
 
   virtual Point center() const;
 
@@ -182,6 +195,8 @@ public:
   //! Draws the element and its children.
   virtual void draw( gfx::Engine& painter );
 
+  virtual void debugDraw( gfx::Engine& painter );
+
   virtual void animate( unsigned int timeMs );
 
   //! Destructor
@@ -189,9 +204,16 @@ public:
 
   //! Moves this element in absolute point.
   virtual void setPosition(const Point& relativePosition);
+  virtual void setPosition(int x, int y);
 
   //! Moves this element on relative distance.
   virtual void move( const Point& offset );
+
+  //!
+  virtual void canvasDraw( const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0 );
+
+  //!
+  virtual void canvasDraw( const gfx::Picture& picture, const Point& point );
 
   //! Returns true if element is visible.
   virtual bool visible() const;
@@ -292,7 +314,14 @@ public:
    *	\return Returns the first element with the given id. If no element
    *	with this id was found, 0 is returned.
    */
-  virtual Widget* findChild(int id, bool searchchildren=false) const;
+  Widget* findChild(int id, bool searchChildren=false) const;
+  Widget* findChild(const std::string& internalName, bool searchChildren) const;
+
+  template<class T>
+  T* findChild(int id, bool searchChildren=false) const
+  {
+    return safety_cast<T*>( findChild( id, searchChildren ) );
+  }
 
   //! Reads attributes of the scene node.
   /** Implement this to set the attributes of your scene node for
@@ -316,8 +345,8 @@ public:
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */
   void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
-
   void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
+  void setGeometry(float left, float top, float rigth, float bottom);
 
   //! 
   void setLeft( int newLeft );
@@ -403,7 +432,7 @@ public:
   void setRight(int newRight);
 
   void addProperty(const std::string& name, const Variant &value );
-  const Variant& getProperty( const std::string& name ) const;
+  const Variant& getProperty( const std::string& name ) const;  
 
 protected:
 
@@ -414,6 +443,9 @@ protected:
    * geometry.
    */
   virtual void _finalizeResize();
+  virtual bool _onButtonClicked( Widget* sender ) { return false; }
+  virtual bool _onMousePressed( const NEvent::Mouse& event ) { return false; }
+  virtual bool _onListboxChanged( Widget* sender ) { return false; }
   virtual void _finalizeMove();
 
   Widgets& _getChildren();
@@ -428,16 +460,6 @@ protected:
 };
 
 typedef SmartPtr< Widget > WidgetPtr;
-
-enum ElementState
-{
-  stNormal=0, 
-  stPressed, 
-  stHovered, 
-  stDisabled, 
-  stChecked,
-  StateCount
-};
 
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

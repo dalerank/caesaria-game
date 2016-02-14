@@ -1,0 +1,49 @@
+{  
+  geometry : [ 0, 0, 380, 128 ]
+  buttons : "off"
+  static : true
+  bgtype : "whiteFrame"
+     
+  edPlayerName#EditBox :
+  {
+    geometry : [ 32, 50, 352, 82 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_2_WHITE"
+    textOffset : [ 20, 0 ]
+    tooltip : "##enter_dinasty_name_here##"
+    text : "##new_governor##"
+  }
+
+  lbNext#Label :
+  {
+    geometry : [ 180, 90, 325, 110 ]
+    text : "##plname_continue##"
+    font : "FONT_2"
+    textAlign : [ "lowerRight", "center" ]
+  }
+
+  lbTitle#Label :
+  {
+    geometry : [ 10, 10, 380, 48 ]
+    text : "##enter_your_name##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  btnContinue#TexturedButton :
+  {
+    geometry : [ 330, 90, 357, 117 ]
+    normal : [ "paneling", 179 ]
+    hovered : [ "paneling", 180 ]
+    pressed : [ "paneling", 181 ]
+    disabled : [ "paneling", 179 ]
+    tooltip : "##plname_start_new_game##"
+  }
+
+  lbExitHelp#Label :
+  {
+    geometry : [ 18, 90, 300, 110 ]
+    text : "##press_escape_to_exit##"
+    font : "FONT_1"
+  }
+}

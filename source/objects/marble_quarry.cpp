@@ -28,7 +28,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::quarry, MarbleQuarry)
 
 MarbleQuarry::MarbleQuarry()
-  : Factory(good::none, good::marble, object::quarry, Size(2) )
+  : Factory(good::none, good::marble, object::quarry, Size(2,2) )
 {
   _animation().load( ResourceGroup::commerce, 44, 10);
   _animation().setDelay( 4 );
@@ -45,14 +45,11 @@ void MarbleQuarry::timeStep( const unsigned long time )
 bool MarbleQuarry::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners);
-  for( auto tile : perimetr )
-  {
-    near_mountain |= tile->getFlag( Tile::tlRock );
-  }
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos(-1, -1), size() + Size(2, 2), Tilemap::CheckCorners);
+
+  bool near_mountain = !perimetr.select( Tile::tlRock ).empty();  // tells if the factory is next to a mountain
 
   const_cast< MarbleQuarry* >( this )->_setError( near_mountain ? "" : _("##build_near_mountain_only##") );
 

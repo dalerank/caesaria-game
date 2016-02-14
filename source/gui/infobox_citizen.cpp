@@ -26,6 +26,7 @@
 #include "gfx/picture.hpp"
 #include "core/gettext.hpp"
 #include "good/productmap.hpp"
+#include "walker/animals.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
 #include "walker/enemysoldier.hpp"
@@ -34,10 +35,13 @@
 #include "walker/merchant_sea.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
-#include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "core/color_list.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
+
+using namespace events;
 
 namespace gui
 {
@@ -54,8 +58,8 @@ public:
   CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
-    _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
-    _wlkPicture.fill( DefaultColors::clear, Rect() );
+    _wlkPicture = gfx::Picture( rectangle.size() - Size(6,6), 0, true );
+    _wlkPicture.fill( ColorList::clear, Rect() );
     _walker = wlk;
   }
 
@@ -74,12 +78,12 @@ public:
     if( _wlkPicture.isValid() )
     {
       Rect clipRect = absoluteClippingRect();
-      clipRect._lefttop += Point( 3, 3 );
-      clipRect._bottomright -= Point( 3, 3 );
-      painter.draw( _wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
+      clipRect._lefttop += Point(3, 3);
+      clipRect._bottomright -= Point(3, 3);
+      painter.draw( _wlkPicture, absoluteRect().lefttop() + Point(3, 3), &clipRect );
       gfx::Pictures pics;
       _walker->getPictures( pics );
-      painter.draw( pics, absoluteRect().lefttop() + Point( 30, 30 ), &clipRect );
+      painter.draw( pics, absoluteRect().lefttop() + Point(30, 30), &clipRect );
     }
   }
 
@@ -105,7 +109,7 @@ public:
   std::vector<CitizenScreenshot*> screenshots;
   TilePos baseBuildingPos;
   TilePos destinationPos;
-  WalkerPtr object;
+  WalkerPtr object;  
 
 public:
   void updateCurrentAction( const std::string& action, TilePos pos );
@@ -139,9 +143,8 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   _d->object = wlk;
   _d->lbName->setText( wlk->name() );
 
-  std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
-  _d->lbType->setText( _(walkerType) );
-  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::bigPicture( wlk->type() ) );
+  _d->lbType->setText( _(wlk->info().prettyName()) );
+  _d->lbCitizenPic->setBackgroundPicture( wlk->info().bigPicture() );
 
   std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );
@@ -149,8 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    auto event = events::PlaySound::create( sound, 100 );
-    event->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
   }
 
   _updateTitle();
@@ -166,8 +168,8 @@ void AboutPeople::_updateNeighbors()
   if( _d->object.isNull() )
     return;
 
-  foreach( it, _d->screenshots )
-    (*it)->deleteLater();
+  for( auto s : _d->screenshots )
+    s->deleteLater();
 
   _d->screenshots.clear();
 
@@ -176,17 +178,16 @@ void AboutPeople::_updateNeighbors()
   Point lbOffset( 60, 0 );
   for( auto tile : tiles )
   {
-    auto& tileWalkers = _d->city->walkers( tile->pos() );
+    const auto& tileWalkers = _d->city->walkers( tile->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
-      CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
-      lb->setTooltipText( _("##click_here_to_talk_person##") );
-      _d->screenshots.push_back( lb );
+      auto& ctzScreenshot = add<CitizenScreenshot>( lbRect, tileWalkers.front() );
+      ctzScreenshot.setTooltipText( _("##click_here_to_talk_person##") );
+      _d->screenshots.push_back( &ctzScreenshot );
       lbRect += lbOffset;
 
-
-      CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
+      CONNECT( &ctzScreenshot, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
 }
@@ -198,17 +199,17 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 
   Widget::setupUI( model );
 
-  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
-  _d->lbName->setFont( Font::create( FONT_2 ));
+  _d->lbName = &add<Label>( Rect( 90, 108, width() - 30, 108 + 20) );
+  _d->lbName->setFont( FONT_2 );
 
-  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
-  _d->lbType->setFont( Font::create( FONT_1 ));
+  _d->lbType = &add<Label>( Rect( 90, 128, width() - 30, 128 + 20) );
+  _d->lbType->setFont( FONT_1 );
 
-  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
-                            "##citizen_thoughts_will_be_placed_here##" );
+  _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
+                              "##citizen_thoughts_will_be_placed_here##" );
 
   _d->lbThinks->setWordwrap( true );
-  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+  _d->lbCitizenPic = &add<Label>( Rect( 30, 112, 30 + 55, 112 + 80) );
 
   GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
   GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
@@ -222,40 +223,84 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 void AboutPeople::_updateExtInfo(){}
 Label *AboutPeople::_lbThinks(){ return _d->lbThinks; }
 
+typedef Delegate2< WalkerPtr, bool& > Condition;
+
 void AboutPeople::_updateTitle()
 {
   if( _d->object.isNull() )
     return;
 
-  std::string title;
-  if( _d->object.is<EnemySoldier>() )
+  std::vector<Condition> conditions{ makeDelegate( this, &AboutPeople::_checkEnemy ),
+                                     makeDelegate( this, &AboutPeople::_checkUnvividly ),
+                                     makeDelegate( this, &AboutPeople::_checkAnimal ),
+                                     makeDelegate( this, &AboutPeople::_checkMerchant ),
+                                     makeDelegate( this, &AboutPeople::_checkDefault ) };
+
+  for( auto& condition : conditions )
   {
-    title = WalkerHelper::getNationName( _d->object->nation() );
-    title.insert( title.size()-2, "_soldier" );
+    bool found = false;
+    condition( _d->object, found );
+    if( found )
+      break;
   }
-  else
+}
+
+void AboutPeople::_checkEnemy(WalkerPtr walker, bool& found)
+{
+  if( !walker.is<EnemySoldier>() )
+    return;
+
+  std::string title = world::toString( walker->nation() );
+  title.insert( title.size()-2, "_soldier" );
+  setTitle( _(title) );
+  found = true;
+}
+
+void AboutPeople::_checkUnvividly(WalkerPtr walker, bool& found)
+{
+  if( walker->getFlag( Walker::vividly ) )
+    return;
+
+  setTitle( _("##object##") );
+  found = true;
+}
+
+void AboutPeople::_checkAnimal(WalkerPtr walker, bool& found)
+{
+  if( !walker.is<Animal>() )
+    return;
+
+  setTitle( _("##animal##") );
+  found = true;
+}
+
+void AboutPeople::_checkMerchant(WalkerPtr walker, bool& found)
+{
+  switch( walker->type() )
   {
-    switch( _d->object->type() )
-    {
-    case walker::merchant:
-    {
-      auto landMerchant = _d->object.as<Merchant>();
-      title = _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity();
-    }
-    break;
-
-    case walker::seaMerchant:
-    {
-      auto seaMerchant = _d->object.as<SeaMerchant>();
-      title = _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity();
-    }
-    break;
-
-    default: title = "##citizen##";
-    }
+  case walker::merchant:
+  {
+    auto landMerchant = walker.as<Merchant>();
+    setTitle( _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity() );
+    found = true;
   }
+  break;
 
-  setTitle( _( title ) );
+  case walker::seaMerchant:
+  {
+    auto seaMerchant = walker.as<SeaMerchant>();
+    setTitle( _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity() );
+    found = true;
+  }
+  break;
+
+  default: break;
+  }
+}
+
+void AboutPeople::_checkDefault(WalkerPtr walker, bool& found)
+{
+  setTitle( _("##citizen##") );
 }
 
 AboutPeople::~AboutPeople()
@@ -281,18 +326,18 @@ const WalkerList& AboutPeople::_walkers() const { return _d->walkers; }
 void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos pos)
 {
   destinationPos = pos;
-  std::string destBuildingName;
   OverlayPtr ov = city->getOverlay( pos );
-  if( ov.isValid() )
-  {
-    destBuildingName = ov->info().prettyName();
-    if( btnMove2dst ) btnMove2dst->setVisible( !destBuildingName.empty() );
-  }
+  if( btnMove2dst )
+    btnMove2dst->setVisible( ov.isValid() );
 
   if( lbCurrentAction )
   {
-    lbCurrentAction->setPrefixText( _("##wlk_state##") );
-    lbCurrentAction->setText( action + "(" + _(destBuildingName) + ")" );
+    std::string text = ov.isValid() ? ov->info().prettyName() : "";
+    if( !action.empty() || !text.empty() )
+    {
+      lbCurrentAction->setPrefixText( _("##wlk_state##") );
+      lbCurrentAction->setText( action + "(" + _(text) + ")" );
+    }
   }
 }
 
@@ -300,32 +345,27 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 {
   baseBuildingPos = pos;
   OverlayPtr ov = city->getOverlay( pos );
-  std::string text;
 
-  if( ov.isValid() )
-  {
-    text = ov->info().prettyName();
-    if( lbBaseBuilding ) lbBaseBuilding->setText( text );    
-  }
+  if( lbBaseBuilding )
+    lbBaseBuilding->setText( ov.isValid() ? ov->info().prettyName() : "" );
 
-  if( btnMove2base ) btnMove2base->setVisible( !text.empty() );
+  if( btnMove2base )
+    btnMove2base->setVisible( ov.isValid() );
 }
 
 void AboutPeople::Impl::moveCamera2base()
 {
-  if( baseBuildingPos != gfx::tilemap::invalidLocation() )
+  if( baseBuildingPos != TilePos::invalid() )
   {
-    auto event = events::MoveCamera::create( baseBuildingPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( baseBuildingPos );
   }
 }
 
 void AboutPeople::Impl::moveCamera2dst()
 {
-  if( destinationPos != gfx::tilemap::invalidLocation() )
+  if( destinationPos != TilePos::invalid() )
   {
-    auto event = events::MoveCamera::create( destinationPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( destinationPos );
   }
 
   if( object.isValid() )

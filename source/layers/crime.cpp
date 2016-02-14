@@ -72,11 +72,11 @@ void Crime::drawTile( const RenderInfo& rinfo, Tile& tile)
       crime = (int)house->getServiceValue( Service::crime );
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty(); // In case of vacant terrain
 
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house  );
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr  );
     }
 
     if( needDrawAnimations )
@@ -94,21 +94,13 @@ void Crime::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Crime( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Crime::handleEvent(NEvent& event)
+void Crime::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -132,7 +124,7 @@ void Crime::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Crime::Crime( Camera& camera, PlayerCityPtr city)

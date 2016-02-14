@@ -23,15 +23,11 @@
 
 struct SMouseMultiClicks
 {
-    SMouseMultiClicks()
-        : DoubleClickTime(200), CountSuccessiveClicks(0), LastClickTime(0), LastMouseInputEvent(mouseEventCount)
-    {}
-
-    int DoubleClickTime;
-    int CountSuccessiveClicks;
-    int LastClickTime;
-    Point LastClick;
-    MouseEventType LastMouseInputEvent;
+    int DoubleClickTime = 200;
+    int CountSuccessiveClicks = 0;
+    int LastClickTime = 0;
+    Point LastClick ;
+    NEvent::Mouse::Type lastMouseInputEvent = NEvent::Mouse::mouseEventCount;
 };
 
 class EventConverter::Impl
@@ -44,7 +40,7 @@ public:
 
     std::map< int, int > KeyMap;
 
-    int checkSuccessiveClicks(int mouseX, int mouseY, MouseEventType inputEvent );
+    int checkSuccessiveClicks(int mouseX, int mouseY, NEvent::Mouse::Type inputEvent );
     void createKeyMap();
     inline void init_key( int name, int value ) { KeyMap[ name ] = value; }     
 };
@@ -184,7 +180,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   case SDL_MOUSEMOTION:
   {
     ret.EventType = sEventMouse;
-    ret.mouse.type = mouseMoved;
+    ret.mouse.type = NEvent::Mouse::moved;
     SDL_Keymod mods = SDL_GetModState();
 
     _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
@@ -200,7 +196,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 #if SDL_MAJOR_VERSION>1
   case SDL_WINDOWEVENT:
   {
-    ret.EventType = sAppEvent;
+    ret.EventType = sEvenApplication;
     ret.app.type = appEventCount;
     switch( sdlEvent.window.event )
     {
@@ -237,19 +233,19 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 
     ret.mouse.control = mods & KMOD_CTRL;
     ret.mouse.shift = mods & KMOD_SHIFT;
-    ret.mouse.type = mouseMoved;
+    ret.mouse.type = NEvent::Mouse::moved;
 
     switch(sdlEvent.button.button)
     {
     case SDL_BUTTON_LEFT:
       if(sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-        ret.mouse.type = mouseLbtnPressed;
+        ret.mouse.type = NEvent::Mouse::btnLeftPressed;
         _d->mouseButtonStates |= mbsmLeft;
       }
       else
       {
-        ret.mouse.type = mouseLbtnRelease;
+        ret.mouse.type = NEvent::Mouse::mouseLbtnRelease;
         _d->mouseButtonStates &= ~mbsmLeft;
       }
     break;
@@ -257,12 +253,12 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     case SDL_BUTTON_RIGHT:
       if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-        ret.mouse.type = mouseRbtnPressed;
+        ret.mouse.type = NEvent::Mouse::btnRightPressed;
         _d->mouseButtonStates |= mbsmRight;
       }
       else
       {
-        ret.mouse.type = mouseRbtnRelease;
+        ret.mouse.type = NEvent::Mouse::mouseRbtnRelease;
         _d->mouseButtonStates &= ~mbsmRight;
       }
     break;
@@ -270,12 +266,12 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     case SDL_BUTTON_MIDDLE:
       if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-        ret.mouse.type = mouseMbtnPressed;
+        ret.mouse.type = NEvent::Mouse::btnMiddlePressed;
         _d->mouseButtonStates |= mbsmMiddle;
       }
       else
       {
-        ret.mouse.type = mouseMbtnRelease;
+        ret.mouse.type = NEvent::Mouse::mouseMbtnRelease;
         _d->mouseButtonStates &= ~mbsmMiddle;
       }
     break;
@@ -283,18 +279,18 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 
     ret.mouse.buttonStates = _d->mouseButtonStates;
 
-    if( ret.mouse.type != mouseMoved )
+    if( ret.mouse.type != NEvent::Mouse::moved )
     {
-      if( ret.mouse.type >= mouseLbtnPressed && ret.mouse.type <= mouseMbtnPressed )
+      if( ret.mouse.type >= NEvent::Mouse::btnLeftPressed && ret.mouse.type <= NEvent::Mouse::btnMiddlePressed )
       {
         int clicks = _d->checkSuccessiveClicks(ret.mouse.x, ret.mouse.y, ret.mouse.type);
         if ( clicks == 2 )
         {
-          ret.mouse.type = (MouseEventType)(mouseLbtDblClick + ret.mouse.type-mouseLbtnPressed);
+          ret.mouse.type = (NEvent::Mouse::Type)(NEvent::Mouse::mouseLbtDblClick + ret.mouse.type-NEvent::Mouse::btnLeftPressed);
         }
         else if ( clicks == 3 )
         {
-          ret.mouse.type = (MouseEventType)(mouseLbtnTrplClick + ret.mouse.type-mouseLbtnPressed);
+          ret.mouse.type = (NEvent::Mouse::Type)(NEvent::Mouse::mouseLbtnTrplClick + ret.mouse.type-NEvent::Mouse::btnLeftPressed);
         }
       }
     }
@@ -305,7 +301,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   {
     SDL_MouseWheelEvent wheelEvent = sdlEvent.wheel;
     ret.EventType = sEventMouse;
-    ret.mouse.type = mouseWheel;
+    ret.mouse.type = NEvent::Mouse::mouseWheel;
     ret.mouse.x = _d->mouseX;
     ret.mouse.y = _d->mouseY;
     ret.mouse.wheel = wheelEvent.y > 0 ? 1.0f : -1.0f;
@@ -314,7 +310,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 
   case SDL_TEXTINPUT:
   {
-    ret.EventType = sTextInput;
+    ret.EventType = sEventTextInput;
     memcpy( ret.text.text, sdlEvent.text.text, 32 );
   }
   break;
@@ -375,31 +371,31 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   return ret;
 }
 
-int EventConverter::Impl::checkSuccessiveClicks(int mouseX, int mouseY, MouseEventType inputEvent )
+int EventConverter::Impl::checkSuccessiveClicks(int mouseX, int mouseY, NEvent::Mouse::Type inputEvent )
 {
-    const int MAX_MOUSEMOVE = 3;
+  const int MAX_MOUSEMOVE = 3;
 
-    int clickTime = DateTime::elapsedTime();
+  int clickTime = DateTime::elapsedTime();
 
-    if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
-        && abs(MouseMultiClicks.LastClick.x() - mouseX ) <= MAX_MOUSEMOVE
-        && abs(MouseMultiClicks.LastClick.y() - mouseY ) <= MAX_MOUSEMOVE
-        && MouseMultiClicks.CountSuccessiveClicks < 3
-        && MouseMultiClicks.LastMouseInputEvent == inputEvent
-        )
-    {
-        ++MouseMultiClicks.CountSuccessiveClicks;
-    }
-    else
-    {
-        MouseMultiClicks.CountSuccessiveClicks = 1;
-    }
+  if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
+      && abs(MouseMultiClicks.LastClick.x() - mouseX ) <= MAX_MOUSEMOVE
+      && abs(MouseMultiClicks.LastClick.y() - mouseY ) <= MAX_MOUSEMOVE
+      && MouseMultiClicks.CountSuccessiveClicks < 3
+      && MouseMultiClicks.lastMouseInputEvent == inputEvent
+      )
+  {
+      ++MouseMultiClicks.CountSuccessiveClicks;
+  }
+  else
+  {
+      MouseMultiClicks.CountSuccessiveClicks = 1;
+  }
 
-    MouseMultiClicks.LastMouseInputEvent = inputEvent;
-    MouseMultiClicks.LastClickTime = clickTime;
-    MouseMultiClicks.LastClick = Point( mouseX, mouseY ); 
+  MouseMultiClicks.lastMouseInputEvent = inputEvent;
+  MouseMultiClicks.LastClickTime = clickTime;
+  MouseMultiClicks.LastClick = Point( mouseX, mouseY );
 
-    return MouseMultiClicks.CountSuccessiveClicks;
+  return MouseMultiClicks.CountSuccessiveClicks;
 }
 
 EventConverter& EventConverter::instance()

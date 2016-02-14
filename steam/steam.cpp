@@ -19,24 +19,30 @@
 
 #include "core/osystem.hpp"
 #include "core/logger.hpp"
+#include "core/stringarray.hpp"
 #include "public/steam/steam_api.h"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 #include "helper/helper.h"
+#endif
+
+#ifdef GAME_PLATFORM_LINUX
+#include <unistd.h>
 #endif
 
 namespace steamapi
 {
 
-#ifdef CAESARIA_USE_STEAM
+#ifdef GAME_USE_STEAM
 
 #define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
-enum MissionName { n2_nvillage=0, nx_count };
+enum MissionName { n2_nvillage=0, n2_nexthope, nx_count };
 enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 
-static const AppId_t CAESARIA_STEAM_APPID=0x04ffd8;
-static const AppId_t CAESARIA_AVEC3_APPID=0x053124;
+static const AppId_t GAME_STEAM_APPID=0x04ffd8;
+static const AppId_t GAME_AVEC3_APPID=0x053124;
 static bool gameRunInOfflineMode = false;
+static bool gameRunFromClient = false;
 
 struct Achievement
 {
@@ -86,13 +92,14 @@ Achievement glbAchievements[achv_count] =
 {
   _ACH_ID( achievementFirstWin     ),
   _ACH_ID( achievementNewGraphics  ),
-  _ACH_ID( achievementNewVillage   )
+  _ACH_ID( achievementNewVillage   ),
+  _ACH_ID( achievementClerkEscape   ),
 };
 
 class UserStats
 {
 public:
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   uint64 steamId;
 #else
   CSteamID steamId;
@@ -106,7 +113,7 @@ public:
   bool needStoreStats;
   bool statsValid, statsUpdate;
 
-#ifndef CAESARIA_PLATFORM_WIN
+#ifndef GAME_PLATFORM_WIN
   STEAM_CALLBACK( UserStats, receivedUserStats, UserStatsReceived_t, _callbackUserStatsReceived );
   STEAM_CALLBACK( UserStats, updateUserStats, UserStatsStored_t, _callbackUserStatsStored );
   STEAM_CALLBACK( UserStats, updateAchievementInfo, UserAchievementStored_t, _callbackAchievementStored );
@@ -131,6 +138,7 @@ public:
     #define _INIT_MISSION( id ) missions[ id ] = MissionInfo( id, #id, 0 );
 
     _INIT_MISSION( n2_nvillage )
+    _INIT_MISSION( n2_nexthope )
 
     #undef _INIT_MISSION
 
@@ -161,7 +169,7 @@ void UserStats::unlockAchievement( Achievement &achievement )
   achievement.idIconImage = 0;
 
   // mark it down
-#ifdef  CAESARIA_PLATFORM_WIN
+#ifdef  GAME_PLATFORM_WIN
   sth_setAchievement( achievement.steamName );
 #else
   if( xclient.stats )
@@ -197,8 +205,8 @@ void UserStats::clearAchievement( Achievement &achievement )
   achievement.idIconImage = 0;
 
   // mark it down
-#ifdef  CAESARIA_PLATFORM_WIN
-  //sth_clearAchievement( achievement.uniqueName );
+#ifdef  GAME_PLATFORM_WIN
+  sth_clearAchievement( achievement.steamName );
 #else
   if( xclient.stats )
   {
@@ -212,7 +220,7 @@ void UserStats::clearAchievement( Achievement &achievement )
 
 std::string language()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   return "";
 #else
   std::string lang = SteamUtils()->GetSteamUILanguage();
@@ -249,6 +257,10 @@ void UserStats::evaluateAchievement( Achievement& achievement )
       if(missions[n2_nvillage].count>0){unlockAchievement(achievement);}
   break;
 
+  case achievementClerkEscape:
+      if(missions[n2_nexthope].count>0){unlockAchievement(achievement);}
+  break;
+
   case achievementFirstWin:
       if(stat_num_wins>0){ unlockAchievement(achievement);};
   break;
@@ -256,11 +268,11 @@ void UserStats::evaluateAchievement( Achievement& achievement )
   case achievementNewGraphics:
   {
     bool haveDlc = false;
-#ifdef CAESARIA_PLATFORM_WIN
-    haveDlc = sth_isDlcInstalled( CAESARIA_AVEC3_APPID );
+#ifdef GAME_PLATFORM_WIN
+    haveDlc = sth_isDlcInstalled( GAME_AVEC3_APPID );
 #else
     if( xclient.apps )
-      haveDlc = xclient.apps->BIsDlcInstalled( CAESARIA_AVEC3_APPID );
+      haveDlc = xclient.apps->BIsDlcInstalled( GAME_AVEC3_APPID );
 #endif
     if( haveDlc ) unlockAchievement( achievement );
     else clearAchievement( achievement );
@@ -274,7 +286,7 @@ void UserStats::evaluateAchievement( Achievement& achievement )
 
 void UserStats::storeStatsIfNecessary()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   if( needStoreStats )
   {
     // already set any achievements in UnlockAchievement
@@ -347,7 +359,7 @@ bool checkSteamRunning()
   // Once you get a public Steam AppID assigned for this game, you need to replace k_uAppIdInvalid with it and
   // removed steam_appid.txt from the game depot.
   Logger::warning( "Check running Steam" );
-  bool needRestart = SteamAPI_RestartAppIfNecessary( CAESARIA_STEAM_APPID );
+  bool needRestart = SteamAPI_RestartAppIfNecessary( GAME_STEAM_APPID );
   return !needRestart;
 }
 
@@ -368,6 +380,13 @@ bool connect()
     return false;
   }
 
+#ifdef GAME_PLATFORM_LINUX
+    int pid = getpid();
+    StringArray processIdTree;
+    OSystem::getProcessTree( pid, processIdTree );
+    gameRunFromClient = processIdTree.contains( "steam" );
+#endif
+
   // set our debug handler
   SteamClient()->SetWarningMessageHook( &SteamAPIDebugTextHook );
 
@@ -384,7 +403,7 @@ bool connect()
   Logger::warning( "CurrentGameLanguage: {0}", SteamApps()->GetCurrentGameLanguage() );
   gameRunInOfflineMode = !SteamUser()->BLoggedOn();
 
-  bool mayStart = SteamApps()->BIsSubscribedApp( CAESARIA_STEAM_APPID );
+  bool mayStart = SteamApps()->BIsSubscribedApp( GAME_STEAM_APPID );
   if( !mayStart )
   {
     Logger::warning( "Cant play in this account" );
@@ -410,7 +429,7 @@ void close()
 void update()
 {
 // Run Steam client callbacks
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   sth_runCallbacks();
   glbUserStats.receivedUserStats();
 #else
@@ -424,7 +443,7 @@ void init()
   xclient.stats = SteamUserStats();
   xclient.apps = SteamApps();
 
-#if defined(CAESARIA_PLATFORM_WIN) && defined(__GNUC__)
+#if defined(GAME_PLATFORM_WIN) && defined(__GNUC__)
   xclient.user = 0;
   xclient.stats = 0;
   xclient.apps = 0;
@@ -535,7 +554,7 @@ const gfx::Picture& userImage()
   // We also want to use the Steam Avatar image inside the HUD if it is available.
   // We look it up via GetMediumFriendAvatar, which returns an image index we use
   // to look up the actual RGBA data below.
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   if( glbUserStats.steamId != 0 )
   {
     if( !glbUserStats.avatarImage.isValid() )
@@ -561,7 +580,7 @@ const gfx::Picture& userImage()
 //-----------------------------------------------------------------------------
 // Purpose: Our stats data was stored!
 //-----------------------------------------------------------------------------
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 void UserStats::updateUserStats()
 {
 
@@ -570,7 +589,7 @@ void UserStats::updateUserStats()
 void UserStats::updateUserStats( UserStatsStored_t *pCallback )
 {
   // we may get callbacks for other games' stats arriving, ignore them
-  if ( CAESARIA_STEAM_APPID == pCallback->m_nGameID )
+  if ( GAME_STEAM_APPID == pCallback->m_nGameID )
   {
     if ( k_EResultOK == pCallback->m_eResult )
     {
@@ -584,7 +603,7 @@ void UserStats::updateUserStats( UserStatsStored_t *pCallback )
       // Fake up a callback here so that we re-load the values.
       UserStatsReceived_t callback;
       callback.m_eResult = k_EResultOK;
-      callback.m_nGameID = CAESARIA_STEAM_APPID;
+      callback.m_nGameID = GAME_STEAM_APPID;
       receivedUserStats( &callback );
     }
     else
@@ -605,7 +624,7 @@ bool isStatsReceived()
 //-----------------------------------------------------------------------------
 // Purpose: An achievement was stored
 //-----------------------------------------------------------------------------
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 void UserStats::updateAchievementInfo()
 {
 
@@ -614,7 +633,7 @@ void UserStats::updateAchievementInfo()
 void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
 {
   // we may get callbacks for other games' stats arriving, ignore them
-  if ( CAESARIA_STEAM_APPID == pCallback->m_nGameID )
+  if ( GAME_STEAM_APPID == pCallback->m_nGameID )
   {
     if ( 0 == pCallback->m_nMaxProgress )
     {
@@ -636,7 +655,7 @@ void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
 // Purpose: We have stats data from Steam. It is authoritative, so update
 //			our data with those results now.
 //-----------------------------------------------------------------------------
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 void UserStats::receivedUserStats()
 {
   if( sth_isStatsAvailable() )
@@ -678,7 +697,7 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
     return;
 
   // we may get callbacks for other games' stats arriving, ignore them
-  if ( CAESARIA_STEAM_APPID == pCallback->m_nGameID )
+  if ( GAME_STEAM_APPID == pCallback->m_nGameID )
   {
     if ( k_EResultOK == pCallback->m_eResult )
     {
@@ -754,6 +773,14 @@ void missionWin( const std::string& name )
   evaluateAchievements();
 }
 
+void missionLose(const std::string& name)
+{
+  glbUserStats.stats[ stat_num_lose ].count++;
+  glbUserStats.stats[ stat_num_games ].count++;
+  glbUserStats.checkMissions( name );
+  evaluateAchievements();
+}
+
 void evaluateAchievement( AchievementType achivId )
 {
   glbUserStats.evaluateAchievement( glbAchievements[achivId] );
@@ -763,21 +790,43 @@ void evaluateAchievement( AchievementType achivId )
 
 bool available() { return true; }
 
+std::string ld_prefix()
+{
+  return gameRunFromClient
+            ? "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" "
+            : "";
+}
+
+void resetPrefs()
+{
+  glbUserStats.stats[ stat_num_wins ].count = 0;
+  glbUserStats.stats[ stat_num_games ].count = 0;
+  glbUserStats.stats[ stat_num_lose ].count = 0;
+  glbUserStats.clearAchievement( glbAchievements[achievementNewVillage] );
+  glbUserStats.clearAchievement( glbAchievements[achievementFirstWin] );
+  glbUserStats.clearAchievement( glbAchievements[achievementClerkEscape] );
+  glbUserStats.storeStatsIfNecessary();
+}
+
 #else
 
 bool available() { return false; }
 bool checkSteamRunning() { return true; }
 bool connect() { return true; }
+void missionWin( const std::string& name ) {}
+void missionLose( const std::string& name ) {}
 void close() {}
+void resetPrefs() {}
 bool isAchievementReached(steamapi::AchievementType) { return true; }
 gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
 void init() {}
 std::string userName(){ return ""; }
 void update(){}
+std::string ld_prefix() { return ""; }
 std::string achievementCaption(AchievementType achivId) { return ""; }
 std::string language() { return "en"; }
 const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
 bool isStatsReceived() { return false; }
 
-#endif //CAESARIA_USE_STEAM
+#endif //GAME_USE_STEAM
 }

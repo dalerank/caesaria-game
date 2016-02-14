@@ -24,9 +24,11 @@
 #include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
-#include "objects/overlay.hpp"
+#include "objects/constants.hpp"
 
 // contains some metaData for a building type
+struct Desirability;
+
 namespace object
 {
 
@@ -38,7 +40,7 @@ class Info
   void initialize(const VariantMap& options);
 
 public:
-#define DECL_PROPERTY(type,name,def) type name(const type& t=def) const { return getOption( #name, t ); }
+#define DECL_PROPERTY(type,name,def) type name(const type& t=def) const { return getOption( TEXT(name), t ); }
   DECL_PROPERTY(int,cost,0)
   DECL_PROPERTY(bool,requestDestroy,false)
   DECL_PROPERTY(int,employers,0)
@@ -59,10 +61,11 @@ public:
   std::string prettyName() const;
   std::string description() const;
   object::Type type() const;
+  std::string typeName() const;
   object::Group group() const;
   gfx::Picture randomPicture( int size=0 ) const;
-  bool isMyPicture( const std::string& name ) const;
-  Desirability desirability() const;
+  bool havePicture( const std::string& name ) const;
+  const Desirability& desirability() const;
   gfx::Picture randomPicture( const Size& size ) const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;

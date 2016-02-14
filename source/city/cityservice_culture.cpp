@@ -142,14 +142,6 @@ public:
            {}
 };
 
-SrvcPtr CultureRating::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new CultureRating( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 CultureRating::CultureRating( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
@@ -222,6 +214,6 @@ int CultureRating::objects_n(CultureRating::Coverage type) const
   }
 }
 
-std::string CultureRating::defaultName() { return CAESARIA_STR_EXT(CultureRating); }
+std::string CultureRating::defaultName() { return TEXT(CultureRating); }
 
 }//end namespace city

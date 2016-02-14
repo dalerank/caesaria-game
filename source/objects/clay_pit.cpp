@@ -22,6 +22,8 @@
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
+#include "core/logger.hpp"
+#include "objects/metadata.hpp"
 #include "objects/constants.hpp"
 #include "events/showinfobox.hpp"
 #include "objects_factory.hpp"
@@ -30,12 +32,24 @@ using namespace gfx;
 using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::flooded_clay_pit, FloodedClayPit)
 
 ClayPit::ClayPit()
-  : Factory( good::none, good::clay, object::clay_pit, Size(2) )
+  : Factory( good::none, good::clay, object::clay_pit, Size(2,2) )
 {
   _fgPictures().resize(2);
   _setUnworkingInterval( 12 );
+}
+
+bool ClayPit::build(const city::AreaInfo& info)
+{
+  bool isOk = Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::minesMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+
+  return isOk;
 }
 
 void ClayPit::timeStep( const unsigned long time )
@@ -43,14 +57,25 @@ void ClayPit::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
+void ClayPit::flood()
+{
+  deleteLater();
+
+  Logger::warning( "WARNING!!! ClaiPit was flooded at [{},{}]", pos().i(), pos().j() );
+
+  OverlayPtr flooded( new FloodedClayPit() );
+  flooded->drop();
+  flooded->build( city::AreaInfo( _city(), pos() ) );
+  _city()->addOverlay( flooded );
+}
+
 void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  auto event = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
-  event->dispatch();
+  events::dispatch<ShowInfobox>( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
 
-  collapse();
+  flood();
 }
 
 bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
@@ -61,7 +86,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
     return false;
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos(-1, -1), size() + Size(2,2), Tilemap::CheckCorners );
 
   bool near_water = !perimetr.select( Tile::tlWater ).empty();
 
@@ -69,3 +94,10 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
 
   return near_water;
 } 
+
+FloodedClayPit::FloodedClayPit()
+  : Ruins(object::flooded_clay_pit)
+{
+  setSize(Size(2,2));
+  setPicture( info().randomPicture( size() ) );
+}

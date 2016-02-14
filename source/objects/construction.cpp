@@ -116,6 +116,11 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
   return true;
 }
 
+Construction::BuildArea Construction::buildArea(const city::AreaInfo& areaInfo) const
+{
+  return BuildArea();
+}
+
 std::string Construction::troubleDesc() const
 {
   if( isNeedRoad() && roadside().empty() )
@@ -165,14 +170,12 @@ void Construction::computeRoadside()
   if( !_masterTile() )
       return;
 
-  Tilemap& tilemap = _city()->tilemap();
-
   int s = size().width();
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
-    TilesArray tiles = tilemap.rect( pos() + TilePos( -dst, -dst ),
+    TilesArray tiles = _map().rect( pos() + TilePos( -dst, -dst ),
                                      pos() + TilePos( s+dst-1, s+dst-1 ),
-                                     !Tilemap::checkCorners );
+                                     !Tilemap::CheckCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
@@ -184,16 +187,15 @@ void Construction::burn()
 {
   if( !info().mayBurn() )
   {
-    Logger::warning( "Construction {0} [{1},{2}] cant be fireed at !", info().name(), pos().i(), pos().j() );
+    Logger::warning( "Construction {0} [{1},{2}] cant be fireed!", info().name(), pos().i(), pos().j() );
   }
   else
   {
     deleteLater();
 
-    auto event = Disaster::create( tile(), Disaster::fire );
-    event->dispatch();
+    events::dispatch<Disaster>( tile(), Disaster::fire );
 
-    Logger::warning( "Construction {0} catch fire at []{1},{2}]!", info().name(), pos().i(), pos().j() );
+    Logger::warning( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
 }
 
@@ -204,8 +206,7 @@ void Construction::collapse()
 
   deleteLater();
 
-  GameEventPtr event = Disaster::create( tile(), Disaster::collapse );
-  event->dispatch();
+  events::dispatch<Disaster>( tile(), Disaster::collapse );
 
   Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
@@ -293,7 +294,7 @@ TilesArray Construction::enterArea() const
   int s = size().width();
   TilesArray near = _city()->tilemap().rect( pos() - TilePos(1, 1),
                                              pos() + TilePos(s, s),
-                                             !Tilemap::checkCorners );
+                                             !Tilemap::CheckCorners );
 
   return near.walkables( true );
 }

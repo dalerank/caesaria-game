@@ -26,7 +26,6 @@
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
-#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -53,7 +52,7 @@ const Point hippodromeSectionOffset[] = {
 };
 
 HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Type type )
-  : Building( object::fortArea, Size(5) )
+  : Building( object::fortArea, Size(5,5) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -104,9 +103,8 @@ void HippodromeSection::destroy()
   auto hippodrome = _map().overlay( _basepos ).as<Hippodrome>();
   if( hippodrome.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _basepos );
-    e->dispatch();
-    _basepos = gfx::tilemap::invalidLocation();
+    events::dispatch<ClearTile>( _basepos );
+    _basepos = TilePos::invalid();
   }
 }
 
@@ -220,7 +218,7 @@ bool Hippodrome::build( const city::AreaInfo& info )
 {
   _checkDirection( info );
 
-  setSize( Size( 5 ) );
+  setSize(Size(5, 5));
   EntertainmentBuilding::build( info );
 
   TilePos offset = _d->direction == direction::north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
@@ -236,8 +234,8 @@ bool Hippodrome::build( const city::AreaInfo& info )
   _d->sectionMiddle->setAnimationVisible( false );
   _animation().start();
 
-  auto charioter = CircusCharioter::create( _city(), this );
-  _d->charioters.push_back( charioter );
+  auto charioter = Walker::create<CircusCharioter>( _city(), this );
+  _d->charioters.push_back( charioter.object() );
 
   return true;
 }
@@ -248,15 +246,13 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->sectionEnd->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionEnd->pos() );
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->sectionMiddle->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionMiddle->pos() );
     _d->sectionMiddle = 0;
   }
 }
@@ -272,10 +268,10 @@ WalkerList Hippodrome::_specificWorkers() const
 {
   WalkerList ret;
 
-  foreach( i, walkers() )
+  for( auto i : walkers() )
   {
-    if( (*i)->type() == walker::charioteer )
-      ret << *i;
+    if( i->type() == walker::charioteer )
+      ret << i;
   }
 
   return ret;

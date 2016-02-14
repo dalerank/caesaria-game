@@ -28,25 +28,22 @@ namespace citylayer
 class Constructor : public Layer
 {
 public:
-  virtual void handleEvent(NEvent &event);
+  virtual void onEvent( const NEvent &event);
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void render( gfx::Engine &engine);
   virtual void init(Point cursor);
-  virtual void drawProminentTile( const RenderInfo& renderInfo, gfx::Tile& tile, const int depth, bool force);
+  virtual void drawProminentTile( const gfx::RenderInfo& renderInfo, gfx::Tile& tile, const int depth, bool force);
   virtual void beforeRender(gfx::Engine &engine);
-  virtual void drawPass( const RenderInfo& rinfo, gfx::Tile &tile, gfx::Renderer::Pass pass);
+  virtual void drawPass( const gfx::RenderInfo& rinfo, gfx::Tile &tile, gfx::Renderer::Pass pass);
   virtual void afterRender(gfx::Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(gfx::Engine &engine);
   virtual void changeLayer(int type);
-  LayerPtr drawLayer() const;
 
-  static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
+  Constructor( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
 
   virtual ~Constructor();
-public signals:
-  Signal3<object::Type,TilePos,int>& onBuild();
 
 private:
   void _updatePreviewTiles(bool force);
@@ -56,12 +53,10 @@ private:
   void _buildAll();
   void _finishBuild();
   void _initBuildMode();
-  void _drawBuildTiles( const RenderInfo& renderInfo );
-  void _drawBuildTile( const RenderInfo& renderInfo, gfx::Tile* tile);
-  void _tryDrawBuildTile( const RenderInfo& renderInfo, gfx::Tile& tile);
+  void _drawBuildTiles( const gfx::RenderInfo& renderInfo );
+  void _drawBuildTile( const gfx::RenderInfo& renderInfo, gfx::Tile* tile);
+  void _tryDrawBuildTile( const gfx::RenderInfo& renderInfo, gfx::Tile& tile);
   void _exitBuildMode();
-
-  Constructor( gfx::Renderer& renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(Constructor)
 };

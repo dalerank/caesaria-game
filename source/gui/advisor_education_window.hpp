@@ -28,15 +28,11 @@ namespace advisorwnd
 
 class Education : public Base
 {
-public:
-  Education( PlayerCityPtr city, Widget* parent, int id );
-
-  void draw( gfx::Engine& painter );
-
-private:
-  void _showHelp();
-
   __DECLARE_IMPL(Education)
+public:
+  Education( PlayerCityPtr city, Widget* parent );
+  virtual void draw( gfx::Engine& painter );
+  virtual void showDetails(Widget* widget);
 };
 
 }

@@ -26,19 +26,20 @@ namespace citylayer
 class Education : public Info
 {
 public:
+  Education( gfx::Camera& camera, PlayerCityPtr city, int type );
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city, int type );
-  virtual void handleEvent(NEvent& event);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void onEvent( const NEvent& event);
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
 
 private:
-  Education( gfx::Camera& camera, PlayerCityPtr city, int type );
+  void _updatePaths();
   int _getLevelValue(HousePtr house ) const;
   std::string _getAccessLevel( int lvl ) const;
 
-  object::TypeSet _flags;
-  int _type;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

@@ -38,15 +38,16 @@ public:
   //! Деструктор
   virtual ~SpeedOptions(void);
 
-  virtual bool onEvent(const NEvent &event);
-
 public signals:
   Signal1<int>& onGameSpeedChange();
   Signal1<int>& onScrollSpeedChange();
   Signal1<int>& onAutosaveIntervalChange();
 
+protected:
+  virtual bool _onButtonClicked(Widget *sender);
+
 private:
-  void _update();
+  void _update();  
 
   class Impl;
   ScopedPtr< Impl > _d;

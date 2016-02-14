@@ -254,11 +254,10 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
   int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
-  TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
   BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
-                                                                               housePos - offset, housePos + offset );
+                                                                               housePos, aresOffset );
 
   int ret = 0;
   for( auto bld : buildings )
@@ -631,7 +630,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 {
   PlayerCityPtr city = house->_city();
 
-  TilesArea area( city->tilemap(), house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
+  TilesArea area( city->tilemap(), house->pos() - TilePos( 2, 2 ), house->size() + Size(4, 4) );
 
   float middleDesirbl = 0;;
 
@@ -763,13 +762,13 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
     for( auto& v : varConsumptions )
     {
-      spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
+      spec._d->consumptionMuls[ good::Helper::type( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
     for( auto& it : vmTextures )
     {
-      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
+      std::string arName = fmt::format( "h{}_{}", spec._d->houseLevel, it.first );
       StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];

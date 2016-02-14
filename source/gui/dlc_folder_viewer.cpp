@@ -24,10 +24,14 @@
 #include "core/locale.hpp"
 #include "core/variant_map.hpp"
 #include "table.hpp"
+#include "steam.hpp"
+#include "texturedbutton.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/saveadapter.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/logger.hpp"
+#include "core/event.hpp"
 #include "core/priorities.hpp"
 
 using namespace gfx;
@@ -37,11 +41,6 @@ namespace gui
 {
 
 REGISTER_CLASS_IN_WIDGETFACTORY(DlcFolderViewer)
-#ifdef CAESARIA_USE_STEAM
-static std::string ld_prefix = "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" ";
-#else
-static std::string ld_prefix;
-#endif
 
 class DlcFolderViewer::Impl
 {
@@ -83,8 +82,8 @@ public:
       }
 
       Picture pic = PictureLoader::instance().load( vfs::NFile::open( picPath ) );
-      Image* image = new Image( table, Rect( 0, 0, 140, 140 ), pic, Image::best );
-      table->addElementToCell( rowNumber, columnNumber, image );
+      Image& image = table->add<Image>( Rect( 0, 0, 140, 140 ), pic, Image::best );
+      table->addElementToCell( rowNumber, columnNumber, &image );
       table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
     }    
   }
@@ -92,7 +91,7 @@ public:
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( DefaultColors::black.color & 0xccffffff );
+    background.fill( ColorList::black.color & 0xccffffff );
     background.update();
   }
 };
@@ -139,7 +138,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 120, 50, width() - 40, height() - 50 ) );
+  _d->table = &add<Table>( -1, Rect( 120, 50, width() - 40, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );
@@ -147,17 +146,18 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   _d->fillTable( items );
   CONNECT( _d->table, onCellClicked(), this, DlcFolderViewer::_resolveCellClick )
 
-  PushButton* btn = new PushButton( this, Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
-  CONNECT( btn, onClicked(), this, DlcFolderViewer::_openFolder )
-  btn = new PushButton( this, Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
-  CONNECT( btn, onClicked(), this, DlcFolderViewer::deleteLater )
+  auto& openFolder = add<PushButton>( Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
+  CONNECT( &openFolder, onClicked(), this, DlcFolderViewer::_openFolder )
+
+  auto& close = add<PushButton>( Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
+  CONNECT( &close, onClicked(), this, DlcFolderViewer::deleteLater )
 }
 
 DlcFolderViewer::~DlcFolderViewer() {}
 
 void DlcFolderViewer::_openFolder()
 {
-  OSystem::openDir( _d->folder.toString(), ld_prefix );
+  OSystem::openDir( _d->folder.toString(), steamapi::ld_prefix() );
 }
 
 void DlcFolderViewer::draw(Engine& painter)
@@ -168,6 +168,18 @@ void DlcFolderViewer::draw(Engine& painter)
   painter.draw( _d->background, lefttop() );
 
   Window::draw( painter );
+}
+
+bool DlcFolderViewer::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventKeyboard &&
+      event.keyboard.key == KEY_ESCAPE )
+  {
+    deleteLater();
+    return true;
+  }
+
+  return Window::onEvent( event );
 }
 
 void DlcFolderViewer::setupUI(const VariantMap& ui)
@@ -182,13 +194,12 @@ void DlcFolderViewer::_loadDesc(Path path)
   Rect rect = _d->table->relativeRect();
   rect.rleft() += 100;
   rect.rright() -= 100;
-  Window* window = new Window( this, rect, "" );
-  window->setupUI( path );
-  window->setModal();
-  window->setWindowFlag( Window::fdraggable, false );
+  auto& window = add<Window>( rect, "" );
+  window.setupUI( path );
+  window.setWindowFlag( Window::fdraggable, false );
+  window.add<ExitButton>( Point( window.width() - 40, 12 ) );
 
-  PushButton* btnClose = new PushButton( window, Rect( window->width() - 40, 12, window->width() - 16, 12 + 24), "X");
-  CONNECT( btnClose, onClicked(), window, Window::deleteLater )
+  window.setModal();
 }
 
 void DlcFolderViewer::_resolveCellClick(int row, int column)
@@ -209,8 +220,8 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
       _loadDesc( path );
     }
     else
-    {
-      OSystem::openUrl( save.toCString(), ld_prefix );
+    {      
+      OSystem::openUrl( save.toCString(), steamapi::ld_prefix() );
     }
   }
 }

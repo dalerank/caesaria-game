@@ -288,67 +288,70 @@ int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression)
   int isUsable;
 	png_structp png_ptr;
 	png_infop info_ptr;
-		SDL_Surface *outsurf = surf;
-    png_byte *line;
-    int y;
-    int start;         // rw position on invoking this function, for error handling
+  SDL_Surface *outsurf = surf;
+  png_byte *line;
+  int y;
+  int start;         // rw position on invoking this function, for error handling
 
-    // Clamp the compression
-    if(compression < -1) compression = -1;
+  // Clamp the compression
+  if(compression < -1) compression = -1;
 
-    // Do nothing if we have no destination or surface
-    if(!dest) {
-        SDL_SetError("No destination RWops specified.");
-        return -1;
-    }
+  // Do nothing if we have no destination or surface
+  if(!dest) {
+      SDL_SetError("No destination RWops specified.");
+      return -1;
+  }
 
-    if(!surf) { 
-        SDL_SetError("No surface specified.");
-        return -1; 
-    }
+  if(!surf) {
+      SDL_SetError("No surface specified.");
+      return -1;
+  }
 
-    // Determine whether the surface is in a usable format, and if it is not
-    // attempt to create a usable copy of it. +
-    isUsable = get_format_usability(surf);
-    if(isUsable == PF_UNUSABLE || isUsable == PF_UNUSABLE_ALPHA) {
-        if(!(outsurf = make_usable_format(surf, isUsable == PF_UNUSABLE_ALPHA))) {
-            SDL_SetError("Unable to create temporary surface.");
-            return -1;
-        }
-    }
+  // Determine whether the surface is in a usable format, and if it is not
+  // attempt to create a usable copy of it. +
+  isUsable = get_format_usability(surf);
+  if(isUsable == PF_UNUSABLE || isUsable == PF_UNUSABLE_ALPHA) {
+      if(!(outsurf = make_usable_format(surf, isUsable == PF_UNUSABLE_ALPHA))) {
+          SDL_SetError("Unable to create temporary surface.");
+          return -1;
+      }
+  }
 
-    // Create the png write structure we need to generate the png output
-	if(!(png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,NULL,NULL))) {
+  // Create the png write structure we need to generate the png output
+  if(!(png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL,NULL,NULL)))
+  {
 		SDL_SetError("Unable to allocate png write structure");
         return -1;
 	}
 
-    // And the corresponding info structure...
-    if(!(info_ptr = png_create_info_struct(png_ptr))) {
+  // And the corresponding info structure...
+  if(!(info_ptr = png_create_info_struct(png_ptr)))
+  {
 		SDL_SetError("Unable to allocate png info structure");
         png_destroy_write_struct(&png_ptr, NULL);
         return -1;
 	}
 
-    // We need to use a custom writer, so that we can output to the RWops
-    png_set_write_fn(png_ptr, (void *)dest, sdlrw_write_png, NULL);
+  // We need to use a custom writer, so that we can output to the RWops
+  png_set_write_fn(png_ptr, (void *)dest, sdlrw_write_png, NULL);
 
-    // Determine the current position in the RW so we can restore it on errors
-    start = SDL_RWtell(dest);
+  // Determine the current position in the RW so we can restore it on errors
+  start = SDL_RWtell(dest);
 
-    // Mark the location we want to come out if there is a fatal error
-	if(setjmp(png_jmpbuf(png_ptr))) {
-        // Something bad happend in libpng or the write callback, clean up and give up.
-        png_destroy_write_struct(&png_ptr, &info_ptr);
+  // Mark the location we want to come out if there is a fatal error
+  if(setjmp(png_jmpbuf(png_ptr)))
+  {
+    // Something bad happend in libpng or the write callback, clean up and give up.
+    png_destroy_write_struct(&png_ptr, &info_ptr);
 
-        // kill the temporary surface if we created one.
-        if(isUsable == PF_UNUSABLE || isUsable == PF_UNUSABLE_ALPHA) SDL_FreeSurface(outsurf);
+    // kill the temporary surface if we created one.
+    if(isUsable == PF_UNUSABLE || isUsable == PF_UNUSABLE_ALPHA) SDL_FreeSurface(outsurf);
 
-        // Restore the position of the RWops to the location it was at when we started
-        SDL_RWseek(dest, start, RW_SEEK_SET);
-        SDL_SetError("PNG saving error, giving up.");
-        return -1;
-    }
+    // Restore the position of the RWops to the location it was at when we started
+    SDL_RWseek(dest, start, RW_SEEK_SET);
+    SDL_SetError("PNG saving error, giving up.");
+    return -1;
+  }
 
     // handle compression
     png_set_compression_level(png_ptr, compression);
@@ -376,7 +379,7 @@ int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression)
     }
     else     // not palettised, with alpha
     {
-        png_set_IHDR(png_ptr, info_ptr, outsurf -> w, outsurf -> h, 8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+        png_set_IHDR(png_ptr, info_ptr, outsurf -> w, outsurf -> h, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
     }
 
     // info setup done, so write it out and we can get to image data.

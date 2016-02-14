@@ -20,6 +20,9 @@
 
 #include "smartlist.hpp"
 #include "position.hpp"
+#include "gfx/tilepos.hpp"
+#include "objects/param.hpp"
+#include <set>
 
 namespace utils
 {
@@ -45,6 +48,31 @@ int countByType( const ObjectList& objects, const T& type )
   }
 
   return ret;
+}
+
+template<class ObjectList>
+ObjectList selectByType( const ObjectList& objects, int type )
+{
+  ObjectList ret;
+  for( auto& it : objects )
+  {
+    if( it->type() == type )
+      ret.push_back( it );
+  }
+
+  return ret;
+}
+
+template<class ObjectPtr>
+inline std::string objNameOrDefault( ObjectPtr obj, const std::string& defaultValue="" )
+{
+  return obj.isValid() ? obj->name() : defaultValue;
+}
+
+template<class ObjectPtr>
+inline TilePos objPosOrDefault( ObjectPtr obj, const TilePos& defaultValue=TilePos::invalid() )
+{
+  return obj.isValid() ? obj->pos() : defaultValue;
 }
 
 template< class Object >
@@ -103,8 +131,32 @@ SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& na
   return SmartPtr<Object>();
 }
 
+template< class Object >
+SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
+{
+  int lowValue = 9999;
+  SmartPtr<Object> ret;
+  for( auto obj : list )
+  {
+    int state = obj->state( name );
+    if( lowValue < state );
+    {
+      lowValue = state;
+      ret = obj;
+    }
+  }
+
+  return ret;
+}
+
+template< class Object >
+int objectState( SmartPtr<Object> object, Param name, int defaultValue=0 )
+{
+  return object.isValid() ? object->state( name ) : defaultValue;
+}
+
 template<class Object, class Parent>
-std::set<SmartPtr<Object>> uniques( const std::set<SmartPtr<Parent>>& objects )
+std::set<SmartPtr<Object>> select( const std::set<SmartPtr<Parent>>& objects )
 {
   std::set<SmartPtr<Object>> ret;
   for( auto item : objects )
@@ -115,6 +167,13 @@ std::set<SmartPtr<Object>> uniques( const std::set<SmartPtr<Parent>>& objects )
   }
 
   return ret;
+}
+
+template<typename Object>
+void deleteLater( SmartPtr<Object> overlay )
+{
+  if( overlay.isValid() )
+    overlay->deleteLater();
 }
 
 }//end namespace utils

@@ -1,0 +1,43 @@
+{  
+  geometry : [ 0, 0, 510, 260 ]
+  bgtype : "whiteFrame"
+    
+  lbTitle#Label : {
+    geometry : [ 85, 15, "pw-85", 40 ]
+    text : "##dispatch_gift_title##"   
+    textAlign : [ "center", "center" ]
+    font : "FONT_5"
+  }
+    
+  lbxGifts#ListBox : {
+    scrollbar.visible : false
+    geometry : [ 16, 64, "pw-16", 160 ] 
+    textAlign : [ "center", "center" ]
+  }
+
+  lbLastGiftDate#Label : {
+    geometry : [ 16, "ph-90", "pw-16", "ph-70" ]
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+  }
+
+  lbPlayerMoney#Label : {
+    geometry : [ 16, "ph-70", "pw-16", "ph-50" ]
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+  }
+    
+  btnSend#PushButton : {
+    geometry : [ 34, "ph-40", 290, "ph-20" ]
+    font : "FONT_2"
+    text : "##dispatch_gift##"
+    bgtype : "whiteBorderUp"
+  }
+
+  btnCancel#PushButton : {
+    geometry : [ 340, "ph-40", 496, "ph-20" ]
+    font : "FONT_2"
+    text : "##cancel##"      
+    bgtype : "whiteBorderUp"
+  }
+}

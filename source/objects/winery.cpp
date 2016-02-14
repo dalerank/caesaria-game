@@ -28,9 +28,9 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
 
-Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size(2) )
+Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size::square(2) )
 {
-  _picture().load( ResourceGroup::commerce, 86 );
+  setPicture( info().randomPicture( size() ) );
 
   _fgPictures().resize(3);
 }
@@ -44,7 +44,7 @@ bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveVinegrad = !info.city->statistic().objects.find<Building>( object::vinard ).empty();
+  bool haveVinegrad = info.city->statistic().objects.count( object::vinard ) > 0;
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 

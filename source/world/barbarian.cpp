@@ -16,19 +16,15 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "barbarian.hpp"
-#include "empire.hpp"
-#include "good/storage.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/logger.hpp"
-#include "merchant.hpp"
-#include "gfx/animation.hpp"
-#include "city.hpp"
-#include "core/variant_map.hpp"
-#include "game/gamedate.hpp"
-#include "events/notification.hpp"
-#include "city/states.hpp"
-#include "config.hpp"
-#include "objects_factory.hpp"
+#include <GameWorld>
+#include <GameGood>
+#include <GameApp>
+#include <GameLogger>
+#include <GameObjects>
+#include <GameGfx>
+#include <GameCore>
+#include <GameEvents>
+#include <GameCity>
 
 namespace world
 {
@@ -62,14 +58,15 @@ std::string Barbarian::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap: ret = "##enemy_army_threating_a_city##";      break;
+  case aboutEmpireMap: ret = "##enemy_army_threating_a_city##";      break;
+  case aboutEmtype: ret = "world_barbarian"; break;
   default:        ret = "##enemy_army_unknown_about##";  break;
   }
 
   return ret;
 }
 
-std::string Barbarian::type() const { return CAESARIA_STR_EXT(Barbarian); }
+std::string Barbarian::type() const { return TEXT(Barbarian); }
 
 void Barbarian::timeStep(unsigned int time)
 {
@@ -93,7 +90,7 @@ void Barbarian::updateStrength(int value)
   setStrength( strength() + value );
 }
 
-int Barbarian::viewDistance() const { return config::barbarian::viewRange; }
+int Barbarian::searchRange() const { return config::barbarian::viewRange; }
 void Barbarian::setMinpop4attack(int value) { _d->minPop4attack = value; }
 
 bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
@@ -121,7 +118,7 @@ void Barbarian::_check4attack()
       _attackObject( item.second.as<Object>() );
       break;
     }
-    else if( item.first < viewDistance() )
+    else if( item.first < searchRange() )
     {
       bool validWay = _findWay( location(), item.second->location() );
       if( validWay )
@@ -235,9 +232,6 @@ Barbarian::Barbarian( EmpirePtr empire )
   _d->mode = Impl::findAny;
   _d->minPop4attack = 1000;
   setSpeed( 4.f );
-
-  _animation().clear();
-  _animation().load( "world_barbarian" );
 }
 
 }//end namespace world

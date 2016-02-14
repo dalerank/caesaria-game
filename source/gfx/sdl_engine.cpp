@@ -41,17 +41,39 @@
 #include "core/debug_timer.hpp"
 #include "sdl_batcher.hpp"
 
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
 #include <dlfcn.h>
 #endif
 
 namespace gfx
 {
 
-namespace {
-  unsigned int drawTime;
-  unsigned int drawTimeBatch;
-}
+struct SdlFrame : public Frame
+{
+  struct {
+    Callback start;
+    Callback metrics;
+    Callback finish;
+  } handlers;
+
+  virtual void start()
+  {
+    if( !handlers.start.empty() )
+      handlers.start();
+  }
+
+  virtual void drawMetrics()
+  {
+    if( !handlers.metrics.empty() )
+      handlers.metrics();
+  }
+
+  virtual void finish()
+  {
+    if( !handlers.start.empty() )
+      handlers.finish();
+  }
+};
 
 class SdlEngine::Impl
 {
@@ -68,15 +90,24 @@ public:
     bool equals( int r, int g, int b, int a ) { return (r==red && g == green && b == blue && a == alpha); }
   }MaskInfo;
 
+  struct {
+    int drawTime;
+    int drawTimeBatch;
+    Picture lbText;
+  } metrics;
+
   Picture screen;
-  Picture fpsTx;
-  std::string debugTextStr;
 
   SDL_Window* window;
   SDL_Renderer* renderer;
   SdlBatcher batcher;
+  SdlFrame frame;
+
+  float screenScale;
 
   MaskInfo mask;
+  Point mousepos;
+  Rect windowRect;
   int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
@@ -84,6 +115,8 @@ public:
   Font debugFont;
 
 public:
+  void renderStart();
+  void renderFinish();
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
   void setClip(const Rect& clip);
@@ -99,7 +132,6 @@ SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
-  _d->debugTextStr.reserve( 32 );
 }
 
 SdlEngine::~SdlEngine(){}
@@ -170,6 +202,26 @@ void SdlEngine::debug(const std::string &text, const Point &pos)
 
 }
 
+void SdlEngine::_drawFrameMetrics()
+{
+  if( getFlag( Engine::showMetrics ) )
+  {
+    static int timeCount = 0;
+
+    if( DebugTimer::ticks() - timeCount > 500 )
+    {
+      std::string debugTextStr = fmt::format( "fps:{} dc:{}", fps(), _d->drawCall );
+      _d->metrics.lbText.fill( 0, Rect() );
+      _d->debugFont.draw( _d->metrics.lbText, debugTextStr, Point( 0, 0 ) );
+      timeCount = DebugTimer::ticks();
+#ifdef SHOW_FPS_IN_LOG
+      Logger::warning( "FPS: {}", fps );
+#endif
+    }
+    draw( _d->metrics.lbText, Point( _d->screen.width() / 2, 2 ), 0 );
+  }
+}
+
 void SdlEngine::init()
 {
   Logger::warning( "SDLGraficEngine: init");
@@ -184,11 +236,11 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {0}", SDL_GetError() );
+    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   void* cocoa_lib;
   cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
   void (*nsappload)(void);
@@ -196,19 +248,15 @@ void SdlEngine::init()
   nsappload();
 #endif
 
-  SDL_Window *window;
-
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   auto mode = modes().front();
-  Size s( mode.width(), mode.height() );
-  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  s.width(), s.height() );
+  _srcSize = Size( mode.width(), mode.height() );
+  Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  _srcSize = Size( s.width() * ( 768.f / s.height()), 768 );
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  _d->window = SDL_CreateWindow( "CaesarIA:android",
+                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
@@ -219,22 +267,22 @@ void SdlEngine::init()
     auto mode = modes().front();
     Size s( mode.width(), mode.height() );
 
-    window = SDL_CreateWindow("CaesariA",
+    _d->window = SDL_CreateWindow("CaesariA",
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
                               s.width(), s.height(),
-                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
+                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_SHOWN );
   }
   else
   {
-    window = SDL_CreateWindow( "CaesariA",
+    _d->window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED,
                              _srcSize.width(), _srcSize.height(),
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   }
 
-  if (window == NULL)
+  if (_d->window == NULL)
   {
     Logger::warning( "CRITICAL!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
@@ -243,7 +291,7 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");  
 #endif
 
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+  SDL_Renderer *renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
@@ -289,16 +337,27 @@ void SdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  Logger::warning( "SDLGraficEngine: set caption");
-  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
-  SDL_SetWindowTitle( window, versionStr.c_str() );
+  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", GAME_BUILD_NUMBER );
+  SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
-  _d->window = window;
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
-  _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
+#ifdef GAME_PLATFORM_ANDROID
+  _d->screenScale = 800.f / _srcSize.height();
+#else
+  SDL_RenderGetScale( _d->renderer, &_d->screenScale, nullptr );
+#endif
+  SDL_Rect rect;
+  SDL_RenderGetViewport( _d->renderer, &rect);
+  _d->windowRect = Rect( Point( rect.x, rect.y ), Size( rect.w, rect.h ) );
+
+  _d->metrics.lbText = Picture( Size( 200, 20 ), 0, true );
+
+  _d->frame.handlers.start = makeDelegate( _d.data(), &Impl::renderStart );
+  _d->frame.handlers.finish = makeDelegate( _d.data(), &Impl::renderFinish );
+  _d->frame.handlers.metrics = makeDelegate( this, &SdlEngine::_drawFrameMetrics );
 }
 
 void SdlEngine::exit()
@@ -312,7 +371,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( "SdlEngine:: can't make surface, size={0}x{1}]", size.width(), size.height() );
+    Logger::warning( "SdlEngine: can't make surface, size={}x{}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;
@@ -356,50 +415,34 @@ void SdlEngine::unloadPicture( Picture& ioPicture )
   ioPicture = Picture();
 }
 
-void SdlEngine::startRenderFrame()
-{
-  drawTime =0;
-  drawTimeBatch = 0;
-  SDL_RenderClear(_d->renderer);  // black background for a complete redraw
-  _d->batcher.reset();
+void SdlEngine::Impl::renderStart()
+{ 
+  SDL_GetMouseState( &mousepos.rx(), &mousepos.ry() );
+  SDL_RenderClear(renderer);  // black background for a complete redraw
+  batcher.reset();
 }
 
-void SdlEngine::endRenderFrame()
+void SdlEngine::Impl::renderFinish()
 {
-  if( getFlag( Engine::debugInfo ) )
-  {
-    static int timeCount = 0;
-
-    if( DebugTimer::ticks() - timeCount > 500 )
-    {
-      _d->debugTextStr = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
-      _d->fpsTx.fill( 0, Rect() );
-      _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
-      timeCount = DebugTimer::ticks();
-#ifdef SHOW_FPS_IN_LOG
-      Logger::warning( "FPS: {0}", _d->fps );
-#endif
-    }
-    draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );
-  }
-
-  bool needDraw = _d->batcher.finish();
+  bool needDraw = batcher.finish();
   if( needDraw )
-    _d->renderState();
+    renderState();
 
-  SDL_RenderPresent(_d->renderer);
+  SDL_RenderPresent(renderer);
 
-  _d->fps++;
+  fps++;
 
-  if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
+  if( DateTime::elapsedTime() - lastUpdateFps > 1000 )
   {
-    _d->lastUpdateFps = DateTime::elapsedTime();
-    _d->lastFps = _d->fps;
-    _d->fps = 0;
+    lastUpdateFps = DateTime::elapsedTime();
+    lastFps = fps;
+    fps = 0;
   }
 
-  _d->drawCall = 0;
+  drawCall = 0;
 }
+
+Size SdlEngine::viewportSize() const { return _srcSize * _d->screenScale; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {    
@@ -446,7 +489,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     if( clipRect != 0 )
       SDL_RenderSetClipRect( _d->renderer, 0 );
 
-    drawTime += DateTime::elapsedTime() - t;
+    _d->metrics.drawTime += DateTime::elapsedTime() - t;
   }
 }
 
@@ -506,7 +549,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     if( clipRect != 0 )
       SDL_RenderSetClipRect( _d->renderer, 0 );
 
-    drawTimeBatch += DateTime::elapsedTime() - t;
+    _d->metrics.drawTimeBatch += DateTime::elapsedTime() - t;
   }
 }
 
@@ -592,7 +635,15 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 
 void SdlEngine::fillRect(const NColor& color, const Rect& rect)
 {
+  static SDL_Rect r;
+  r.x = rect.left();
+  r.y = rect.top();
+  r.h = rect.height();
+  r.w = rect.width();
 
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
+  SDL_RenderFillRect( _d->renderer, &r );
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
 
 void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
@@ -655,6 +706,13 @@ void SdlEngine::setTitle(const std::string& title)
 
 void SdlEngine::setScale( float scale )
 {
+  static float lastScale = 0;
+  if( lastScale != scale )
+  {
+    Logger::warning( "SdlEngine: set scale {}", scale );
+    lastScale = scale;
+  }
+
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
@@ -664,6 +722,10 @@ void SdlEngine::setScale( float scale )
 
 void SdlEngine::setVirtualSize( const Size& size )
 {
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   const Size* s = size.width() > 0 ? &size : &_srcSize;
   SDL_RenderSetLogicalSize( _d->renderer, s->width(), s->height() );
 }
@@ -721,13 +783,10 @@ Engine::Modes SdlEngine::modes() const
 
 Point SdlEngine::cursorPos() const
 {
-  int x,y;
-  SDL_GetMouseState(&x,&y);
-
-  return Point( x, y );
+  return (_d->mousepos - _d->windowRect.lefttop()) / _d->screenScale;
 }
 
-unsigned int SdlEngine::fps() const {  return _d->fps; }
+unsigned int SdlEngine::fps() const {  return _d->lastFps; }
 
 void SdlEngine::setFlag( int flag, int value )
 {
@@ -735,7 +794,7 @@ void SdlEngine::setFlag( int flag, int value )
 
   switch( flag )
   {
-  case debugInfo: _d->debugFont = Font::create( FONT_2 ); break;
+  case showMetrics: _d->debugFont = Font::create( FONT_2 ); break;
   case batching:  _d->batcher.setActive( value );  break;
   default: break;
   }
@@ -750,11 +809,23 @@ bool SdlEngine::haveEvent( NEvent& event )
   if( SDL_PollEvent(&sdlEvent) )
   {
     event = EventConverter::instance().get( sdlEvent );
+
+#ifdef GAME_PLATFORM_ANDROID
+    //Android fix that prevent dribling map
+    if( event.EventType == sEventMouse )
+    {
+      Point cp = cursorPos();
+      event.mouse.x = cp.x();
+      event.mouse.y = cp.y();
+    }
+#endif
     return true;
   }
 
   return false;
 }
+
+Frame& SdlEngine::frame() { return _d->frame; }
 
 void SdlEngine::Impl::setClip(const Rect& clip)
 {
@@ -845,7 +916,7 @@ void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const 
   if( clipRect != 0 )
     SDL_RenderSetClipRect( renderer, 0 );
 
-  drawTime += DateTime::elapsedTime() - t;
+  metrics.drawTime += DateTime::elapsedTime() - t;
 }
 
 }//end namespace gfx

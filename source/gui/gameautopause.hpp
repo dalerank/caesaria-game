@@ -15,23 +15,26 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
-#define _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+#ifndef _CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_
+#define _CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_
 
-#include "core/scopedptr.hpp"
+#include "widget.hpp"
 
-namespace gui { class Widget; }
+namespace gui
+{
 
-class GameAutoPause
+class GameAutoPauseWidget : public Widget
 {
 public:
-  GameAutoPause();
-  void activate();
-  static void insertTo( gui::Widget* parent );
-  virtual ~GameAutoPause();
+  GameAutoPauseWidget( Widget* parent );
+  ~GameAutoPauseWidget();
+  static void insertTo(Widget* parent);
 
+  void activate();
 private:
   bool _activated;
 };
 
-#endif //_CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+}
+
+#endif //_CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_

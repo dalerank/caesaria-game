@@ -17,18 +17,20 @@
 #define _CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
 
 #include "widget.hpp"
+#include "core/event.hpp"
+#include <set>
 
 namespace gui
 {
 
-class WidgetEscapeCloser : public Widget
+class WidgetClosers : public Widget
 {
+  std::set<int> _codes;
 public:
-  static void insertTo( Widget* parent );
-
+  WidgetClosers( Widget* parent );
+  void addCloseCode(int code);
+  static void insertTo( Widget* parent, int code1=KEY_KEY_CODES_COUNT, int code2=KEY_ESCAPE );
   virtual bool onEvent(const NEvent &event);
-private:
-  WidgetEscapeCloser( Widget* parent );
 };
 
 }//end namesapce gui

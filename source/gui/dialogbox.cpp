@@ -16,115 +16,58 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
-#include "gfx/picture.hpp"
-#include "gfx/decorator.hpp"
-#include "gui/label.hpp"
-#include "texturedbutton.hpp"
-#include "core/event.hpp"
-#include "gfx/engine.hpp"
-#include "environment.hpp"
-#include "gameautopause.hpp"
-#include "core/logger.hpp"
+#include <GameGfx>
+#include <GameEvents>
+#include <GameLogger>
+#include <GameGui>
 
 using namespace gfx;
 
 namespace gui
 {
 
-namespace dialog
-{
+REGISTER_CLASS_IN_WIDGETFACTORY(Dialogbox)
 
-namespace {
-  int okBtnPicId = 239;
-  int cancelBtnPicId = 243;
-}
-
-class Dialog::Impl
+class Dialogbox::Impl
 {
 public:
-  GameAutoPause locker;
+  enum { okPicId=239, cancelPicId=243 };
+  bool never=true;
 
   struct {
     Signal1<int> onResult;
     Signal0<> onOk;
     Signal0<> onCancel;
-    Signal0<> onNever;
+    Signal1<bool> onNever;
+    Signal1<Widget*> onOkEx;
+    Signal1<Widget*> onCancelEx;
+    Signal2<Widget*,bool> onNeverEx;
   } signal;
 };
 
-Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
-                      const std::string& text, int buttons, bool lockGame)
-                      : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
+Dialogbox::Dialogbox(Widget* parent)
+ : Window( parent->ui()->rootWidget() ), _d( new Impl )
 {
-  Font font = Font::create( FONT_3 );
-
-  button( buttonClose )->hide();
-  button( buttonMin )->hide();
-  button( buttonMax )->hide();
-
-  int titleHeight = font.getTextSize( "A" ).height();
-  if( rectangle.size() == Size( 0, 0 ) )
-  {    
-    Size size = font.getTextSize( text );
-
-    if( size.width() > 440 )
-    {
-      size.setHeight( size.width() / 440 * 40 );
-      size.setWidth( 480 );
-    }
-    else
-      size = Size( 480, 60 );
-
-    size += Size( 0, titleHeight ); //title
-    size += Size( 0, 50 ); //buttons
-    size += Size( 0, 30 ); //borders
-
-    setGeometry( Rect( Point( 0, 0 ), size ) );
-    setCenter( parent()->center() );
-  }
-  
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + titleHeight), title );
-  lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );  
-
-  Label* lbText = new Label( this, Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
-  lbText->setTextAlignment( align::center, align::upperLeft );
-  lbText->setWordwrap( true );
-
-  if( (buttons == btnOk) || (buttons == btnCancel) )
-  {
-    new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
-                        Size( 39, 26 ), buttons,
-                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
-  }
-  else if( buttons & (btnOk | btnCancel) )
-  {
-    new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
-                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
-  }
-
-  if( buttons & btnNever )
-  {
-    new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnNever, cancelBtnPicId );
-
-
-  }
-
-  setModal();
-
-  if( lockGame )
-    _d->locker.activate();
+  _initSimpleDialog();
 }
 
-Signal1<int>& Dialog::onResult()
+Dialogbox::Dialogbox( Ui *ui, const Rect& rectangle, const std::string& title,
+                      const std::string& text, int buttons)
+                      : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
+{
+  _initSimpleDialog();
+
+  setText(text);
+  setTitle(title);
+  setButtons(buttons);
+}
+
+Signal1<int>& Dialogbox::onResult()
 {
   return _d->signal.onResult;
 }
 
-bool Dialog::onEvent( const NEvent& event )
+bool Dialogbox::onEvent( const NEvent& event )
 {
   switch( event.EventType )
   {
@@ -136,9 +79,24 @@ bool Dialog::onEvent( const NEvent& event )
 
         switch( id )
         {
-        case btnOk: emit _d->signal.onOk(); break;
-        case btnCancel: emit _d->signal.onCancel(); break;
-        case btnNever: emit _d->signal.onNever(); break;
+        case btnYes:
+          emit _d->signal.onOk();
+          emit _d->signal.onOkEx(this);
+        break;
+
+        case btnNo:
+          emit _d->signal.onCancel();
+          emit _d->signal.onCancelEx(this);
+        break;
+
+        case btnNever:
+        {
+          _d->never = !_d->never;
+          event.gui.caller->setText(_d->never ? "X" : " ");
+          emit _d->signal.onNever(_d->never);
+          emit _d->signal.onNeverEx(this, _d->never);
+        }
+        break;
         }
 
         return true;
@@ -165,37 +123,154 @@ bool Dialog::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-Signal0<>& Dialog::onOk() {  return _d->signal.onOk;}
-Signal0<>& Dialog::onCancel(){  return _d->signal.onCancel;}
-Signal0<>& Dialog::onNever() { return _d->signal.onNever; }
+void Dialogbox::setupUI(const VariantMap& ui)
+{
+  Window::setupUI( ui );
+}
 
-void Dialog::draw(gfx::Engine& painter )
+Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
+
+Signal1<Widget*>&      Dialogbox::onYesEx()   { return _d->signal.onOkEx; }
+Signal0<>&             Dialogbox::onNo()      { return _d->signal.onCancel;}
+Signal1<Widget*>&      Dialogbox::onNoEx()    { return _d->signal.onCancelEx;  }
+Signal1<bool>&         Dialogbox::onNever()   { return _d->signal.onNever; }
+Signal2<Widget*,bool>& Dialogbox::onNeverEx() { return _d->signal.onNeverEx; }
+
+void Dialogbox::_initSimpleDialog()
+{
+  Window::setupUI(":/gui/dialogbox.gui");
+  _setSystemButtonsVisible(false);
+  GameAutoPauseWidget::insertTo(this);
+  onYes().connect( this, &Dialogbox::deleteLater );
+  onNo().connect( this, &Dialogbox::deleteLater );
+
+  moveToCenter();
+  setModal();
+}
+
+void Dialogbox::draw(gfx::Engine& painter )
 {
   if( !visible() )
-  {
     return;
-  }
 
   Window::draw( painter );
 }
 
-Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
+void Dialogbox::setTitle(const std::string& title)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOk );
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  if( lbTitle )
+      lbTitle->setText( title );
+}
 
-  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
-  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
+void Dialogbox::setText(const std::string& text)
+{
+  INIT_WIDGET_FROM_UI( Label*, lbText )
 
+  Font titleFont = _titleWidget() ? _titleWidget()->font() : Font::create( FONT_4 );
+
+  Font textFont = lbText
+                ? lbText->font()
+                : Font::create( FONT_3 );
+
+  int titleHeight = titleFont.getTextSize( "A" ).height();
+  int textLineHeight = textFont.getTextSize( "A" ).height() + textFont.kerningHeight();
+  Size size = textFont.getTextSize( text );
+
+  if( size.width() > 440 )
+  {
+    size.setHeight( size.width() / 440 * textLineHeight );
+    size.setWidth( 480 );
+  }
+  else
+    size = Size( 480, 40 );
+
+  size += Size( 0, titleHeight ); //title
+  size += Size( 0, 50 ); //buttons
+  size += Size( 0, 30 ); //borders
+
+  if( lbText )
+    lbText->setText(text);
+
+  setGeometry( Rect( Point( 0, 0 ), size ) );
+  moveToCenter();
+}
+
+void Dialogbox::setNeverValue(bool value)
+{
+  _d->never = value;
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  if( btnActionNever )
+  {
+    btnActionNever->show();
+    btnActionNever->setText(_d->never ? "X" : " ");
+  }
+}
+
+void Dialogbox::setButtons(int buttons)
+{
+  if( (buttons & btnYesNo) == btnYesNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
+  }
+  else if( (buttons & btnYes) == btnYes || (buttons & btnNo) == btnNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
+    INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
+    if( btnAction )
+    {
+      TexturedButton::States states( (buttons & btnYes)== btnYes ? Impl::okPicId : Impl::cancelPicId );
+      btnAction->changeImageSet( states );
+      btnAction->setID( btnYes );
+    }
+  }
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionYes )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionNo )
+  if( btnActionNever )
+  {
+    btnActionNever->setVisible( (buttons & btnNever) == btnNever );
+    btnActionNever->setID( btnNever );
+  }
+
+  if( btnActionYes )
+    btnActionYes->setID( btnYes );
+
+  if( btnActionNo )
+    btnActionNo->setID( btnNo );
+}
+
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
+{
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYes | (showNever ? Dialogbox::btnNever : 0) );
   return ret;
 }
 
-Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel, pauseGame );
+  auto& dialog = Confirmation( ui, title, text);
+  dialog.onYes().connect( callback );
 
-  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
-  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
+  return dialog;
+}
 
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel)
+{
+  auto& dialog = Confirmation( ui, title, text);
+  dialog.onYes().connect( callbackOk );
+  dialog.onNo().connect( callbackCancel );
+
+  return dialog;
+}
+
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text)
+{
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYesNo );
   return ret;
 }
 

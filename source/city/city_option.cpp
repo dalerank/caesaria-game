@@ -34,11 +34,11 @@ public:
 
   OptionEnum() : EnumsHelper<int>(-1)
   {
-#define _O(a) append( PlayerCity::a, CAESARIA_STR_EXT(a) );
-    _O(adviserEnabled);
+#define _O(a) append( PlayerCity::a, TEXT(a) );
+    _O(adviserEnabled)
     _O(godEnabled)
     _O(fishPlaceEnabled)
-    _O(updateRoads)
+    _O(updateRoadsOnNextFrame)
     _O(forceBuild)
     _O(warningsEnabled)
     _O(updateTiles)
@@ -55,6 +55,17 @@ public:
     _O(destroyEpidemicHouses)
     _O(forestFire)
     _O(forestGrow)
+    _O(warfNeedTimber)
+    _O(showGodsUnhappyWarn)
+    _O(claypitMayCollapse)
+    _O(minesMayCollapse)
+    _O(riversideAsWell)
+    _O(soldiersHaveSalary)
+    _O(housePersonalTaxes)
+    _O(cutForest2timber)
+    _O(ironInRocks)
+    _O(svkBorderEnabled)
+    _O(farmUseMeadows)
 #undef _O
   }
 };
@@ -64,23 +75,9 @@ PlayerCity::OptionType findOption(const std::string& name)
   return (PlayerCity::OptionType)OptionEnum::instance().findType( name );
 }
 
-VariantList Options::save() const
-{
-  VariantList ret;
-  for(auto& it : *this)
-  {
-    ret << Point(it.first, it.second);
-  }
-  return ret;
-}
-
 void Options::load(const VariantList& stream)
 {
-  for (auto& it : stream)
-  {
-    Point tmp = it;
-    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
-  }
+  SerializedMap::load( stream );
 
   resetIfNot( PlayerCity::climateType, game::climate::central );
   resetIfNot( PlayerCity::adviserEnabled, 1 );
@@ -94,6 +91,15 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::legionAttack, 1 );
   resetIfNot( PlayerCity::c3gameplay, 0 );
   resetIfNot( PlayerCity::warfNeedTimber, 1 );
+  resetIfNot( PlayerCity::showGodsUnhappyWarn, 1);
+  resetIfNot( PlayerCity::claypitMayCollapse, 1);
+  resetIfNot( PlayerCity::minesMayCollapse, 1);
+  resetIfNot( PlayerCity::riversideAsWell, 1);
+  resetIfNot( PlayerCity::soldiersHaveSalary, 1);
+  resetIfNot( PlayerCity::housePersonalTaxes, 1);
+  resetIfNot( PlayerCity::cutForest2timber, 1 );
+  resetIfNot( PlayerCity::ironInRocks, 1 );
+  resetIfNot( PlayerCity::svkBorderEnabled, 1 );
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 

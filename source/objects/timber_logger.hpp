@@ -25,7 +25,24 @@ class TimberLogger : public Factory
 {
 public:
   TimberLogger();
+
+  virtual math::Percent productivity();
+  virtual void timeStep(const unsigned long time);
+  virtual std::string errorDesc() const;
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+
+  virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap &stream) const;
+
+protected:
+  virtual void _productReady();
+
+private:
+  void _checkDistance2forest();
+  const gfx::Tile& _findNearestForest(const city::AreaInfo& areaInfo) const;
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_TIMBER_LOGGER_H_INCLUDE_

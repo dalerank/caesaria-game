@@ -34,7 +34,7 @@ namespace events
 
 GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
-  return create( pos, TileOverlayFactory::instance().create( type ) );
+  return create( pos, Overlay::create( type ) );
 }
 
 GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
@@ -56,20 +56,19 @@ void BuildAny::_exec( Game& game, unsigned int )
   if( _overlay.isNull() )
     return;
 
-  OverlayPtr ctOv = game.city()->getOverlay( _pos );
+  OverlayPtr overlay2build = game.city()->getOverlay( _pos );
 
   bool mayBuild = true;
-  if( ctOv.isValid() )
+  if( overlay2build.isValid() )
   {
-    mayBuild = ctOv->isDestructible();
+    mayBuild = overlay2build->isDestructible();
   }
 
   TilePos offset(10, 10);
   int enemies_n =  game.city()->statistic().walkers.count<EnemySoldier>( _pos - offset, _pos + offset );
   if( enemies_n > 0 && _overlay->group() != object::group::disaster)
   {
-    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##too_close_to_enemy_troops##", 2 );
     return;
   }
 
@@ -95,21 +94,18 @@ void BuildAny::_exec( Game& game, unsigned int )
 
       if( construction->group() != object::group::disaster )
       {
-        auto event = PlaySound::create( "buildok", 1, 100 );
-        event->dispatch();
+        events::dispatch<PlaySound>( "buildok", 1, 100 );
       }
 
       if( construction->isNeedRoad() && construction->roadside().empty() )
       {
-        auto event = WarningMessage::create( "##building_need_road_access##", 1 );
-        event->dispatch();
+        events::dispatch<WarningMessage>( "##building_need_road_access##", 1 );
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        auto event = WarningMessage::create( error, 1 );
-        event->dispatch();
+        events::dispatch<WarningMessage>( error, 1 );
       }
 
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
@@ -118,15 +114,13 @@ void BuildAny::_exec( Game& game, unsigned int )
         unsigned int worklessCount = game.city()->statistic().workers.workless();
         if( worklessCount < wb->maximumWorkers() )
         {
-          auto event = WarningMessage::create( "##city_need_more_workers##", 2 );
-          event->dispatch();
+          events::dispatch<WarningMessage>( "##city_need_more_workers##", 2 );
         }
 
         int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
-          auto event = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
-          event->dispatch();
+          events::dispatch<WarningMessage>( "##working_build_poor_labor_warning##", 2 );
         }
       }
     }
@@ -136,8 +130,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     auto construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      auto event = WarningMessage::create( construction->errorDesc(), 1 );
-      event->dispatch();
+      events::dispatch<WarningMessage>( construction->errorDesc(), 1 );
     }
   }
 }

@@ -21,6 +21,7 @@
 #include "objects/metadata.hpp"
 #include "name_generator.hpp"
 #include "objects/factory.hpp"
+#include "gfx/tilemap.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "good/store.hpp"
@@ -32,9 +33,10 @@
 #include "events/removecitizen.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/cart_animation.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "core/common.hpp"
 #include "walkers_factory.hpp"
 #include "core/logger.hpp"
 #include "city/trade_options.hpp"
@@ -47,9 +49,9 @@ using namespace config;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-CAESARIA_LITERALCONST(stock)
-CAESARIA_LITERALCONST(producerPos)
-CAESARIA_LITERALCONST(consumerPos)
+GAME_LITERALCONST(stock)
+GAME_LITERALCONST(producerPos)
+GAME_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl
@@ -69,18 +71,16 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway& oPathWay);
 };
 
-CartPusher::CartPusher(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
+  : Citizen( city, walker::cartPusher  ), _d( new Impl )
 {
-  _setType( walker::cartPusher );
   _d->producerBuilding = nullptr;
   _d->consumerBuilding = nullptr;
   _d->cantUnloadGoods = false;
   _d->brokePathCounter = 0;
+  _d->stock.setCapacity( cap );
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void CartPusher::_reachedPathway()
@@ -104,7 +104,7 @@ void CartPusher::_reachedPathway()
       {
         int storedQty = saveQty - _d->stock.qty();
         producerBuilding()->store().confirmDeliver( _d->stock.type(), storedQty,
-                                                    gfx::tile::hash( consumerBuilding()->pos() ),
+                                                    consumerBuilding()->pos().hash(),
                                                     game::Date::current() );
       }
     }
@@ -143,7 +143,7 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
+  Logger::warning( "WARNING !!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
   deleteLater();
 }
 
@@ -222,7 +222,8 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
      std::iter_swap( oPics.begin(), oPics.begin() + 1);
    }
 
-   for( auto&& pic : oPics ) { pic.addOffset( offset ); }
+   for( auto& pic : oPics )
+     pic.addOffset( offset );
 }
 
 void CartPusher::_computeWalkerDestination()
@@ -321,7 +322,7 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
   //find shortest path
   int maxLength = 999;
   PathwayPtr shortestPath = 0;
-  for( auto item : pathWayList )
+  for( auto& item : pathWayList )
   {
     if( (int)item.second->length() < maxLength )
     {
@@ -402,22 +403,15 @@ void CartPusher::send2city(BuildingPtr building, good::Stock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  _d->anim.update( time );
+  if( !waitInterval() )
+    _d->anim.update( time );
+
   if( game::Date::isWeekChanged() && !_pathway().isValid() )
   {
     _computeWalkerDestination();
   }
 
   Walker::timeStep( time );
-}
-
-CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
-{
-  CartPusherPtr ret( new CartPusher( city ) );
-  ret->_d->stock.setCapacity( cap );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 CartPusher::~CartPusher(){}
@@ -427,11 +421,8 @@ void CartPusher::save( VariantMap& stream ) const
   Walker::save( stream );
   
   stream[ literals::stock ] = _d->stock.save();
-  stream[ literals::producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
-
-  stream[ literals::consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+  stream[ literals::producerPos ] = utils::objPosOrDefault( _d->producerBuilding );
+  stream[ literals::consumerPos ] = utils::objPosOrDefault( _d->consumerBuilding );
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -445,11 +436,11 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( literals::stock ).toList() );
 
   TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
-  _d->producerBuilding = _city()->getOverlay( prPos ).as<Building>();
+  _d->producerBuilding = _map().overlay<Building>( prPos );
 
   if( _d->producerBuilding.is<WorkingBuilding>() )
   {
-    auto workingBuilding = ptr_cast<WorkingBuilding>( _d->producerBuilding );
+    auto workingBuilding = _d->producerBuilding.as<WorkingBuilding>();
     workingBuilding->addWalker( this );
   }
   else
@@ -458,7 +449,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
-  _d->consumerBuilding = _city()->getOverlay( cnsmPos ).as<Building>();
+  _d->consumerBuilding = _map().overlay<Building>( cnsmPos );
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )
@@ -469,8 +460,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  auto event = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  event->dispatch();
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   if( !created )
   {
@@ -516,8 +506,8 @@ TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return utils::objPosOrDefault( _d->producerBuilding );
+  case plDestination: return utils::objPosOrDefault( _d->consumerBuilding );
   default: break;
   }
 

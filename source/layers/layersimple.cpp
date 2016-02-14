@@ -35,7 +35,6 @@ class Simple::Impl
 {
 public:
   int ticks;
-  SenatePopupInfo senateInfo;
   Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
   object::TypeSet inacceptable;
@@ -49,14 +48,6 @@ public:
 };
 
 int Simple::type() const { return citylayer::simple; }
-
-LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Simple( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void Simple::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
@@ -107,16 +98,6 @@ void Simple::afterRender(Engine& engine)
 void Simple::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-
-  Tile* lastTile = _currentTile();
-  if( lastTile )
-  {
-    SenatePtr senate = lastTile->overlay<Senate>();
-    if( senate.isValid() )
-    {
-      _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );
-    }
-  }
 }
 
 Simple::Simple( Camera& camera, PlayerCityPtr city)
@@ -127,6 +108,11 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
   _d->ticks = 0;
   _d->highlight.alpha.setCondition( 180, 254, 2 );
   _d->inacceptable << object::fortification << object::wall;
+
+  LayerDrawPassPtr pass( new SenatePopupInfo() );
+  pass->drop(); //auto delete
+
+  addDrawPass( LayerDrawPass::gui, pass );
 }
 
 }//end namespace citylayer

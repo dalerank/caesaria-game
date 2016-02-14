@@ -22,7 +22,7 @@
 #include "core/priorities.hpp"
 
 Bridge::Bridge(const object::Type type)
-  : Construction( type, Size(1) )
+  : Construction( type, Size(1,1) )
 {
 
 }

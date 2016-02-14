@@ -32,13 +32,13 @@
 namespace gfx
 {
 
-#define CAESARIA_GL_RENDER
+#define GAME_GL_RENDER
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-#undef CAESARIA_GL_RENDER
+#ifdef GAME_PLATFORM_ANDROID
+#undef GAME_GL_RENDER
 #endif
 
-#ifdef CAESARIA_GL_RENDER
+#ifdef GAME_GL_RENDER
 
 class GlEngine : public Engine
 {

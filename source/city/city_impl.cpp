@@ -53,7 +53,7 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
 {
   VariantMap services = config::load( model );
 
-  for (auto it : services)
+  for (auto& it : services)
   {
     SrvcPtr service = ServiceFactory::instance().create( city, it.first );
     if( service.isValid() )
@@ -89,8 +89,12 @@ void Overlays::update(PlayerCityPtr city, unsigned int time)
 void Overlays::recalcRoadAccess()
 {
   // for each overlay
-  this->select<Construction>()
-        .for_each( [](ConstructionPtr ptr){ ptr->computeRoadside();} );
+  for( auto ptr : *this )
+  {
+    auto construction = ptr.as<Construction>();
+    if( construction.isValid() )
+        construction->computeRoadside();
+  }
 }
 
 void Overlays::onDestroyOverlay(PlayerCityPtr city, OverlayPtr overlay)
@@ -127,7 +131,7 @@ VariantMap Walkers::save() const
     }
     catch(...)
     {
-      Logger::warning( "!!! WARNING: Can't save walker type {0}", WalkerHelper::getTypename( wtype ));
+      Logger::warning( "WARNING !!! Can't save walker type {}", WalkerHelper::getTypename( wtype ));
     }
 
     walkedId++;

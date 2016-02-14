@@ -41,7 +41,7 @@ public:
   } DrawFlag;
 
 
-  ContextMenuItem( ContextMenu* parent, const std::string& text );
+  ContextMenuItem( Widget* parent, const std::string& text );
 
   virtual ~ContextMenuItem();
 
@@ -53,9 +53,11 @@ public:
 
   virtual ContextMenu* subMenu() const;
 
-  virtual void setIsSeparator( bool isSepar );
+  virtual void setIsSeparator(bool separator );
 
   virtual void toggleCheck();
+
+  virtual void draw(gfx::Engine &painter);
 
   virtual void setFlag( DrawFlag flagName, bool set=true );
 
@@ -65,6 +67,7 @@ public:
 
   virtual void setHovered( bool hover );
 
+  virtual bool isAutoChecking();
   virtual void setAutoChecking( bool autoChecking );
 
   virtual bool isPointInside(const Point& point) const;
@@ -90,13 +93,17 @@ public:
 
   virtual SubMenuAlign subMenuAlignment() const;
 
+  void setSubMenuIconVisible( bool visible );
+
 signals public:
   Signal1<bool>& onChecked();
   Signal1<int>& onAction();
 
+protected:
+  virtual void _updateTexture( gfx::Engine& painter );
+
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(ContextMenuItem)
 };
 
 }//end namespace gui
