@@ -5,7 +5,8 @@ set(BASE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 
 aux_source_directory(. TILESET_SRC_LIST)
-add_definitions(-DCAESARIA_DISABLE_PICTUREBANK)
+add_definitions(-DGAME_DISABLE_PICTUREBANK)
+add_definitions(-DGAME_DISABLED_TILEMAPCONFIG)
 file(GLOB TILESET_INC_LIST "*.hpp")
 
 set( TILESET_DEP_SOURCES_LIST
@@ -15,13 +16,18 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/core/json.cpp"
+      "${BASE_SOURCE_DIR}/core/format.cpp"
+      "${BASE_SOURCE_DIR}/gfx/tilepos.cpp"
       "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
+      "${BASE_SOURCE_DIR}/core/variant_map.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
       "${BASE_SOURCE_DIR}/core/font.cpp"
+      "${BASE_SOURCE_DIR}/core/color_list.cpp"
       "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
+      "${BASE_SOURCE_DIR}/vfs/fileinfo.cpp"
       "${BASE_SOURCE_DIR}/gfx/batch.cpp"
       "${BASE_SOURCE_DIR}/gfx/picture.cpp"
       "${BASE_SOURCE_DIR}/gfx/engine.cpp"
@@ -47,13 +53,14 @@ include_directories( ${SDL2MINI_INCLUDE_DIR})
 include_directories( ${PNG_INCLUDE_DIR})
 include_directories( ${SDL2_TTF_INCLUDE_DIR})
 include_directories( ${ZLIB_INCLUDE_DIR})
-
+include_directories( ${MINIZIP_INCLUDE_DIR})
 add_executable(${PROJECT_NAME}
                ${TILESET_SRC_LIST} ${TILESET_INC_LIST}
                ${TILESET_DEP_SOURCES_LIST} )
 
 target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${MINIZIP_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 

@@ -62,7 +62,7 @@ public:
     {
       if( stream.size() != 9 )
       {
-        Logger::warning( "%s [%s %d]", "Incorrect argument number in ", __FILE__, __LINE__ );
+        Logger::warning( "{0} [{1} {2}]", "Incorrect argument number in ", __FILE__, __LINE__ );
         return;
       }
 
@@ -303,12 +303,13 @@ void Options::load( const VariantMap& stream )
 {
   for( auto& it : stream )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
 
     if( gtype == good::none )
     {
-      Logger::warning( "%s %s [%s %d]", "Can't convert type from ",
-                       it.first.c_str(), __FILE__, __LINE__ );
+      Logger::warning( "{} {} [{} {}]",
+                       "Can't convert type from ",
+                       it.first, __FILE__, __LINE__ );
     }
 
     _d->goods[ gtype ].load( it.second.toList() );
@@ -323,7 +324,7 @@ VariantMap Options::save() const
 
   for( auto& product : _d->goods )
   {
-    ret[ good::Helper::getTypeName( product.first ) ] = product.second.save();
+    ret[ good::Helper::name( product.first ) ] = product.second.save();
   }
 
   return ret;

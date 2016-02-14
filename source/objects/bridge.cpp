@@ -22,7 +22,7 @@
 #include "core/priorities.hpp"
 
 Bridge::Bridge(const object::Type type)
-  : Construction( type, Size(1) )
+  : Construction( type, Size(1,1) )
 {
 
 }
@@ -51,7 +51,7 @@ public:
       break;
 
       default:
-        Logger::warning( "!!! WARNING: Cant parse IdxSet from type %s", item.type() );
+        Logger::warning( "!!! WARNING: Cant parse IdxSet from type {0}", item.type() );
       break;
       }
     }
@@ -97,7 +97,7 @@ BridgeConfig& BridgeConfig::find( object::Type type )
     }
     else
     {
-      Logger::warning( "!!! WARNING: Cant find bridge config for %d:%s", type, configName.c_str() );
+      Logger::warning( "!!! WARNING: Cant find bridge config for {0}:{1}", type, configName );
     }
   }
 

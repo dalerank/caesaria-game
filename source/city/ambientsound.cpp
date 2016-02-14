@@ -20,9 +20,9 @@
 #include "gfx/tilemap_camera.hpp"
 #include "gfx/tilearea.hpp"
 #include "sound/engine.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 #include "config.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
@@ -67,7 +67,7 @@ struct AmbientEmitter
   void initialize( const vfs::Path& filename )
   {
     VariantMap types = config::load( filename );
-    for( auto& rtype : types )
+    for( const auto& rtype : types )
     {
       Tile::Type type = gfx::tile::findType( rtype.first );
       if( type != Tile::tlUnknown )
@@ -113,8 +113,8 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->pos().getDistanceFromSQ( cameraPos )
-             < a.tile->pos().getDistanceFromSQ( cameraPos ));
+    return ( tile->pos().distanceSqFrom( cameraPos )
+             < a.tile->pos().distanceSqFrom( cameraPos ));
   }
 
   std::string sound( unsigned int time ) const
@@ -173,14 +173,6 @@ public:
   HashSet processedSounds;
 };
 
-SrvcPtr AmbientSound::create(PlayerCityPtr city)
-{
-  SrvcPtr p( new AmbientSound( city ) );
-  p->drop();
-
-  return p;
-}
-
 AmbientSound::~AmbientSound() {}
 
 AmbientSound::AmbientSound(PlayerCityPtr city)
@@ -209,8 +201,7 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  _d->emmitersArea.clear();
-  _d->emmitersArea.add( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
+  _d->emmitersArea = TilesArea( _city()->tilemap(), ambientsnd::maxDistance, _d->cameraPos );
 
   for( auto tile : _d->emmitersArea )
     _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
@@ -265,6 +256,6 @@ void AmbientSound::setCamera(Camera *camera)
   _d->camera = camera;
 }
 
-std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }
+std::string AmbientSound::defaultName() { return TEXT(AmbientSound); }
 
 }//end namespace city

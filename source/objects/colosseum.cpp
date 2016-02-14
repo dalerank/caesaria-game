@@ -45,17 +45,17 @@ public:
   } lastshow;
 };
 
-Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
+Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5,5) ), _d( new Impl )
 {
-  setPicture( ResourceGroup::entertainment, 36 );
+  setPicture(ResourceGroup::entertainment, 36);
 
-  _animationRef().load( ResourceGroup::entertainment, 37, 13);
-  _animationRef().setOffset( Point( 122, 81 ) );
+  _animation().load( ResourceGroup::entertainment, 37, 13);
+  _animation().setOffset(Point(122, 81));
 
   _fgPictures().resize(2);
 
-  _addNecessaryWalker( walker::gladiator );
-  _addNecessaryWalker( walker::lionTamer );
+  _addNecessaryWalker(walker::gladiator);
+  _addNecessaryWalker(walker::lionTamer);
 }
 
 void Colosseum::deliverService()
@@ -65,7 +65,7 @@ void Colosseum::deliverService()
 
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
     _fgPictures().front().load( ResourceGroup::entertainment, 50 );
     int currentWalkerNumber = walkers().size();

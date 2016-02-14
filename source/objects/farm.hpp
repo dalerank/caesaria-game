@@ -37,14 +37,17 @@ public:
   virtual void burn();
   virtual void collapse();
   virtual void destroy();
+  virtual math::Percent productivity() const;
   virtual void computeRoadside();
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  virtual unsigned int produceQty() const;
-  virtual void initialize(const MetaData &mdata);
+  gfx::TilesArray meadows() const;
+  gfx::TilesArray area() const;
 
+  virtual unsigned int produceQty() const;
+  virtual void initialize(const object::Info& mdata);
 protected:
   gfx::Picture _getMainPicture();
   OverlayPtr _buildFarmTile( const city::AreaInfo& info, const TilePos& ppos );

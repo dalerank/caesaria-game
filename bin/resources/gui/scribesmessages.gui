@@ -1,0 +1,57 @@
+{  
+  static : true
+
+	lbBackground#Label : 
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbTitle#Label :
+    {
+      font : "FONT_5"
+      geometry : [ 16, 10, "pw-16", 50 ]
+      text : "##scribe_messages_title##"
+      textAlign : [ "center", "center" ]
+    }
+       
+    btnHelp#TexturedButton :
+    {
+      geometry : [ 16, "ph-40", 40, "ph-16" ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+    }
+
+    lbDate#Label : {
+      geometry : [ 80, 45, "pw/2", 60 ]
+      text : "##scrw_date##"
+      font : "FONT_1"
+    }
+
+    lbSubj#Label : {
+      geometry : [ "pw/2", 45, "pw-10", 60 ]
+      text : "##scrw_subject##"
+      font : "FONT_1"
+    }
+    
+    btnExit#TexturedButton :
+    {
+      geometry : [ "pw-40", "ph-40", "pw-16", "ph-16" ]
+      tooltip : "##exit_this_panel##"
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+
+    lbInfo#Label :
+    {
+      geometry : [ 50, "ph-40", "pw-50", "ph-12" ]
+      textAlign : [ "center", "upperLeft" ]
+      font : "FONT_1"
+      text : "##left_click_open_right_erase##"
+      multiline : true
+    }
+  }
+}

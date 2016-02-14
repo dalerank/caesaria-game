@@ -48,8 +48,6 @@ Merchant::~Merchant(){}
 Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
-  //default picture
-  setPicture( gfx::Picture( ResourceGroup::empirebits, PicID::landTradeRoute ) );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
@@ -82,8 +80,6 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
     return MerchantPtr();
   }
 
-  ret->setPicture( gfx::Picture( ResourceGroup::empirebits,
-                                 route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
@@ -102,6 +98,17 @@ void Merchant::timeStep( unsigned int time )
   {
     setLocation( _d->steps[ _d->step ] );
   }
+}
+
+std::string Merchant::about(Object::AboutType type)
+{
+  switch( type )
+  {
+  case aboutEmtype: return isSeaRoute() ? "world_merchantsea" : "world_merchantland";
+  default: break;
+  }
+
+  return "";
 }
 
 std::string Merchant::destinationCity() const {  return _d->destCity; }

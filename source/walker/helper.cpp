@@ -20,83 +20,43 @@
 #include "animals.hpp"
 #include "human.hpp"
 #include "world/nation.hpp"
+#include "core/hash.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
 using namespace gfx;
 
-class TypeEnums : public EnumsHelper<walker::Type>
+class WalkersDB : public std::map< walker::Type, walker::Info >
 {
 public:
-  TypeEnums() : EnumsHelper<walker::Type>( walker::unknown )
+  std::map<int, walker::Type> rmap;
+  void append( walker::Type type, const std::string& name )
   {
-
-  }
-};
-
-class NationEnums : public EnumsHelper<world::Nation>
-{
-public:
-  NationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
-  {
-
+    (*this)[ type ] = walker::Info{ type, name, "##wt_" + name + "##" };
+    rmap[ Hash(name) ] = type;
   }
 };
 
 class WalkerHelper::Impl
 {
 public:    
-  typedef std::map< walker::Type, std::string > PrettyNames;
   typedef std::map< world::Nation, std::string > PrettyNations;
 
-  TypeEnums htype;
-  PrettyNames typenames;
-
-  NationEnums hnation;
-  PrettyNations nationnames;
+  WalkersDB infodb;
 
   VariantMap options;
 
   void appendType( walker::Type type, const std::string& name )
   {
-    htype.append( type, name );
-    typenames[ type ] = "##wt_" + name + "##";
-  }
-
-  void appendNation( world::Nation nation, const std::string& name )
-  {
-    hnation.append( nation, name );
-    nationnames[ nation ] = "##wn_" + name + "##";
+    infodb.append( type, name  );
   }
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::nation::a, CAESARIA_STR_A(a));
-    __REG_WNATION( unknown )
-    __REG_WNATION( rome )
-    __REG_WNATION( etruscan )
-    __REG_WNATION( barbarian )
-    __REG_WNATION( numidian )
-    __REG_WNATION( pict )
-    __REG_WNATION( samnite )
-    __REG_WNATION( selecid )
-    __REG_WNATION( carthaginian )
-    __REG_WNATION( celt )
-    __REG_WNATION( eygptian )
-    __REG_WNATION( goth )
-    __REG_WNATION( graeci )
-    __REG_WNATION( judaean )
-    __REG_WNATION( native )
-    __REG_WNATION( visigoth )
-    __REG_WNATION( gaul )
-    __REG_WNATION( iberian )
-    __REG_WNATION( helveti )
-#undef __REG_WNATION
+    appendType( walker::all,        "unknown" );
 
-      appendType( walker::all,        "unknown" );
-
-#define __REG_WTYPE(a) appendType( walker::a, CAESARIA_STR_A(a));
+#define __REG_WTYPE(a) appendType( walker::a, TEXT(a));
     __REG_WTYPE( unknown    )
     __REG_WTYPE( immigrant  )
     __REG_WTYPE( citizen    )
@@ -158,6 +118,7 @@ public:
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
     __REG_WTYPE( gladiatorRiot )
+    __REG_WTYPE( riverWave )
     __REG_WTYPE( merchantCamel )
 #undef __REG_WTYPE
   }
@@ -169,7 +130,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    Logger::warning( "Unknown walker info for type %d", type );
+    Logger::warning( "Unknown walker info for type {}", type );
     return VariantMap();
   }
 
@@ -186,6 +147,20 @@ bool WalkerHelper::isAnimal(WalkerPtr wlk)
   return wlk.is<Animal>() || wlk.is<Fish>();
 }
 
+const walker::Info& WalkerHelper::find(walker::Type type)
+{
+  static const walker::Info invalid{ walker::unknown, "unknown", "##wt_unknown##" };
+  auto it = instance()._d->infodb.find( type );
+
+  if( it != instance()._d->infodb.end() )
+    return it->second;
+  else
+  {
+    Logger::warning( "WalkerHelper: can't find walker typeName for {}", type );
+    return invalid;
+  }
+}
+
 void WalkerHelper::load( const vfs::Path& filename )
 {
   _d->options = config::load( filename );
@@ -197,86 +172,24 @@ WalkerHelper& WalkerHelper::instance()
   return inst;
 }
 
-std::string WalkerHelper::getTypename( walker::Type type )
-{
-  std::string name = instance()._d->htype.findName( type );
+std::string WalkerHelper::getTypename( walker::Type type ) {  return find( type ).typeName(); }
+std::string WalkerHelper::getPrettyTypename(walker::Type type) {  return find( type ).prettyName(); }
 
-  if( name.empty() )
+walker::Type WalkerHelper::getType(const std::string& name)
+{
+  const auto& infodb = instance()._d->infodb;
+  auto typeIt = infodb.rmap.find( Hash(name) );
+  if( typeIt == infodb.rmap.end() )
   {
-    Logger::warning( "WalkerHelper: can't find walker typeName for %d", type );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+    Logger::warning( "WalkerHelper: can't find walker type for {}", name);
+    return walker::unknown;
   }
 
-  return name;
-}
-
-walker::Type WalkerHelper::getType(const std::string &name)
-{
-  walker::Type type = instance()._d->htype.findType( name );
-
-  if( type == instance()._d->htype.getInvalid() )
-  {
-    Logger::warning( "Can't find walker type for %s", name.c_str());
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
-  }
-
-  return type;
-}
-
-std::string WalkerHelper::getPrettyTypename(walker::Type type)
-{
-  Impl::PrettyNames::iterator it = instance()._d->typenames.find( type );
-  return it != instance()._d->typenames.end() ? it->second : "";
-}
-
-std::string WalkerHelper::getNationName(world::Nation type)
-{
-  Impl::PrettyNations::iterator it = instance()._d->nationnames.find( type );
-  return it != instance()._d->nationnames.end() ? it->second : "";
-}
-
-world::Nation WalkerHelper::getNation(const std::string &name)
-{
-  world::Nation nation = instance()._d->hnation.findType( name );
-
-  if( nation == instance()._d->hnation.getInvalid() )
-  {
-    Logger::warning( "Can't find nation type for " + name );
-  }
-
-  return nation;
-}
-
-Picture WalkerHelper::bigPicture(walker::Type type)
-{
-  int index = -1;
-  switch( type )
-  {
-  case walker::immigrant: index=4; break;
-  case walker::emigrant: index=9; break;
-  case walker::doctor: index = 2; break;
-  case walker::cartPusher: index=51; break;
-  case walker::marketLady: index=12; break;
-  case walker::marketKid: index=38; break;
-  case walker::merchant: index=25; break;
-  case walker::prefect: index=19; break;
-  case walker::engineer: index=7; break;
-  case walker::taxCollector: index=6; break;
-  case walker::sheep: index = 54; break;
-  case walker::seaMerchant: index = 61; break;
-  case walker::merchantCamel : index = 25; break;
-  case walker::recruter: index=13; break;
-  case walker::lionTamer: index=11; break;
-  default: index=8; break;
-  break;
-  }
-
-  return index >= 0 ? Picture( "bigpeople", index ) : Picture::getInvalid();
+  return typeIt->second;
 }
 
 WalkerHelper::~WalkerHelper(){}
 WalkerHelper::WalkerHelper() : _d( new Impl ){}
-
 
 struct RelationInfo
 {
@@ -384,13 +297,13 @@ void __fillRelations( const std::string& name, const VariantMap& items, const st
   T wtype = check( name );
 
   StringArray types = items.get( section ).toStringArray();
-  foreach( itType, types )
+  for( auto& itType : types )
   {
-    T ftype = check( *itType );
+    T ftype = check( itType );
 
     if( ftype == unknownType )
     {
-      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str());
+      Logger::warning( warnText, itType, name );
     }
     else
     {
@@ -403,32 +316,32 @@ void WalkerRelations::load(const VariantMap& stream)
 {
   //_d->relations.clear();
   VariantMap wrelations = stream.get( "walkers" ).toMap();
-  foreach( it, wrelations )
+  for( auto& itemr : wrelations )
   {
-    VariantMap item = it->second.toMap();
-    __fillRelations<walker::Type>( it->first, item, "friend",
+    VariantMap vm = itemr.second.toMap();
+    __fillRelations<walker::Type>( itemr.first, vm, "friend",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown friend %s for type %s",
+                                   "WalkerRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, walker::unknown );
 
-    __fillRelations<walker::Type>( it->first, item, "enemy",
+    __fillRelations<walker::Type>( itemr.first, vm, "enemy",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown enemy %s for type %s",
+                                   "WalkerRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, walker::unknown );
   }
 
   VariantMap nrelations = stream.get( "nations" ).toMap();
-  foreach( it,nrelations)
+  for( auto& itemr : nrelations)
   {
-    VariantMap item = it->second.toMap();
-    __fillRelations<world::Nation>( it->first, item, "friend",
-                                   &WalkerHelper::getNation,
-                                   "NationRelations: unknown friend %s for type %s",
+    VariantMap item = itemr.second.toMap();
+    __fillRelations<world::Nation>( itemr.first, item, "friend",
+                                   &world::toNation,
+                                   "NationRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, world::nation::unknown );
 
-    __fillRelations<world::Nation>( it->first, item, "enemy",
-                                   &WalkerHelper::getNation,
-                                   "NationRelations: unknown enemy %s for type %s",
+    __fillRelations<world::Nation>( itemr.first, item, "enemy",
+                                   &world::toNation,
+                                   "NationRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, world::nation::unknown );
   }
 }
@@ -436,7 +349,6 @@ void WalkerRelations::load(const VariantMap& stream)
 void WalkerRelations::clear()
 {
   _d->walkers.clear();
-
 }
 
 VariantMap WalkerRelations::save() const
@@ -449,4 +361,14 @@ VariantMap WalkerRelations::save() const
 WalkerRelations::WalkerRelations() : _d( new Impl )
 {
 
+}
+
+walker::Type walker::toType(const std::string& name)
+{
+  return WalkerHelper::getType( name );
+}
+
+std::string walker::toString(walker::Type type)
+{
+  return WalkerHelper::getTypename( type );
 }

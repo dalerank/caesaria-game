@@ -39,14 +39,14 @@ typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 
 }
 
 Road::Road()
-  : Construction( object::road, Size(1) )
+  : Construction( object::road, Size::square(1) )
 {
   _paved = 0;
 }
 
 bool Road::build( const city::AreaInfo& info )
 {
-  info.city->setOption( PlayerCity::updateRoads, 1 );
+  info.city->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
 
   Tilemap& tilemap = info.city->tilemap();
   OverlayPtr overlay = tilemap.at( info.pos ).overlay();
@@ -116,10 +116,11 @@ const Picture& Road::picture( const city::AreaInfo& areaInfo) const
       if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
       {
         const TilePos& p = areaInfo.pos;
-        if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
-        else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
-        else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
-        else if ( epos == p.westnb() ) directionFlags |= road2west; // road to the west
+        TilePos::Neighbors nb = p.nb();
+        if( epos == nb.north() ) directionFlags |= road2north; // road to the north
+        else if ( epos == nb.south() ) directionFlags |= road2south; // road to the south
+        else if ( epos == nb.east() ) directionFlags |= road2east; // road to the east
+        else if ( epos == nb.west() ) directionFlags |= road2west; // road to the west
       }
     }
   }
@@ -259,10 +260,8 @@ void Road::destroy()
 
   TilesArray tiles = area();
 
-  foreach( it, tiles )
-  {
-    (*it)->setFlag( Tile::tlRoad, false );
-  }
+  for( auto it : tiles )
+    it->setFlag( Tile::tlRoad, false );
 }
 
 void Road::burn() {}
@@ -318,7 +317,7 @@ Plaza::Plaza()
 
   setType(object::plaza);
   _picture().load( ResourceGroup::entertainment, 102 ); // 102 ~ 107
-  setSize( Size( 1 ) );
+  setSize( Size::square( 1 ) );
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -333,7 +332,10 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   for( auto tile : area )
-    is_constructible &= tile->overlay().is<Road>();
+  {
+    object::Type type = object::typeOrDefault( tile->overlay() );
+    is_constructible &= (type == object::road);
+  }
 
   const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
 
@@ -355,20 +357,20 @@ const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const city::AreaInfo& info )
+bool Plaza::build( const city::AreaInfo& areainfo )
 {
-  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
+  RoadPtr road = areainfo.city->getOverlay( areainfo.pos ).as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
   }
 
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    auto plazas = info.city->tilemap()
+    auto plazas = areainfo.city->tilemap()
                                .getNeighbors( pos(), Tilemap::AllNeighbors)
                                .overlays<Plaza>();
     for( auto plaza : plazas )
@@ -405,7 +407,7 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size::square(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )
@@ -426,10 +428,10 @@ void Plaza::updatePicture()
     }
 
     Desirability::update( _city(), this, Desirability::off );
-    setSize( Size( 2 ) );
-    city::AreaInfo info( _city(), pos() );
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    setSize( Size::square( 2 ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
     Desirability::update( _city(), this, Desirability::on );
   }
 }

@@ -111,20 +111,20 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void WarehouseStore::applyStorageReservation( good::Stock &stock, const int reservationID )
+bool WarehouseStore::applyStorageReservation( good::Stock &stock, const int reservationID )
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "Warehouse: GoodType does not match reservation" );
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "Warehouse: Quantity does not match reservation" );
-    return;
+    return false;
   }
 
 
@@ -134,7 +134,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   // first we look at the half filled subTiles
   if (amount > 0)
   {
-    for( auto&& room : _warehouse->rooms() )
+    for( auto& room : _warehouse->rooms() )
     {
       if( room.type() == stock.type() && room.freeQty() > 0 )
       {
@@ -146,7 +146,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
     }
 
     // then we look at the empty subTiles
-    for( auto&& room : _warehouse->rooms() )
+    for( auto& room : _warehouse->rooms() )
     {
       if( room.type() == good::none)
       {
@@ -159,23 +159,24 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   }
 
   _warehouse->computePictures();
+  return true;
 }
 
-void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
   if( stock.type() != reservedStock.type() )
   {   
-    Logger::warning( "Warehouse: GoodType does not match reservation need=%s have=%s",
-                     good::Helper::name(reservedStock.type()).c_str(),
-                     good::Helper::name(stock.type()).c_str() );
-    return;
+    Logger::warning( "Warehouse: GoodType does not match reservation need={} have={}",
+                     good::Helper::name(reservedStock.type()),
+                     good::Helper::name(stock.type()) );
+    return false;
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
-    Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
-                     good::Helper::name(stock.type()).c_str(),
+    Logger::warning( "Warehouse: Retrieve stock[{0}] less reserve qty, decrease from {1} to {2}",
+                     good::Helper::name(stock.type()),
                      reservedStock.qty(), stock.freeQty() );
     reservedStock.setQty( stock.freeQty() );
   }
@@ -183,7 +184,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   int amount = reservedStock.qty();
 
   // first we look at the half filled subTiles
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     if (amount == 0)
     {
@@ -203,7 +204,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   }
 
   // then we look at the filled subTiles
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     if (amount == 0)
     {
@@ -220,6 +221,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   }
 
   _warehouse->computePictures();
+  return true;
 }
 
 void WarehouseStore::retrieve(good::Stock& stock, const int amount)
@@ -244,7 +246,7 @@ void WarehouseStore::load(const VariantMap &stream)
 
   VARIANT_LOAD_CLASS_LIST( _capacities, stream )
 
-  for( auto&& it : _capacities )
+  for( auto& it : _capacities )
     if( it.second == 0 )
       it.second = maxCapacity;
 }

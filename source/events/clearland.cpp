@@ -21,7 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "warningmessage.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "requestdestroy.hpp"
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
@@ -42,6 +42,11 @@ GameEventPtr ClearTile::create(const TilePos& pos)
   return ret;
 }
 
+GameEventPtr ClearTile::create(const Tile& tile )
+{
+  return create( tile.epos() );
+}
+
 bool ClearTile::_mayExec(Game& game, unsigned int) const{ return true; }
 
 void ClearTile::_exec( Game& game, unsigned int )
@@ -52,33 +57,23 @@ void ClearTile::_exec( Game& game, unsigned int )
 
   if( cursorTile.getFlag( Tile::isDestructible ) )
   {
-    Size size( 1 );
+    Size size(1, 1);
     TilePos rPos = _pos;
 
     OverlayPtr overlay = cursorTile.overlay();
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    if( overlay.isValid()  )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      const MetaData& md = MetaDataHolder::find( overlay->type() );
-      if( !overlay->canDestroy() )
-      {
-        GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
-        e->dispatch();
+      auto info = overlay->info();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
-        if( md.getFlag( MetaDataOptions::requestDestroy, false ) )
-        {
-          e = RequestDestroy::create( overlay );
-          e->dispatch();
-        }
-        return;
-      }
-
-      if( md.getFlag( MetaDataOptions::precisionDestroy, false ) )
+      if( info.requestDestroy() )
       {
-        //overlay->partlyDestroy( _pos );
+        events::dispatch<RequestDestroy>( overlay );
       }
+      return;
     }
 
     if( overlay.isValid() )
@@ -92,9 +87,9 @@ void ClearTile::_exec( Game& game, unsigned int )
     for( auto tile : clearedTiles )
     {
       tile->setMaster( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );
@@ -117,8 +112,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
         int imgId = math::random( 58-1 );
 
-        Picture pic;
-        pic.load( ResourceGroup::land1a, startOffset + imgId );
+        Picture pic( config::rc.land1a, startOffset + imgId );
         tile->setPicture( pic );
         tile->setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -130,7 +124,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.city()->setOption( PlayerCity::updateRoads, 1 );
+      game.city()->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
     }
   }
 

@@ -23,7 +23,7 @@ namespace constants
 namespace minimap
 {
 
-Colors::Colors(ClimateType climate) {
+Colors::Colors(const ClimateType climate) {
 	if (climate == game::climate::central)
 	{
 		int colours[][8] = {

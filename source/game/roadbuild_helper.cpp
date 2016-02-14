@@ -58,10 +58,10 @@ bool __checkWalkables( const TilesArray& tiles )
   return true;
 }
 
-TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
+TilesArray RoadPropagator::createPath(Tilemap& tileMap, const TilePos& startPos, const TilePos& stopPos,
                                       bool roadAssignment, bool returnRect )
 {  
-  Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
+  Logger::warning( "RoadPropagator::getPath from ({0},{1}) to ({2}, {3})",
                     startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
   TilesArray ret;
   if( startPos == stopPos )
@@ -104,9 +104,9 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
     Pathfinder& finder = Pathfinder::instance();
     finder.setCondition( makeDelegate( &RoadPropagator::instance(), &RoadPropagator::canBuildRoad ) );
 
-    int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly | Pathfinder::customCondition;
+    int flags = Pathway::fourDirection | Pathway::terrainOnly | Pathway::customCondition;
 
-    flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
+    flags |= (roadAssignment ? 0 : Pathway::ignoreRoad );
     const Tile& stile = tileMap.at( startPos );
     const Tile& ftile = tileMap.at( stopPos );
     Pathway way = finder.getPath( stile.pos(), ftile.pos(), flags );

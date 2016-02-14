@@ -23,6 +23,7 @@
 namespace gui
 {
 
+class ListBox;
 class ListBoxItem;
 
 namespace dialog
@@ -32,7 +33,8 @@ class LanguageSelect : public Label
 {
 public:
   LanguageSelect(Widget* parent, vfs::Path model,
-                 const std::string& current, Size size = Size(512,384));
+                 const std::string& current,
+                 const Size& size = Size(512,384));
 
   virtual ~LanguageSelect();
   void setDefaultFont( const std::string& fontname );
@@ -42,11 +44,8 @@ public signals:
   Signal0<> onContinue;
 
 private:
-  class Impl;
-  ScopedPtr<Impl> _d;
-
   void _changeLanguage(const ListBoxItem& item);
-  void _apply();
+  void _loadLanguages(ListBox& lbx, const vfs::Path& filename);
 
   std::string _defaultFont;
 };

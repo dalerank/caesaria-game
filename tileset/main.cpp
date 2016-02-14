@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -32,7 +33,7 @@
 #include "zlib.h"
 #include "zip.h"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #undef main
 #endif
 
@@ -160,7 +161,7 @@ public:
   Texture(int width, int height)
   {
     image = gfx::Picture( Size( width, height ), 0, true );
-    image.fill( DefaultColors::clear );
+    image.fill( ColorList::clear );
 
     root = new Node(0,0, width, height);
   }
@@ -202,10 +203,10 @@ public:
         if (unitCoordinates)
         {
           std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
-                                                           r.left()/(float)width,
-                                                           r.top()/(float)height,
-                                                           r.width()/(float)width,
-                                                           r.height()/(float)height );
+                                           r.left()/(float)width,
+                                           r.top()/(float)height,
+                                           r.width()/(float)width,
+                                           r.height()/(float)height );
           atlas.write( str );
         }
         else
@@ -243,14 +244,14 @@ public:
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
 			{
-        Logger::warning("Error: Could not find directory '" + path.toString() + "'");
+        Logger::warning("Error: Could not find directory '{0}'", path.toString());
 				return;
 			}
 
       getImageFiles(path, imageFiles);
 		}
 
-    Logger::warning( "Found %d images", imageFiles.size() );
+    Logger::warning( "Found {} images", imageFiles.size() );
 
     std::set<ImageName> imageNameSet;
 
@@ -263,8 +264,8 @@ public:
 
         if(image.width() > width || image.height() > height)
 				{
-          Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
-                           filename.c_str(), image.width(), image.height(), width, height );
+          Logger::warning( "Error: '{0}' ({1}x{2}) ) is larger than the atlas ({3}x{4}})",
+                           filename, image.width(), image.height(), width, height );
 					return;
 				}			        
 				
@@ -281,13 +282,13 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for( auto&& imageName : imageNameSet )
+    for( auto& imageName : imageNameSet )
 		{
       bool added = false;
 			
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-      for( auto&& texture : textures)
+      for( auto& texture : textures)
 			{
         if(texture->addImage(imageName.image, imageName.name, padding))
 				{
@@ -308,7 +309,7 @@ public:
 		
     for(Texture* texture : textures)
 		{
-      Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
+      Logger::warning( "Writing atlas: {} {}", name, utils::i2str(++count));
       std::string txName = name + utils::i2str(count);
       texture->write(txName, fileNameOnly, unitCoordinates, width, height);
       names.push_back( txName + ".png" );
@@ -323,7 +324,7 @@ public:
       vfs::Directory directory( path );
       StringArray files = directory.entries().items().files( ".png" );
       StringArray directories = directory.entries().items().folders();
-		
+
       imageFiles << files;
 			
       for( auto str : directories)
@@ -517,16 +518,19 @@ struct Config
 class Atlases : public std::vector<AtlasGenerator*>
 {
 public:
-  gfx::Picture findByIndex( int index )
+  gfx::Picture findByIndex( int index, std::string& name )
   {
     gfx::Picture ret = gfx::Picture::getInvalid();
     int currentStart = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
     {
       if( index >= currentStart &&
           index < currentStart + a->textures.size() )
       {
-        ret = a->textures[ index - currentStart ]->image;
+        int tI = index - currentStart;
+        ret = a->textures[ tI ]->image;
+        name = a->names[ tI ];
+        break;
       }
       else
       {
@@ -540,7 +544,7 @@ public:
   int max() const
   {
     int result = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
       result += a->textures.size();
 
     return result;
@@ -566,7 +570,7 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   if ( zf == nullptr )
   {
      /* Handle error */
-     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     Logger::warning( "Unable to open {} for writing\n", arcName.toCString() );
      return;
   }
 
@@ -621,21 +625,68 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   zipClose(zf,NULL);
 }
 
+void unpackAtlases( const std::string& fullpath )
+{
+  vfs::Directory currentDir = vfs::Path( fullpath ).directory();
+  vfs::Entries::Items entries = currentDir.entries().items();
+  for( auto& item : entries )
+  {
+    if( item.name.isMyExtension( ".atlas" )  )
+    {
+      VariantMap config = config::load( item.name );
+      vfs::Path textureName = config.get( "texture" ).toString();
+
+      vfs::Path dirName = textureName.removeExtension();
+      bool dirCreated = currentDir.create( dirName.toString() );
+      if( !dirCreated )
+      {
+        Logger::warning( "WARNING !!! Cant create directory " + textureName.toString() );
+        continue;
+      }
+
+      vfs::Directory dir2save = currentDir/dirName;
+
+      vfs::NFile file = vfs::NFile::open( textureName );
+      gfx::Picture atlasTx = PictureLoader::instance().load( file, true );
+
+      VariantMap frames = config.get( "frames" ).toMap();
+      for( auto& frame : frames )
+      {
+        std::string name = frame.first + ".png" ;
+        VariantList rectVl = frame.second.toList();
+        Point start( rectVl.get( 0 ).toInt(), rectVl.get( 1 ).toInt() );
+        Size size( rectVl.get( 2 ).toInt(), rectVl.get( 3 ).toInt() );
+
+        gfx::Picture image = gfx::Picture( size, 0, true );
+        image.fill( ColorList::clear );
+
+        image.draw( atlasTx, Rect( start, size ) );
+        image.save( (dir2save/name).toString() );
+      }
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
   Logger::registerWriter( Logger::consolelog, "" );
   gfx::Engine* engine = new gfx::SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );  
+  Logger::warning( "GraficEngine: set size 800x800" );
   engine->setScreenSize( Size( 800, 800 ) );
-  engine->setFlag( gfx::Engine::debugInfo, true );
+  engine->setFlag( gfx::Engine::showMetrics, true );
   engine->setFlag( gfx::Engine::batching, false );
   engine->init();
   engine->setTitle( "CaesarIA: tileset packer" );
 
-
   Config config;
   Atlases gens;
+
+  if(argc == 2 && strcmp( argv[1], "unpack" ) == 0 )
+  {
+    unpackAtlases( argv[0] );
+    return 0;
+  }
 
   vfs::Path path( "tileset.model" );
   if( path.exist() )
@@ -648,11 +699,14 @@ int main(int argc, char* argv[])
     if(argc < 5)
     {
       Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
-      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
+      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");      
       Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
       Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
       Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
       Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
+      Logger::warning("\t");
+      Logger::warning("\tUsage: AtlasGenerator unpack");
+      Logger::warning("\twill unpack current atlasses to different textures");
       return 0;
     }
 
@@ -717,13 +771,17 @@ int main(int argc, char* argv[])
     gray = ygray;
     for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      bg.fill( gray ? ColorList::darkSlateGray : ColorList::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
     }    
   }
   bg.update();
 
   int index = 0;
+  std::string picName;
+  gfx::Picture pic = gens.findByIndex(index, picName);
+  engine->setTitle( picName );
+
   while(running)
   {
     static unsigned int lastTimeUpdate = DebugTimer::ticks();    
@@ -734,16 +792,19 @@ int main(int argc, char* argv[])
       {
         if( event.key.keysym.sym == SDLK_UP ) index++;
         if( event.key.keysym.sym == SDLK_DOWN) index--;
+
+        pic = gens.findByIndex(index, picName);
+        engine->setTitle( picName );
       }
     }
 
     index = math::clamp<int>( index, 0, gens.max()-1 );
-    engine->startRenderFrame();
+    engine->frame().start();
 
-    engine->draw( bg, Point() );
-    gfx::Picture pic = gens.findByIndex(index);
-    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
-    engine->endRenderFrame();
+    engine->draw( bg, Point() );    
+    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800,800) ) );
+
+    engine->frame().finish();
 
     int delayTicks = DebugTimer::ticks() - lastTimeUpdate;
     if( delayTicks < 33 )

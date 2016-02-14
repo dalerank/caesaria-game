@@ -35,7 +35,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual good::Store& goodStore();
+  virtual good::Store& store();
 
   // return the current house level
   const HouseSpecification& spec() const;
@@ -51,6 +51,7 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
   virtual bool build( const city::AreaInfo& info );
+  virtual bool getMinimapColor(int& color1, int& color2) const;
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual double state( Param param) const;
@@ -62,7 +63,7 @@ public:
   bool isEntertainmentNeed( Service::Type type ) const;
   bool isHealthNeed( Service::Type type ) const;
 
-  Desirability desirability() const;
+  const Desirability& desirability() const;
 
   virtual void destroy();
 
@@ -96,10 +97,11 @@ public:
   virtual std::string troubleDesc() const;
 
   bool isCheckedDesirability() const;
+  void addWalker( WalkerPtr walker );
+  const WalkerList& walkers() const;
 
   void __debugChangeLevel( int change );
   void __debugMakeGeneration();
-
 private:
   void _updateHealthLevel();
   void _levelUp();

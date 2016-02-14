@@ -28,7 +28,6 @@
 #include "gfx/tilemap.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
-#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -45,12 +44,12 @@ public:
 };
 
 Prefecture::Prefecture()
-  : ServiceBuilding(Service::prefect, object::prefecture, Size(1)),
+  : ServiceBuilding(Service::prefect, object::prefecture, Size::square(1)),
     _d( new Impl )
 {
-  _d->fireDetect = gfx::tilemap::invalidLocation();
+  _d->fireDetect = TilePos::invalid();
 
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  setPicture( info().randomPicture( size() ) );
   _fgPictures().resize(1);
 }
 
@@ -70,14 +69,14 @@ void Prefecture::deliverService()
   {
     TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );
     bool fireDetect = fireDetectPos.i() >= 0;
-    PrefectPtr prefect = Prefect::create( _city() );
+    PrefectPtr prefect = Walker::create<Prefect>( _city() );
     prefect->setMaxDistance( walkerDistance() );
 
     if( fireDetect )
     {
       TilePos startPos = roadside().front()->pos();
 
-      OverlayPtr ruin = _city()->getOverlay( _d->fireDetect );
+      OverlayPtr ruin = _map().overlay( _d->fireDetect );
       Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );
 
       bool fireInOutWorkArea = pathway.length() <= walkerDistance();
@@ -94,7 +93,7 @@ void Prefecture::deliverService()
         fireDetect = false;
       }
 
-      _d->fireDetect = gfx::tilemap::invalidLocation();
+      _d->fireDetect = TilePos::invalid();
     }
     
     prefect->send2City( this, Prefect::patrol, fireDetect ? 1000 : 0 );
@@ -113,18 +112,15 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
 
   city::FirePtr fire = city->statistic().services.find<city::Fire>();
 
-  fireDetect = gfx::tilemap::invalidLocation();
-  if( city.isValid() )
+  fireDetect = TilePos::invalid();
+  int minDistance = 9999;
+  for( auto& location : fire->locations() )
   {
-    int minDistance = 9999;
-    for( auto& location : fire->locations() )
+    int currentDistance = pos.distanceFrom( location );
+    if( currentDistance < minDistance )
     {
-      int currentDistance = pos.distanceFrom( location );
-      if( currentDistance < minDistance )
-      {
-        minDistance = currentDistance;
-        fireDetect = location;
-      }
+      minDistance = currentDistance;
+      fireDetect = location;
     }
   }
 

@@ -49,7 +49,7 @@ public:
 
     _icon.load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
-    setFont( Font::create( FONT_2_WHITE ) );
+    setFont( FONT_2_WHITE );
     _updateText();
   }
 
@@ -71,7 +71,7 @@ protected:
   void _updateText()
   {
     _step = _step % 4;
-    setText( _step == 0 ? "Any" : utils::format( 0xff, "%d/4", _step ) );
+    setText( _step == 0 ? "Any" : fmt::format( "{}/4", _step ) );
   }
 
   //! when some mouse button clicked
@@ -89,76 +89,66 @@ protected:
   Signal1<float> _onChangeSignal;
 };
 
-gui::OrderGoodWidget::OrderGoodWidget(Widget* parent, const Rect& rect, good::Product good, good::Store& storage)
-  : Label( parent, rect, "" ), _storage( storage )
+OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, good::Store& storage)
+  : Label( parent, Rect( Point( 0, 25 ) * index, Size( parent->width(), 25 ) ), "" ),
+    _storage( storage )
 {
-  _type = good;
-  setFont( Font::create( FONT_1_WHITE ) );
+  _info = good::Info( good );
+  _goodIcon = _info.picture();
+  setFont( FONT_1_WHITE );
 
-  _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
-  _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
-                                 _storage.capacity( good ), _storage.capacity() );
+  _btnChangeRule = &add<PushButton>( Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
+  _btnVolume = &add<VolumeButton>( Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
+                                   _storage.capacity( good ), _storage.capacity() );
 
-  _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
+  _btnChangeRule->setFont( FONT_1_WHITE );
   updateBtnText();
 
-  CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeRule );
-  CONNECT( _btnVolume, onChange(), this, OrderGoodWidget::changeCapacity );
+  CONNECT_LOCAL( _btnChangeRule, onClicked(), OrderGoodWidget::changeRule );
+  CONNECT_LOCAL( _btnVolume,     onChange(),  OrderGoodWidget::changeCapacity );
 }
 
 void OrderGoodWidget::_updateTexture(Engine& painter)
 {
   Label::_updateTexture( painter );
 
-  std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
+  std::string goodName = _( "##" + _info.name() + "##" );
 
-  if( _textPicture().isValid() )
-  {
-    Font rfont = font();
-    rfont.draw( _textPicture(), goodName, 55, 0 );
-  }
+  canvasDraw( goodName, Point( 55, 0 ) );
 }
 
 void OrderGoodWidget::draw(Engine& painter)
 {
   Label::draw( painter );
 
-  Picture goodIcon = good::Helper::picture( _type );
-  painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
-  painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
+  painter.draw( _goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
+  painter.draw( _goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
 }
 
-OrderGoodWidget*OrderGoodWidget::create(const int index, const good::Product good, Widget* parent, good::Store& storage)
-{
-  Point offset( 0, 25 );
-  Size wdgSize( parent->width(), 25 );
-  return new OrderGoodWidget( parent, Rect( offset * index, wdgSize), good, storage );
-}
-
-void gui::OrderGoodWidget::changeCapacity(float fillingPercentage)
+void OrderGoodWidget::changeCapacity(float fillingPercentage)
 {
   int storeCap = _storage.capacity();
-  _storage.setCapacity( _type, storeCap * fillingPercentage );
+  _storage.setCapacity( _info.type(), storeCap * fillingPercentage );
 }
 
-void gui::OrderGoodWidget::updateBtnText()
+void OrderGoodWidget::updateBtnText()
 {
-  good::Orders::Order rule = _storage.getOrder( _type );
+  good::Orders::Order rule = _storage.getOrder( _info.type() );
   if( rule > good::Orders::none )
   {
-    Logger::warning( "OrderGoodWidget: unknown rule %d", (int)rule );
+    Logger::warning( "OrderGoodWidget: unknown rule {0}", (int)rule );
     return;
   }
 
   const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-  _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
+  _btnChangeRule->setFont( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE );
   _btnChangeRule->setText( _(ruleName[ rule ]) );
 }
 
-void gui::OrderGoodWidget::changeRule()
+void OrderGoodWidget::changeRule()
 {
-  good::Orders::Order rule = _storage.getOrder( _type );
-  _storage.setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
+  good::Orders::Order rule = _storage.getOrder( _info.type() );
+  _storage.setOrder( _info.type(), good::Orders::Order( (rule+1) % (good::Orders::none)) );
   updateBtnText();
 }
 

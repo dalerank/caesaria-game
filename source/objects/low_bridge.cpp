@@ -15,9 +15,9 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "low_bridge.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
@@ -271,7 +271,7 @@ bool LowBridge::build( const city::AreaInfo& info )
 {
   TilePos endPos, startPos;
   _d->direction=direction::none;
-  setSize( Size(0) );
+  setSize( Size::zero );
   Construction::build( info );
 
   _d->subtiles.clear();
@@ -323,8 +323,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
-      GameEventPtr event = BuildAny::create( buildPos, subtile.object() );
-      event->dispatch();
+      events::dispatch<BuildAny>( buildPos, subtile.object() );
       index++;
     }
   }
@@ -358,10 +357,9 @@ void LowBridge::destroy()
   for( auto tile : _d->subtiles )
   {
     tile->_parent = 0;
-    GameEventPtr event = ClearTile::create( tile->_pos );
-    event->dispatch();
+    events::dispatch<ClearTile>( tile->_pos );
 
-    Tile& mapTile = _city()->tilemap().at( tile->_pos );
+    Tile& mapTile = _map().at( tile->_pos );
     tile::decode( mapTile, tile->_info );
   }
 }
@@ -374,7 +372,7 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  for( auto& subtile : _d->subtiles )
+  for( const auto& subtile : _d->subtiles )
   {
     vl_tinfo.push_back( subtile->_imgId );
   }
@@ -409,7 +407,7 @@ LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
   _index = index;
   _parent = 0;
   _rpicture.load( ResourceGroup::transport, index );
-  _rpicture.addOffset( tile::tilepos2screen( _pos ) );
+  _rpicture.addOffset( _pos.toScreenCoordinates() );
 }
 
 LowBridgeSubTile::~LowBridgeSubTile() {}
@@ -420,13 +418,12 @@ bool LowBridgeSubTile::isWalkable() const { return true;  }
 
 bool LowBridgeSubTile::isNeedRoad() const { return false; }
 
-bool LowBridgeSubTile::build(const city::AreaInfo &info)
+bool LowBridgeSubTile::build(const city::AreaInfo &areainfo)
 {
-  Construction::build( info );
+  Construction::build( areainfo );
   _fgPictures().clear();
-  _pos = info.pos;
-  const MetaData& md = MetaDataHolder::find( type() );
-  Point sbOffset = md.getOption( "subtileOffset" );
+  _pos = areainfo.pos;
+  Point sbOffset = info().getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );
   _fgPictures().push_back( _rpicture );

@@ -36,6 +36,13 @@ public:
 
   PushButton( Widget* );
 
+  PushButton(Widget* parent,
+              const RectF& rectangle,
+              const std::string& caption="",
+              int id=-1,
+              bool noclip=false,
+              const BackgroundStyle bgstyle=greyBorderLine);
+
   //! constructor
   PushButton( Widget* parent,
               const Rect& rectangle,
@@ -56,6 +63,8 @@ public:
   //! override render function 
   virtual void draw( gfx::Engine& painter );
 
+  virtual void debugDraw(gfx::Engine &painter);
+
   virtual void setText(const std::string& text );
 
   virtual void setPressed( bool pressed );
@@ -73,6 +82,7 @@ public:
 
   virtual void setIcon( const std::string& rcname, int index, ElementState state );
   virtual void setIcon( const std::string& rcname, int index );
+  virtual void setIcon( gfx::Picture pic );
   virtual void setIconOffset( Point offset );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );
@@ -80,8 +90,10 @@ public:
 
   virtual void setFont( const Font& font, ElementState state );
   virtual void setFont( const Font& font );
+  virtual void setFont( const std::string& fname );
+  virtual void setFont( FontType type, NColor color=0 );
 
-  virtual Font font( ElementState state );
+  virtual Font font( ElementState state ) const;
 
   virtual bool isPushButton() const;
   virtual void setIsPushButton( bool value );
@@ -89,6 +101,7 @@ public:
   virtual void setupUI(const VariantMap &ui);
 
   virtual void setTextOffset( const Point& offset );
+  virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=0);
 
 signals public:
   virtual Signal0<>& onClicked(); 
@@ -108,7 +121,7 @@ protected:
 
   virtual ElementState _state();
   virtual void _updateBackground( ElementState state );
-  virtual void _updateTextPic();
+  virtual void _updateTexture();
 
   gfx::Picture& _textPicture();
   void _updateStyle();

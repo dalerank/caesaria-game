@@ -58,6 +58,7 @@ public:
 
   const std::string& errorMessage() const;
   void join();
+  void stop();
   void abort();
   void setDelay(int ms);
   bool running() const;

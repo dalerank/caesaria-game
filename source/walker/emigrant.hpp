@@ -25,10 +25,10 @@
 namespace gfx { class CartAnimation; }
 
 /** This is an emigrant coming with his stuff */
-class Emigrant : public Human
+class Emigrant : public Citizen
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static EmigrantPtr create( PlayerCityPtr city );
   static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
                                 const gfx::Tile& startTile, std::string thoughts );
 

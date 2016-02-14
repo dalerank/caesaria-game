@@ -24,8 +24,10 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
+#include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
+#include "core/logger.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -38,6 +40,7 @@ public:
   {
     unsigned int current;
     unsigned int maximum;
+    walker::Type type;
   } workers;
 
   bool isActive;
@@ -51,14 +54,15 @@ public signals:
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
-: Building( type, size ), _d( new Impl )
+  : Building( type, size ), _d( new Impl )
 {
   _d->workers.current = 0;
+  _d->workers.type = walker::unknown;
   _d->workers.maximum = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
   _d->laborAccessKoeff = 100;
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -80,7 +84,7 @@ void WorkingBuilding::load( const VariantMap& stream)
 
   if( !_d->workers.maximum )
   {
-    _d->workers.maximum = MetaDataHolder::find( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = info().employers();
   }
 }
 
@@ -120,11 +124,11 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
-void WorkingBuilding::initialize(const MetaData& mdata)
+void WorkingBuilding::initialize(const object::Info& mdata)
 {
   Building::initialize( mdata );
 
-  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+  setMaximumWorkers( (unsigned int)mdata.employers() );
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
@@ -133,7 +137,7 @@ unsigned int WorkingBuilding::maximumWorkers() const { return _d->workers.maximu
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->workers.current = math::clamp( currentWorkers, 0u, _d->workers.maximum );}
 unsigned int WorkingBuilding::numberWorkers() const { return _d->workers.current; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
-unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
+math::Percent WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
 bool WorkingBuilding::mayWork() const { return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
@@ -141,8 +145,9 @@ bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
-std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
+std::string WorkingBuilding::errorDesc() const { return _d->errorStr; }
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+void WorkingBuilding::_setWorkersType(walker::Type type) { _d->workers.type = type; }
 Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
@@ -180,27 +185,27 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
   {
     if( mayWork() )
     {
-      if( _animationRef().isStopped() )
+      if( _animation().isStopped() )
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animationRef().isRunning() )
+      if( _animation().isRunning() )
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
-    _animationRef().update( time );
-    const Picture& pic = _animationRef().currentFrame();
+    _animation().update( time );
+    const Picture& pic = _animation().currentFrame();
     if( pic.isValid() && !_fgPictures().empty() )
     {
-      _fgPictures().back() = _animationRef().currentFrame();
+      _fgPictures().back() = _animation().currentFrame();
     }
   }
 }
@@ -208,10 +213,10 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 void WorkingBuilding::_changeAnimationState(bool enabled)
 {
   if( enabled )
-    _animationRef().start();
+    _animation().start();
   else
   {
-    _animationRef().stop();
+    _animation().stop();
 
     if( _d->clearAnimationOnStop && !_fgPictures().empty() )
     {
@@ -221,26 +226,33 @@ void WorkingBuilding::_changeAnimationState(bool enabled)
 }
 
 void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
+walker::Type WorkingBuilding::workerType() { return _d->workers.type; }
 
 void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-  e->dispatch();
-
-  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
-  e->dispatch();
+  events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
 
   setWorkers( 0 );
 }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() && !walker->isDeleted() )
+  if( walker.isNull() )
   {
-    _d->walkerList.push_back( walker );
+    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    return;
   }
+
+   if( walker->isDeleted() )
+   {
+      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+     return;
+   }
+
+   _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()
@@ -255,8 +267,7 @@ void WorkingBuilding::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 
@@ -274,6 +285,7 @@ void WorkingBuilding::burn()
   _disaster();
 }
 
+
 namespace {
 
 static const unsigned int productivityDescriptionCount = 6;
@@ -288,20 +300,20 @@ static const char* productivityDescription[] =
 
 std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
-  std::string factoryType = object::toString( w->type() );
+  std::string factoryType = w->info().typeName();
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
 
   if( prefix.empty() )
   {
-    return utils::format( 0xff, "##%s_%s##",
-                          factoryType.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}##",
+                        factoryType, productivityDescription[ workKoeff ] );
   }
   else
   {
-    return utils::format( 0xff, "##%s_%s_%s##",
-                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}_{2}##",
+                        factoryType, prefix, productivityDescription[ workKoeff ] );
   }
 }
 

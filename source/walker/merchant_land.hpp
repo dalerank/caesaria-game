@@ -24,10 +24,8 @@
 /** This is the empire merchant which buy/sell goods at warehouses */
 class LandMerchant : public Merchant
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-  static LandMerchantPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
-
   virtual ~LandMerchant();
 
   void send2city();
@@ -51,7 +49,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  LandMerchant( PlayerCityPtr city );
+  LandMerchant( PlayerCityPtr city, world::MerchantPtr m=nullptr );
 
   class Impl;
   ScopedPtr< Impl > _d;

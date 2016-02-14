@@ -29,12 +29,14 @@
 #include "environment.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
+#include "window.hpp"
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
 #include "gfx/decorator.hpp"
 #include "listbox.hpp"
 #include "core/metric.hpp"
+#include "gfx/drawstate.hpp"
 #include "city/config.hpp"
 #include "core/osystem.hpp"
 
@@ -58,13 +60,29 @@ public:
   Label* lbFunds;
   Label* lbDate;
   bool useIcon;
+  bool constructorMode;
   ContextMenu* langSelect;
 
   struct {
     Batch batch;
-    Pictures pics;
+    Pictures fallback;
     Rects rects;
   } bg;
+
+  struct {
+    Signal0<> onExit;
+    Signal0<> onEnd;
+    Signal0<> onSave;
+    Signal0<> onLoad;
+    Signal0<> onRestart;
+    Signal0<> onShowVideoOptions;
+    Signal0<> onShowSoundOptions;
+    Signal0<> onShowGameSpeedOptions;
+    Signal0<> onShowCityOptions;
+    Signal1<bool> onToggleConstructorMode;
+    Signal1<int> onShowExtentInfo;
+    Signal1<Advisor> onRequestAdvisor;
+  } signal;
 
 slots public:
   void resolveSave();
@@ -75,19 +93,6 @@ slots public:
   void showShortKeyInfo();
   void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
-
-signals public:
-  Signal0<> onExitSignal;
-  Signal0<> onEndSignal;
-  Signal0<> onSaveSignal;
-  Signal0<> onLoadSignal;
-  Signal0<> onRestartSignal;
-  Signal0<> onShowVideoOptionsSignal;
-  Signal0<> onShowSoundOptionsSignal;
-  Signal0<> onShowGameSpeedOptionsSignal;
-  Signal0<> onShowCityOptionsSignal;
-  Signal1<int> onShowExtentInfoSignal;
-  Signal1<Advisor> onRequestAdvisorSignal;
 };
 
 void TopMenu::draw(gfx::Engine& engine)
@@ -97,10 +102,9 @@ void TopMenu::draw(gfx::Engine& engine)
 
   _d->updateDate();
 
-  if( _d->bg.batch.valid() )
-    engine.draw( _d->bg.batch, &absoluteClippingRectRef() );
-  else
-    engine.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( engine, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->bg.batch )
+      .fallback( _d->bg.fallback, _d->bg.rects );
 
   MainMenu::draw( engine );
 }
@@ -108,13 +112,13 @@ void TopMenu::draw(gfx::Engine& engine)
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _d->useIcon ? "" : _("##pop##"), value ) );
+    _d->lbPopulation->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _d->useIcon ? "" : _("##denarii_short##"), value) );
+    _d->lbFunds->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
@@ -141,32 +145,27 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showShortKeyInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* shortKeyInfo = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  shortKeyInfo->setupUI( ":/gui/shortkeys.gui" );
-  shortKeyInfo->setCenter( parent->center() );
+  Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
+  shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
 
-  auto btnExit = new TexturedButton( shortKeyInfo,
-                                     Point( shortKeyInfo->width() - 34, shortKeyInfo->height() - 34 ),
-                                     Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  WidgetEscapeCloser::insertTo( shortKeyInfo );
-
-  CONNECT( btnExit, onClicked(), shortKeyInfo, Label::deleteLater );
+  shortKeyInfo.moveToCenter();
+  WidgetClosers::insertTo( &shortKeyInfo, KEY_RBUTTON );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 {
-  int tag = sender->getProperty( CAESARIA_STR_A(ExtentInfo) );
+  int tag = sender->getProperty( TEXT(ExtentInfo) );
   if( tag != extentinfo::none )
   {
-    emit onShowExtentInfoSignal( tag );
+    emit signal.onShowExtentInfo( tag );
   }
 }
 
 void TopMenu::Impl::initBackground( const Size& size )
 {
   Pictures p_marble;
-  p_marble.load( ResourceGroup::panelBackground, 1, 12 );
+  p_marble.load( gui::rc.panel, 1, 12 );
 
   unsigned int i = 0;
   int x = 0;
@@ -175,28 +174,20 @@ void TopMenu::Impl::initBackground( const Size& size )
   while( x < size.width() )
   {
     const Picture& pic = p_marble[i%12];
-    bg.pics.push_back( pic );
+    bg.fallback.push_back( pic );
     bg.rects.push_back( Rect( Point( x, 0), pic.size() * ykoef ) );
     x += pic.width() * ykoef;
     i++;
   }
 
-  bool batchOk = bg.batch.load( bg.pics, bg.rects );
+  bool batchOk = bg.batch.load( bg.fallback, bg.rects );
   if( !batchOk )
     bg.batch.destroy();
 }
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( ":/gui/about.gui" );
-  bg->setCenter( parent->center() );
-
-  TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  WidgetEscapeCloser::insertTo( bg );
-
-  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
+  lbDate->ui()->add<SimpleWindow>( Rect( 0, 0, 500, 300 ), "", ":/gui/about.gui" );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
@@ -208,6 +199,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
   _d->initBackground( size() );
   _d->useIcon = useIcon;
+  _d->constructorMode = false;
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
@@ -216,21 +208,21 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   if( _d->lbPopulation )
   {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
-    _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
-    _d->lbPopulation->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::population );
+    _d->lbPopulation->setIcon( useIcon ? "population" : "none", 1 );
+    _d->lbPopulation->addProperty( TEXT(ExtentInfo), extentinfo::population );
   }
 
   if( _d->lbFunds )
   {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
-    _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
-    _d->lbFunds->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::economy);
+    _d->lbFunds->setIcon( useIcon ? "paneling" : "", 332 );
+    _d->lbFunds->addProperty( TEXT(ExtentInfo), extentinfo::economy);
   }
 
   if( _d->lbDate )
   {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
-    _d->lbDate->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::celebrates );
+    _d->lbDate->addProperty( TEXT(ExtentInfo), extentinfo::celebrates );
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 
@@ -238,16 +230,16 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   ContextMenu* file = tmp->addSubMenu();
 
   ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
-  ContextMenuItem* load = file->addItem( _("##mainmenu_loadgame##"), -1, true, false, false, false );
-  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
-  ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
-  ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
+  ContextMenuItem* load =    file->addItem( _("##mainmenu_loadgame##"),  -1, true, false, false, false );
+  ContextMenuItem* save =    file->addItem( _("##gmenu_file_save##"),    -1, true, false, false, false );
+  ContextMenuItem* mainMenu= file->addItem( _("##gmenu_file_mainmenu##"),-1, true, false, false, false );
+  ContextMenuItem* exit =    file->addItem( _("##gmenu_exit_game##"),    -1, true, false, false, false );
 
-  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::_emit );
-  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::_emit );
-  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::_emit );
-  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::_emit );
-  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::_emit );
+  CONNECT( restart, onClicked(), &_d->signal.onRestart, Signal0<>::_emit );
+  CONNECT( exit, onClicked(), &_d->signal.onExit, Signal0<>::_emit );
+  CONNECT( save, onClicked(), &_d->signal.onSave, Signal0<>::_emit );
+  CONNECT( load, onClicked(), &_d->signal.onLoad, Signal0<>::_emit );
+  CONNECT( mainMenu, onClicked(), &_d->signal.onEnd, Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
@@ -255,11 +247,14 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
   ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
+  ContextMenuItem* constrMode = options->addItem( _("##city_constr_mode##"), -1, true, false, false, false );
+  constrMode->setAutoChecking( true );
 
-  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::_emit );
-  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::_emit );
-  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::_emit );
-  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::_emit );
+  CONNECT( screen, onClicked(), &_d->signal.onShowVideoOptions,     Signal0<>::_emit );
+  CONNECT( speed,  onClicked(), &_d->signal.onShowGameSpeedOptions, Signal0<>::_emit );
+  CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
+  CONNECT( cityopts,  onClicked(), &_d->signal.onShowCityOptions,   Signal0<>::_emit );
+  CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -270,35 +265,36 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( _("##visit_labor_advisor##"), advisor::employers );
+  advisersMenu->addItem( _("##visit_labor_advisor##"      ), advisor::employers );
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
-  advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
-  advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading );
+  advisersMenu->addItem( _("##visit_imperial_advisor##"   ), advisor::empire );
+  advisersMenu->addItem( _("##visit_rating_advisor##"     ), advisor::ratings );
+  advisersMenu->addItem( _("##visit_trade_advisor##"      ), advisor::trading );
   advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
   advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
   advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
   advisersMenu->addItem( _("##visit_religion_advisor##"   ), advisor::religion );
   advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
-  advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
-  advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
+  advisersMenu->addItem( _("##visit_financial_advisor##"  ), advisor::finance );
+  advisersMenu->addItem( _("##visit_chief_advisor##"      ), advisor::main );
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
   _d->updateDate();
 }
 
-Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
-Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
-Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
-Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
-Signal1<int> &TopMenu::onShowExtentInfo() { return _d->onShowExtentInfoSignal; }
-Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
-Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
-Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }
-Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
-Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
-Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
-void TopMenu::Impl::resolveAdvisorShow(int id) { emit onRequestAdvisorSignal( (advisor::Type)id ); }
+Signal0<>& TopMenu::onExit() {  return _d->signal.onExit; }
+Signal0<>& TopMenu::onSave(){  return _d->signal.onSave; }
+Signal0<>& TopMenu::onEnd(){  return _d->signal.onEnd; }
+Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->signal.onRequestAdvisor; }
+Signal1<int> &TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
+Signal0<>& TopMenu::onLoad(){  return _d->signal.onLoad; }
+Signal0<>&TopMenu::onRestart() { return _d->signal.onRestart; }
+Signal0<>& TopMenu::onShowVideoOptions(){  return _d->signal.onShowVideoOptions; }
+Signal0<>&TopMenu::onShowSoundOptions(){ return _d->signal.onShowSoundOptions; }
+Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->signal.onShowGameSpeedOptions; }
+Signal0<>&TopMenu::onShowCityOptions(){ return _d->signal.onShowCityOptions; }
+void TopMenu::Impl::resolveAdvisorShow(int id) { emit signal.onRequestAdvisor( (advisor::Type)id ); }
+Signal1<bool>&gui::TopMenu::onToggleConstructorMode() { return _d->signal.onToggleConstructorMode; }
 
 }//end namespace gui

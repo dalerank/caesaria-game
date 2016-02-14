@@ -115,7 +115,7 @@ bool IC_Command_INFO::invoke(const StringArray& args,
 			pOutput->appendMessage( strings[ cnt ] );
 
 
-		pOutput->appendMessage( std::string( "Size of objlist = " ) + utils::format( 0xff, "%d", strings.size() ) );
+    pOutput->appendMessage( std::string( "Size of objlist = " ) + utils::i2str( strings.size() ) );
 
 		return true;
 	}

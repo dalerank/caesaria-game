@@ -32,9 +32,6 @@ namespace city
 class AmbientSound : public Srvc
 {
 public:
-  /** constructor **/
-  static SrvcPtr create( PlayerCityPtr city );
-
   /** Call before destructor */
   virtual void destroy();
 
@@ -47,8 +44,8 @@ public:
   static std::string defaultName();
 
   virtual ~AmbientSound();
-private:
   AmbientSound( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

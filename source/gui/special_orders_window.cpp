@@ -44,10 +44,8 @@ class BaseSpecialOrdersWindow::Impl
 public:
   Pictures bgPicture;
   GroupBox* gbOrders;
-  Widget* gbOrdersInsideArea;
   Label* lbTitle;
-  PushButton* btnExit;
-  PushButton* btnHelp;
+  Widget* gbOrdersInsideArea;
   PushButton* btnEmpty;
 };
 
@@ -55,25 +53,24 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 50, 10, width()-50, 10 + 30 ), "", true );
-  _d->lbTitle->setFont( Font::create( FONT_5 ) );
-  _d->lbTitle->setTextAlignment( align::center, align::center );
+  auto& lbTitle = add<Label>( Rect( 50, 10, width()-50, 10 + 30 ), "", true );
+  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setTextAlignment( align::center, align::center );
+  _d->lbTitle = &lbTitle;
 
-  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
+  auto& btnExit = add<ExitButton>( Point( 472, height() - 39 ), Widget::noId );
+  btnExit.setTooltipText( _("##infobox_tooltip_exit##") );
 
-  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
+  auto& btnHelp = add<HelpButton>( Point( 14, height() - 39 ), "" );
+  btnHelp.setTooltipText( _("##infobox_tooltip_help##") );
 
-  _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
-  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
-
-  CONNECT( _d->btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
+  auto& gbOrders = add<GroupBox>( Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
+  _d->gbOrdersInsideArea = &gbOrders.add<Widget>( -1, Rect( 5, 5, gbOrders.width()-5, gbOrders.height()-5 ) );
 }
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
-Widget*BaseSpecialOrdersWindow::_ordersArea()
+Widget* BaseSpecialOrdersWindow::_ordersArea()
 {
   return _d->gbOrdersInsideArea;
 }
@@ -94,12 +91,12 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
     {
       deleteLater();
       return true;
     }
-    else if( event.mouse.type == mouseLbtnRelease )
+    else if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }
@@ -112,6 +109,10 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void BaseSpecialOrdersWindow::setTitle( const std::string& text ){  _d->lbTitle->setText( text );}
+void BaseSpecialOrdersWindow::setTitle( const std::string& text )
+{
+  if( _d->lbTitle )
+    _d->lbTitle->setText( text );
+}
 
 }//end namespace gui

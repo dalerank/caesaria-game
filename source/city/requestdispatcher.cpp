@@ -52,26 +52,17 @@ Dispatcher::Dispatcher( PlayerCityPtr city )
 {
 }
 
-city::SrvcPtr Dispatcher::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Dispatcher( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 {
   const std::string type = stream.get( "reqtype" ).toString();
   if( type == RqGood::typeName() )
   {
-    RequestPtr r = RqGood::create( stream );
-    _d->newRequests.push_back( r );
+    RequestPtr request = RqGood::create( stream );
+    _d->newRequests.push_back( request );
 
     if( showMessage )
     {
-      events::GameEventPtr e = events::ShowRequestInfo::create( r );
-      e->dispatch();
+      events::dispatch<events::ShowRequestInfo>( request );
     }
     return true;
   }
@@ -97,9 +88,9 @@ void Dispatcher::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
     bool isReady = request->isReady( rcity );
     if( !request->isAnnounced() && isReady )
     {
-      events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+      auto event = events::ShowRequestInfo::create( request, true );
       request->setAnnounced( true );
-      e->dispatch();
+      event->dispatch();
     }
 
     request->update();
@@ -140,7 +131,7 @@ VariantMap Dispatcher::save() const
 void Dispatcher::load(const VariantMap& stream)
 {
   VariantMap vm_items = stream.get( "items" ).toMap();
-  for( auto item : vm_items )
+  for( const auto& item : vm_items )
     add( item.second.toMap(), false );
 
   VARIANT_LOAD_TIME_D( _d, lastRequestCancelDate, stream )

@@ -47,22 +47,21 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( !dock.isValid() )
   {
-    Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutMarket: market is null tile at [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 
   setBase( dock );
   _setWorkingVisible( true );
 
-  Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
-  lbAbout->setWordwrap( true );
-  lbAbout->setFont( Font::create( FONT_1 ) );
-  lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
+  Label& lbAbout = add<Label>( Rect( 15, 30, width() - 15, 50) );
+  lbAbout.setWordwrap( true );
+  lbAbout.setFont( FONT_1 );
+  lbAbout.setTextAlignment( align::upperLeft, align::upperLeft );
 
-  std::string title = MetaDataHolder::findPrettyName( dock->type() );
-  setTitle( _( title ) );
+  setTitle( _( dock->info().prettyName() ) );
 
-  lbAbout->setText( _( dock->numberWorkers() > 0 ? "##dock_about##" : "##dock_no_workers##" ) );
+  lbAbout.setText( _( dock->numberWorkers() > 0 ? "##dock_about##" : "##dock_no_workers##" ) );
   updateStore( dock );
 
   _updateWorkersLabel( Point( 32, 8 ), 542, dock->maximumWorkers(), dock->numberWorkers() );
@@ -77,17 +76,16 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   int offset = ( width() - startOffset * 2 ) / 6;
   //std::string goodName = good::Helper::name( goodType );
   int qty = dock->exportStore().qty( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
-  Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  Label& lb = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
+  lb.setFont( FONT_2 );
+  lb.setIcon( good::Info( goodType ).picture() );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 30, 0 ) );
 }
 
 void AboutDock::updateStore( DockPtr dock )

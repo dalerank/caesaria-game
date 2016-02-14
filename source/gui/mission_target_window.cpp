@@ -49,7 +49,6 @@ class MissionTargets::Impl
 public:
   audio::Muter muter;
   audio::SampleDeleter speechDel;
-  GameAutoPause locker;
   PlayerCityPtr city;
   Label* lbTitle;
   Label* subTitle;
@@ -63,27 +62,12 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
-{
-  MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
-  ret->setCenter( parent->center() );
-  ret->setCity( city );
-  ret->show();
-  ret->setModal();
 
-  return ret;
-}
-
-MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
-  : Window( parent, rectangle, "", id ), _d( new Impl )
+MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, const Rect& rectangle )
+  : Window( parent, rectangle.width() > 0 ? rectangle : Rect( 0, 0, 610, 430 ), "", id )
+  , _d( new Impl )
 {
   Widget::setupUI( ":/gui/targets.gui" );
-  _d->locker.activate();
-
-  WidgetEscapeCloser::insertTo( this );
-
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
-  CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
@@ -93,6 +77,16 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   GET_DWIDGET_FROM_UI( _d, lbPeace  )
   GET_DWIDGET_FROM_UI( _d, lbShortDesc )
   GET_DWIDGET_FROM_UI( _d, lbxHelp )
+
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), MissionTargets::deleteLater );
+
+  setCity( city );
+
+
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
+  GameAutoPauseWidget::insertTo( this );
+  moveToCenter();
+  setModal();
 }
 
 void MissionTargets::draw( gfx::Engine& painter )
@@ -126,34 +120,34 @@ void MissionTargets::setCity(PlayerCityPtr city)
 
   if( _d->lbProsperity )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
+    text = fmt::format( "{}:{}", _("##senatepp_prsp_rating##"), wint.needProsperity() );
     _d->lbProsperity->setText( text );
     _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
   }
 
   if( _d->lbPopulation )
   {
-    text = utils::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
+    text = fmt::format( "{}:{}", _("##mission_wnd_population##"), wint.needPopulation() );
     _d->lbPopulation->setText( text );
   }
 
   if( _d->lbFavour )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
+    text = fmt::format( "{}:{}", _("##senatepp_favour_rating##"), wint.needFavour() );
     _d->lbFavour->setText( text );
     _d->lbFavour->setVisible( wint.needFavour() > 0 );
   }
 
   if( _d->lbCulture )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
+    text = fmt::format( "{}:{}", _("##senatepp_clt_rating##"), wint.needCulture() );
     _d->lbCulture->setText( text );
     _d->lbCulture->setVisible( wint.needCulture() > 0 );
   }
 
   if( _d->lbPeace )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
+    text = fmt::format( "{}:{}", _("##senatepp_peace_rating##"), wint.needPeace() );
     _d->lbPeace->setText( text );
     _d->lbPeace->setVisible( wint.needPeace() > 0 );
   }
@@ -162,9 +156,8 @@ void MissionTargets::setCity(PlayerCityPtr city)
   {
     _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
-    foreach( it, wint.overview() )
+    for( const auto& text : wint.overview() )
     {
-      std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
       {
         Picture pic( text.substr( 5 ) );

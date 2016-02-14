@@ -67,7 +67,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 }
 
 
-GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size(3))
+GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size::square(3))
 {
   _fgPictures().resize(1);
 }
@@ -75,7 +75,7 @@ GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, 
 void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  auto trainee = TraineeWalker::create( _city(), walker::gladiator );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::gladiator );
   trainee->send2City( this );
 }
 
@@ -84,7 +84,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
   TrainingBuilding::timeStep( time );
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size::square(3) )
 {
    _fgPictures().resize(1);
 }
@@ -97,7 +97,7 @@ void LionsNursery::timeStep(const unsigned long time)
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  auto tamer = LionTamer::create( _city() );
+  auto tamer = Walker::create<LionTamer>( _city() );
   tamer->send2City( this, true );
 
   addWalker( tamer.object() );

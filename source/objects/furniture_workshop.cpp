@@ -45,7 +45,8 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
   return true;
 }
 
-FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop()
+  : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2,2) )
 {
   _picture().load( ResourceGroup::commerce, 117 );
   _fgPictures().resize( 3 );

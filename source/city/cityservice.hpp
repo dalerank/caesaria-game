@@ -26,9 +26,17 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Srvc)
+
 class Srvc : public ReferenceCounted
 {
 public:
+  template<typename Class, typename... Args>
+  static SrvcPtr create( const Args & ... args)
+  {
+    auto instance = ptr_make<Class>( args... );
+    return ptr_cast<Srvc>( instance );
+  }
   /**
    * @brief Call every frame
    * @param Current frame in city
@@ -65,8 +73,6 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-typedef SmartPtr<Srvc> SrvcPtr;
 
 }//end namespace city
 

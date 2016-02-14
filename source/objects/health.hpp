@@ -25,7 +25,8 @@ class HealthBuilding : public ServiceBuilding
 public:
   virtual ~HealthBuilding();
 
-  virtual unsigned int patientsNumber() const;
+  virtual unsigned int patientsMax() const;
+  virtual unsigned int patientsCurrent() const;
 
   virtual void buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr);
   virtual unsigned int walkerDistance() const;
@@ -33,6 +34,8 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+  virtual void initialize(const object::Info &mdata);
 
 protected:
   HealthBuilding( const Service::Type service,

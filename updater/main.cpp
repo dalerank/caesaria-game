@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 	// Start logging
   Logger::registerWriter( Logger::consolelog, "" );
 
-  Logger::warning( "Updater v%s (c) 2012-2015 by dalerank is"
+  Logger::warning( "Updater v{} (c) 2012-2015 by dalerank is"
 									 " part of CaesarIA (http://bitbucket.org/dalerank/caesaria).",
 									 LIB_UPDATE_VERSION );
 	Logger::warning( "\n" );

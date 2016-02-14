@@ -25,6 +25,7 @@ namespace vfs
 {
 
 class Directory;
+class Info;
 
 class Path
 {
@@ -75,6 +76,8 @@ public:
   Path operator+(const Path& other );
   Path canonical() const;
 
+  Info info() const;
+
   //! flatten a path and file name for example: "/you/me/../." becomes "/you"
   Path flattenFilename( const Path& root = "/" ) const;
 
@@ -101,6 +104,11 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+inline std::string operator+(const std::string& str, const Path& path)
+{
+  return str + path.toString();
+}
 
 }//end namespace io
 

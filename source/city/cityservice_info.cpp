@@ -77,13 +77,7 @@ VariantMap Info::MaxParameters::save() const
 {
   VariantMap maxParamVm;
   for( int k=0; k < paramsCount; k++ )
-  {
-    VariantList paramVm;
-    paramVm << (*this)[ k ].date;
-    paramVm << (*this)[ k ].value;
-
-    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
-  }
+    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = VariantList( (*this)[ k ].date, (*this)[ k ].value );
 
   return maxParamVm;
 }
@@ -94,19 +88,10 @@ void Info::MaxParameters::load(const VariantMap &vm)
   for( auto& item : vm )
   {
     int index = utils::toInt( item.first );
-    DateTime date = item.second.toList().get( 0 ).toDateTime();
-    int value = item.second.toList().get( 1 ).toInt();
-    (*this)[ index ].date = date;
-    (*this)[ index ].value = value;
+    VariantList vl = item.second.toList();
+    (*this)[ index ].date = vl.get( 0 ).toDateTime();
+    (*this)[ index ].value = vl.get( 1 ).toInt();
   }
-}
-
-SrvcPtr Info::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Info( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Info::Info( PlayerCityPtr city )
@@ -162,17 +147,8 @@ void Info::timeStep(const unsigned int time )
     last[ blackHouses ] = _city()->statistic().houses.terribleNumber();
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc = _city()->statistic().services.find<Peace>();
-    if( peaceSrvc.isValid() )
-    {
-      last[ peace ] = peaceSrvc->value();
-    }
-
-    MilitaryPtr mil = _city()->statistic().services.find<Military>();
-    if( mil.isValid() )
-    {
-      last[ Info::milthreat ] = mil->threatValue();
-    }
+    last[ peace ] = _city()->statistic().services.value<Peace>();
+    last[ Info::milthreat ] = _city()->statistic().services.value<Military>();
 
     auto habitable = _city()->statistic().houses.habitable();
 
@@ -186,10 +162,7 @@ void Info::timeStep(const unsigned int time )
       last[ houseNumber ]++;
     }
 
-    SentimentPtr sentimentSrvc = _city()->statistic().services.find<Sentiment>();
-
-    if( sentimentSrvc.isValid())
-      last[ sentiment ] = sentimentSrvc->value();
+    last[ sentiment ] = _city()->statistic().services.value<Sentiment>();
 
     for( int k=0; k < paramsCount; k++ )
     {
@@ -229,7 +202,7 @@ Info::Parameters Info::yearParams(unsigned int year) const
 
 const Info::MaxParameters& Info::maxParams() const { return _d->maxparam; }
 const Info::History& Info::history() const { return _d->allHistory; }
-std::string Info::defaultName() {  return CAESARIA_STR_EXT(Info); }
+std::string Info::defaultName() {  return TEXT(Info); }
 
 VariantMap Info::save() const
 {
@@ -264,29 +237,23 @@ Info::Parameters::Parameters()
 Info::Parameters::Parameters(const Info::Parameters& other)
 {
   resize( paramsCount );
-  for( unsigned int i=0; i < other.size(); i++ )
-    (*this)[ i ] = other[ i ];
+  *this = other;
+  //std::copy( other.begin(), other.end(), begin() );
 }
 
 VariantList Info::Parameters::save() const
 {
   VariantList vl;
   for( int k=0; k < Info::paramsCount; k++  )
-  {
     vl.push_back( (*this)[ k ] );
-  }
 
   return vl;
 }
 
 void Info::Parameters::load(const VariantList& stream)
 {
-  int k=0;
   for( auto& it : stream )
-  {
-    (*this)[ k ] = it;
-    k++;
-  }
+    push_back( it );
 }
 
 }//end namespace city

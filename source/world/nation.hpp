@@ -18,15 +18,18 @@
 #ifndef _CAESARIA_NATIONTYPE_INCLUDE_H_
 #define _CAESARIA_NATIONTYPE_INCLUDE_H_
 
+#include <string>
+
 namespace world
 {
 
 namespace nation
 {
+
 enum Type
 {
   unknown=0,
-  rome,
+  roman,
   etruscan,
   barbarian,
   numidian,
@@ -46,9 +49,13 @@ enum Type
   helveti,
   count
 };
-}//end namespace nation
 
+}//end namespace nation
 typedef nation::Type Nation;
+
+Nation toNation( const std::string& name );
+std::string prettyName( Nation nation );
+std::string toString( Nation nation );
 
 }//end namespace world
 

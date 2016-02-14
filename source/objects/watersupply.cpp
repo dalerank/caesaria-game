@@ -34,7 +34,7 @@
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
 #include "gfx/tilearea.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 
 using namespace gfx;
 
@@ -54,10 +54,10 @@ public:
 void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
-  Tilemap& tmap = _city()->tilemap();
-  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size::square( 10 + 10 ) + size() );
 
-  foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
+  for( auto& tile : reachedTiles )
+    tile->setParam( Tile::pReservoirWater, 0 );
 }
 
 void Reservoir::_waterStateChanged()
@@ -84,7 +84,7 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
-void Reservoir::initialize(const MetaData& mdata)
+void Reservoir::initialize(const object::Info& mdata)
 {
   WaterSource::initialize( mdata );
 
@@ -101,17 +101,17 @@ void Reservoir::broke()
 }
 
 Reservoir::Reservoir()
-    : WaterSource( object::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size::square( 3 ) )
 {  
   _isWaterSource = false;
-  _picture().load( ResourceGroup::utilitya, 34 );
+  setPicture( info().randomPicture( size() ) );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _animationRef().load( ResourceGroup::utilitya, 35, 8);
-  _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _animationRef().setDelay( 11 );
+  _animation().load( ResourceGroup::utilitya, 35, 8);
+  _animation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _animation().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPictures().resize(1);
@@ -121,7 +121,7 @@ Reservoir::~Reservoir(){}
 
 bool Reservoir::build( const city::AreaInfo& info )
 {
-  Construction::build( info );
+  WaterSource::build( info );
 
   _isWaterSource = _isNearWater( info.city, info.pos );
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
@@ -131,14 +131,10 @@ bool Reservoir::build( const city::AreaInfo& info )
 
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
-  bool near_water = false;  // tells if the factory is next to a mountain
-
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size::square( 2 ), !Tilemap::CheckCorners );
 
-  foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
-
-  return near_water;
+  return perimetr.waters().size() > 0;  // tells if the factory is next to a mountain
 }
 
 void Reservoir::initTerrain(Tile &terrain) {}
@@ -163,12 +159,12 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArray reachedTiles = aquifer();
 
-    foreach( tile, reachedTiles )
+    for( auto& tile : reachedTiles )
     {
-      int value = (*tile)->param( Tile::pReservoirWater );
-      (*tile)->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );
+      int value = tile->param( Tile::pReservoirWater );
+      tile->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );
     }
   }
 
@@ -178,10 +174,23 @@ void Reservoir::timeStep(const unsigned long time)
     _produceWater(offsets, 4);
   }
 
-  _animationRef().update( time );
+  _animation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPicture( 0 ) = _animationRef().currentFrame();
+  _fgPicture( 0 ) = _animation().currentFrame();
+}
+
+TilesArray Reservoir::aquifer() const
+{
+  TilesArea r( _map(), pos() - TilePos( 10, 10 ), Size::square( 10 + 10 ) + size() );
+  return r;
+}
+
+bool Reservoir::getMinimapColor(int& color1, int& color2) const
+{
+  color1 = 0x39497B;
+  color2 = 0x313873;
+  return true;
 }
 
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
@@ -193,7 +202,7 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
   thisp->_fgPictures().clear();
   if( nearWater )
   {
-    thisp->_fgPictures().push_back( Picture( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPictures().append( ResourceGroup::utilitya, 35 );
     thisp->_fgPictures().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
@@ -247,7 +256,7 @@ void WaterSource::timeStep( const unsigned long time )
 
 void WaterSource::_produceWater(const TilePos* points, const int size)
 {
-  Tilemap& tilemap = _city()->tilemap();
+  Tilemap& tilemap = _map();
 
   for( int index=0; index < size; index++ )
   {
@@ -273,8 +282,7 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
 void WaterSource::broke()
 {
-  Tilemap& tilemap = _city()->tilemap();
-  TilesArray tiles = tilemap.rect( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = _map().rect( pos() - TilePos( 1, 1), size() + Size::square(2) );
 
   int saveWater = water();
   _d->water = 0;
@@ -293,15 +301,15 @@ void WaterSource::broke()
 void WaterSource::save(VariantMap &stream) const
 {
   Construction::save( stream );
-  stream[ "water" ] = _d->water;
-  stream[ "isRoad" ] = _d->isRoad;
+  VARIANT_SAVE_ANY_D( stream, _d, water )
+  VARIANT_SAVE_ANY_D( stream, _d, isRoad )
 }
 
 void WaterSource::load(const VariantMap &stream)
 {
   Construction::load( stream );
-  _d->water = stream.get( "water" );
-  _d->isRoad = stream.get( "isRoad" );
+  VARIANT_LOAD_ANY_D( _d, water, stream )
+  VARIANT_LOAD_ANY_D( _d, isRoad, stream )
   _d->daysWithoutWater = 0;
 }
 
@@ -314,6 +322,6 @@ TilePos Reservoir::entry(Direction direction)
   case direction::east: return pos() + TilePos( 2, 1 );
   case direction::south: return pos() + TilePos( 1, 0 );
   case direction::west: return pos() + TilePos( 0, 1 );
-  default: return gfx::tilemap::invalidLocation();
+  default: return TilePos::invalid();
   }
 }

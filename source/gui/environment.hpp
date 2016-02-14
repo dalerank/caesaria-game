@@ -28,8 +28,28 @@ namespace gui
 class Ui : Widget
 {
 public:
-  typedef enum { showTooltips=0, buttonShowDebugArea } Flag;
-  Ui( gfx::Engine& painter, const Size& size );
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
+
+  template<typename WidgetClass>
+  WidgetClass* findWidget()
+  {
+    for( auto widget : children() )
+    {
+      WidgetClass* ret = safety_cast<WidgetClass*>( widget );
+      if( ret )
+        return ret;
+    }
+
+    return nullptr;
+  }
+
+  typedef enum { showTooltips=0, drawDebugArea } Flag;
+  Ui( gfx::Engine& painter );
 
   virtual ~Ui();
 
@@ -50,7 +70,7 @@ public:
   virtual void beforeDraw();
 
   void animate(unsigned int time);
-  const Size& vsize() const;
+  Size vsize() const;
   bool handleEvent(const NEvent& event);
 
   virtual void deleteLater( Widget* ptrElement );

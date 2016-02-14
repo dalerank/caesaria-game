@@ -29,17 +29,22 @@ class Gift;
 namespace world
 {
 
+class Relation;
+class RelationAbility;
+
 class Emperor
 {
 public:
   Emperor();
   virtual ~Emperor();
 
-  int relation( const std::string& cityname ) const;
   void updateRelation( const std::string& cityname, int value );
+  void updateRelation( const std::string& cityname, const RelationAbility& ability );
 
   void sendGift( const Gift& money );
-  DateTime lastGiftDate( const std::string& cityname ) const;
+  const Gift& lastGift( const std::string& cityname ) const;
+  const Relation& relation( const std::string& cityname ) const;
+
   void timeStep( unsigned int time );
 
   void remSoldiers(const std::string& cityname, int value);

@@ -1,0 +1,6 @@
+#include "walker/walkers_factory.hpp"
+#include "walker/merchant_land.hpp"
+#include "walker/merchant_sea.hpp"
+#include "walker/chastener.hpp"
+#include "walker/helper.hpp"
+#include "walker/chastener_elephant.hpp"

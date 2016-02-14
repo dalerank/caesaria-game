@@ -66,11 +66,13 @@ std::string PlayerArmy::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap:
+  case aboutEmpireMap:
      ret =  mode() == PlayerArmy::go2home
                   ? "##playerarmy_gone_to_home##"
                   : "##playerarmy_gone_to_location##";
   break;
+
+  case aboutEmtype: return "world_playerarmy"; break;
 
   default:        ret = "##ourcity_unknown_about##";  break;
   }
@@ -88,7 +90,7 @@ PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
   return ret;
 }
 
-std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
+std::string PlayerArmy::type() const { return TEXT(PlayerArmy); }
 
 void PlayerArmy::timeStep(const unsigned int time)
 {
@@ -131,7 +133,7 @@ void PlayerArmy::move2location(Point point)
   bool validWay = _findWay( location(), point);
   if( !validWay )
   {
-    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    Logger::warning( "PlayerArmy: cant find way to point [{0},{!}]", point.x(), point.y()  );
     deleteLater();
   }
 
@@ -194,7 +196,7 @@ void PlayerArmy::killSoldiers(int percent)
 
 PlayerArmy::Mode PlayerArmy::mode() const { return _d->mode; }
 
-int PlayerArmy::viewDistance() const { return 30; }
+int PlayerArmy::searchRange() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
@@ -227,7 +229,7 @@ void PlayerArmy::_check4attack()
       _attackObject( it.second.as<Object>() );
       break;
     }
-    else if( it.first < viewDistance() )
+    else if( it.first < searchRange() )
     {
       bool validWay = _findWay( location(), it.second->location() );
       if( validWay )
@@ -338,14 +340,6 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
 {
   _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
-
-  Picture pic( ResourceGroup::empirebits, 37 );
-  Size size = pic.size();
-  pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  setPicture( pic );
-
-  _animation().clear();
-  _animation().load( "world_playerarmy" );
 }
 
 void PlayerArmy::Impl::updateStrength()

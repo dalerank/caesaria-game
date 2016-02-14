@@ -22,12 +22,13 @@
 #include "actor_colony.hpp"
 #include "walker/walker.hpp"
 #include "objects_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size(2))
+Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size::square(2))
 {
   _fgPictures().resize(2);
 
@@ -53,7 +54,7 @@ void Theater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
     _fgPictures().front().load( ResourceGroup::entertainment, 35 );
   }
@@ -66,16 +67,4 @@ void Theater::deliverService()
 
 bool Theater::mayWork() const {  return (numberWorkers() > 0 && traineeValue(walker::actor) > 0); }
 int Theater::maxVisitors() const { return 500; }
-
-WalkerList Theater::_specificWorkers() const
-{
-  WalkerList ret;
-
-  for( auto wlk : walkers() )
-  {
-    if( wlk->type() == walker::actor )
-      ret << wlk;
-  }
-
-  return ret;
-}
+WalkerList Theater::_specificWorkers() const { return utils::selectByType( walkers(), walker::actor ); }

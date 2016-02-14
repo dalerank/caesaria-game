@@ -17,17 +17,15 @@
 
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
+#include "core/platform_specific.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
-#define getline_def getline_fp
-#include "windows.h"
-#include <time.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_WIN
+  #define getline_def getline_fp
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
+  #ifdef GAME_PLATFORM_ANDROID
     #define getline_def getline_fp
   #else
     #define getline_def getline
-    #include <sys/stat.h>
   #endif
 #endif
 
@@ -91,7 +89,7 @@ long FileNative::size() const{	return _size;}
 long FileNative::getPos() const { return ftell(_file);}
 
 
-#if defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
+#if defined(GAME_PLATFORM_WIN) || defined(GAME_PLATFORM_ANDROID)
 size_t getline_fp(char **linebuf, size_t *linebufsz, FILE *file)
 {
   int delimiter = '\n';
@@ -123,7 +121,7 @@ size_t getline_fp(char **linebuf, size_t *linebufsz, FILE *file)
 
   return idx;
 }
-#endif //defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
+#endif //defined(GAME_PLATFORM_WIN) || defined(GAME_PLATFORM_ANDROID)
 
 ByteArray FileNative::readLine()
 {
@@ -195,7 +193,7 @@ void FileNative::openFile()
   const char* modeStr[] = { "rb", "wb", "ab" };
   if( (unsigned int)_mode > Entity::fmAppend )
   {
-    Logger::warning( "Unsupported file open mode for %s", _name.toCString() );
+    Logger::warning( "Unsupported file open mode for {0}", _name.toString() );
     _mode = Entity::fmRead;
   }
 
@@ -210,7 +208,7 @@ void FileNative::openFile()
   }
   else
   {
-    Logger::warning( "FileNative: Can't open file %s", _name.toCString() );
+    Logger::warning( "FileNative: Can't open file {0}", _name.toString() );
   }
 }
 
@@ -238,9 +236,9 @@ bool FileNative::isOpen() const { return _file != 0;}
 
 size_t FileNative::lastModify() const
 {
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   return 0;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(GAME_PLATFORM_UNIX)
   struct stat attr;
   stat(_name.toCString(), &attr);
   return attr.st_mtime;

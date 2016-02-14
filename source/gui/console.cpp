@@ -4,6 +4,7 @@
 #include "core/saveadapter.hpp"
 #include "gfx/engine.hpp"
 #include "core/utils.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 
@@ -144,7 +145,7 @@ void Console::draw( gfx::Engine& painter )
             << absoluteRect().righttop() << absoluteRect().rightbottom()
             << absoluteRect().rightbottom() << absoluteRect().leftbottom()
             << absoluteRect().leftbottom() << absoluteRect().lefttop();
-      painter.drawLines( DefaultColors::red, array );
+      painter.drawLines( ColorList::red, array );
     }
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed

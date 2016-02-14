@@ -28,6 +28,7 @@ public:
   virtual ~Dock();
 
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual Construction::BuildArea buildArea(const city::AreaInfo& areaInfo) const;
   virtual bool build(const city::AreaInfo& info);
   virtual void destroy();
 

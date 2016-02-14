@@ -38,6 +38,7 @@ public:
     crime,
     guard,
     missionary,
+    patrician,
     srvCount
   } Type;
 

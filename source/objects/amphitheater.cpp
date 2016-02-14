@@ -47,7 +47,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3,3)), _d( new Impl )
 {
   _fgPictures().resize(2);
 
@@ -104,7 +104,7 @@ void Amphitheater::deliverService()
 
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning())
+  if( _animation().isRunning())
   {
     _fgPictures().front().load( ResourceGroup::entertainment, 12 );
     int currentWalkerNumber = walkers().size();

@@ -20,7 +20,6 @@
 
 #include <vector>
 #include <set>
-#include "position.hpp"
 #include "variant.hpp"
 
 class TilePosArray : public std::vector< TilePos >
@@ -31,9 +30,11 @@ public:
   TilePosArray& addUnique( const TilePos& pos );
 
   TilePosArray& append( const TilePos& pos );
+  TilePosArray& append( int i, int j);
 
   TilePos valueOrEmpty( unsigned int index );
   TilePosArray& pop_front();
+  void remove( const TilePos& pos );
 
   TilePos random();
 

@@ -21,41 +21,19 @@
 #include "game/predefinitions.hpp"
 #include "game/service.hpp"
 #include "core/variant.hpp"
+#include "objects/constants.hpp"
 #include "config.hpp"
 
 namespace religion
 {
 
-typedef enum
-{
-  romeDivCeres = 0,
-  romeDivMars,
-  romeDivNeptune,
-  romeDivVenus,
-  romeDivMercury,
-
-  romeDivCount=0xff
-} RomeDivinityType;
-
-struct RomeDinName
-{
-  RomeDivinityType type;
-  std::string name;
-};
-
-const char* const baseDivinityNames[] =
-{
-  "ceres",
-  "mars",
-  "neptune",
-  "venus",
-  "mercury",
-  0
-};
+#define BIG_TEMPLE_TYPE(a) object::big_##a##_temple
+#define SML_TEMPLE_TYPE(a) object::small_##a##_temple
 
 class Divinity : public ReferenceCounted
 {
 public:
+  typedef enum { bigTemple, smallTemple } TempleSize;
   virtual std::string name() const = 0;
   virtual float relation() const = 0;
   virtual Service::Type serviceType() const = 0;
@@ -67,6 +45,7 @@ public:
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
   virtual void setEffectPoint( int value ) = 0;
+  virtual object::Type templeType( TempleSize size ) const = 0;
   virtual void setInternalName(const std::string &newName) = 0;
   virtual int wrathPoints() const = 0;
   virtual void checkAction( PlayerCityPtr city ) = 0;

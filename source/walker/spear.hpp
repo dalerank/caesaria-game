@@ -22,18 +22,18 @@
 
 class Spear : public ThrowingWeapon
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static SpearPtr create( PlayerCityPtr city );
   void setPicInfo( const std::string& rc, unsigned int index );
+  virtual void initialize(const VariantMap &options);
 
 protected:
+  Spear( PlayerCityPtr city );
   virtual void _onTarget();
   virtual const char* rcGroup() const;
   virtual int _rcStartIndex() const;
 
 private:
-  Spear( PlayerCityPtr city );
-
   std::string _picRc;
   unsigned int _picIndex;
 };

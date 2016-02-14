@@ -23,9 +23,8 @@
 
 class RomeSoldier : public Soldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:  
-  static RomeSoldierPtr create( PlayerCityPtr city, walker::Type type );
-
   void send2city(FortPtr base, TilePos pos);
   void send2expedition(const std::string& name);
 
@@ -35,6 +34,7 @@ public:
   virtual void send2patrol();  
 
   virtual void save(VariantMap &stream) const;
+  virtual Gender gender() const;
   virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 

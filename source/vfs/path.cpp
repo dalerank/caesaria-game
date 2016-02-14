@@ -20,23 +20,24 @@
 #include "filesystem.hpp"
 #include "entries.hpp"
 #include "directory.hpp"
+#include "fileinfo.hpp"
 #include "core/utils.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) 
-  #ifdef CAESARIA_PLATFORM_LINUX
+#elif defined(GAME_PLATFORM_UNIX)
+  #ifdef GAME_PLATFORM_LINUX
     //#include <sys/io.h>
     #include <linux/limits.h>
-  #elif defined(CAESARIA_PLATFORM_MACOSX)
+  #elif defined(GAME_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
   #include <libgen.h>
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
@@ -170,19 +171,19 @@ bool Path::exist(SensType sens) const
 
 bool Path::isFolder() const
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   WIN32_FILE_ATTRIBUTE_DATA fad;
   if( ::GetFileAttributesExA( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   struct stat path_stat;
   if ( ::stat( toString().c_str(), &path_stat) != 0 )
       return false;
 
   return S_ISDIR(path_stat.st_mode);
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 }
 
 bool Path::isDirectoryEntry() const
@@ -267,14 +268,14 @@ Path::~Path(){}
 
 Path Path::absolutePath() const
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   char *p=0;
   char fpath[_MAX_PATH];
 
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
   std::string tmp = utils::replace( p, "\\", "/");
   return tmp;
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   char* p=0;
   char fpath[4096];
   fpath[0]=0;
@@ -295,7 +296,7 @@ Path Path::absolutePath() const
     return Path( std::string(p) + "/" );
   else
     return Path( std::string(p) );
-#endif // CAESARIA_PLATFORM_UNIX
+#endif // GAME_PLATFORM_UNIX
 }
 
 
@@ -363,7 +364,7 @@ Path Path::getRelativePathTo( const Directory& directory ) const
   unsigned int it1=0;
   unsigned int it2=0;
 
-#if defined (CAESARIA_PLATFORM_WIN)
+#if defined (GAME_PLATFORM_WIN)
   char partition1 = 0, partition2 = 0;
   Path prefix1, prefix2;
   if ( it1 > 0 )
@@ -386,15 +387,15 @@ Path Path::getRelativePathTo( const Directory& directory ) const
   {
     return *this;
   }
-#endif //CAESARIA_PLATFORM_WIN
+#endif //GAME_PLATFORM_WIN
 
 
   for (; i<list1.size() && i<list2.size() 
-#if defined (CAESARIA_PLATFORM_WIN)
+#if defined (GAME_PLATFORM_WIN)
     && ( utils::isEquale( list1[ it1 ], list2[ it2 ], utils::equaleIgnoreCase ) )
-#elif defined(CAESARIA_PLATFORM_UNIX)
-    && ( list1[ it1 ]== list2[ it2 ] )	
-#endif //CAESARIA_PLATFORM_UNIX
+#elif defined(GAME_PLATFORM_UNIX)
+    && ( list1[ it1 ] == list2[ it2 ] )
+#endif //GAME_PLATFORM_UNIX
     ; ++i)
   {
     ++it1;
@@ -512,6 +513,8 @@ Path Path::canonical() const
 {
   return utils::localeLower( _d->path );
 }
+
+Info Path::info() const { return Info( *this ); }
 
 } //end namespace vfs
 

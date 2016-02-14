@@ -17,7 +17,7 @@
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
@@ -40,10 +40,15 @@ public:
   State state;
   bool spreadFire;
   DateTime lastTimeGrow;
+  struct {
+    enum { size=4 };
+    int itiles[size] = {0x6B8231, 0x103808, 0x103008, 0x737931};
+    int jtiles[size] = {0x102008, 0x737929, 0x526921, 0x084910};
+  } mmapColors;
 };
 
 Tree::Tree()
-  : Overlay( object::tree, Size(1) ), _d( new Impl )
+  : Overlay( object::tree, Size::square(1) ), _d( new Impl )
 {
   _d->age = math::random( 15 );
   _d->flat = false;
@@ -51,6 +56,8 @@ Tree::Tree()
   _d->state = State::well;
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
+
+  setPicture( info().randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -65,8 +72,8 @@ void Tree::timeStep( const unsigned long time )
         _burnAround();
     }
 
-    _animationRef().update( time );
-    _fgPictures().back() = _animationRef().currentFrame();
+    _animation().update( time );
+    _fgPictures().back() = _animation().currentFrame();
 
     if( _d->health <= 0 )
       _die();
@@ -87,23 +94,21 @@ bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build( const city::AreaInfo& info )
+bool Tree::build( const city::AreaInfo& rinfo )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
-  auto& md = MetaDataHolder::find( object::tree );
-  if( md.isMyPicture( picname ) )
-  {
-    _picture().load( picname );
-  }
-  else
-  {
-    setPicture( md.picture(1) );
-  }
-  _d->flat = (picture().height() <= tilemap::cellPicSize().height());
-  return Overlay::build( info );
+  std::string txName = imgid::toResource( rinfo.city->tilemap().at( rinfo.pos ).imgId() );
+  if( info().havePicture( txName ) )
+    _picture().load( txName );
+
+  if( !picture().isValid() )
+      setPicture( info().randomPicture(1) );
+
+  _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
+  return Overlay::build( rinfo );
 }
 
 void Tree::save(VariantMap& stream) const
@@ -156,7 +161,7 @@ void Tree::burn()
 void Tree::_startBurning()
 {
   _d->state = State::burning;
-  _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
+  _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
   _fgPictures().resize(1);
 }
 
@@ -164,8 +169,7 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
-                                    .overlays();
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
   for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
@@ -175,18 +179,18 @@ void Tree::_burnAround()
 
 void Tree::grow()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  TilesArray tiles = _map().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
   for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
-        city::AreaInfo info( _city(), tile->pos() );
-        bool buildOk = overlay->build( info );
+        city::AreaInfo areainfo( _city(), tile->pos() );
+        bool buildOk = overlay->build( areainfo );
         if( buildOk )
         {
           _city()->addOverlay( overlay );
@@ -194,7 +198,7 @@ void Tree::grow()
           auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
-            Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );
+            Picture pic = info().randomPicture( Size::square(1) );
             newTree->setPicture( pic );
             newTree->_d->flat = pic.height() < pic.width() / 2;
             newTree->_d->health = 10;
@@ -211,6 +215,14 @@ void Tree::_die()
   _d->state = State::burnt;
   setPicture( "burnedTree", 1 );
   _d->flat = false;
-  _animationRef().clear();
+  _animation().clear();
   _fgPictures().clear();
+}
+
+bool Tree::getMinimapColor(int& color1, int& color2) const
+{
+  const int t = (pos().i() + pos().j()) % 3;
+  color1 = _d->mmapColors.itiles[ t ];
+  color2 = _d->mmapColors.jtiles[ t+1 ];
+  return true;
 }

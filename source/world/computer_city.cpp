@@ -84,7 +84,7 @@ public:
     VariantMap ret;
     for( auto& gtype : good::all() )
     {
-      std::string tname = good::Helper::getTypeName( gtype );
+      std::string tname = good::Helper::name( gtype );
       int ncapacity = capacity( gtype );
       if( ncapacity > 0 )
       {
@@ -108,7 +108,7 @@ public:
   {
     for( auto& item : stream )
     {
-      good::Product gtype = good::Helper::getType( item.first );
+      good::Product gtype = good::Helper::type( item.first );
       Variant value = item.second;
       switch( value.type() )
       {
@@ -338,15 +338,15 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   BuildingInfo info;
 
   info.type = type;
-  const  MetaData& md = MetaDataHolder::find( info.type );
-  good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
+  auto md = object::Info::find( info.type );
+  good::Product output = good::Helper::type( md.getOption( "output" ).toString() );
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
-  info.maxWorkersNumber = md.getOption( "employers" );
-  info.maxService = md.getOption( "maxServe" );
+  info.maxWorkersNumber = md.employers();
+  info.maxService = md.maxServe();
   info.workersNumber = 0;
   info.progress = 0;
-  info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
+  info.productively = md.productRate() / 12.f;
 
   buildings.push_back( info );
 }
@@ -386,7 +386,7 @@ void ComputerCity::Impl::citizensConsumeServices()
   ServiceInfo mayServe;
   ServiceInfo idle;
 
-  for( auto&& info : buildings )
+  for( auto& info : buildings )
   {
     idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
     if( info.maxWorkersNumber > 0 )
@@ -477,7 +477,7 @@ void ComputerCity::_checkMerchantsDeadline()
 {
   if( _d->trade.merchantSent.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
   {
-    TraderouteList routes = empire()->tradeRoutes( name() );
+    TraderouteList routes = empire()->troutes().from( name() );
 
     if( routes.empty() )
       return;
@@ -770,9 +770,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->buys.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
-  _d->states.romeCity = false;
-
-  _initTextures();
+  _d->states.birth = game::Date::current();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->trade.delay <= 0; }
@@ -780,7 +778,6 @@ econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 City::AiMode ComputerCity::modeAI() const { return _d->modeAI; }
-bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
 SmartPtr<Player> ComputerCity::mayor() const { return 0; }
@@ -810,8 +807,8 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_CLASS_D( options, _d, buildings )
   VARIANT_SAVE_CLASS_D( options, _d, targets )
 
-  options[ "sea" ] = (_d->terrain & EmpireMap::sea ? true : false);
-  options[ "land" ] = (_d->terrain & EmpireMap::land ? true : false);
+  options[ "sea" ] = (_d->terrain & EmpireMap::trSea ? true : false);
+  options[ "land" ] = (_d->terrain & EmpireMap::trLand ? true : false);
 
   VARIANT_SAVE_ENUM_D( options, _d, modeAI )
   VARIANT_SAVE_ANY_D( options, _d, trade.merchantSent )
@@ -819,11 +816,10 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, states.age )
   VARIANT_SAVE_ANY_D( options, _d, available )
   VARIANT_SAVE_ANY_D( options, _d, trade.merchants_n )
-  VARIANT_SAVE_ANY_D( options, _d, distantCity )
-  VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
   VARIANT_SAVE_ANY_D( options, _d, trade.delay )
   VARIANT_SAVE_ANY_D( options, _d, lasttime.attacked )
   VARIANT_SAVE_ANY_D( options, _d, states.population )
+  VARIANT_SAVE_ANY_D( options, _d, states.birth )
   VARIANT_SAVE_ANY_D( options, _d, strength )
   VARIANT_SAVE_ANY_D( options, _d, sentiment )
 }
@@ -836,10 +832,9 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_TIME_D  ( _d, trade.merchantSent,    options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
   VARIANT_LOAD_ANY_D   ( _d, trade.merchants_n,     options )
-  VARIANT_LOAD_ANY_D   ( _d, distantCity,           options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
-  VARIANT_LOAD_ANY_D   ( _d, states.romeCity,       options )
   VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
+  VARIANT_LOAD_TIME_D  ( _d, states.birth,          options )
   VARIANT_LOAD_ANY_D   ( _d, trade.delay,           options )
   VARIANT_LOAD_TIME_D  ( _d, lasttime.attacked,     options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
@@ -857,7 +852,6 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_CLASS_D_LIST( _d, peoples, options )
   VARIANT_LOAD_CLASS_D( _d, buildings, options )
 
-
   if( _d->realSells.empty() )
   {
     for( auto& it : good::all() )
@@ -871,10 +865,8 @@ void ComputerCity::load( const VariantMap& options )
       _d->initPeoples();
   }
 
-  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
-                  + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
-
-  _initTextures();
+  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::trSea : EmpireMap::trUnknown)
+                  + (options.get( "land" ).toBool() ? EmpireMap::trLand : EmpireMap::trUnknown);
 }
 
 const good::Store& ComputerCity::sells() const { return _d->realSells; }
@@ -937,7 +929,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap sells_vm = stream.get( "sells" ).toMap();
   for( auto& it : sells_vm )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
     _d->sells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
     _d->realSells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
@@ -945,7 +937,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap buys_vm = stream.get( "buys" ).toMap();
   for( auto& it : buys_vm )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
     _d->buys.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
 }
@@ -997,14 +989,32 @@ std::string ComputerCity::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap:
-    if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
-    else ret = name();
+  case aboutEmpireMap:
+    if( nation() == world::nation::roman
+        && tradeType() == EmpireMap::trUnknown )
+      ret = "##empmap_distant_romecity_tip##";
+    else
+      ret = name();
   break;
 
-  case empireAdvInfo:
-    if( isDistantCity() ) ret = "##empiremap_distant_city##";
-    else ret = "";
+  case aboutEmpireAdvInfo:
+    if( nation() == world::nation::roman
+        && tradeType() == EmpireMap::trUnknown )
+      ret = "##empiremap_distant_city##";
+    else
+      ret = "";
+  break;
+
+  case aboutEmtype:
+    if( nation() == world::nation::roman )
+      return "world_romancity";
+
+    if( tradeType() != EmpireMap::trSea )
+      return "world_seatradecity";
+    else if( tradeType() != EmpireMap::trLand )
+      return "world_landtradecity";
+
+    return "world_othercity";
   break;
 
   default:
@@ -1016,19 +1026,6 @@ std::string ComputerCity::about(Object::AboutType type)
 
 unsigned int ComputerCity::tradeType() const { return _d->terrain; }
 int ComputerCity::strength() const { return _d->strength; }
-
-void ComputerCity::_initTextures()
-{
-  int index = PicID::otherCity;
-
-  if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->states.romeCity ) { index = PicID::romeCity; }
-
-  setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().load( ResourceGroup::empirebits, index+1, 6 );
-  _animation().setLoop( true );
-  _animation().setDelay( 2 );
-}
 
 void ComputerCity::_resetGoodState(good::Product pr)
 {

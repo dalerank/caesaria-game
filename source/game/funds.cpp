@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "core/serialized_map.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
@@ -35,14 +36,16 @@ enum { defaultSalary=30 };
 class IssuesDetailedHistory::Impl
 {
 public:
-  IssuesDetailedHistory::DateIssues issues;
+  DateIssues issues;
 };
 
 class Treasury::Impl
 {
 public:
-  int taxRate;
+  SerializedMap<int, int> salaries;
+
   int workerSalary;
+  int taxRate;
   int money;
   int lastYearUpdate;
   int maxDebt;
@@ -72,7 +75,7 @@ void Treasury::resolveIssue( econ::Issue issue )
   switch( issue.type )
   {
   case Issue::unknown:
-    Logger::warning( "Funds: wrong issue type %d", issue.type );
+    Logger::warning( "Funds: wrong issue type {0}", issue.type );
     return;
   break;
 
@@ -175,10 +178,24 @@ int Treasury::getIssueValue(Issue::Type type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
+const IssuesDetailedHistory& Treasury::getIssueHistory() const {  return _d->detailedHistory; }
 int Treasury::taxRate() const{  return _d->taxRate;}
 void Treasury::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
-int Treasury::workerSalary() const{  return _d->workerSalary;}
-void Treasury::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
+void Treasury::setWorkerSalary(const unsigned int value) { _d->workerSalary = value; }
+
+void Treasury::setWorkerSalary(int wtype, const unsigned int value)
+{
+  _d->salaries[ wtype ] = value;
+}
+
+int Treasury::workerSalary(int wtype) const
+{
+  auto it = _d->salaries.find( wtype );
+  if( it != _d->salaries.end() )
+    return it->second;
+
+  return _d->workerSalary;
+}
 
 VariantMap Treasury::save() const
 {
@@ -190,6 +207,7 @@ VariantMap Treasury::save() const
   VARIANT_SAVE_ANY_D( ret, _d, lastYearUpdate )
   VARIANT_SAVE_CLASS_D( ret, _d, history )
   VARIANT_SAVE_CLASS_D( ret, _d, detailedHistory )
+  VARIANT_SAVE_CLASS_D( ret, _d, salaries )
 
   return ret;
 }
@@ -202,6 +220,7 @@ void Treasury::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, history, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, detailedHistory, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, salaries, stream )
 }
 
 Treasury::~Treasury(){}
@@ -239,10 +258,7 @@ void IssuesDetailedHistory::addIssue(Issue issue)
   }
 }
 
-const IssuesDetailedHistory::DateIssues& IssuesDetailedHistory::issues()
-{
-  return _d->issues;
-}
+const DateIssues& IssuesDetailedHistory::issues() const {  return _d->issues; }
 
 IssuesDetailedHistory::IssuesDetailedHistory() : _d( new Impl )
 {
@@ -271,14 +287,14 @@ void IssuesDetailedHistory::load(const VariantList& stream)
   }
 }
 
-VariantList IssuesDetailedHistory::DateIssue::save() const
+VariantList DateIssue::save() const
 {
   VariantList ret;
   ret << time << type << money;
   return ret;
 }
 
-void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
+void DateIssue::load(const VariantList& stream)
 {
   time = stream.get( 0 ).toDateTime();
   type = (Type)stream.get( 1 ).toInt();
@@ -297,7 +313,7 @@ VariantList IssuesValue::save() const
 void IssuesValue::load(const VariantList& stream)
 {
   VariantListReader reader( stream );
-  while( reader.atEnd() )
+  while( !reader.atEnd() )
   {
     econ::Issue::Type type = (Issue::Type)reader.next().toInt(); //type
     int value = reader.next().toInt(); //value

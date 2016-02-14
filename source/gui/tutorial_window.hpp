@@ -32,7 +32,6 @@ public:
   virtual ~TutorialWindow();
 
 private:
-  GameAutoPause _locker;
   audio::Muter _muter;
   audio::SampleDeleter _speechDel;
 };

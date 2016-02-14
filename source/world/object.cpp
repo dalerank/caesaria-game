@@ -35,13 +35,13 @@ class Object::Impl
 {
 public:
   Picture pic;
+  std::string emtype;
   Point location;
   EmpirePtr empire;
   std::string name;
-  Animation animation;
-  Pictures pictures;
   unsigned int time;
   bool isDeleted;
+  Nation nation;
 };
 
 ObjectPtr Object::create( EmpirePtr empire)
@@ -53,7 +53,7 @@ ObjectPtr Object::create( EmpirePtr empire)
 }
 
 bool Object::isDeleted() const { return _d->isDeleted; }
-std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+std::string Object::type() const { return TEXT(Object); }
 void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
@@ -62,30 +62,17 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: %s added to %s", obj->name().c_str(), name().c_str() );
+  Logger::warning( "WorldObjects: {} added to {}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
-Picture Object::picture() const { return _d->pic; }
+Nation Object::nation() const {  return _d->nation; }
 
-const Pictures& Object::pictures() const
+std::string Object::about(Object::AboutType type)
 {
-  _d->animation.update( _d->time++ );
-  _d->pictures[ idxAnimation ] = _d->animation.currentFrame();
+  if( type == aboutEmtype )
+    return _d->emtype;
 
-  return _d->pictures;
-}
-
-void Object::setPicture(Picture pic)
-{
-  _d->pic = pic;
-  _d->pictures[ idxPicture ] = pic;
-}
-
-bool Object::isMovable() const { return false; }
-
-std::string Object::about(Object::AboutType)
-{
   return "";
 }
 
@@ -93,24 +80,25 @@ void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
-  VARIANT_SAVE_STR_D( stream, _d, name )
-  VARIANT_SAVE_CLASS_D( stream, _d, animation )
+  VARIANT_SAVE_STR_D( stream, _d, name )    
+  VARIANT_SAVE_STR_D( stream, _d, emtype )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
+  stream[ "nation" ] = world::toString( _d->nation );
 }
 
 void Object::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANYDEF_D( _d, location, _d->location, stream )
   VARIANT_LOAD_STRDEF_D( _d, name, _d->name, stream )
+  VARIANT_LOAD_STRDEF_D( _d, emtype, "unknown", stream )
 
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
-  std::string picName = stream.get( "picture" ).toString();
-  if( !picName.empty() )
-    setPicture( Picture( picName )  );
-  VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
+  Variant vNation = stream.get( "nation" );
+  if( vNation.isValid() )
+    _d->nation = world::toNation( vNation.toString() );
 }
 
 void Object::attach()
@@ -121,16 +109,16 @@ void Object::attach()
 
 Object::~Object() {}
 
-Object::Object( EmpirePtr empire) : _d( new Impl )
+Object::Object(EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
+  _d->nation = nation::unknown;
   _d->empire = empire;
-  _d->pictures.resize( 2 );
+  _d->emtype = "unknown";
   _d->isDeleted = false;
 }
 
 void Object::deleteLater() { _d->isDeleted = true; }
-Animation& Object::_animation() { return _d->animation; }
-Pictures&  Object::_pictures()  { return _d->pictures; }
+void Object::_setNation(Nation nation) { _d->nation = nation; }
 
 }//end namespace world

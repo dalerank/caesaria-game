@@ -53,7 +53,7 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 
   MirrorDownload::InitRandomizer();
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   if( !_executable.haveExtension() )
   {
     Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
@@ -70,14 +70,14 @@ Updater::~Updater()
 void Updater::setBinaryAsExecutable()
 {
   std::vector<vfs::Path> executableNames;
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   executableNames.push_back( "caesaria.exe" );
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   executableNames.push_back( "caesaria.linux" );
   executableNames.push_back( "caesaria.linux64" );
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   executableNames.push_back( "caesaria.macos" );
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
   executableNames.push_back( "caesaria.haiku" );
 #endif
 
@@ -131,7 +131,7 @@ void Updater::downloadNewMirrors()
   std::string mirrorsUrl = CAESARIA_MAIN_SERVER;
   mirrorsUrl += CAESARIA_MIRRORS_INFO;
 
-  Logger::warning( utils::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
+  Logger::warning( "Downloading mirror list from {}...", mirrorsUrl  ); // grayman - fixed
 
   vfs::Path mirrorPath = getTargetDir()/CAESARIA_MIRRORS_INFO;
 
@@ -145,7 +145,7 @@ void Updater::downloadNewMirrors()
   }
   else
   {
-    Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
+    Logger::warning( " Mirrors download failed: {}", request->GetErrorMessage() );
   }
 }
 
@@ -196,7 +196,7 @@ void Updater::downloadCurrentVersion()
 
   if (inifile == NULL)
   {
-    Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
+    Logger::warning( "Cannot find downloaded version info file: {}", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
     return;
   }
 
@@ -267,7 +267,7 @@ void Updater::DetermineLocalVersion()
 
       if (item.second.localChangesAllowed)
       {
-        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toCString() );
+        Logger::warning( "File {} exists, local changes are allowed, skipping.", candidate.toCString() );
         continue;
       }
 
@@ -275,7 +275,7 @@ void Updater::DetermineLocalVersion()
 
       if (candidateFilesize != item.second.filesize)
       {
-        Logger::warning( "WRONG SIZE[need=%d  have=%d]", item.second.filesize, candidateFilesize );
+        Logger::warning( "WRONG SIZE[need={}  have={}]", item.second.filesize, candidateFilesize );
         mismatch = true;
         continue;
       }
@@ -318,7 +318,7 @@ void Updater::DetermineLocalVersion()
     total.filesize += vfs::NFile::size( i.first );
   }
 
-  Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
+  Logger::warning( "The local files are matching {} different versions.", _localVersions.size() );
 
   if (_fileProgressCallback != NULL)
   {
@@ -336,7 +336,7 @@ void Updater::DetermineLocalVersion()
     {
       const std::string& version = i->first;
 
-      Logger::warning( "Files matching version %s: %d (size: %s)",
+      Logger::warning( "Files matching version {}: {} (size: {})",
                        version.c_str(),
                        i->second.numFiles,
                        Util::getHumanReadableBytes(i->second.filesize).c_str() );
@@ -806,7 +806,7 @@ void Updater::cancelDownloads()
 
 void SteamHelper::checkDepsAndStart()
 {
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
   vfs::Path sdl2abspath = vfs::Directory::userDir()/sdl2relpath;
 
@@ -850,7 +850,7 @@ void SteamHelper::checkDepsAndStart()
 
   system( "./caesaria.macos &" );
   exit(EXIT_SUCCESS);
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   STARTUPINFOA siStartupInfo;
   PROCESS_INFORMATION piProcessInfo;
 
@@ -866,7 +866,7 @@ void SteamHelper::checkDepsAndStart()
   BOOL success = CreateProcessA( NULL, "caesaria.exe", NULL, NULL,  false, 0, NULL,
                                  parentPath.toCString(), &siStartupInfo, &piProcessInfo);
 
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   system( "./caesaria.linux &" );
   exit(EXIT_SUCCESS);
 #endif

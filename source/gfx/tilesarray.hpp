@@ -18,6 +18,7 @@
 
 #include "tile.hpp"
 #include "core/tilepos_array.hpp"
+#include "core/position_array.hpp"
 
 #include <vector>
 #include <cstring>
@@ -37,6 +38,7 @@ public:
   };
 
   bool contain( const TilePos& tilePos ) const;
+  bool contain( Tile* a ) const;
   Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
@@ -46,24 +48,28 @@ public:
   Corners corners() const;
 
   TilePos leftUpCorner() const;
-
   TilePos rightDownCorner() const;
 
   TilesArray& operator=(const TilesArray& a);
 
   TilesArray& append( const TilesArray& a );
   TilesArray& append( Tile* a );
+  bool appendOnce( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;
   TilesArray select( Tile::Type flag ) const;
   TilesArray select( Tile::Param param ) const;
 
-  TilesArray terrains() const;
+  int count( Tile::Type flag ) const;
 
+  TilesArray terrains() const;
+  TilesArray masters() const;
+  TilesArray children( Tile* master ) const;
   TilesArray waters() const;
 
   TilesArray& remove(const TilePos& pos );
-  TilePosArray locations() const;
+  PointsArray mappositions() const;
+  Locations locations() const;
 
   OverlayList overlays() const;
 

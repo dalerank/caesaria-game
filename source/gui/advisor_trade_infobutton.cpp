@@ -19,6 +19,7 @@
 #include "good/helper.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
+#include "core/format.hpp"
 #include "core/gettext.hpp"
 #include "core/utils.hpp"
 
@@ -40,13 +41,8 @@ public:
     int exporting;
   } qty;
 
-  struct
-  {
-    std::string name;
-    gfx::Picture picture;
-    good::Product type;
-  } good;
-
+  good::Info info;
+  Picture picture;
   gfx::Pictures border;
 
 signals public:
@@ -56,25 +52,24 @@ signals public:
 TradeGoodInfo::TradeGoodInfo(Widget *parent, const Rect &rect, good::Product good, int qty, bool enable, trade::Order trade, int exportQty, int importQty)
   : PushButton( parent, rect, "", -1, false, PushButton::noBackground ), _d( new Impl )
 {
-  _d->good.type = good;
+  _d->info = good::Info( good );
+  _d->picture = _d->info.picture();
   _d->qty.value = qty;
   _d->enable = enable;
   _d->tradeOrder = trade;
   _d->qty.exporting = exportQty;
   _d->qty.importing = importQty;
-  _d->good.picture = good::Helper::picture( _d->good.type );
-  _d->good.name = good::Helper::name( _d->good.type );
   Decorator::draw( _d->border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
-  setFont( Font::create( FONT_2_WHITE ) );
+  setFont( FONT_2_WHITE );
 }
 
 void TradeGoodInfo::draw(Engine &painter)
 {
   PushButton::draw( painter );
 
-  painter.draw( _d->good.picture, absoluteRect().lefttop() + Point( 15, 0) );
-  painter.draw( _d->good.picture, absoluteRect().righttop() - Point( 20 + _d->good.picture.width(), 0 ) );
+  painter.draw( _d->picture, absoluteRect().lefttop() + Point( 15, 0) );
+  painter.draw( _d->picture, absoluteRect().righttop() - Point( 20 + _d->picture.width(), 0 ) );
 
   if( _state() == stHovered )
     painter.draw( _d->border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
@@ -87,19 +82,19 @@ void TradeGoodInfo::_btnClicked()
 {
   PushButton::_btnClicked();
 
-  emit _d->onClickedASignal( _d->good.type );
+  emit _d->onClickedASignal( _d->info.type() );
 }
 
-void TradeGoodInfo::_updateTextPic()
+void TradeGoodInfo::_updateTexture()
 {
-  PushButton::_updateTextPic();
+  PushButton::_updateTexture();
 
   if( _textPicture().isValid() )
   {
     Font f = font( _state() );
     Picture& textPic = _textPicture();
-    f.draw( textPic, _( _d->good.name ), 55, 0, true, false );
-    f.draw( textPic, utils::format( 0xff, "%d", _d->qty.value / 100), 190, 0, true, false );
+    f.draw( textPic, _( _d->info.name() ), 55, 0, true, false );
+    f.draw( textPic, utils::i2str(_d->qty.value / 100), 190, 0, true, false );
     f.draw( textPic, _d->enable ? "" : _("##disable##"), 260, 0, true, false );
 
     std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
@@ -112,14 +107,14 @@ void TradeGoodInfo::_updateTextPic()
       if( _d->qty.importing == 0 )
         tradeStateText = _( ruleName[ _d->tradeOrder ] );
       else
-        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
+        tradeStateText = fmt::format( "{} {}", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
     break;
 
     case trade::exporting:
       if( _d->qty.exporting == 0)
         tradeStateText = _( ruleName[ _d->tradeOrder ] );
       else
-        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _d->tradeOrder ] ), _d->qty.exporting );
+        tradeStateText = fmt::format( "{0} {1}", _( ruleName[ _d->tradeOrder ] ), _d->qty.exporting );
     break;
 
     default: break;
