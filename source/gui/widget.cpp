@@ -457,7 +457,7 @@ Widget* Widget::findChild(int id, bool searchChildren) const
   return e;
 }
 
-Widget*Widget::findChild(const std::string& internalName, bool searchChildren) const
+Widget* Widget::findChild(const std::string& internalName, bool searchChildren) const
 {
   Widget* e = 0;
 

@@ -298,7 +298,7 @@ void Health::_showDetailInfo(Widget* widget)
 
     auto& window = parent()->add<Window>( Rect( 0, 0, 480, 480 ), _(info.prettyName()) );
     window.moveToCenter();
-    WidgetClose::insertTo( &window, KEY_RBUTTON );
+    WidgetClosers::insertTo( &window, KEY_RBUTTON );
 
     auto& frame = window.add<Label>( Rect( 20, 40, window.width() - 20, window.height() - 20 ), "",
                                      false, Label::bgBlackFrame );

@@ -92,7 +92,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
     lbPlayerMoney->setText( text );
   }
 
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 

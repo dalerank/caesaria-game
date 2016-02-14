@@ -760,6 +760,13 @@ void Label::setColor(NColor color)
   _d->is.needUpdate = true;
 }
 
+void Label::setColor(const string& color)
+{
+  NColor c = ColorList::find(color);
+  if (c.color != 0)
+    setColor(c);
+}
+
 void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
   Widget::setTextAlignment( horizontal, vertical );

@@ -21,6 +21,7 @@
 #include <GameObjects>
 #include <GameScene>
 #include <GameGfx>
+#include <GameGood>
 #include "core/osystem.hpp"
 #include "steam.hpp"
 #include <string>
@@ -50,6 +51,24 @@ Size Session::getVideoMode(int index) { return _game->engine()->modes().at(index
 void Session::setResolution(Size size){SETTINGS_SET_VALUE(resolution, size);}
 Size Session::getResolution() { return _game->engine()->screenSize(); }
 void Session::saveSettings() { game::Settings::save(); }
+
+StringArray Session::tradableGoods()
+{
+  return good::tradable().names();
+}
+
+VariantMap Session::getGoodInfo(const std::string& goodName)
+{
+  VariantMap ret;
+  good::Info info(good::toType(goodName));
+  ret[ "name" ] = info.utname();
+  ret[ "picture" ] = info.picture().name();
+  ret[ "empPicture" ] = info.picture(true).name();
+  ret[ "exportPrice" ] = info.price( _game->city(), good::Info::exporting );
+  ret[ "importPrice" ] = info.price( _game->city(), good::Info::importing );
+
+  return ret;
+}
 
 void Session::loadNextMission()
 {

@@ -139,7 +139,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
 
   _d->icon = good::Info( type ).picture();
 

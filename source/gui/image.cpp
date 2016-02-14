@@ -44,7 +44,7 @@ public signals:
 //! constructor
 Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
-	_d->mode = Image::fit;
+  _d->mode = Image::fit;
 }
 
 Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int id)
@@ -152,17 +152,23 @@ void Image::setPicture(const Picture& picture)
 	{
     setWidth( picture.width() );
     setHeight( picture.height() );
-    }
+  }
+}
+
+void Image::setPicture(const string& rc)
+{
+  _d->mode = Image::image;
+  setPicture(Picture(rc));
 }
 
 void Image::setPicture(const string& rc, int id)
 {
-  setPicture( Picture( rc, id ) );
+  setPicture(Picture(rc, id));
 }
 
 void Image::setupUI(const VariantMap& ui)
 {
-  Widget::setupUI( ui );
+  Widget::setupUI(ui);
 
   setPicture( Picture( ui.get( "image" ).toString() ) );
   std::string mode = ui.get( "mode" ).toString();
@@ -173,6 +179,12 @@ void Image::setupUI(const VariantMap& ui)
   else if( mode == "best" ) { _d->mode = Image::best; }
   else { _d->mode = Image::image; }
 
+  setMode(_d->mode);
+}
+
+void Image::setMode(Image::Mode mode)
+{
+  _d->mode = mode;
   if( _d->mode == Image::image )
   {
     setWidth( picture().width() );

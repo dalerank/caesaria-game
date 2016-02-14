@@ -287,7 +287,7 @@ public:
     }
 
     moveToCenter();
-    WidgetClose::insertTo( this, KEY_RBUTTON );
+    WidgetClosers::insertTo( this, KEY_RBUTTON );
     setFont( Font::create( FONT_1 ) );
     setModal();    
   }

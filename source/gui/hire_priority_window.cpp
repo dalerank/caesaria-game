@@ -50,7 +50,7 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->type = type;
   _d->priority = priority;
 
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
   GameAutoPauseWidget::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );

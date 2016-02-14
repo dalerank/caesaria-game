@@ -150,7 +150,7 @@ void TopMenu::Impl::showShortKeyInfo()
   shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
 
   shortKeyInfo.moveToCenter();
-  WidgetClose::insertTo( &shortKeyInfo, KEY_RBUTTON );
+  WidgetClosers::insertTo( &shortKeyInfo, KEY_RBUTTON );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)

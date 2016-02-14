@@ -90,7 +90,7 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
 
   setMayDelete( false );
   setWindowFlag( fdraggable, false );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
   GameAutoPauseWidget::insertTo( this );
   moveToCenter();
   setModal();

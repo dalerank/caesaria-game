@@ -3,6 +3,7 @@
 #include "gui/gameautopause.hpp"
 #include "gui/texturedbutton.hpp"
 #include "gui/loadgamedialog.hpp"
+#include "gui/dictionary.hpp"
 #include "gui/widget.hpp"
 #include "gui/window.hpp"
 #include "gui/startmenu.hpp"
@@ -21,4 +22,6 @@
 #include "gui/image.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "gui/window_language_select.hpp"
+#include "gui/groupbox.hpp"
+
 

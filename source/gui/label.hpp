@@ -127,7 +127,8 @@ public:
 
   virtual void setAlpha( unsigned int value );
 
-  virtual void setColor( NColor color );
+  virtual void setColor(NColor color);
+  virtual void setColor(const std::string& color);
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
   virtual void setTextAlignment( const std::string& horizontal, const std::string& vertical );

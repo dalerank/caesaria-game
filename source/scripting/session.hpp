@@ -24,6 +24,8 @@
 
 class Game;
 class VariantList;
+class VariantMap;
+class StringArray;
 
 namespace script
 {
@@ -40,6 +42,8 @@ public:
   int videoModesCount();
   Size getVideoMode(int index);
   void setResolution(Size size);
+  StringArray tradableGoods();
+  VariantMap getGoodInfo(const std::string& goodName);
   Size getResolution();
   void saveSettings();
 

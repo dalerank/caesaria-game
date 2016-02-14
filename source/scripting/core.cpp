@@ -91,6 +91,26 @@ int push(js_State* J,const Variant& param)
   return 1;
 }
 
+void push(js_State *J, const StringArray& items)
+{
+  js_newarray(J);
+  for (uint32_t i=0; i<items.size(); i++)
+  {
+    push(J, items[i]);
+    js_setindex(J, -2, i);
+  }
+}
+
+void push(js_State *J, const VariantMap& items)
+{
+  js_newobject(J);
+  for (const auto& item : items)
+  {
+    push(J, item.second);
+    js_setproperty(J, -2, item.first.c_str());
+  }
+}
+
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
 
@@ -360,6 +380,7 @@ void constructor_Session(js_State *J)
 #include "exitbutton.implementation"
 #include "listbox.implementation"
 #include "texturedbutton.implementation"
+#include "image.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -385,6 +406,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "exitbutton.interface"
 #include "listbox.interface"
 #include "texturedbutton.interface"
+#include "image.interface"
 
   Core::loadModule(":/system/modules.js");
   {

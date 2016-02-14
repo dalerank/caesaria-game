@@ -506,7 +506,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->cities.playerCity = city->name();
 
-  for( auto& product : good::all() )
+  for( const auto& product : good::all() )
   {
     world::PriceInfo prices = getPrice( product );
     city->empirePricesChanged( product, prices );

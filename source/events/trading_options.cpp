@@ -44,7 +44,7 @@ void ChangeTradingOptions::load(const VariantMap& stream)
 void ChangeTradingOptions::_exec(Game& game, unsigned int)
 {
   VariantMap citiesVm = _options.get( "cities" ).toMap();
-  for( auto& it : citiesVm )
+  for( const auto& it : citiesVm )
   {
     world::CityPtr cityp = game.empire()->findCity( it.first );
     if( cityp.isNull() )

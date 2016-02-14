@@ -287,7 +287,7 @@ void Lobby::Impl::showCredits()
  
   Size size = ui().vsize();
   Fade& frame = ui().add<Fade>( 0xA0 );
-  WidgetClose::insertTo( &frame, KEY_RBUTTON );
+  WidgetClosers::insertTo( &frame, KEY_RBUTTON );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {

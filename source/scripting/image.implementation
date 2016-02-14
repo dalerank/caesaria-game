@@ -1,0 +1,6 @@
+DEFINE_OBJECT_FUNCTION_0(Image,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(Image,setGeometry,Rect)
+DEFINE_OBJECT_FUNCTION_1(Image,setPosition,Point)
+DEFINE_OBJECT_FUNCTION_1(Image,setPicture,std::string)
+DEFINE_OBJECT_FUNCTION_1(Image,setTooltipText,std::string)
+DEFINE_WIDGET_CONSTRUCTOR(Image)

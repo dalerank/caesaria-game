@@ -161,6 +161,19 @@ void Window::setTitleRect(const Rect& rect)
     _d->title->setGeometry( rect );
 }
 
+void Window::addCloseCode(int code)
+{
+  auto list = findChildren<WidgetClosers*>();
+  WidgetClosers* closers = nullptr;
+  if (list.empty())
+    closers = &add<WidgetClosers>();
+  else
+    closers = list.front();
+
+  if (closers != nullptr)
+    closers->addCloseCode(code);
+}
+
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
   PushButton*& btn = _d->buttons[ btnName ];
@@ -455,7 +468,7 @@ SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string
   add<ExitButton>(Point(width() - 34, height() - 34));
 
   moveToCenter();
-  WidgetClose::insertTo(this, KEY_RBUTTON);
+  WidgetClosers::insertTo(this, KEY_RBUTTON);
 }
 
 }//end namespace gui

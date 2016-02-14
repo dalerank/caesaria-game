@@ -8,6 +8,7 @@ Label.prototype = {
   set font (fname) { this.widget.setFont(fname); },
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.h); },
   set tooltip (text) { this.widget.setTooltipText(text); },
+  set textColor (color) { this.widget.setColor(color); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
@@ -20,10 +21,6 @@ ExitButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); }
 }
 
-function Window(parent) {
-  this.widget = new _Window(parent);
-} 
-
 function TexturedButton(parent) {
   this.widget = new _TexturedButton(parent);
 }
@@ -34,6 +31,17 @@ TexturedButton.prototype = {
   set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set callback (func) { this.widget.onClickedEx(func); },
+}
+
+function Image(parent) {
+  this.widget = new _Image(parent);
+}
+
+Image.prototype = {
+  set position (point) { this.widget.setPosition(point.x,point.y); },
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set tooltip (text) { this.widget.setTooltipText(text); },
+  set picture (name) { this.widget.setPicture(name); }
 }
 
 function Window(parent) {
@@ -52,8 +60,15 @@ Window.prototype = {
   moveToCenter : function() { this.widget.moveToCenter(); },
   setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
+
+  closeAfterKey : function(obj) {
+      if(obj.escape)
+        this.widget.addCloseCode(0x1B);
+      if(obj.rmb)
+        this.widget.addCloseCode(0x4);
+  },
   addLabel : function(rx,ry,rw,rh) {
-    var label = new Label( this.widget ); 
+    var label = new Label(this.widget); 
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label; 
   },
@@ -61,6 +76,12 @@ Window.prototype = {
     var listbox = new Listbox(this.widget);
     listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
     return listbox;
+  },
+  addImage : function(rx,ry,picname) {
+    var image = new Image(this.widget);
+    image.picture = picname;
+    image.position = {x:rx,y:ry};
+    return image;
   },
   addButton : function(rx,ry,rw,rh) {
     var button = new Button(this.widget);
@@ -85,6 +106,7 @@ Button.prototype = {
   set callback (func) { this.widget.onClickedEx(func); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },   
   set tooltip (text) { this.widget.setTooltipText(text); },
+  set textAlign (obj) { this.widget.setTextAlignment(obj.h,obj.v); },
 
   deleteLater : function() { this.widget.deleteLater(); },
   setFocus : function() { this.widget.setFocus(); }

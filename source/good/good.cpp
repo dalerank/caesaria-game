@@ -47,8 +47,9 @@ struct Stage
     merchandise << wine << furniture << pottery << weapon << marble << prettyWine;
 
     tradable = all;
-    tradable.exclude( fish )
-            .exclude( denaries );
+    tradable.exclude(fish )
+            .exclude(denaries)
+            .exclude(none);
 
     any = Product( all.size() );
   }
@@ -97,7 +98,7 @@ bool Products::contain(const Product& type) const
   return this->count( type ) > 0;
 }
 
-Products&Products::exclude(const Product& type)
+Products& Products::exclude(const Product& type)
 {
   erase( type );
   return *this;
@@ -111,11 +112,18 @@ Products& Products::exclude(const Products& types)
   return *this;
 }
 
+StringArray Products::names() const
+{
+  StringArray ret;
+  for( auto g : *this )
+    ret.addIfValid(good::Helper::name( g ));
+
+  return ret;
+}
+
 Product toType(const std::string& typeName)
 {
   return Helper::type( typeName );
 }
-
-
 
 }

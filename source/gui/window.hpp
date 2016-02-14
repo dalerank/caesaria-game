@@ -82,6 +82,8 @@ public:
   virtual void setText(const std::string& text);
   virtual void setTitleRect(const Rect& rect);
 
+  void addCloseCode(int code);
+
 public signals:
   Signal1<Widget*>& onCloseEx();
 

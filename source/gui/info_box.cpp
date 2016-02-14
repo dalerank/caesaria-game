@@ -63,7 +63,7 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
 : Window( parent, rect, "", id ), _d( new Impl )
 {
   GameAutoPauseWidget::insertTo( this );
-  WidgetClose::insertTo( this, KEY_RBUTTON );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
 
   // create the title
   setupUI( ":/gui/infobox.gui" );

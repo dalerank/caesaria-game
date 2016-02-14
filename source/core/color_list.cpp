@@ -34,7 +34,7 @@ const NColor& ColorList::find(const std::string& name)
 
 void ColorList::_createColors()
 {
-__ADD_COLOR( clear )
+__ADD_COLOR( clear          )
 __ADD_COLOR( red            )
 __ADD_COLOR( caesarRed      )
 __ADD_COLOR( blue           )

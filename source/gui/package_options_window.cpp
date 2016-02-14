@@ -68,7 +68,7 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT_LOCAL( _d->edCaesar3Music,  onTextChanged(), PackageOptions::_setCaesar3Music )
   CONNECT_LOCAL( _d->edScreenshots,   onTextChanged(), PackageOptions::_setScreenshotsDir )
 
-  WidgetClose::insertTo( this );
+  WidgetClosers::insertTo( this );
   moveToCenter();
   setModal();
 }
