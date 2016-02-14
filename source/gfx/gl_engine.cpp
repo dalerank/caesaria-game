@@ -39,7 +39,6 @@
 #include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
-
 #ifndef GAME_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
@@ -104,7 +103,8 @@
 #include "core/time.hpp"
 #include "IMG_savepng.h"
 
-namespace gfx{
+namespace gfx
+{
 
 #ifdef GAME_USE_FRAMEBUFFER
 

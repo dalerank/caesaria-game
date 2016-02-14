@@ -370,7 +370,7 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 		if( c == '@' )
 		{
 			richText.text += whitespace;
-			dline.push_back( richText );
+			dline.push_back( richText );			
 			const int linewidth = richText.width();
 			richText = TextToken();
 			richText.offset = linewidth;
@@ -392,9 +392,9 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
       richText.font.setColor( color );
 			richText.text = "";
 			whitespace = "";
-		}
+    }
 
-		if( c == '&' )
+    if( c == '&' )
 		{				
       const int whitelgth = font.current.getTextSize( whitespace ).width();
       const int wordlgth = font.current.getTextSize( word ).width();
