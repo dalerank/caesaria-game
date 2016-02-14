@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_CHANGEEMPIREOPTIONS_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/variant_map.hpp"
 
 namespace events
 {
@@ -28,7 +29,7 @@ class ChangeEmpireOptions : public GameEvent
 public:
   static GameEventPtr create();
 
-  virtual void load(const VariantMap &);
+  virtual void load(const VariantMap& );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

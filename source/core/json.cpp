@@ -17,31 +17,55 @@
 
 #include "json.hpp"
 #include "utils.hpp"
+#include "variant_map.hpp"
+#include "variant_list.hpp"
+#include "core/format.hpp"
+#include "gfx/tilepos.hpp"
 
 static std::string lastParsedObjectName;
-static std::string sanitizeString(std::string str)
+static std::string sanitizeString( const std::string& str)
 {
-  str = utils::replace( str, "\\", "\\\\");
+  std::string output;
+  output.reserve(str.length());
+  output += "\"";
+
+  for (std::string::size_type i = 0; i < str.length(); ++i)
+  {
+      switch (str[i])
+      {
+      case '"':              output += "\\\"";              break;
+      case '/':              output += "\\/";               break;
+      case '\b':             output += "\\b";               break;
+      case '\f':             output += "\\f";               break;
+      case '\n':             output += "\\n";               break;
+      case '\r':             output += "\\r";               break;
+      case '\t':             output += "\\t";               break;
+      case '\\':             output += "\\\\";              break;
+      default:               output += str[i];            break;
+      }
+  }
+
+  /*str = utils::replace( str, "\\", "\\\\");
   str = utils::replace( str, "\"", "\\\"");
   str = utils::replace( str, "\b", "\\b");
   str = utils::replace( str, "\f", "\\f");
   str = utils::replace( str, "\n", "\\n");
   str = utils::replace( str, "\r", "\\r");
-  str = utils::replace( str, "\t", "\\t");
-  
-  return std::string( "\"" ) + str + std::string("\"");
+  str = utils::replace( str, "\t", "\\t");*/
+  output += "\"";
+  return output;
 }
 
 static std::string join(const StringArray& rlist, const std::string& sep)
 {
   std::string res;
-  for( StringArray::const_iterator it = rlist.begin(); it != rlist.end(); ++it )
+  for( const auto& it : rlist )
   {
     if(!res.empty())
     {
       res.append( sep );
     }
-    res.append( *it );
+    res.append( it );
   }
   return res;
 }
@@ -83,8 +107,8 @@ Variant Json::parse(const std::string& json, bool &success )
 
 std::string Json::serialize(const Variant &data, const std::string& tab)
 {
-        bool success = true;
-        return Json::serialize(data, success, tab);
+   bool success = true;
+   return Json::serialize(data, success, tab);
 }
 
 std::string Json::serialize(const Variant &data, bool &success, const std::string& tab)
@@ -102,21 +126,31 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::List:
     case Variant::NStringArray: // variant is a list?
     {
-      StringArray values;
       const VariantList rlist = data.toList();
-      for( VariantList::const_iterator it = rlist.begin(); it != rlist.end(); ++it)
+
+      if( rlist.empty() )
       {
-        std::string serializedValue = serialize( *it, "" );
-        if( serializedValue.empty() )
+        str = "[]";
+      }
+      else
+      {
+        StringArray values;
+        std::string serializedValue;
+        serializedValue.reserve( 512 );
+        for( auto& item : rlist )
         {
-            success = false;
-            break;
+          serializedValue = serialize( item, "" );
+          if( serializedValue.empty() )
+          {
+              success = false;
+              break;
+          }
+
+          values.push_back( serializedValue );
         }
 
-        values.push_back( serializedValue );
+        str = "[ " + join( values, ", " ) + " ]";
       }
-
-      str = "[ " + join( values, ", " ) + " ]";
     }
     break;
 
@@ -132,16 +166,17 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       {
         str = "{ \n";
         StringArray pairs;
-        foreach( it, vmap )
+        std::string serializedValue;
+        serializedValue.reserve( 512 );
+        for( auto& item : vmap )
         {        
-          std::string serializedValue = serialize( it->second, tab + "  ");
+          serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
-                  //success = false;
-            pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+            pairs.push_back( tab + sanitizeString( item.first ) + std::string( " : \"nonSerializableValue\"" ) );
             continue;
           }
-          pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+          pairs.push_back( tab + sanitizeString( item.first ) + " : " + serializedValue );
         }
         str += join(pairs, ",\n");
         std::string rtab( tab );
@@ -198,7 +233,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       // TODO: cheap hack - almost locale independent double formatting
       std::string posX = utils::replace(utils::format( 0xff, "%f", pos.x()), ",", ".");
       std::string posY = utils::replace(utils::format( 0xff, "%f", pos.y()), ",", ".");
-      str = utils::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
+      str = fmt::format( "[ {0}, {1} ]", posX, posY );
     }
     break;
 
@@ -229,11 +264,11 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     default:
       if ( data.canConvert( Variant::LongLong ) ) // any signed number?
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::Long ))
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::String ) ) // can value be converted to string?
       {
@@ -406,43 +441,43 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
  */
 Variant Json::parseArray(const std::string &json, int &index, bool &success)
 {
-        VariantList list;
+  VariantList list;
 
-        Json::nextToken(json, index);
+  Json::nextToken(json, index);
 
-        bool done = false;
-        while(!done)
-        {
-                int token = Json::lookAhead(json, index);
+  bool done = false;
+  while(!done)
+  {
+    int token = Json::lookAhead(json, index);
 
-                if(token == JsonTokenNone)
-                {
-                        success = false;
-                        return VariantList();
-                }
-                else if(token == JsonTokenComma)
-                {
-                        Json::nextToken(json, index);
-                }
-                else if(token == JsonTokenSquaredClose)
-                {
-                        Json::nextToken(json, index);
-                        break;
-                }
-                else
-                {
-                        Variant value = Json::parseValue(json, index, success);
+    if(token == JsonTokenNone)
+    {
+      success = false;
+      return VariantList();
+    }
+    else if(token == JsonTokenComma)
+    {
+      Json::nextToken(json, index);
+    }
+    else if(token == JsonTokenSquaredClose)
+    {
+      Json::nextToken(json, index);
+      break;
+    }
+    else
+    {
+      Variant value = Json::parseValue(json, index, success);
 
-                        if(!success)
-                        {
-                                return VariantList();
-                        }
+      if(!success)
+      {
+        return VariantList();
+      }
 
-                        list.push_back(value);
-                }
-        }
+      list.push_back(value);
+    }
+  }
 
-        return Variant(list);
+  return Variant(list);
 }
 
 /**
@@ -499,9 +534,10 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
     }
   }
 
+  std::string items("{}[],");
   for( unsigned int i=0; i < s.size(); i++ )
   {
-    if( std::string("{}[],").find( s[i] ) != std::string::npos )
+    if( items.find( s[i] ) != std::string::npos )
     {
       s = json.substr( std::max( 0, index-20 ), lastIndex );
       complete = false;
@@ -602,7 +638,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 //                                 {
 //                                         break;
 //                                 }
-              _CAESARIA_DEBUG_BREAK_IF( true && "yet not work")
+              _GAME_DEBUG_BREAK_IF( true && "yet not work")
             }
           }
           else
@@ -625,43 +661,44 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
  */
 Variant Json::parseNumber(const std::string &json, int &index)
 {
-        Json::eatWhitespace(json, index);
+  Json::eatWhitespace(json, index);
 
-        int lastIndex = Json::lastIndexOfNumber(json, index);
-        int charLength = (lastIndex - index) + 1;
-        std::string numberStr;
+  int lastIndex = Json::lastIndexOfNumber(json, index);
+  int charLength = (lastIndex - index) + 1;
+  std::string numberStr;
 
-        numberStr = json.substr( index, charLength );
+  numberStr = json.substr( index, charLength );
 
-        index = lastIndex + 1;
+  index = lastIndex + 1;
 
-        if( numberStr.find('.') != std::string::npos )
-        {
-          return Variant( utils::toFloat( numberStr.c_str() ) );
-        }
-        else if( numberStr[0] == '-' ) 
-        {
-          return Variant( utils::toInt( numberStr.c_str() ) );
-        } 
-        else 
-        {
-          return Variant( utils::toUint( numberStr.c_str() ) );
-        }
+  if( numberStr.find('.') != std::string::npos )
+  {
+    return Variant( utils::toFloat( numberStr.c_str() ) );
+  }
+  else if( numberStr[0] == '-' )
+  {
+    return Variant( utils::toInt( numberStr.c_str() ) );
+  }
+  else
+  {
+    return Variant( utils::toUint( numberStr.c_str() ) );
+  }
 }
 
 /**
  * lastIndexOfNumber
  */
+static const std::string digitsTemplateStr("0123456789+-.eE");
 int Json::lastIndexOfNumber(const std::string &json, int index)
 {
    int lastIndex;
 
-   for(lastIndex = index; lastIndex < (int)json.size(); lastIndex++)
+   for( lastIndex = index; lastIndex < (int)json.size(); lastIndex++)
    {
-     if( std::string("0123456789+-.eE").find( json[lastIndex] ) == std::string::npos )
-      {
-              break;
-      }
+     if( digitsTemplateStr.find( json[lastIndex] ) == std::string::npos )
+     {
+             break;
+     }
    }
 
    return lastIndex -1;
@@ -670,15 +707,16 @@ int Json::lastIndexOfNumber(const std::string &json, int index)
 /**
  * eatWhitespace
  */
+static const std::string whitespaceTemplate(" \t\n\r");
 void Json::eatWhitespace(const std::string &json, int &index)
 {
-        for(; index < (int)json.size(); index++)
-        {
-          if(std::string(" \t\n\r").find(json[index]) == std::string::npos)
-                {
-                        break;
-                }
-        }
+  for(; index < (int)json.size(); index++)
+  {
+    if( whitespaceTemplate.find(json[index]) == std::string::npos)
+    {
+      break;
+    }
+  }
 }
 
 /**

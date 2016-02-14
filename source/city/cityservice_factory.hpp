@@ -19,8 +19,7 @@
 #define __CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "city/city.hpp"
+#include "core/singleton.hpp"
 
 namespace city
 {
@@ -40,18 +39,21 @@ class BaseServiceCreator : public ServiceCreator
 public:
   virtual SrvcPtr create( PlayerCityPtr city )
   {
-    return T::create( city );
+    return Srvc::create<T>( city );
   }
 
   virtual std::string serviceName() const { return T::defaultName(); }
 };
 
-
-class ServiceFactory
+/**
+ * @brief Factory, which can create services for city
+ *        from registered classes.
+ */
+class ServiceFactory : public StaticSingleton<ServiceFactory>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(ServiceFactory)
 public:
-  static SrvcPtr create( PlayerCityPtr city, const std::string& name);
-  static ServiceFactory& instance();
+  static SrvcPtr create( PlayerCityPtr city, const std::string& name );
   void addCreator( ServiceCreatorPtr creator );
 
   template<class T>
@@ -61,12 +63,20 @@ public:
     addCreator( ret );
   }
 
+  virtual ~ServiceFactory();
+
 private:
   ServiceFactory();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+#define REGISTER_SERVICE_IN_FACTORY(type,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { ServiceFactory::instance().addCreator<type>(); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 }//end namespace city
 

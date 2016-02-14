@@ -19,6 +19,7 @@
 #define __CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
+#include "core/smartlist.hpp"
 
 PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
 
@@ -28,11 +29,17 @@ PREDEFINE_CLASS_SMARTLIST(Srvc,List)
 
 namespace request
 {
-PREDEFINE_CLASS_SMARTLIST(Request,List)
-PREDEFINE_CLASS_SMARTLIST(RqGood,List)
+PREDEFINE_CLASS_SMARTPOINTER(RqBase)
+PREDEFINE_CLASS_SMARTPOINTER(RqGood)
 PREDEFINE_CLASS_SMARTPOINTER(Dispatcher)
 }
 
-}
+typedef request::RqBase Request;
+typedef request::RqGood GoodRequest;
+typedef SmartPtr<Request> RequestPtr;
+typedef SmartPtr<GoodRequest> GoodRequestPtr;
+typedef SmartList<Request> RequestList;
+
+}//end namespace city
 
 #endif //__CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__

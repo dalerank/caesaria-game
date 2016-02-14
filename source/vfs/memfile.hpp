@@ -52,6 +52,8 @@ public:
 
   virtual int write(const ByteArray& array);
 
+  virtual size_t lastModify() const;
+
   virtual ByteArray read(unsigned int sizeToRead);
 
   //! returns where in the file we are.
@@ -64,17 +66,17 @@ public:
   //! returns name of file
   virtual const Path& path() const;
 
-  static NFile create( void* memory, long len, const Path& fileName, bool deleteMemoryWhenDropped );
+  static NFile create( void* memory, long len, const Path& fileName, bool _deleteMemoryWhenDropped );
   static NFile create( ByteArray data, const Path& fileName );
 
 private:
   MemoryFile();
 
-  void *Buffer;
-  long Len;
+  void *_buffer;
+  long _length;
   long _pos;
-  Path Filename;
-  bool deleteMemoryWhenDropped;
+  Path _filename;
+  bool _deleteMemoryWhenDropped;
 };
 
 } //end namespace io

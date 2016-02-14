@@ -17,7 +17,7 @@
 
 #include "random_animals.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "city/cityservice_animals.hpp"
 #include "objects/house.hpp"
@@ -25,14 +25,18 @@
 #include "core/logger.hpp"
 #include "walker/animals.hpp"
 #include "walker/helper.hpp"
+#include "core/variant_map.hpp"
 #include "walker/walkers_factory.hpp"
 #include "gfx/tilemap.hpp"
+#include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(RandomAnimals, "random_animals")
 
 class RandomAnimals::Impl
 {
@@ -69,14 +73,14 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
   if( _d->count > 0 )
   {
     Tilemap& tmap = game.city()->tilemap();
-    TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-    border = border.walkableTiles( true );
+    TilesArray border = tmap.rect( TilePos(0, 0), Size(tmap.size(), tmap.size()) );
+    border = border.walkables( true );
 
     Tile* randomTile = border.random();
 
     for( unsigned int k=0; k < _d->count; k++ )
     {
-      AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( _d->animalType, game.city() ) );
+      AnimalPtr animal = WalkerManager::instance().create<Animal>( _d->animalType, game.city() );
       if( animal.isValid() )
       {
         animal->send2City( randomTile->pos() );
@@ -89,8 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    city::AnimalsPtr srvc;
-    srvc << game.city()->findService( city::Animals::defaultName() );
+    AnimalsPtr srvc = game.city()->statistic().services.find<Animals>();
 
     if( srvc.isValid() )
     {
@@ -122,9 +125,9 @@ VariantMap RandomAnimals::save() const
 {
   VariantMap ret;
 
-  VARIANT_SAVE_ANY_D( ret, _d, count );
-  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals );
-  ret[ "animalType" ] = (int)_d->animalType;
+  VARIANT_SAVE_ANY_D( ret, _d, count )
+  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals )
+  VARIANT_SAVE_ENUM_D( ret, _d, animalType )
   return ret;
 }
 

@@ -1,0 +1,58 @@
+{  
+  geometry : [ 0, 0, 350, 225 ]
+  bgtype : "whiteFrame"
+  
+  lbTitle#Label :
+  {
+    font : "FONT_5"
+    geometryf : [ 0.05, 0.05, 0.95, 0.2 ]
+    text : "##game_sound_options##"
+    textAlign : [ "center", "center" ]
+  }
+
+  spinGameSound#SpinBox :
+  {
+    geometry : [ 28, 60, "pw-28", 84 ]
+    text : "##gmsndwnd_game_volume##"
+    postfix : " %"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+    properties : { soundType : 3 }
+  }
+         
+  spinAmbientSound#SpinBox :
+  {
+    geometry : [ 28, 96, "pw-28", 120 ]
+    text : "##gmsndwnd_ambient_sound##"
+    postfix : " %"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+    properties : { soundType : 1 }
+  }
+    
+  spinThemeSound#SpinBox :
+  {
+    geometry : [ 28, 132, "pw-28", 156 ]
+    text : "##gmsndwnd_theme_sound##"
+    postfix : " %"
+    textAlign : [ "center", "center" ]
+    font : "FONT_2"
+    properties : { soundType : 2 }
+  }
+
+  btnOk#PushButton :
+  {
+    geometryf : [ 0.25, 0.70, 0.75, 0.79 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##ok##"
+    id : 1001
+  }
+    
+  btnCancel#PushButton :
+  {
+    geometryf : [ 0.25, 0.82, 0.75, 0.91 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##cancel##"
+    id : 1002
+  }
+}

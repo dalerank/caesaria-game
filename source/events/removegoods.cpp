@@ -14,18 +14,17 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "removegoods.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "core/variant_map.hpp"
 #include "game/game.hpp"
-
-using namespace constants;
 
 namespace events
 {
 
-GameEventPtr RemoveGoods::create( good::Type type, int qty  )
+GameEventPtr RemoveGoods::create(good::Product type, int qty  )
 {
   RemoveGoods* r = new RemoveGoods();
   r->_qty = qty;
@@ -38,21 +37,15 @@ GameEventPtr RemoveGoods::create( good::Type type, int qty  )
 }
 
 template<class T>
-void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Type what, int& qty )
+void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what, int& qty )
 {
-  SmartList<T> bList;	
-#ifdef CAESARIA_PLATFORM_HAIKU
-  bList << city->overlays();
-#else
-  city::Helper helper( city );
-  bList = helper.find<T>( btype );
-#endif
-  foreach( it, bList )
+  SmartList<T> bList = city->statistic().objects.find<T>( btype );
+  for( auto building : bList )
   {
     if( qty <= 0 )
       break;
 
-    good::Store& store = (*it)->store();
+    good::Store& store = building->store();
     int maxQty = std::min( store.getMaxRetrieve( what ), qty );
 
     if( maxQty > 0 )
@@ -66,8 +59,8 @@ void _removeGoodFrom( PlayerCityPtr city, objects::Type btype, good::Type what, 
 
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
-  _removeGoodFrom<Warehouse>( game.city(), objects::warehouse, _type, _qty );
-  _removeGoodFrom<Granary>( game.city(), objects::granary, _type, _qty );
+  _removeGoodFrom<Warehouse>( game.city(), object::warehouse, _type, _qty );
+  _removeGoodFrom<Granary>( game.city(), object::granery, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }

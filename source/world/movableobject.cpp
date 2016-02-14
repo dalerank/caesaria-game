@@ -24,7 +24,7 @@
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
-#include <map>
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 
@@ -44,7 +44,7 @@ public:
 MovableObject::MovableObject( EmpirePtr empire )
   : Object( empire ), __INIT_IMPL(MovableObject)
 {
-  setSpeed( 1.f );
+  setSpeed( defaultSpeed );
 }
 
 MovableObject::~MovableObject(){}
@@ -83,7 +83,7 @@ void MovableObject::timeStep(const unsigned int time)
   }
 }
 
-int MovableObject::viewDistance() const { return 40; }
+int MovableObject::searchRange() const { return defaultViewDistance; }
 const Route& MovableObject::way() const { return _dfunc()->way; }
 
 void MovableObject::_reachedWay()
@@ -102,12 +102,8 @@ void MovableObject::save(VariantMap& stream) const
   __D_IMPL_CONST(d,MovableObject)
   VARIANT_SAVE_ANY_D( stream, d, start )
   VARIANT_SAVE_ANY_D( stream, d, stop )
-
-  VariantList pointsVl;
-  foreach( i, d->way ) { pointsVl.push_back( *i ); }
-
-  stream[ "points" ] = pointsVl;
-  stream[ "step"   ] = (int)d->way.step;
+  VARIANT_SAVE_ANY_D( stream, d, way.step )
+  VARIANT_SAVE_CLASS_D( stream, d, way )
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -118,10 +114,8 @@ void MovableObject::load(const VariantMap& stream)
   d->options = stream;
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
-
-  d->way.step = (int)stream.get( "step" );
-  VariantList points = stream.get( "points" ).toList();
-  foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
+  VARIANT_LOAD_ANY_D( d, way.step, stream )
+  VARIANT_LOAD_CLASS_D_LIST( d, way, stream )
 }
 
 bool MovableObject::_findWay( Point p1, Point p2 )
@@ -131,17 +125,58 @@ bool MovableObject::_findWay( Point p1, Point p2 )
   d->start = p1;
   d->stop = p2;
 
-  d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::land );
+  d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::trLand );
   setLocation( d->start );
   d->way.step = 0;
 
   if( d->way.empty() )
   {
-    Logger::warning( "MovableObject: cannot find way from [%d,%d] to [%d,%d]", p1.x(), p1.y(), p2.x(), p2.y() );
+    Logger::warning( "MovableObject: cannot find way from [{},{}] to [{},{}]", p1.x(), p1.y(), p2.x(), p2.y() );
     return false;
   }
 
   return true;
 }
 
+class Messenger::Impl
+{
+public:
+  std::string title;
+  std::string message;
+};
+
+Messenger::~Messenger() {}
+
+void Messenger::now( EmpirePtr empire,
+                     const std::string& cityname,
+                     const std::string& title,
+                     const std::string& message)
+{
+  Messenger* m = new Messenger( empire );
+  m->_dfunc()->title = title;
+  m->_dfunc()->message = message;
+
+  ObjectPtr obj( m );
+  obj->drop();
+
+  CityPtr pcity = empire->findCity( cityname );
+  if( pcity.isValid() )
+    pcity->addObject( obj );
 }
+
+std::string Messenger::title() const { return _dfunc()->title; }
+std::string Messenger::message() const { return _dfunc()->message; }
+
+Messenger::Messenger(EmpirePtr empire)
+ : MovableObject( empire ), __INIT_IMPL(Messenger)
+{
+
+}
+
+void Route::reset()
+{
+  clear();
+  step = 0;
+}
+
+}//end namespace world

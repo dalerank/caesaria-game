@@ -16,37 +16,23 @@
 #include "factory.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "random_damage.hpp"
-#include "random_fire.hpp"
-#include "showtutorialwindow.hpp"
-#include "changebuildingoptions.hpp"
-#include "changeempireoptions.hpp"
-#include "cityindebt.hpp"
-#include "enemy_attack.hpp"
-#include "showinfobox.hpp"
-#include "showadvisorwindow.hpp"
-#include "earthquake.hpp"
-#include "start_work.hpp"
-#include "distant_battle.hpp"
-#include "trading_options.hpp"
-#include "contaminated_water.hpp"
-#include "changeemperor.hpp"
-#include "random_animals.hpp"
+
+#include <map>
 
 namespace events
 {
 
-class GameEventFactory::Impl
+typedef std::map< std::string, GameEventCreatorPtr > Creators;
+class EFactory::Impl
 {
 public:
-  typedef std::map< std::string, GameEventCreatorPtr > Creators;
   Creators creators;
 };
 
-GameEventPtr GameEventFactory::create( const std::string& name )
+GameEventPtr EFactory::create( const std::string& name )
 {
-  GameEventFactory& inst = instance();
-  Impl::Creators::iterator it = inst._d->creators.find( name );
+  EFactory& inst = instance();
+  Creators::iterator it = inst._d->creators.find( name );
   if( it != inst._d->creators.end() )
   {
     return it->second->create();
@@ -56,18 +42,18 @@ GameEventPtr GameEventFactory::create( const std::string& name )
   return GameEventPtr();
 }
 
-GameEventFactory& GameEventFactory::instance()
+EFactory& EFactory::instance()
 {
-  static GameEventFactory inst;
+  static EFactory inst;
   return inst;
 }
 
-void GameEventFactory::addCreator( const std::string& name, GameEventCreatorPtr creator )
+void EFactory::addCreator( const std::string& name, GameEventCreatorPtr creator )
 {
   if( creator.isNull() )
     return;
 
-  Impl::Creators::iterator it = _d->creators.find( name );
+  Creators::iterator it = _d->creators.find( name );
 
   if( it != _d->creators.end() )
   {
@@ -78,24 +64,8 @@ void GameEventFactory::addCreator( const std::string& name, GameEventCreatorPtr 
   _d->creators[ name ] = creator;
 }
 
-GameEventFactory::GameEventFactory() : _d( new Impl )
+EFactory::EFactory() : _d( new Impl )
 {
-  addCreator<ShowTutorial>( "tutorial_window" );
-  addCreator<ChangeBuildingOptions>( "building_options" );
-  addCreator<ChangeEmpireOptions>( "empire_options" );
-  addCreator<ChangeEmperor>( "change_emperor" );
-  addCreator<RandomDamage>( "random_collapse" );
-  addCreator<RandomFire>( "random_fire" );
-  addCreator<CityIndebt>( "city_indebt" );
-  addCreator<EnemyAttack>( "enemy_attack" );
-  addCreator<ShowInfobox>( "messagebox" );
-  addCreator<EarthQuake>( "earthquake" );
-  addCreator<StartWork>( "start_work" );
-  addCreator<ShowAdvisorWindow>( "advisor_window" );
-  addCreator<DistantBattle>( "distant_battle" );
-  addCreator<ChangeTradingOptions>( "trading_options" );
-  addCreator<ContaminatedWater>( "contaminated_water" );
-  addCreator<RandomAnimals>( "random_animals" );
 }
 
 }//end namespace events

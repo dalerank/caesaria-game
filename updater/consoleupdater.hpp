@@ -21,7 +21,7 @@
 #include "updatecontroller.hpp"
 #include "updateview.hpp"
 #include "core/logger.hpp"
-#include "exceptionsafethread.hpp"
+#include "thread/safethread.hpp"
 #include <signal.h>
 
 namespace updater
@@ -38,22 +38,6 @@ public:
 		OkNeedRestart
 	};
 
-private:
-	UpdaterOptions _options;
-
-	// The update controller manages the logic
-	UpdateController _controller;
-
-	// Exit flag
-	volatile bool _done;
-
-	static Delegate1<int> _abortSignalHandler;
-
-	// Most recent progress info
-	ProgressInfo _info;
-
-	bool _progressDone;
-
 public:
 	ConsoleUpdater(int argc, char* argv[]);
 
@@ -64,23 +48,20 @@ public:
 	// Main entry point, algorithm starts here, does not leak exceptions
 	void run();
 
-	// IUpdateView implementation
 	void onStartStep(UpdateStep step);
 	void onFinishStep(UpdateStep step);
 	void OnFailure(UpdateStep step, const std::string& errorMessage);
 	void onProgressChange(const ProgressInfo& info);
-	void OnMessage(const std::string& message);
-	void OnWarning(const std::string& message);
-	//void OnStartDifferentialUpdate(const DifferentialUpdateInfo& info);
-	//void OnPerformDifferentialUpdate(const DifferentialUpdateInfo& info);
-	//void OnFinishDifferentialUpdate(const DifferentialUpdateInfo& info);
+  void onMessage(const std::string& message);
+  void onWarning(const std::string& message);
 
 private:
+  void _initAbortSignalHandler();
 	static void resolveAbortSignal(int signal);
 
 	void onAbort(int);
 
-	void PrintProgress();
+  void printProgress();
 
 	class Impl;
 	ScopedPtr< Impl > _d;

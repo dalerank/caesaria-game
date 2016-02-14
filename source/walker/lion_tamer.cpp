@@ -19,22 +19,16 @@
 #include "city/city.hpp"
 #include "lion.hpp"
 #include "pathway/pathway.hpp"
+#include "walkers_factory.hpp"
+#include "objects/building.hpp"
 
-using namespace constants;
+REGISTER_CLASS_IN_WALKERFACTORY(walker::lionTamer, LionTamer)
 
 class LionTamer::Impl
 {
 public:
   int delay;
 };
-
-LionTamerPtr LionTamer::create(PlayerCityPtr city)
-{
-  LionTamerPtr ret( new LionTamer( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void LionTamer::timeStep(const unsigned long time)
 {
@@ -53,20 +47,17 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
 
   if( !isDeleted() )
   {
-    LionPtr lion = Lion::create( _city() );
+    LionPtr lion = Walker::create<Lion>( _city() );
     lion->setPos( pos() );
-    lion->setPathway( _pathwayRef() );
+    lion->setPathway( _pathway() );
     lion->go();
     _d->delay = 12;
 
-    _city()->addWalker( ptr_cast<Walker>( lion ) );
+    attach();
   }
 }
 
-LionTamer::~LionTamer()
-{
-
-}
+LionTamer::~LionTamer() {}
 
 LionTamer::LionTamer(PlayerCityPtr city)
   : TraineeWalker( city, walker::lionTamer ), _d( new Impl )

@@ -25,14 +25,15 @@ typedef SmartPtr< TaxCollector > TaxCollectorPtr;
 
 class TaxCollector : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static TaxCollectorPtr create( PlayerCityPtr city );
-
   float takeMoney() const;
 
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
+  virtual Gender gender() const;
   virtual std::string thoughts(Thought th) const;
+  BuildingPtr base() const;
 
 protected:
   virtual void _centerTile();

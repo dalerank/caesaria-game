@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "clearland.hpp"
 #include "game/game.hpp"
@@ -21,11 +21,11 @@
 #include "gfx/tilemap.hpp"
 #include "warningmessage.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "requestdestroy.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
@@ -42,6 +42,11 @@ GameEventPtr ClearTile::create(const TilePos& pos)
   return ret;
 }
 
+GameEventPtr ClearTile::create(const Tile& tile )
+{
+  return create( tile.epos() );
+}
+
 bool ClearTile::_mayExec(Game& game, unsigned int) const{ return true; }
 
 void ClearTile::_exec( Game& game, unsigned int )
@@ -52,24 +57,21 @@ void ClearTile::_exec( Game& game, unsigned int )
 
   if( cursorTile.getFlag( Tile::isDestructible ) )
   {
-    Size size( 1 );
+    Size size(1, 1);
     TilePos rPos = _pos;
 
-    TileOverlayPtr overlay = cursorTile.overlay();
+    OverlayPtr overlay = cursorTile.overlay();
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = ptr_cast<Construction>(overlay);
-    if( constr.isValid() && !constr->canDestroy() )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ) );
-      e->dispatch();
+      auto info = overlay->info();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
-      const MetaData& md = MetaDataHolder::getData( constr->type() );
-      if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
+      if( info.requestDestroy() )
       {
-        e = RequestDestroy::create( constr );
-        e->dispatch();
+        events::dispatch<RequestDestroy>( overlay );
       }
       return;
     }
@@ -81,21 +83,20 @@ void ClearTile::_exec( Game& game, unsigned int )
       overlay->deleteLater();
     }
 
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( it, clearedTiles )
+    TilesArray clearedTiles = tmap.area( rPos, size );
+    for( auto tile : clearedTiles )
     {
-      Tile* tile = *it;
-      tile->setMasterTile( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->setMaster( NULL );
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );
 
       if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
-        tile->setPicture( imgid::toResource( tile->originalImgId() ) );
+        //tile->setPicture( imgid::toResource( tile->originalImgId() ) );
       }
       else
       {
@@ -109,11 +110,11 @@ void ClearTile::_exec( Game& game, unsigned int )
         // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-        int imgId = math::random( 58 );
+        int imgId = math::random( 58-1 );
 
-        Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
-        tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
-        tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
+        Picture pic( config::rc.land1a, startOffset + imgId );
+        tile->setPicture( pic );
+        tile->setImgId( imgid::fromResource( pic.name() ) );
       }
     }
 
@@ -123,7 +124,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.city()->setOption( PlayerCity::updateRoads, 1 );
+      game.city()->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
     }
   }
 

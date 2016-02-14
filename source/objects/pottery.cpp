@@ -18,30 +18,31 @@
 #include "pottery.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-Pottery::Pottery() : Factory(good::clay, good::pottery, objects::pottery, Size(2))
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::pottery_workshop, Pottery)
+
+Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size::square(2))
 {
-  _fgPicturesRef().resize( 3 );
+  _fgPictures().resize( 3 );
 }
 
-bool Pottery::canBuild( const CityAreaInfo& areaInfo ) const
+bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Factory::canBuild( areaInfo );
   return ret;
 }
 
-bool Pottery::build( const CityAreaInfo& info )
+bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
-  city::Helper helper( info.city );
-  bool haveClaypit = !helper.find<Building>( objects::clayPit ).empty();
+  bool haveClaypit = info.city->statistic().objects.count( object::clay_pit ) > 0;
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 
@@ -60,6 +61,6 @@ void Pottery::deliverGood()
 
 void Pottery::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 157 );
-  _fgPicturesRef()[1].setOffset( 45, -10 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 157 );
+  _fgPicture(1).setOffset( 45, -10 );
 }

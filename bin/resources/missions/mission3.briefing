@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe01_00001"
+  title : "350 BC - Third assignment"
+	
+  items : {
+    capua : {
+      title : "##capua_title##"
+      location : [ 300, 170 ]
+      mission : ":/missions/capua.mission"
+    }
+
+    tarentum : {
+      title : "##tarentum_title##"
+      mission : ":/missions/tarentum.mission"
+      location : [ 350, 230 ]
+    }
+  }
+}

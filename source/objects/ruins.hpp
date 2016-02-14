@@ -24,37 +24,42 @@
 class Ruins : public Building
 {
 public:
-  Ruins( constants::objects::Type type );
+  Ruins( object::Type type );
   void setInfo( std::string parent ) { _parent = parent; }
-  std::string info() const { return _parent; }
+  std::string pinfo() const { return _parent; }
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
-  void afterBuild() { _alsoBuilt=false; }
+  virtual bool build(const city::AreaInfo &info);
+  virtual void collapse() {}
+  virtual void burn() {}
+  virtual bool getMinimapColor(int &color1, int color2) const;
 
+  void afterBuild() { _alsoBuilt=false; }
 protected:
   std::string _parent;
+  float _value;
   bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
 {
+  static const int defaultForce = 2;
 public:
   BurningRuins();
 
   virtual void timeStep(const unsigned long time);
-  virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
   virtual bool isFlat() const { return false; }
-  virtual void collapse();
   virtual bool canDestroy() const;
+  virtual bool getMinimapColor(int& color1, int& color2) const;
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 class BurnedRuins : public Ruins
@@ -65,8 +70,8 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool build(const CityAreaInfo &info);
-  virtual bool isNeedRoadAccess() const;
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool isNeedRoad() const;
   virtual void destroy();
 };
 
@@ -78,13 +83,11 @@ class CollapsedRuins : public Ruins
 public:
   CollapsedRuins();
 
-  virtual void burn();
-  virtual bool build(const CityAreaInfo &info);
-  virtual void collapse();
+  virtual bool build(const city::AreaInfo &info);
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 class PlagueRuins : public Ruins
@@ -92,16 +95,15 @@ class PlagueRuins : public Ruins
 public:
   PlagueRuins();
 
-  virtual void timeStep(const unsigned long time);
-  virtual void burn();
+  virtual void timeStep(const unsigned long time);  
   virtual bool isDestructible() const;
-  virtual bool build( const CityAreaInfo& info );
+  virtual bool build( const city::AreaInfo& info );
   virtual bool isWalkable() const;
   virtual void destroy();
 
   virtual void applyService(ServiceWalkerPtr walker);
 
-  virtual bool isNeedRoadAccess() const;
+  virtual bool isNeedRoad() const;
 };
 
 #endif //__CAESARIA_RUINS_H_INCLUDE_

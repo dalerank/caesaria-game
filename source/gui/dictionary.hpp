@@ -20,7 +20,7 @@
 
 #include "window.hpp"
 #include "core/signals.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 namespace gui
 {
@@ -28,8 +28,8 @@ namespace gui
 class DictionaryWindow : public Window
 {
 public:
-  static void show( Widget* parent, gfx::TileOverlay::Type type );
-  static void show( Widget* parent, const std::string& uri );
+  DictionaryWindow( Widget* parent, const std::string& helpId );
+  DictionaryWindow( Widget* parent, object::Type type );
 
   virtual ~DictionaryWindow();
   virtual bool onEvent(const NEvent &event);
@@ -37,7 +37,6 @@ public:
   virtual void load( const std::string& uri );
 
 private:
-  DictionaryWindow( Widget* parent );
   void _handleUriChange(std::string);
   vfs::Path _convUri2path(std::string uri);
 

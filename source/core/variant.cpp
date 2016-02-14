@@ -13,123 +13,95 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstring>
 
+#include "core/color.hpp"
 #include "variant.hpp"
+#include "variant_map.hpp"
+#include "variant_list.hpp"
+#include "gfx/tilepos.hpp"
 #include "variantprivate.hpp"
 #include "utils.hpp"
 
+namespace tname {
+template<class T>
+static bool equale( const char* name )
+{
+  return !strcmp( name, typeid(T).name() );
+}
+}
+
 static Variant::Type staticNameToType( const char* name )
 {
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(int).name() ) )
-		return Variant::Int;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(unsigned int).name() ) )
-		return Variant::UInt;
-	if( !strcmp( name, typeid(long long).name() ) )
-		return Variant::LongLong;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(double).name() ) )
-		return Variant::Double;
-	if( !strcmp( name, typeid(char).name() ) )
-		return Variant::Char;
-	if( !strcmp( name, typeid(VariantMap).name() ) )
-		return Variant::Map;
-	if( !strcmp( name, typeid(VariantList).name() ) )
-		return Variant::List;
-  if( !strcmp( name, typeid(std::string).name() ) )
-		return Variant::String;
-	if( !strcmp( name, typeid(StringArray).name() ) )
-		return Variant::NStringArray;
-	if( !strcmp( name, typeid(ByteArray).name() ) )
-		return Variant::NByteArray;
-	if( !strcmp( name, typeid(DateTime).name() ) )
-		return Variant::NDateTime;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(Rect).name() ) )
-		return Variant::NRectI;
-	//if( !strcmp( name, typeid(RectF).name() ) )
-	//	return Variant::NRectF;
-	if( !strcmp( name, typeid(Size).name() ) )
-		return Variant::NSize;
-	//if( !strcmp( name, typeid(NSizeF).name() ) )
-	//	return Variant::SizeF;
-// 	if( !strcmp( name, typeid(Line).name() ) )
-// 		return Variant::Line;
-// 	if( !strcmp( name, typeid(LineF).name() ) )
-// 		return Variant::LineF;
-	if( !strcmp( name, typeid(Point).name() ) )
-		return Variant::NPoint;
-  if( !strcmp( name, typeid(TilePos).name() ) )
-    return Variant::NTilePos;
-	if( !strcmp( name, typeid(PointF).name() ) )
-		return Variant::NPointF;
-	//if( !strcmp( name, typeid(Font).name() ) )
-	//	return Variant::Font;
-// 	if( !strcmp( name, typeid(Pixmap).name() ) )
-// 		return Variant::Pixmap;
-// 	if( !strcmp( name, typeid(Color).name() ) )
-// 		return Variant::Color;
-// 	
-  if( !strcmp( name, typeid(unsigned char).name() ) )
-		return Variant::Uchar;
-	if( !strcmp( name, typeid(unsigned short).name() ) )
-		return Variant::Ushort;
-	if( !strcmp( name, typeid(unsigned long).name() ) )
-		return Variant::Ulong;
-	if( !strcmp( name, typeid(long).name() ) )
-		return Variant::Long;
-	if( !strcmp( name, typeid(float).name() ) )
-		return Variant::Float;
+  if( tname::equale<bool>( name ) )           return Variant::Bool;
+  if( tname::equale<int>( name ) )            return Variant::Int;
+  if( tname::equale<unsigned int>( name ) )   return Variant::UInt;
+  if( tname::equale<long long>( name ) )      return Variant::LongLong;
+  if( tname::equale<bool>( name ) )           return Variant::Bool;
+  if( tname::equale<double>( name ) )         return Variant::Double;
+  if( tname::equale<char>( name ) )           return Variant::Char;
+  if( tname::equale<VariantMap>( name ) )     return Variant::Map;
+  if( tname::equale<VariantList>( name ) )    return Variant::List;
+  if( tname::equale<std::string>( name ) )    return Variant::String;
+  if( tname::equale<StringArray>( name ) )    return Variant::NStringArray;
+  if( tname::equale<ByteArray>( name ) )      return Variant::NByteArray;
+  if( tname::equale<DateTime>( name ) )       return Variant::NDateTime;
+  if( tname::equale<Rect>( name ) )           return Variant::NRectI;
+  if( tname::equale<RectF>( name ) )          return Variant::NRectF;
+  if( tname::equale<Size>( name ) )           return Variant::NSize;
+  if( tname::equale<SizeF>( name ) )          return Variant::NSizeF;
+  if( tname::equale<Point>( name ) )          return Variant::NPoint;
+  if( tname::equale<TilePos>( name ) )        return Variant::NTilePos;
+  if( tname::equale<PointF>( name ) )         return Variant::NPointF;
+  if( tname::equale<unsigned char>( name ) )  return Variant::Uchar;
+  if( tname::equale<unsigned short>( name ) ) return Variant::Ushort;
+  if( tname::equale<unsigned long>( name ) )  return Variant::Ulong;
+  if( tname::equale<long>( name ) )   	      return Variant::Long;
+  if( tname::equale<float>( name ) )          return Variant::Float;
 
-	return Variant::Invalid;
+  return Variant::Invalid;
 }
 
 static std::string staticTypeToName( Variant::Type t)
 {
-    switch( t )
-	{
-	case Variant::Invalid:	return "Invalid";
-	case Variant::Bool : return "Bool";
-	case Variant::Int : return "Int";
-	case Variant::UInt : return "UInt";
-	case Variant::LongLong : return "LongLong";
-	case Variant::ULongLong : return "ULongLong";
-	case Variant::Double : return "Double";
-	case Variant::Char : return "Char";
-	case Variant::Map : return "Map";
-	case Variant::List : return "List";
-	case Variant::String : return "String";
-	case Variant::NStringArray : return "NStringArray";
-	case Variant::NByteArray : return "NByteArray";
-	case Variant::NDateTime : return "DateTime";
-	case Variant::NRectI : return "NRectI";
-	case Variant::NRectF : return "NRectF";
-	case Variant::NSize : return "Size";
-	case Variant::NSizeF : return "SizeF";
-	case Variant::Line : return "Line";
-	case Variant::LineF : return "LineF";
-	case Variant::NPoint : return "Point";
-  case Variant::NTilePos : return "TilePos";
-	case Variant::NPointF : return "PointF";
-	case Variant::Font : return "Font";
-	case Variant::Pixmap : return "Pixmap";
-	case Variant::Color : return "Color";
-	case Variant::Uchar : return "Uchar";
-	case Variant::Ushort : return "Ushort";
-	case Variant::Ulong : return "ULong";
-	case Variant::Long : return "Long";
-	case Variant::Float : return "Float";
-	case Variant::UserType : return "UserType";
-	default: return "";
-	}
+  switch( t )
+  {
+  case Variant::Invalid:        return "Invalid";
+  case Variant::Bool :          return "Bool";
+  case Variant::Int :           return "Int";
+  case Variant::UInt :          return "Uint";
+  case Variant::LongLong :      return "LongLong";
+  case Variant::ULongLong :     return "ULongLong";
+  case Variant::Double :        return "Double";
+  case Variant::Char :          return "Char";
+  case Variant::Map :           return "Map";
+  case Variant::List :          return "List";
+  case Variant::String :        return "String";
+  case Variant::NStringArray :  return "StringArray";
+  case Variant::NByteArray :    return "ByteArray";
+  case Variant::NDateTime :     return "DateTime";
+  case Variant::NRectI :        return "Rect";
+  case Variant::NRectF :        return "RectF";
+  case Variant::NSize :         return "Size";
+  case Variant::NSizeF :        return "SizeF";
+  case Variant::Line :          return "Line";
+  case Variant::LineF :         return "LineF";
+  case Variant::NPoint :        return "Point";
+  case Variant::NTilePos :      return "TilePos";
+  case Variant::NPointF :       return "PointF";
+  case Variant::Font :          return "Font";
+  case Variant::Pixmap :        return "Pixmap";
+  case Variant::Color :         return "Color";
+  case Variant::Uchar :         return "Uchar";
+  case Variant::Ushort :        return "Ushort";
+  case Variant::Ulong :         return "Ulong";
+  case Variant::Long :          return "Long";
+  case Variant::Float :         return "Float";
+  case Variant::UserType :      return "UserType";
+  default: return "";
+  }
 }
 
 typedef void (*f_construct)(Variant2Impl*, const void *);
@@ -160,76 +132,30 @@ static bool checkVariantNull( const Variant2Impl *x )
 
 static void constructNewVariant( Variant2Impl *x, const void *copy)
 {
-	switch (x->type) 
-	{
-	case Variant::String:
-    v_construct<std::string>(x, copy);
-		break;
-	case Variant::NStringArray:
-		v_construct<StringArray>(x, copy);
-		break;
-	case Variant::Map:
-		v_construct<VariantMap>(x, copy);
-		break;
-		/*    case Variant::Hash:
-		v_construct<VariantHash>(x, copy);
-		break;
-		*/
-	case Variant::List:
-		v_construct<VariantList>(x, copy);
-		break;
-		/*    case Variant::Date:
-		v_construct<Date>(x, copy);
-		break;
-		case Variant::Time:
-		v_construct<Time>(x, copy);
-		break;
-		*/
-	case Variant::NDateTime:
-		v_construct<DateTime>(x, copy);
-		break;
-	case Variant::NByteArray:
-		v_construct<ByteArray>(x, copy);
-		break;
-		/*    case Variant::BitArray:
-		v_construct<BitArray>(x, copy);
-		break;
-		*/
-	case Variant::NSize:
-		v_construct<Size>(x, copy);
-		break;
-	case Variant::NSizeF:
-		v_construct<SizeF>(x, copy);
-		break;
-	case Variant::NRectI:
-		v_construct<Rect>(x, copy);
-		break;
-// 	case Variant::LineF:
-// 		v_construct<LineF>(x, copy);
-// 		break;
-  case Variant::NRectF:
-    v_construct<RectF>(x, copy);
+  switch (x->type)
+  {
+    case Variant::String: v_construct<std::string>(x, copy); break;
+    case Variant::NStringArray: v_construct<StringArray>(x, copy); break;
+    case Variant::Map: v_construct<VariantMap>(x, copy); break;
+    case Variant::List: v_construct<VariantList>(x, copy); break;
+    case Variant::NDateTime: v_construct<DateTime>(x, copy); break;
+    case Variant::NByteArray: v_construct<ByteArray>(x, copy); break;
+    case Variant::NSize: v_construct<Size>(x, copy); break;
+    case Variant::NSizeF: v_construct<SizeF>(x, copy); break;
+    case Variant::NRectI: v_construct<Rect>(x, copy); break;
+    case Variant::NRectF: v_construct<RectF>(x, copy); break;
+    case Variant::NPoint: v_construct<Point>(x, copy); break;
+    case Variant::NTilePos: v_construct<TilePos>(x, copy); break;
+    case Variant::NPointF: v_construct<PointF>(x, copy); break;
+    case Variant::Color: v_construct<NColor>(x, copy);	break;
+    case Variant::Invalid:
+    case Variant::UserType:break;
+
+    default:
+        _GAME_DEBUG_BREAK_IF( true && "can't create variant" );
     break;
-	case Variant::NPoint:
-		v_construct<Point>(x, copy);
-		break;
-  case Variant::NTilePos:
-    v_construct<TilePos>(x, copy);
-    break;
-	case Variant::NPointF:
-		v_construct<PointF>(x, copy);
-		break;
-// 	case Variant::Color:
-// 		v_construct<Color>(x, copy);
-// 		break;
-	case Variant::Invalid:
-	case Variant::UserType:
-		break;
-	default:
-		_CAESARIA_DEBUG_BREAK_IF( true && "can't create variant" );
-		break;
-	}
-	x->is_null = !copy;
+  }
+  x->is_null = !copy;
 }
 
 static void clearVariant(Variant2Impl *d)
@@ -255,6 +181,7 @@ static void clearVariant(Variant2Impl *d)
     case Variant::NSize: v_clear<Size>(d); break;
     case Variant::NSizeF: v_clear<SizeF>(d); break;
     case Variant::NRectI: v_clear<Rect>(d); break;
+    case Variant::Color: v_clear<NColor>(d); break;
 //     case Variant::LineF:
 //         v_clear<LineF>(d);
 //         break;
@@ -277,7 +204,7 @@ static void clearVariant(Variant2Impl *d)
     case Variant::Bool:
       break;
     default:
-      _CAESARIA_DEBUG_BREAK_IF( true && "Can't clean variant" );
+      _GAME_DEBUG_BREAK_IF( true && "Can't clean variant" );
       break;
     }
 
@@ -291,47 +218,42 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
     return *static_cast<const T *>(a->data.ptr) == *static_cast<const T *>(b->data.ptr);
 }
 
-/*static bool compare(const Variant2Impl *a, const Variant2Impl *b)
+static bool compareVariants(const Variant2Impl *a, const Variant2Impl *b)
 {
     switch(a->type) {
-    //case Variant::List:
-    //    return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);
-    //case Variant::Map: 
-    //    {
-    //    const VariantMap *m1 = v_cast<VariantMap>(a);
-    //    const VariantMap *m2 = v_cast<VariantMap>(b);
-    //    if (m1->count() != m2->count())
-    //        return false;
-    //    VariantMap::ConstIterator it = m1->constBegin();
-    //    VariantMap::ConstIterator it2 = m2->constBegin();
-    //    while (it != m1->constEnd()) {
-    //        if (*it != *it2 || it.key() != it2.key())
-    //            return false;
-    //        ++it;
-    //        ++it2;
-    //    }
-    //   return true;
-    //}
-    // 
+    case Variant::List:
+        return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);
+    case Variant::Map:
+        {
+        const VariantMap *m1 = v_cast<VariantMap>(a);
+        const VariantMap *m2 = v_cast<VariantMap>(b);
+        if (m1->size() != m2->size())
+            return false;
+        VariantMap::const_iterator it = m1->begin();
+        VariantMap::const_iterator it2 = m2->begin();
+        while (it != m1->end())
+        {
+            if (*it != *it2 || it->first != it2->first )
+                return false;
+            ++it;
+            ++it2;
+        }
+       return true;
+    }
+
     //case Variant::Hash:
     //    return *v_cast<VariantHash>(a) == *v_cast<VariantHash>(b);
     case Variant::String:
      return *v_cast<std::string>(a) == *v_cast<std::string>(b);
-    //case Variant::NStringArray:
-    //   return *v_cast<StringList>(a) == *v_cast<StringList>(b);
+    case Variant::NStringArray:
+       return *v_cast<StringArray>(a) == *v_cast<StringArray>(b);
     case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
     case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
     case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);
     case Variant::NRectF: return *v_cast<RectF>(a) == *v_cast<RectF>(b);
-//     case Variant::Line:
-//         return *v_cast<Line>(a) == *v_cast<Line>(b);
-//     case Variant::LineF:
-//         return *v_cast<LineF>(a) == *v_cast<LineF>(b);
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
     case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
-//    case Variant::Url:
-//        return *v_cast<Url>(a) == *v_cast<Url>(b);
     case Variant::Char:
       return a->data.c == b->data.c;
     case Variant::Int:
@@ -348,10 +270,10 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
         return a->data.d == b->data.d;
     case Variant::Float:
         return a->data.f == b->data.f;
-//    case Variant::Date:
-//        return *v_cast<Date>(a) == *v_cast<Date>(b);
+    case Variant::Date:
+        return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
 //    case Variant::Time:
-//        return *v_cast<Time>(a) == *v_cast<Time>(b); 
+//        return *v_cast<Time>(a) == *v_cast<Time>(b);
     case Variant::NDateTime: return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
     case Variant::NByteArray: return *v_cast<ByteArray>(a) == *v_cast<ByteArray>(b);
     case Variant::Invalid: return true;
@@ -371,48 +293,38 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
         return true;
 
     return a_ptr == b_ptr;
-}*/
+}
 
 /*!
   \internal
  */
 static long long Variant2Number(const Variant2Impl *d)
 {
-    switch (d->type) {
-    case Variant::Int:
-        return d->data.i;
-    case Variant::LongLong:
-        return d->data.ll;
-    case Variant::Char:        
-        return (long long)( d->data.c );
-    case Variant::Short:
-        return (long long)( d->data.i );
-    case Variant::Long:
-        return (long long)( d->data.i );
-    case Variant::Float:
-        return (long long)floorf( d->data.f );
-    case Variant::Double:
-        return (long long)floor( d->data.d );
+    switch (d->type)
+    {
+    case Variant::Int:    return d->data.i;
+    case Variant::LongLong: return d->data.ll;
+    case Variant::Char:   return (long long)( d->data.c );
+    case Variant::Short:  return (long long)( d->data.i );
+    case Variant::Long:   return (long long)( d->data.i );
+    case Variant::Float:  return (long long)floorf( d->data.f );
+    case Variant::Double: return (long long)floor( d->data.d );
     }
-    _CAESARIA_DEBUG_BREAK_IF( true );
+    _GAME_DEBUG_BREAK_IF( true );
     return 0;
 }
 
 static unsigned long long Variant2UNumber(const Variant2Impl *d)
 {
-    switch (d->type) {
-    case Variant::UInt:
-        return d->data.u;
-    case Variant::ULongLong:
-        return d->data.ull;
-    case Variant::Char:
-        return (unsigned long long)( d->data.c );
-    case Variant::Ushort:
-        return (unsigned long long)( d->data.i );
-    case Variant::Ulong:
-        return (unsigned long long)( d->data.ll );
+    switch (d->type)
+    {
+    case Variant::UInt:        return d->data.u;
+    case Variant::ULongLong:   return d->data.ull;
+    case Variant::Char:        return (unsigned long long)( d->data.c );
+    case Variant::Ushort:      return (unsigned long long)( d->data.i );
+    case Variant::Ulong:       return (unsigned long long)( d->data.ll );
     }
-    _CAESARIA_DEBUG_BREAK_IF( true );
+    _GAME_DEBUG_BREAK_IF( true );
     return 0;
 }
 
@@ -422,12 +334,10 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
 
     switch( (unsigned long long)(d->type) )
     {
-    case Variant::String:
-      return utils::toInt( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray:
-      return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
-    case Variant::Bool:
-        return (long long)(d->data.b);
+    case Variant::String: return utils::toInt( v_cast<std::string>(d)->c_str() );
+    case Variant::NByteArray: return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::Bool: return (long long)(d->data.b);
+    case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
     case Variant::Int:
     case Variant::Char:
@@ -454,12 +364,10 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
 
     switch((unsigned int)(d->type)) 
     {
-    case Variant::String:
-      return utils::toUint( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray:
-      return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
-    case Variant::Bool:
-        return (unsigned long long)(d->data.b);
+    case Variant::String:  return utils::toUint( v_cast<std::string>(d)->c_str() );
+    case Variant::NByteArray: return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::Bool: return (unsigned long long)(d->data.b);
+    case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
     case Variant::Int:
     case Variant::Char:
@@ -494,8 +402,8 @@ inline bool convertToBool(const Variant2Impl *const d)
  */
 static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void *result, bool *ok)
 {
-    _CAESARIA_DEBUG_BREAK_IF ( d->type == (unsigned int)( t ) );
-    _CAESARIA_DEBUG_BREAK_IF( !result );
+    _GAME_DEBUG_BREAK_IF ( d->type == (unsigned int)( t ) );
+    _GAME_DEBUG_BREAK_IF( !result );
 
     bool dummy;
     if (!ok)
@@ -564,9 +472,18 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
                 *str = (*v_cast<StringArray>(d))[0];
               }
             break;
-            /*case Variant::Url:
-                *str = v_cast<Url>(d)->toString();
-            break;*/
+            case Variant::NSize:
+              {
+                const Size* ns = v_cast<Size>(d);
+                *str = utils::format( 0xff, "[%d,%d]", ns->width(), ns->height() );
+              }
+            break;
+            case Variant::NPoint:
+              {
+                const Point* ns = v_cast<Point>(d);
+                *str = utils::format( 0xff, "[%d,%d]", ns->x(), ns->y() );
+              }
+            break;
             default:
                 return false;
         }
@@ -737,11 +654,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     case Variant::NStringArray:
         if (d->type == Variant::List) 
         {
-            StringArray *slst = static_cast<StringArray*>(result);
-            const VariantList *list = v_cast< VariantList >(d);
-            VariantList::const_iterator it = list->begin(); 
-            for( ; it != list->end(); ++it)
-                slst->push_back( it->toString() );
+            StringArray* slst = static_cast<StringArray*>(result);
+            const VariantList* list = v_cast< VariantList >(d);
+            for( const auto& it : *list )
+                slst->push_back( it.toString() );
         } 
         else if( d->type == Variant::String ) 
         {
@@ -786,7 +702,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         {
         case Variant::String:
           *dt = DateTime( v_cast<std::string>(d)->c_str() );
-            break;
+        break;
 //         case Variant::Date:
 //             *dt = DateTime(*v_cast<Date>(d));
 //             break;
@@ -1113,65 +1029,27 @@ Variant::Variant(int typeOrUserType, const void *copy, unsigned int flags)
     }
 }
 
-Variant::Variant(int val)
-{ _d.is_null = false; _d.type = Int; _d.data.i = val; }
-
-Variant::Variant(unsigned int val)
-{ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
-
-Variant::Variant(long long val)
-{ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
-
-Variant::Variant(unsigned long long val)
-{ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
-
-Variant::Variant(bool val)
-{ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
-
-Variant::Variant(double val)
-{ _d.is_null = false; _d.type = Double; _d.data.d = val; }
-
-Variant::Variant(const ByteArray& val)
-{ _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
-
-Variant::Variant(const std::string& val)
-{ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
-
-Variant::Variant(char val)
-{ _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
-
-Variant::Variant(const char* string)
-{
-  const std::string rstring( string );
-  _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, rstring);
-}
-
-Variant::Variant(const DateTime &val)
-{ _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
-
-Variant::Variant(const StringArray &strArr)
-{ _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
-
-Variant::Variant(const VariantList& rlist)
-{ _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
-
-Variant::Variant(const VariantMap& rmap)
-{ _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
-// Variant::Variant(const Hash<String, Variant> &hash)
-// { _d.is_null = false; _d.type = Hash; v_construct<Variant2Hash>(&_d, hash); }
-
+Variant::Variant(int val){ _d.is_null = false; _d.type = Int; _d.data.i = val; }
+Variant::Variant(unsigned int val){ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
+Variant::Variant(long long val){ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
+Variant::Variant(unsigned long long val){ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
+Variant::Variant(bool val){ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
+Variant::Variant(double val){ _d.is_null = false; _d.type = Double; _d.data.d = val; }
+Variant::Variant(const ByteArray& val) { _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
+Variant::Variant(const std::string& val){ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
+Variant::Variant(char val) { _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
+Variant::Variant(const DateTime &val) { _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
+Variant::Variant(const StringArray &strArr) { _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
+Variant::Variant(const VariantList& rlist) { _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
+Variant::Variant(const VariantMap& rmap) { _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
 Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }
 Variant::Variant(const RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<RectF>(&_d, r); }
-// Variant::Variant(const core::LineF &l) { _d.is_null = false; _d.type = Variant::LineF; v_construct<core::LineF>(&_d, l); }
-// Variant::Variant(const core::Line &l) { _d.is_null = false; _d.type = Variant::Line; v_construct<core::Line>(&_d, l); }
 Variant::Variant(const Rect &r) { _d.is_null = false; _d.type = Variant::NRectI; v_construct<Rect>(&_d, r); }
 Variant::Variant(const Size &s) { _d.is_null = false; _d.type = Variant::NSize; v_construct<Size>(&_d, s); }
 Variant::Variant(const SizeF &s) { _d.is_null = false; _d.type = Variant::NSizeF; v_construct<SizeF>(&_d, s); }
-
-//Variant::Variant(const Url &u) { _d.is_null = false; _d.type = Url; v_construct<Url>(&_d, u); }
-//Variant::Variant(const Color& color) { create( Variant::Color, &color); }
+Variant::Variant(const NColor& color) {  _d.is_null = false; _d.type = Variant::Color; v_construct<NColor>(&_d, color); }
 
 Variant::Type Variant::type() const
 {
@@ -1374,6 +1252,11 @@ TilePos Variant::toTilePos() const
   return Variant2ToHelper<TilePos>( _d, Variant::NTilePos, varHandler );
 }
 
+NColor Variant::toColor() const
+{
+   return Variant2ToHelper<NColor>(_d, Variant::Color, varHandler);
+}
+
 /*!
     \fn Rect Variant::toRect() const
 
@@ -1391,6 +1274,9 @@ RectF Variant::toRectf() const
 {
     return Variant2ToHelper<RectF>(_d, Variant::NRectF, varHandler);
 }
+
+Variant::operator TilePos() const { return toTilePos(); }
+Variant::operator NColor() const { return toColor(); }
 
 /*!
     \fn NSizeU Variant::toSize() const
@@ -1742,7 +1628,8 @@ static const unsigned int CanConvertMatrix[Variant::LastCoreType + 1] =
 
 /*LineF*/        1 << Variant::Line,
 
-/*Point*/        1 << Variant::NPointF,
+                // TODO: Fix narrowing, remove cast
+/*Point*/        (const unsigned int) (1 << Variant::NPointF),
 
 /*PointF*/       1 << Variant::NPoint
 
@@ -1957,7 +1844,7 @@ bool Variant::isValid() const
 Variant2Handler::Variant2Handler()
 {
 	construct = constructNewVariant;
-	compare = 0;
+  compare = compareVariants;
 	canConvert = 0;
 	convert = convertVariantType2Type;
 	clear = clearVariant;
@@ -1967,10 +1854,8 @@ Variant2Handler::Variant2Handler()
 
 StringArray& operator<<(StringArray &strlist, const VariantList &vars)
 {
-  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); ++it )
-  {
-    strlist.push_back( (*it).toString() );
-  }
+  for( auto& var : vars )
+    strlist.push_back( var.toString() );
 
   return strlist;
 }

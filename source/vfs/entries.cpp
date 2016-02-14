@@ -18,6 +18,7 @@
 #include "entries.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "core/osystem.hpp"
 #include "core/utils.hpp"
 
 #include <map>
@@ -41,25 +42,7 @@ public:
   HashedIndex hashedIndex;
   HashedIndex hashedIcIndex;
 
-  Path checkCase( Path p )
-  {
-    switch( sensType )
-    {
-    case Path::ignoreCase:
-      return utils::localeLower( p.toString() );
-      break;
-    case Path::equaleCase: break;
-    case Path::nativeCase:
-  #ifdef CAESARIA_PLATFORM_WIN
-      return utils::localeLower( p.toString() );
-  #elif defined(CAESARIA_PLATFORM_UNIX)
-      return p;
-  #endif
-    break;
-    }
-
-    return p;
-  }
+  Path checkCase(const Path& p );
 };
 
 Entries::Entries( const Path& path, Path::SensType type, bool ignorePaths )
@@ -97,21 +80,23 @@ Entries& Entries::operator=( const Entries& other )
 
 Entries::ConstItemIt Entries::begin() const {  return _d->files.begin(); }
 Entries::ConstItemIt Entries::end() const{  return _d->files.end(); }
-Entries::Items &Entries::_items(){  return _d->files; }
+Entries::Items& Entries::_items(){  return _d->files; }
 
 void Entries::_updateCache()
 {
   _d->hashedIndex.clear();
   _d->hashedIcIndex.clear();
-  for( unsigned int k=0; k < _d->files.size(); k++ )
+  int k=0;
+  foreach( it, _d->files )
   {
-    EntryInfo& info = _d->files[ k ];
-    info.fphash = utils::hash( info.fullpath.toString() );
-    info.nhash = utils::hash( info.name.toString() );
-    info.nihash = utils::hash( utils::localeLower( info.name.toString() ) );
+    EntryInfo& info = *it;
+    info.fphash = info.fullpath.hash();
+    info.nhash = info.name.hash();
+    info.nihash = info.name.canonical().hash();
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
+    k++;
   }
 }
 
@@ -229,17 +214,17 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
   Path::SensType sType = _d->sensType;
   if( _d->sensType == Path::nativeCase )
   {
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_UNIXU)
     sType = Path::equaleCase;
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
     sType = Path::ignoreCase;
 #endif
   }
 
   std::string fname = filename.baseName().toString();
   unsigned int fnHash = (sType == Path::ignoreCase
-                            ? utils::hash( utils::localeLower( fname ) )
-                            : utils::hash( fname )
+                            ? Hash( utils::localeLower( fname ) )
+                            : Hash( fname )
                         );
 
   if( _d->hashedIndex.empty() )
@@ -250,8 +235,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
       bool equale = false;
       switch( sType )
       {
-      case Path::equaleCase: equale = (*it).nhash == fnHash; break;
-      case Path::ignoreCase: equale = (*it).nihash == fnHash; break;
+      case Path::equaleCase: equale = it->nhash == fnHash; break;
+      case Path::ignoreCase: equale = it->nihash == fnHash; break;
       default: break;
       }
 
@@ -267,13 +252,13 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
     {
     case Path::equaleCase:
     {
-      Impl::HashedIndex::iterator it = _d->hashedIndex.find( fnHash );
+      auto it = _d->hashedIndex.find( fnHash );
       if( it != _d->hashedIndex.end() ) return it->second;
     }
     break;
     case Path::ignoreCase:
     {
-      Impl::HashedIndex::iterator it = _d->hashedIcIndex.find( fnHash );
+      auto it = _d->hashedIcIndex.find( fnHash );
       if( it != _d->hashedIcIndex.end() ) return it->second;
     }
     break;
@@ -297,27 +282,36 @@ void Entries::setSensType( Path::SensType type )
   _d->sensType = type;
 }
 
-Entries Entries::filter(int flags, const std::string &options)
+Entries Entries::filter(int flags, const std::string& options)
 {
   Entries ret;
   bool isFile = (flags & Entries::file) > 0;
   bool isDirectory = (flags & Entries::directory) > 0;
   bool checkFileExt = (flags & Entries::extFilter) > 0;
 
-  foreach( it, _d->files )
+  StringArray exts = utils::split( utils::trim( options ), "," );
+
+  for( const auto& item : _d->files )
   {
     bool mayAdd = true;
-    if( isFile ) { mayAdd = !(*it).isDirectory; }
-    if( !mayAdd && isDirectory ) { mayAdd = (*it).isDirectory; }
+    if( isFile ) { mayAdd = !item.isDirectory; }
+    if( !mayAdd && isDirectory ) { mayAdd = item.isDirectory; }
 
-    if( mayAdd && !(*it).isDirectory && checkFileExt )
+    if( mayAdd && !item.isDirectory && checkFileExt )
     {
-      mayAdd = (*it).fullpath.isMyExtension( options );
+      if( exts.size() > 1 )
+      {
+        mayAdd = exts.contains( item.fullpath.extension() );
+      }
+      else
+      {
+        mayAdd = item.fullpath.isMyExtension( options );
+      }
     }
 
     if( mayAdd )
     {
-      ret._d->files.push_back( *it );
+      ret._d->files.push_back( item );
     }
   }
 
@@ -329,6 +323,76 @@ const Entries::Items& Entries::items() const {  return _d->files; }
 const EntryInfo& Entries::item(unsigned int index) const
 {
   return _d->files[ index ];
+}
+
+Path Entries::Impl::checkCase( const Path& p)
+{
+  switch( sensType )
+  {
+  case Path::ignoreCase:
+    return p.canonical();
+  break;
+  case Path::equaleCase: break;
+  case Path::nativeCase:
+    if( OSystem::isWindows() )
+    {
+      return p.canonical();
+    }
+    else if( OSystem::isUnix() )
+    {
+      return p;
+    }
+  break;
+  }
+
+  return p;
+}
+
+StringArray Entries::Items::names() const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+    ret << item.name.toString();
+
+  return ret;
+}
+
+StringArray Entries::Items::fullnames() const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+    ret << item.fullpath.toString();
+
+  return ret;
+}
+
+StringArray Entries::Items::files(const std::string& ext) const
+{
+  StringArray ret;
+
+  bool any = ext.empty();
+  for( auto& item : *this )
+  {
+    if( any || item.fullpath.isMyExtension( ext ) )
+      ret << item.fullpath.toString();
+  }
+
+  return ret;
+}
+
+StringArray Entries::Items::folders() const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+  {
+    if( item.isDirectory )
+      ret << item.fullpath.toString();
+  }
+
+  return ret;
 }
 
 } //end namespace io

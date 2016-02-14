@@ -13,23 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012- Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_RIVER_WAVE_H_INCLUDED__
 #define __CAESARIA_RIVER_WAVE_H_INCLUDED__
 
 #include "walker.hpp"
 #include "predefinitions.hpp"
+#include "gfx/animation.hpp"
 
 class RiverWave : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RiverWavePtr create( PlayerCityPtr city );
   virtual ~RiverWave();
 
   virtual void send2City(const TilePos& location);
   virtual void timeStep(const unsigned long time);
   virtual void save(VariantMap& stream) const;
+  virtual void initialize(const VariantMap &options);
 
 protected:
   const gfx::Picture& getMainPicture();

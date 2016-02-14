@@ -20,7 +20,26 @@
 #include "city/predefinitions.hpp"
 #include "objects/predefinitions.hpp"
 #include "objects/constants.hpp"
+#include "core/tilepos_array.hpp"
+#include "gfx/tilesarray.hpp"
 #include "route.hpp"
+
+class PathwayCondition : std::set<const gfx::Tile*>
+{
+public:
+  template<class Obj>
+  bool append( SmartPtr<Obj> building )
+  {
+    return append( ptr_cast<Overlay>( building ) );
+  }
+
+  bool append(OverlayPtr overlay);
+  void checkRoads(const gfx::Tile* tile, bool& ret);
+  void allTiles(const gfx::Tile* tile, bool& ret);
+
+  TilePossibleCondition byRoads();
+  TilePossibleCondition bySomething();
+};
 
 class PathwayHelper
 {
@@ -29,17 +48,26 @@ public:
   static Pathway create(TilePos startPos, TilePos stopPos,
                         WayType type=roadOnly );
 
+  template<class T>
+  static Pathway create( TilePos startPos, SmartPtr<T> building,
+                         WayType type)
+  {
+    return create( startPos, ptr_cast<Construction>( building ), type );
+  }
+
   static Pathway create(TilePos startPos, ConstructionPtr construction,
                         WayType type);
 
   static Pathway create(TilePos statrPos, TilePos stopPos,
-                        const TilePossibleCondition& condition );
+                        const TilePossibleCondition& condition,
+                        int flags=0);
 
-  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type );
+  static DirectRoute shortWay( const TilePos& startPos, ConstructionList buildings, WayType type);
+  static DirectRoute shortWay( PlayerCityPtr city, const Locations& area, object::Type buildingType, WayType type );
 
-  static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
-
-  static Pathway way2border( PlayerCityPtr city, TilePos startPos );
+  static Pathway randomWay( PlayerCityPtr city, const TilePos& startPos, int walkRadius );
+  static Pathway way2border( PlayerCityPtr city, const TilePos& startPos );
 };
 
 #endif

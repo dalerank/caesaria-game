@@ -13,32 +13,98 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_health_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
+#include "events/showadvisorwindow.hpp"
+#include "events/movecamera.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
+#include "widgetescapecloser.hpp"
 #include "gfx/engine.hpp"
+#include "environment.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
-#include "core/foreach.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
-#include "objects/service.hpp"
+#include "objects/health.hpp"
 #include "dictionary.hpp"
 #include "city/cityservice_health.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 #include "widget_helper.hpp"
+#include "gfx/drawstate.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
+
+struct HealthcareInfo
+{
+  std::string building;
+  std::string people;
+  int buildingCount = 0;
+  int buildingWork  = 0;
+  int peoplesServed = 0;
+  int needService   = 0;
+
+  static const std::map<object::Type, HealthcareInfo> defaults;
+  static const HealthcareInfo& find( const object::Type service )
+  {
+    auto it = defaults.find( service );
+    if( it != defaults.end() )
+      return it->second;
+
+    static const HealthcareInfo invalid;
+    return invalid;
+  }
+
+  HealthcareInfo() {}
+
+  HealthcareInfo( const std::string& b, const std::string& p )
+    : building(b), people(p)
+  {}
+
+  HealthcareInfo(PlayerCityPtr city, const object::Type objectType)
+  {
+    buildingWork = 0;
+    peoplesServed = 0;
+    buildingCount = 0;
+    needService = 0;
+
+    HealthBuildingList srvBuildings = city->statistic().objects.find<HealthBuilding>( objectType );
+    for( auto b : srvBuildings )
+    {
+      buildingWork += b->numberWorkers() > 0 ? 1 : 0;
+      peoplesServed += b->patientsCurrent();
+      buildingCount++;
+    }
+
+    HouseList houses = city->statistic().houses.find();
+    Service::Type serviceType = ServiceHelper::fromObject( objectType );
+    for( auto h : houses )
+    {
+      if( h->isHealthNeed( serviceType ) )
+        needService += h->habitants().count();
+    }
+  }
+};
+
+ const std::map<object::Type, HealthcareInfo> HealthcareInfo::defaults = {
+    { object::baths,    {"##bath##",     "##peoples##"} },
+    { object::barber,   {"##barber##",   "##peoples##"} },
+    { object::hospital, {"##hospital##", "##patients##"} },
+    { object::clinic,   {"##clinics##",  "##peoples##"} },
+  };
+
+
+enum { rowOffset=20, smallCityNormalhealthValue=85,
+       minPopullation4healthCalc=100, smallCityPopulation=300 };
 
 namespace gui
 {
@@ -46,111 +112,69 @@ namespace gui
 namespace advisorwnd
 {
 
-class HealthInfoLabel : public Label
+class HealthBldDetail : public PushButton
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
-                   int workBulding, int numberBuilding, int peoplesCount  )
-    : Label( parent, rect )
+  HealthBldDetail( Widget* parent, const Rect& rect, const object::Type service,
+                   const HealthcareInfo& info  )
+    : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     _service = service;
-    _workingBuilding = workBulding;
-    _numberBuilding = numberBuilding;
-    _peoplesCount = peoplesCount;
+    _info = info;
 
-    setFont( Font::create( FONT_1 ) );
+    setFont( FONT_1_WHITE );
+    Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
-  virtual void _updateTexture( gfx::Engine& painter )
+  virtual void _updateTexture()
   {
-    Label::_updateTexture( painter );
+    PushButton::_updateTexture();
 
-    std::string buildingStr, peoplesStr;
-    switch( _service )
-    {
-    case objects::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
-    case objects::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
-    case objects::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case objects::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
-    default: break;
-    }
+    HealthcareInfo info = HealthcareInfo::find( _service );
 
-    PictureRef& texture = _textPictureRef();
-    Font rfont = font();
-    std::string buildingStrT = utils::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
-    rfont.draw( *texture, buildingStrT, 0, 0 );
+    std::string peoplesStrT = _("##health_no_info##");
+    peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
 
-    std::string buildingWorkT = utils::format( 0xff, "%d", _workingBuilding );
-    rfont.draw( *texture, buildingWorkT, 165, 0 );
+    std::string coverageStrT;
+    int coveragePrcnt = _info.needService > 0
+                          ? math::percentage( _info.peoplesServed, _info.needService )
+                          : 100;
+    math::clamp_to( coveragePrcnt, 0, 100 );
+    coverageStrT = fmt::format( "{}%", coveragePrcnt );
 
-    std::string peoplesStrT = utils::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
-    rfont.draw( *texture, peoplesStrT, 255, 0 );
+    canvasDraw( fmt::format( "{} {}", _info.buildingCount, _(info.building )), Point() );
+    canvasDraw( utils::i2str( _info.buildingWork ), Point( 165, 0 ) );
+    canvasDraw( peoplesStrT, Point( 255, 0 ) );
+    canvasDraw( coverageStrT, Point( 455, 0 ) );
   }
+
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    if( _state() == stHovered )
+     pipe.draw( border );
+  }
+
+  object::Type service() const { return _service; }
 
 private:
-  TileOverlay::Type _service;
-  int _workingBuilding;
-  int _numberBuilding;
-  int _peoplesCount;
+  object::Type _service;
+  HealthcareInfo _info;
+  Pictures border;
 };
 
-class Health::Impl
-{
-public:
-  HealthInfoLabel* lbBathsInfo;
-  HealthInfoLabel* lbBarbersInfo;
-  HealthInfoLabel* lbDoctorInfo;
-  HealthInfoLabel* lbHospitalInfo;
-  Label* lbAdvice;
-  TexturedButton* btnHelp;
-
-  struct InfrastructureInfo
-  {
-    int buildingCount;
-    int buildingWork;
-    int peoplesServed;
-  };
-
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
-  void updateAdvice( PlayerCityPtr city );
-};
-
-
-Health::Health(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 290 ), "", id ), _d( new Impl )
+Health::Health(PlayerCityPtr city, Widget* parent)
+  : Base( parent, city, advisor::health, Rect( 0, 0, 640, 290 ) )
 {
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* lbBlackframe;
-  GET_DWIDGET_FROM_UI( _d, lbAdvice )
-  GET_WIDGET_FROM_UI( lbBlackframe )
+  _initUI();
+  _updateAdvice();
 
-  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
-  Size labelSize( lbBlackframe->width() - 6, 20 );
-
-  Impl::InfrastructureInfo info = _d->getInfo( city, objects::baths );
-  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), objects::baths,
-                                             info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, objects::barber );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), objects::barber,
-                                              info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, objects::doctor );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), objects::doctor,
-                                          info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, objects::hospital );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), objects::hospital,
-                                          info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-
-  _d->updateAdvice( city );
-
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, Health::_showHelp );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnHelp, onClicked(), Health::_showHelp );
 }
 
 void Health::draw( gfx::Engine& painter )
@@ -161,66 +185,46 @@ void Health::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Health::_showHelp()
+void Health::_showHelp() { ui()->add<DictionaryWindow>( "health_advisor" ); }
+
+void Health::_updateAdvice()
 {
-  DictionaryWindow::show( this, "health_advisor" );
-}
-
-Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
-{
-  city::Helper helper( city );
-
-  InfrastructureInfo ret;
-
-  ret.buildingWork = 0;
-  ret.peoplesServed = 0;
-  ret.buildingCount = 0;
-
-  ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
-  foreach( b, srvBuildings )
-  {
-    ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
-    ret.buildingCount++;
-  }
-
-  return ret;
-}
-
-void Health::Impl::updateAdvice(PlayerCityPtr c)
-{
+  INIT_WIDGET_FROM_UI( Label*, lbAdvice )
   if( !lbAdvice )
     return;
 
-  city::HealthCarePtr hc;
-  hc << c->findService( city::HealthCare::defaultName() );
+  HealthCarePtr hc = _city->statistic().services.find<HealthCare>();
+  if( !hc.isValid() )
+  {
+    Logger::warning( "WARNING !!! HealthCare service not exist" );
+    return;
+  }
 
   StringArray outText;
 
-  if( c->population() < 100 )
+  if( _city->states().population < minPopullation4healthCalc )
   {
     outText << "##healthadv_not_need_health_service_now##";
   }
   else
   {
-    if( c->population() < 300 )
+    if( _city->states().population < smallCityPopulation )
     {
-      if( hc.isValid() && hc->value() > 85 )
+      if( hc->value() > smallCityNormalhealthValue )
       {
         outText << "##healthadv_noproblem_small_city##";
       }
     }
     else
     {
-      city::Helper helper( c );
-      HouseList houses =  helper.find<House>( objects::house );
+      HouseList houses = _city->statistic().houses.find();
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;
       unsigned int needDoctors = 0;
       unsigned int needHospital = 0;
-      foreach( it, houses )
+      for( auto house : houses )
       {
-        HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths ) ? 1 : 0;
         needDoctors += house->isHealthNeed( Service::doctor ) ? 1 : 0;
         needBarbers += house->isHealthNeed( Service::barber ) ? 1 : 0;
@@ -244,7 +248,13 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
         outText << "##healthadv_some_regions_need_barbers##";
         outText << "##healthadv_some_regions_need_barbers_2##";
       }
-      if( needHospital > 0 ) { outText << "##healthadv_some_regions_need_hospital##"; }
+
+      if( needHospital > 0 )
+      {
+        outText << "##healthadv_some_regions_need_hospital##";
+      }
+
+      outText << hc->reason();
     }
   }
 
@@ -254,6 +264,73 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   lbAdvice->setText( _(text) );
 }
 
+void Health::_initUI()
+{
+  INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
+  if( !lbBlackframe )
+  {
+    Logger::warning( "WARNING !!! Can't initialize Health adwisor window" );
+    return;
+  }
+
+  Point startPoint = Point( 3, 3 );
+  Point offset( 0, rowOffset );
+  Size labelSize( lbBlackframe->width() - 6, 20 );
+
+  object::Types types{ object::baths, object::barber, object::clinic, object::hospital };
+
+  for( auto type : types )
+  {
+    auto& btn = lbBlackframe->add<HealthBldDetail>( Rect( startPoint, labelSize ), type,
+                                                    HealthcareInfo( _city, type ) );
+    startPoint += offset;
+    CONNECT_LOCAL( &btn, onClickedEx(), Health::_showDetailInfo )
+  }
 }
+
+void Health::_showDetailInfo(Widget* widget)
+{
+  HealthBldDetail* detail = safety_cast<HealthBldDetail*>( widget );
+  if( detail )
+  {
+    object::Type type = detail->service();
+    const object::Info& info = object::Info::find( type );
+
+    auto& window = parent()->add<Window>( Rect( 0, 0, 480, 480 ), _(info.prettyName()) );
+    window.moveToCenter();
+    WidgetClosers::insertTo( &window, KEY_RBUTTON );
+
+    auto& frame = window.add<Label>( Rect( 20, 40, window.width() - 20, window.height() - 20 ), "",
+                                     false, Label::bgBlackFrame );
+
+    auto buildings = _city->statistic().objects.find<HealthBuilding>( type );
+    int index = 0;
+    Point offset( 2, 2 );
+    Size size( frame.width()-6, 24 );
+    for( auto b : buildings )
+    {
+      std::string text = fmt::format( "{} {} at [{},{}] {} workers, {} served",
+                                      (b->info().prettyName()), index+1,
+                                      b->pos().i(), b->pos().j(),
+                                      b->numberWorkers(), b->patientsCurrent() );
+      auto& btn = frame.add<PushButton>( Rect( offset, size ), text, -1, false, PushButton::whiteBorderUp );
+      btn.addProperty( "pos", b->pos().hash() );
+      btn.setFont( Font::create( FONT_1 ) ) ;
+      offset = btn.leftbottom() + Point( 0, 2 );
+      index++;
+      CONNECT_LOCAL( &btn, onClickedEx(), Health::_moveCamera )
+    }
+  }
+}
+
+void Health::_moveCamera(Widget* widget)
+{
+  int hash = widget->getProperty( "pos" );
+  TilePos pos( (hash >> 16)&0xff, hash&0xff );
+  events::dispatch<events::MoveCamera>( pos );
+  events::dispatch<events::ShowAdvisorWindow>( false, advisor::none );
+}
+
+}//end namespace advisor
 
 }//end namespace gui

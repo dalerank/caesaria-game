@@ -21,15 +21,15 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
-#include "core/variant.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
+#include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
-#include "objects/constants.hpp"
+#include "objects/construction.hpp"
 #include "corpse.hpp"
-#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -37,59 +37,57 @@
 #include "throwing_weapon.hpp"
 #include "core/foreach.hpp"
 #include "events/militarythreat.hpp"
+#include "walkers_factory.hpp"
+#include "objects/metadata.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-namespace {
-  static unsigned int __getCost( ConstructionPtr b )
-  {
-    return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
-  }
-}
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::britonSoldier, EnemySoldier, briton )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::gladiatorRiot, EnemySoldier, glriot)
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::etruscanSoldier, EnemySoldier, etruscan)
 
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
-: Soldier( city, type )
+  : Soldier( city, type )
 {
   _setSubAction( check4attack );
   setAttackPriority( attackAll );
   setAttackDistance( 1 );
 
-  _atExclude << objects::disasterGroup
-             << objects::roadGroup
-             << objects::gardenGroup;
+  _atExclude << object::group::disaster
+             << object::group::road
+             << object::group::garden;
 
   addFriend( type );
+  _failedWayCounter = 0;
 }
 
-Priorities<int>& EnemySoldier::_excludeAttack() {  return _atExclude; }
+object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
-  WalkerList enemies = _findEnemiesInRange( attackDistance() );
+  WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
-  if( !enemies.empty() )
+  if( enemy.isValid() )
   {
     _setSubAction( Soldier::fightEnemy );
-    setTarget( enemies.front()->pos() );
+    setTarget( enemy->pos() );
     fight();
   }
   else
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
-    if( !constructions.empty() )
+    auto building = _findContructionsInRange( attackDistance() ).firstOrEmpty();
+    if( building.isValid() )
     {
       _setSubAction( Soldier::destroyBuilding );
-      setTarget( constructions.front()->pos() );
+      setTarget( building->pos() );
       fight();
     }
   }
 
   if( action() == acFight )
   {
-    city::Helper helper( _city() );
     bool needMeMove = false;
-    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+    _city()->statistic().map.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
 
     if( needMeMove )
     {
@@ -138,26 +136,25 @@ void EnemySoldier::_reachedPathway()
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   WalkerList walkers;
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    TilesArray tiles = tmap.rect( k, pos() );
 
     walker::Type rtype;
-    foreach( tile, tiles )
+    for( auto tile : tiles )
     {
-      const WalkerList& tileWalkers = _city()->walkers( (*tile)->pos() );
+      const WalkerList& tileWalkers = _city()->walkers( tile->pos() );
 
-      foreach( i, tileWalkers )
+      for( auto wlk : tileWalkers )
       {
-        WalkerPtr wlk = *i;
         rtype = wlk->type();
         if( rtype == type() || !WalkerHelper::isHuman( wlk ) || isFriendTo( wlk ) )
           continue;
 
-        walkers.push_back( *i );
+        walkers.push_back( wlk );
       }
     }
   }
@@ -171,9 +168,9 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 
   WalkerList walkers = _findEnemiesInRange( range );
 
-  foreach( it, walkers)
+  for( auto wlk : walkers)
   {
-    ret = PathwayHelper::create( pos(), (*it)->pos(), PathwayHelper::allTerrain );
+    ret = PathwayHelper::create( pos(), wlk->pos(), PathwayHelper::allTerrain );
     if( ret.isValid() )
     {
       return ret;
@@ -190,21 +187,27 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    int size = _city()->tilemap().size();
+    int size = _map().size();
     pathway = _findPathway2NearestConstruction( size/2 );
   }   
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::create( pos(), _city()->borderInfo().roadExit,
+    pathway = PathwayHelper::create( pos(), _city()->getBorderInfo( PlayerCity::roadExit ).epos(),
                                      PathwayHelper::allTerrain );
-    setTarget( TilePos( -1, -1) );
+    setTarget( TilePos::invalid() );
   }
 
   if( !pathway.isValid() )
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
-    setTarget( TilePos( -1, -1) );
+    setTarget( TilePos::invalid() );
+    _failedWayCounter++;
+  }
+
+  if( _failedWayCounter > 4 )
+  {
+    pathway = Pathway();
   }
 
   if( pathway.isValid() )
@@ -224,16 +227,17 @@ void EnemySoldier::_check4attack()
 ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 {
   ConstructionList ret;
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
 
   for( unsigned int k=0; k <= range; k++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    ConstructionList blds = tmap.rect( k, pos() )
+                                .overlays()
+                                .select<Construction>();
 
-    foreach( it, tiles )
+    for( auto b : blds )
     {
-      ConstructionPtr b = ptr_cast<Construction>( (*it)->overlay() );
-      if( b.isValid() && !_atExclude.count( b->group() ) )
+      if( !_atExclude.count( b->group() ) )
       {
         ret.push_back( b );
       }
@@ -250,21 +254,21 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackIndustry:
   {
     ConstructionList tmpRet;
-    TileOverlay::Group needGroup;
+    object::Group needGroup;
     switch( _atPriority )
     {
-    case attackIndustry: needGroup = objects::industryGroup; break;
-    case attackFood: needGroup = objects::foodGroup; break;
-    case attackCitizen:  needGroup = objects::houseGroup; break;
-    case attackSenate: needGroup = objects::administrationGroup; break;
-    default: needGroup = objects::unknownGroup; break;
+    case attackIndustry: needGroup = object::group::industry; break;
+    case attackFood: needGroup = object::group::food; break;
+    case attackCitizen:  needGroup = object::group::house; break;
+    case attackSenate: needGroup = object::group::administration; break;
+    default: needGroup = object::group::unknown; break;
     }
 
-    foreach( it, ret )
+    for( auto bld : ret )
     {
-      if( (*it)->group() == needGroup )
+      if( bld->group() == needGroup )
       {
-        tmpRet << *it;
+        tmpRet << bld;
       }
     }
 
@@ -276,22 +280,22 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackBestBuilding:
   {
     ConstructionPtr maxBuilding = ret.front();
-    unsigned int maxCost = __getCost( maxBuilding );
+    unsigned int maxCost = maxBuilding->info().cost();
 
-    foreach( it, ret )
+    for( auto& it : ret )
     {
-      unsigned int cost = __getCost( *it );
+      unsigned int cost = it->info().cost();
       if( cost > maxCost )
       {
         maxCost = cost;
-        maxBuilding = *it;
+        maxBuilding = it;
       }
     }
 
     if( maxBuilding.isValid() )
     {
       ret.clear();
-      ret << maxBuilding;
+      ret.push_back( maxBuilding );
       return ret;
     }
   }
@@ -310,9 +314,8 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 
   ConstructionList constructions = _findContructionsInRange( range );
 
-  foreach( it, constructions )
+  for( auto c : constructions )
   {
-    ConstructionPtr c = ptr_cast<Construction>( *it );
     ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
     if( ret.isValid() )
     {
@@ -378,7 +381,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   case destroyBuilding:
   {    
     ConstructionList constructions;
-    ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( target() ) );
+    ConstructionPtr c = _map().overlay<Construction>( target() );
 
     if( c.isValid() && !_atExclude.count( c->group() ) )
     {
@@ -395,7 +398,7 @@ void EnemySoldier::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );
+      b->updateState( pr::damage, 1 );
     }
     else
     {
@@ -411,24 +414,13 @@ EnemySoldier::~EnemySoldier() {}
 
 int EnemySoldier::agressive() const { return 2; }
 
-EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
-{
-  EnemySoldierPtr ret( new EnemySoldier( city, type ) );
-  ret->setName( NameGenerator::rand( NameGenerator::male ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
-}
-
 void EnemySoldier::send2City( TilePos pos )
 {
   setPos( pos );
   _check4attack();
-  _city()->addWalker( this );
+  attach();
 
-  events::GameEventPtr e = events::MilitaryThreat::create( 1 );
-  e->dispatch();
+  events::dispatch<events::MilitaryThreat>( 1 );
 }
 
 bool EnemySoldier::die()
@@ -458,12 +450,15 @@ void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
+
+  VARIANT_LOAD_ANY( _failedWayCounter, stream )
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
 {
   Soldier::save( stream );
 
+  VARIANT_SAVE_ANY( stream, _failedWayCounter )
   stream[ "type" ] = (int)type();
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

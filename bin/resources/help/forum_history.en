@@ -1,0 +1,14 @@
+{  
+ title : "##forum##"
+ sound : "fanfare"
+ text  : "Just as the word @amphitheater& calls to mind the @Colosseum&, despite the commonality of amphitheaters throughout the Empire, so too the word 'forum' elicits thoughts of the Roman Forum, although Rome itself had many forae and most provincial towns were built around forae of their own.\n The original Roman Forum came to exist almost inevitably, in the time of Etruscan kings. A crossroads at the Tiber was a natural meeting and trading place. The first king drained the swampy lowlands, which had been used as a cemetery, and the area was soon paved. The prime location attracted @shops&. By the end of the kingdom and beginning of the Republic, the Forum already had @temples&, and more were added in the fifth century BC.\n Rome was still a minor city-state, undistinguished from its neighbors, until the Punic wars for dominance of the Mediterranean. Having already achieved superiority over their Italian neighbors, Romans felt the need to display their power and began a wave of monumental construction centering on the Forum. Rome began to look like the capital of an empire, and the Forum was its center.\n When the Republic fell, the Forum lost much of its commercial importance and became a political center. Government in the Empire was no longer a public affair. The Forum became an inner court to display the Emperor's propaganda, which he expressed through @statuary& and public buildings. Caesar started this trend by erecting his own temple. His successors would emulate his example, even creating their own forae - but none could match the statement made by a new arch or column in the Forum.\n The Roman Forum's fate mirrors that of the Empire. When Constantinople became the center of the world and Rome another provincial city, the Forum became a marble quarry. Bronze statues were stolen and melted down. By the Middle Ages, the grass-covered ruins of the Forum were known as 'il Campo Vaccino' ('the Cow Field')."
+ uri : {
+  "amphitheater" : "amphitheater"
+	"amphitheaters" : "amphitheater"
+	"shops" : "shop"
+	"temples" : "temple"
+	"statuary" : "statuary"
+	"Colosseum" : "colosseum"
+	"hippodromes" : "hippodrome"
+	}
+}

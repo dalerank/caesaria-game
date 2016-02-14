@@ -17,44 +17,38 @@
 
 #include "cityservice_fishplace.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
+#include "core/variant_map.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
-
-using namespace constants;
+#include "cityservice_factory.hpp"
+#include "core/common.hpp"
+#include "core/tilepos_array.hpp"
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(Fishery,fishery)
+
 class Fishery::Impl
 {
 public:
-  typedef std::vector<TilePos> Locations;
-
   unsigned int maxFishPlace;
-  int failedCounter;
+  int nFailed;
 
   Locations locations;
   FishPlaceList places;
 };
 
-SrvcPtr Fishery::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Fishery( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery);}
+std::string Fishery::defaultName() {  return TEXT(Fishery); }
 
 Fishery::Fishery( PlayerCityPtr city )
   : Srvc( city, Fishery::defaultName() ), _d( new Impl )
 {
-  _d->failedCounter = 0;
+  _d->nFailed = 0;
   _d->maxFishPlace = 1;
 }
 
@@ -65,41 +59,31 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    Helper helper( _city() );
-    _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = FishPlace::create( _city() );
-    TilePos travelingPoint = _city()->borderInfo().boatExit;
-    if( !_d->locations.empty() )
-    {
-      travelingPoint = _d->locations.size() > 1
-                         ? _d->locations[ math::random( _d->locations.size() ) ]
-                         : _d->locations.front();
-    }
+    FishPlacePtr fishplace = Walker::create<FishPlace>( _city() );
+    TilePos travelingPoint = _d->locations.empty()
+                               ? _city()->getBorderInfo( PlayerCity::boatExit ).epos()
+                               : _d->locations.random();
 
-    fishplace->send2city( _city()->borderInfo().boatEntry, travelingPoint );
+    fishplace->send2city( _city()->getBorderInfo( PlayerCity::boatEntry ).epos(), travelingPoint );
 
     if( fishplace->isDeleted() )
     {
-      _d->failedCounter++;
+      _d->nFailed++;
       return;
     }
 
     _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
-  FishPlaceList::iterator fit = _d->places.begin();
-  while( fit != _d->places.end() )
-  {
-    if( (*fit)->isDeleted() )     {      fit = _d->places.erase( fit );    }
-    else {  ++fit;    }
-  }
+  utils::eraseIfDeleted( _d->places );
 }
 
-bool Fishery::isDeleted() const { return _d->failedCounter > 3; }
+bool Fishery::isDeleted() const { return _d->nFailed > 3; }
 
 void Fishery::addLocation(TilePos location)
 {
@@ -111,9 +95,9 @@ void Fishery::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap locations = stream.get( "locations" ).toMap();
-  foreach( it, locations )
+  for( auto& location : locations )
   {
-    addLocation( it->second.toTilePos() );
+    addLocation( location.second.toTilePos() );
   }
 }
 
@@ -123,9 +107,9 @@ VariantMap Fishery::save() const
 
   VariantMap locationsVm;
   int index = 0;
-  foreach( it, _d->locations )
+  for( auto& location : _d->locations )
   {
-    locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = *it;
+    locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = location;
   }
 
   ret[ "locations" ] = locationsVm;

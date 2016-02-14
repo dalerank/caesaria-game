@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "neptune.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
@@ -25,8 +25,8 @@
 #include "walker/ship.hpp"
 #include "walker/fishing_boat.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace religion
 {
@@ -34,50 +34,48 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Neptune::create()
-{
-  DivinityPtr ret( new Neptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Neptune::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Neptune::templeType(Divinity::TempleSize size) const
+{
+    return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(neptune)
+                    : SML_TEMPLE_TYPE(neptune);
+}
+
+Neptune::Neptune()
+  : RomeDivinity( RomeDivinity::Neptune )
+{
+
+}
+
 void Neptune::_doWrath(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                                            _("##wrath_of_neptune_description##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Neptune.smk");
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##wrath_of_neptune_title##"),
+                                 _("##wrath_of_neptune_description##"),
+                                 true,
+                                 "god_neptune");
 
-  ShipList boats;
-  boats << city->walkers();
+  auto boats = city->walkers().select<Ship>();
 
-  int destroyBoats = math::random( boats.size() );
-  for( int i=0; i < destroyBoats; i++ )
+  ShipList destroyBoats = boats.random( 5 );
+  for( auto& ship : destroyBoats )
   {
-    ShipList::iterator it = boats.begin();
-    std::advance( it, math::random( boats.size() ) );
-    (*it)->deleteLater();
-    boats.erase( it );
+    ship->die();
   }
 }
 
 void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
-                                                            _("##smallcurse_of_neptune_description##"),
-                                                            events::ShowInfobox::send2scribe );
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##smallcurse_of_neptune_title##"),
+                                 _("##smallcurse_of_neptune_description##"),
+                                 true,
+                                 "god_neptune" );
 
-  DockList docks;
-  docks << city->overlays();
+  DockList docks = city->statistic().objects.find<Dock>();
 
   DockPtr dock = docks.random();
   if( dock.isValid() )
@@ -88,17 +86,13 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
-  city::Helper helper( city );
-  FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
+  FishingBoatList boats = city->statistic().walkers.find<FishingBoat>( walker::fishingBoat, TilePos(-1, -1));
 
-  FishingBoatPtr boat = boats.random();
-  foreach( it, boats )
+  boats = boats.random( math::max<size_t>( boats.size() / 5, 5 ) );
+  for( auto boat : boats )
   {
-    if( (*it)->fishQty() < boat->fishQty() )
-      boat = *it;
+    boat->addFish( boat->fishMax() - boat->fishQty() );
   }
-
-  boat->addFish( boat->fishMax() - boat->fishQty() );
 }
 
 }//end namespace rome

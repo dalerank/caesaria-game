@@ -5,10 +5,9 @@ file(GLOB PNG_SOURCES_LIST "*.c")
 
 include_directories(${ZLIB_INCLUDE_DIR})
 
-add_library(${PROJECT_NAME} ${PNG_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${PNG_SOURCES_LIST})
 
-target_link_libraries(${PROJECT_NAME} zlib)
-
+#target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 
 # Required on Unix OS family to be able to be linked into shared libraries.
 set_target_properties(${PROJECT_NAME}

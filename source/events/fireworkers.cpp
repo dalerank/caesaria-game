@@ -17,19 +17,19 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
 #include "gfx/tile.hpp"
-#include "core/foreach.hpp"
+#include "city/city.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace events
 {
+static const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr FireWorkers::create(TilePos center, unsigned int workers)
+GameEventPtr FireWorkers::create(const TilePos& center, unsigned int workers)
 {
   FireWorkers* e = new FireWorkers();
   e->_center  = center;
@@ -49,15 +49,15 @@ FireWorkers::FireWorkers() : _workers( 0 ) {}
 void FireWorkers::_exec(Game& game, unsigned int)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
 
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
-                                                 _center + TilePos( curRange, curRange ) );
-    foreach( tile, perimetr )
+    TilePos range( curRange, curRange );
+    TilesArray perimetr = tilemap.rect( _center - range,
+                                                _center + range );
+    for( auto& tile : perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->overlay() );
+      WorkingBuildingPtr wrkBuilding = tile->overlay<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );
@@ -71,11 +71,10 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    city::Helper helper( game.city() );
-    WorkingBuildingList  wb = helper.find<WorkingBuilding>( objects::any );
-    foreach( it, wb )
+    WorkingBuildingList buildings = game.city()->statistic().objects.find<WorkingBuilding>();
+    for( auto building : buildings )
     {
-      int removedFromWb = (*it)->removeWorkers( _workers );
+      int removedFromWb = building->removeWorkers( _workers );
       _workers -= removedFromWb;
 
       if( !_workers )
@@ -84,4 +83,4 @@ void FireWorkers::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}// end namesopace events

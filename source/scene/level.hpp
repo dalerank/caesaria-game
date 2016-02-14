@@ -26,6 +26,7 @@
 #include "game/game.hpp"
 
 class Game;
+namespace undo{ class UStack; }
 
 namespace scene
 {
@@ -33,7 +34,7 @@ namespace scene
 class Level: public Base
 {
 public:
-  typedef enum {mainMenu=0, loadGame, restart, loadBriefing, quitGame} ResultType;
+  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_quit} ResultType;
   Level( Game& game, gfx::Engine& engine );
   virtual ~Level();
 
@@ -41,26 +42,27 @@ public:
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
-  virtual void draw();
+  virtual void draw();  
   virtual void animate( unsigned int time );
   virtual void afterFrame();
   virtual int result() const;
-
   virtual bool installEventHandler(EventHandlerPtr);
+  virtual gfx::Camera* camera() const;
 
-  void setCameraPos( TilePos pos );
+  undo::UStack& undoStack();
+  void setConstructorMode( bool enabled );
+  void setCameraPos( TilePos pos, bool force=false );
+  void switch2layer( int layer );
+
+public slots:
+  void loadStage(std::string filename);
+  void quit();
+  void restart();
+  void exit();
 
 private slots:
-  void _exitToMainMenu();
-  void _exitGame();
-  void _resolveSwitchMap();
-  void _restartMission();
-  void _showLoadDialog();
-  void _resolveLoadGame(std::string filename);
   void _resolveLoad();
-  void _resolveEscapeButton();
   void _resolveEnterButton();
-  void _showIngameMenu();
   void _requestExitGame();
   bool _tryExecHotkey( NEvent& event );
   void _handleDebugEvent( int event );

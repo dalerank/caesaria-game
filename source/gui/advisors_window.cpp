@@ -40,8 +40,7 @@
 #include "advisor_religion_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
-#include "core/foreach.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
 #include "image.hpp"
@@ -54,9 +53,10 @@
 #include "advisor_population_window.hpp"
 #include "widget_helper.hpp"
 #include "world/empire.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -64,122 +64,61 @@ namespace gui
 namespace advisorwnd
 {
 
-class AWindow::Impl
-{
-public:
-  GameAutoPause locker;
-  Widget* advisorPanel;
-
-  Point offset;
-
-  PlayerCityPtr city;
-
-  void sendMoney2City( int money );
-  void showEmpireMapWindow();
-};
-
-PushButton* AWindow::addButton( const int pos, const int picId, std::string tooltip )
+PushButton& Parlor::_addButton( Advisor advisorName, int picId, std::string tooltip )
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * pos, Size( 40 ), pos, picId, picId, picId + 13 );
-  btn->setIsPushButton( true );
-  btn->setTooltipText( tooltip );
+  auto& btn = add<TexturedButton>( tabButtonPos + Point( 48, 0 ) * (advisorName-1), Size(40, 40),
+                                   advisorName, TexturedButton::States( picId, picId, picId + 13 ) );
+  btn.setIsPushButton( true );
+  btn.setTooltipText( tooltip );
   return btn;
 }
 
-AWindow::AWindow( Widget* parent, int id )
-: Window( parent, Rect( Point(0, 0), parent->size() ), "", id ), _d( new Impl )
+void Parlor::_initButtons()
 {
-  _d->locker.activate();
-  // use some clipping to remove the right and bottom areas
+  if( _model.isNull() )
+  {
+    Logger::warning( "Parlor model is null. Cant init buttons" );
+    return;
+  }
+
+  auto buttons = children().select<PushButton>();
+  for( auto& btn : buttons )
+    btn->deleteLater();
+
+  for( auto& item : _model->items() )
+    _addButton( item.type, item.pic, _( fmt::format( "##visit_{}_advisor##", item.tooltip ) ) );
+
+  auto& btn = _addButton( advisor::unknown, 609 );
+  btn.setIsPushButton( false );
+
+  CONNECT_LOCAL( &btn, onClicked(), Parlor::deleteLater );
+}
+
+Parlor::Parlor( Widget* parent, int id )
+  : Window( parent, Rect( Point(0, 0), parent->size() ), "", id )
+{
   setupUI( ":/gui/advisors.gui" );
-  _d->advisorPanel = 0;
 
-  WidgetEscapeCloser::insertTo( this );
+  GameAutoPauseWidget::insertTo( this );
+  WidgetClosers::insertTo( this );
 
-  Image* imgBgButtons;
-  GET_WIDGET_FROM_UI( imgBgButtons )
-
+  INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
-
-  addButton( advisor::employers,     255, _("##visit_labor_advisor##"        ));
-  addButton( advisor::military,      256, _("##visit_military_advisor##"     ));
-  addButton( advisor::empire,        257, _("##visit_imperial_advisor##"     ));
-  addButton( advisor::ratings,       258, _("##visit_rating_advisor##"       ));
-  addButton( advisor::trading,       259, _("##visit_trade_advisor##"        ));
-  addButton( advisor::population,    260, _("##visit_population_advisor##"   ));
-  addButton( advisor::health,        261, _("##visit_health_advisor##"       ));
-  addButton( advisor::education,     262, _("##visit_education_advisor##"    ));
-  addButton( advisor::entertainment, 263, _("##visit_entertainment_advisor##"));
-  addButton( advisor::religion,      264, _("##visit_religion_advisor##"     ));
-  addButton( advisor::finance,       265, _("##visit_financial_advisor##"    ));
-  addButton( advisor::main,          266, _("##visit_chief_advisor##"        ));
-
-  PushButton* btn = addButton( advisor::count, 609 );
-  btn->setIsPushButton( false );
-
-  CONNECT( btn, onClicked(), this, AWindow::deleteLater );
 }
 
-void AWindow::showAdvisor( const constants::advisor::Type type )
+void Parlor::setModel(ParlorModel* model)
 {
-  if( type >= advisor::count )
-    return;
+  _model.reset( model );
+  model->setParent( this );
+  _initButtons();
 
-  Widget::Widgets rchildren = children();
-  foreach( child, rchildren )
-  {
-    PushButton* btn = safety_cast< PushButton* >( *child );
-    if( btn )
-    {
-      btn->setPressed( btn->ID() == type );
-    }
-  }
-
-  if( _d->advisorPanel )
-  {
-    _d->advisorPanel->deleteLater();
-    _d->advisorPanel = 0;
-  }
-
-  switch( type )
-  {
-  case advisor::employers: _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers ); break;
-  case advisor::military:
-  {
-    FortList forts;
-    forts << _d->city->overlays();
-    _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
-  }
-  break;
-
-  case advisor::population: _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); break;
-
-  case advisor::empire: _d->advisorPanel = new advisorwnd::Emperor( _d->city, this, advisor::empire ); break;
-  case advisor::ratings: _d->advisorPanel = new advisorwnd::Ratings( this, advisor::ratings, _d->city ); break;
-  case advisor::trading:
-    {
-      advisorwnd::Trade* wnd = new advisorwnd::Trade( _d->city, this, advisor::trading );
-      _d->advisorPanel =  wnd;
-      CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
-    }
-  break;
-
-  case advisor::education: _d->advisorPanel = new advisorwnd::Education( _d->city, this, -1 ); break;
-  case advisor::health: _d->advisorPanel = new advisorwnd::Health( _d->city, this, -1 ); break;
-  case advisor::entertainment: _d->advisorPanel = new advisorwnd::Entertainment( _d->city, this, -1 ); break;
-  case advisor::religion: _d->advisorPanel = new advisorwnd::Religion( _d->city, this, -1 ); break;
-  case advisor::finance: _d->advisorPanel = new advisorwnd::Finance( _d->city, this, -1 ); break;
-  case advisor::main: _d->advisorPanel = new advisorwnd::AdvisorChief( _d->city, this, -1 );
-
-  default:
-  break;
-  }
+  CONNECT( this, onSwitchAdvisor, model, ParlorModel::switchAdvisor );
 }
 
-void AWindow::draw(gfx::Engine& engine )
+void Parlor::draw(gfx::Engine& engine )
 {
   if( !visible() )
     return;
@@ -187,9 +126,9 @@ void AWindow::draw(gfx::Engine& engine )
   Window::draw( engine );
 }
 
-bool AWindow::onEvent( const NEvent& event )
+bool Parlor::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
+  if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
   {
     deleteLater();
     return true;
@@ -198,37 +137,147 @@ bool AWindow::onEvent( const NEvent& event )
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->ID();
-    if( id >= 0 && id < advisor::count )
+    if( id >= 0 && id < advisor::unknown )
     {
-      showAdvisor( (constants::advisor::Type)event.gui.caller->ID() );
+      emit onSwitchAdvisor( Advisor( event.gui.caller->ID() ) );
     }
   }
 
   return Widget::onEvent( event );
 }
 
-AWindow* AWindow::create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city )
+void Parlor::showAdvisor(Advisor type) { emit onSwitchAdvisor(type); }
+
+Parlor* Parlor::create(Widget* parent, int id, const Advisor type, ParlorModel* model )
 {
-  AWindow* ret = new AWindow( parent, id );
-  ret->_d->city = city;
+  Parlor* ret = new Parlor( parent, id );
+  ret->setModel( model );
   ret->showAdvisor( type );
 
   return ret;
 }
 
-void AWindow::Impl::sendMoney2City(int money)
+class ParlorModel::Impl
 {
- events::GameEventPtr event = events::FundIssueEvent::create( city::Funds::donation, money );
- event->dispatch();
+public:
+  Widget* parent;
+  Base* advisorPanel;
+
+  Point offset;
+  PlayerCityPtr city;
+};
+
+ParlorModel::ParlorModel(PlayerCityPtr city)
+  : __INIT_IMPL(ParlorModel)
+{
+  __D_REF(d,ParlorModel)
+  d.city = city;
+  d.advisorPanel = nullptr;
 }
 
-void AWindow::Impl::showEmpireMapWindow()
+void ParlorModel::sendMoney2City(int money)
 {
-  advisorPanel->parent()->deleteLater();
-  events::GameEventPtr event = events::ShowEmpireMap::create( true );
-  event->dispatch();
+  events::dispatch<Payment>( econ::Issue::donation, money );
 }
 
+void ParlorModel::showEmpireMapWindow()
+{
+  __D_REF(d,ParlorModel)
+  d.advisorPanel->parent()->deleteLater();
+  events::dispatch<ShowEmpireMap>( true );
 }
+
+void ParlorModel::setParent(Widget* parlor)
+{
+  _dfunc()->parent = parlor;
+}
+
+Parlor::Items ParlorModel::items()
+{
+  Parlor::Items items = { { advisor::employers,     255, "labor" },
+                          { advisor::military,      256, "military"},
+                          { advisor::empire,        257, "imperial"},
+                          { advisor::ratings,       258, "rating"},
+                          { advisor::trading,       259, "trade"},
+                          { advisor::population,    260, "population"},
+                          { advisor::health,        261, "health"},
+                          { advisor::education,     262, "education"},
+                          { advisor::entertainment, 263, "entertainment"},
+                          { advisor::religion,      264, "religion"},
+                          { advisor::finance,       265, "financial"},
+                          { advisor::main,          266, "chief"} };
+
+  return items;
+}
+
+void ParlorModel::switchAdvisor(Advisor type)
+{
+  __D_REF(d,ParlorModel)
+  if( type >= advisor::unknown )
+    return;
+
+  auto buttons = d.parent->children().select<PushButton>();
+  for( auto btn : buttons )
+  {
+    btn->setPressed( btn->ID() == type );
+  }
+
+  if( d.advisorPanel )
+  {
+    if( type == d.advisorPanel->type() )
+      return;
+
+    d.advisorPanel->deleteLater();
+    d.advisorPanel = nullptr;
+  }
+
+  switch( type )
+  {
+  case advisor::employers:
+    d.advisorPanel = new advisorwnd::Employer( d.city, d.parent );
+  break;
+  case advisor::military:
+  {
+    auto forts = d.city->statistic().objects.find<Fort>();
+    d.advisorPanel = new advisorwnd::Legion( d.parent, d.city, forts );
+  }
+  break;
+  case advisor::population:
+    d.advisorPanel = new advisorwnd::Population( d.city, d.parent );
+  break;
+  case advisor::empire:
+    d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent );
+  break;
+  case advisor::ratings:
+    d.advisorPanel = new advisorwnd::Ratings( d.parent, d.city );
+  break;
+  case advisor::trading:
+    d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );
+  break;
+  case advisor::education:
+    d.advisorPanel = new advisorwnd::Education( d.city, d.parent );
+  break;
+  case advisor::health:
+    d.advisorPanel = new advisorwnd::Health( d.city, d.parent );
+  break;
+  case advisor::entertainment:
+    d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
+  break;
+  case advisor::religion:
+    d.advisorPanel = new advisorwnd::Religion( d.city, d.parent );
+  break;
+  case advisor::finance:
+    d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );
+  break;
+  case advisor::main:
+    d.advisorPanel = new advisorwnd::Chief( d.city, d.parent );
+  break;
+
+  default:
+  break;
+  }
+}
+
+}//end namespace advisorwnd
 
 }//end namespace gui

@@ -41,6 +41,7 @@ public:
   __GS_PROPERTY(language)
   __GS_PROPERTY(resolution)
   __GS_PROPERTY(fullscreen)
+  __GS_PROPERTY(climateModel)
   __GS_PROPERTY(savedir)
   __GS_PROPERTY(emigrantSalaryKoeff)
   __GS_PROPERTY(minMonthWithFood)
@@ -52,12 +53,14 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(c3music)
+  __GS_PROPERTY(c3video)
+  __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
-  __GS_PROPERTY(difficulty)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(emblemsModel)
@@ -80,6 +83,39 @@ public:
   __GS_PROPERTY(hotkeysModel)
   __GS_PROPERTY(cartsModel)
   __GS_PROPERTY(logoArchive)
+  __GS_PROPERTY(titleResource)
+  __GS_PROPERTY(forbidenTile)
+  __GS_PROPERTY(layersOptsModel)
+  __GS_PROPERTY(experimental)
+  __GS_PROPERTY(scrollSpeed)
+  __GS_PROPERTY(buildMenuModel)
+  __GS_PROPERTY(borderMoving)
+  __GS_PROPERTY(mmb_moving)
+  __GS_PROPERTY(lockInfobox)
+  __GS_PROPERTY(soundAlias)
+  __GS_PROPERTY(videoAlias)
+  __GS_PROPERTY(playerName)
+  __GS_PROPERTY(lastGame)
+  __GS_PROPERTY(tooltipEnabled)
+  __GS_PROPERTY(screenshotDir)
+  __GS_PROPERTY(showTabletMenu)
+  __GS_PROPERTY(batchTextures)
+  __GS_PROPERTY(ccUseAI)
+  __GS_PROPERTY(metricSystem)
+  __GS_PROPERTY(defaultFont)
+  __GS_PROPERTY(celebratesConfig)
+  __GS_PROPERTY(ambientsounds)
+  __GS_PROPERTY(debugMenu)
+  __GS_PROPERTY(cntrGroupsModel)
+  __GS_PROPERTY(logfile)
+  __GS_PROPERTY(rightMenu)
+  __GS_PROPERTY(showEmpireMapTiles)
+  __GS_PROPERTY(logoImageRc)
+  __GS_PROPERTY(logoImageIndex)
+  __GS_PROPERTY(showLastChanges)
+  __GS_PROPERTY(lastChangesNumber)
+  __GS_PROPERTY(citiesIdModel)
+  __GS_PROPERTY(showStartAware)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -90,12 +126,18 @@ public:
   static vfs::Path rcpath( const std::string& option="" );
   static vfs::Path rpath( const std::string& option="" );
 
-  static void load();
+  static int findLastChanges();
+
+  static bool haveLastConfig();
+  static void loadLastConfig();
   static void save();
 
   void setwdir( const std::string& wdir );
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
+  void checkC3present();
+  void changeSystemLang( const std::string& newLang );
+  void resetIfNeed(char* argv[], int argc);
 private:
   Settings();
 
@@ -107,6 +149,8 @@ private:
 
 #define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
 #define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define SETTINGS_STR(a) game::Settings::get( game::Settings::a ).toString()
+#define KILLSWITCH(a) game::Settings::get( game::Settings::a ).toBool()
 #define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

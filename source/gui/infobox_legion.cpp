@@ -25,15 +25,13 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "walker/romesoldier.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "objects/fort.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
 #include "widget_helper.hpp"
-
-using namespace constants;
 
 namespace gui
 {
@@ -63,7 +61,7 @@ public:
 };
 
 AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( ":/gui/legionopts.gui" );
 
@@ -85,16 +83,16 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
 
   if( !walkers.empty() )
   {
-    foreach( i, walkers )
+    for( auto& wlk : walkers )
     {
-      RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
+      RomeSoldierPtr rs = wlk.as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
+      PatrolPointPtr pp = wlk.as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();
@@ -115,14 +113,13 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      city::Helper helper( city );
-      BuildingList barracks = helper.find<Building>( objects::barracks );
+      int barracks_n = city->statistic().objects.count( object::barracks );
 
-      std::string text = barracks.empty()
+      std::string text = barracks_n == 0
                           ? "##legion_haveho_soldiers_and_barracks##"
                           : "##legion_haveho_soldiers##";
 
-      _lbTextRef()->move( Point( 0, 20 ));
+      _lbText()->move( Point( 0, 20 ));
       setText( _( text ) );
     }
     else
@@ -136,8 +133,8 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   setTitle( _( fortTitle ) );
   _update();
 
-  CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
-  CONNECT( _d->btnAttackAnimals, onClicked(), this, AboutLegion::_toggleAnimalsAttack );
+  CONNECT_LOCAL( _d->btnReturn, onClicked(), AboutLegion::_returnSoldiers2fort );
+  CONNECT_LOCAL( _d->btnAttackAnimals, onClicked(), AboutLegion::_toggleAnimalsAttack );
 }
 
 AboutLegion::~AboutLegion() {}
@@ -176,7 +173,7 @@ void AboutLegion::_update()
 
   if( _d->btnAttackAnimals )
   {
-    std::string text = utils::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    std::string text = fmt::format( "##attack_animals_{}##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
   }
 
@@ -184,17 +181,7 @@ void AboutLegion::_update()
 
   if( _d->lbFlag )
   {
-    int flIndex = 0;
-    switch( _d->fort->type() )
-    {
-    case objects::fortJavelin: flIndex = 30; break;
-    case objects::fortLegionaire: flIndex = 21; break;
-    case objects::fortMounted: flIndex = 39; break;
-
-    default: break;
-    }
-
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, flIndex );
+    gfx::Picture pic( ResourceGroup::sprites, _d->fort->flagIndex() );
     pic.setOffset( 0, 0 );
     _d->lbFlag->setIcon( pic );
   }
@@ -202,7 +189,7 @@ void AboutLegion::_update()
   if( _d->lbMoraleStandart )
   {
     int mIndex = 20 - math::clamp<int>( _d->fort->legionMorale() / 5, 0, 20 );
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, mIndex+ 48 );
+    gfx::Picture pic( ResourceGroup::sprites, mIndex+ 48 );
     pic.setOffset( 0, 0 );
     _d->lbMoraleStandart->setIcon( pic );
   }
@@ -217,9 +204,9 @@ void AboutLegion::_addAvailalbesFormation()
 
   int index = 0;
   int formationPicId[] = { 33, 34, 30, 31, 29, 28 };
-  foreach( it, formations )
+  for( auto& it : formations )
   {
-    _addFormationButton( index, *it, formationPicId[ *it ] );
+    _addFormationButton( index, it, formationPicId[ it ] );
     index++;
   }
 }
@@ -278,18 +265,18 @@ bool AboutLegion::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
-  Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
-  PushButton* btn = new PushButton( this, rect, "", id );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, picId );
-  btn->setIconOffset( Point( 1, 1 ) );
-  btn->setTooltipText( _("##legion_formation_tooltip##") );
+  Rect rect( Point( 16, 140 ) + offset * index, Size(83,83) );
+  PushButton& btn = add<PushButton>( rect, "", id );
+  btn.setBackgroundStyle( PushButton::whiteBorderUp );
+  btn.setIcon( gui::miniature.rc, picId );
+  btn.setIconOffset( Point( 1, 1 ) );
+  btn.setTooltipText( _("##legion_formation_tooltip##") );
 }
 
 void AboutLegion::_returnSoldiers2fort()

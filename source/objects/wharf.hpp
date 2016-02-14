@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WHARF_INCLUDE_H_
 #define _CAESARIA_WHARF_INCLUDE_H_
@@ -35,7 +37,7 @@ public:
   virtual std::string troubleDesc() const;
 
 private:
-  virtual void _updatePicture( constants::Direction direction );
+  virtual void _updatePicture( Direction direction );
 
 private:
   class Impl;

@@ -19,17 +19,20 @@
 #define __CAESARIA_WALKER_DEBUG_INFO_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/camera.hpp"
 #include "game/predefinitions.hpp"
+#include "render_info.hpp"
+#include "core/color.hpp"
 
 namespace gfx
 {
 
+class Camera;
+class Engine;
+
 class WalkerDebugInfo
 {
 public:
-  static void showPath(WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera, NColor color=0);
+  static void showPath(WalkerPtr walker, const RenderInfo& rinfo, NColor color=0);
 };
 
 }//end namespace gfx

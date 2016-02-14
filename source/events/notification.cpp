@@ -20,14 +20,18 @@
 #include "world/object.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "objects/construction.hpp"
 #include "world/empire.hpp"
 #include "world/barbarian.hpp"
 #include "world/romechastenerarmy.hpp"
+#include "city/statistic.hpp"
+
+using namespace city;
 
 namespace events
 {
 
-class Notification::Impl
+class Notify::Impl
 {
 public:
   std::string message;
@@ -36,17 +40,17 @@ public:
   int type;
 };
 
-GameEventPtr Notification::attack(const std::string& cityname, const std::string& message, world::ObjectPtr object )
+GameEventPtr Notify::attack(const std::string& cityname, const std::string& message, world::ObjectPtr object )
 {
-  Notification* ev = new Notification();
+  Notify* ev = new Notify();
 
   ev->_d->cityname = cityname;
   ev->_d->message = message;
   ev->_d->object = object->name();
 
-  if( is_kind_of<world::Barbarian>( object ) )  {  ev->_d->type = city::Military::Notification::barbarian;  }
-  else if( is_kind_of<world::RomeChastenerArmy>( object ) ) { ev->_d->type = city::Military::Notification::chastener; }
-  else { ev->_d->type = city::Military::Notification::unknown; }
+  if( is_kind_of<world::Barbarian>( object ) )  {  ev->_d->type = notification::barbarian;  }
+  else if( is_kind_of<world::RomeChastenerArmy>( object ) ) { ev->_d->type = notification::chastener; }
+  else { ev->_d->type = notification::unknown; }
 
   GameEventPtr evPtr( ev );
   evPtr->drop();
@@ -54,28 +58,27 @@ GameEventPtr Notification::attack(const std::string& cityname, const std::string
   return evPtr;
 }
 
-void Notification::_exec(Game& game, unsigned int)
+void Notify::_exec(Game& game, unsigned int)
 {
   world::CityPtr pCity = game.empire()->findCity( _d->cityname );
 
-  if( is_kind_of<PlayerCity>( pCity ) )
-  {
-    PlayerCityPtr plrCity = ptr_cast<PlayerCity>( pCity );
-    city::MilitaryPtr mil;
-    mil << plrCity->findService( city::Military::defaultName() );
+  PlayerCityPtr plrCity = ptr_cast<PlayerCity>( pCity );
+  if( plrCity.isValid() )
+  {    
+    MilitaryPtr mil = plrCity->statistic().services.find<Military>();
 
     if( mil.isValid() )
     {
-      mil->addNotification( _d->message, _d->object, (city::Military::Notification::Type)_d->type );
+      mil->addNotification( notification::Describe{ (notification::Type)_d->type, _d->message, _d->object } );
     }
   }
 }
 
-bool Notification::_mayExec(Game& game, unsigned int time) const { return true; }
+bool Notify::_mayExec(Game& game, unsigned int time) const { return true; }
 
-Notification::Notification() : _d( new Impl )
+Notify::Notify() : _d( new Impl )
 {
 
 }
 
-}
+}//end namespace events

@@ -27,30 +27,32 @@ class Rome : public City
 {
 public:
   static const char* defaultName;
-  Rome( EmpirePtr empire );
+  static CityPtr create( EmpirePtr empire );
 
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
 
   virtual unsigned int tradeType() const;
-  virtual city::Funds& funds();
+  virtual econ::Treasury& treasury();
   virtual std::string name() const;
-  virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
-  virtual unsigned int age() const;
+  virtual std::string about(AboutType type);
+  virtual const city::States& states() const;
   virtual void timeStep(const unsigned int time);
-  virtual SmartPtr<Player> player() const;
+  virtual PlayerPtr mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
-  virtual world::Nation nation() const;
+  virtual void load(const VariantMap &stream);
   virtual DateTime lastAttack() const;
   virtual int strength() const;
-  virtual void delayTrade( unsigned int month );
-  virtual void empirePricesChanged( good::Type gtype, int bCost, int sCost );
-  virtual const good::Store& importingGoods() const;
-  virtual const good::Store& exportingGoods() const;
+  virtual void delayTrade(unsigned int);
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
+  virtual const good::Store& sells() const;
+  virtual const good::Store& buys() const;
 
 private:
+  Rome( EmpirePtr empire );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

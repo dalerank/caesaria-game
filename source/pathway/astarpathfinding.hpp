@@ -19,21 +19,14 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "gfx/tilesarray.hpp"
+#include "core/singleton.hpp"
 #include "core/delegate.hpp"
 #include "pathway.hpp"
 
-class Pathfinder
+class Pathfinder : public StaticSingleton<Pathfinder>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Pathfinder)
 public:
-  typedef enum { noFlags=0x0,
-                 checkStart=0x1, checkStop=0x2,
-                 roadOnly=0x4, deepWaterOnly=0x8, terrainOnly=0x10,
-                 waterOnly=0x20, traversePath=0x40,
-                 everyWhere=0x80, fourDirection=0x100,
-                 customCondition=0x200, ignoreRoad=0x400 } Flags;
-
-  static Pathfinder& instance();
-
   void update( const gfx::Tilemap& tmap );
 
   Pathway getPath( TilePos start, gfx::TilesArray arrivedArea, int flags );

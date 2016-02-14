@@ -17,21 +17,17 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "soldier.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "helper.hpp"
+#include "objects/construction.hpp"
+#include "core/variant_map.hpp"
 
-using namespace constants;
 using namespace gfx;
-
-CAESARIA_LITERALCONST(sldAction)
-CAESARIA_LITERALCONST(strikeForce)
-CAESARIA_LITERALCONST(resistance)
-CAESARIA_LITERALCONST(attackDistance)
 
 class Soldier::Impl
 {
 public:
-  Soldier::SldrAction action;
+  Soldier::SldrAction sldAction;
   float strikeForce;
   float resistance;
   TilePos possibleAttackPos;
@@ -44,10 +40,9 @@ public:
            attackDistance( 1u ), morale( 100 ) {}
 };
 
-Soldier::Soldier(PlayerCityPtr city, walker::Type type)
-    : Human( city ), __INIT_IMPL(Soldier)
+Soldier::Soldier( PlayerCityPtr city, walker::Type type)
+    : Human( city, type ), __INIT_IMPL(Soldier)
 {
-  _setType( type );
 }
 
 void Soldier::fight()
@@ -95,8 +90,7 @@ void Soldier::initialize(const VariantMap &options)
 bool Soldier::_move2freePos( TilePos target )
 {
   const int defaultRange = 10;
-  city::Helper helper( _city() );
-  Pathway way2freeslot = helper.findFreeTile<Soldier>( target, pos(), defaultRange );
+  Pathway way2freeslot = _city()->statistic().walkers.freeTile<Soldier>( target, pos(), defaultRange );
   if( way2freeslot.isValid() )
   {
     _updatePathway( way2freeslot );
@@ -115,10 +109,10 @@ void Soldier::save(VariantMap& stream) const
 {
   Walker::save( stream );
   __D_IMPL_CONST(d,Soldier);
-  stream[ lc_sldAction ] = (int)d->action;
-  stream[ lc_strikeForce  ] = d->strikeForce;
-  stream[ lc_resistance ] = d->resistance;
-  stream[ lc_attackDistance ] = (int)d->attackDistance;
+  VARIANT_SAVE_ENUM_D(stream, d, sldAction )
+  VARIANT_SAVE_ANY_D( stream, d, strikeForce )
+  VARIANT_SAVE_ANY_D( stream, d, resistance )
+  VARIANT_SAVE_ANY_D( stream, d, attackDistance )
   VARIANT_SAVE_ANY_D( stream, d, morale )
 }
 
@@ -126,18 +120,19 @@ void Soldier::load(const VariantMap& stream)
 {
   Walker::load( stream );
   __D_IMPL(d,Soldier)
-  d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
-  d->strikeForce = stream.get( lc_strikeForce );
-  d->resistance = stream.get( lc_resistance );
-  d->attackDistance = stream.get( lc_attackDistance ).toUInt();
-  VARIANT_LOAD_ANY_D( d, morale, stream )
+  VARIANT_LOAD_ENUM_D(d, sldAction,         stream )
+  VARIANT_LOAD_ANY_D( d, strikeForce,    stream )
+  VARIANT_LOAD_ANY_D( d, resistance,     stream )
+  VARIANT_LOAD_ANY_D( d, attackDistance, stream )
+  VARIANT_LOAD_ANY_D( d, morale,         stream )
 }
 
 unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 
-Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->action; }
-void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->action = action; }
+Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->sldAction; }
+void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->sldAction = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
+int Soldier::experience() const { return 0; }
 void Soldier::addFriend(walker::Type friendType){  _dfunc()->friends.insert( friendType );}
 
 bool Soldier::isFriendTo(WalkerPtr wlk) const
@@ -147,7 +142,7 @@ bool Soldier::isFriendTo(WalkerPtr wlk) const
   {
     isFriend = WalkerRelations::isNeutral( type(), wlk->type() );
 
-    if( nation() != world::unknownNation )
+    if( nation() != world::nation::unknown )
     {
       isFriend = WalkerRelations::isNeutral( nation(), wlk->nation() );
     }

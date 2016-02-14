@@ -19,31 +19,36 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_map.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "events/disaster.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
 {
 
+REGISTER_EVENT_IN_FACTORY(EarthQuake, "earthquake")
+
 class EarthQuake::Impl
 {
 public:
-  VariantMap events;
+  VariantMap onFinished;
   unsigned int lastTimeUpdate;
-  TilePos startPoint, endPoint, currentPoint;
+  TilePos start, end, current;
 };
 
-GameEventPtr EarthQuake::create(TilePos start, TilePos stop)
+GameEventPtr EarthQuake::create(const TilePos& start, const TilePos& stop)
 {
   EarthQuake* eq = new EarthQuake();
-  eq->_d->startPoint = start;
-  eq->_d->endPoint = stop;
-  eq->_d->currentPoint = start;
+  eq->_d->start = start;
+  eq->_d->end = stop;
+  eq->_d->current = start;
 
   GameEventPtr ret( eq );
   ret->drop();
@@ -61,7 +66,7 @@ GameEventPtr EarthQuake::create()
 
 bool EarthQuake::isDeleted() const
 {
-  return _d->currentPoint == _d->endPoint;
+  return _d->current == _d->end;
 }
 
 void EarthQuake::_exec( Game& game, unsigned int time)
@@ -72,47 +77,47 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute earthquake event" );
 
     Tilemap& tmap = game.city()->tilemap();
-    Tile* currentTile = &tmap.at( _d->currentPoint );
+    Tile* currentTile = &tmap.at( _d->current );
     if( currentTile )
     {
       bool mayDestruct = currentTile->getFlag( Tile::isConstructible );
-      mayDestruct |= is_kind_of<Construction>( currentTile->overlay() );
+      mayDestruct |= currentTile->overlay().is<Construction>();
 
       if( mayDestruct )
       {
-        events::GameEventPtr e = events::Disaster::create( *currentTile, Disaster::rift );
-        e->dispatch();
+        events::dispatch<Disaster>( *currentTile, Disaster::rift );
       }
     }
 
     //calculate next point
-    TilesArray nextPoints = tmap.getNeighbors(_d->currentPoint, Tilemap::FourNeighbors);
+    TilesArray nextPoints = tmap.getNeighbors(_d->current, Tilemap::FourNeighbors);
 
-    int lastDst = _d->currentPoint.getDistanceFromSQ(_d->endPoint);
+    int lastDst = _d->current.distanceSqFrom(_d->end);
     for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
     {
       bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
-      mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
-      int curDst = (*it)->pos().getDistanceFromSQ(_d->endPoint);
+      mayDestruct |= (*it)->overlay().is<Construction>();
+      int curDst = (*it)->pos().distanceSqFrom(_d->end);
+
       if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
       else { ++it; }
     }
 
     if( nextPoints.empty() )
     {
-      TilePos offset = _d->endPoint - _d->currentPoint;
+      TilePos offset = _d->end - _d->current;
       offset.setI( math::signnum( offset.i() ) );
       offset.setJ( math::signnum( offset.j() ) );
-      _d->currentPoint += offset;
+      _d->current += offset;
     }
     else
     {
-      _d->currentPoint = nextPoints.random()->pos();
+      _d->current = nextPoints.random()->pos();
     }
 
-    if( _d->currentPoint == _d->endPoint )
+    if( _d->current == _d->end )
     {
-      events::Dispatcher::instance().load( _d->events );
+      events::Dispatcher::instance().load( _d->onFinished );
     }
   }
 }
@@ -122,14 +127,14 @@ bool EarthQuake::_mayExec(Game&, unsigned int) const { return true; }
 void EarthQuake::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  _d->events = stream.get( "onFinished" ).toMap();
-  _d->startPoint = stream.get( "start" ).toTilePos();
-  _d->endPoint = stream.get( "end" ).toTilePos();
-  _d->currentPoint = stream.get( "current", TilePos( -1, -1 ) ).toTilePos();
+  VARIANT_LOAD_VMAP_D( _d, onFinished, stream )
+  VARIANT_LOAD_ANY_D( _d, start, stream )
+  VARIANT_LOAD_ANY_D( _d, end, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, current, TilePos( -1, -1), stream )
 
-  if( _d->currentPoint == TilePos( -1, -1 ) )
+  if( _d->current == TilePos::invalid() )
   {
-    _d->currentPoint = _d->startPoint;
+    _d->current = _d->start;
   }
 }
 
@@ -137,17 +142,17 @@ VariantMap EarthQuake::save() const
 {
   VariantMap ret = GameEvent::save();
 
-  ret[ "onFinished" ] = _d->events;
-  ret[ "start" ] = _d->startPoint;
-  ret[ "end" ] = _d->endPoint;
-  ret[ "current" ] = _d->currentPoint;
+  VARIANT_SAVE_ANY_D( ret, _d, onFinished )
+  VARIANT_SAVE_ANY_D( ret, _d, start )
+  VARIANT_SAVE_ANY_D( ret, _d, end )
+  VARIANT_SAVE_ANY_D( ret, _d, current )
 
   return ret;
 }
 
 EarthQuake::EarthQuake() : _d( new Impl )
 {
-  _d->currentPoint = TilePos( -1, -1 );
+  _d->current = TilePos::invalid();
   _d->lastTimeUpdate = 0;
 }
 

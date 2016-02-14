@@ -17,6 +17,7 @@
 #define _CAESARIA_REMOVEGOODS_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "good/good.hpp"
 
 namespace events
 {
@@ -24,7 +25,7 @@ namespace events
 class RemoveGoods : public GameEvent
 {
 public:
-  static GameEventPtr create( good::Type type, int qty );
+  static GameEventPtr create( good::Product type, int qty );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap& stream);
@@ -37,7 +38,7 @@ protected:
 private:
   RemoveGoods();
 
-  good::Type _type;
+  good::Product _type;
   int _qty;
 };
 

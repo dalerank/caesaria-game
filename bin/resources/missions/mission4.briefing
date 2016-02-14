@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe01_00002"
+  title : "270 BC - Fourth assignment"
+	
+  items : {
+    tarraco : {
+      title : "##tarraco_title##"
+      location : [ 120, 210 ]
+      mission : ":/missions/tarraco.mission"
+    }
+
+    syracusae : {
+      title : "##syracusae_title##"
+      mission : ":/missions/syracusae.mission"
+      location : [ 330, 280 ]
+    }
+  }
+}

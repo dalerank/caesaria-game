@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -21,10 +21,7 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 
-namespace gfx
-{
-  class Picture;
-}
+namespace gfx { class Picture; }
 
 namespace gui
 {
@@ -32,14 +29,18 @@ namespace gui
 class MenuRigthPanel : public Widget
 {
 public:
-  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, gfx::Picture& tilePic );
+  typedef enum { leftSide, rightSide } Side;
+  MenuRigthPanel( Widget* parent );
+
+  static MenuRigthPanel* create(Widget* parent, const gfx::Picture &tilePic, int top);
         
   virtual void draw( gfx::Engine& engine );
+  void setSide( Side side );
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  MenuRigthPanel( Widget* parent );
+  void _initBackground( const gfx::Picture &tilePic );
 };
 
 }//end namespace gui

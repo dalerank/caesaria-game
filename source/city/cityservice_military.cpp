@@ -24,34 +24,31 @@
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
 #include "objects/fort.hpp"
+#include "core/variant_map.hpp"
 #include "core/flagholder.hpp"
-
-using namespace constants;
+#include "statistic.hpp"
+#include "cityservice_factory.hpp"
 
 namespace city
 {
 
+static const int notificationHistoryMonths = 3 * DateTime::monthsInYear;
+static const int enemySoldiertThreat = 10;
+REGISTER_SERVICE_IN_FACTORY(Military,military)
+
 class Military::Impl
 {
 public:
-  Military::NotificationArray notifications;
+  Notifications notifications;
   DateTime lastEnemyAttack;
   float threatValue;
-  bool updateMilitaryThreat;
+  bool needUpdateMilitaryThreat;
 };
 
-city::SrvcPtr Military::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Military( city ) );
-  ret->drop();
-
-  return SrvcPtr( ret );
-}
-
 Military::Military( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->updateMilitaryThreat = true;
+  _d->needUpdateMilitaryThreat = true;
   _d->threatValue = 0;
 }
 
@@ -61,85 +58,60 @@ void Military::timeStep(const unsigned int time )
   {
     DateTime curDate = game::Date::current();
     //clear old notificationse
-    for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
-    {
-      if( (*it).date.monthsTo( curDate ) > 3 * DateTime::monthsInYear )
-      {
-        it = _d->notifications.erase( it );
-      }
-      else { ++it; }
-    }
+    _d->notifications.eraseOld( curDate, notificationHistoryMonths );
   }
 
   if( game::Date::isWeekChanged() )
   {
     world::EmpirePtr empire = _city()->empire();
 
-    for( NotificationArray::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
+    for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
-      world::ObjectPtr object = empire->findObject( it->objectName );
+      world::ObjectPtr object = empire->findObject( it->desc.objectName );
 
-      if( object.isValid() )
-      {
-
-        ++it;
-      }
-      else
-      {
-        it = _d->notifications.erase( it );
-      }
+      if( object.isValid() ) { ++it; }
+      else { it = _d->notifications.erase( it ); }
     }
   }
 
-  if( _d->updateMilitaryThreat || game::Date::isMonthChanged() )
+  if( _d->needUpdateMilitaryThreat || game::Date::isMonthChanged() )
   {
-    _d->updateMilitaryThreat = false;
+    _d->needUpdateMilitaryThreat = false;
 
-    EnemySoldierList enSoldiers;
-    enSoldiers << _city()->walkers();
+    int enemiesInCity_n = _city()->walkers().count<EnemySoldier>();
 
-    _d->threatValue = enSoldiers.size() * 10;
+    _d->threatValue = enemiesInCity_n * enemySoldiertThreat;
   }  
 }
 
-void Military::addNotification(const std::string& text, const std::string& name, Notification::Type type)
+void Military::addNotification(const notification::Describe& describe )
 {
   Notification n;
   n.date = game::Date::current();
-  n.message = text;
-  n.objectName = name;
-  n.type = type;
+  n.desc = describe;
 
   _d->notifications.push_back( n );
 }
 
-Military::Notification Military::priorityNotification() const
+Notification Military::priorityNotification() const
 {
   return Notification();
 }
 
-const Military::NotificationArray& Military::notifications() const
+const Notifications& Military::notifications() const
 {
   return _d->notifications;
 }
 
-bool Military::haveNotification(Military::Notification::Type type) const
+bool Military::haveNotification( notification::Type type) const
 {
-  foreach( it, _d->notifications )
-  {
-    if( it->type == type )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return _d->notifications.contain( type );
 }
 
 bool Military::isUnderAttack() const
 {
-  return haveNotification( Notification::barbarian )
-      || haveNotification( Notification::chastener );
+  return haveNotification( notification::barbarian )
+      || haveNotification( notification::chastener );
 }
 
 VariantMap Military::save() const
@@ -148,9 +120,9 @@ VariantMap Military::save() const
 
   VariantMap notifications;
   int index = 0;
-  foreach( it, _d->notifications )
+  for( auto& notification : _d->notifications )
   {
-    notifications[ utils::format( 0xff, "note_%03d", index ) ] = (*it).save();
+    notifications[ utils::format( 0xff, "note_%03d", index ) ] = notification.save();
   }
 
   VARIANT_SAVE_ANY( ret, notifications );
@@ -165,20 +137,15 @@ void Military::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
   VARIANT_LOAD_VMAP( notifications, stream );
 
-  foreach( it, notifications )
-  {    
-    Notification n;
-    n.load( it->second.toList() );
-
-    _d->notifications.push_back( n );
-  }
+  for( auto& notification : notifications )
+    _d->notifications.push_back( notification::create( notification.second.toList()) );
 }
 
 const DateTime& Military::lastAttack() const { return _d->lastEnemyAttack; }
 
 void Military::updateThreat(int value)
 {
-  _d->updateMilitaryThreat = true;
+  _d->needUpdateMilitaryThreat = true;
 
   if( value > 0 )
     _d->lastEnemyAttack = game::Date::current();
@@ -188,13 +155,12 @@ int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( 
 
 world::PlayerArmyList Military::expeditions() const
 {
-  FortList forts;
-  forts << _city()->overlays();
+  FortList forts = _city()->statistic().objects.find<Fort>( object::group::military );
 
   world::PlayerArmyList ret;
-  foreach( it, forts )
+  for( auto fort : forts )
   {
-    world::PlayerArmyPtr army = (*it)->expedition();
+    world::PlayerArmyPtr army = fort->expedition();
     if( army.isValid() )
     {
       ret.push_back( army );
@@ -211,24 +177,7 @@ world::ObjectList Military::enemies() const
   return ret;
 }
 
-unsigned int Military::threatValue() const{ return _d->threatValue; }
-std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
-
-VariantList Military::Notification::save() const
-{
-  VariantList ret;
-  ret << type << date << Variant( objectName ) << Variant( message ) << location;
-
-  return ret;
-}
-
-void Military::Notification::load(const VariantList& stream)
-{
-  type = (Type)stream.get( 0 ).toInt();
-  date = stream.get( 1 ).toDateTime();
-  objectName = stream.get( 2 ).toString();
-  message = stream.get( 3 ).toString();
-  location = stream.get( 4 ).toPoint();
-}
+int Military::value() const{ return _d->threatValue; }
+std::string Military::defaultName(){  return TEXT(Military); }
 
 }//end namespace city

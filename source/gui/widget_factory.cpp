@@ -17,31 +17,12 @@
 
 #include "widget_factory.hpp"
 #include "core/utils.hpp"
-#include "label.hpp"
-#include "editbox.hpp"
-#include "pushbutton.hpp"
 #include "core/requirements.hpp"
-#include "texturedbutton.hpp"
-#include "listbox.hpp"
-#include "image.hpp"
-#include "smkviewer.hpp"
 #include "core/logger.hpp"
-#include "groupbox.hpp"
-#include "filelistbox.hpp"
-#include "dictionary_text.hpp"
 #include <map>
 
 namespace gui
 {
-
-template< class T > class BaseWidgetCreator : public WidgetCreator
-{
-public:
-  Widget* create( Widget* parent )
-  {
-    return new T( parent );
-  }
-};
 
 class WidgetFactory::Impl
 {
@@ -59,22 +40,12 @@ Widget* WidgetFactory::create(const std::string& type, Widget* parent ) const
     return findConstructor->second->create( parent );
   }
 
+  Logger::warning( "WARNING !!! {} have not constructor in widget factory", type );
   return 0;
 }
 
 WidgetFactory::WidgetFactory() : _d( new Impl )
 {
-  // entertainment
-  addCreator( CAESARIA_STR_EXT(Label),          new BaseWidgetCreator<Label>() );
-  addCreator( CAESARIA_STR_EXT(EditBox),        new BaseWidgetCreator<EditBox>() );
-  addCreator( CAESARIA_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
-  addCreator( CAESARIA_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
-  addCreator( CAESARIA_STR_EXT(GroupBox),       new BaseWidgetCreator<GroupBox>() );
-  addCreator( CAESARIA_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
-  addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
-  addCreator( CAESARIA_STR_EXT(SmkViewer),      new BaseWidgetCreator<SmkViewer>() );
-  addCreator( CAESARIA_STR_EXT(FileListBox),    new BaseWidgetCreator<FileListBox>() );
-  addCreator( CAESARIA_STR_EXT(DictionaryText), new BaseWidgetCreator<DictionaryText>() );
 }
 
 WidgetFactory::~WidgetFactory() {}
@@ -89,7 +60,7 @@ void WidgetFactory::addCreator( const std::string& typeName, WidgetCreator* ctor
   }
   else
   {
-    Logger::warning( "already have constructor for this widget type" );
+    Logger::warning( "WARNING !!! Already have constructor for this widget type[{}] ", typeName );
   }
 }
 

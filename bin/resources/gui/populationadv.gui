@@ -1,0 +1,87 @@
+{
+  size : [ 640, 432 ]
+  static : true
+  
+  lbBackground#Label :
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbIcon#Label : {
+      geometry : [ 10, 10, 50, 50 ]
+      image : "paneling_00260"
+    }
+
+    lbBlackframe#Label : {
+      geometry : [ 46, 335, "pw-50", "ph-15" ]
+      bgtype : "blackFrame"
+
+      lbMigrationValue#Label : {
+        geometry : [ 10, 2, "pw-10", 20 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+
+      lbFoodValue#Label : {
+        geometry : [ 10, 20, "pw-10", 38 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+
+      lbYearMigrationValue#Label : {
+        geometry : [ 10, 38, "pw-10", 56 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+
+      lbAdvice#Label : {
+        geometry : [ 10, 56, "pw-10", 74 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_1"
+      }
+    }
+
+    lbChart#Label : {
+      geometry : [ 55, 60, 612, 271 ]
+      image : "panelwindows_00015"
+
+      lbNextChartArea#Label : {
+        geometry : [448, 3, 548, 53]
+      }
+
+      lbNextChart#Label : {
+        geometry : [ 445, 0, 550, 80 ]
+        text : "next"
+        textAlign : [ "center", "lowerRight" ]
+      }
+
+      lbPrevChartArea#Label : {
+        geometry : [448, 103, 548, 153]
+      }
+
+      lbPrevChart#Label : {
+        geometry : [ 445, 100, 550, 180 ]
+        text : "prev"
+        textAlign : [ "center", "lowerRight" ]
+      }
+    }
+
+    lbTitle#Label : {
+      geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
+      minimumSize : [ 0, 30 ]
+      maximumSize : [ 0, 60 ]
+      font : "FONT_5"
+      text : "##advpopulation_title_census##"
+      textAlign : [ "center", "center" ]
+    }  
+  }  
+}
+

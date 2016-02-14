@@ -18,14 +18,19 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "warningmessage.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "core/variant_map.hpp"
 #include "objects/senate.hpp"
 #include "core/logger.hpp"
+#include "gui/widget_helper.hpp"
+#include "factory.hpp"
 
-using namespace constants;
+using namespace gui::advisorwnd;
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ShowAdvisorWindow, "advisor_window")
 
 GameEventPtr ShowAdvisorWindow::create()
 {
@@ -50,16 +55,15 @@ void ShowAdvisorWindow::load(const VariantMap &stream)
 
   _show = stream.get( "show" );
   Variant adv = stream.get( "advisor" );
-  if( adv.type() == Variant::String ) { _advisor = advisor::findType( adv.toString() ); }
+  if( adv.type() == Variant::String ) { _advisor = advisor::fromString( adv.toString() ); }
   else { _advisor = (advisor::Type)adv.toInt(); }
 }
 
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::count )
+ShowAdvisorWindow::ShowAdvisorWindow()
+  : _show( false ), _advisor( advisor::unknown )
 {
-  _show = false;
-  _advisor = advisor::count;
 }
 
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
@@ -67,39 +71,37 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   bool advEnabled = game.city()->getOption( PlayerCity::adviserEnabled ) > 0;
   if( !advEnabled )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##not_available##" );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##not_available##", 1 );
     return;
   }
 
-  city::Helper helper( game.city() );
-  SenateList senates = helper.find<Senate>( objects::senate );
-  if( senates.empty() )
+  bool haveSenate = game.city()->statistic().objects.count( object::senate ) > 0;
+  if( !haveSenate )
   {
-    events::GameEventPtr e = events::WarningMessage::create( "##build_senate_for_advisors##" );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##build_senate_for_advisors##", 1 );
     return;
   }
 
-  List<gui::advisorwnd::AWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::advisorwnd::AWindow*>();
+  Parlor* parlor = gui::findChildA<Parlor*>( true, game.gui()->rootWidget() );
 
   if( _show )
   {
-    if( !wndList.empty() )
+    if( parlor )
     {
-      wndList.front()->bringToFront();
-      wndList.front()->showAdvisor( _advisor );
+      parlor->bringToFront();
+      parlor->showAdvisor( _advisor );
     }
     else
     {
-      gui::advisorwnd::AWindow::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
+      auto model = new ParlorModel( game.city() );
+      Parlor::create( game.gui()->rootWidget(), -1, _advisor, model );
     }
   }
   else
   {
-    if( !wndList.empty() )
+    if( parlor )
     {
-      wndList.front()->deleteLater();
+      parlor->deleteLater();
     }
   }
 }

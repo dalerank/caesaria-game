@@ -31,9 +31,14 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_small, SmallStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_middle, MediumStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_big, BigStatue)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::triumphal_arch, TriumphalArch)
 
 // govt     1  - small statue        1 x 1
 // govt     2  - medium statue       2 x 2
@@ -45,42 +50,42 @@ using namespace gfx;
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-SmallStatue::SmallStatue() : Building( objects::smallStatue, Size(1) )
+SmallStatue::SmallStatue() : Building( object::statue_small, Size::square(1) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 1 );
+  _picture().load( ResourceGroup::govt, 1 );
 }
 
-bool SmallStatue::isNeedRoadAccess() const {  return false; }
+bool SmallStatue::isNeedRoad() const {  return false; }
 
-MediumStatue::MediumStatue() : Building( objects::middleStatue, Size(2) )
+MediumStatue::MediumStatue() : Building( object::statue_middle, Size::square(2) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 2);
+  _picture().load( ResourceGroup::govt, 2);
 }
 
-bool MediumStatue::isNeedRoadAccess() const {  return false; }
+bool MediumStatue::isNeedRoad() const {  return false; }
 
-BigStatue::BigStatue() : Building( objects::bigStatue, Size(3))
+BigStatue::BigStatue() : Building( object::statue_big, Size::square(3))
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 3 );
+  _picture().load( ResourceGroup::govt, 3 );
 }
 
-bool BigStatue::isNeedRoadAccess() const {  return false;}
+bool BigStatue::isNeedRoad() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
-TriumphalArch::TriumphalArch() : Building( objects::triumphalArch, Size(3) )
+TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size::square(3) )
 {
-  setPicture( ResourceGroup::land3a, 43 );
-  _animationRef().load("land3a", 44, 1);
-  _animationRef().setOffset( Point( 63, 97 ) );
-  _fgPicturesRef().resize(1);
-  _fgPicturesRef()[0] = _animationRef().currentFrame();
+  _picture().load( config::rc.land3a, 43 );
+  _animation().load("land3a", 44, 1);
+  _animation().setOffset( Point( 63, 97 ) );
+  _fgPictures().resize(1);
+  _fgPicture(0) = _animation().currentFrame();
 }

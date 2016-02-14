@@ -12,13 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
 #define __CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
 
 #include "pushbutton.hpp"
-#include "gfx/picture.hpp"
-#include "game/resourcegroup.hpp"
 
 namespace gui
 {
@@ -26,29 +26,54 @@ namespace gui
 class TexturedButton : public PushButton
 {
 public:
-  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id, 
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 ) 
-    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
+  static const int defaultSize = 24;
+  struct States
   {
-    setPicture( ResourceGroup::panelBackground, normalTxIndex, stNormal );
-    setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex , stHovered );
-    setPicture( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex , stPressed );
-    setPicture( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex , stDisabled );
-  }
+    int normal;
+    int hover;
+    int pressed;
+    int disabled;
+    States( int n, int h=-1, int p=-1, int d=-1 )
+     : normal( n ), hover( h ), pressed( p ), disabled( d )
+    {}
+  };
+
+  TexturedButton( Widget* parent, const Point& pos, const States& states );
 
   TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
-                  const char* resourceGroup,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 )
-    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
-  {
-    setPicture( resourceGroup, normalTxIndex , stNormal );
-    setPicture( resourceGroup, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex, stHovered );
-    setPicture( resourceGroup, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex, stPressed );
-    setPicture( resourceGroup, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex, stDisabled );
-  }
+                  const States& states );
 
-  TexturedButton( Widget* parent ) : PushButton( parent )
-  {}
+  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
+                  const std::string& resourceGroup,
+                  const States& states );
+
+  TexturedButton( Widget* parent );
+
+  void changeImageSet(const std::string& rc, int normal, int hover, int pressed, int disabled );
+  void changeImageSet(const States& states, const std::string& rc="");
+};
+
+class HelpButton : public TexturedButton
+{
+public:
+  HelpButton(Widget* parent);
+  HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId );
+
+  virtual void setupUI( const VariantMap& ui );
+
+protected:
+  virtual void _btnClicked();
+  std::string _helpid;
+};
+
+class ExitButton : public TexturedButton
+{
+public:
+  ExitButton(Widget* parent);
+  ExitButton(Widget* parent, const Point& pos, int id=Widget::noId);
+
+protected:
+  virtual void _btnClicked();
 };
 
 }//end namespace gui

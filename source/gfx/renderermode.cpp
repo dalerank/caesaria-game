@@ -12,22 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "renderermode.hpp"
 #include "objects/objects_factory.hpp"
 #include "objects/building.hpp"
 #include "objects/constants.hpp"
-#include "layerconstants.hpp"
-
-using namespace constants;
+#include "layers/constants.hpp"
 
 namespace gfx
 {
+
+typedef std::set<LayerMode::Flag> Flags;
 
 class LayerMode::Impl
 {
 public:
   int type;
+  Flags flags;
 };
 
 Renderer::ModePtr LayerMode::create( const int type )
@@ -44,25 +47,24 @@ LayerMode::LayerMode(int type) : _d( new Impl )
   //_d->type = citylayer::simple;
 }
 
-int LayerMode::getType() const {  return _d->type;}
+int LayerMode::type() const {  return _d->type;}
+
+bool LayerMode::flag(LayerMode::Flag name) { return _d->flags.count( name ) > 0; }
 void LayerMode::_setType(int type){  _d->type = type;}
+void LayerMode::_setFlag(LayerMode::Flag name, bool value)
+{
+  if( value ) _d->flags.insert( name );
+  else _d->flags.erase( name );
+}
 
 class BuildMode::Impl
 {
 public:
-  bool isBorderBuilding;
-  bool isMultiBuilding;
-  bool isCheckWalkers;
-  bool isRoadAssignment;
-  ConstructionPtr construction;
+  OverlayPtr overlay;
 };
 
-bool BuildMode::isBorderBuilding() const {    return _d->isBorderBuilding;}
-bool BuildMode::isMultiBuilding() const{  return _d->isMultiBuilding;}
-bool BuildMode::isRoadAssignment() const{  return _d->isRoadAssignment;}
-bool BuildMode::isCheckWalkers() const { return _d->isCheckWalkers; }
-
-ConstructionPtr BuildMode::getContruction() const{    return _d->construction;}
+ConstructionPtr BuildMode::contruction() const { return _d->overlay.as<Construction>(); }
+OverlayPtr BuildMode::overlay()          const { return _d->overlay; }
 
 DestroyMode::DestroyMode() : LayerMode( citylayer::destroyd )
 {
@@ -76,41 +78,39 @@ Renderer::ModePtr DestroyMode::create()
   return ret;
 }
 
-Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
+Renderer::ModePtr BuildMode::create(object::Type type)
 {
-  BuildMode* newCommand = new BuildMode();
-  TileOverlayPtr overlay = TileOverlayFactory::instance().create( type );
-  newCommand->_d->construction = ptr_cast<Construction>( overlay );
-  newCommand->_d->isMultiBuilding = false;
-  newCommand->_d->isBorderBuilding = false;
-  newCommand->_d->isRoadAssignment = false;
-  newCommand->_d->isCheckWalkers = true;
+  BuildMode* newCommand = new BuildMode( citylayer::build );
 
-  switch( type )
+  auto md = object::Info::find( type );
+
+  newCommand->_d->overlay = Overlay::create( type );
+  newCommand->_setFlag( multibuild, false );
+  newCommand->_setFlag( border, false );
+  newCommand->_setFlag( assign2road, false );
+  newCommand->_setFlag( checkWalkers, md.checkWalkersOnBuild() );
+
+  if( type == object::road )
   {
-  case objects::road:
-    newCommand->_d->isBorderBuilding = true;
-    newCommand->_d->isMultiBuilding = true;
-    newCommand->_d->isRoadAssignment = false;
-  break;
-
-  case objects::aqueduct:
-  case objects::wall:
-  case objects::fortification:
-    newCommand->_d->isBorderBuilding = true;
-    newCommand->_d->isMultiBuilding = true;
-  break;
-
-  case objects::house:
-  case objects::garden:
-  case objects::plaza:
-    newCommand->_d->isMultiBuilding = true;
-    newCommand->_d->isCheckWalkers = (type == objects::house);
-  break;
-
-  default:
-  break;
-  }   
+    newCommand->_setFlag( border, true );
+    newCommand->_setFlag( multibuild, true );
+    newCommand->_setFlag( assign2road, false );
+  }
+  else if( type == object::aqueduct ||
+           type == object::wall ||
+           type == object::fortification )
+  {
+    newCommand->_setFlag( border, true );
+    newCommand->_setFlag( multibuild, true );
+  }
+  else if( type == object::garden )
+  {
+    newCommand->_setFlag( multibuild, true );
+  }
+  else if( type == object::house || type == object::plaza )
+  {
+    newCommand->_setFlag( multibuild, true );
+  }
 
   Renderer::ModePtr ret( newCommand );
   ret->drop();
@@ -118,9 +118,50 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
   return ret;
 }
 
-BuildMode::BuildMode()
-  : LayerMode( citylayer::build ), _d( new Impl )
+BuildMode::BuildMode(int layer)
+  : LayerMode( layer ), _d( new Impl )
 {
+}
+
+Renderer::ModePtr EditorMode::create(object::Type type)
+{
+  EditorMode* newCommand = new EditorMode();
+
+  newCommand->_d->overlay = Overlay::create( type );
+  newCommand->_setFlag( multibuild, false );
+  newCommand->_setFlag( border, false );
+  newCommand->_setFlag( assign2road, false );
+  newCommand->_setFlag( checkWalkers, false );
+
+  switch( type )
+  {
+  case object::terrain:
+  case object::tree:
+  case object::water:
+  case object::rock:
+  case object::meadow:
+  case object::plateau:
+    newCommand->_setFlag( multibuild, true );
+  break;
+
+  case object::river:
+    newCommand->_setFlag( multibuild, true );
+    newCommand->_setFlag( border, true );
+  break;
+
+  default: break;
+  }
+
+  Renderer::ModePtr ret( newCommand );
+  ret->drop();
+
+  return ret;
+}
+
+EditorMode::EditorMode()
+  : BuildMode( citylayer::constructor )
+{
+
 }
 
 }//end namespace gfx

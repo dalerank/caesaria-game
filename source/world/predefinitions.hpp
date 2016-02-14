@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
 
-#include "core/smartptr.hpp"
+#include "core/smartlist.hpp"
 #include "core/predefinitions.hpp"
 
 namespace world
@@ -26,6 +26,7 @@ namespace world
 
 PREDEFINE_CLASS_SMARTPOINTER(Empire)
 PREDEFINE_CLASS_SMARTPOINTER(Emperor)
+PREDEFINE_CLASS_SMARTPOINTER(Messenger)
 PREDEFINE_CLASS_SMARTPOINTER(EmpireMap)
 PREDEFINE_CLASS_SMARTPOINTER(ComputerCity)
 

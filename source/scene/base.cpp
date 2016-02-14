@@ -23,6 +23,7 @@
 #include "core/event.hpp"
 #include "core/eventconverter.hpp"
 #include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 
 namespace scene
 {
@@ -38,17 +39,18 @@ Base::Base()
 
 Base::~Base() {}
 
-void Base::drawFrame(gfx::Engine& engine )
+void Base::drawFrame(gfx::Engine& engine)
 {
-   engine.startRenderFrame();
+   engine.frame().start();
    
    draw();
+   if( engine.getFlag( gfx::Engine::showMetrics ) )
+     engine.frame().drawMetrics();
    
-   engine.endRenderFrame();
+   engine.frame().finish();;
 }
 
-void Base::handleEvent( NEvent& event ) {}
-void Base::afterFrame() {}
+gfx::Camera* Base::camera() const { return 0; }
 void Base::stop(){ _isStopped = true;}
 
 void Base::update(gfx::Engine& engine )

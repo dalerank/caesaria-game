@@ -17,7 +17,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "saver.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
 #include "world/empire.hpp"
@@ -26,7 +26,10 @@
 #include "game.hpp"
 #include "religion/pantheon.hpp"
 #include "settings.hpp"
+#include "gui/environment.hpp"
 #include "events/dispatcher.hpp"
+#include "gui/minimap_window.hpp"
+#include "gui/widget_helper.hpp"
 
 namespace game
 {
@@ -45,6 +48,7 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm_scenario[ "translation" ] = SETTINGS_VALUE( lastTranslation );
   vm_scenario[ "climate" ] = (int)game.city()->climate();
+
   vm[ "scenario" ] = vm_scenario;
   vm[ SaverOptions::restartFile ] = Variant( _restartFile );
 
@@ -64,7 +68,14 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   religion::rome::Pantheon::instance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
 
-  SaveAdapter::save( vm, filename );
+  gui::Minimap* minimap = gui::findChildA<gui::Minimap*>( true, game.gui()->rootWidget() );
+  if( minimap )
+  {
+    vfs::Path imgPath = filename.changeExtension( "png" );
+    minimap->saveImage( imgPath.toString() );
+  }
+
+  config::save( vm, filename );
 }
 
 void Saver::setRestartFile(const std::string& filename) { _restartFile = filename; }

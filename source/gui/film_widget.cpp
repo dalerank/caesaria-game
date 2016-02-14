@@ -24,8 +24,10 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "game/video_config.hpp"
 #include "smkviewer.hpp"
 #include "widget_helper.hpp"
+#include "image.hpp"
 
 namespace gui
 {
@@ -33,9 +35,7 @@ namespace gui
 class FilmWidget::Impl
 {
 public:
-  GameAutoPause locker;
   Label* lbTitle;
-  TexturedButton* btnExit;
   Label* lbTime;
   Label* lbReceiver;
   Label* lbMessage;
@@ -46,29 +46,39 @@ public signals:
   Signal0<> onCloseSignal;
 };
 
-FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
+FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPauseWidget::insertTo( this );
   _d->lbMessage = 0;
 
   setupUI( ":/gui/filmwidget.gui" );
   setCenter( parent->center() );
 
-  _d->smkViewer = new SmkViewer( this, Rect( 10, 10, width() - 10, 10 + 292 ) );
-
   GET_DWIDGET_FROM_UI( _d, lbTitle )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbTime )
   GET_DWIDGET_FROM_UI( _d, lbReceiver )
   GET_DWIDGET_FROM_UI( _d, lbMessage )
 
-  _d->videoFile = film; //"/smk/Emmigrate.smk"
+  _d->videoFile = movie::Config::instance().realPath( movieName ); //"/smk/Emmigrate.smk"
+  if( _d->videoFile.exist() )
+  {
+    _d->smkViewer = &add<SmkViewer>( Rect( 12, 12, width() - 12, 12 + 292 ) );
+    _d->smkViewer->setFilename( _d->videoFile );
+  }
+  else
+  {
+    gfx::Picture pic;
+    pic.load( movieName, 1 )
+       .withFallback( "freska", 1 );
 
-  _d->smkViewer->setFilename( _d->videoFile );
+    add<Image>( Rect( 12, 12, width() - 12, 12 + 292 ), pic, Image::fit );
+  }
 
-  CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
-  CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );
+  LINK_WIDGET_ACTION( TexturedButton*, btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), FilmWidget::deleteLater );
+
+  setModal();
 }
 
 FilmWidget::~FilmWidget( void ) {}
@@ -91,9 +101,9 @@ void FilmWidget::setTitle(std::string text)
 void FilmWidget::setTime(DateTime time)
 {
   if( _d->lbTime ) _d->lbTime->setText( utils::format( 0xff, "%s %d %s",
-                                                              DateTime::getMonthName( time.month() ),
-                                                              time.year(),
-                                                              time.year() < 0 ? "BC" : "AD" ) );
+                                                       DateTime::monthName( time.month() ),
+                                                       time.year(),
+                                                       time.year() < 0 ? "BC" : "AD" ) );
 }
 
 Signal0<>& FilmWidget::onClose() {  return _d->onCloseSignal; }

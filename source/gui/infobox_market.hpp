@@ -28,13 +28,13 @@ namespace infobox
 class AboutMarket : public AboutConstruction
 {
 public:
-   AboutMarket( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-   virtual ~AboutMarket();
+  AboutMarket( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  virtual ~AboutMarket();
    
-   void drawGood( MarketPtr market, const good::Type& goodType, int, int );
+  void drawGood( MarketPtr market, const good::Product& goodType, int, int );
 };
 
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //__CAESARIA_INFOBOX_MARKET_H_INCLUDE_

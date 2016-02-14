@@ -20,6 +20,7 @@
 #include "core/utils.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
+#include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "dictionary_text.hpp"
 #include "core/logger.hpp"
@@ -27,6 +28,7 @@
 #include "core/event.hpp"
 #include "widget_helper.hpp"
 #include "core/gettext.hpp"
+#include "widgetescapecloser.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
@@ -34,31 +36,41 @@ using namespace gfx;
 namespace gui
 {
 
+static const char* defaultExt = "en";
+
 class DictionaryWindow::Impl
 {
 public:
   Label* lbTitle;
   DictionaryText* lbText;
-  TexturedButton* btnExit;
 
   typedef std::map<std::string,std::string> Aliases;
   Aliases aliases;
 };
 
-DictionaryWindow::DictionaryWindow( Widget* p )
+DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   : Window( p->ui()->rootWidget(), Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
 
-  setPosition( Point( parent()->width() - width(), parent()->height() - height() ) / 2 );
-
   GET_DWIDGET_FROM_UI( _d, lbTitle )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
-  _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
-  _d->lbText->setFont( Font::create( FONT_1 ) );
+  _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
+  _d->lbText->setFont( FONT_1 );
 
-  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
+
+  if( !helpId.empty() )
+    load( helpId );
+
+  moveToCenter();
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
+  setModal();
+}
+
+DictionaryWindow::DictionaryWindow(Widget* parent, object::Type type)
+  : DictionaryWindow( parent, "" )
+{
+   load( object::toString( type ) );
 }
 
 void DictionaryWindow::_handleUriChange(std::string value)
@@ -74,30 +86,12 @@ void DictionaryWindow::_handleUriChange(std::string value)
 
 vfs::Path DictionaryWindow::_convUri2path(std::string uri)
 {
-  vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
+  vfs::Path fpath = fmt::format( ":/help/{}.{}", uri, Locale::current() );
 
   if( !fpath.exist() )
-    fpath = fpath.changeExtension( ".en" );
+    fpath = fpath.changeExtension( defaultExt );
 
   return fpath;
-}
-
-void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
-{
-  DictionaryWindow* wnd = new DictionaryWindow( parent );
-  if( wnd->_d->lbText )
-  {
-    wnd->load( MetaDataHolder::findTypename( type ) );
-  }
-}
-
-void DictionaryWindow::show(Widget* parent, const std::string& uri)
-{
-  DictionaryWindow* wnd = new DictionaryWindow( parent );
-  if( wnd->_d->lbText )
-  {
-    wnd->load( uri );
-  }
 }
 
 DictionaryWindow::~DictionaryWindow( void ) {}
@@ -107,12 +101,7 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }
@@ -129,17 +118,15 @@ void DictionaryWindow::load(const std::string& uri)
 {
   vfs::Path filePath = _convUri2path( uri );
 
-  VariantMap vm = SaveAdapter::load( filePath );
+  VariantMap vm = config::load( filePath );
 
   std::string text = vm.get( "text" ).toString();
   std::string title = vm.get( "title" ).toString();
 
   _d->aliases.clear();
   VariantMap uris = vm.get( "uri" ).toMap();
-  foreach( it, uris )
-  {
-    _d->aliases[ it->first ] = it->second.toString();
-  }
+  for( const auto& it : uris )
+    _d->aliases[ it.first ] = it.second.toString();
 
   _d->lbTitle->setText( _(title) );
   _d->lbText->setText( text );

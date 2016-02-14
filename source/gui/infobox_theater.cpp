@@ -21,9 +21,10 @@
 #include "objects/theater.hpp"
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_map.hpp"
+#include "game/infoboxmanager.hpp"
 #include "label.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -32,13 +33,24 @@ namespace gui
 namespace infobox
 {
 
-AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
-  : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
-{
-  TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
-  setTitle( _( theater->name() ) );
+REGISTER_OBJECT_BASEINFOBOX(theater,AboutTheater)
 
-  _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
+AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
+  : AboutWorkingBuilding( parent, tile.overlay<WorkingBuilding>() )
+{
+  setupUI( ":/gui/infoboxtheater.gui" );
+
+  auto theater = _getBuilding().as<Theater>();
+
+  if( theater.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
+  setTitle( _( theater->info().prettyName() ) );
+
+  _lbText()->setTextAlignment( align::upperLeft, align::center);
   _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );
   
   if( theater->showsCount() == 0 )
@@ -49,7 +61,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   {
     if( theater->isShow() )
     {
-      VariantMap shows = SaveAdapter::load( ":/theater_shows.model" );
+      VariantMap shows = config::load( ":/theater_shows.model" );
       VariantMap::iterator currentShowIt = shows.begin();
 
       std::advance( currentShowIt, theater->showsCount() % shows.size() );

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_COASTALBUILDING_INCLUDE_H_
 #define _CAESARIA_COASTALBUILDING_INCLUDE_H_
@@ -25,10 +25,10 @@
 class CoastalFactory : public Factory
 {
 public:
-  CoastalFactory( const good::Type consume, const good::Type produce,
-                  const TileOverlay::Type type, Size size );
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(const CityAreaInfo &info);
+  CoastalFactory( const good::Product consume, const good::Product produce,
+                  const object::Type type, Size size );
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
   virtual void destroy();
 
   virtual void save(VariantMap &stream) const;
@@ -40,8 +40,8 @@ public:
 
   virtual ~CoastalFactory();
 private:
-  void _setDirection( constants::Direction direction );
-  virtual void _updatePicture( constants::Direction direction ) = 0;
+  void _setDirection( Direction direction );
+  virtual void _updatePicture( Direction direction ) = 0;
 
 private:
   class Impl;

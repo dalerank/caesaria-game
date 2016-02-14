@@ -17,18 +17,19 @@
 
 #include "dispatcher.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "postpone.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "core/saveadapter.hpp"
 
 namespace events
 {
+typedef SmartList<GameEvent> Events;
 
 class Dispatcher::Impl
 {
 public:
-  typedef SmartList< GameEvent > Events;
 
   Events events;
   Events newEvents;
@@ -49,25 +50,31 @@ void Dispatcher::append(GameEventPtr event)
   else
   {
     Logger::warning( "EventsDispatcher: cant add event but is null" );
-    Stacktrace::print();
   }
 }
 
 void Dispatcher::update(Game& game, unsigned int time )
 {
-  for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
+  for( Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
 
-    e->tryExec( game, time );
+    try
+    {
+      e->tryExec( game, time );
 
-    if( e->isDeleted() ) { it = _d->events.erase( it ); }
-    else { ++it; }
+      if( e->isDeleted() ) { it = _d->events.erase( it ); }
+      else { ++it; }
+    }
+    catch(...)
+    {
+      _d->events.erase( it );
+    }
   }
 
   if( !_d->newEvents.empty() )
   {
-    _d->events << _d->newEvents;
+    _d->events.append( _d->newEvents );
     _d->newEvents.clear();
   }
 }
@@ -76,9 +83,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  foreach( event, _d->events )
+  for( auto& event : _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
+    ret[ fmt::format( "event_{0}", index++ ) ] = event->save();
   }
 
   return ret;
@@ -86,15 +93,23 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  foreach( it, stream )
+  for( auto& it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
+    auto event = PostponeEvent::create( it.first, it.second.toMap() );
 
-    if( e.isValid() )
-    {
-      append( e );
-    }
+    if( event.isValid() )
+      append( event );
   }
+}
+
+void Dispatcher::load( const vfs::Path& filename, const std::string& section)
+{
+  VariantMap vm = config::load( filename );
+
+  if( !section.empty() )
+    vm = vm.get( section ).toMap();
+
+  load( vm );
 }
 
 void Dispatcher::reset() { _d->events.clear(); }

@@ -1,0 +1,54 @@
+{  
+  buttons : "off"
+  static : true
+
+  lbTitle#Label : {
+    geometry : [ 40, 10, "pw-10", 35 ]
+    font : "FONT_5"
+    text.align : [ "center", "center" ]
+  }
+
+  lbIndustryInfo#Label : {
+    geometry : [ 40, 35, "pw-10", 70 ]
+    font : "FONT_1"
+    multiline : true
+  }
+
+  lbStackedQty#Label : {
+    geometry : [ 40, 70, "pw-10", 85 ]
+    font : "FONT_1"
+  }
+
+  btnIndustryState#PushButton : {
+    geometry : [ 50, 125, "pw-60", 155 ]
+    font : "FONT_2"
+    bgtype : "whiteBorderUp"
+    text : "##unknown_btn_state##"
+    tooltip : "##tradeadv_industrystate_tip##"
+  }
+
+  btnStackingState#MultilineButton : {
+    geometry : [ 50, 160, "pw-60", 210 ]
+    font : "FONT_2"
+    bgtype : "whiteBorderUp"
+    text : "##unknown_btn_state##"
+    tooltip : ""
+  }
+
+  btnExit#TexturedButton :
+  {
+    geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]
+    normal : [ "paneling", 532 ]
+    hovered : [ "paneling", 533 ]
+    pressed : [ "paneling", 534 ]
+    disabled : [ "paneling", 535 ]
+  }
+
+  btnHelp#TexturedButton : {
+    geometry : [ 11, "ph-34", 35, "ph-10" ]
+    normal : [ "paneling", 528 ]
+    hovered : [ "paneling", 529 ]
+    pressed : [ "paneling", 530 ]
+    disabled : [ "paneling", 531 ]
+  }
+}

@@ -20,14 +20,15 @@
 
 #include "core/position.hpp"
 #include "core/scopedptr.hpp"
+#include "core/singleton.hpp"
 #include "vfs/path.hpp"
 
 // contains data needed for loading pictures
-class PictureInfoBank
+class PictureInfoBank : public StaticSingleton<PictureInfoBank>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(PictureInfoBank)
 public:
   typedef enum { walkerOffset=0, tileOffset } OffsetType;
-  static PictureInfoBank& instance();
   ~PictureInfoBank();
 
   void initialize( vfs::Path filename );

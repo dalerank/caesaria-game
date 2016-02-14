@@ -16,6 +16,7 @@
 #include "service.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "objects/constants.hpp"
 
 ServiceHelper& ServiceHelper::instance()
 {
@@ -25,7 +26,7 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
-#define __REG_SERVICE(a) append( Service::a, "srvc_"CAESARIA_STR_EXT(a) );
+#define __REG_SERVICE(a) append( Service::a, "srvc_" TEXT(a) );
   __REG_SERVICE( well )
   __REG_SERVICE( fountain )
   __REG_SERVICE( market )
@@ -54,6 +55,7 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
   __REG_SERVICE( crime )
   __REG_SERVICE( guard )
   __REG_SERVICE( missionary )
+  __REG_SERVICE( patrician )
 #undef __REG_SERVICE
   append( Service::srvCount, "srvc_none" );
 }
@@ -64,8 +66,8 @@ Service::Type ServiceHelper::getType( const std::string& name )
 
   if( type == instance().getInvalid() )
   {
-    Logger::warning( "Can't find Service::Type for serviceName %s", name.c_str() );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
+    Logger::warning( "WARNING !!! Can't find Service::Type for serviceName {0}", name );
+    //_GAME_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
   return type;
@@ -77,9 +79,22 @@ std::string ServiceHelper::getName( Service::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "Can't find service typeName for %d", type );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
+    Logger::warning( "WARNING !!! Can't find service typeName for {0}", type );
+    //_GAME_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 
   return name;
+}
+
+Service::Type ServiceHelper::fromObject(int objectType)
+{
+  switch( objectType )
+  {
+  case object::barber: return Service::barber;
+  case object::baths: return Service::baths;
+  case object::hospital: return Service::hospital;
+  case object::clinic: return Service::doctor;
+  }
+
+  return Service::srvCount;
 }

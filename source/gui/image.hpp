@@ -29,7 +29,7 @@ namespace gui
 class Image : public Widget
 {
 public:
-  typedef enum { native=0, fit, image, center } Mode;
+  typedef enum { native=0, fit, image, center, best } Mode;
   //! constructor
   Image(Widget* parent );
 
@@ -42,9 +42,12 @@ public:
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
 
-  virtual void setPicture( gfx::Picture picture );
+  virtual void setPicture(const gfx::Picture& picture );
+  virtual void setPicture(const std::string& rc, int id);
+  virtual void setPicture(const std::string& rc);
 
   virtual void setupUI( const VariantMap& ui );
+  void setMode(Mode mode);
     
   gfx::Picture picture() const;
 

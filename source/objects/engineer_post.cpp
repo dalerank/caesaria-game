@@ -13,24 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "engineer_post.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "constants.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::objects::engineerPost, Size(1) )
-{
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-  //setPicture( ResourceGroup::buildingEngineer, 56 );
+REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
 
-  _animationRef().load( ResourceGroup::buildingEngineer, 57, 10 );
-  _animationRef().setDelay( 4 );
-  _animationRef().setOffset( Point( 10, 42 ) );
-  _fgPicturesRef().resize(1);
+EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1,1) )
+{
+  setPicture(info().randomPicture(size()));
+  _fgPictures().resize(1);
 }
 
 void EngineerPost::timeStep(const unsigned long time)
@@ -40,7 +38,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( numberWorkers() > 0 && walkers().size() == 0 )
+  if (numberWorkers() > 0 && walkers().size() == 0)
   {
     ServiceBuilding::deliverService();
   }

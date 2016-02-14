@@ -22,8 +22,9 @@
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/font.hpp"
+#include "core/osystem.hpp"
 #include "core/gettext.hpp"
 
 using namespace gfx;
@@ -35,10 +36,10 @@ class SplashScreen::Impl
 {
 public:
   Picture background;
-  PictureRef textPic;
+  Picture textPic;
+  Picture fadetx;
   std::string lastText;
   std::string text, prefix;
-  PictureRef fadetx;
 
 public:
   void fade(Engine &engine, Picture &pic, bool out, int offset);
@@ -46,24 +47,20 @@ public:
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
 
-SplashScreen::~SplashScreen() {}
+SplashScreen::~SplashScreen()
+{
+
+}
 
 void SplashScreen::initialize()
 {
   Engine& engine = Engine::instance();
 
-  _d->background = Picture::load( "logo", 1 );
+  _d->textPic = Picture( Size( 800, 30 ), 0, true );
+  _d->fadetx = Picture( engine.screenSize(), 0, true );
+  _d->fadetx.fill( NColor(0xff, 0, 0, 0), Rect() );
 
-  // center the background on the screen
-  Size s = (engine.screenSize() - _d->background.size()) / 2;
-  _d->background.setOffset( Point( s.width(), -s.height() ) );
-
-  _d->textPic.init( Size( _d->background.width(), 30 ) );
-  _d->textPic->setOffset( Point( (engine.screenSize().width() - _d->textPic->width()) / 2,
-                                  _d->background.offset().y() - _d->background.height() - 5 ) );
-
-  _d->fadetx.init( engine.screenSize() );
-  _d->fadetx->fill( NColor(0xff, 0, 0, 0), Rect() );
+  setImage( "logo", 1 );
 }
 
 void SplashScreen::draw()
@@ -74,17 +71,31 @@ void SplashScreen::draw()
   {
     Font textFont = Font::create( FONT_2_WHITE ) ;
 
-    Rect textRect = textFont.getTextRect( _d->text, Rect( Point(), _d->textPic->size() ), align::center, align::center );
+    Rect textRect = textFont.getTextRect( _d->text, Rect( Point(), _d->textPic.size() ), align::center, align::center );
 
-    _d->textPic->fill( 0xff000000 );
+    _d->textPic.fill( 0xff000000 );
 
-    textFont.draw( *_d->textPic, _d->text, textRect.left(), textRect.top(), false, true );
+    textFont.draw( _d->textPic, _d->text, textRect.left(), textRect.top(), false, true );
 
     _d->lastText = _d->text;
   }
 
   engine.draw( _d->background, 0, 0);
-  engine.draw( *_d->textPic, 0, 0 );
+  engine.draw( _d->textPic, 0, 0 );
+}
+
+void SplashScreen::setImage(const std::string &image, int index)
+{
+  Engine& engine = Engine::instance();
+  _d->background.load( image, index )
+                .withFallback( "logo", 1 );
+
+  // center the background on the screen
+  Size s = (engine.screenSize() - _d->background.size()) / 2;
+  _d->background.setOffset( Point( s.width(), -s.height() ) );
+
+  _d->textPic.setOffset( Point( (engine.screenSize().width() - _d->textPic.width()) / 2,
+                                  _d->background.offset().y() - _d->background.height() - 5 ) );
 }
 
 void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offset )
@@ -95,63 +106,67 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
 
   for( int k=start; out ? k < stop : k > stop ; k+=offset )
   {
-    engine.startRenderFrame();
-    fadetx->setAlpha( k );
-    fadetx->update();
+    engine.frame().start();
+    fadetx.setAlpha( k );
+    fadetx.update();
     engine.draw( pic, 0, 0);
-    engine.draw( *fadetx, 0, 0);
-    engine.endRenderFrame();
+    engine.draw( fadetx, 0, 0);
+    engine.frame().finish();
   }
 }
 
-void SplashScreen::exitScene()
+void SplashScreen::exitScene(bool showDevText)
 {
-#ifndef DEBUG
+#ifdef DEBUG
+  showDevText = false;
+#endif
+
   Engine& engine = Engine::instance();
 
   int offset = 3;
 
   Font textFont = Font::create( FONT_3 ) ;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  offset = 12;
-  textFont = Font::create( FONT_4 );
-#endif
-
-  _d->fade( engine, _d->background, true, offset );
-
-  _d->textPic.init( engine.screenSize() );
-  _d->textPic->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic->size() ) );
-
-  std::string text[7] = { 
-                          "This is an developer's version of CaesarIA!",
-                          "therefore this game still has bugs and some features  is not complete!",
-                          "It will be updated and fixed for a basis stage.",
-			  "Also, this game is not tested with every device, be aware of that if you choose this version for play",
-			  "You can support the development of this game at",
-                          "www.bitbucket.org/dalerank/caesaria",
-                          "If you encounter bugs or crashes please send us a description about"
-			};
-  for( int i=0; i<7; i++ )
+  if( OSystem::isAndroid() )
   {
-    Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
-    bool defaultColor = i == 5;  
-    textFont.setColor( defaultColor ? DefaultColors::indianRed : DefaultColors::dodgerBlue );
-    textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
+    offset = 12;
+    textFont = Font::create( FONT_4 );
   }
 
-  _d->fade( engine, *_d->textPic, false, offset );
-  engine.delay( 3000 );
-  _d->fade( engine, *_d->textPic, true, offset );
-#endif
+  _d->fade( engine, _d->background, true, offset );
+  _d->textPic = Picture( engine.screenSize(), 0, true );
+  _d->textPic.fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic.size() ) );
+
+  if( showDevText )
+  {
+    StringArray text;
+    text << "This is a development version of CaesarIA!"
+         << "therefore this game still has a lot of bugs and some features are not complete!"
+         << "This version is not tested, as well, be aware of that"
+         << "You can support the development of this game at"
+         << " www.caesaria.net"
+         << "If you encounter bugs or crashes please send us a report";
+
+    int offset = 0;
+    for( const auto& line : text )
+    {
+      Rect textRect = textFont.getTextRect( line, Rect( Point(), _d->textPic.size() ), align::center, align::center );
+      bool defaultColor = ( (line)[0] != ' ');
+      textFont.setColor( defaultColor ? ColorList::dodgerBlue : ColorList::indianRed );
+      textFont.draw( _d->textPic, line, textRect.left(), textRect.top() + offset, false, true );
+      offset += 20;
+    }
+
+    _d->fade( engine, _d->textPic, false, offset );
+    engine.delay( 3000 );
+  }
+  _d->fade( engine, _d->textPic, true, offset );
 }
 
 void SplashScreen::setText(std::string text)
 {
   _d->text = _d->prefix + " " + _( text );
-
-  Engine& engine = Engine::instance();
-  update( engine );
+  update( Engine::instance() );
 }
 
 void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }

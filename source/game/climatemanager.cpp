@@ -25,6 +25,9 @@
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "resourceloader.hpp"
+#include "vfs/directory.hpp"
+#include "core/variant_map.hpp"
+#include "settings.hpp"
 
 using namespace vfs;
 
@@ -36,31 +39,45 @@ namespace climate
 
 void initialize(ClimateType climate)
 {
-  VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
+  VariantMap climateArchives = config::load( SETTINGS_RC_PATH( climateModel ) );
 
-  std::string optName;
-  if( climate == game::climate::central ) { optName = "central"; }
-  else if( climate == game::climate::northen )  { optName = "north"; }
-  else if( climate == game::climate::desert ) { optName = "south"; }
+  std::map<ClimateType,std::string> regions = { {central, TEXT(central) },
+                                                {northen, TEXT(northen) },
+                                                {desert,  TEXT(desert)  } };
 
-  Path archivePath = climateArchives.get( optName ).toString();
-  ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
+  auto it = regions.find( climate );
+  std::string regionType = it != regions.end() ? it->second : TEXT(central);
 
-  if( archive.isNull() )
+  StringArray archives = climateArchives.get( regionType ).toStringArray();
+  vfs::Directory c3resourceDirectory( SETTINGS_STR( c3gfx ) );
+
+  for( const auto& str : archives )
   {
-    Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );
-    return;
-  }
+    Path archivePath = str;
 
-  ResourceLoader rc;
-  NFile atlasInfo = archive->createAndOpenFile( "info" );
-  if( atlasInfo.isOpen() )
-  {
-    rc.loadAtlases( atlasInfo, false );
-  }
-  else
-  {
-    rc.loadFiles( archive );
+    Directory dir = c3resourceDirectory.empty()
+                       ? archivePath.directory()
+                       : c3resourceDirectory;
+
+    Path arcPath = dir.find( archivePath.baseName(), Path::ignoreCase );
+
+    ArchivePtr archive = FileSystem::instance().mountArchive( arcPath );
+    if( archive.isNull() )
+    {
+      Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );
+      continue;
+    }
+
+    ResourceLoader rc;
+    NFile atlasInfo = archive->createAndOpenFile( "info" );
+    if( atlasInfo.isOpen() )
+    {
+      rc.loadAtlases( atlasInfo, false );
+    }
+    else
+    {
+      rc.loadFiles( archive );
+    }
   }
 }
 

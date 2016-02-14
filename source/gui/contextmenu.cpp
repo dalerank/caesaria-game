@@ -1,22 +1,25 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "contextmenu.hpp"
 #include "contextmenuprivate.hpp"
 #include "contextmenuitem.hpp"
 #include "core/event.hpp"
+#include "core/utils.hpp"
 #include "core/time.hpp"
 #include "core/position.hpp"
 #include "environment.hpp"
@@ -36,8 +39,8 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
 
   _d->eventParent = 0; 
   _d->closeHandling = cmRemove;
-  _d->pos = rectangle.UpperLeftCorner;
-  _d->needRecalculateItems = true;
+  _d->pos = rectangle.lefttop();
+  _d->flags.invalidate = true;
 
   if( getFocus )
     setFocus();
@@ -46,10 +49,9 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
 
   setTextAlignment( align::center, align::upperLeft );
 
-  _d->allowFocus = allowFocus;
+  _d->flags.allowFocus = allowFocus;
   _d->changeTime = 0;
-  _d->highlihted = -1;
-//  _d->animator->resetFlag( WidgetAnimator::isActive );
+  _d->highlihted.index = -1;
 }
 
 //! destructor
@@ -64,6 +66,46 @@ ContextMenu::CloseMode ContextMenu::getCloseHandling() const {  return _d->close
 //! Returns amount of menu items
 unsigned int ContextMenu::itemCount() const {  return _d->items.size();}
 
+ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::string& text, int commandId,
+                                       bool enabled, bool hasSubMenu,
+                                       bool checked, bool autoChecking)
+{
+  StringArray items = utils::split( path, "/" );
+
+  if( items.empty() )
+  {
+    return addItem( text,  commandId, enabled, hasSubMenu, checked, autoChecking );
+  }
+
+  ContextMenuItem* lastItem = findItem( items.front() );
+  if( lastItem == NULL )
+  {
+    lastItem = addItem( items.front(), -1, true, true );
+  }
+
+  items.erase( items.begin() );
+  for( auto& item : items )
+  {
+    if( lastItem->subMenu() == NULL )
+    {
+      lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
+    }
+    else
+    {
+      lastItem = lastItem->subMenu()->findItem( item );
+      if( !lastItem )
+        lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
+    }
+  }
+
+  if( lastItem->subMenu() )
+  {
+    lastItem = lastItem->subMenu()->addItem( text, commandId );
+  }
+
+  return lastItem;
+}
+
 //! Adds a menu item.
 ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
                           bool enabled, bool hasSubMenu,
@@ -74,35 +116,35 @@ ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
 
 //! Insert a menu item at specified position.
 ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& text, int commandId, bool enabled,
-    bool hasSubMenu, bool checked, bool autoChecking)
+                                         bool hasSubMenu, bool checked, bool autoChecking)
 {
-  ContextMenuItem* newItem = new ContextMenuItem( this, text );
-  newItem->setEnabled( enabled );
-  newItem->setSubElement( true );
-  newItem->setChecked( checked );
-  newItem->setAutoChecking( autoChecking );
-  newItem->setText( text );
-  newItem->setFlag( ContextMenuItem::drawSubmenuSprite );
-  newItem->setIsSeparator( text.empty() );
-  newItem->setCommandId( commandId );
-  sendChildToBack( newItem );
+  ContextMenuItem& newItem = add<ContextMenuItem>( text );
+  newItem.setEnabled( enabled );
+  newItem.setSubElement( true );
+  newItem.setChecked( checked );
+  newItem.setAutoChecking( autoChecking );
+  newItem.setText( text );
+  newItem.setFlag( ContextMenuItem::drawSubmenuSprite );
+  newItem.setIsSeparator( text.empty() );
+  newItem.setCommandId( commandId );
+  newItem.sendToBack();
 
   if (hasSubMenu)
   {
-    ContextMenu* subMenu = newItem->addSubMenu( commandId );
+    ContextMenu* subMenu = newItem.addSubMenu( commandId );
     subMenu->setVisible( false );
   }
 
   if ( idx < _d->items.size() )
   {
-    _d->items.insert( _d->items.begin() + idx, newItem );
+    _d->items.insert( _d->items.begin() + idx, &newItem );
   }
   else
   {
-    _d->items.push_back( newItem );
+    _d->items.push_back( &newItem );
   }
 
-  return newItem;
+  return &newItem;
 }
 
 ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSearch ) const
@@ -118,9 +160,19 @@ ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSear
   return NULL;
 }
 
+ContextMenuItem* ContextMenu::findItem(const std::string& name) const
+{
+  for( auto it : _d->items )
+  {
+    if ( it->text() == name )
+      return it;
+  }
+
+  return nullptr;
+}
+
 //! Adds a separator item to the menu
 void ContextMenu::addSeparator() {  addItem(0, -1, true, false, false, false); }
-
 
 //! Returns text of the menu item.
 ContextMenuItem* ContextMenu::item( unsigned int idx ) const
@@ -132,7 +184,7 @@ ContextMenuItem* ContextMenu::item( unsigned int idx ) const
 }
 
 //! Sets text of the menu item.
-void ContextMenu::updateItems() {  _d->needRecalculateItems = true; }
+void ContextMenu::updateItems() {  _d->flags.invalidate = true; }
 
 //! Removes a menu item
 void ContextMenu::removeItem(unsigned int idx)
@@ -166,7 +218,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 			switch(event.gui.type)
 			{
 			case guiElementFocusLost:
-				if (event.gui.caller == this && !isMyChild(event.gui.element) && _d->allowFocus)
+        if (event.gui.caller == this && !isMyChild(event.gui.element) && _d->flags.allowFocus)
 				{
 					// set event parent of submenus
 					Widget* p = _d->eventParent ? _d->eventParent : parent();
@@ -177,7 +229,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 					event.gui.caller = this;
 					event.gui.element = 0;
 					event.gui.type = guiElementClosed;
-					if ( !p->onEvent(event) )
+          if ( !p->onEvent(event) )
 					{
 						if( (_d->closeHandling & cmHide) > 0 )
 						{
@@ -193,7 +245,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				}
 				break;
 			case guiElementFocused:
-				if (event.gui.caller == this && !_d->allowFocus)
+        if (event.gui.caller == this && !_d->flags.allowFocus)
 				{
 					return true;
 				}
@@ -206,7 +258,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
@@ -216,9 +268,9 @@ bool ContextMenu::onEvent(const NEvent& event)
 					drop();
 				}
 				return true;
-			case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
 				return true;
-			case mouseMoved:
+      case NEvent::Mouse::moved:
 				if( isHovered() )
 					_isHighlighted( event.mouse.pos(), true);
 				return true;
@@ -231,9 +283,8 @@ bool ContextMenu::onEvent(const NEvent& event)
 		}
 	}
 
-	return Widget::onEvent(event);
+  return Widget::onEvent(event);
 }
-
 
 //! Sets the visible state of this element.
 void ContextMenu::setVisible(bool visible)
@@ -241,12 +292,15 @@ void ContextMenu::setVisible(bool visible)
   _setHovered( -1 );
   _closeAllSubMenus();
 
+  if( visible )
+    updateItems();
+
   Widget::setVisible( visible );
 }
 
 void ContextMenu::_setHovered( int index )
 {
-  _d->highlihted = index;
+  _d->highlihted.index = index;
   _d->changeTime = DateTime::elapsedTime();
 }
 
@@ -278,11 +332,11 @@ unsigned int ContextMenu::_sendClick(const Point& p)
 
 	// check click on myself
 	if( isPointInside(p) &&
-		(unsigned int)_d->highlihted < _d->items.size())
+    (unsigned int)_d->highlihted.index < _d->items.size())
 	{
-		if (!_d->items[_d->highlihted]->enabled() ||
-			_d->items[_d->highlihted ]->isSeparator() ||
-			_d->items[_d->highlihted ]->subMenu() )
+    if (!_d->items[_d->highlihted.index]->enabled() ||
+      _d->items[_d->highlihted.index ]->isSeparator() ||
+      _d->items[_d->highlihted.index ]->subMenu() )
 			return 2;
 
 		selectedItem()->toggleCheck();
@@ -293,14 +347,15 @@ unsigned int ContextMenu::_sendClick(const Point& p)
 		event.gui.element = 0;
 		event.gui.type = guiMenuItemSelected;
 		if( _d->eventParent )
- 			_d->eventParent->onEvent(event);
+      _d->eventParent->onEvent(event);
 		else 
-			parent()->onEvent(event);
+      parent()->onEvent(event);
 
 		ContextMenuItem* tItem = selectedItem();
 		if( tItem )
     {
       emit tItem->onClicked()();
+      emit tItem->onAction()( tItem->commandId() );
 
       emit _d->onItemActionSignal( tItem->commandId() );
     }
@@ -346,48 +401,48 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
 	{
 		if (_d->items[openmenu]->enabled() && _d->items[openmenu]->subMenu()->_isHighlighted(p, canOpenSubMenu))
 		{
-			_d->highlihted = openmenu;
+      _d->highlihted.index = openmenu;
       _d->changeTime = DateTime::elapsedTime();
 			return true;
 		}
 	}
 
-	foreach( it, _d->items )
+  for( auto it : _d->items )
 	{
-		(*it)->setHovered( false );
+    it->setHovered( false );
 	}
 
 	// highlight myself
-  _d->lastHighlihted = -1;
+  _d->highlihted.last = -1;
   foreach( it, _d->items )
 	{		
 		if ( (*it)->enabled() && (*it)->absoluteRect().isPointInside( p ))
 		{
-			_d->highlihted = std::distance( _d->items.begin(), it );
+      _d->highlihted.index = std::distance( _d->items.begin(), it );
       _d->changeTime = DateTime::elapsedTime();
 
 			// make submenus visible/invisible
-			if( _d->highlihted != _d->lastHighlihted )
+      if( _d->highlihted.index != _d->highlihted.last )
 			{
 				_closeAllSubMenus();
 
-				setItemVisible( _d->lastHighlihted, false );
+        setItemVisible( _d->highlihted.last, false );
 
-				ContextMenuItem* rItem = _d->items[ _d->highlihted ];
+        ContextMenuItem* rItem = _d->items[ _d->highlihted.index ];
 				if( rItem->subMenu() && canOpenSubMenu && rItem->enabled() )
 				{
 					rItem->subMenu()->setVisible( true );
-					setItemVisible( _d->highlihted, true );
+          setItemVisible( _d->highlihted.index, true );
 				}
 
-				_d->lastHighlihted = _d->highlihted;
+        _d->highlihted.last = _d->highlihted.index;
 				rItem->setHovered( true );
 			}
 			return true;
 		}
 	}
 
-	_d->highlihted = openmenu;
+  _d->highlihted.index = openmenu;
 	return false;
 }
 
@@ -404,9 +459,9 @@ void ContextMenu::beforeDraw(gfx::Engine& painter )
     updateItems();
   }
 
-  if( _d->needRecalculateItems )
+  if( _d->flags.invalidate )
   {
-    _d->needRecalculateItems = false;
+    _d->flags.invalidate = false;
     _recalculateSize();
   }
 
@@ -425,7 +480,7 @@ void ContextMenu::draw(gfx::Engine& painter )
 void ContextMenu::_recalculateSize()
 {
 	Rect rect;
-	rect.UpperLeftCorner = relativeRect().UpperLeftCorner;
+  rect._lefttop = relativeRect().lefttop();
   Size maxSize( 100, 3 );
 
 	unsigned int i;
@@ -452,7 +507,7 @@ void ContextMenu::_recalculateSize()
 
 	maxSize.setHeight( std::max<unsigned int>( maxSize.height()+5, 10 ) );
 
-	rect.LowerRightCorner = relativeRect().UpperLeftCorner + Point( maxSize.width(), maxSize.height() );
+  rect._bottomright = relativeRect().lefttop() + Point( maxSize.width(), maxSize.height() );
 
 	setGeometry(rect);
 
@@ -477,10 +532,10 @@ void ContextMenu::_recalculateSize()
       if( root && ContextMenuItem::alignAuto == refItem->subMenuAlignment() )
       {
         Rect rectRoot( root->absoluteRect() );
-				if ( absoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
+        if ( absoluteRect().left() + subRect.right() > rectRoot.right() )
 				{
-					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
-					subRect.LowerRightCorner.setX( 0 );
+          subRect.setLeft( -subMenuSize.width() );
+          subRect.setRight( 0 );
 				}
 			}
 			else
@@ -488,16 +543,16 @@ void ContextMenu::_recalculateSize()
 				switch( refItem->subMenuAlignment() & 0x0f )
 				{
 				case ContextMenuItem::alignLeft:
-					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
-					subRect.LowerRightCorner.setX( 0 );
+          subRect.setLeft( -subMenuSize.width() );
+          subRect.setRight( 0 );
 				break;
 
 				case ContextMenuItem::alignRigth:
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
-					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
+          subRect.setLeft( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
+          subRect.setRight( subRect.left() + subMenuSize.width() );
 				break;
 				}
 
@@ -524,165 +579,29 @@ void ContextMenu::_recalculateSize()
 //! Returns the selected item in the menu
 int ContextMenu::selected() const
 {
-  return _d->highlihted;
+  return _d->highlihted.index;
 }
 
 ContextMenuItem *ContextMenu::selectedItem() const
 {
-  return item( _d->highlihted );
+  return item( _d->highlihted.index );
 }
-
-//! Writes attributes of the element.
-void ContextMenu::save( VariantMap& out ) const
-{
-	/*INrpElement::serializeAttributes(out,options);
-
-	out->addPosition2d("Position", Pos);
-
-	if (Parent->getType() == EGUIET_CONTEXT_MENU || Parent->getType() == EGUIET_MENU )
-	{
-		const NrpContextMenu* const ptr = (const NrpContextMenu*)Parent;
-		// find the position of this item in its parent's list
-		unsigned int i;
-		// VC6 needs the cast for this
-		for (i=0; (i<ptr->getItemCount()) && (ptr->getSubMenu(i) != (const NrpContextMenu*)this); ++i)
-			; // do nothing
-
-		out->addInt("ParentItem", i);
-	}
-
-	out->addInt("CloseHandling", (int)CloseHandling);
-
-	// write out the item list
-	out->addInt("ItemCount", Items.size());
-
-    core::stringc tmp;
-
-    INrpEnvironment* env = core::nrp_cast< INrpEnvironment* >( Environment );
-	for (unsigned int i=0; i < Items.size(); ++i)
-	{
-        String itemCaption = "Item";
-        itemCaption.append( String::FromInt( i ) );
-        itemCaption.append(  String::FromCharArray( nrp::SerializeHelper::stateProp ) );
-        out->addString( nrp::SerializeHelper::subSectionStartProp, itemCaption.c_str() );
-
-        const SItem& refItem = Items[i];
-		tmp = "IsSeparator"; tmp += i;
-		out->addBool(tmp.c_str(), refItem.IsSeparator);
-
-		if (!refItem.IsSeparator)
-		{
-			tmp = "Text"; tmp += i;
-			out->addString(tmp.c_str(), refItem.Text.c_str());
-			tmp = "CommandID"; tmp += i;
-			out->addInt(tmp.c_str(), refItem.CommandId);
-			tmp = "Enabled"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.Enabled);
-			tmp = "Checked"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.Checked);
-			tmp = "AutoChecking"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.AutoChecking);
-            tmp = "FontName"; tmp += i;
-            String fontName;
-            env->GetFontManager()->GetFontName( refItem.font, fontName );
-            out->addString( tmp.c_str(), fontName.c_str() );
-            tmp = "FontColor"; tmp += i;
-            out->addColor(tmp.c_str(), refItem.color );
-		}
-
-        out->addString( core::SerializeHelper::subSectionEndProp, itemCaption.c_str() );
-	}
-    */
-}
-
-
-//! Reads attributes of the element
-void ContextMenu::load( const VariantMap& in )
-{
-    /*
-	INrpElement::deserializeAttributes(in,options);
-
-	Pos = in->getAttributeAsPosition2d("Position");
-
-	// link to this item's parent
-	if (Parent && ( Parent->getType() == EGUIET_CONTEXT_MENU || Parent->getType() == EGUIET_MENU ) )
-        ((NrpContextMenu*)Parent)->SetSubMenu( in->getAttributeAsInt("ParentItem"),this);
-
-	CloseHandling = (CloseMode)in->getAttributeAsInt("CloseHandling");
-
-	removeAllItems();
-
-	// read the item list
-	const int count = in->getAttributeAsInt("ItemCount");
-
-	for (int i=0; i<count; ++i)
-	{
-        core::stringc tmp;
-		String txt;
-		int commandid=-1;
-		bool enabled=true;
-		bool checked=false;
-		bool autochecking=false;
-
-		tmp = "IsSeparator"; tmp += i;
-		if ( in->existsAttribute(tmp.c_str()) && in->getAttributeAsBool(tmp.c_str()) )
-			addSeparator();
-		else
-		{
-			tmp = "Text"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				txt = in->getAttributeAsStringW( tmp.c_str() );
-
-			tmp = "CommandID"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				commandid = in->getAttributeAsInt(tmp.c_str());
-
-			tmp = "Enabled"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				enabled = in->getAttributeAsBool(tmp.c_str());
-
-			tmp = "Checked"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				checked = in->getAttributeAsBool(tmp.c_str());
-
- 			tmp = "AutoChecking"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				autochecking = in->getAttributeAsBool(tmp.c_str());
-
-            unsigned int index = addItem( txt.c_str(), commandid, enabled, false, checked, autochecking);
-
-            SItem& refItem = Items[ index ];
-            tmp = "FontName"; tmp += i;
-            if ( in->existsAttribute(tmp.c_str()) )
-                refItem.font = GetEnvironment()->GetFontManager()->GetFont( in->getAttributeAsStringW( tmp.c_str() ) );
-
-            tmp = "FontColor"; tmp += i;
-            if ( in->existsAttribute(tmp.c_str()) )
-                refItem.color = in->getAttributeAsColor( tmp.c_str() );
-		}
-	}
-
-	_RecalculateSize();
-
-    */
-}
-
 
 // because sometimes the element has no parent at click time
 void ContextMenu::setEventParent( Widget *parent )
 {
 	_d->eventParent = parent;
 
-	for (unsigned int i=0; i<_d->items.size(); ++i)
-		if( _d->items[i]->subMenu() )
-			_d->items[i]->subMenu()->setEventParent(parent);
+  for( auto item : _d->items )
+    if( item->subMenu() )
+      item->subMenu()->setEventParent(parent);
 }
 
 
 bool ContextMenu::_hasOpenSubMenu() const
 {
-	foreach( i, _d->items )
-		if( (*i)->subMenu() && (*i)->subMenu()->visible() )
+  for( auto i : _d->items )
+    if( i->subMenu() && i->subMenu()->visible() )
 			return true;
 
 	return false;
@@ -692,20 +611,18 @@ bool ContextMenu::_hasOpenSubMenu() const
 void ContextMenu::_closeAllSubMenus()
 {
 	for(unsigned int i=0; i<_d->items.size(); ++i)
-		if( _d->items[i]->subMenu() )
+  {
+    if( _d->items[i]->subMenu() && _d->items[i]->visible())
 		{
-			if( _d->items[i]->visible() )
-      {
-				setItemVisible( i, false );
-      }
-			//_d->items[i]->getSubMenu()->setVisible(false);
+      setItemVisible( i, false );
 		}
+  }
 
 	//HighLighted = -1;
 }
 
-void ContextMenu::setAllowFocus( bool enabled ) {	_d->allowFocus = enabled;}
-int ContextMenu::hovered() const {	return _d->highlihted; }
-Signal1<int>& ContextMenu::onItemAction() {  return _d->onItemActionSignal; }
+void ContextMenu::setAllowFocus( bool enabled ) {	_d->flags.allowFocus = enabled;}
+int ContextMenu::hovered() const {	return _d->highlihted.index; }
+Signal1<int>& ContextMenu::onItemAction() { return _d->onItemActionSignal; }
 
 }//end namespace gui

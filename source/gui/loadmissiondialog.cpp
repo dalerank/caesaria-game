@@ -27,7 +27,7 @@
 #include "label.hpp"
 #include "image.hpp"
 #include "core/saveadapter.hpp"
-//#include <algorithm>
+#include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "dictionary_text.hpp"
 #include "widgetescapecloser.hpp"
@@ -65,11 +65,10 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
 {
   saveItemText = item.text();
 
-  vfs::Path fn(saveItemText);
-  fn = directory/fn;
+  vfs::Path fn = directory/saveItemText;
 
-  std::string missionName = vfs::Path( fn ).baseName( false ).toString();
-  VariantMap vm = SaveAdapter::load( fn );
+  std::string missionName = fn.baseName().removeExtension();
+  VariantMap vm = config::load( fn );
   Locale::addTranslation( missionName );
 
   std::string text = vm.get( "preview.text" ).toString();
@@ -77,7 +76,7 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   std::string title = vm.get( "preview.title" ).toString();
 
   if( lbDescription ) lbDescription->setText( _(text) );
-  if( imgPreview ) imgPreview->setPicture( Picture::load( previewImg ) );
+  if( imgPreview ) imgPreview->setPicture( Picture( previewImg ) );
   if( btnLoad ) btnLoad->setEnabled( !saveItemText.empty() );
   if( lbTitle ) lbTitle->setText( _( title ) );
 }
@@ -87,7 +86,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
 {
   setupUI( ":/gui/loadmissiondialog.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClosers::insertTo( this );
 
   _d->directory = dir;
 
@@ -103,6 +102,9 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
   if( _d->lbxFiles ) _d->lbxFiles->setShowTime( false );
 
   _d->fillFiles();
+  if( _d->lbxFiles ) _d->lbxFiles->setFocus();
+
+  moveToCenter();
 }
 
 void LoadMission::Impl::fillFiles()
@@ -111,14 +113,13 @@ void LoadMission::Impl::fillFiles()
     return;
   lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).getEntries();
+  vfs::Entries flist = vfs::Directory( directory ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".mission" );
 
   StringArray names;
-  foreach( it, flist )
-  {
-    names << (*it).fullpath.toString();
-  }
+  for( auto& it : flist )
+    names << it.fullpath.toString();
+
   std::sort( names.begin(), names.end() );
 
   lbxFiles->addItems( names );
@@ -146,9 +147,8 @@ Signal1<std::string>& LoadMission::onSelectFile() { return _d->onSelectFileSigna
 
 LoadMission* LoadMission::create( Widget* parent, const vfs::Directory& dir )
 {
-  LoadMission* ret = new LoadMission( parent, dir );
-  ret->setCenter( parent->center() );
-  return ret;
+  LoadMission& ret = parent->add<LoadMission>( dir );
+  return &ret;
 }
 
 }//end namespace dialog

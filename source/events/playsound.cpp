@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "playsound.hpp"
 #include "core/utils.hpp"
@@ -21,24 +23,19 @@
 namespace events
 {
 
-GameEventPtr PlaySound::create( std::string rc, int index, int volume )
+GameEventPtr PlaySound::create( const std::string& rc, int index, int volume, audio::SoundType type, bool force )
 {
-  PlaySound* e = new PlaySound();
-  e->_sound = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
-  e->_volume = volume;
-
-  GameEventPtr ret( e );
-  ret->drop();
-
-  return ret;
+  return create( utils::format( 0xff, "%s_%05d", rc.c_str(), index ),
+                 volume, type, force );
 }
 
-GameEventPtr PlaySound::create(std::string filename, int volume, bool theme)
+GameEventPtr PlaySound::create(const std::string& filename, int volume, audio::SoundType type, bool force)
 {
   PlaySound* e = new PlaySound();
   e->_sound = filename;
   e->_volume = volume;
-  e->_theme = theme;
+  e->_type = type;
+  e->_force = force;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -48,12 +45,12 @@ GameEventPtr PlaySound::create(std::string filename, int volume, bool theme)
 
 void PlaySound::_exec(Game&, unsigned int)
 {
-  audio::Engine::instance().play( _sound, _volume, _theme ? audio::themeSound : audio::ambientSound );
+  audio::Engine::instance().play( _sound, _volume, _type, _force );
 }
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }
 
-PlaySound::PlaySound() : _sound( ""), _volume( 0 ), _theme( false )
+PlaySound::PlaySound() : _sound(""), _volume( 0 ), _type( audio::ambient )
 {}
 
 }

@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe02_00001"
+  title : "50 AD - Nineth assignment"
+	
+  items : {
+    damascus : {
+      title : "##damascus_title##"
+      location : [ 570, 280 ]
+      mission : ":/missions/damascus.mission"
+    }
+
+    caesarea : {
+      title : "##caesarea_title##"
+      mission : ":/missions/caesarea.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

@@ -14,10 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
-#include "gfx/engine.hpp"
+#include <GameEvents>
+#include <GameGfx>
+
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
@@ -26,77 +28,108 @@
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
-#include "events/changespeed.hpp"
 #include "core/event.hpp"
 #include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
-#include "gfx/renderermode.hpp"
+#include "layers/constants.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "core/time.hpp"
 #include "core/utils.hpp"
 #include "gui/empiremap_window.hpp"
-#include "gui/save_dialog.hpp"
 #include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
-#include "gfx/city_renderer.hpp"
 #include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
-#include "gfx/helper.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
-#include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
-#include "gfx/tilemap_camera.hpp"
 #include "city/ambientsound.hpp"
-#include "gui/win_mission_window.hpp"
-#include "events/showempiremapwindow.hpp"
-#include "events/showadvisorwindow.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
 #include "events/setsoundoptions.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "events/warningmessage.hpp"
-#include "events/postpone.hpp"
-#include "gfx/pictureconverter.hpp"
 #include "gui/city_options_window.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/timer.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_info.hpp"
-#include "gfx/layer.hpp"
+#include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "city/build_options.hpp"
-#include "events/movecamera.hpp"
+#include "core/tilerect.hpp"
+#include "city/active_points.hpp"
+#include "city/statistic.hpp"
+#include "sound/themeplayer.hpp"
+#include "core/osystem.hpp"
+#include "city/states.hpp"
+#include "city/undo_stack.hpp"
 
 using namespace gui;
-using namespace constants;
+using namespace events;
 using namespace gfx;
+using namespace city;
 
 namespace scene
 {
+typedef SmartList<EventHandler> EventHandlers;
+const int topMenuHeight = 24;
+
+class MenuBreaker : public EventHandler
+{
+public:
+  Menu* _m1 = nullptr;
+  Menu* _m2 = nullptr;
+
+  MenuBreaker( Menu* m1, Menu* m2 )
+   : _m1(m1), _m2(m2)
+  {
+
+  }
+
+  static EventHandlerPtr create( Menu* m1, Menu* m2 )
+  {
+    EventHandlerPtr ret( new MenuBreaker( m1, m2 ) );
+    ret->drop();
+
+    return ret;
+  }
+
+  void handleEvent(NEvent &event)
+  {
+    bool rmbReleased = event.EventType == sEventMouse
+                       && event.mouse.type == NEvent::Mouse::mouseRbtnRelease;
+
+    bool escapePressed = event.EventType == sEventKeyboard
+                         && event.keyboard.key == KEY_ESCAPE;
+    if( rmbReleased || escapePressed )
+    {
+      if( _m1 ) _m1->cancel();
+      if( _m2 ) _m2->cancel();
+    }
+  }
+
+  bool finished() const { return false; }
+};
 
 class Level::Impl
 {
 public:
-  typedef std::vector< EventHandlerPtr > EventHandlers;
-
   EventHandlers eventHandlers;
+  Minimap* mmap;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   gui::Menu* menu;
@@ -109,6 +142,8 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
+  bool simulationPaused;
+  undo::UStack undoStack;
 
   int result;
 
@@ -117,9 +152,10 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
   void showAdvisorsWindow();
-  void showMissionTaretsWindow();
+  void showMissionTargetsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
+  void resolveCreateObject( int type );
   void resolveSelectLayer( int type );
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission(Level *lvl, bool forceWin=false);
@@ -133,12 +169,21 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
+  void changeShowNotification(bool value);
+  void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
-  void extendReign( int years );
+  void saveScrollSpeed( int speed );
+  void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
+  void initRender();
+  void initMainUI();
+  void installHandlers( Base* scene);
+  void initSound();
+  void initTabletUI(Level* scene);
+  void connectTopMenu2scene(Level* scene);
 
   std::string getScreenshotName();
   vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
@@ -148,164 +193,200 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
+  _d->simulationPaused = false;
   _d->engine = &engine;
 }
 
-Level::~Level()
+Level::~Level() {}
+
+void Level::Impl::initRender()
 {
+  bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
+  renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
+  renderer.setViewport( engine->viewportSize() );
+  renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
+}
+
+void Level::Impl::initMainUI()
+{  
+  PlayerCityPtr city = game->city();
+  gui::Ui& ui = *game->gui();
+
+  ui.clear();
+
+  Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
+  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
+
+  topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
+  topMenu->setPopulation( game->city()->states().population );
+  topMenu->setFunds( game->city()->treasury().money() );
+
+  bool fitToHeidht = OSystem::isAndroid();
+  menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
+  menu->hide();
+
+  extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
+  extMenu->show();
+  Rect minimapRect = extMenu->getMinimapRect();
+
+  mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
+
+  WindowMessageStack::create( ui.rootWidget() );
+  rightPanel->bringToFront();
+
+  if( KILLSWITCH( rightMenu ) )
+  {
+    rightPanel->setSide( MenuRigthPanel::rightSide );
+    menu->setSide( Menu::rightSide, rightPanel->lefttop() );
+    extMenu->setSide( Menu::rightSide, rightPanel->lefttop() );
+  }
+  else
+  {
+    rightPanel->setSide( MenuRigthPanel::leftSide );
+    menu->setSide( Menu::leftSide, rightPanel->righttop() );
+    extMenu->setSide( Menu::leftSide, rightPanel->righttop() );
+  }
+}
+
+void Level::Impl::installHandlers( Base* scene )
+{
+  scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
+  scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
+}
+
+void Level::Impl::initSound()
+{
+  auto sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+
+  if( sound.isValid() )
+    sound->setCamera( renderer.camera() );
+
+  CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
+}
+
+void Level::Impl::initTabletUI( Level* scene )
+{
+  //specific tablet actions bar
+  auto& tabletUi = game->gui()->add<tablet::ActionsBar>();
+  tablet::ActionsHandler::assignTo( &tabletUi, scene );
+
+  tabletUi.setVisible( SETTINGS_VALUE(showTabletMenu) );
+}
+
+void Level::Impl::connectTopMenu2scene(Level* scene)
+{
+  CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
+  CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
+  CONNECT( topMenu, onRestart(),              scene,   Level::restart )
+  CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
+  CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
+
+  CONNECT_LOCAL( topMenu, onLoad(),                    Impl::showLoadDialog )
+  CONNECT_LOCAL( topMenu, onSave(),                    Impl::showSaveDialog )
+  CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
+  CONNECT_LOCAL( topMenu, onShowVideoOptions(),        Impl::setVideoOptions )
+  CONNECT_LOCAL( topMenu, onShowSoundOptions(),        Impl::showSoundOptionsWindow )
+  CONNECT_LOCAL( topMenu, onShowGameSpeedOptions(),    Impl::showGameSpeedOptionsDialog )
+  CONNECT_LOCAL( topMenu, onShowCityOptions(),         Impl::showCityOptionsDialog )
 }
 
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  _d->renderer.initialize( city, _d->engine, _d->game->gui() );
-  _d->game->gui()->clear();
 
-  const int topMenuHeight = 23;
-  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
-
-  Engine& engine = Engine::instance();
-  gui::Ui& gui = *_d->game->gui();
-
-  installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
-
-  Rect rPanelRect( engine.screenSize().width() - rPanelPic.width(), topMenuHeight,
-                   engine.screenSize().width(), engine.screenSize().height() );
-
-  _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
-
-  _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->population() );
-  _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
-
-  _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenSize().width() - _d->rightPanel->width(),
-                                _d->topMenu->height() ) );
-
-  _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
-                                     _d->topMenu->height() ) );
-
-  Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
-                               city,
-                               *_d->renderer.camera() );
-
-  WindowMessageStack::create( gui.rootWidget() );
-
-  _d->rightPanel->bringToFront();
-  _d->renderer.setViewport( engine.screenSize() );
-  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
-
-  //specific android actions bar
-#ifdef CAESARIA_PLATFORM_ANDROID
-  AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
-
-  CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
-  CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
-  CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
-  CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
-#endif
+  _d->initRender();
+  _d->initMainUI();
+  _d->installHandlers( this );
+  _d->initSound();
+  _d->initTabletUI( this );  
+  _d->connectTopMenu2scene( this );
+  _d->undoStack.init( city );
 
   //connect elements
-  CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, Level::_requestExitGame );
-  CONNECT( _d->topMenu, onLoad(), this, Level::_showLoadDialog );
-  CONNECT( _d->topMenu, onEnd(), this, Level::_exitToMainMenu );
-  CONNECT( _d->topMenu, onRestart(), this, Level::_restartMission );
-  CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
-  CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
-  CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
-  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
-  CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
 
-  CONNECT( city, onPopulationChanged(), _d->topMenu, TopMenu::setPopulation );
-  CONNECT( city, onFundsChanged(), _d->topMenu, TopMenu::setFunds );
-  CONNECT( city, onWarningMessage(), _d.data(), Impl::resolveWarningMessage );
+  city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
+  CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
+  CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
+  CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
-  CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
-  CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->menu, onHide(), _d->extMenu, ExtentMenu::maximize );
+  CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool )
+  CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
-  CONNECT( _d->extMenu, onHide(), _d->menu, Menu::maximize );
-  CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
-  CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );
-  CONNECT( _d->extMenu, onRotateLeft(), &_d->renderer, CityRenderer::rotateLeft );
-  CONNECT( _d->extMenu, onSelectOverlayType(), _d.data(), Impl::resolveSelectLayer );
-  CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow )
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow )
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow )
-  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow )
-  CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next )
+  CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
+  CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
+  CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
+  CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
+  CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
+  CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
+  CONNECT( _d->extMenu, onRotateRight(),           _d->mmap,         Minimap::update )
+  CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
+  CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
+  CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTargetsWindow )
+  CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
+  CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
-  CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add )
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter )
-  CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled )
+  CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
+  CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter )
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos )
-  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(), Impl::handleDirectionChange )
-  CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
+  CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
+  CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
+  CONNECT( _d->mmap, onZoomChange(), _d->renderer.camera(),          gfx::Camera::changeZoom )
+  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
+  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
+  CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
+  CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
-  _d->showMissionTaretsWindow();
+  _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
+  _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
-  CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
-  CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+  _d->dhandler.setVisible( KILLSWITCH(debugMenu) );
+
+  CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
+  CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
+
+  events::dispatch<events::ScriptFunc>( "OnMissionStart" );
+
+  if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
+  {
+    setConstructorMode( true );
+  }
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
-
-void Level::Impl::showSaveDialog()
-{
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-
-  if( !saveDir.exist() )
-  {
-    gui::DialogBox* dialog = new gui::DialogBox( game->gui()->rootWidget(), Rect(), "##warning##",
-                                                 "##save_directory_not_exist##", gui::DialogBox::btnOk );
-    dialog->show();
-    return;
-  }
-
-  SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), game, Game::save );
-}
-
-void Level::Impl::setVideoOptions()
-{
-  events::GameEventPtr event = events::SetVideoSettings::create();
-  event->dispatch();
-}
+void Level::Impl::showSaveDialog() { events::dispatch<ShowSaveDialog>(); }
+void Level::Impl::setVideoOptions(){ events::dispatch<ScriptFunc>( "OnShowVideoSettings" ); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  dialog::GameSpeedOptions* dialog = new dialog::GameSpeedOptions( game->gui()->rootWidget(),
-                                                                   game->timeMultiplier(),
-                                                                   0,
-                                                                   SETTINGS_VALUE( autosaveInterval ) );
+  dialog::SpeedOptions& dialog = game->gui()->add<dialog::SpeedOptions>( game->timeMultiplier(),
+                                                                         SETTINGS_VALUE( scrollSpeed ),
+                                                                         SETTINGS_VALUE( autosaveInterval ) );
 
-  CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
-  CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
+  CONNECT( &dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
+  CONNECT( &dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
+  CONNECT( &dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
+  CONNECT( &dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
 void Level::Impl::showCityOptionsDialog()
 {
-  CityOptionsWindow* wnd = new CityOptionsWindow( game->gui()->rootWidget(),
-                                                  game->city() );
-  wnd->show();
+  auto& wnd = game->gui()->add<dialog::CityOptions>( game->city() );
+  wnd.show();
 }
 
-void Level::Impl::resolveWarningMessage(std::string text )
+void Level::Impl::resolveWarningMessage(std::string text)
 {
-  events::GameEventPtr e = events::WarningMessage::create( text );
-  e->dispatch();
+  events::dispatch<WarningMessage>( text, WarningMessage::neitral );
 }
 
 void Level::Impl::saveCameraPos(Point p)
@@ -321,22 +402,29 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
-  e->dispatch();
+  events::dispatch<ChangeSoundOptions>();
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
 
-void Level::Impl::showTileHelp()
+void Level::Impl::changeShowNotification(bool value)
 {
-  const Tile& tile = game->city()->tilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
-  events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
-  e->dispatch();
+  SETTINGS_SET_VALUE(showStartAware, value);
 }
 
 void Level::Impl::showMessagesWindow()
 {
-  new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+  unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
+  Widget* wnd = game->gui()->findWidget( id );
+
+  if( wnd == 0 )
+  {
+    wnd = &game->gui()->add<dialog::ScribesMessages>( game->city() );
+  }
+  else
+  {
+    wnd->bringToFront();
+  }
 }
 
 void Level::Impl::setAutosaveInterval(int value)
@@ -351,6 +439,7 @@ void Level::Impl::layerChanged(int layer)
   {
     lastLayerId = (citylayer::Type)layer;
   }
+  undoStack.finished();
 }
 
 void Level::Impl::makeFullScreenshot()
@@ -359,8 +448,8 @@ void Level::Impl::makeFullScreenshot()
   int mapSize = tmap.size();
   Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
   Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = tile::tilepos2screen( lastRightTile.pos() );
-  Point lastBottomPos = tile::tilepos2screen( lastBottomTile.pos() );
+  Point lastRightPos = lastRightTile.pos().toScreenCoordinates();
+  Point lastBottomPos = lastBottomTile.pos().toScreenCoordinates();
   Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
 
   TilesArray ret;
@@ -380,140 +469,56 @@ void Level::Impl::makeFullScreenshot()
     }
   }
 
-  PictureRef fullPic;
-  fullPic.init( fullPicSize );
-  Point doffset( 0, fullPicSize.height() / 2 );
-  foreach( tile, ret )
+  Picture fullPic = Picture( fullPicSize, 0, true );
+  /*Point doffset( 0, fullPicSize.height() / 2 );
+  for( auto tile : ret )
   {
-    Tile* t = *tile;
-    if( t->masterTile() )
-      t = t->masterTile();       
+    if( tile->master() )
+      tile = tile->master();
 
-    const Picture& tpic = t->overlay().isValid()
-                            ? t->overlay()->picture()
-                            : t->picture();
+    const Picture& tpic = tile->overlay().isValid()
+                            ? tile->overlay()->picture()
+                            : tile->picture();
 
     Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
-  }
+    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+  }*/
 
   std::string filename = getScreenshotName();
-  PictureConverter::save( *fullPic, filename, "PNG" );
-}
-
-void Level::Impl::extendReign(int years)
-{
-  city::VictoryConditions vc;
-  vc = game->city()->victoryConditions();
-  vc.addReignYears( years );
-
-  game->city()->setVictoryConditions( vc );
+  PictureConverter::save( fullPic, filename, "PNG" );
 }
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  DirectionHelper dHelper;
-
-  events::GameEventPtr e = events::WarningMessage::create( _(dHelper.findName( direction ) ) );
-  e->dispatch();
+  events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
 }
 
 std::string Level::Impl::getScreenshotName()
 {
-  DateTime time = DateTime::getCurrenTime();
-  return utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
-                               time.year(), time.month(), time.day(),
-                               time.hour(), time.minutes(), time.seconds() );
-}
-
-void Level::_resolveLoadGame( std::string filename )
-{
-  _d->mapToLoad = filename.empty()
-                      ? _d->createFastSaveName().toString()
-                      : filename;
-  _resolveSwitchMap();
-}
-
-void Level::_resolveEscapeButton()
-{
-  NEvent e;
-
-  e.EventType = sEventKeyboard;
-  e.keyboard.key = KEY_ESCAPE;
-  e.keyboard.pressed = false;
-  e.keyboard.shift = false;
-  e.keyboard.control = false;
-  e.keyboard.symbol = 0;
-
-  handleEvent( e );
-}
-
-void Level::_resolveEnterButton()
-{
-  NEvent e;
-
-  e.EventType = sEventKeyboard;
-  e.keyboard.key = KEY_RETURN;
-  e.keyboard.pressed = false;
-  e.keyboard.shift = false;
-  e.keyboard.control = false;
-  e.keyboard.symbol = 0;
-
-  handleEvent( e );
-}
-
-
-void Level::_showIngameMenu()
-{
-  gui::Widget* p = _d->game->gui()->rootWidget();
-  gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
-
-  menu->setCenter( p->center() );
-  menu->setupUI( ":/gui/ingamemenu_android.gui" );
-  WidgetEscapeCloser::insertTo( menu );
-
-  PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
-  PushButton* btnSave = findChildA<PushButton*>( "btnSave", true, menu );
-  PushButton* btnLoad = findChildA<PushButton*>( "btnLoad", true, menu );
-  PushButton* btnRestart = findChildA<PushButton*>( "btnRestart", true, menu );
-  PushButton* btnMainMenu = findChildA<PushButton*>( "btnMainMenu", true, menu );
-  PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
-
-  CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
-  CONNECT( btnExit, onClicked(), this, Level::_requestExitGame );
-  CONNECT( btnLoad, onClicked(), this, Level::_showLoadDialog );
-  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog  );
-  CONNECT( btnRestart, onClicked(), this, Level::_restartMission );
-  CONNECT( btnMainMenu, onClicked(), this, Level::_exitToMainMenu );
+  DateTime time = DateTime::currenTime();
+  vfs::Path filename = utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
+                                      time.year(), time.month(), time.day(),
+                                      time.hour(), time.minutes(), time.seconds() );
+  vfs::Directory screenDir = SETTINGS_STR( screenshotDir );
+  return (screenDir/filename).toString();
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
-  std::string typesave = type.empty() ? SETTINGS_VALUE( fastsavePostfix ).toString() : type;
+  std::string typesave = type.empty() ? SETTINGS_STR( fastsavePostfix ) : type;
   vfs::Path filename = game->city()->name()
                        + typesave
                        + postfix
-                       + SETTINGS_VALUE( saveExt ).toString();
+                       + SETTINGS_STR( saveExt );
 
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   return saveDir/filename;
 }
 
-void Level::_resolveSwitchMap()
-{
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
-  _d->result = isNextBriefing ? Level::loadBriefing : Level::loadGame;
-  stop();
-}
-
 void Level::Impl::showEmpireMapWindow()
 {
-  events::GameEventPtr e;
-  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMap::create( true ); }
-  else {  e = events::WarningMessage::create( "##not_available##" ); }
-
-  if( e.isValid() ) e->dispatch();
+  events::dispatch<ShowEmpireMap>( true );
 }
 
 void Level::draw()
@@ -521,7 +526,6 @@ void Level::draw()
   _d->renderer.render();
 
   _d->game->gui()->beforeDraw();
-
   _d->game->gui()->draw();
 }
 
@@ -538,7 +542,7 @@ void Level::animate( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
-    if( game::Date::current().month() % autosaveInterval == 0 )
+    if( (int)game::Date::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
@@ -548,9 +552,7 @@ void Level::animate( unsigned int time )
   }
 }
 
-void Level::afterFrame()
-{
-}
+void Level::afterFrame() {}
 
 void Level::handleEvent( NEvent& event )
 {
@@ -563,14 +565,7 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  /*static enum _MouseEventTarget
-  {
-    _MET_NONE,
-    _MET_GUI,
-    _MET_TILES
-  } _mouseEventTarget = _MET_NONE; */
-
-  for( Impl::EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  for( auto it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
@@ -586,67 +581,19 @@ void Level::handleEvent( NEvent& event )
 
   if( !eventResolved )
   {
-     _d->renderer.handleEvent( event );
-     _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
-  }
-  /*if (event.EventType == sEventMouse)
-  {
-    if( event.mouse.type == mouseRbtnPressed || event.mouse.type == mouseLbtnPressed )
-    {
-      eventResolved = gui.handleEvent( event );
-      if( eventResolved )
-      {
-        _mouseEventTarget = _MET_GUI;
-      }
-      else // eventresolved
-      {
-        _mouseEventTarget = _MET_TILES;
-        _d->renderer.handleEvent( event );
-      }
-      return;
-    }
-
-    switch(_mouseEventTarget)
-    {
-    case _MET_GUI:
-      gui.handleEvent( event );
-    break;
-
-    case _MET_TILES:
-      _d->renderer.handleEvent( event );
+    _d->renderer.handleEvent( event );
+    if( event.EventType == sEventMouse )
       _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
-    break;
-
-    default:
-       if( !gui.handleEvent( event ) )
-        _d->renderer.handleEvent( event );
-    break;
-    }
-
-    if( event.mouse.type == mouseRbtnRelease || event.mouse.type == mouseLbtnRelease )
-    {
-      _mouseEventTarget = _MET_NONE;
-    }
   }
-  else
-  {
-    eventResolved = gui.handleEvent( event );
-   
-    if( !eventResolved )
-    {
-      _d->renderer.handleEvent( event );
-    }
-  }*/
 }
 
 void Level::Impl::makeScreenShot()
 {
   std::string filename = getScreenshotName();
-  Logger::warning( "Level: create screenshot %s", filename.c_str() );
+  Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  events::GameEventPtr e = events::WarningMessage::create( "Screenshot save to " + filename );
-  e->dispatch();
+  events::dispatch<WarningMessage>( "Screenshot save to " + filename, WarningMessage::neitral );
 }
 
 void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
@@ -654,83 +601,93 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  city::MilitaryPtr mil;
-  city::InfoPtr info;
-
-  info << pcity->findService( city::Info::defaultName() );
-  mil << pcity->findService( city::Military::defaultName() );
+  MilitaryPtr mil = pcity->statistic().services.find<Military>();
+  InfoPtr info = pcity->statistic().services.find<Info>();
 
   if( mil.isValid() && info.isValid()  )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    bool failedByDestroy = mil->threatValue() > 0 && params[ city::Info::population ].value > 0 && !pcity->population();
+    bool failedByDestroy = mil->value() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
     bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
     {
       game->pause();
-      Window* wnd = new Window( game->gui()->rootWidget(),
-                                          Rect( 0, 0, 400, 220 ), "" );
-      Label* lb = new Label( wnd, Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
-      lb->setTextAlignment( align::center, align::center );
-      lb->setFont( Font::create( FONT_6 ) );
+      Window& window = game->gui()->add<Window>( Rect( 0, 0, 400, 220 ), "" );
+      Label& text = window.add<Label>( Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
+      text.setTextAlignment( align::center, align::center );
+      text.setFont( FONT_6 );
 
-      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 144), _("##restart_mission##") );
-      btnRestart->setTooltipText( _("##restart_mission_tip##") );
-      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
+      auto& btnRestart = window.add<PushButton>( Rect( 20, 120, 380, 144), _("##restart_mission##") );
+      btnRestart.setTooltipText( _("##restart_mission_tip##") );
+      auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      wnd->setCenter( game->gui()->rootWidget()->center() );
-      wnd->setModal();
+      CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
+      CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
 
-      CONNECT( btnRestart, onClicked(), lvl, Level::_restartMission );
-      CONNECT( btnMenu, onClicked(), lvl, Level::_exitToMainMenu );
+      window.moveToCenter();
+      window.setModal();
+
+      events::dispatch<MissionLose>(forceFailed);
     }
   }
 }
 
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
-  PlayerCityPtr city = game->city();
-  const city::VictoryConditions& wt = city->victoryConditions();
+  auto city = game->city();
+  auto& conditions = city->victoryConditions();
 
   int culture = city->culture();
   int prosperity = city->prosperity();
   int favour = city->favour();
-  int peace = city->favour();
-  int population = city->population();
-  bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
+  int peace = city->peace();
+  int population = city->states().population;
+  bool success = conditions.isSuccess( culture, prosperity, favour, peace, population );
 
   if( success || force )
   {
-    dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
-                                                      wt.newTitle(), wt.winText(),
-                                                      false );
-
-    mapToLoad = wt.nextMission();
-
-    CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
-    CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
+    events::dispatch<MissionWin>( force );
   }
 }
 
-int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
-void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
+
+void Level::setConstructorMode(bool enabled)
+{
+  auto city = _d->game->city();
+  city->setOption( PlayerCity::constructorMode, enabled ? 1 : 0 );
+  _d->extMenu->setConstructorMode( enabled );
+}
+
+void Level::loadStage(std::string filename)
+{
+  _d->mapToLoad = filename;
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
+  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
+  stop();
+}
+
+void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
+void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
+void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
-void Level::_restartMission() { _d->result = Level::restart;  stop();}
-void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
-void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
+void Level::setCameraPos(TilePos pos, bool force) {  _d->renderer.camera()->setCenter( pos, force ); }
+void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
+Camera* Level::camera() const { return _d->renderer.camera(); }
+undo::UStack&Level::undoStack() { return _d->undoStack; }
+void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
+void Level::quit(){ _d->result = Level::res_quit; stop(); }
+void Level::restart() { _d->result = Level::res_restart; stop();}
+int  Level::result() const {  return _d->result; }
+void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
-  CONNECT( dlg, onOk(), this, Level::_exitGame );
-  CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+  events::dispatch<ScriptFunc>( "OnRequestExitGame" );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)
@@ -752,11 +709,17 @@ bool Level::_tryExecHotkey(NEvent &event)
       }
       break;
 
-      case KEY_KEY_F: _d->renderer.setLayer( citylayer::fire ); break;
-      case KEY_KEY_D: _d->renderer.setLayer( citylayer::damage ); break;
-      case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
-      case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
-      case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_KEY_E:
+      {
+        TilePos center = _d->renderer.camera()->center();
+        TileRect trect( center-config::tilemap.unitLocation(), center+config::tilemap.unitLocation());
+        TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
+        PlayerCity::TileType rcenter = trect.contain( currect )
+                                          ? PlayerCity::roadExit
+                                          : PlayerCity::roadEntry;
+        _d->renderer.camera()->setCenter( _d->game->city()->getBorderInfo( rcenter ).epos(), false );
+      }
+      break;
 
       default:
         handled = false;
@@ -772,19 +735,19 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_MINUS:
     case KEY_PLUS:
     case KEY_SUBTRACT:
+    case KEY_EQUALS:
     case KEY_ADD:
     {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      events::dispatch<ChangeSpeed>( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
-      e->dispatch();
       handled = true;
     }
     break;
 
     case KEY_KEY_P:
     {
-      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
-      e->dispatch();
+      _d->simulationPaused =  !_d->simulationPaused;
+      events::dispatch<Pause>( _d->simulationPaused ? Pause::pause : Pause::play );
       handled = true;
     }
     break;
@@ -792,45 +755,38 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-      e->dispatch();
+      events::dispatch<Step>( event.keyboard.key == KEY_COMMA ? 1 : 25);
       handled = true;
     }
     break;
 
     case KEY_F5:
-      if( event.keyboard.control )
-      {
-        _d->makeFastSave();
-        handled = true;
-      }
+      _d->makeFastSave();
+      handled = true;
     break;
 
     case KEY_F9:
-      if( event.keyboard.control )
-      {
-        _resolveLoadGame( "" );
-        handled = true;
-      }
+      loadStage( _d->createFastSaveName().toString() );
+      handled = true;
     break;
 
-    case KEY_KEY_1: case KEY_KEY_2:
-    case KEY_KEY_3: case KEY_KEY_4:
+    case KEY_F1: case KEY_F2:
+    case KEY_F3: case KEY_F4:
     {
       if( event.keyboard.control )
       {
         unsigned int index = event.keyboard.key - KEY_KEY_1;
-        city::BuildOptions bopts;
+        development::Options bopts;
         bopts = _d->game->city()->buildOptions();
         if( event.keyboard.shift )
         {
           TilePos camPos = _d->renderer.camera()->center();
-          bopts.setMemPoint( index, camPos );
+          _d->game->city()->activePoints().set( index, camPos );
           _d->game->city()->setBuildOptions( bopts );
         }
         else
         {
-          TilePos camPos = bopts.memPoint( index );
+          TilePos camPos = _d->game->city()->activePoints().get( index );
           _d->renderer.camera()->setCenter( camPos );
         }
 
@@ -850,9 +806,9 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
-      foreach( it, children )
+      for( auto it : children )
       {
-        bool handled = (*it)->onEvent( event );
+        bool handled = it->onEvent( event );
         if( handled )
             break;
       }
@@ -867,34 +823,19 @@ bool Level::_tryExecHotkey(NEvent &event)
   return handled;
 }
 
-void Level::Impl::showMissionTaretsWindow()
+void Level::Impl::showMissionTargetsWindow()
 {
-  int id = utils::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( TEXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
-    dialog::MissionTargets* wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
-    wnd->show();
-    wnd->setID( id );
+    auto& wnd = game->gui()->add<dialog::MissionTargets>( game->city() );
+    wnd.show();
+    wnd.setID( id );
   }
 }
 
-void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
-{  
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
-  e->dispatch();
-}
-
-void Level::_showLoadDialog()
-{
-  gui::Widget* parent = _d->game->gui()->rootWidget();
-
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
-
-  CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
-  wnd->setTitle( _("##mainmenu_loadgame##") );
-}
+void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
+void Level::Impl::showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
 
 }//end namespace scene

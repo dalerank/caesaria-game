@@ -19,17 +19,40 @@
 #include "core/position.hpp"
 #include "objects/road.hpp"
 #include "gfx/animation_bank.hpp"
+#include "gfx/cart_animation.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "helper.hpp"
 #include "corpse.hpp"
+#include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
-Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
+REGISTER_CLASS_IN_WALKERFACTORY(walker::immigrant, Immigrant)
+
+enum class ThinksAboutFood : unsigned short
+{
+   nothing = 0,
+   onemonth,
+   somemonth,
+   much,
+   count
+};
+
+static const std::string ThinksAboutFoodDesc[] = {
+  "##immigrant_nofood_here##",
+  "##immigrant_onemonthfood_here##",
+  "##immigrant_somefood_here##",
+  "##immigrant_much_food_here##",
+  ""
+};
+
+Immigrant::Immigrant( PlayerCityPtr city )
+  : Emigrant( city )
 {
   CitizenGroup peoples;
   peoples[ CitizenGroup::matureMin ] = 2;
@@ -39,11 +62,11 @@ Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
   _setType( walker::immigrant );
 }
 
-Animation& Immigrant::_cart()
+CartAnimation& Immigrant::_cart()
 {
   if( !Emigrant::_cart().isValid() )
   {
-    _setCart( AnimationBank::getCart( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, 0, direction()) );
+    Emigrant::_cart().load( AnimationBank::animImmigrantCart + G_EMIGRANT_CART1, direction() );
   }
 
   return Emigrant::_cart();
@@ -56,18 +79,18 @@ void Immigrant::getPictures( Pictures& oPics)
   // depending on the walker direction, the cart is ahead or behind
   switch (direction())
   {
-  case constants::north:
-  case constants::northEast:
-  case constants::northWest:
-  case constants::west:
+  case direction::north:
+  case direction::northEast:
+  case direction::northWest:
+  case direction::west:
     oPics.push_back( getMainPicture() );
     oPics.push_back( _cart().currentFrame() );
   break;
 
-  case constants::southWest:
-  case constants::southEast:
-  case constants::east:
-  case constants::south:
+  case direction::southWest:
+  case direction::southEast:
+  case direction::east:
+  case direction::south:
     oPics.push_back( _cart().currentFrame() );
     oPics.push_back( getMainPicture() );
   break;
@@ -80,7 +103,7 @@ void Immigrant::getPictures( Pictures& oPics)
 void Immigrant::_changeDirection()
 {
   Emigrant::_changeDirection();
-  _setCart( Animation() );  // need to get the new graphic
+  _setCart( CartAnimation() );  // need to get the new graphic
 }
 
 void Immigrant::_updateThoughts()
@@ -89,12 +112,10 @@ void Immigrant::_updateThoughts()
   thinks << "##immigrant_where_my_home##";
   thinks << "##immigrant_want_to_be_liontamer##";
 
-  int fstock = city::Statistic::getFoodStock( _city() );
-  int mconsumption = city::Statistic::getFoodMonthlyConsumption( _city() );
-  if( fstock / (mconsumption+1) > 4 )
-  {
-    thinks << "##immigrant_much_food_here##";
-  }
+  int fstock = _city()->statistic().food.inGranaries();
+  int mconsumption = _city()->statistic().food.monthlyConsumption();
+  int index = math::clamp<int>( fstock / (mconsumption+1), (int)ThinksAboutFood::nothing, (int)ThinksAboutFood::much );
+  thinks << ThinksAboutFoodDesc[ index ];
 
   setThinks( thinks.random() );
 }
@@ -116,14 +137,6 @@ bool Immigrant::die()
   }
 
   return false;
-}
-
-ImmigrantPtr Immigrant::create(PlayerCityPtr city )
-{
-  ImmigrantPtr newEmigrant( new Immigrant( city ) );
-  newEmigrant->initialize( WalkerHelper::getOptions( constants::walker::immigrant ) );
-  newEmigrant->drop();
-  return newEmigrant;
 }
 
 Immigrant::~Immigrant(){}

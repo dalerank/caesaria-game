@@ -71,6 +71,7 @@ public:
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
   virtual void setFont( const Font& font );
+  virtual void setFont( FontType type, NColor color=0);
 
   virtual void setAlpha( unsigned int value );
 
@@ -86,11 +87,11 @@ signals public:
   Signal1<std::string>& onWordClick();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _handleClick(const Point& p);
 
-  gfx::PictureRef& _textPictureRef();
+  gfx::Picture& _textPicture();
   gfx::Pictures& _backgroundRef();
 
 private:

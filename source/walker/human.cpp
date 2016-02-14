@@ -16,18 +16,38 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "human.hpp"
+#include "city/states.hpp"
 #include "city/city.hpp"
-
-using namespace constants;
 
 Human::Human(PlayerCityPtr city)
   : Walker( city )
 {
-  setFlag( Walker::vividly, true );
-  _setNation( city->nation() );
+  _initHumabOptions();
 }
 
-Human::~Human()
+Human::Human(PlayerCityPtr city, walker::Type type)
+  : Walker( city, type )
+{
+  _initHumabOptions();
+}
+
+void Human::_initHumabOptions()
+{
+  setFlag( Walker::vividly, true );
+  _setNation( _city()->states().nation );
+  _rndOffset() = Point( math::random( 15), math::random( 15 ) ) - Point( 7, 7 );
+}
+
+Human::~Human() {}
+
+Citizen::Citizen(PlayerCityPtr city)
+  : Human( city )
+{
+
+}
+
+Citizen::Citizen(PlayerCityPtr city, walker::Type type)
+  : Human( city, type )
 {
 
 }

@@ -17,48 +17,36 @@
 
 #include "waymark.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
-#include "city/helper.hpp"
+#include "gfx/imgid.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
-
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::waymark, Waymark)
 
 Waymark::Waymark()
-  : TileOverlay( constants::objects::tree, Size(1) )
+  : Overlay( object::waymark, Size::square(1) )
 {
-
 }
 
 void Waymark::timeStep( const unsigned long time )
 {
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
 bool Waymark::isFlat() const { return _isFlat; }
 bool Waymark::isDestructible() const{  return false; }
+void Waymark::initTerrain(Tile&) {}
 
-void Waymark::initTerrain(Tile& terrain)
-{
-
-}
-
-bool Waymark::build( const CityAreaInfo& info )
+bool Waymark::build( const city::AreaInfo& info )
 {  
-  bool isEntryMark = false;
-
   Tilemap& tmap = info.city->tilemap();
   TilesArray around = tmap.getNeighbors( info.pos );
-  TilePos entryPos = info.city->borderInfo().roadEntry;
-  foreach( it, around )
-  {
-    if( (*it)->pos() == entryPos )
-    {
-      isEntryMark = true;
-      break;
-    }
-  }
+  TilePos entryPos = info.city->getBorderInfo( PlayerCity::roadEntry ).epos();
+  bool isEntryMark = around.contain( entryPos );
 
   unsigned int picIndex = isEntryMark ? 89 : 85;
   const TilePos& pos = info.pos;
@@ -70,9 +58,17 @@ bool Waymark::build( const CityAreaInfo& info )
   {
     picIndex += (pos.j() == 0 ? 2 : 0 );
   }
+  else
+  {
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
+    Tile& oTile = tmap.at( info.pos );
+    oTile.setPicture( pic );
+    oTile.setImgId( imgid::fromResource( pic.name() ) );
+    deleteLater();
+  }
 
-  setPicture( ResourceGroup::land3a, picIndex );
-  _isFlat = picture().height() <= tilemap::cellPicSize().height();
+  _picture().load( config::rc.land3a, picIndex );
+  _isFlat = picture().height() <= config::tilemap.cell.picSize().height();
 
-  return TileOverlay::build( info );
+  return Overlay::build( info );
 }

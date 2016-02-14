@@ -41,13 +41,10 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
   ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
   if( ret && ret->subMenu() )
   {
-    //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
     ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
     ret->setBackgroundMode( Label::bgNone );
+    ret->setSubMenuIconVisible( false );
   }
-  //refItem.alignEnabled = true;
-  //refItem.horizontal = EGUIA_CENTER;
-  //refItem.vertical = EGUIA_CENTER;
 
   return ret;
 }
@@ -55,150 +52,143 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
 //! called if an event happened.
 bool MainMenu::onEvent(const NEvent& event)
 {
-	if (enabled())
-	{
-		switch(event.EventType)
-		{
-		case sEventGui:
-			switch(event.gui.type)
-			{
-			case guiElementFocusLost:
-				if (event.gui.caller == this && !isMyChild(event.gui.element))
-				{
-					_closeAllSubMenus();
-					_setHovered( -1 );
-				}
-				break;
-			case guiElementFocused:
-				if (event.gui.caller == this )
-				{
-					bringToFront();
-				}
-				break;
-			default:
-				break;
-			}
-			break;
-		case sEventMouse:
-			switch(event.mouse.type)
-			{
-			case mouseLbtnPressed:
-			{
-				if (!ui()->hasFocus(this))
-				{
-					ui()->setFocus(this);
-				}
-
-    	  bringToFront();
-
-				Point p(event.mouse.pos() );
-				bool shouldCloseSubMenu = _hasOpenSubMenu();
-				if (!absoluteClippingRect().isPointInside(p))
-				{
-					shouldCloseSubMenu = false;
-				}
-				_isHighlighted( event.mouse.pos(), true);
-				if ( shouldCloseSubMenu )
-				{
-          ui()->removeFocus(this);
-				}
-
-				return true;
-			}
-
-			case mouseLbtnRelease:
-			{
-				Point p(event.mouse.pos() );
-				if (!absoluteClippingRect().isPointInside(p))
-				{
-					int t = _sendClick(p);
-					if ((t==0 || t==1) && isFocused())
-						removeFocus();
-				}
-
-			  return true;
-			}
-
-      case mouseMoved:
+  if (enabled())
+  {
+    switch(event.EventType)
+    {
+    case sEventGui:
+      switch(event.gui.type)
       {
-        if (ui()->hasFocus(this) && hovered() >= 0)
-				{
-					int oldHighLighted = hovered();
-					_isHighlighted( event.mouse.pos(), true);
-					if ( hovered() < 0 )
+      case guiElementFocusLost:
+        if (event.gui.caller == this && !isMyChild(event.gui.element))
+        {
+          _closeAllSubMenus();
+          _setHovered( -1 );
+        }
+        break;
+      case guiElementFocused:
+        if (event.gui.caller == this )
+        {
+          bringToFront();
+        }
+        break;
+      default:  break;
+      }
+      break;
+
+    case sEventMouse:
+      switch(event.mouse.type)
+      {
+      case NEvent::Mouse::btnLeftPressed:
+      {
+        if (!isFocused())
+          setFocus();
+
+        bringToFront();
+
+         Point p(event.mouse.pos() );
+         bool shouldCloseSubMenu = _hasOpenSubMenu();
+         if (!absoluteClippingRect().isPointInside(p))
+         {
+           shouldCloseSubMenu = false;
+         }
+         _isHighlighted( event.mouse.pos(), true );
+         if ( shouldCloseSubMenu )
+         {
+           removeFocus();
+         }
+
+         return true;
+      }
+
+      case NEvent::Mouse::mouseLbtnRelease:
+      {
+        Point p(event.mouse.pos() );
+        if (!absoluteClippingRect().isPointInside(p))
+        {
+          int t = _sendClick(p);
+          if ((t==0 || t==1) && isFocused())
+            removeFocus();
+        }
+
+        return true;
+      }
+
+      case NEvent::Mouse::moved:
+      {
+        if (isFocused() && hovered() >= 0)
+        {
+          int oldHighLighted = hovered();
+          _isHighlighted( event.mouse.pos(), true);
+          if ( hovered() < 0 )
           {
             _setHovered( oldHighLighted );   // keep last hightlight active when moving outside the area
           }
-				}
-				return true;
+        }
+        return true;
       }
-
-      default:
-			break;
-			}
-		break;
+      default:	break;
+    }
+    break;
 		
-    default:
-		break;
-		}
-	}
+    default: break;
+    }
+  }
 
-	return Widget::onEvent(event);
+  return Widget::onEvent(event);
 }
 
 void MainMenu::_recalculateSize()
 {
-	Rect parentRect = parent()->clientRect(); // client rect of parent  
+  Rect parentRect = parent()->clientRect(); // client rect of parent
 
-	//AbstractSkin* skin = getEnvironment()->getSkin();
+  //AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = Font::create( FONT_2_WHITE );
   
   int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
-	setGeometry( Rect( parentRect.UpperLeftCorner.x(), parentRect.UpperLeftCorner.y(),
-										 parentRect.LowerRightCorner.x(), parentRect.UpperLeftCorner.y() + hg ) );
-	Rect rect;
+  setGeometry( Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ) );
+  Rect rect;
 
-  rect.UpperLeftCorner = parentRect.UpperLeftCorner;
+  rect._lefttop = parentRect.lefttop();
   hg = std::max<int>( font.getTextSize("A").height(), hg );
-	//if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
-	//	height = skin->getSize(EGDS_MENU_HEIGHT);
-	int width = rect.UpperLeftCorner.x();
-	int i;
+  //if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
+  //	height = skin->getSize(EGDS_MENU_HEIGHT);
+  int width = rect.left();
+  int i;
 
-	for( i=0; i<(int)itemCount(); ++i)
-	{
-		ContextMenuItem* refItem = item( i );
-		if ( refItem->isSeparator() )
-		{
-			refItem->setDimmension( Size( 16, height() ) );
-		}
-		else
-		{
+  for( i=0; i<(int)itemCount(); ++i)
+  {
+    ContextMenuItem* refItem = item( i );
+    if ( refItem->isSeparator() )
+    {
+      refItem->setDimmension( Size( 16, height() ) );
+    }
+    else
+    {
       Size itemSize = font.getTextSize( refItem->text() ) + Size( 20, 0 );
       itemSize.setHeight( height() );
-			refItem->setDimmension( itemSize );
-		}
+      refItem->setDimmension( itemSize );
+    }
 
-		refItem->setOffset( width );
-		width += refItem->dimmension().width();
-	}
+    refItem->setOffset( width );
+    width += refItem->dimmension().width();
+  }
 
-	// recalculate submenus
-	for( i=0; i<(int)itemCount(); ++i )
+  // recalculate submenus
+  for( i=0; i<(int)itemCount(); ++i )
   {
     ContextMenuItem* refItem = item( i );
 
     Rect rectangle( refItem->offset(), 0, refItem->offset() + refItem->dimmension().width(), hg );
     refItem->setGeometry( rectangle );
 
-		if( refItem->subMenu() )
-		{
-			// move submenu
+    if( refItem->subMenu() )
+    {
+      // move submenu
       Size itemSize = refItem->subMenu()->absoluteRect().size();
-
-			refItem->subMenu()->setGeometry( Rect( refItem->offset(), hg,
-																								refItem->offset() + itemSize.width()-5, hg+itemSize.height() ));
-		}
+      refItem->subMenu()->setGeometry( Rect( refItem->offset(), hg,
+                                             refItem->offset() + itemSize.width()-5, hg+itemSize.height() ));
+    }
   }
 }
 

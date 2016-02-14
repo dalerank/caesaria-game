@@ -22,17 +22,34 @@
 #include "gfx/picture.hpp"
 #include "game/service.hpp"
 
+#define DIVINITY_MUST_INITIALIZE_FROM_PANTHEON friend class RomeDivinity;
+
 namespace religion
 {
 
 namespace rome
 {
+  class Pantheon;
+}
 
 class RomeDivinity : public Divinity
 {
+  friend class rome::Pantheon;
 public:
+  typedef enum
+  {
+    Ceres = 0,
+    Mars,
+    Neptune,
+    Venus,
+    Mercury,
 
-  void assignFestival( int type );
+    Count=0xff
+  } Type;
+
+  static std::string findIntName( Type type );
+  static StringArray getIntNames();
+  static std::vector<RomeDivinity::Type> getIntTypes();
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& vm );
@@ -45,19 +62,30 @@ public:
   virtual float monthDecrease() const;
   virtual void setEffectPoint( int value );
   virtual int wrathPoints() const;
+  virtual object::Type templeType( TempleSize size ) const;
   virtual DateTime lastFestivalDate() const;
-
+  virtual void setInternalName(const std::string &newName);
   virtual void updateRelation( float income, PlayerCityPtr city );
-
+  virtual std::string internalName() const;
   virtual std::string moodDescription() const;
   virtual void checkAction(PlayerCityPtr city);
 
-  RomeDivinity();
-
-  virtual void setInternalName(const std::string &newName);
-  virtual std::string internalName() const;
+  RomeDivinity::Type dtype() const;
+  void assignFestival( int type );
 
 protected:
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->setInternalName( findIntName( instance->dtype() ) );
+    instance->drop();
+
+    return instance;
+  }
+
+  RomeDivinity( Type type=RomeDivinity::Count );
+
   virtual void _doBlessing( PlayerCityPtr city ) {}
   virtual void _doWrath( PlayerCityPtr city ) {}
   virtual void _doSmallCurse( PlayerCityPtr city ) {}
@@ -69,14 +97,17 @@ protected:
   bool _blessingDone;
   bool _smallCurseDone;
   int _wrathPoints;
-  float _relation;
-  float _needRelation;
+  RomeDivinity::Type _dtype;
   int _effectPoints;
   gfx::Picture _pic;
   StringArray _moodDescr;
-};
 
-}//end namespace rome
+  struct
+  {
+    float current;
+    float target;
+  } _relation;
+};
 
 }//end namespace religion
 

@@ -20,6 +20,7 @@
 #define _CAESARIA_SOLDIER_INCLUDE_H_
 
 #include "human.hpp"
+#include "walkers_factory_creator.hpp"
 
 /** Soldier, friend or enemy */
 class Soldier : public Human
@@ -33,6 +34,7 @@ public:
                  back2base,
                  duckout,
                  patrol,
+                 doStuck,
                  userAction,
                  doNothing=0xff } SldrAction;
 
@@ -57,13 +59,14 @@ public:
 
   virtual unsigned int attackDistance() const;
   virtual void setAttackDistance( unsigned int distance );
+  virtual int experience() const;
   virtual bool isFriendTo( WalkerPtr wlk ) const;
   virtual void setTarget( TilePos location );
   TilePos target() const;
-  void addFriend( constants::walker::Type friendType);
+  void addFriend( walker::Type friendType);
 
 protected:
-  Soldier(PlayerCityPtr city, constants::walker::Type type);
+  Soldier( PlayerCityPtr city, walker::Type type);
 
   SldrAction _subAction() const;
   void _setSubAction( SldrAction action );
@@ -75,6 +78,5 @@ protected:
 private:
   __DECLARE_IMPL(Soldier)
 };
-
 
 #endif //_CAESARIA_SOLDIER_INCLUDE_H_

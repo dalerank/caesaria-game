@@ -1,0 +1,67 @@
+{
+  version : 1
+  map : "random"
+  random : {
+   size : 5
+   smooth : 2.6
+   terrain : 5
+  }
+  funds : 8000
+  city.name : "Brundisium"
+  date : "-350.01.01"
+  adviserEnabled : true
+	
+  win :
+  {
+    population : 0
+    name : "n1_random"
+    culture : 0
+    prosperity : 0
+    peace : 0
+    favour : 0
+    next : ""
+    title : "##clerk##"
+    finish : "300.01.01"
+    may_continue : false
+    short : "##win_or_die##"
+    maxHouseLevel : "big_villa"
+    caption : "##new_village##"
+    overview :  [ "##tutorial_text##",
+                  "@img=picture2_00002" ]
+  }
+	
+  empire :
+  {
+    enabled : true
+    cities :
+    {
+      all : "enabled"
+    }
+  }
+  		
+  events :
+  {
+    tutorial#random_collapse :
+    {
+      population : 60
+      strong : 25
+    }
+  }
+	
+  buildoptions :
+  {
+    farm : "enabled"
+    raw_material : "enabled"
+    factory : "enabled"
+    water : "enabled"
+    health : "enabled"
+    religion : "enabled"
+    education : "enabled"
+    commerce : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "enabled"
+    security : "enabled"
+    check_desirability : false                  
+  }
+}

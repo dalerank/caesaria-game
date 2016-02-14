@@ -30,9 +30,12 @@
 #include "core/foreach.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_map.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerSoldier, Chastener)
 
 Chastener::Chastener( PlayerCityPtr city, walker::Type type )
     : EnemySoldier( city, type )
@@ -40,16 +43,7 @@ Chastener::Chastener( PlayerCityPtr city, walker::Type type )
   addFriend( walker::romeChastenerElephant );
 }
 
-ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
-{
-  ChastenerPtr ret( new Chastener( city, type ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
-}
-
-int Chastener::agressive() const { return -2; }
+int Chastener::agressive() const { return 3; }
 
 bool Chastener::die()
 {

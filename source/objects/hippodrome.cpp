@@ -19,14 +19,19 @@
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "core/logger.hpp"
+#include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::hippodrome, Hippodrome)
 
 const Point hippodromeSectionOffset[] = {
   Point(), Point( 0, 43 ), Point(),
@@ -46,13 +51,13 @@ const Point hippodromeSectionOffset[] = {
   Point( 120, 95 ) //18
 };
 
-HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
-  : Building( objects::fortArea, Size(5) )
+HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Type type )
+  : Building( object::fortArea, Size(5,5) )
 {
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 
-  _fgPicturesRef().resize( 1 );
+  _fgPictures().resize( 1 );
 
   _basepos = base.pos();
   _direction = direction;
@@ -65,8 +70,8 @@ HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction dir
   case middle:
     switch( _direction )
     {
-    case north: pictureIndex = 3; animIndex = 8; break;
-    case west:  pictureIndex = 12; animIndex = 17; break;
+    case direction::north: pictureIndex = 3; animIndex = 8; break;
+    case direction::west:  pictureIndex = 12; animIndex = 17; break;
     default: break;
     }
   break;
@@ -74,20 +79,19 @@ HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction dir
   case ended:
     switch( _direction )
     {
-    case north: pictureIndex = 1; animIndex = 7; break;
-    case west:  pictureIndex = 14; animIndex = 18; break;
+    case direction::north: pictureIndex = 1; animIndex = 7; break;
+    case direction::west:  pictureIndex = 14; animIndex = 18; break;
     default: break;
     }
   break;
   }
 
-  Picture pic = Picture::load( ResourceGroup::hippodrome, pictureIndex );
-  pic.setOffset( Point( 0, pic.height() / 2) + hippodromeSectionOffset[ pictureIndex ] );
-  setPicture( pic );
+  _picture().load( ResourceGroup::hippodrome, pictureIndex );
+  _picture().setOffset( Point( 0, _picture().height() / 2 ) + hippodromeSectionOffset[ pictureIndex ] );
 
-  _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
-  _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
-  _animationRef().stop();
+  _animation().addFrame( ResourceGroup::hippodrome, animIndex );
+  _animation().setOffset( hippodromeSectionOffset[ animIndex ]);
+  _animation().stop();
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -96,12 +100,11 @@ void HippodromeSection::destroy()
 {
   Building::destroy();
 
-  HippodromePtr hp = ptr_cast<Hippodrome>( _city()->getOverlay( _basepos ) );
-  if( hp.isValid() )
+  auto hippodrome = _map().overlay( _basepos ).as<Hippodrome>();
+  if( hippodrome.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _basepos );
-    e->dispatch();
-    _basepos = TilePos( -1, -1 );
+    events::dispatch<ClearTile>( _basepos );
+    _basepos = TilePos::invalid();
   }
 }
 
@@ -120,6 +123,7 @@ public:
   HippodromeSectionPtr sectionMiddle, sectionEnd;
   Picture fullyPic;  
   WalkerList charioters;
+  Pictures charioterPictures;
 };
 
 Direction Hippodrome::direction() const { return _d->direction; }
@@ -132,13 +136,13 @@ void Hippodrome::timeStep(const unsigned long time)
   foreach( it, _d->charioters )
   {
     (*it)->timeStep( time );
-    Pictures rpics;
-    (*it)->getPictures( rpics );
-    _fgPicture( 2 + index ) = rpics[0];
-    _fgPicture( 2 + index + 1 ) = rpics[1];
-    const Point mp = (*it)->mappos();
+    _d->charioterPictures.clear();
+    (*it)->getPictures( _d->charioterPictures );
+    _fgPicture( 2 + index )     = _d->charioterPictures[0];
+    _fgPicture( 2 + index + 1 ) = _d->charioterPictures[1];
+    const Point& mp = (*it)->mappos();
     const Point& xp = tile().mappos();
-    _fgPicture( 2 + index ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
+    _fgPicture( 2 + index     ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
     _fgPicture( 2 + index + 1 ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
     index+=2;
   }
@@ -149,10 +153,11 @@ const Pictures& Hippodrome::pictures(Renderer::Pass pass) const
   return EntertainmentBuilding::pictures( pass );
 }
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, objects::hippodrome, Size(15,5) ), _d( new Impl )
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, object::hippodrome, Size(15,5) ), _d( new Impl )
 {
-  _fgPicturesRef().resize(5);
-  _d->direction = west;
+  _fgPictures().resize(5);
+  _d->direction = direction::west;
+  _d->charioterPictures.reserve(3);
   _init();  
 
   _addNecessaryWalker( walker::charioteer );
@@ -170,23 +175,22 @@ std::string Hippodrome::troubleDesc() const
   return ret;
 }
 
-bool Hippodrome::canBuild( const CityAreaInfo& areaInfo ) const
+bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
 {
   const_cast<Hippodrome*>( this )->_checkDirection( areaInfo );
-  if( _d->direction != noneDirection )
+  if( _d->direction != direction::none )
   {
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  city::Helper helper( areaInfo.city );
-  HippodromeList hpList = helper.find<Hippodrome>( objects::hippodrome );
-  if( !hpList.empty() )
+  int hp_n = areaInfo.city->statistic().objects.count<Hippodrome>();
+  if( hp_n > 0 )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
     return false;
   }
 
-  return _d->direction != noneDirection;
+  return _d->direction != direction::none;
 }
 
 void Hippodrome::deliverService()
@@ -210,14 +214,14 @@ void Hippodrome::deliverService()
   _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
 }
 
-bool Hippodrome::build( const CityAreaInfo& info )
+bool Hippodrome::build( const city::AreaInfo& info )
 {
   _checkDirection( info );
 
-  setSize( Size( 5 ) );
+  setSize(Size(5, 5));
   EntertainmentBuilding::build( info );
 
-  TilePos offset = _d->direction == north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
+  TilePos offset = _d->direction == direction::north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
 
   _d->sectionMiddle = _addSection( HippodromeSection::middle, offset );
   _d->sectionEnd = _addSection( HippodromeSection::ended, offset * 2 );
@@ -228,10 +232,10 @@ bool Hippodrome::build( const CityAreaInfo& info )
 
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
-  _animationRef().start();
+  _animation().start();
 
-  WalkerPtr wlk = CircusCharioter::create( _city(), this );
-  _d->charioters.push_back( wlk );
+  auto charioter = Walker::create<CircusCharioter>( _city(), this );
+  _d->charioters.push_back( charioter.object() );
 
   return true;
 }
@@ -242,15 +246,13 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->sectionEnd->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionEnd->pos() );
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->sectionMiddle->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionMiddle->pos() );
     _d->sectionMiddle = 0;
   }
 }
@@ -266,10 +268,10 @@ WalkerList Hippodrome::_specificWorkers() const
 {
   WalkerList ret;
 
-  foreach( i, walkers() )
+  for( auto i : walkers() )
   {
-    if( (*i)->type() == walker::charioteer )
-      ret << *i;
+    if( i->type() == walker::charioteer )
+      ret << i;
   }
 
   return ret;
@@ -283,73 +285,74 @@ void Hippodrome::_init( bool onBuild )
     _fgPicture( 1 ) = Picture::getInvalid();
   }
 
-  _animationRef().clear();
+  _animation().clear();
 
   switch( _d->direction )
   {
-  case north:
+  case direction::north:
   {
-    setPicture( ResourceGroup::hippodrome, 5 );
-    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 9 );
+    _picture().load( ResourceGroup::hippodrome, 5 );
+    _d->fullyPic.load( ResourceGroup::hippodrome, 9 );
     _d->fullyPic.setOffset( hippodromeSectionOffset[ 9 ] );
     if( !onBuild )
     {
-      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 3);
+      _fgPicture( 0 ).load( ResourceGroup::hippodrome, 3);
       _fgPicture( 0 ).setOffset( 150, 181 );
-      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 1);
+      _fgPicture( 1 ).load( ResourceGroup::hippodrome, 1);
       _fgPicture( 1 ).setOffset( 300, 310 );
     }
   }
   break;
 
-  case west:
+  case direction::west:
   {
-    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 16 );
+    _d->fullyPic.load( ResourceGroup::hippodrome, 16 );
     _d->fullyPic.setOffset( hippodromeSectionOffset[ 16 ] );
-    Picture pic = Picture::load( ResourceGroup::hippodrome, 10 );
+    Picture pic( ResourceGroup::hippodrome, 10 );
     pic.setOffset( 0, pic.height() / 2 + 42 );
     setPicture( pic );
 
     if( !onBuild )
     {
-      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 12);
+      _fgPicture( 0 ).load( ResourceGroup::hippodrome, 12);
       _fgPicture( 0 ).setOffset( 150, 31 );
-      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 14 );
+      _fgPicture( 1 ).load( ResourceGroup::hippodrome, 14 );
       _fgPicture( 1 ).setOffset( 300, -43 );
     }
   }
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+    Logger::warning( "Hippodrome: Unknown direction" );
+    //_CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
   }
 }
 
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  CityAreaInfo info = { _city(), pos() + offset, TilesArray() };
+  city::AreaInfo info( _city(), pos() + offset );
   ret->build( info );
   ret->drop();
 
   return ret;
 }
 
-void Hippodrome::_checkDirection( const CityAreaInfo& areaInfo )
+void Hippodrome::_checkDirection( const city::AreaInfo& areaInfo )
 {
   const_cast<Hippodrome*>( this )->setSize( Size( 15, 5 ) );
-  _d->direction = west;
+  _d->direction = direction::west;
   bool mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check horizontal direction
 
   if( !mayBuild )
   {
-    _d->direction = north;
+    _d->direction = direction::north;
     const_cast<Hippodrome*>( this )->setSize( Size( 5, 15 ) );
     mayBuild = EntertainmentBuilding::canBuild( areaInfo ); //check vertical direction
   }
 
   if( !mayBuild )
   {
-    _d->direction = noneDirection;
+    _d->direction = direction::none;
   }
 }

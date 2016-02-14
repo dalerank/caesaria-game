@@ -20,28 +20,49 @@
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
+#include "metadata.hpp"
 
 class TileOverlayConstructor
 {
 public:
-  virtual gfx::TileOverlayPtr create() = 0;
+  virtual OverlayPtr create() = 0;
+};
+
+template< class T > class BaseCreator : public TileOverlayConstructor
+{
+public:
+  virtual OverlayPtr create()
+  {
+    OverlayPtr ret( new T() );
+    ret->initialize( object::Info::find( ret->type() ) );
+    ret->drop();
+
+    return ret;
+  }
 };
 
 class TileOverlayFactory
 {
 public:
   static TileOverlayFactory& instance();
-  gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
-  gfx::TileOverlayPtr create( const std::string& typeName ) const;
+  OverlayPtr create( const object::Type type ) const;
+  OverlayPtr create( const std::string& typeName ) const;
 
-  bool canCreate( const gfx::TileOverlay::Type type ) const;
-  void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  bool canCreate( const object::Type type ) const;
+  void addCreator( const object::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
   TileOverlayFactory();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define REGISTER_CLASS_IN_OVERLAYFACTORY(type,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { TileOverlayFactory::instance().addCreator( type, TEXT(a), new BaseCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
+
 
 #endif  //__CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_

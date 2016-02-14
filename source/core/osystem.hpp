@@ -20,11 +20,26 @@
 
 #include <string>
 
+class StringArray;
+
 class OSystem
 {
 public:
+  typedef enum { unknown, windows, win32, win64, unix, linux, macos, bsd, haiku, beos, android } Type;
   static void error( const std::string& title, const std::string& text );
-  static void openUrl( const std::string& url );
+  static void getProcessTree( int pid, StringArray& out );
+  static void openUrl(const std::string& url , const std::string& prefix="");
+  static void openDir(const std::string& path , const std::string &prefix="");
+  static int  gmtOffsetMs();
+  static void markFileAsExecutable( const std::string& filename );
+  static bool is( Type type );
+  static void restartProcess(const std::string &filename, const std::string& dir, const StringArray& cmds);
+
+  static bool isAndroid();
+  static bool isLinux();
+  static bool isUnix();
+  static bool isMac();
+  static bool isWindows();
 };
 
 #endif //__CAESARIA_OSYSTEM_INCLUDE_HPP__

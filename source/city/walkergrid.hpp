@@ -19,26 +19,28 @@
 #define __CAESARIA_WALKER_GRID_H_INCLUDED__
 
 #include "walker/predefinitions.hpp"
-#include "gfx/tile.hpp"
+#include "core/size.hpp"
 #include <vector>
 
 namespace city
 {
 
-class WalkerGrid
+class WalkersGrid
 {
 public:
   void clear();
 
   void append( WalkerPtr a );
-  void resize(Size size );
+  void resize( Size size );
   const Size& size() const;
   void remove( WalkerPtr a );
+  void update( const WalkerList& walkers );
+  void sort();
 
-  const WalkerList& at(const TilePos &pos );
+  const WalkerList& at(const TilePos& pos);
 
 private:
-  unsigned int _offset(const TilePos &pos);
+  unsigned int _offset(const TilePos& pos);
 
   typedef std::vector< WalkerList > Grid;
 
@@ -47,6 +49,6 @@ private:
   Grid _grid;
 };
 
-}
+}//end namespace city
 
 #endif//__CAESARIA_WALKER_GRID_H_INCLUDED__

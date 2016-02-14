@@ -17,6 +17,7 @@
 
 #include "cityservice.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 
 namespace city
@@ -29,14 +30,14 @@ public:
   std::string name;
 };
 
+void Srvc::timeStep(const unsigned int time) {}
+
 std::string Srvc::name() const { return _d->name; }
 
 void Srvc::setName(const std::string& name) { _d->name = name; }
-
+void Srvc::attach(){ _d->city->addService( this ); }
 bool Srvc::isDeleted() const { return false; }
-
 void Srvc::destroy() {}
-
 VariantMap Srvc::save() const { return VariantMap(); }
 
 void Srvc::load(const VariantMap& stream) {}
@@ -44,7 +45,7 @@ void Srvc::load(const VariantMap& stream) {}
 Srvc::~Srvc()
 {
 #ifdef DEBUG
-  Logger::warning( "CityServices: remove " + name() );
+  Logger::warning( "CityServices: remove {0}", name() );
 #endif
 }
 
@@ -55,7 +56,7 @@ Srvc::Srvc(PlayerCityPtr city, const std::string& name)
   _d->city = city;
   setDebugName( name );
 #ifdef DEBUG
-  Logger::warning( "CityServices: create " + name );
+  Logger::warning( "CityServices: create {0}", name );
 #endif
 }
 

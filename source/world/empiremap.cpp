@@ -18,6 +18,9 @@
 #include "empiremap.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/variant_map.hpp"
+#include "gfx/tilepos.hpp"
+#include "core/tilepos_array.hpp"
 #include "routefinder.hpp"
 
 namespace world
@@ -26,10 +29,10 @@ namespace world
 struct EmTile
 {  
   TilePos pos;
-  EmpireMap::TerrainType info;
+  EmpireMap::TerrainType terrain = EmpireMap::trUnknown;
 
   EmTile() {}
-  EmTile( TilePos p ) : pos( p ), info( EmpireMap::unknown ) {}
+  EmTile( const TilePos& p ) : pos (p) {}
 };
 
 static EmTile invalidTile = EmTile( TilePos( -1, -1 ) );
@@ -84,22 +87,36 @@ public:
   ScopedPtr< TraderouteFinder > routefinder;
 };
 
-EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
+EmpireMap::TerrainType EmpireMap::getTerrainType( const TilePos& ij ) const
 {
-  return _d->at( ij ).info;
+  return _d->at( ij ).terrain;
 }
 
-Route EmpireMap::findRoute(Point start, Point stop, int flags ) const
+TilePos EmpireMap::point2location(const Point& point) const
+{
+   return _d->pnt2tp( point );
+}
+
+void EmpireMap::setTerrainType(const TilePos& ij, EmpireMap::TerrainType type)
+{
+  _d->at( ij ).terrain = type;
+}
+
+Rect EmpireMap::area(const TilePos& ij) const
+{
+  return Rect( Point( ij.i() * _d->tilesize.width(),ij.j() * _d->tilesize.height() ),
+               _d->tilesize );
+}
+
+Route EmpireMap::findRoute(const Point& start, const Point& stop, int flags ) const
 {
   Route way;
-  TilePosArray tiles;
+  Locations tiles;
 
   _d->routefinder->findRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);
 
-  foreach( pos, tiles)
-  {
-    way.push_back( _d->tp2pnt( *pos ) );
-  }
+  for( const auto& pos : tiles)
+    way.push_back( _d->tp2pnt( pos ) );
 
   return way;
 }
@@ -111,7 +128,7 @@ EmpireMap::EmpireMap() : _d( new Impl )
 
 EmpireMap::~EmpireMap() {}
 
-void EmpireMap::initialize(const VariantMap& stream)
+void EmpireMap::load(const VariantMap& stream)
 {
   if( stream.empty() )
   {
@@ -124,28 +141,47 @@ void EmpireMap::initialize(const VariantMap& stream)
 
   VariantList tiles = stream.get( "tiles" ).toList();
   int index = 0;
-  foreach( v, tiles )
+  for( const auto& v : tiles )
   {
     EmTile& tile = _d->at( TilePos( index % _d->size.width(), index / _d->size.width() ) );
-    tile.info = (v->toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
+    tile.terrain = (TerrainType)v.toInt();
     index++;
   }
 
-  _d->routefinder.reset( new TraderouteFinder( *this ) );
+  _d->routefinder.createInstance( *this );
 }
 
-void EmpireMap::setCity(Point rpos)
+VariantMap EmpireMap::save() const
+{
+  VariantMap ret;
+
+  VariantList vTiles;
+  for( int j=0; j < _d->size.height(); j++ )
+    for( int i=0; i < _d->size.width(); i++ )
+    {
+      EmTile& tile = _d->at( TilePos( i, j ) );
+      vTiles.push_back( tile.terrain );
+    }
+
+  ret[ "tiles" ] = vTiles;
+  ret[ "size"  ] = _d->size;
+  ret[ "tilesize" ] = _d->tilesize;
+
+  return ret;
+}
+
+void EmpireMap::setCity(const Point& rpos)
 {
   TilePos pos = _d->pnt2tp( rpos );
 
   if( _d->isInside( pos ) )
   {
     EmTile& tile = _d->at( pos );
-    tile.info = EmpireMap::city;
-    _d->routefinder->setTerrainType( pos, EmpireMap::city );
+    tile.terrain = EmpireMap::trCity;
+    _d->routefinder->setTerrainType( pos, EmpireMap::trCity );
   }
 }
 
-Size EmpireMap::getSize() const {  return _d->size; }
+Size EmpireMap::size() const { return _d->size; }
 
 }

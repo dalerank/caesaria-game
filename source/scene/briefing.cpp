@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "briefing.hpp"
 #include "gui/texturedbutton.hpp"
@@ -26,6 +26,8 @@
 #include "core/event.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 
@@ -36,7 +38,7 @@ class MissionButton : public TexturedButton
 {
 public:
   MissionButton( Widget* parent, Point pos, std::string title, std::string mission )
-   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", 5, 6, 4, 4 )
+   : TexturedButton( parent, pos, Size::square( 46 ), -1, "europe02", TexturedButton::States( 5, 6, 4, 4 ) )
   {
     setIsPushButton( true );
     _mission = mission;
@@ -48,14 +50,11 @@ public:
 protected:
   virtual void _btnClicked()
   {
-    Widgets widgets = parent()->children();
-    foreach( it, widgets)
+    auto buttons = parent()->children().select<MissionButton>();
+    for( auto button : buttons)
     {
-      MissionButton* btn = safety_cast<MissionButton*>( *it );
-      if( btn && btn != this )
-      {
-        btn->setPressed( false );
-      }
+      if( button != this )
+        button->setPressed( false );
     }
 
     emit onMissionSelect( _mission, _title );
@@ -75,7 +74,6 @@ class Briefing::Impl
 public:
   static const int currentVesion=1;
   bool isStopped;
-  gui::Label* missionTitle;
   gui::Label* cityCaption;
   gui::TexturedButton* btnContinue;
   Game* game;
@@ -92,7 +90,8 @@ public:
 
   void resolveSelecMission( std::string mission, std::string title )
   {
-    cityCaption->setText( title );
+    btnContinue->setEnabled( true );
+    cityCaption->setText( _(title) );
     fileMap = mission;
   }
 };
@@ -110,7 +109,6 @@ Briefing::~Briefing() {}
 void Briefing::draw()
 {
   _d->game->gui()->beforeDraw();
-  //_d->engine->drawPicture(_d->bgPicture, 0, 0);
   _d->game->gui()->draw();
 }
 
@@ -125,36 +123,51 @@ void Briefing::initialize()
 
   Logger::warning( "Briefing: initialize start");
 
-  VariantMap vm = SaveAdapter::load( _d->filename );
+  VariantMap vm = config::load( _d->filename );
 
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
-    Picture pic = Picture::load( "mapback", 1 );
-    gui::Image* mapback = new gui::Image( _d->game->gui()->rootWidget(), Point(), pic );
-    mapback->setCenter( _d->game->gui()->rootWidget()->center() );
+    Picture mapBackImage( "mapback", 1 );
+    std::string briefingCaption = vm[ "title" ].toString();
+    if( briefingCaption.empty() )
+      briefingCaption = "##briefing_select_next_mission##";
+    gui::Image& mapback = _d->game->gui()->add<gui::Image>( Point(), mapBackImage );
+    if( !mapBackImage.isValid() )
+    {
+      mapback.setGeometry( Rect( 0, 0, 640, 480 ) );
+    }
+    mapback.setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();
-    pic = Picture::load( mapToLoad );
-    gui::Image* img = new gui::Image( mapback, Point( 192, 144 ), pic );
+
+    mapBackImage.load( mapToLoad )
+                .withFallback( "europe01", 2 );
+
+    Point startImgPos( 192, 144 );
+    const unsigned int textYOffset = 400;
+    mapback.add<gui::Image>( startImgPos, mapBackImage );
 
     VariantMap items = vm[ "items" ].toMap();
-    foreach( it, items )
+    for( const auto& it : items )
     {
-      VariantMap miss_vm = it->second.toMap();
+      VariantMap miss_vm = it.second.toMap();
       std::string title = miss_vm.get( "title" ).toString();
-      Point location = miss_vm.get( "location" ).toPoint();
       std::string mission = miss_vm.get( "mission" ).toString();
-      gui::MissionButton* btn = new gui::MissionButton( img, location, title, mission );
-      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );
+      Point location = miss_vm.get( "location" ).toPoint() + startImgPos;
+
+      auto& missionButton = mapback.add<gui::MissionButton>( location, title, mission );
+      CONNECT( &missionButton, onMissionSelect, _d.data(), Impl::resolveSelecMission );
     }
 
     std::string missionTt = vm.get( "title" ).toString();
-    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 200 + img->width(), 600 ), missionTt );
-    _d->missionTitle->setFont( Font::create( FONT_5 ));
-    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + img->width(), 630 ) );
-    _d->cityCaption->setFont( Font::create( FONT_2 ) );
+    auto& missionTitle = mapback.add<gui::Label>( Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
+    missionTitle.setFont( Font::create( FONT_5 ));
+    _d->cityCaption = &mapback.add<gui::Label>( Rect( 200, 600, 200 + textYOffset, 630 ) );
+    _d->cityCaption->setFont( FONT_2 );
+    _d->cityCaption->setText( _(briefingCaption) );
 
-    _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
+    _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size::square( 27 ), -1, 179 );
+    _d->btnContinue->setEnabled( false );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }
   else
@@ -166,6 +179,6 @@ void Briefing::initialize()
 
 int Briefing::result() const{  return _d->result; }
 bool Briefing::isStopped() const{  return _d->isStopped;}
-std::string Briefing::getMapName() const{  return _d->fileMap;}
+std::string Briefing::getMapName() const{ return _d->fileMap; }
 
 }//end namespace scene

@@ -20,11 +20,12 @@
 
 #include "human.hpp"
 #include "objects/constants.hpp"
+#include "objects/predefinitions.hpp"
 
 class Rioter : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RioterPtr create( PlayerCityPtr city );
   virtual ~Rioter();
 
   virtual void timeStep(const unsigned long time);
@@ -36,7 +37,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual int agressive() const;
-  virtual void excludeAttack( constants::objects::Group group );
+  virtual void excludeAttack( object::Group group );
 
 protected:
   Rioter( PlayerCityPtr city );
@@ -50,10 +51,8 @@ private:
 
 class NativeRioter : public Rioter
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RioterPtr create( PlayerCityPtr city );
-
-private:
   NativeRioter( PlayerCityPtr city );
 };
 

@@ -16,18 +16,31 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_APPLICATION_H_INCLUDED__
 #define __CAESARIA_APPLICATION_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
-#include "scene/base.hpp"
-#include "gfx/engine.hpp"
-#include "enums.hpp"
+#include "scene/constants.hpp"
 
-class Scene;
+namespace scene{ class Base; }
+namespace gfx{   class Engine; }
+
+class Simulation
+{
+public:
+
+  struct {
+    unsigned int manualTicksCounterX10;
+    unsigned int current; // last action time
+    unsigned int ticksX10; // time (ticks) multiplied by 10;
+    unsigned int multiplier; // 100 = 1x speed
+  } time;
+
+  void reset();
+  Simulation();
+};
 
 class Game
 {
@@ -36,43 +49,37 @@ public:
   ~Game();
 
   void save(std::string filename) const;
+  bool load(std::string filename);
 
   void initialize();
 
   bool exec();
 
+  void play();
   void reset();
+  void pause();
   void clear();
+  void destroy();
 
-  PlayerPtr player() const;
-  PlayerCityPtr city() const;
+  PlayerPtr        player() const;
+  PlayerCityPtr    city() const;
   world::EmpirePtr empire() const;
-  gui::Ui* gui() const;
-  gfx::Engine* engine() const;
-  scene::Base* scene() const;
-  DateTime date() const;
+  gui::Ui*         gui() const;
+  gfx::Engine*     engine() const;
+  scene::Base*     scene() const;
+  const DateTime&  date() const;
 
   void setPaused( bool value );
   bool isPaused() const;
 
   void step( unsigned int count = 1);
-
-  void play();
-  void pause();
-
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
-  int timeMultiplier() const;
-  void setNextScreen(ScreenType screen);
-  bool load(std::string filename);
+  int  timeMultiplier() const;
+  void setNextScreen( scene::ScreenType screen);
 
-public signals:
-  Signal1<std::string>& onSaveAccepted();
-
-private:
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+private:  
+  __DECLARE_IMPL(Game)
 };
 
 

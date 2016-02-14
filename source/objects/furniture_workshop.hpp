@@ -25,8 +25,8 @@
 class FurnitureWorkshop : public Factory
 {
 public:
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo &areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
 
   FurnitureWorkshop();
 protected:

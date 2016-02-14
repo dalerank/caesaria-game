@@ -38,6 +38,7 @@ public:
     crime,
     guard,
     missionary,
+    patrician,
     srvCount
   } Type;
 
@@ -49,11 +50,12 @@ public:
   int max() const { return _max; }
   void setMax( int value ) { _max = value; set( _value ); }
 
-  operator float() const { return _value; }
+  operator float() const { return value(); }
 
   Service& operator=( float i) { set( i ); return *this; }
   Service& operator-=(float i) { set( _value - i ); return *this; }
   Service& operator+=(float i) { set( _value + i ); return *this; }
+
 private:
   float _value;
   int _min, _max;
@@ -66,6 +68,7 @@ public:
 
   static Service::Type getType(const std::string& name);
   static std::string getName( Service::Type type );
+  static Service::Type fromObject( int objectType );
 
 private:
   ServiceHelper();

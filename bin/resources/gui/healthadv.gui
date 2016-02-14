@@ -1,0 +1,57 @@
+{
+  geometry : [ 0, 0, 640, 290 ]
+  bgtype : "whiteFrame"
+  static : true
+  
+  lbBlackframe#Label : {
+    geometry : [ 35, 90, "pw-35", 175 ]
+    bgtype : "blackFrame"
+  }
+
+  lbWorkText#Label : {
+    font : "FONT_1"
+    geometry : [ 180, 72, 280, 92 ]
+    text : "##work##"
+  }
+
+  lbMaxAv#Label : {
+    font : "FONT_1"
+    geometry : [ 290, 72, 470, 92 ]
+    text : "##hlth_care_of##"
+  }
+
+  lbCoverage#Label : {
+    font : "FONT_1"
+    geometry : [ 480, 72, "pw-20", 92 ]
+    text : "##coverage##"
+  }
+
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00261"
+  }
+
+  lbTitle#Label : {
+    geometryf : [ 0.1, 0.05, 0.95, 0.13 ]
+    font : "FONT_5"
+    text : "##health_advisor##"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbAdvice#Label : {
+    geometry : [ 35, 180, "pw-35", "ph-15" ]
+    multiline : true
+    text : "##healthadv_advice##"
+    font : "FONT_1"
+    multiline : true
+  }
+
+  btnHelp#TexturedButton : {
+      geometry : [ 12, "ph-39", 36, "ph-15" ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+  }
+}
+

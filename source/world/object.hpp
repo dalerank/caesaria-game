@@ -22,6 +22,7 @@
 #include "gfx/picturesarray.hpp"
 #include "predefinitions.hpp"
 #include "gfx/animation.hpp"
+#include "nation.hpp"
 
 namespace world
 {
@@ -29,9 +30,11 @@ namespace world
 class Object : public ReferenceCounted
 {
 public:
+  typedef enum { aboutEmpireMap=0, aboutEmpireAdvInfo, aboutEmtype } AboutType;
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;
+  virtual bool isAvailable() const { return true; }
   virtual std::string type() const;
   virtual void timeStep(const unsigned int time);
   virtual EmpirePtr empire() const;
@@ -40,24 +43,19 @@ public:
   virtual Point location() const;
   virtual void addObject( ObjectPtr );
   virtual void setLocation( const Point& location );
-  virtual gfx::Picture picture() const;
-  virtual const gfx::Pictures& pictures() const;
-  virtual void setPicture( gfx::Picture pic );
-  virtual bool isMovable() const;
+  virtual std::string about( AboutType type );
+  Nation nation() const;
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
 
   virtual void attach();
-
   virtual ~Object();
-
   void deleteLater();
 
 protected:
+  void _setNation( world::Nation nation );
   Object(EmpirePtr empire );
-  gfx::Animation& _animation();
-  gfx::Pictures& _pictures();
 
 private:
   class Impl;

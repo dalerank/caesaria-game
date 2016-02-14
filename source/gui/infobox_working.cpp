@@ -21,8 +21,12 @@
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "core/utils.hpp"
-
-using namespace constants;
+#include "widget_helper.hpp"
+#include "game/datetimehelper.hpp"
+#include "texturedbutton.hpp"
+#include "core/logger.hpp"
+#include "core/common.hpp"
+#include "dialogbox.hpp"
 
 namespace gui
 {
@@ -33,32 +37,37 @@ namespace infobox
 AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
+  if( building.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   _working = building;
 
-  setBase( ptr_cast<Construction>( _working ) );
+  setBase( _working  );
+  _setWorkingVisible( true );
 
-  std::string title = MetaDataHolder::findPrettyName( _working->type() );
-  setTitle( _(title) );
+  setTitle( _( _working->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 
-  Label* lb = new Label( this, Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setWordwrap( true );
+  const int id = lbHelpId;
+  auto& lb = add<Label>( Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, id );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setWordwrap( true );
 
   setText( "" );
 
-  std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->state( Construction::damage ),
-                                           (int)_working->state( Construction::fire ));
-  if( is_kind_of<ServiceBuilding>( _working ) )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
   {
-    ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
-    DateTime time = srvc->lastSendService();
-    text += utils::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT_LOCAL( &btn, onClicked(), AboutWorkingBuilding::_showAdvInfo )
   }
-
-  new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
 void AboutWorkingBuilding::setText(const std::string& text)
@@ -78,16 +87,28 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::_showHelp()
+void AboutWorkingBuilding::_showHelp() { ui()->add<DictionaryWindow>( _working->type() ); }
+
+WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
+
+void AboutWorkingBuilding::_showAdvInfo()
 {
-  DictionaryWindow::show( this, _working->type() );
+  auto serviceBuilding = _working.as<ServiceBuilding>();
+  std::string timeText;
+  if( serviceBuilding.isValid() )
+  {
+    DateTime time = serviceBuilding->lastSendService();
+    timeText = utils::date2str( time, true );
+  }
+
+  std::string workerState = fmt::format( "Damage={}\nFire={}\nService={}\n",
+                                         utils::objectState( _working, pr::damage ),
+                                         utils::objectState( _working, pr::fire ),
+                                         timeText );
+
+  dialog::Information( ui(), "Information", workerState );
 }
 
-WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()
-{
-  return _working;
-}
-
-}
+}//end namespace infobox
 
 }//end namespace gui

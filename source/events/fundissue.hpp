@@ -15,34 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_FUNDISSUE_EVENT_H_INCLUDE_
-#define _CAESARIA_FUNDISSUE_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_PAYMENT_EVENT_H_INCLUDE_
+#define _CAESARIA_PAYMENT_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "good/good.hpp"
 
 namespace events
 {
 
-class FundIssueEvent : public GameEvent
+class Payment : public GameEvent
 {
 public:
   static GameEventPtr create( int type, int value );
-  static GameEventPtr import( good::Type good, int qty, float buff=1.f );
-  static GameEventPtr exportg( good::Type good, int qty, float buff=1.f );
+  static GameEventPtr import( good::Product good, int qty, float buff=1.f );
+  static GameEventPtr exportg( good::Product good, int qty, float buff=1.f );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  FundIssueEvent();
+  Payment();
 
   int _type;
   int _value;
   float _buff;
-  good::Type _gtype;
+  good::Product _gtype;
   int _qty;
 };
 
 } //end namespace events
-#endif //_CAESARIA_FUNDISSUE_EVENT_H_INCLUDE_
+#endif //_CAESARIA_PAYMENT_EVENT_H_INCLUDE_

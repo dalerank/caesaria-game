@@ -21,7 +21,7 @@
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "image.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
@@ -31,98 +31,88 @@
 #include "widget_helper.hpp"
 #include "smkviewer.hpp"
 
-using namespace constants;
+using namespace events;
 
 namespace gui
 {
 
 class EmperrorRequestWindow::Impl
 {
-public:
-  void openEmperrorAdvisor();
-  GameAutoPause locker;
+public:  
   std::string video;
 };
 
-EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::request::RequestPtr request,
+EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::RequestPtr request,
                                                       bool mayExec, const std::string& video )
 {
-  EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
+  auto* requestWindow = new EmperrorRequestWindow(parent, request);
   if( mayExec )
   {
-    ret->setText( _( "##city_have_goods_for_request##") );    
+    requestWindow->setText( _( "##city_have_goods_for_request##") );
   }
-  ret->_d->video = video;
+  requestWindow->setVideo( video );
 
-  return ret;
+  return requestWindow;
 }
 
 EmperrorRequestWindow::~EmperrorRequestWindow() {}
 
-EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request )
+EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPauseWidget::insertTo( this );
 
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
   setupUI( uiFile );
 
-  setCenter( parent->center() );
-
-  city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
+  city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
   if( gr.isValid() )
   {
-    Label* lbQty;
-    Image* imgIcon;
-    Label* lbInterval;
-    Label* lbTitle;
-    Label* lbText;
-    SmkViewer* smkViewer;
-    GET_WIDGET_FROM_UI( lbQty )
-    GET_WIDGET_FROM_UI( lbText )
-    GET_WIDGET_FROM_UI( imgIcon )
-    GET_WIDGET_FROM_UI( lbInterval )
-    GET_WIDGET_FROM_UI( smkViewer )
-    GET_WIDGET_FROM_UI( lbTitle )
+    INIT_WIDGET_FROM_UI(Label*, lbQty )
+    INIT_WIDGET_FROM_UI(Label*, lbText )
+    INIT_WIDGET_FROM_UI(Image*, imgIcon )
+    INIT_WIDGET_FROM_UI(Label*, lbInterval )
+    INIT_WIDGET_FROM_UI(SmkViewer*, smkViewer )
+    INIT_WIDGET_FROM_UI(Label*, lbTitle )
 
-    if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
-    if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
+    if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
+    if( imgIcon ) { imgIcon->setPicture( gr->info().picture() ); }
 
     std::string title, text, video;
-    switch( gr->goodType() )
+    if( gr->info().type() == good::denaries )
     {
-    case good::denaries:
-        text = "##rome_need_some_goods##";
-        title = "##emperor_request_money##";
-        video = ":/smk/Urgent_message1.smk";
-    break;
-
-    default:
-        text = "##rome_need_some_money##";
-        title = "##emperor_request##";
-        video = ":/smk/Urgent_message2.smk";
-    break;
+      text = "##rome_need_some_goods##";
+      title = "##emperor_request_money##";
+      video = "urgent_message1";
+    }
+    else
+    {
+      text = "##rome_need_some_money##";
+      title = "##emperor_request##";
+      video = "urgent_message2";
     }
 
-    if( lbText ) { lbText->setText( _( text ) ); }
+    if( lbText )
+    {
+      lbText->setWordwrap( true );
+      lbText->setText( _( text ) );
+    }
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
     int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );
-    if( lbInterval ) { lbInterval->setText( utils::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
+    if( lbInterval ) { lbInterval->setText( fmt::format( "{} {}", month2Comply, _( "##months_to_comply##") ) ); }
 
     video = _d->video.empty() ? video : _d->video;
     if( smkViewer ) { smkViewer->setFilename( video ); }
   }
 
-  TexturedButton* btnExit;
-  TexturedButton* btnAdvisor;
-  GET_WIDGET_FROM_UI( btnExit )
-  GET_WIDGET_FROM_UI( btnAdvisor )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit,    onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::_openEmperrorAdvisor )
 
-  CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
-  CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
+  moveToCenter();
+  setModal();
 }
 
 void EmperrorRequestWindow::draw(gfx::Engine& painter )
@@ -135,15 +125,13 @@ void EmperrorRequestWindow::draw(gfx::Engine& painter )
 
 void EmperrorRequestWindow::setText(const std::string& text)
 {
-  Label* lbText;
-  GET_WIDGET_FROM_UI( lbText )
+  INIT_WIDGET_FROM_UI( Label*, lbText )
   if( lbText ) { lbText->setText( text );  }
 }
 
 void EmperrorRequestWindow::setTitle(const std::string& text)
 {
-  Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
   if( lbTitle ) { lbTitle->setText( text );  }
 }
 
@@ -152,10 +140,14 @@ bool EmperrorRequestWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
+void EmperrorRequestWindow::setVideo(const std::string& video)
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::empire );
-  e->dispatch();
+  _d->video = video;
+}
+
+void EmperrorRequestWindow::_openEmperrorAdvisor()
+{
+  events::dispatch<ShowAdvisorWindow>( true, advisor::empire );
 }
 
 }//end namespace gui

@@ -16,20 +16,20 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fundissue.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "city/trade_options.hpp"
 
-using namespace constants;
+using namespace econ;
 
 namespace events
 {
 
-GameEventPtr FundIssueEvent::create(int type, int value)
+GameEventPtr Payment::create(int type, int value)
 {
-  FundIssueEvent* ev = new FundIssueEvent();
+  Payment* ev = new Payment();
   ev->_value = value;
   ev->_type = type;
   GameEventPtr ret( ev );
@@ -37,49 +37,49 @@ GameEventPtr FundIssueEvent::create(int type, int value)
   return ret;
 }
 
-GameEventPtr FundIssueEvent::import(good::Type good, int qty, float buff)
+GameEventPtr Payment::import(good::Product good, int qty, float buff)
 {
-  FundIssueEvent* ev = new FundIssueEvent();
+  Payment* ev = new Payment();
   ev->_gtype = good;
   ev->_qty = qty;
   ev->_buff = buff;
-  ev->_type = city::Funds::importGoods;
+  ev->_type = Issue::importGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
 }
 
-GameEventPtr FundIssueEvent::exportg(good::Type good, int qty, float buff)
+GameEventPtr Payment::exportg(good::Product good, int qty, float buff)
 {
-  FundIssueEvent* ev = new FundIssueEvent();
+  Payment* ev = new Payment();
   ev->_gtype = good;
   ev->_qty = qty;
   ev->_buff = buff;
-  ev->_type = city::Funds::exportGoods;
+  ev->_type = Issue::exportGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
 }
 
-bool FundIssueEvent::_mayExec(Game& game, unsigned int time) const {  return true; }
+bool Payment::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-FundIssueEvent::FundIssueEvent() : _type( 0 ), _value( 0 ), _buff( 1.f ), _gtype( good::none ), _qty( 0 )
+Payment::Payment() : _type( 0 ), _value( 0 ), _buff( 1.f ), _gtype( good::none ), _qty( 0 )
 {}
 
-void FundIssueEvent::_exec(Game& game, unsigned int )
+void Payment::_exec(Game& game, unsigned int )
 {
-  if( _type == city::Funds::importGoods )
+  if( _type == Issue::importGoods )
   {
     int price = good::Helper::importPrice( game.city(), _gtype, _qty );
     _value = -price * ( 1+_buff );
   }
-  else if( _type == city::Funds::exportGoods )
+  else if( _type == Issue::exportGoods )
   {
     int price = good::Helper::exportPrice( game.city(), _gtype, _qty );
     _value = price * ( 1+_buff );
   }
 
-  game.city()->funds().resolveIssue( FundIssue( _type, _value ) );
+  game.city()->treasury().resolveIssue( Issue( (Issue::Type)_type, _value ) );
 }
 
 } //end namespace events

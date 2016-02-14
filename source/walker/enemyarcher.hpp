@@ -23,9 +23,8 @@
 
 class EnemyArcher : public EnemySoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static EnemyArcherPtr create( PlayerCityPtr city, constants::walker::Type type );
-
   void send2city( TilePos pos );
 
   virtual void timeStep(const unsigned long time);
@@ -38,7 +37,7 @@ protected:
   virtual void _waitFinished();
 
 private:
-  EnemyArcher(PlayerCityPtr city, constants::walker::Type type);
+  EnemyArcher(PlayerCityPtr city, walker::Type type=walker::etruscanArcher);
 };
 
 #endif //_CAESARIA_ENEMYARCHER_INCLUDE_H_

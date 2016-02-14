@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
 #define _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
@@ -27,26 +27,27 @@ namespace gui
 namespace dialog
 {
 
-class GameSpeedOptions : public Window
+class SpeedOptions : public Window
 {
 public:
-  GameSpeedOptions(Widget* parent,
-                         int gameSpeed,
-                         int scrollSpeed,
-                         int autosaveInterval);
+  SpeedOptions( Widget* parent,
+                int gameSpeed,
+                int scrollSpeed,
+                int autosaveInterval);
 
   //! Деструктор
-  virtual ~GameSpeedOptions(void);
-
-  virtual bool onEvent(const NEvent &event);
+  virtual ~SpeedOptions(void);
 
 public signals:
   Signal1<int>& onGameSpeedChange();
   Signal1<int>& onScrollSpeedChange();
   Signal1<int>& onAutosaveIntervalChange();
 
+protected:
+  virtual bool _onButtonClicked(Widget *sender);
+
 private:
-  void _update();
+  void _update();  
 
   class Impl;
   ScopedPtr< Impl > _d;

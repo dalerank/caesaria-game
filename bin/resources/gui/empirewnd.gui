@@ -1,0 +1,41 @@
+{  
+  geometryf : [ 0, 0, 1, 1 ]
+  bgtype : "none"
+  static : false
+
+  gbox#GroupBox : {
+    geometry : [ 0, "ph-120", "pw-0", "ph-0" ]
+    bgtype : "none"    
+  }
+
+  btnTrade#TexturedButton : {
+    geometry : [ "pw-48", "ph-100", "pw-20", "ph-72" ]
+    normal : [ "paneling", 292 ]
+    hovered : [ "paneling", 293 ]
+    pressed : [ "paneling", 294 ]
+    disabled : [ "paneling", 294 ]
+    tooltip : "##to_trade_advisor##"
+  }
+
+  btnExit#ExitButton : {
+    geometry : [ "pw-44", "ph-44", "pw-20", "ph-20" ]
+    tooltip : "##return_to_main_map##"
+  }
+
+  btnHelp#HelpButton : {
+    geometry : [ 20, "ph-44", 44, "ph-20" ]
+    uri : "empiremap"
+  }
+
+  btnAi#PushButton : {
+    geometry : [ 20, "ph-100", 48, "ph-72" ]
+    text : "AI"
+    text.align : [ "center", "center" ]
+  }
+
+  lbTitle#Label : {
+    geometry : [ 150, "ph-132", "pw-150", "ph-100" ]
+    font : "FONT_5"
+    text.align : [ "center", "center" ]
+  }
+}

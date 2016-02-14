@@ -23,14 +23,16 @@
 #include "core/gettext.hpp"
 #include "objects/granary.hpp"
 #include "core/utils.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
-#include "special_orders_window.hpp"
-#include "good/goodhelper.hpp"
+#include "granary_orders_window.hpp"
+#include "good/helper.hpp"
+#include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
+#include "core/metric.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace metric;
 
 namespace gui
 {
@@ -38,32 +40,40 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(granery,AboutGranary)
+
 AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   setupUI( ":/gui/granaryinfo.gui" );
-  _granary = ptr_cast<Granary>( tile.overlay() );
 
-  setBase( ptr_cast<Construction>( _granary ) );
+  _granary = tile.overlay<Granary>();
 
-  PushButton* btnOrders;
-  Label* lbUnits;
-  GET_WIDGET_FROM_UI( btnOrders )
-  GET_WIDGET_FROM_UI( lbUnits )
+  if( _granary.isNull() )
+  {
+    deleteLater();
+    return;
+  }
 
-  CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
+  setBase( _granary );
+  _setWorkingVisible( true );
 
-  std::string title = MetaDataHolder::findPrettyName( _granary->type() );
-  setTitle( _(title) ); 
+  INIT_WIDGET_FROM_UI( Label*, lbUnits )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOrders, onClicked(), AboutGranary::showSpecialOrdersWindow );
+
+  setTitle( _( _granary->info().prettyName() ) );
 
   if( lbUnits )
   {
     // summary: total stock, free capacity
-    std::string desc = utils::format( 0xff, "%d %s, %s %d",
-                                             _granary->store().qty(),
+    int capacity = _granary->store().qty();
+    int freeQty = _granary->store().freeQty();
+    std::string desc = utils::format( 0xff, "%d %s, %s %d (%s)",
+                                             Measure::convQty( capacity ),
                                              _("##units_in_stock##"), _("##freespace_for##"),
-                                             _granary->store().freeQty() );
-    lbUnits->setPosition( _lbTitleRef()->leftbottom() + Point( 0, 5 ) );
+                                             Measure::convQty( freeQty ),
+                                             Measure::measureType() );
+    lbUnits->setPosition( _lbTitle()->leftbottom() + Point( 0, 5 ) );
     lbUnits->setText( desc );
 
     drawGood(good::wheat, 0, lbUnits->bottom() );
@@ -86,27 +96,29 @@ void AboutGranary::showSpecialOrdersWindow()
   }
   else
   {
-    pos = absoluteRect().UpperLeftCorner;
+    pos = absoluteRect().lefttop();
   }
 
-  new GranarySpecialOrdersWindow( parent(), pos, _granary );
+  parent()->add<GranarySpecialOrdersWindow>( pos, _granary );
 }
 
-void AboutGranary::drawGood( good::Type goodType, int col, int paintY)
+void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
 {
-  std::string goodName = good::Helper::getTypeName( goodType );
+  good::Info info( goodType );
   int qty = _granary->store().qty(goodType);
-  std::string outText = utils::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
+  qty = Measure::convQty( qty );
+  const char* measure = Measure::measureShort();
+
+  std::string outText = fmt::format( "{} {} {}", qty, _(measure), _( "##" + info.name() + "##" ) );
 
   // pictures of goods
-  const Picture& pic = good::Helper::picture( goodType );
-  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 150, 24 )) );
-  lb->setIcon( pic );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  Label& lb = add<Label>( Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
+  lb.setIcon( info.picture() );
+  lb.setFont( FONT_2 );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 30, 0 ) );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

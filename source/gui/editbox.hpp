@@ -21,7 +21,6 @@
 #include "widget.hpp"
 #include "core/color.hpp"
 #include "core/signals.hpp"
-#include <string>
 
 namespace gui
 {
@@ -100,9 +99,6 @@ public:
   //! \return Returns the size in pixels of the text
   virtual Size textDimension();
 
-  //! Sets text justification
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
-
   //! called if an event happened.
   virtual bool onEvent( const NEvent& event );
 
@@ -144,7 +140,7 @@ signals public:
 
 protected:
   //! Updates the position, splits text if required
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
   //! Breaks the single text line.
   void _breakText();
@@ -170,6 +166,7 @@ protected:
 
   void _setText( const std::wstring& text );
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

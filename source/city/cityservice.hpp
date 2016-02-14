@@ -26,23 +26,45 @@
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Srvc)
+
 class Srvc : public ReferenceCounted
 {
 public:
-  virtual void timeStep( const unsigned int time ) = 0;
+  template<typename Class, typename... Args>
+  static SrvcPtr create( const Args & ... args)
+  {
+    auto instance = ptr_make<Class>( args... );
+    return ptr_cast<Srvc>( instance );
+  }
+  /**
+   * @brief Call every frame
+   * @param Current frame in city
+   */
+  virtual void timeStep( const unsigned int time );
 
   std::string name() const;
   void setName( const std::string& name  );
 
+  /** Add this service to city **/
+  void attach();
+
+  /**
+   * @brief Check service is alive
+   * @return false if may to destroy service
+   */
   virtual bool isDeleted() const;
   
+  /**
+   * @brief Calls before erasing from city
+   */
   virtual void destroy();
 
+  /** Serialization functions **/
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
   virtual ~Srvc();
-
 protected:
   Srvc( PlayerCityPtr city, const std::string& name );
   PlayerCityPtr _city() const;
@@ -51,8 +73,6 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-typedef SmartPtr<Srvc> SrvcPtr;
 
 }//end namespace city
 

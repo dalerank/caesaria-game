@@ -22,8 +22,8 @@
 #include "objects/barracks.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -32,10 +32,11 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(barracks,AboutBarracks)
+
 class AboutBarracks::Impl
 {
 public:
-  Label* lbWeaponQty;
 };
 
 AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& tile )
@@ -43,27 +44,28 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 {
   setupUI( ":/gui/barracsopts.gui" );
 
-  BarracksPtr barracks = ptr_cast<Barracks>( tile.overlay() );
+  BarracksPtr barracks = tile.overlay<Barracks>();
 
   if( !barracks.isValid() )
   {
     deleteLater();
-    Logger::warning( "AboutBarracs: cant find barracks at %d,%d", tile.i(), tile.j() );
+    Logger::warning( "AboutBarracs: cant find barracks at {0}x{1}", tile.i(), tile.j() );
     return;
   }
 
-  setBase( ptr_cast<Construction>( barracks ) );
+  setBase( barracks );
+  _setWorkingVisible( true );
 
-  GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
+  INIT_WIDGET_FROM_UI( Label*, lbWeaponQty )
 
-  setTitle( MetaDataHolder::findPrettyName( base()->type() ) );
+  setTitle( _( barracks->info().prettyName() ) );
   setText( _("##barracks_info##") );
 
-  if( _d->lbWeaponQty )
+  if( lbWeaponQty )
   {
-    _lbTextRef()->setHeight( height() / 2 );
-    _d->lbWeaponQty->setTop( _lbTextRef()->bottom() + 5 );
-    _d->lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
+    _lbText()->setHeight( height() / 2 );
+    lbWeaponQty->setTop( _lbText()->bottom() + 5 );
+    lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
   }
 }
 

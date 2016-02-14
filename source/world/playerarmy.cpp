@@ -17,22 +17,27 @@
 
 #include "playerarmy.hpp"
 #include "empire.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "merchant.hpp"
 #include "gfx/animation.hpp"
+#include "core/variant_map.hpp"
 #include "city.hpp"
 #include "city/city.hpp"
 #include "objects/fort.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
+#include "objects_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+REGISTER_CLASS_IN_WORLDFACTORY(PlayerArmy)
 
 struct SoldierInfo
 {
@@ -56,6 +61,25 @@ public:
   void updateStrength();
 };
 
+std::string PlayerArmy::about(Object::AboutType type)
+{
+  std::string ret;
+  switch(type)
+  {
+  case aboutEmpireMap:
+     ret =  mode() == PlayerArmy::go2home
+                  ? "##playerarmy_gone_to_home##"
+                  : "##playerarmy_gone_to_location##";
+  break;
+
+  case aboutEmtype: return "world_playerarmy"; break;
+
+  default:        ret = "##ourcity_unknown_about##";  break;
+  }
+
+  return ret;
+}
+
 PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
 {
   PlayerArmyPtr ret( new PlayerArmy( empire ) );
@@ -66,7 +90,7 @@ PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
   return ret;
 }
 
-std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
+std::string PlayerArmy::type() const { return TEXT(PlayerArmy); }
 
 void PlayerArmy::timeStep(const unsigned int time)
 {
@@ -74,7 +98,7 @@ void PlayerArmy::timeStep(const unsigned int time)
   {
     if( game::Date::isDayChanged() )
     {
-      for( RomeSoldierList::iterator it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
+      for( auto it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
       {
         if( (*it)->isDeleted() )
         {
@@ -109,7 +133,7 @@ void PlayerArmy::move2location(Point point)
   bool validWay = _findWay( location(), point);
   if( !validWay )
   {
-    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    Logger::warning( "PlayerArmy: cant find way to point [{0},{!}]", point.x(), point.y()  );
     deleteLater();
   }
 
@@ -157,11 +181,12 @@ void PlayerArmy::killSoldiers(int percent)
   if( percent >= 100 )
   {
     _d->soldiersInfo.clear();
+    Logger::warning( "PlayerArmy killed" );
     deleteLater();
   }
 
   int curStrength = strength();
-  int finishStrength = curStrength * percent / 100;
+  int finishStrength = math::percentage( curStrength, percent );
   while( !_d->soldiersInfo.empty() && curStrength > finishStrength )
   {
     _d->soldiersInfo.erase( _d->soldiersInfo.begin() );
@@ -171,7 +196,7 @@ void PlayerArmy::killSoldiers(int percent)
 
 PlayerArmy::Mode PlayerArmy::mode() const { return _d->mode; }
 
-int PlayerArmy::viewDistance() const { return 30; }
+int PlayerArmy::searchRange() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
@@ -186,28 +211,27 @@ bool PlayerArmy::_isAgressiveArmy(ArmyPtr other) const
 
 void PlayerArmy::_check4attack()
 {
-  MovableObjectList mobjects;
-  mobjects << empire()->objects();
+  auto mobjects = empire()->objects().select<MovableObject>();
   mobjects.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;
 
-  foreach( it, mobjects )
+  for( auto& it : mobjects )
   {
-    float distance = location().distanceTo( (*it)->location() );    
-    distanceMap[ (int)distance ] = *it;
+    float distance = location().distanceTo( it->location() );
+    distanceMap[ (int)distance ] = it;
   }
 
-  foreach( it, distanceMap )
+  for( auto& it : distanceMap )
   {
-    if( it->first < 20 )
+    if( it.first < config::army::viewRange )
     {
-      _attackObject( ptr_cast<Object>( it->second ) );
+      _attackObject( it.second.as<Object>() );
       break;
     }
-    else if( it->first < viewDistance() )
+    else if( it.first < searchRange() )
     {
-      bool validWay = _findWay( location(), it->second->location() );
+      bool validWay = _findWay( location(), it.second->location() );
       if( validWay )
       {
         _d->mode = PlayerArmy::go2location;
@@ -222,16 +246,16 @@ void PlayerArmy::_check4attack()
      std::map< int, CityPtr > citymap;
 
      DateTime currentDate = game::Date::current();
-     foreach( it, cities )
+     for( auto city : cities )
      {
-       float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( 12 - (*it)->lastAttack().monthsTo( currentDate ), 0, 12 );
-       citymap[ month2lastAttack * 100 + (int)distance ] = *it;
+       float distance = location().distanceTo( city->location() );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - city->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
+       citymap[ month2lastAttack * 100 + (int)distance ] = city;
      }
 
-     foreach( it, citymap )
+     for( auto city : citymap )
      {
-       bool validWay = _findWay( location(), it->second->location() );
+       bool validWay = _findWay( location(), city.second->location() );
        if( validWay )
        {
          _d->mode = PlayerArmy::go2location;
@@ -258,15 +282,15 @@ void PlayerArmy::_reachedWay()
     PlayerCityPtr pCity = ptr_cast<PlayerCity>( _d->base );
     if( pCity.isValid() )
     {
-      foreach( it, _d->soldiersInfo )
+      for( auto sldr : _d->soldiersInfo )
       {
-        int type = (*it).save[ "type" ];
-        WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
-        walker->load( (*it).save );
-        pCity->addWalker( walker );
+        int type = sldr.save[ "type" ];
+        WalkerPtr walker = WalkerManager::instance().create( (walker::Type)type, pCity );
+        walker->load( sldr.save );
+        walker->attach();
       }
 
-      FortPtr fort = ptr_cast<Fort>( pCity->getOverlay( _d->fortPos ) );
+      auto fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
       if( fort.isValid() )
       {
         fort->returnSoldiers();
@@ -280,13 +304,13 @@ void PlayerArmy::_reachedWay()
 
 void PlayerArmy::_attackAny()
 {
-  ObjectList objs = empire()->findObjects( location(), 20 );
+  ObjectList objs = empire()->findObjects( location(), config::army::viewRange );
   objs.remove( this );
 
   bool successAttack = false;
-  foreach( i, objs )
+  for( auto i : objs )
   {
-    successAttack = _attackObject( *i );
+    successAttack = _attackObject( i );
     if( successAttack )
       break;
   }
@@ -316,24 +340,14 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
 {
   _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
-
-  Picture pic = Picture::load( ResourceGroup::empirebits, 37 );
-  Size size = pic.size();
-  pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
-  setPicture( pic );
-
-  _animation().clear();
-  _animation().load( ResourceGroup::empirebits, 72, 6 );
-  _animation().setLoop( gfx::Animation::loopAnimation );
-  _animation().setOffset( Point( 5, -10 ) );
 }
 
 void PlayerArmy::Impl::updateStrength()
 {
   unsigned int result = 0;
-  foreach( it, soldiersInfo )
+  for( auto& it : soldiersInfo )
   {
-    result += (*it).strike;
+    result += it.strike;
   }
 }
 

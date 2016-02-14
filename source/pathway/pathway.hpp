@@ -27,6 +27,13 @@
 class Pathway : public ReferenceCounted
 {
 public:
+  typedef enum { noFlags=0x0,
+                 checkStart=0x1, checkStop=0x2,
+                 roadOnly=0x4, deepWaterOnly=0x8, terrainOnly=0x10,
+                 waterOnly=0x20, traversePath=0x40,
+                 everyWhere=0x80, fourDirection=0x100,
+                 customCondition=0x200, ignoreRoad=0x400 } Flag;
+
   typedef enum { forward, reverse } DirectionType;
   Pathway();
   Pathway( const Pathway& copy );
@@ -52,11 +59,12 @@ public:
   bool isDestination() const;
 
   void next();
-  constants::Direction direction();
+  Direction direction() const;
 
-  void setNextDirection(const gfx::Tilemap& tmap, constants::Direction direction );
+  void setNextDirection(const gfx::Tilemap& tmap, Direction direction );
   void setNextTile( const gfx::Tile& tile);
-  bool contains( gfx::Tile& tile);
+  void append( const Pathway& other );
+  bool contains(const gfx::Tile &tile);
   const gfx::TilesArray& allTiles() const;
 
   void prettyPrint() const;

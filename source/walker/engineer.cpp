@@ -16,9 +16,11 @@
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "engineer.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "objects/construction.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
+REGISTER_CLASS_IN_WALKERFACTORY(walker::engineer, Engineer)
 
 class Engineer::Impl
 {
@@ -26,11 +28,6 @@ public:
   int averageLevel;
   std::set<ConstructionPtr> _reachedBuildings;
 };
-
-WalkerPtr Engineer::create(PlayerCityPtr city)
-{
-  return ServiceWalker::create( city, Service::engineer ).object();
-}
 
 Engineer::~Engineer() {}
 
@@ -61,16 +58,16 @@ std::string Engineer::thoughts(Thought th) const
 
 void Engineer::_centerTile()
 {
-  city::Helper helper( _city() );
-  TilePos offset( reachDistance(), reachDistance() );
-  ConstructionList buildings = helper.find<Construction>( objects::any, pos() - offset, pos() + offset );
-  foreach( b, buildings )
+  ConstructionList buildings = _city()->statistic().objects
+                                                   .find<Construction>( object::any,
+                                                                        pos(), reachDistance() );
+  for( auto b : buildings )
   {
-    if( !_d->_reachedBuildings.count( *b ) )
+    if( !_d->_reachedBuildings.count( b ) )
     {
-      int damageLvl = (*b)->state( Construction::damage );
+      int damageLvl = b->state( pr::damage );
       _d->averageLevel = ( _d->averageLevel + damageLvl ) / 2;
-      _d->_reachedBuildings.insert( *b );
+      _d->_reachedBuildings.insert( b );
     }
   }
 

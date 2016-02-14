@@ -20,6 +20,7 @@
 #include "core/timer.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "gfx/tilemap_config.hpp"
 #include <vector>
 
 class AlarmEvent
@@ -48,12 +49,13 @@ public:
 
     alarms.erase( alarms.begin() );
     currentIndex = math::clamp<int>( currentIndex, 0, alarms.size() - 1 );
-    emit onAlarmChangeSignal( alarms.size() > 0 );
+    emit signal.onAlarmChange( alarms.size() > 0 );
   }
 
-public signals:
-  Signal1<bool> onAlarmChangeSignal;
-  Signal1<TilePos> onMoveToAlarmSignal;
+  struct {
+    Signal1<bool> onAlarmChange;
+    Signal1<TilePos> onMoveToAlarm;
+  } signal;
 };
 
 AlarmEventHolder::AlarmEventHolder() : _d( new Impl )
@@ -74,7 +76,7 @@ void AlarmEventHolder::add( TilePos pos, std::string message )
   alarm.position = pos;
   
   _d->alarms.push_back( alarm );
-  emit _d->onAlarmChangeSignal( _d->alarms.size() > 0 );
+  emit _d->signal.onAlarmChange( _d->alarms.size() > 0 );
 }
 
 void AlarmEventHolder::next()
@@ -83,13 +85,13 @@ void AlarmEventHolder::next()
     return;
 
   _d->currentIndex = (_d->currentIndex+1) % _d->alarms.size();
-  emit _d->onMoveToAlarmSignal( _d->alarms[ _d->currentIndex ].position );
+  emit _d->signal.onMoveToAlarm( _d->alarms[ _d->currentIndex ].position );
 }
 
 TilePos AlarmEventHolder::getCurrentPos() const
 {
   if( _d->currentIndex >= _d->alarms.size() )
-    return TilePos( -1, -1 );
+    return TilePos::invalid();
 
   return _d->alarms[ _d->currentIndex ].position;
 }
@@ -104,5 +106,5 @@ std::string AlarmEventHolder::getCurrentMessage() const
   return _d->alarms[ _d->currentIndex ].message;
 }
 
-Signal1<bool>& AlarmEventHolder::onAlarmChange() {  return _d->onAlarmChangeSignal; }
-Signal1<TilePos>& AlarmEventHolder::onMoveToAlarm(){  return _d->onMoveToAlarmSignal;}
+Signal1<bool>& AlarmEventHolder::onAlarmChange() {  return _d->signal.onAlarmChange; }
+Signal1<TilePos>& AlarmEventHolder::onMoveToAlarm(){  return _d->signal.onMoveToAlarm;}

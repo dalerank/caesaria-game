@@ -13,26 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "removecitizen.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
-#include "core/foreach.hpp"
 
 using namespace gfx;
 
 namespace events
 {
+const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr RemoveCitizens::create(TilePos center, unsigned int count)
+GameEventPtr RemoveCitizens::create(const TilePos& center, const CitizenGroup& group)
 {
   RemoveCitizens* e = new RemoveCitizens();
   e->_center  = center;
-  e->_count = count;
+  e->_group = group;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -42,31 +42,21 @@ GameEventPtr RemoveCitizens::create(TilePos center, unsigned int count)
 void RemoveCitizens::_exec(Game& game, unsigned int time)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    HouseList hList;
-    hList << tilemap.getRectangle( curRange, _center ).overlays();
+    HouseList hList = tilemap.rect( curRange, _center ).overlays().select<House>();
 
-    foreach( it, hList )
+    for( auto house : hList )
     {
-      HousePtr house = *it;
-      if( house.isValid() )
-      {
-        if( house->habitants().count() >= _count )
-        {
-          house->remHabitants( _count );
-          break;
-        }
-      }
+      house->removeHabitants( _group );
+      if( _group.empty() )
+        break;
     }
   }
 }
 
 bool RemoveCitizens::_mayExec(Game&, unsigned int) const { return true; }
 
-RemoveCitizens::RemoveCitizens() : _count( 0 )
-{
-}
+RemoveCitizens::RemoveCitizens() {}
 
 }

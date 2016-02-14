@@ -20,23 +20,28 @@
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "walker/serviceman.hpp"
 #include "walker/rioter.hpp"
 #include "walker/indigene.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::native_hut, NativeHut)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::native_center, NativeCenter)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::native_field, NativeField)
 
 namespace {
 static const int rioterGenerateLevel = 80;
 }
 
-NativeBuilding::NativeBuilding(const Type type, const Size& size )
+NativeBuilding::NativeBuilding(const object::Type type, const Size& size )
 : Building( type, size )
 {
-  setState( inflammability, 0 );
-  setState( collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 void NativeBuilding::save( VariantMap& stream) const 
@@ -49,7 +54,7 @@ void NativeBuilding::load( const VariantMap& stream)
   Building::load(stream);
 }
 
-bool NativeBuilding::build( const CityAreaInfo& info )
+bool NativeBuilding::build( const city::AreaInfo& info )
 {
   tile().setFlag( Tile::tlRock, true );
   return Building::build( info );
@@ -57,9 +62,9 @@ bool NativeBuilding::build( const CityAreaInfo& info )
 
 bool NativeBuilding::canDestroy() const { return false; }
 
-NativeHut::NativeHut() : NativeBuilding( objects::nativeHut, Size(1) )
+NativeHut::NativeHut() : NativeBuilding( object::native_hut, Size::square(1) )
 {
-  setPicture( ResourceGroup::housing, 49 );
+  _picture().load( ResourceGroup::housing, 49 );
   _discontent = 0;
   _day2look = math::random( 90 );
 }
@@ -84,7 +89,7 @@ void NativeHut::timeStep(const unsigned long time)
 
     if( math::random( _discontent ) > rioterGenerateLevel )
     {
-      RioterPtr rioter = NativeRioter::create( _city() );
+      auto rioter = Walker::create<NativeRioter>( _city() );
       rioter->send2City( this );
       _discontent = 0;
     }
@@ -92,8 +97,8 @@ void NativeHut::timeStep(const unsigned long time)
     if( _day2look < 0 )
     {
       _day2look = 30 + math::random( 60 );
-      IndigenePtr ind = Indigene::create( _city() );
-      ind->send2city( this );
+      auto indigene = Walker::create<Indigene>( _city() );
+      indigene->send2city( this );
     }
   }
 }
@@ -122,9 +127,9 @@ float NativeHut::evaluateService(ServiceWalkerPtr walker)
 
 float NativeHut::discontent() const { return _discontent; }
 
-NativeCenter::NativeCenter() : NativeBuilding( objects::nativeCenter, Size(2) )
+NativeCenter::NativeCenter() : NativeBuilding( object::native_center, Size::square(2) )
 {
-  setPicture( ResourceGroup::housing, 51 );
+  _picture().load( ResourceGroup::housing, 51 );
 }
 
 void NativeCenter::save( VariantMap&stream) const 
@@ -139,10 +144,10 @@ void NativeCenter::store(unsigned int qty)
 
 }
 
-NativeField::NativeField() : NativeBuilding( objects::nativeField, Size(1) )
+NativeField::NativeField() : NativeBuilding( object::native_field, Size::square(1) )
 {
   _progress = 0;
-  setPicture( ResourceGroup::commerce, 13 );
+  _picture().load( ResourceGroup::commerce, 13 );
 }
 
 void NativeField::save( VariantMap&stream) const 
@@ -180,5 +185,5 @@ unsigned int NativeField::catchCrops()
 
 void NativeField::_updatePicture()
 {
-  setPicture( ResourceGroup::commerce, 13 + _progress / 20 );
+  _picture().load( ResourceGroup::commerce, 13 + _progress / 20 );
 }

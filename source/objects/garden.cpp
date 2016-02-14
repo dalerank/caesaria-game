@@ -18,14 +18,18 @@
 #include "garden.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 
-Garden::Garden() : Construction(constants::objects::garden, Size(1) )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::garden, Garden)
+
+Garden::Garden() : Construction(object::garden, Size(1,1))
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
   // actual garden picture will be set upon building being constructed
@@ -39,25 +43,22 @@ void Garden::initTerrain(Tile& terrain)
 
 bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
-bool Garden::isNeedRoadAccess() const{  return false;}
+bool Garden::isNeedRoad() const{  return false;}
 
-bool Garden::build( const CityAreaInfo& info )
+bool Garden::build( const city::AreaInfo& areainfo )
 {
   // this is the same arrangement of garden tiles as existed in C3
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
-      if( garden.isValid() )
-      {
-        garden->update();
-      }
-    }
+    auto gardens = areainfo.city->tilemap()
+                              .getNeighbors(pos(), Tilemap::AllNeighbors)
+                              .overlays()
+                              .select<Garden>();
+    for( auto garden : gardens )
+      garden->update();
   }
 
   return true;
@@ -71,11 +72,11 @@ void Garden::load(const VariantMap& stream)
   //after loading size may change to 2
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 void Garden::save(VariantMap& stream) const
@@ -85,9 +86,10 @@ void Garden::save(VariantMap& stream) const
   stream[ "picture" ] = Variant( picture().name() );
 }
 
-Desirability Garden::desirability() const
+const Desirability& Garden::desirability() const
 {
-  Desirability ret = Construction::desirability();
+  static Desirability ret;
+  ret = Construction::desirability();
   ret.base *= (size().area() * size().width());
   //ret.range *= size().width();
   ret.step = -ret.base / ret.range;
@@ -102,9 +104,9 @@ std::string Garden::sound() const
 
 void Garden::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
-  foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
+  TilesArray tiles = area();
+  for( auto tile : tiles )
+    tile->setFlag( Tile::tlGarden, false );
 }
 
 void Garden::setPicture(Picture picture)
@@ -115,20 +117,20 @@ void Garden::setPicture(Picture picture)
 
 void Garden::update()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles(_map(), pos(), Size(2,2));
 
-  bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  bool canGrow2squareGarden = (nearTiles.size() == 4); // be carefull on map edges
+  for( auto tile : nearTiles )
   {
-    GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
+    auto garden = tile->overlay<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
   if( canGrow2squareGarden )
   {   
-    foreach( tile, nearTiles )
+    for( auto tile : nearTiles )
     {
-      TileOverlayPtr overlay = (*tile)->overlay();
+      OverlayPtr overlay = tile->overlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )
@@ -137,12 +139,12 @@ void Garden::update()
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
-    setSize( 2 );
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::off );
+
+    setSize(Size(2,2));
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_raw.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -26,8 +26,11 @@
 #include "infobox_factory.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
+#include "dialogbox.hpp"
+#include "core/common.hpp"
+#include "texturedbutton.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -36,63 +39,77 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(vinard,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(wheat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vegetable_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(olive_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(fig_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(meat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(clay_pit,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(lumber_mill,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
+
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
-{
+  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 64 ) )
+{  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
-  FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
+
+  FactoryPtr rawmb = tile.overlay<Factory>();
   _type = rawmb->type();
 
-  setBase( ptr_cast<Construction>( rawmb ) );
+  setBase( rawmb );
+  _setWorkingVisible( true );
 
-  Label* lbDamage;
-  Label* lbProgress;
-  Label* lbProductivity;
-  GET_WIDGET_FROM_UI( lbProductivity )
-  GET_WIDGET_FROM_UI( lbProgress )
-  GET_WIDGET_FROM_UI( lbDamage )
+  INIT_WIDGET_FROM_UI( Label*, lbProductivity )
+  INIT_WIDGET_FROM_UI( Label*, lbProgress )
 
-  if( rawmb->produceGoodType() != good::none )
+  if( rawmb->produce().type() != good::none )
   {
-    Picture pic = good::Helper::picture( rawmb->produceGoodType() );
-    new Image( this, Point( 10, 10 ), pic );
+    add<Image>( Point( 10, 10 ), rawmb->produce().picture() );
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
 
-  if( lbDamage != NULL )
-  {
-    std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( Construction::damage ),
-                                            (int)rawmb->state( Construction::fire ) );
-    lbDamage->setText( text );
-  }
-
   if( lbProgress != NULL )
   {
-    std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
+    std::string text = fmt::format( "{} {}%", _("##rawm_production_complete_m##"), rawmb->progress() );
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
-  _lbTitleRef()->setText( _(title) );
+  _lbTitle()->setText( _( rawmb->info().prettyName() ) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
-  text = ( utils::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
+  text = ( fmt::format( "{}\n{}", _(text), _( cartInfo ) ) );
 
   if( lbProductivity != NULL )
   {
     lbProductivity->setText( _(text) );
   }
+
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
+  {
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    auto& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT_LOCAL( &btn, onClicked(), AboutRawMaterial::_showAdvInfo )
+  }
+}
+
+void AboutRawMaterial::_showAdvInfo()
+{
+  std::string workerState = fmt::format( "Damage={}\nFire={}\n",
+                                         utils::objectState( base(), pr::damage ),
+                                         utils::objectState( base(), pr::fire ) );
+
+  dialog::Information( ui(), "Information", workerState );
 }
 
 AboutRawMaterial::~AboutRawMaterial() {}
-
-void AboutRawMaterial::_showHelp()
-{
-  DictionaryWindow::show( ui()->rootWidget(), _type );
-}
+void AboutRawMaterial::_showHelp() { ui()->add<DictionaryWindow>( _type ); }
 
 }
 

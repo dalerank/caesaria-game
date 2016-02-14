@@ -19,13 +19,14 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "environment.hpp"
 #include "objects/road.hpp"
 #include "core/utils.hpp"
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "dictionary.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -34,24 +35,27 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(tree,AboutLand)
+
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
+  : Infobox( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
-  Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
-  lbText->setFont( Font::create( FONT_2 ) );
-  lbText->setTextAlignment( align::upperLeft, align::center );
-  lbText->setWordwrap( true );
+  int id = lbTextId;
+  Label& lbText = add<Label>( Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, id );
+  lbText.setFont( FONT_2 );
+  lbText.setTextAlignment( align::upperLeft, align::center );
+  lbText.setWordwrap( true );
 
   std::string text;
   std::string title;
 
-  if( tile.pos() == city->borderInfo().roadExit )
+  if( tile.pos() == city->getBorderInfo( PlayerCity::roadExit ).epos() )
   {
     title = "##to_empire_road##";
     _helpUri = "road_to_empire";
     text = "";
   }
-  else if( tile.pos() == city->borderInfo().boatEntry )
+  else if( tile.pos() == city->getBorderInfo( PlayerCity::roadEntry ).epos() )
   {
     title = "##to_rome_road##";
     text = "";
@@ -69,7 +73,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
                             : "##water";
     title = typeStr + "_caption##";
 
-    TilePos exitPos = city->borderInfo().boatEntry;
+    TilePos exitPos = city->getBorderInfo( PlayerCity::boatEntry ).epos();
     Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
 
     text = way.isValid()
@@ -85,19 +89,20 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.overlay()->type() == objects::plaza )
+    object::Type ovType = object::typeOrDefault( tile.overlay() );
+    if(ovType == object::plaza )
     {
       title = "##plaza_caption##";
       _helpUri = "plaza";
       text = "##plaza_text##";
     }
-    else if( tile.overlay()->type() == objects::road )
+    else if( ovType == object::road )
     {
       _helpUri = "paved_road";
-      RoadPtr road = ptr_cast<Road>( tile.overlay() );
+      auto road = tile.overlay<Road>();
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
-      if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
-      else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
+      if( tile.pos() == city->getBorderInfo( PlayerCity::roadEntry ).epos() ) { text = "##road_from_rome##"; }
+      else if( tile.pos() == city->getBorderInfo( PlayerCity::roadExit ).epos() ) { text = "##road_to_distant_region##"; }
       else text = road->pavedValue() > 0 ? "##road_paved_text##" : "##road_text##";
     }
     else
@@ -123,10 +128,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   text = _(text );
+#ifdef DEBUG
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
-                                          ((short int) tile.originalImgId() ) );
-  
+                                          ((unsigned int) tile.imgId() ) );
+#endif
   setTitle( _( title ));
   setText( text );
 }
@@ -137,32 +143,24 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-void AboutLand::_showHelp()
-{
-  DictionaryWindow::show( this, _helpUri );
-}
+void AboutLand::_showHelp() { ui()->add<DictionaryWindow>( _helpUri ); }
+void AboutFreeHouse::_showHelp() { ui()->add<DictionaryWindow>( "vacant_lot" ); }
 
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
     : AboutLand( parent, city, tile )
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
-  if( cnst.isValid() && cnst->getAccessRoads().size() == 0 )
+  auto cnst = tile.overlay<Construction>();
+  if( cnst.isValid() )
   {
-    setText( _("##freehouse_text_noroad##") );
+      setText( cnst->roadside().empty()
+                  ? _("##freehouse_text_noroad##")
+                  : _("##freehouse_text##") );
   }
-  else
-  {
-    setText( _("##freehouse_text##") );
-    }
 }
 
-void AboutFreeHouse::_showHelp()
-{
-  DictionaryWindow::show( this, "vacant_lot" );
-}
 
-}
+}//end namespace infobox
 
 }//end namespace gui

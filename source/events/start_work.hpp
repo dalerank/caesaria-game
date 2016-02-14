@@ -19,6 +19,8 @@
 #define _CAESARIA_EVENT_START_WORK_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/variant_map.hpp"
+#include "objects/constants.hpp"
 
 namespace events
 {
@@ -39,7 +41,7 @@ protected:
 private:
   StartWork();
 
-  std::vector< int > _bldTypes;
+  object::Types _bldTypes;
   bool _noTroubles;
   bool _isDeleted;
   VariantMap _options;

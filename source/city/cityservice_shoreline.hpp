@@ -18,19 +18,18 @@
 
 #include "cityservice.hpp"
 #include "game/predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
-namespace  city {
+namespace  city
+{
 
 class Shoreline : public city::Srvc
 {
 public:
-  static city::SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep(const unsigned int time );
 
-private:
   Shoreline(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -30,11 +30,14 @@ namespace world
 class Merchant : public Object
 {
 public:
+  enum { defaultCapacity=2000 };
+
   static MerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
                              good::Store& sell, good::Store& buy );
   virtual ~Merchant();
 
   virtual void timeStep( unsigned int time );
+  virtual std::string about(AboutType type);
 
   std::string baseCity() const;
   std::string destinationCity() const;
@@ -58,4 +61,4 @@ private:
 
 } //end namespace world
 
-#endif //_OPENCAESAR3_WORLD_TRADING_INCLUDE_H_
+#endif //_CAESARIA_WORLD_MERCHANT_INCLUDE_H_

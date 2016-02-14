@@ -20,12 +20,13 @@
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
+#include "core/format.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
+#include "city/statistic.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -34,18 +35,22 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Mercury::create()
-{
-  DivinityPtr ret( new Mercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
+}
+
+object::Type Mercury::templeType(Divinity::TempleSize size) const
+{
+    return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(mercury)
+                    : SML_TEMPLE_TYPE(mercury);
+}
+
+Mercury::Mercury()
+  : RomeDivinity( RomeDivinity::Mercury )
+{
+
 }
 
 template<class T>
@@ -53,25 +58,22 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 {
   if( showMessage )
   {
-    std::string txt = utils::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
-    std::string descr = utils::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+    std::string txt = fmt::format( "##{0}_of_mercury_title##", title );
+    std::string descr = fmt::format( "##{0}_of_mercury_description##", title );
 
-    events::GameEventPtr event = events::ShowInfobox::create( _(txt),
-                                                              _(descr),
-                                                              events::ShowInfobox::send2scribe,
-                                                              ":/smk/God_Mercury.smk");
-    event->dispatch();
+    events::dispatch<events::ShowInfobox>( _(txt),
+                                           _(descr),
+                                           true,
+                                           "god_mercury");
   }
 
-  SmartList<T> buildings;
-  buildings << city->overlays();
+  SmartList<T> buildings = city->statistic().objects.find<T>();
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    good::Store& store = (*it)->store();
-    for( int i=good::wheat; i < good::goodCount; i++ )
+    good::Store& store = building->store();
+    for( auto& gtype : good::all() )
     {
-      good::Type gtype = (good::Type)i;
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
@@ -90,27 +92,24 @@ void Mercury::_doWrath(PlayerCityPtr city)
 
 void Mercury::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_mercury_title##"),
-                                                            _("##smallcurse_of_mercury_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##smallcurse_of_mercury_title##"),
+                                         _("##smallcurse_of_mercury_description##") );
 
-  FactoryList factories;
-  factories << city->overlays();
+  FactoryList factories = city->overlays().select<Factory>();
 
-  foreach( it, factories )
+  for( auto factory : factories )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *it ), -5, 4 * 12 );
+    FactoryProgressUpdater::assignTo( factory, -5, 4 * 12 );
   }
 }
 
 void Mercury::_doBlessing(PlayerCityPtr city)
 {
-  WarehouseList whList;
-  whList << city->overlays();
+  auto warehouses = city->overlays().select<Warehouse>();
 
-  foreach( it, whList )
+  for( auto wh : warehouses )
   {
-    WarehouseBuff::assignTo( *it, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
+    WarehouseBuff::assignTo( wh, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
   }
 }
 

@@ -26,7 +26,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutLand : public Simple
+class AboutLand : public Infobox
 {
 public:
   AboutLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );

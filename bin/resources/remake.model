@@ -1,0 +1,14 @@
+{
+  old : ":/gfx/pics_old.zip"
+  main : ":/gfx/pics.zip"
+  animals : ":/gfx/pics_animals.zip"
+  carts : ":/gfx/pics_carts.zip"
+  gui : ":/gfx/pics_gui.zip"
+  house : ":/gfx/pics_house.zip"
+  land : ":/gfx/pics_land.zip"
+  objects : ":/gfx/pics_objects.zip"
+  animations : ":/gfx/pics_anim.zip"
+  walkers : ":/gfx/pics_walkers.zip"
+  misc : ":/gfx/misc.zip"
+  sound : ":/audio/themes.zip"
+}

@@ -19,16 +19,18 @@
 #define __CAESARIA_EMIGRANT_H_INCLUDED__
 
 #include "human.hpp"
-#include "core/predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 #include "game/citizen_group.hpp"
 
+namespace gfx { class CartAnimation; }
+
 /** This is an emigrant coming with his stuff */
-class Emigrant : public Human
+class Emigrant : public Citizen
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static EmigrantPtr create( PlayerCityPtr city );
   static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
-                                 const gfx::Tile& startTile, std::string thoughts );
+                                const gfx::Tile& startTile, std::string thoughts );
 
   bool send2city( const gfx::Tile& startTile );
   void leaveCity( const gfx::Tile& tile );
@@ -50,9 +52,9 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
   virtual bool _isCartBackward() const;
-  virtual gfx::Animation& _cart();
+  virtual gfx::CartAnimation& _cart();
 
-  void _setCart( const gfx::Animation& anim );
+  void _setCart(const gfx::CartAnimation &anim );
   
   Emigrant( PlayerCityPtr city );
 

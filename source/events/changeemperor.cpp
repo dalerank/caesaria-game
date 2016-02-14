@@ -21,10 +21,13 @@
 #include "world/emperor.hpp"
 #include "events/showinfobox.hpp"
 #include "world/empire.hpp"
+#include "factory.hpp"
 #include "core/gettext.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ChangeEmperor, "change_emperor" )
 
 GameEventPtr ChangeEmperor::create()
 {
@@ -61,8 +64,7 @@ void ChangeEmperor::_exec(Game& game, unsigned int)
       text = _( "##emperor_changed_default_text##" ) + empName;
     }
 
-    GameEventPtr e = events::ShowInfobox::create( "##emperor_changed_title##", text );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( "##emperor_changed_title##", text );
   }
 }
 

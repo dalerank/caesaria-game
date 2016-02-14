@@ -33,14 +33,14 @@ public:
   AboutGranary( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutGranary();
   
-  void drawGood(good::Type goodType, int, int);
+  void drawGood(good::Product goodType, int, int);
   void showSpecialOrdersWindow();
 
 private:
   GranaryPtr _granary;
 };
 
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_GRANARY_H_INCLUDE_

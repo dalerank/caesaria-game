@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_ACTOR_COLONY_H_INCLUDE_
 #define _CAESARIA_ACTOR_COLONY_H_INCLUDE_
@@ -25,6 +25,7 @@ class ActorColony : public TrainingBuilding
 {
 public:
   ActorColony();
+
   virtual void deliverTrainee();
   virtual void timeStep(const unsigned long time);
 };

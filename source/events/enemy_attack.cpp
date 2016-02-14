@@ -17,27 +17,32 @@
 
 #include "enemy_attack.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "game/gamedate.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
+#include "pathway/pathway_helper.hpp"
+#include "objects/construction.hpp"
 #include "walker/helper.hpp"
+#include "city/states.hpp"
+#include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
 {
 
-namespace {
-CAESARIA_LITERALCONST(type)
-CAESARIA_LITERALCONST(items)
-CAESARIA_LITERALCONST(target)
-}
+GAME_LITERALCONST(items)
+GAME_LITERALCONST(target)
+GAME_LITERALCONST(count)
+GAME_LITERALCONST(random)
+
+REGISTER_EVENT_IN_FACTORY(EnemyAttack, "enemy_attack" )
 
 class AttackPriorityHelper : public EnumsHelper<EnemySoldier::AttackPriority>
 {
@@ -77,34 +82,43 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     return;
 
   _d->isDeleted = true;
-  foreach( i, _d->items )
+  for( auto& item : _d->items )
   {
-    VariantMap soldiers = i->second.toMap();
+    VariantMap soldiers = item.second.toMap();
+    const Tile& exitTile = game.city()->getBorderInfo( PlayerCity::roadExit );
 
-    std::string soldierType = soldiers.get( lc_type ).toString();
-    int soldierNumber = soldiers.get( "count" );
+    std::string soldierType = soldiers.get( "type" ).toString();
+    int soldierNumber = soldiers.get( literals::count );
 
     Variant vCityPop = soldiers.get( "city.pop" );
     if( vCityPop.isValid() )
     {
-      soldierNumber = game.city()->population() * vCityPop.toFloat();
+      soldierNumber = game.city()->states().population * vCityPop.toFloat();
     }
 
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
 
-    if( vLocation.toString() == "random" )
+    if( vLocation.toString() == literals::random )
     {
       Tilemap& tmap = game.city()->tilemap();
-      int lastIndex = tmap.size();
-      TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
+      TilesArray tiles = tmap.border().walkables( true );
 
-      tiles = tiles.walkableTiles( true );
-
-      Tile* tile = tiles[ math::random( tiles.size() ) ];
-      if( tile )
+      int tryCount = 0;
+      for(; tryCount < 10; tryCount++ )
       {
-        location = tile->pos();
+        Tile* tile = tiles.random();
+        if( tile )
+          location = tile->pos();
+
+        Pathway path = PathwayHelper::create( location, exitTile.epos(), PathwayHelper::allTerrain );
+        if( path.isValid() )
+          break;
+     }
+
+      if( tryCount >= 10 )
+      {
+        location = game.city()->getBorderInfo( PlayerCity::roadEntry ).epos();
       }
     }
     else
@@ -115,8 +129,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
     {
-      WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
-      EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+      EnemySoldierPtr enemy = Walker::create<EnemySoldier>( wtype, game.city() );
       if( enemy.isValid() )
       {
         enemy->send2City( location );
@@ -134,12 +147,12 @@ bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
-  _d->items = stream.get( lc_items ).toMap();
+  _d->items = stream.get( literals::items ).toMap();
 
-  std::string targetStr = stream.get( lc_target ).toString();
+  std::string targetStr = stream.get( literals::target ).toString();
 
   AttackPriorityHelper helper;
-  if( targetStr == "random" )
+  if( targetStr == literals::random )
   {
     _d->attackPriority = (EnemySoldier::AttackPriority)math::random( EnemySoldier::attackCount );
   }
@@ -155,15 +168,14 @@ VariantMap EnemyAttack::save() const
 
   __D_IMPL_CONST(_d,EnemyAttack);
 
-  ret[ lc_items ] = _d->items;
+  ret[ literals::items ] = _d->items;
 
   return ret;
 }
 
 EnemyAttack::EnemyAttack() : __INIT_IMPL(EnemyAttack)
 {
-  __D_IMPL(_d,EnemyAttack)
-  _d->isDeleted = false;
+  _dfunc()->isDeleted = false;
 }
 
 }//end namespace events

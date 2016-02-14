@@ -18,17 +18,9 @@
 #include "lion.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
-//#include "corpse.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
-
-LionPtr Lion::create(PlayerCityPtr city)
-{
-  LionPtr ret( new Lion( city ) );
-  ret->drop();
-
-  return ret;
-}
+REGISTER_CLASS_IN_WALKERFACTORY(walker::lion, Lion)
 
 bool Lion::die()
 {
@@ -44,9 +36,8 @@ void Lion::_reachedPathway()
   deleteLater();
 }
 
-Lion::Lion(PlayerCityPtr city) : Animal( city )
+Lion::Lion(PlayerCityPtr city)
+  : Animal( city, walker::lion )
 {
-  _setType( walker::lion );
-
-  setName( _("##Lion##") );
+  setName( _("##lion##") );
 }

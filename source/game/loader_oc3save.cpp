@@ -23,6 +23,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "player.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "gamedate.hpp"
 #include "world/empire.hpp"
@@ -50,10 +51,10 @@ public:
 bool OC3::load( const std::string& filename, Game& game )
 {
   Logger::warning( "GameLoaderOc3: start loading from " + filename );
-  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap vm = config::load( filename );
   if( vm.empty() )
   {
-    Logger::warning( "GameLoaderOc3: empty file " + filename );
+    Logger::warning( "!!! WARNING: GameLoaderOc3 empty file " + filename );
     return false;
   }
   
@@ -82,14 +83,14 @@ bool OC3::load( const std::string& filename, Game& game )
     return true;
   }
 
-  Logger::warning( "GameLoaderOc3: unsupported version %d", fileVersion );
+  Logger::warning( "!!! WARNING: GameLoaderOc3 unsupported version {0}", fileVersion );
   return false;
 }
 
 int OC3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
-  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap vm = config::load( filename );
   VariantMap scenario_vm = vm[ "scenario" ].toMap();
 
   return scenario_vm.get( "climate", -1 );
@@ -97,7 +98,7 @@ int OC3::climateType(const std::string& filename)
 
 bool OC3::isLoadableFileExtension( const std::string& filename )
 {
-  return filename.substr( filename.size() - 8 ) == ".oc3save";
+  return vfs::Path( filename ).isMyExtension( ".oc3save" );
 }
 
 std::string OC3::restartFile() const { return _d->restartFile; }

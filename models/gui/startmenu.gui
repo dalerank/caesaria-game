@@ -1,8 +1,0 @@
-{  
-  geometryf : [ 0, 0, 1, 1 ]
-
-  buttonSize : [ 200, 25 ]
-  buttonFont : "FONT_2"
-  buttonStyle : "greyBorderLine"
-  buttonOffset : 40
-}

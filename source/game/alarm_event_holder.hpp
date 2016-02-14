@@ -20,7 +20,7 @@
 #define __CAESARIA_ALARM_EVENT_HOLDER_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/signals.hpp"
 
 #include <string>
@@ -48,4 +48,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
+#endif //__CAESARIA_ALARM_EVENT_HOLDER_H_INCLUDED__

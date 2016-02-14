@@ -19,6 +19,7 @@
 #define _CAESARIA_WIDGET_FACTORY_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
+#include "core/singleton.hpp"
 #include <string>
 
 namespace gui
@@ -32,10 +33,20 @@ public:
   virtual Widget* create( Widget* parent ) = 0;
 };
 
-class WidgetFactory
+template< class T >
+class BaseWidgetCreator : public WidgetCreator
 {
 public:
-  WidgetFactory();
+  Widget* create( Widget* parent )
+  {
+    return new T( parent );
+  }
+};
+
+class WidgetFactory : public StaticSingleton<WidgetFactory>
+{
+  SET_STATICSINGLETON_FRIEND_FOR(WidgetFactory)
+public:
   ~WidgetFactory();
 
   Widget* create(const std::string& type, Widget* parent ) const;
@@ -44,9 +55,24 @@ public:
 
   void addCreator( const std::string& type, WidgetCreator* ctor );
 private:
+  WidgetFactory();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define REGISTER_CLASS_IN_WIDGETFACTORY(a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreator( TEXT(a), new BaseWidgetCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
+
+#define REGISTER_CLASSNAME_IN_WIDGETFACTORY(a, name) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreator( name, new BaseWidgetCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
+
 
 }//end namespace gui
 #endif //_CAESARIA_WIDGET_FACTORY_H_INCLUDE_

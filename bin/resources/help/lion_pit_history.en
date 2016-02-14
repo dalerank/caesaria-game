@@ -1,0 +1,8 @@
+{  
+ title : "##lionsNursery##"
+ sound : "fanfare"
+ text  : "The most commonly known gladiatorial contests were between trained combatants. Roman crowds always craved novelty, and animal shows provided welcome variety.\n Many people know of 'contests' between Christians and lions in the arenas, but these were only one variety of animal combat. Contests against animals featured giraffes, elephants, panthers, lions and tigers - the more exotic and dangerous, the surer to please the crowd. Sometimes animals were pitted against one another, sometimes against professional gladiators, and sometimes against criminals."
+ uri : {
+  "amphitheaters" : "amphitheater"
+	}
+}

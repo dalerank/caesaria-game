@@ -20,84 +20,25 @@
 
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
-#include "game/enums.hpp"
-#include "tileoverlay.hpp"
+#include "objects/predefinitions.hpp"
 #include "predefinitions.hpp"
 #include "core/direction.hpp"
+#include "tilepos.hpp"
 
 namespace gfx
 {
-
-class Picture;
 
 // a Tile in the Tilemap
 class Tile
 {
 public:
-  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pBasicCount } Param;
+  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pDirt, pIron, pBasicCount } Param;
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
-                 wasDrawn } Type;
+                 isRendered, tlUnknown } Type;
 
 public:
-  explicit Tile(const TilePos& pos);
-
-  // tile coordinates
-  int i() const;
-  int j() const;
-  inline const TilePos& pos() const{ return _pos; }
-  inline const TilePos& epos() const { return _epos; }
-  inline const Point& mappos() const { return _mappos; }
-
-  inline const TileOverlayPtr& rov() const { return _overlay; }
-  void setEPos( const TilePos& epos );
-
-  Point center() const;
-
-  // displayed picture
-  void setPicture( const Picture& picture );
-  void setPicture( const char* rc, const int index );
-  void setPicture( const std::string& name );
-  const Picture& picture() const;
-
-  // used for multi-tile graphics: current displayed picture
-  // background of constructible tiles is 1x1 => master used for foreground
-  // non-constructible tiles have no foreground => master used for background
-  Tile* masterTile() const;
-  void setMasterTile(Tile* master);
-  bool isMasterTile() const;
-
-  void changeDirection( Tile* masterTile, constants::Direction newDirection);
-
-  bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
-
-  inline void resetWasDrawn() { _wasDrawn = false; }
-  inline void setWasDrawn()   { _wasDrawn = true;  }
-  inline bool rwd() const { return _wasDrawn; }
-
-  void animate( unsigned int time );
-
-  const gfx::Animation& animation() const;
-  void setAnimation( const gfx::Animation& animation );
-
-  bool isWalkable( bool ) const;
-  bool getFlag( Type type ) const;
-  void setFlag( Type type, bool value );
-
-  TileOverlayPtr overlay() const;
-  void setOverlay( TileOverlayPtr overlay );
-  unsigned int originalImgId() const;
-  void setOriginalImgId( unsigned short int id );
-
-  inline int height() const { return _height; }
-  void setHeight( int value ) { _height = value; }
-
-  void setParam( Param param, int value );
-  void changeParam( Param param, int value );
-  int param( Param param ) const;
-
-private:
   struct Terrain
   {
     bool water;
@@ -115,25 +56,86 @@ private:
     /*
      * original tile information
      */
-    unsigned short int imgid;
+    ImgID imgid;
     unsigned short int terraininfo;
 
-    void reset();
-    void clearFlags();
-
-    std::map<Param, int> params;
+    void clear();
   };
 
+  explicit Tile(const TilePos& pos);
+
+  // tile coordinates
+  inline int i() const { return _pos.i(); }
+  inline int j() const { return _pos.j(); }
+  inline const TilePos& pos() const{ return _pos; }
+  inline const TilePos& epos() const { return _epos; }
+  inline const Point& mappos() const { return _mappos; }
+
+  inline const OverlayPtr& rov() const { return _overlay; }
+  void setEPos( const TilePos& epos );
+
+  Point center() const;
+
+  // displayed picture
+  void setPicture( const Picture& picture );
+  void setPicture( const std::string& name );
+  void setPicture( const std::string& group, const int index );
+  inline const Picture& picture() const { return _picture; }
+
+  // used for multi-tile graphics: current displayed picture
+  // background of constructible tiles is 1x1 => master used for foreground
+  // non-constructible tiles have no foreground => master used for background
+  inline Tile* master() const { return _master;}
+  void setMaster(Tile* master);
+  bool isMaster() const;
+
+  void changeDirection( Tile* master, Direction newDirection);
+
+  bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
+
+  inline void resetRendered()  { _rendered = false; }
+  inline void setRendered()    { _rendered = true;  }
+  inline bool rendered() const { return _rendered; }
+
+  void animate( unsigned int time );
+
+  const gfx::Animation& animation() const;
+  void setAnimation( const gfx::Animation& animation );
+
+  bool isWalkable( bool ) const;
+  bool getFlag( Type type ) const;
+  void setFlag( Type type, bool value );
+
+  Terrain& terrain() { return _terrain; }
+  const Terrain& terrain() const { return _terrain; }
+
+  void setOverlay( OverlayPtr overlay );
+  inline ImgID imgId() const { return _terrain.imgid;}
+  void setImgId( ImgID id );
+
+  inline int height() const { return _height; }
+  void setHeight( int value ) { _height = value; }
+
+  void setParam( Param param, int value );
+  void changeParam( Param param, int value );
+  int param( Param param ) const;
+
+  template<class T>
+  SmartPtr<T> overlay() const { return ptr_cast<T>( _overlay ); }
+  OverlayPtr overlay() const;
+
+private:
+  std::map<Param, int> _params;
   TilePos _pos; // absolute coordinates
   TilePos _epos; // effective coordinates
   Point _mappos;
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
   Picture _picture; // main picture
-  bool _wasDrawn;
+  bool _rendered;
   int _height;
-  gfx::Animation _animation;
-  TileOverlayPtr _overlay;
+  Animation _animation;
+  OverlayPtr _overlay;
 
 private:
   Tile( const Tile& base );

@@ -1,0 +1,18 @@
+{ 
+ title : "##trade_title##"
+ speech : "tutorial2_trade"
+ items : [ "##trade_enabled_tt##",
+            "@img=picture5_00001",
+	    "##open_traderoute_tutorial##",
+            "@img=picture5_00002",
+	    "##tt_goto_trade_advisor##",
+            "@img=picture5_00003",
+	    "##tt_set_export_rules##",
+            "@img=picture5_00004",
+	    "##tt2_first_export_sale##",
+            "@img=picture5_00005",
+	    "##tt2_expand_your_city##"
+ ]
+}
+
+

@@ -1,0 +1,8 @@
+{  
+ title : "##gladiatorSchool##"
+ sound : "fanfare"
+ text  : "The mainstay of games in the @amphitheaters& were contests to the death between armed men, between men and beasts, and even between wild animals. Gladiators took their name from the 'gladius', a short sword designed for close-quarter fighting. Daggers, forks, nets and shields rounded out their equipment. Wounded fighters raised the middle finger of their left hand to the crowd, which responded with thumbs up - meaning 'show mercy' - or thumbs down - a death sentence. Crowds only turned thumbs up when a gladiator had fought so well that they wanted to see him fight again. When a gladiator died, an official dressed as Charon, a god of the underworld, checked the body to confirm death, and dragged it from the arena to the sound of trumpets.\n Contests against animals featured giraffes, elephants, panthers, lions and tigers - the more exotic and dangerous, the surer to please the crowd. Sometimes animals were pitted against one another.\n Gladiators usually began their careers as slaves or prisoners, and success in the games sometimes led to freedom. The best of them were highly trained in special schools, and they could become major celebrities, sometimes continuing to fight professionally even after winning their freedom. In the lowest form of gladiatorial contest, unprotected and untrained criminals were sent into the ring to kill each other before the bloodthirsty crowds - or, even worse, sent unarmed against trained gladiators. Many condemned men committed suicide on their way to the amphitheater rather than die to amuse a cheering mob."
+ uri : {
+  "amphitheaters" : "amphitheater"
+	}
+}

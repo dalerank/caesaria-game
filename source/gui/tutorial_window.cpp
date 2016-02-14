@@ -23,11 +23,13 @@
 #include "events/playsound.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
+#include "core/variant_map.hpp"
 #include "texturedbutton.hpp"
 #include "widget_helper.hpp"
 #include "label.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -35,46 +37,45 @@ namespace gui
 TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   : Window( p, Rect( 0, 0, 590, 450 ), "" )
 {
-  _locker.activate();
+  GameAutoPauseWidget::insertTo( this );
 
   setupUI( ":/gui/tutorial_window.gui" );
-  Size pSize = parent()->size() - size();
-  setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  Label* lbTitle;
-  TexturedButton* btnExit;
-  ListBox* lbxHelp;
+  INIT_WIDGET_FROM_UI(Label*, lbTitle )
+  INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
 
-  GET_WIDGET_FROM_UI( lbTitle )
-  GET_WIDGET_FROM_UI( btnExit )
-  GET_WIDGET_FROM_UI( lbxHelp )
-
-  CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), TutorialWindow::deleteLater );
 
   if( !lbxHelp )
     return;
 
-  VariantMap vm = SaveAdapter::load( tutorial );
-  Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
+  VariantMap vm = config::load( tutorial );
+  Logger::warningIf( vm.empty(), "!!! WARNING: Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
-  std::string title = vm.get( "title" ).toString();
-  std::string sound = vm.get( "sound" ).toString();
+  std::string title = vm.get( "title" );
+  std::string sound = vm.get( "sound" );
+  std::string speech = vm.get( "speech" );
 
   if( lbTitle ) lbTitle->setText( _( title ) );
   if( !sound.empty() )
   {
-    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
-    e->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
+  }
+
+  if( !speech.empty() )
+  {
+    _muter.activate( 5 );
+    _speechDel.assign( speech );
+    events::dispatch<PlaySound>( speech, 100, audio::speech );
   }
 
   const std::string imgSeparator = "@img=";
-  foreach( it, items )
+  for( const auto& text : items )
   {
-    std::string text = *it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
-      Picture pic = Picture::load( text.substr( imgSeparator.length() ) );
+      Picture pic( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbxHelp->addItem( pic );
       item.setTextAlignment( align::center, align::upperLeft );
       int lineCount = pic.height() / lbxHelp->itemHeight();
@@ -87,8 +88,11 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
       lbxHelp->fitText( _( text ) );
     }
   }
+
+  moveToCenter();
+  setModal();
 }
 
-TutorialWindow::~TutorialWindow() {}
+TutorialWindow::~TutorialWindow(){}
 
 }//end namespace gui

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "rift.hpp"
 #include "gfx/tile.hpp"
@@ -24,28 +24,28 @@
 #include "constants.hpp"
 #include "walker/dustcloud.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-namespace {
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::rift, Rift)
+
+namespace{
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : TileOverlay( objects::rift, Size(1) )
+Rift::Rift() : Overlay( object::rift, Size::square(1) )
 {  
 }
 
-bool Rift::build( const CityAreaInfo& info )
+bool Rift::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
   setPicture( computePicture() );
 
   RiftList rifts = neighbors();
-  foreach( it, rifts )
-  {
-    (*it)->updatePicture();
-  }
+  for( auto rift : rifts )
+    rift->updatePicture();
 
   DustCloud::create( info.city, info.pos, 5 );
 
@@ -61,20 +61,9 @@ void Rift::initTerrain(Tile& terrain)
 
 RiftList Rift::neighbors() const
 {
-  RiftList ret;
+  return  _map().getNeighbors(pos(), Tilemap::FourNeighbors)
+                .overlays<Rift>();
 
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
-
-  foreach( it, tiles )
-  {
-    RiftPtr rt = ptr_cast<Rift>( (*it)->overlay() );
-    if( rt.isValid() )
-    {
-      ret.push_back( rt );
-    }
-  }
-
-  return ret;
 }
 
 Picture Rift::computePicture()
@@ -85,13 +74,13 @@ Picture Rift::computePicture()
   RiftList neigs = neighbors();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  foreach( it, neigs )
+  for( auto rift : neigs )
   {
-    Tile* tile = &(*it)->tile();
-    if (tile->j() > j)      { directionFlags += 1; } // road to the north
-    else if (tile->j() < j) { directionFlags += 4; } // road to the south
-    else if (tile->i() > i) { directionFlags += 2; } // road to the east
-    else if (tile->i() < i) { directionFlags += 8; } // road to the west
+    TilePos p = rift->tile().epos();
+    if (p.j() > j)      { directionFlags += 1; } // road to the north
+    else if (p.j() < j) { directionFlags += 4; } // road to the south
+    else if (p.i() > i) { directionFlags += 2; } // road to the east
+    else if (p.i() < i) { directionFlags += 8; } // road to the west
   }
 
   // std::cout << "direction flags=" << directionFlags << std::endl;
@@ -117,7 +106,7 @@ Picture Rift::computePicture()
   case 15: index = 229; break; // North+East+South+West
   }
 
-  return Picture::load( ResourceGroup::land1a, index);
+  return Picture( config::rc.land1a, index);
 }
 
 bool Rift::isWalkable() const{  return false;}

@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_GROUPBOX_H_INCLUDED__
 #define __CAESARIA_GROUPBOX_H_INCLUDED__
 
-#include "gui/widget.hpp"
+#include "widget.hpp"
 
 namespace gui
 {
@@ -30,7 +30,7 @@ public:
 
   //! constructor
   GroupBox( Widget* parent );
-	GroupBox( Widget* parent, const Rect& rectangle, int id, Style style );
+  GroupBox( Widget* parent, const Rect& rectangle, int id, Style style );
 
   //! destructor
   virtual ~GroupBox();
@@ -54,8 +54,8 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
 private:
-	class Impl;
-	ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui

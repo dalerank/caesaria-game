@@ -20,7 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "object.hpp"
-#include "core/variant.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {
@@ -28,37 +28,51 @@ namespace world
 class Route : public PointsArray
 {
 public:
-  size_type step;
+  unsigned int step;
 
-  void reset()
-  {
-    clear();
-    step = 0;
-  }
+  void reset();
 };
 
 class MovableObject : public Object
 {
 public:
+  enum { defaultSpeed=1, defaultViewDistance=40 };
   virtual ~MovableObject();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
   virtual void setSpeed( float speed );
   virtual void timeStep(const unsigned int time);
-  virtual bool isMovable() const { return true; }
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
   virtual const Route& way() const;
 
 protected:
   virtual bool _findWay( Point p1, Point p2 );
   virtual void _reachedWay();
   virtual void _noWay();
+
   Route& _way();
   MovableObject( EmpirePtr empire );
 
 private: 
   __DECLARE_IMPL(MovableObject)
+};
+
+class Messenger : public MovableObject
+{
+public:
+  virtual ~Messenger();
+  static void now( EmpirePtr empire,
+                   const std::string& cityname,
+                   const std::string& title,
+                   const std::string& message );
+
+  std::string title() const;
+  std::string message() const;
+
+private:
+  Messenger( EmpirePtr empire );
+  __DECLARE_IMPL(Messenger)
 };
 
 }

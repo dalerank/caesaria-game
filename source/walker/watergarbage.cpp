@@ -20,22 +20,16 @@
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
+#include "objects/construction.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-WaterGarbagePtr WaterGarbage::create(PlayerCityPtr city)
-{
-  WaterGarbagePtr ret( new WaterGarbage( city ) );
-  ret->drop();
-
-  return ret;
-}
+REGISTER_CLASS_IN_WALKERFACTORY(walker::waterGarbage, WaterGarbage)
 
 WaterGarbage::WaterGarbage(PlayerCityPtr city )
-  : Walker( city )
+  : Walker( city, walker::waterGarbage )
 {
-  _setType( walker::waterGarbage );
   _animation.load( ResourceGroup::sprites, 93, 6 );
   _animation.setDelay( 2 );
   _animation.setOffset( Point( -15, 0 ) );
@@ -48,10 +42,12 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
 
 void WaterGarbage::send2City(const TilePos &start )
 {
-  Pathway path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::deepWater );
+  Pathway path = PathwayHelper::create( start,
+                                        _city()->getBorderInfo( PlayerCity::boatExit ).epos(),
+                                        PathwayHelper::deepWater );
   if( !path.isValid() )
   {
-    path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::water );
+    path = PathwayHelper::create( start, _city()->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::water );
   }
 
   if( path.isValid() )
@@ -59,7 +55,7 @@ void WaterGarbage::send2City(const TilePos &start )
     setPos( start );
     setPathway( path );
     go();
-    _city()->addWalker( this );
+    attach();
   }
 }
 

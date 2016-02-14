@@ -25,22 +25,33 @@
 #include "core/event.hpp"
 #include "environment.hpp"
 #include "core/time.hpp"
+#include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "city/build_options.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "events/playsound.hpp"
 #include "core/logger.hpp"
+#include "core/saveadapter.hpp"
+#include "core/variant_list.hpp"
 
-using namespace constants;
+//using namespace constants;
 using namespace gfx;
+using namespace city;
+using namespace events;
 
 // used to display the building name and its cost
 namespace gui
 {
 
-CAESARIA_LITERALCONST(cost)
+class BuildMenu::Impl
+{
+public:
+  city::development::Options options;
+  city::development::Branch branch;
+  std::string menuModel;
+  bool c3gameplay;
+};
 
 class BuildButton : public PushButton
 {
@@ -58,404 +69,268 @@ public:
     setTextOffset( Point( 15, 0 ) );
   }
 
-  void _updateTextPic()
+  void setSound( const std::string& name )
+  {
+    addProperty( "sound", name );
+  }
+
+  void _updateTexture()
   {
     ElementState state = _state();
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font f = font( state );
 
     if( f.isValid() && _cost >= 0 )
     {           
-      char buffer[32];
-      sprintf( buffer, "%d", _cost );
-      Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
-                                                align::lowerRight, verticalTextAlign() );
-      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+      std::string text = utils::i2str( _cost );
+      Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-10, height() ),
+                                     align::lowerRight, verticalTextAlign() );
+      canvasDraw( text, textRect.lefttop(), f );
     }
   }
 
-  void setCost(const int cost)
-  {
-    _cost = cost;
-  }
-
-  void _resizeEvent()
+  void _finalizeResize()
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );
   }
 
-  int getCost() const
-  {
-    return _cost;
-  }
+  void setCost(const int cost)   {    _cost = cost;  }
+  int cost() const  {    return _cost;  }
 
 private:
-    int _cost;   // cost of the building
+  int _cost;   // cost of the building
 };
 
-BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id )
-    : Widget( parent, id, rectangle )
+BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
+                      city::development::Branch branch )
+    : Widget( parent, id, rectangle ), __INIT_IMPL(BuildMenu)
 {
+  __D_REF(d,BuildMenu)
+  d.c3gameplay = false;
+  d.branch = branch;
 }
 
 void BuildMenu::initialize()
 {
   // compute the necessary width
+  __D_IMPL(_d,BuildMenu)
   int max_text_width = 0;
   int max_cost_width = 0;
   Size textSize;
   Font font = Font::create( FONT_2 );
-  Widget::Widgets rchildren = children();
-  foreach( widget, rchildren )
-  {
-    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
-    if( button )
-    {
-        textSize = font.getTextSize( button->text());
-        max_text_width = std::max(max_text_width, textSize.width() );
 
-        std::string text = utils::format( 0xff, "%i", button->getCost() );
-        textSize = font.getTextSize( text );
-        max_cost_width = std::max(max_cost_width, textSize.width());
+  VariantMap allItems = config::load( _d->menuModel );
+  VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
+  VariantList submenu = config.get( "submenu" ).toList();
+  VariantList buildings = config.get( "buildings" ).toList();
+
+  for( auto& item : submenu )
+  {
+    development::Branch branch = development::findBranch( item.toString() );
+    if( branch != development::unknown )
+    {
+      std::string title = fmt::format( "##bldm_{}##", item.toString() );
+      addSubmenuButton( branch, title );
     }
   }
 
-  setWidth( std::max(150, max_text_width + max_cost_width + 20) );
+  for( auto& item : buildings )
+  {
+    object::Type bType = object::findType( item.toString() );
+    if( bType != object::unknown )
+    {
+      addBuildButton( bType );
+    }
+  }
+
+  auto buildButtons = children().select<BuildButton>();
+  for( auto bbutton : buildButtons )
+  {
+    textSize = font.getTextSize( bbutton->text());
+    max_text_width = std::max(max_text_width, textSize.width() );
+    textSize = font.getTextSize( utils::i2str( bbutton->cost() ) );
+    max_cost_width = std::max(max_cost_width, textSize.width());
+  }
+
+  setWidth( std::max(150, max_text_width + max_cost_width + 30) );
 
   // set the same size for all buttons
-  foreach( widget, rchildren )
-  {
-    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
-    if( button )
-    {
-      button->setWidth( width() );
-    }
-  }
+  for( auto button : buildButtons )
+    button->setWidth( width() );
 }
 
-BuildMenu::~BuildMenu()
-{
-}
+BuildMenu::~BuildMenu() {}
 
-void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string &text)
-{
-  if( !_options.isGroupAvailable( menuType ) )
+void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
+{  
+  if( !_dfunc()->options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
-  button->setID( menuType | subMenuCreateIdHigh );
-  button->setCost(-1);  // no display
+  BuildButton& button = add<BuildButton>( _(text),
+                                          Rect( 0, height(), width(), height()+25 ),
+                                          menuType | subMenuCreateIdHigh );
+  button.setCost(-1);  // no display cost
+  button.setSound( "bmsel_" + development::toString( menuType ) );
+
+  CONNECT_LOCAL( &button, onClickedEx(), BuildMenu::_resolveButtonClick );
 
   setHeight( height() + 30 );
 }
 
-
-void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
+void BuildMenu::addBuildButton(const object::Type buildingType )
 {
+  __D_IMPL(_d,BuildMenu)
   //int t = DateTime::getElapsedTime();
-  const MetaData &buildingData = MetaDataHolder::instance().getData( buildingType );
+  auto info = object::Info::find( buildingType );
 
-  int cost = buildingData.getOption( lc_cost );
-  bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
+  int cost = info .cost();
+  bool mayBuildInCity = _d->options.isBuildingAvailable( buildingType );
+  if( _d->c3gameplay )
+  {
+    mayBuildInCity &= info .c3logic( true );
+  }
+
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName().c_str()),
-                                           Rect( 0, height(), width(), height() + 25 ), -1 );
-    button->setCost(cost);
-    button->setID( buildingType );
+    auto& button = add<BuildButton>( _(info .prettyName()),
+                                     Rect( 0, height(), width(), height() + 25 ), -1 );
+    button.setCost(cost);
+    button.setID( buildingType );
+    button.setSound( "bmsel_" + info.name() );
 
     setHeight( height() + 30 );
 
-    CONNECT( button, onClicked(), this, BuildMenu::_resolveButtonClick );
+    CONNECT_LOCAL( &button, onClickedEx(), BuildMenu::_resolveButtonClick );
   }
 }
 
-BuildMenu* BuildMenu::create(const BuildMenuType menuType, Widget* parent )
+void BuildMenu::setModel(const std::string& filename)
+{
+  _dfunc()->menuModel = filename;
+}
+
+void BuildMenu::setC3gameplay(bool enabled)
+{
+  _dfunc()->c3gameplay = enabled;
+}
+
+BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent, bool c3gameplay )
 {
   BuildMenu* ret = 0;
   switch (menuType)
   {
-  case BM_WATER:          ret = new BuildMenu_water( parent, Rect( 0, 0, 60, 1 ) ); break;
-  case BM_HEALTH:         ret = new BuildMenu_health( parent, Rect( 0, 0, 60, 1 ) ); break;
-  case BM_SECURITY:       ret = new BuildMenu_security( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_EDUCATION:      ret = new BuildMenu_education( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_ENGINEERING:    ret = new BuildMenu_engineering( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_ADMINISTRATION: ret = new BuildMenu_administration( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_ENTERTAINMENT:  ret = new BuildMenu_entertainment( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_COMMERCE:       ret = new BuildMenu_commerce( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_FARM:           ret = new BuildMenu_farm( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_RAW_MATERIAL:   ret = new BuildMenu_raw_factory( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_FACTORY:        ret = new BuildMenu_factory( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_RELIGION:       ret = new BuildMenu_religion( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_TEMPLE:         ret = new BuildMenu_temple( parent, Rect( 0, 0, 60, 1 )); break;
-  case BM_BIGTEMPLE:      ret = new BuildMenu_bigtemple( parent, Rect( 0, 0, 60, 1 ) ); break;
+  case development::water:          ret = &parent->add<BuildMenu_water >        ( Rect( 0, 0, 60, 1 )); break;
+  case development::health:         ret = &parent->add<BuildMenu_health>        ( Rect( 0, 0, 60, 1 )); break;
+  case development::security:       ret = &parent->add<BuildMenu_security>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::education:      ret = &parent->add<BuildMenu_education>     ( Rect( 0, 0, 60, 1 )); break;
+  case development::engineering:    ret = &parent->add<BuildMenu_engineering>   ( Rect( 0, 0, 60, 1 )); break;
+  case development::administration: ret = &parent->add<BuildMenu_administration>( Rect( 0, 0, 60, 1 )); break;
+  case development::entertainment:  ret = &parent->add<BuildMenu_entertainment> ( Rect( 0, 0, 60, 1 )); break;
+  case development::commerce:       ret = &parent->add<BuildMenu_commerce>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::farm:           ret = &parent->add<BuildMenu_farm>          ( Rect( 0, 0, 60, 1 )); break;
+  case development::raw_material:   ret = &parent->add<BuildMenu_raw_material>  ( Rect( 0, 0, 60, 1 )); break;
+  case development::factory:        ret = &parent->add<BuildMenu_factory>       ( Rect( 0, 0, 60, 1 )); break;
+  case development::religion:       ret = &parent->add<BuildMenu_religion>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::temple:         ret = &parent->add<BuildMenu_temple>        ( Rect( 0, 0, 60, 1 )); break;
+  case development::big_temple:     ret = &parent->add<BuildMenu_bigtemple>     ( Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
+
+  if( ret )
+  {
+    ret->setC3gameplay( c3gameplay );
+  }
 
   return ret;
 }
 
 bool BuildMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = _environment->rootWidget()->absoluteRect();
-  clickedRect.LowerRightCorner = Point( parent()->screenLeft(), _environment->rootWidget()->height() );
+  Rect clickedRect = ui()->rootWidget()->absoluteRect();
+  clickedRect._bottomright = Point( parent()->screenLeft(), ui()->rootWidget()->height() );
   return clickedRect.isPointInside( point );
 }
 
-void BuildMenu::setBuildOptions( const city::BuildOptions& options ) {  _options = options; }
+void BuildMenu::setBuildOptions( const development::Options& options ) { _dfunc()->options = options; }
 
-void BuildMenu::_resolveButtonClick()
+void BuildMenu::_resolveButtonClick( Widget* widget )
 {
-  events::GameEventPtr e = events::PlaySound::create( "icon", 1, 100 );
-  e->dispatch();
-}
+  std::string sound = widget->getProperty( "sound" ).toString();
+  if( sound.empty() )
+    sound = "icon";
 
-void BuildMenu_water::initialize()
-{
-  addBuildButton(objects::fountain);
-  addBuildButton(objects::well);
-  addBuildButton(objects::aqueduct);
-  addBuildButton(objects::reservoir);
-
-  BuildMenu::initialize();
+  events::dispatch<PlaySound>( sound, 1, 100 );
 }
 
 BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )
-	: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::water )
 {
-
-}
-
-void BuildMenu_security::initialize()
-{
-  addBuildButton(objects::prefecture);
-  addBuildButton(objects::wall);
-  addBuildButton(objects::fortification);
-  addBuildButton(objects::fortJavelin);
-  addBuildButton(objects::fortLegionaire);
-  addBuildButton(objects::fortMounted);
-  addBuildButton(objects::barracks);
-  addBuildButton(objects::gatehouse);
-  addBuildButton(objects::tower);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_security::BuildMenu_security( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::security )
 {
-
-}
-
-void BuildMenu_education::initialize()
-{
-  addBuildButton(objects::school);
-  addBuildButton(objects::library);
-  addBuildButton(objects::academy);
-  addBuildButton(objects::missionaryPost);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_education::BuildMenu_education( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::education )
 {
 
-}
-
-void BuildMenu_health::initialize()
-{
-  addBuildButton(objects::doctor);
-  addBuildButton(objects::barber);
-  addBuildButton(objects::baths);
-  addBuildButton(objects::hospital);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_health::BuildMenu_health( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::health )
 {
-
-}
-
-void BuildMenu_engineering::initialize()
-{
-  addBuildButton(objects::engineerPost);
-  addBuildButton(objects::lowBridge);
-  addBuildButton(objects::highBridge);
-  addBuildButton(objects::dock);
-  addBuildButton(objects::shipyard);
-  addBuildButton(objects::wharf);
-  addBuildButton(objects::triumphalArch);
-  addBuildButton(objects::garden);
-  addBuildButton(objects::plaza);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_engineering::BuildMenu_engineering( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::engineering )
 {
-
-}
-
-void BuildMenu_administration::initialize()
-{
-  addBuildButton(objects::forum);
-  addBuildButton(objects::senate);
-
-  addBuildButton(objects::governorHouse);
-  addBuildButton(objects::governorVilla);
-  addBuildButton(objects::governorPalace);
-
-  addBuildButton(objects::smallStatue);
-  addBuildButton(objects::middleStatue);
-  addBuildButton(objects::bigStatue);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_administration::BuildMenu_administration( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::administration )
 {
-
-}
-
-void BuildMenu_entertainment::initialize()
-{
-  addBuildButton(objects::theater);
-  addBuildButton(objects::amphitheater);
-  addBuildButton(objects::colloseum);
-  addBuildButton(objects::hippodrome);
-  addBuildButton(objects::actorColony);
-  addBuildButton(objects::gladiatorSchool);
-  addBuildButton(objects::lionsNursery);
-  addBuildButton(objects::chariotSchool);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_entertainment::BuildMenu_entertainment( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::entertainment )
 {
-
-}
-
-void BuildMenu_commerce::initialize()
-{
-  addSubmenuButton(BM_FARM, _("##bldm_farm##") );
-  addSubmenuButton(BM_RAW_MATERIAL, _("##bldm_raw##") );
-  addSubmenuButton(BM_FACTORY, _("##bldm_factory##") );
-
-  addBuildButton(objects::market);
-  addBuildButton(objects::granary);
-  addBuildButton(objects::warehouse);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_commerce::BuildMenu_commerce( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::commerce )
 {
-
-}
-
-void BuildMenu_farm::initialize()
-{
-  addBuildButton(objects::wheatFarm);
-  addBuildButton(objects::fruitFarm);
-  addBuildButton(objects::oliveFarm);
-  addBuildButton(objects::grapeFarm);
-  addBuildButton(objects::pigFarm);
-  addBuildButton(objects::vegetableFarm);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_farm::BuildMenu_farm( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::farm )
 {
-
 }
 
-void BuildMenu_raw_factory::initialize()
+BuildMenu_raw_material::BuildMenu_raw_material( Widget* parent, const Rect& rectangle )
+  : BuildMenu( parent, rectangle, -1, development::raw_material )
 {
-  addBuildButton(objects::marbleQuarry);
-  addBuildButton(objects::ironMine);
-  addBuildButton(objects::timberLogger);
-  addBuildButton(objects::clayPit);
-
-  BuildMenu::initialize();
-}
-
-BuildMenu_raw_factory::BuildMenu_raw_factory( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
-{
-
-}
-
-void BuildMenu_factory::initialize()
-{
-  addBuildButton(objects::winery);
-  addBuildButton(objects::creamery);
-  addBuildButton(objects::weaponsWorkshop);
-  addBuildButton(objects::furnitureWorkshop);
-  addBuildButton(objects::pottery);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_factory::BuildMenu_factory( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::factory )
 {}
-
-void BuildMenu_religion::initialize()
-{
-  addSubmenuButton(BM_TEMPLE , _("##small_temples##") );
-  addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") );
-
-  addBuildButton(objects::oracle);
-
-  BuildMenu::initialize();
-}
 
 BuildMenu_religion::BuildMenu_religion( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::religion )
 {}
 
-void BuildMenu_temple::initialize()
-{
-  addBuildButton(objects::templeCeres);
-  addBuildButton(objects::templeNeptune);
-  addBuildButton(objects::templeMars);
-  addBuildButton(objects::templeVenus);
-  addBuildButton(objects::templeMercury);
-
-  BuildMenu::initialize();
-}
-
 BuildMenu_temple::BuildMenu_temple( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::temple )
 {
-
-}
-void BuildMenu_bigtemple::initialize()
-{
-  addBuildButton(objects::cathedralCeres);
-  addBuildButton(objects::cathedralNeptune);
-  addBuildButton(objects::cathedralMars);
-  addBuildButton(objects::cathedralVenus);
-  addBuildButton(objects::cathedralMercury);
-
-  BuildMenu::initialize();
 }
 
 BuildMenu_bigtemple::BuildMenu_bigtemple( Widget* parent, const Rect& rectangle )
-: BuildMenu( parent, rectangle, -1 )	 
+  : BuildMenu( parent, rectangle, -1, development::big_temple )
 {
 }
 

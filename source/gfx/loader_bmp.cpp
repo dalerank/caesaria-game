@@ -43,7 +43,7 @@ bool PictureLoaderBmp::isALoadableFileFormat( vfs::NFile file) const
   return checkWord == 0x4D42;
 }
 
-Picture PictureLoaderBmp::load(vfs::NFile file) const
+Picture PictureLoaderBmp::load(vfs::NFile file, bool streaming) const
 {
   //Get the bitmap's buffer and size from the resource file
   if( !file.isOpen() )
@@ -60,20 +60,20 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
   //Were we able to load the bitmap?
   if (temp == NULL)
   {
-    Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
+    Logger::warning( "Unable to load bitmap: {0}", SDL_GetError());
     return Picture::getInvalid();
   }
 
-  Picture* pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
+  Picture pic = Picture( Size( temp->w, temp->h), (unsigned char*)temp->pixels, streaming );
 
-  if( pic->size().area() == 0 )
+  if( pic.size().area() == 0 )
   {
     Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 
 	//Return our loaded image
-  return *pic;
+  return pic;
 }
 
 

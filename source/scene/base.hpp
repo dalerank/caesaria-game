@@ -20,6 +20,7 @@
 #define _CAESARIA_SCENE_BASE_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
 #include "core/smartptr.hpp"
 
 struct NEvent;
@@ -46,13 +47,11 @@ class Base
 public:
   virtual ~Base();
 
-  virtual void handleEvent( NEvent& event);
-  //virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
-
+  virtual void handleEvent( NEvent& event) {}
   virtual void draw() = 0;
 
   // this method is executed after every frame. default: do nothing
-  virtual void afterFrame();
+  virtual void afterFrame() {}
 
   // runs the screen (main loop), returns _wevent
   void update( gfx::Engine& engine );
@@ -60,6 +59,7 @@ public:
 
   // draws the complete frame
   void drawFrame( gfx::Engine &engine );
+  virtual gfx::Camera* camera() const;
 
   virtual void initialize() = 0;
   virtual bool isStopped() const;
@@ -70,7 +70,6 @@ public:
 protected:
   Base();
 
-  //WidgetEvent _wevent;  // event to pass to the main loop
   bool _isStopped;  // screen needs to stop its loop
   int _delayTicks;
 };

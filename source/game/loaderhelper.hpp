@@ -19,19 +19,17 @@
 #define __CAESARIA_LOADER_HELPER_H_INCLUDED__
 
 #include "city/predefinitions.hpp"
-#include <string>
+#include "objects/constants.hpp"
 
-namespace gfx
-{
-  class Tile;
-}
+namespace gfx { class Tile; }
 
 class LoaderHelper
 {
 public:
   static std::string getDefaultCityName( unsigned int location );
+  static std::string getDefaultCityNameSav( unsigned int location );
   static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city, unsigned int forceId=0 );
-  static unsigned int convImgId2ovrType(unsigned int imgId);
+  static object::Type convImgId2ovrType(unsigned int imgId);
 };
 
 #endif //__CAESARIA_LOADER_HELPER_H_INCLUDED__

@@ -16,11 +16,15 @@
 #include "showtutorialwindow.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
 #include "gui/tutorial_window.hpp"
 #include "gui/environment.hpp"
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(ShowTutorial, "tutorial_window")
 
 GameEventPtr ShowTutorial::create(std::string tutorial)
 {
@@ -43,9 +47,9 @@ void ShowTutorial::_exec(Game& game, unsigned int)
   if( _tutorial.empty() )
     return;
 
-  gui::TutorialWindow* wnd = new gui::TutorialWindow( game.gui()->rootWidget(), _tutorial );
-  wnd->show();
+  game.gui()->add<gui::TutorialWindow>( _tutorial );
 }
 
 bool ShowTutorial::_mayExec(Game&, unsigned int) const { return true; }
+
 }

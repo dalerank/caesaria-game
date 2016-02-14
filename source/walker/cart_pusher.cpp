@@ -14,43 +14,44 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "cart_pusher.hpp"
 
 #include "objects/metadata.hpp"
-#include "core/exception.hpp"
-#include "city/city.hpp"
-#include "game/gamedate.hpp"
-#include "core/position.hpp"
-#include "objects/granary.hpp"
-#include "objects/warehouse.hpp"
-#include "gfx/tile.hpp"
-#include "good/goodhelper.hpp"
-#include "core/variant.hpp"
-#include "pathway/path_finding.hpp"
-#include "gfx/picture_bank.hpp"
-#include "objects/factory.hpp"
-#include "good/goodstore.hpp"
-#include "core/utils.hpp"
 #include "name_generator.hpp"
+#include "objects/factory.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/logger.hpp"
-#include "pathway/pathway_helper.hpp"
-#include "objects/constants.hpp"
-#include "corpse.hpp"
+#include "objects/warehouse.hpp"
+#include "objects/granary.hpp"
+#include "good/store.hpp"
+#include "pathway/path_finding.hpp"
+#include "city/city.hpp"
+#include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
+#include "game/gamedate.hpp"
 #include "events/removecitizen.hpp"
-#include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
+#include "corpse.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/cart_animation.hpp"
+#include "pathway/pathway_helper.hpp"
+#include "core/common.hpp"
+#include "walkers_factory.hpp"
+#include "core/logger.hpp"
+#include "city/trade_options.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
+using namespace config;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-const int defaultDeliverDistance = 40;
-CAESARIA_LITERALCONST(stock)
-CAESARIA_LITERALCONST(producerPos)
-CAESARIA_LITERALCONST(consumerPos)
+GAME_LITERALCONST(stock)
+GAME_LITERALCONST(producerPos)
+GAME_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl
@@ -59,7 +60,8 @@ public:
   good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
-  Animation anim;
+  int brokePathCounter;
+  CartAnimation anim;
   int maxDistance;
   long reservationID;
   bool cantUnloadGoods;
@@ -69,51 +71,51 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway& oPathWay);
 };
 
-CartPusher::CartPusher(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
+  : Citizen( city, walker::cartPusher  ), _d( new Impl )
 {
-  _setType( walker::cartPusher );
-  _d->producerBuilding = NULL;
-  _d->consumerBuilding = NULL;
+  _d->producerBuilding = nullptr;
+  _d->consumerBuilding = nullptr;
   _d->cantUnloadGoods = false;
-  _d->maxDistance = defaultDeliverDistance;
+  _d->brokePathCounter = 0;
+  _d->stock.setCapacity( cap );
+  _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 void CartPusher::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->anim = Animation();
+  _d->anim = CartAnimation();
 
-  if( _d->consumerBuilding != NULL )
-  {
-    GranaryPtr granary = ptr_cast<Granary>(_d->consumerBuilding);
-    WarehousePtr warehouse = ptr_cast<Warehouse>(_d->consumerBuilding);
-    FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
+  if( consumerBuilding() != nullptr )
+  {   
+    good::Store& store = consumerBuilding()->store();
 
-    good::Store* goodStore = 0;
-    if( granary.isValid() ) { goodStore = &granary->store(); }
-    else if( warehouse.isValid() ) { goodStore = &warehouse->store(); }
-    else if( factory.isValid() ) { goodStore = &factory->store(); }
-
-    if( goodStore )
-    {              
+    if( store.capacity() > 0 )
+    {
       int saveQty = _d->stock.qty();
       wait( _d->stock.qty() );
-      goodStore->applyStorageReservation(_d->stock, _d->reservationID);      
-      _d->reservationID = 0;      
+      store.applyStorageReservation(_d->stock, _d->reservationID);
+      _d->reservationID = 0;
       _d->cantUnloadGoods = (saveQty == _d->stock.qty());
-    }    
+
+      if( producerBuilding() != nullptr )
+      {
+        int storedQty = saveQty - _d->stock.qty();
+        producerBuilding()->store().confirmDeliver( _d->stock.type(), storedQty,
+                                                    consumerBuilding()->pos().hash(),
+                                                    game::Date::current() );
+      }
+    }
   }
   //
-  if( !_pathwayRef().isReverse() )
+  if( !_pathway().isReverse() )
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     _centerTile();
     go();
-    _d->consumerBuilding = NULL;
+    _d->consumerBuilding = nullptr;
   }
   else
   {
@@ -121,11 +123,18 @@ void CartPusher::_reachedPathway()
   }
 }
 
+void CartPusher::_changeTile()
+{
+  _d->brokePathCounter = 0;
+  Human::_changeTile();
+}
+
 void CartPusher::_brokePathway(TilePos pos)
 {
-  if( _pathwayRef().isValid() )
+  _d->brokePathCounter++;
+  if( _pathway().isValid() && _d->brokePathCounter < 5 )
   {
-    Pathway way = PathwayHelper::create( pos, _pathwayRef().stopPos(), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos, _pathway().stopPos(), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       setPathway( way );
@@ -134,25 +143,23 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway now destination point [%d,%d]", pos.i(), pos.j() );
+  Logger::warning( "WARNING !!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
   deleteLater();
 }
 
-good::Stock &CartPusher::stock() {   return _d->stock;}
+good::Stock& CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
 BuildingPtr CartPusher::producerBuilding()
 {
-   if( _d->producerBuilding.isNull() ) 
-     THROW("ProducerBuilding is not initialized");
+   Logger::warningIf( _d->producerBuilding.isNull(), "!!! WARNING: ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
 BuildingPtr CartPusher::consumerBuilding()
 {
-   if( _d->consumerBuilding.isNull() ) 
-     THROW("ConsumerBuilding is not initialized");
+   Logger::warningIf( _d->consumerBuilding.isNull(), "!!! WARNING: ConsumerBuilding is not initialized");
    
    return _d->consumerBuilding;
 }
@@ -161,7 +168,7 @@ Animation& CartPusher::getCartPicture()
 {
    if( !_d->anim.isValid() )
    {
-     _d->anim = good::Helper::getCartPicture(_d->stock, direction());
+     _d->anim.load(_d->stock, direction());
    }
 
    return _d->anim;
@@ -170,7 +177,7 @@ Animation& CartPusher::getCartPicture()
 void CartPusher::_changeDirection()
 {
    Walker::_changeDirection();
-   _d->anim = Animation();  // need to get the new graphic
+   _d->anim = CartAnimation();  // need to get the new graphic
 }
 
 void CartPusher::getPictures( gfx::Pictures& oPics)
@@ -180,28 +187,28 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
 
    switch( direction() )
    {
-   case constants::west: offset = Point( 10, -5 ); break;
-   case constants::east: offset = Point( -10, 5 ); break;
-   case constants::north: offset = Point( -5, -5 ); break;
-   case constants::south: offset = Point( 5, 5 ); break;
+   case direction::west: offset = Point( 10, -5 ); break;
+   case direction::east: offset = Point( -10, 5 ); break;
+   case direction::north: offset = Point( -5, -5 ); break;
+   case direction::south: offset = Point( 5, 5 ); break;
    default: break;
    }
 
    // depending on the walker direction, the cart is ahead or behind
    switch( direction() )
    {
-   case constants::west:
-   case constants::northWest:
-   case constants::north:
-   case constants::northEast:
+   case direction::west:
+   case direction::northWest:
+   case direction::north:
+   case direction::northEast:
       oPics.push_back( getCartPicture().currentFrame() );
       oPics.push_back( getMainPicture() );
    break;
 
-   case constants::east:
-   case constants::southEast:
-   case constants::south:
-   case constants::southWest:
+   case direction::east:
+   case direction::southEast:
+   case direction::south:
+   case direction::southWest:
       oPics.push_back( getMainPicture() );
       oPics.push_back( getCartPicture().currentFrame() );
    break;
@@ -210,7 +217,13 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    break;
    }
 
-   foreach( it, oPics ) { it->addOffset( offset ); }
+   if( !oPics.empty() && _d->anim.isBack() )
+   {
+     std::iter_swap( oPics.begin(), oPics.begin() + 1);
+   }
+
+   for( auto& pic : oPics )
+     pic.addOffset( offset );
 }
 
 void CartPusher::_computeWalkerDestination()
@@ -232,25 +245,31 @@ void CartPusher::_computeWalkerDestination()
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
-   if (destBuilding == NULL)
+   //if city save goods, need find warehouse first
+   if( _city()->tradeOptions().isStacking(_d->stock.type()) )
+   {
+      destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
+   }
+
+   if(destBuilding == NULL)
    {
       // try send that good to a factory
       destBuilding = _d->getWalkerDestination_factory(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a granary
       destBuilding = _d->getWalkerDestination_granary(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a warehouse
       destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
-   if( destBuilding != NULL)
+   if(destBuilding != NULL)
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
@@ -260,14 +279,14 @@ void CartPusher::_computeWalkerDestination()
    }
    else
    {
-     if( _d->producerBuilding->getAccessRoads().empty() )
+     if( _d->producerBuilding->roadside().empty() )
      {
        deleteLater();
      }
      else
      {
-       Walker::wait( -1 );
-       setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
+       Walker::wait( Walker::infiniteWait );
+       setPos( _d->producerBuilding->roadside().front()->pos() );
        _changeDirection();
        turn( _d->producerBuilding->pos() );
        getMainPicture();
@@ -276,7 +295,7 @@ void CartPusher::_computeWalkerDestination()
 }
 
 template< class T >
-BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
+BuildingPtr reserveShortestPath( const object::Type buildingType,
                                  good::Stock& stock, long& reservationID,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
@@ -284,11 +303,11 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
-  DirectPRoutes::iterator pathWayIt= pathWayList.begin();
+  auto pathWayIt= pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
-    SmartPtr<T> building = ptr_cast<T>( pathWayIt->first );
+    SmartPtr<T> building = pathWayIt->first.as<T>();
 
     if( stock.qty() > building->store().getMaxStore( stock.type() ) )
     {
@@ -303,19 +322,19 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   //find shortest path
   int maxLength = 999;
   PathwayPtr shortestPath = 0;
-  foreach( pathIt, pathWayList )
+  for( auto& item : pathWayList )
   {
-    if( pathIt->second->length() < maxLength )
+    if( (int)item.second->length() < maxLength )
     {
-      shortestPath = pathIt->second;
-      maxLength = pathIt->second->length();
-      res = ptr_cast<Building>( pathIt->first );
+      shortestPath = item.second;
+      maxLength = item.second->length();
+      res = item.first.as<Building>();
     }
   }
 
   if( res.isValid() )
   {
-    SmartPtr<T> ptr = ptr_cast<T>( res );
+    SmartPtr<T> ptr = res.as<T>();
     reservationID = ptr->store().reserveStorage( stock, game::Date::current() );
     if (reservationID != 0)
     {
@@ -334,13 +353,13 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  good::Type goodType = stock.type();
-  TileOverlay::Type buildingType = MetaDataHolder::instance().getConsumerType( goodType );
+  object::ProductConsumer info( stock.type() );
+  object::Type buildingType = info.consumer();
 
-  if (buildingType == objects::unknown)
+  if (buildingType == object::unknown)
   {
      // no factory can use this good
-     return 0;
+     return BuildingPtr();
   }
 
   res = reserveShortestPath<Factory>( buildingType, stock, reservationID, pathPropagator, oPathWay );
@@ -352,7 +371,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
 {
   BuildingPtr res;
 
-  res = reserveShortestPath<Warehouse>( objects::warehouse, stock, reservationID, pathPropagator, oPathWay );
+  res = reserveShortestPath<Warehouse>( object::warehouse, stock, reservationID, pathPropagator, oPathWay );
 
   return res;
 }
@@ -361,50 +380,38 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 {
    BuildingPtr res;
 
-   good::Type goodType = stock.type();
-   if (!(goodType == good::wheat || goodType == good::fish
-         || goodType == good::meat || goodType == good::fruit || goodType == good::vegetable))
+   good::Product p = stock.type();
+   if( !good::foods().contain( p ) )
    {
       // this good cannot be stored in a granary
-      return 0;
+      return BuildingPtr();
    }
 
-   res = reserveShortestPath<Granary>( objects::granary, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>( object::granery, stock, reservationID, pathPropagator, oPathWay );
 
    return res;
 }
 
-void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
+void CartPusher::send2city(BuildingPtr building, good::Stock& carry )
 {
-  _d->stock.append( carry );
+  _d->stock.takeFrom( carry );
   setProducerBuilding( building  );
 
   _computeWalkerDestination();
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  _d->anim.update( time );
-  if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
+  if( !waitInterval() )
+    _d->anim.update( time );
+
+  if( game::Date::isWeekChanged() && !_pathway().isValid() )
   {
     _computeWalkerDestination();
   }
 
   Walker::timeStep( time );
-}
-
-CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
-{
-  CartPusherPtr ret( new CartPusher( city ) );
-  ret->_d->stock.setCapacity( cap );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 CartPusher::~CartPusher(){}
@@ -413,12 +420,9 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  stream[ lc_stock ] = _d->stock.save();
-  stream[ lc_producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : TilePos( -1, -1 );
-
-  stream[ lc_consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+  stream[ literals::stock ] = _d->stock.save();
+  stream[ literals::producerPos ] = utils::objPosOrDefault( _d->producerBuilding );
+  stream[ literals::consumerPos ] = utils::objPosOrDefault( _d->consumerBuilding );
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -429,24 +433,23 @@ void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( lc_stock ).toList() );
+  _d->stock.load( stream.get( literals::stock ).toList() );
 
-  TilePos prPos( stream.get( lc_producerPos ).toTilePos() );
-  Tile& prTile = _city()->tilemap().at( prPos );
-  _d->producerBuilding = ptr_cast<Building>( prTile.overlay() );
+  TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
+  _d->producerBuilding = _map().overlay<Building>( prPos );
 
-  if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
+  if( _d->producerBuilding.is<WorkingBuilding>() )
   {
-    WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( _d->producerBuilding );
-    wb->addWalker( this );
+    auto workingBuilding = _d->producerBuilding.as<WorkingBuilding>();
+    workingBuilding->addWalker( this );
   }
   else
   {
-    Logger::warning( "WARNING: cartPusher producer building is NULL uid=[%d]", uniqueId() );
+    Logger::warning( "WARNING: cartPusher producer building is NULL uid={}", uniqueId() );
   }
 
-  TilePos cnsmPos( stream.get( lc_consumerPos ).toTilePos() );
-  _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
+  TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
+  _d->consumerBuilding = _map().overlay<Building>( cnsmPos );
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )
@@ -457,8 +460,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), 1 );
-  e->dispatch();
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   if( !created )
   {
@@ -469,9 +471,9 @@ bool CartPusher::die()
   return created;
 }
 
-std::string CartPusher::thoughts( Thought th ) const
+std::string CartPusher::thoughts( Thought thougthType )const
 {
-  switch( th )
+  switch( thougthType )
   {
   case thCurrent:
     if( !pathway().isValid() )
@@ -482,7 +484,7 @@ std::string CartPusher::thoughts( Thought th ) const
     {
       if( pathway().isReverse() && _d->cantUnloadGoods )
       {
-        if( is_kind_of<Factory>( _d->consumerBuilding ) )
+        if( _d->consumerBuilding.is<Factory>() )
         {
           return "##cartpusher_cant_unload_goods_in_factory##";
         }
@@ -497,15 +499,15 @@ std::string CartPusher::thoughts( Thought th ) const
   default: break;
   }
 
-  return Walker::thoughts( th );
+  return Walker::thoughts( thougthType );
 }
 
 TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos( -1, -1 );
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
+  case plOrigin: return utils::objPosOrDefault( _d->producerBuilding );
+  case plDestination: return utils::objPosOrDefault( _d->consumerBuilding );
   default: break;
   }
 

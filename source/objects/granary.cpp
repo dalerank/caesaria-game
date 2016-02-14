@@ -19,43 +19,48 @@
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
-#include "good/goodstore_simple.hpp"
-#include "city/helper.hpp"
+#include "good/storage.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
+#include "objects_factory.hpp"
+#include "good/turnover.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
+
 namespace {
-CAESARIA_LITERALCONST(goodStore)
+GAME_LITERALCONST(goodStore)
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };
 static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
-class GranaryStore : public good::SimpleStore
+class GranaryStore : public good::Storage
 {
 public:
   static const int maxCapacity = 2400;
 
   GranaryStore()
   {
-    for( int type=good::wheat; type <= good::vegetable; type++ )
-    {
-      setOrder( (good::Type)type, good::Orders::accept );
-    }
+    for( auto& gtype : good::foods() )
+      setOrder( gtype, good::Orders::accept );
 
     setOrder( good::fish, good::Orders::none );
     setCapacity( GranaryStore::maxCapacity );
+
+    granary = nullptr;
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
-              ? good::SimpleStore::reserveStorage( stock, time )
+              ? good::Storage::reserveStorage( stock, time )
               : 0;
   }
 
@@ -66,28 +71,31 @@ public:
       return;
     }
     
-    good::SimpleStore::store( stock, amount );
+    good::Storage::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
+    _providers().append( stock );
     granary->computePictures();
+    return isOk;
   }
 
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
     granary->computePictures();
+    return isOk;
   }
   
-  virtual void setOrder( const good::Type type, const good::Orders::Order order )
+  virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
-    good::SimpleStore::setOrder( type, order );
-    setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
+    good::Storage::setOrder( type, order );
+    setCapacity( type, (order == good::Orders::reject || order == good::Orders::none) ? 0 : GranaryStore::maxCapacity );
   }
+
+  virtual TilePos owner() const { return granary ? granary->pos() : TilePos::invalid(); }
 
   Granary* granary;
 };
@@ -97,49 +105,40 @@ class Granary::Impl
 public:
   GranaryStore store;
   Pictures granarySprite;
-  bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::objects::granary, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( object::granery, Size(3,3) ), _d( new Impl )
 {
   _d->store.granary = this;
 
-  setPicture( ResourceGroup::commerce, 140 );
-  _fgPicturesRef().resize(6);  // 1 upper level + 4 windows + animation
+  _picture().load(ResourceGroup::commerce, 140);
+  _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
-  _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _animation().setDelay( 4 );
 
-  _fgPicture( 0 ) = Picture::load( ResourceGroup::commerce, 141);
-  _fgPicture( 5 ) = _animationRef().currentFrame();
+  _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
+  _fgPicture( 5 ) = _animation().currentFrame();
   computePictures();
 
-  _d->devastateThis = false;  
-  _d->granarySprite.push_back( Picture::load( ResourceGroup::commerce, 141) );
+  _d->granarySprite.push_back( Picture( ResourceGroup::commerce, 141 ) );
   _d->granarySprite.push_back( Picture::getInvalid() );
 }
 
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( !mayWork() )
+  if( !(mayWork() && isActive()) )
     return;
 
   if( game::Date::isWeekChanged() )
   {
-    if(  walkers().empty() )
-    {
-      if( _d->store.isDevastation() )
-      {
-        _tryDevastateGranary();
-      }
-      else
-      {
-        _resolveDeliverMode();
-      }
-    }
+    _weekUpdate();
+    //animate workers need
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
+    _d->store.removeExpired( game::Date::current() );
   }
 }
 
@@ -158,7 +157,7 @@ void Granary::initTerrain(Tile& terrain)
   //         (1,0)Y    (2,1)Y
   //              (2,0)N
 
- /* bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
+  /* bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::tlRoad, walkable );
   terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
   */
@@ -172,42 +171,41 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPicturesRef()[n+1] = Picture::getInvalid();
+    _fgPictures()[n+1] = Picture::getInvalid();
   }
 
-  if (allQty > 0){ _fgPicturesRef()[1] = Picture::load( ResourceGroup::commerce, 142); }
-  if (allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
-  if (allQty > maxQty * 0.5){ _fgPicturesRef()[3] = Picture::load( ResourceGroup::commerce, 144); }
-  if (allQty > maxQty * 0.9){ _fgPicturesRef()[4] = Picture::load( ResourceGroup::commerce, 145); }
+  if (allQty > 0){ _fgPictures()[1] = Picture( ResourceGroup::commerce, 142); }
+  if (allQty > maxQty * 0.25) { _fgPictures()[2] = Picture( ResourceGroup::commerce, 143); }
+  if (allQty > maxQty * 0.5){ _fgPictures()[3] = Picture( ResourceGroup::commerce, 144); }
+  if (allQty > maxQty * 0.9){ _fgPictures()[4] = Picture( ResourceGroup::commerce, 145); }
 }
 
 void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
 
-   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
-   stream[ lc_goodStore ] = _d->store.save();
+   stream[ "__debug_typeName" ] = Variant( std::string( TEXT(B_GRANARY) ) );
+   stream[ literals::goodStore ] = _d->store.save();
 }
 
 void Granary::load( const VariantMap& stream)
 {
   WorkingBuilding::load(stream);
 
-  _d->store.load( stream.get( lc_goodStore ).toMap() );
+  _d->store.load( stream.get( literals::goodStore ).toMap() );
 
   computePictures();
 }
 
-bool Granary::isWalkable() const { return true; }
+bool Granary::isWalkable() const { return false; }
 
 void Granary::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
-  foreach( it, tiles )
+  TilesArray tiles = area();
+  for( auto tile : tiles )
   {
-    (*it)->setFlag( Tile::tlRoad, false );
-    (*it)->setFlag( Tile::tlRock, false );
+    tile->setFlag( Tile::tlRoad, false );
+    tile->setFlag( Tile::tlRock, false );
   }
 }
 
@@ -245,42 +243,57 @@ Renderer::PassQueue Granary::passQueue() const { return granaryPass; }
 
 void Granary::_resolveDeliverMode()
 {
-  if( walkers().size() > 0 )
-  {
+  //dont send walkers if they on way already
+  if( haveWalkers() )
     return;
-  }
-  //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
+
+  //if warehouse in deliver mode some good then we need to send cart for other warehouses
+  //and take it
+  for( auto& gType : good::foods() )
   {
-    good::Type gType = (good::Type)goodType;
     good::Orders::Order order = _d->store.getOrder( gType );
     int goodFreeQty = math::clamp( _d->store.freeQty( gType ), 0, 400 );
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
+      auto supplier = Walker::create<CartSupplier>( _city() );
+      supplier->send2city( this, gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !supplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( supplier );
         return;
       }
     }
   }
 }
 
-bool Granary::_trySendGoods( good::Type gtype, int qty )
+void Granary::_weekUpdate()
+{
+  if(  walkers().empty() )
+  {
+    if( _d->store.isDevastation() )
+    {
+      _tryDevastateGranary();
+    }
+    else
+    {
+      _resolveDeliverMode();
+    }
+  }
+}
+
+bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
-  CartPusherPtr walker = CartPusher::create( _city() );
-  walker->send2city( BuildingPtr( this ), stock );
+  auto deliverer = Walker::create<CartPusher>( _city() );
+  deliverer->send2city( this, stock );
 
-  if( !walker->isDeleted() )
+  if( !deliverer->isDeleted() )
   {
     stock.setQty( 0 );
-    _d->store.retrieve( stock, qty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
-    addWalker( walker.object() );
+    _d->store.retrieve( stock, qty );
+    addWalker( deliverer.object() );
     return true;
   }
 
@@ -291,16 +304,16 @@ void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   const int maxSentTry = 3;
-  for( int goodType=good::wheat; goodType <= good::vegetable; goodType++ )
+  for( auto& goodType : good::foods() )
   {
     int trySentQty[maxSentTry] = { 400, 200, 100 };
 
-    int goodQty = _d->store.qty( (good::Type)goodType );
+    int goodQty = _d->store.qty( goodType );
     for( int i=0; i < maxSentTry; ++i )
     {
       if( goodQty >= trySentQty[i] )
       {
-        bool goodSended = _trySendGoods( (good::Type)goodType, trySentQty[i] );
+        bool goodSended = _trySendGoods( goodType, trySentQty[i] );
         if( goodSended )
           return;
       }

@@ -18,64 +18,86 @@
 #include "dustcloud.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
+#include "objects/construction.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "walker/helper.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+
+REGISTER_CLASS_IN_WALKERFACTORY(walker::dustCloud, DustCloud)
 
 class DustCloud::Impl
 {
 public:
   gfx::Animation animation;
-  Point dstPos, srcPos;
-  TilePos from, dst;
-  PointF deltaMove;
-  PointF currentPos;
+  struct {
+    Point destination;
+    Point source;
+    PointF current;
+    PointF speed;
+    Point delta() const { return destination - source; }
+  } worldway;
+
+  struct {
+    TilePos destination;
+    TilePos source;
+    Point destination2world() const
+    {
+      int yMultiplier = config::tilemap.cell.size().height();
+      Point xOffset( 0, yMultiplier );
+      return Point( destination.i(), destination.j() ) * yMultiplier + xOffset;
+    }
+
+    float distance() const { return source.distanceFrom( destination ); }
+
+    Point source2world() const
+    {
+      int yMultiplier = config::tilemap.cell.size().height();
+      Point xOffset( 0, yMultiplier );
+      return Point( source.i(), source.j() ) * yMultiplier + xOffset;
+    }
+
+    TilePos nextStep() const { return source.nextStep( destination ); }
+
+    bool mayMove() const { return destination != source; }
+  } mapway;
+
 };
-
-WalkerPtr DustCloud::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new DustCloud( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int range)
 {
   for( int direction=0; direction < 8; direction++ )
   {
-    DustCloud* dc = new DustCloud( city );
+    auto dustcloud = Walker::create<DustCloud>( city );
 
     TilePos offset;
     switch( direction )
     {
-    case north: offset = TilePos( 0, 1 ); break;
-    case northEast: offset = TilePos( 1, 1 ); break;
-    case east: offset = TilePos( 1, 0 ); break;
-    case southEast: offset = TilePos( 1, -1 ); break;
-    case south: offset = TilePos( 0, -1 ); break;
-    case southWest: offset = TilePos( -1, -1 ); break;
-    case west: offset = TilePos( -1, 0 ); break;
-    case northWest: offset = TilePos( -1, 1 ); break;
+    case direction::north:      offset = offset.nb().north();     break;
+    case direction::northEast:  offset = offset.nb().northeast(); break;
+    case direction::east:       offset = offset.nb().east();      break;
+    case direction::southEast:  offset = offset.nb().southeast(); break;
+    case direction::south:      offset = offset.nb().south();     break;
+    case direction::southWest:  offset = offset.nb().southwest(); break;
+    case direction::west:       offset = offset.nb().west();      break;
+    case direction::northWest:  offset = offset.nb().northwest(); break;
     }
 
-    dc->send2City( start, start + offset * range);
-    dc->drop();
+    dustcloud->send2City( start, start + offset * range);
   }
 }
 
 DustCloud::DustCloud(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Walker( city, walker::dustCloud ), _d( new Impl )
 {
-  _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
-  _d->animation.setDelay( 9 );
-  //_d->animation.setOffset( Point( 5, 7 ) );
+  _d->animation.setDelay( Animation::hugeSlow );
 
   setName( _("##dust##") );
 
@@ -84,29 +106,28 @@ DustCloud::DustCloud(PlayerCityPtr city )
 
 void DustCloud::send2City(const TilePos &start, const TilePos& stop )
 {
-  _d->from = start;
-  _d->dst = stop;
+  _d->mapway.source = start;
+  _d->mapway.destination = stop;
 
-  if( _d->from == _d->dst )
+  if( !_d->mapway.mayMove() )
   {
     Logger::warning( "WARNING!!! DustCloud: start equale destination" );
-    _d->dst = _d->from + TilePos( 1, 1 );
+    _d->mapway.destination = _d->mapway.source + TilePos( 1, 1 );
   }
 
-  _d->dstPos = Point( _d->dst.i(), _d->dst.j() ) * 15 + Point( 7, 7 );
-  _d->srcPos = Point( _d->from.i(), _d->from.j() ) * 15 + Point( 7, 7 );
+  _d->worldway.destination = _d->mapway.destination2world();
+  _d->worldway.source = _d->mapway.source2world();
 
   float delim = 6.f + math::random( 8 );
-  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (_d->from.distanceFrom( _d->dst ) * delim);
-  _d->currentPos = _d->srcPos.toPointF();
+  _d->worldway.speed =  _d->worldway.delta().toPointF() / (_d->mapway.distance() * delim);
+  _d->worldway.current = _d->worldway.source.toPointF();
 
-  _setWpos( _d->srcPos );
+  _setWpos( _d->worldway.source );
 
   attach();
 
-  Tilemap& tmap = _city()->tilemap();
-  _pathwayRef().init( tmap.at( _d->from ) );
-  _pathwayRef().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
+  _pathway().init( _map().at( _d->mapway.source ) );
+  _pathway().setNextTile( _map().at( _d->mapway.nextStep() ) );
 }
 
 void DustCloud::timeStep(const unsigned long time)
@@ -115,21 +136,24 @@ void DustCloud::timeStep(const unsigned long time)
   {
   case Walker::acMove:
   {
-    PointF saveCurrent = _d->currentPos;
-    _d->currentPos += _d->deltaMove;
-    const int wcell = tilemap::cellSize().height();
+    PointF saveCurrent = _d->worldway.current;
+    _d->worldway.current += _d->worldway.speed;
 
-    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
-    TilePos ij( tp.x(), tp.y() );
-    setPos( ij );
-    _setWpos( _d->currentPos.toPoint() );
+    int yMultiplier = config::tilemap.cell.size().height();
+    Point xOffset( 0, yMultiplier );
+    TilePos rpos = TilePos( (_d->worldway.current.x() - xOffset.x()) / yMultiplier,
+                            (_d->worldway.current.y() - xOffset.y()) / yMultiplier );
+
+    _setLocation( rpos );
+
+    _setWpos( _d->worldway.current.toPoint() );
     _d->animation.update( time );
 
-    if( saveCurrent.getDistanceFrom( _d->dstPos.toPointF() ) <
-        _d->currentPos.getDistanceFrom( _d->dstPos.toPointF() ) )
+    if( saveCurrent.getDistanceFrom( _d->worldway.destination.toPointF() ) <
+        _d->worldway.current.getDistanceFrom( _d->worldway.destination.toPointF() ) )
     {
-      _d->currentPos = _d->dstPos.toPointF();
-     _reachedPathway();
+      _d->worldway.current = _d->worldway.destination.toPointF();
+      _reachedPathway();
     }
   }
   break;
@@ -152,4 +176,14 @@ void DustCloud::save( VariantMap& stream ) const
 void DustCloud::load( const VariantMap& stream )
 {
   Walker::load( stream );
+}
+
+void DustCloud::initialize(const VariantMap &options)
+{
+  VariantMap anim = options.get( "animation" ).toMap();
+  if( !anim.empty() )
+  {
+    _d->animation.clear();
+    _d->animation.simple( anim );
+  }
 }

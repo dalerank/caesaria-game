@@ -4,7 +4,7 @@
 #include "util.hpp"
 #include "inifile.hpp"
 #include "core/utils.hpp"
-
+#include "core/format.hpp"
 #include "vfs/file.hpp"
 #include "vfs/directory.hpp"
 #include "vfs/entries.hpp"
@@ -23,7 +23,7 @@ typedef std::vector<vfs::Path> FilePathList;
 
 static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePathList& files )
 {
-  vfs::Entries entries = dir.getEntries();
+  vfs::Entries entries = dir.entries();
   foreach( i, entries )
   {
     if( i->name.isDirectoryEntry() )
@@ -35,7 +35,7 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
     }
     else
     {
-      files.push_back( basedir.getRelativePathTo( i->fullpath ) );
+      files.push_back( basedir.relativePathTo( i->fullpath ) );
     }
   }
 }
@@ -56,8 +56,8 @@ void Packager::createUpdate( bool release )
 {
   FilePathList allFiles;
 
-  vfs::Directory::changeCurrentDir( _baseset );
-  vfs::Directory dir = vfs::Directory::getCurrent();
+  vfs::Directory::switchTo( _baseset );
+  vfs::Directory dir = vfs::Directory::current();
 
   __gartherFiles( dir, dir, allFiles );
 
@@ -75,18 +75,18 @@ void Packager::createUpdate( bool release )
     std::string sectionName;
     if( release )
     {
-      sectionName = utils::format( 0xff, "File %s", baseName.c_str() );
+      sectionName = fmt::format( "File {}", baseName );
     }
     else
     {
-      sectionName = utils::format( 0xff, "Version%s File %s", _crver.c_str(), baseName.c_str() );
+      sectionName = fmt::format( "Version{} File {}", _crver, baseName );
     }
 
     ByteArray data = vfs::NFile::open( (*i).absolutePath() ).readAll();
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", utils::format( 0xff, "%x", crc ) );
-    vinfo->SetValue( sectionName, "filesize", utils::format( 0xff, "%d", data.size() ) );
+    vinfo->SetValue( sectionName, "filesize", utils::i2str( data.size() ) );
     // Add platforms information info release file
     std::string platforms = getFilePlatforms(*i);
     if (!platforms.empty()) {

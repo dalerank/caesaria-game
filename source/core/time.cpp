@@ -20,35 +20,47 @@
 #include <cstdio>
 #include <stdint.h>
 #include "requirements.hpp"
-#include "core/math.hpp"
-
-#if defined(CAESARIA_PLATFORM_WIN)
-    #include "windows.h"
-#elif defined(CAESARIA_PLATFORM_UNIX)
-    #include <sys/time.h>
-#endif //CAESARIA_PLATFORM_UNIX
+#include "math.hpp"
+#include "platform_specific.hpp"
 
 using namespace std;
 
+const char* age_ad = "ad";
+const char* age_bc = "bc";
+const char* age_uc = "uc";
+
 const char* const dayNames[ DateTime::daysInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* const romanDayNames[ DateTime::daysInWeek  ] = { "Lunae", "Martis", "Mercuri", "Jovis", "Veneris", "Saturni", "Solis" };
+
 const char* const monthNames[ DateTime::monthsInYear ] = { "January", "February", "March", "April",
-                                                    "May", "June", "July", "August", "September",
-                                                    "October", "November", "December" };
+                                                           "May", "June", "July", "August", "September",
+                                                           "October", "November", "December" };
+
+const char* romanMercMonth = "Mercedonius";
+const char* const romanMonthNames[ DateTime::monthsInYear ] = { "Martius", "Aprilis", "Maius", "Junius",
+                                                                "Quintilis", "Sextilis", "September", "October", "November",
+                                                                "December", "Januarius", "Februarius" };
+
+
+const char* const romanShortMonthNames[ DateTime::monthsInYear ] = { "Mar", "Apr",
+                                                                     "May", "Jun", "Qin", "Sxt", "Sep",
+                                                                     "Oct", "Nov", "Dec", "Jan", "Feb" };
+
 const char* const shortMonthNames[ DateTime::monthsInYear ] = { "Jan", "Feb", "Mar", "Apr",
-                                                    "May", "Jun", "Jul", "Aug", "Sep",
-                                                    "Oct", "Nov", "Dec" };
+                                                                "May", "Jun", "Jul", "Aug",
+                                                                "Sep", "Oct", "Nov", "Dec" };
 
 
 const DateTime DateTime::invalid = DateTime();
 
 void _convertToDateTime( DateTime& dateTime, const tm& val )
 {
-    dateTime.setSeconds(val.tm_sec);
-    dateTime.setMinutes(val.tm_min);
-    dateTime.setHour(val.tm_hour);
-    dateTime.setDay(val.tm_mday);
-    dateTime.setMonth(val.tm_mon);
-    dateTime.setYear(val.tm_year + 1900);
+  dateTime.setSeconds(val.tm_sec);
+  dateTime.setMinutes(val.tm_min);
+  dateTime.setHour(val.tm_hour);
+  dateTime.setDay(val.tm_mday);
+  dateTime.setMonth( Month(val.tm_mon) );
+  dateTime.setYear(val.tm_year + 1900);
 }
 
 int DateTime::_getDaysToDate( const long other ) const {    return abs( (int)(_toJd() - other ) );}
@@ -81,16 +93,16 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 
 tm _getOsLocalTime( time_t date )
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   time_t t;
   tm timeinfo;
   time(&t);
   memcpy( &timeinfo, localtime(&t), sizeof(tm) );
   return timeinfo;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(GAME_PLATFORM_UNIX)
   //time(&date);
   return *localtime( &date );
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return tm();
 }
@@ -147,64 +159,89 @@ DateTime::DateTime()
   _day = _month = 0;
 }
 
-unsigned char DateTime::hour() const {    return _hour;}
-unsigned char DateTime::month() const {    return _month; }
-int DateTime::year() const {     return _year; }
-unsigned char DateTime::minutes() const {     return _minutes; }
-unsigned char DateTime::day() const {     return _day; }
-unsigned char DateTime::seconds() const  {     return _seconds; }
+unsigned char DateTime::hour()    const { return _hour;}
+Month DateTime::month()           const { return Month(_month); }
+int DateTime::year()              const { return _year; }
+unsigned char DateTime::minutes() const { return _minutes; }
+unsigned char DateTime::day()     const { return _day; }
+unsigned char DateTime::seconds() const { return _seconds; }
 void DateTime::setHour( unsigned char h ) {     _hour = h; }
-void DateTime::setMonth( unsigned char m ) {     _month = m; }
+void DateTime::setMonth(Month m) { _month = (unsigned int)m; }
 void DateTime::setYear( unsigned int y ) {     _year = y; }
 void DateTime::setMinutes( unsigned char m )  {    _minutes = m; }
 void DateTime::setDay( unsigned char d ) { _day = d; }
 void DateTime::setSeconds( unsigned char s ) { _seconds = s; }
 
-DateTime DateTime::getCurrenTime()
+DateTime DateTime::currenTime()
 {
 	tm d;
 
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
     _getsystime( &d );
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     time_t rawtime;
-    time ( &rawtime );
+    ::time( &rawtime );
 
     d = *localtime( &rawtime );
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
 }
 
 unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
-const char* DateTime::getDayName( unsigned char d ){   return dayNames[ math::clamp<int>( d, 0, 6 ) ];}
-const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ math::clamp<int>( d, 0, 11 ) ];}
-const char*DateTime::getShortMonthName(unsigned char d) { return shortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
+const char* DateTime::dayName( unsigned char d ){   return dayNames[ math::clamp<int>( d, 0, 6 ) ];}
+const char* DateTime::monthName( Month month ){  return monthNames[ math::clamp<int>( (int)month, 0, 11 ) ];}
+const char* DateTime::shortMonthName(Month month) { return shortMonthNames[ math::clamp<int>( (int)month, 0, 11 ) ]; }
+
+int DateTime::daysInMonth(int y, int m)
+{
+  return ( m!=2
+              ?( (m%2) ^ (m>7) )+30
+              :( ((!(y % 400) || !( y % 4 )) && ( y % 25 )) ? 29 : 28 )
+         );
+}
 
 int DateTime::daysInMonth() const
 {
-    return ( _month!=2
-                ?( (_month%2) ^ (_month>7) )+30
-                :( ((!(_year % 400) || !( _year % 4 )) && ( _year % 25 )) ? 29 : 28 )
-           );
+  return DateTime::daysInMonth( _year, (int)_month );
 }
 
-DateTime DateTime::getTime() const
+const char *DateTime::age() const { return _year > 0 ? age_ad : age_bc; }
+
+DateTime DateTime::time() const
 {
-    DateTime ret( *this );
-    ret._year = ret._month = ret._day = 0;
-    return ret;
+  DateTime ret( *this );
+  ret._year = ret._month = ret._day = 0;
+  return ret;
+}
+
+unsigned int DateTime::hashdate() const
+{
+  return math::signnum( year() ) * ( math::abs( year() ) * 1000 + (int)month() * 50 + day() );
+}
+
+unsigned int DateTime::hashtime() const
+{
+  return hour() * 10000 + minutes() * 100  + seconds();
+}
+
+DateTime DateTime::fromhash(unsigned int hash)
+{
+  int y = hash / 1000;
+  int m = (hash % 1000) / 50;
+  int d = (hash % 50);
+  return DateTime( y, m, d );
 }
 
 unsigned int DateTime::elapsedTime()
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   return ::GetTickCount();
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(GAME_PLATFORM_UNIX)
   timeval tv;
   gettimeofday(&tv, 0);
   return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return 0;
 }
@@ -217,12 +254,7 @@ DateTime& DateTime::operator= ( time_t t)
 
 DateTime& DateTime::operator=( const DateTime& val )
 { 
-  _seconds = val._seconds;
-  _minutes = val._minutes;
-  _hour = val._hour;
-  _day = val._day;
-  _month = val._month;
-  _year = val._year;
+  _set( val );
 
   return *this;
 }
@@ -277,3 +309,26 @@ long DateTime::_toJd() const
 
   return jul_day;
 }
+
+void DateTime::_set(const DateTime& val )
+{
+  _seconds = val._seconds;
+  _minutes = val._minutes;
+  _hour = val._hour;
+  _day = val._day;
+  _month = val._month;
+  _year = val._year;
+}
+
+const char* RomanDate::age() const { return age_uc; }
+const char* RomanDate::dayName(unsigned char d) { return romanDayNames[ math::clamp<int>( d, 0, 6 ) ]; }
+const char* RomanDate::monthName(Month month) { return romanMonthNames[ math::clamp<int>( (int)month, 0, 11 ) ];}
+const char* RomanDate::shortMonthName(unsigned char d) { return romanShortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
+
+RomanDate::RomanDate(const DateTime& date)
+{
+  _set( date );
+  _year += abUrbeCondita;
+}
+
+

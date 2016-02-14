@@ -17,65 +17,54 @@
 
 #include "theater.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "actor_colony.hpp"
 #include "walker/walker.hpp"
+#include "objects_factory.hpp"
+#include "core/common.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-Theater::Theater() : EntertainmentBuilding(Service::theater, objects::theater, Size(2))
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
+
+Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size::square(2))
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::actor );
 }
 
-bool Theater::build( const CityAreaInfo& info )
+bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  city::Helper helper( info.city );
-  ActorColonyList actors = helper.find<ActorColony>( objects::actorColony );
+  int actors_n = info.city->statistic().objects.count<ActorColony>();
 
-  if( actors.empty() )
-  {
+  if( !actors_n )
     _setError( "##need_actor_colony##" );
-  }
 
   return true;
 }
 
 void Theater::timeStep(const unsigned long time) { EntertainmentBuilding::timeStep( time );}
-int Theater::visitorsNumber() const { return 500; }
+int Theater::currentVisitors() const { return 500; }
 
 void Theater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 35 );
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 
 bool Theater::mayWork() const {  return (numberWorkers() > 0 && traineeValue(walker::actor) > 0); }
-
-WalkerList Theater::_specificWorkers() const
-{
-  WalkerList ret;
-
-  foreach( i, walkers() )
-  {
-    if( (*i)->type() == walker::actor )
-      ret << *i;
-  }
-
-  return ret;
-}
+int Theater::maxVisitors() const { return 500; }
+WalkerList Theater::_specificWorkers() const { return utils::selectByType( walkers(), walker::actor ); }

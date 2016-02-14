@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "warehouse.hpp"
 
@@ -24,371 +24,153 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_list.hpp"
 #include "walker/cart_supplier.hpp"
 #include "extension.hpp"
+#include "warehouse_store.hpp"
+#include "objects_factory.hpp"
+#include "core/metric.hpp"
+#include "config.hpp"
 
 #include <list>
 
 using namespace gfx;
+using namespace metric;
+using namespace config;
 
-namespace {
-CAESARIA_LITERALCONST(tiles)
-CAESARIA_LITERALCONST(goodStore)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
+
+namespace
+{
+GAME_LITERALCONST(tiles)
+GAME_LITERALCONST(goodStore)
 }
 
-class WarehouseTile : public ReferenceCounted
+namespace config
 {
-public:
-  WarehouseTile( const TilePos& pos )
-  {
-    _pos = pos;
-    _stock.setCapacity( 400 );
-    computePicture();
-  }
 
-  void computePicture();
+namespace fgpic
+{
+  enum { idxWhRoof=1, idxAnimWork, idxAnimFlag };
+}
 
-  TilePos _pos;
-  good::Stock _stock;
-  Picture _picture;
-};
+}
 
+Warehouse::Room::Room(const TilePos &pos)
+{
+  location = pos;
+  setCapacity( basicCapacity );
+  computePicture();
+}
 
-void WarehouseTile::computePicture()
+void Warehouse::Room::computePicture()
 {
   int picIdx = 0;
-  switch( _stock.type() )
+  if( empty() && type() != good::none  )
+    setType( good::none );
+
+  good::Product gtype = type();
+
+  if( gtype == good::none ) picIdx = 19;
+  else if( gtype == good::wheat ) picIdx = 20;
+  else if( gtype == good::vegetable ) picIdx = 24;
+  else if( gtype == good::fruit ) picIdx = 28;
+  else if( gtype == good::olive ) picIdx = 32;
+  else if( gtype == good::grape ) picIdx = 36;
+  else if( gtype == good::meat ) picIdx = 40;
+  else if( gtype == good::wine ) picIdx = 44;
+  else if( gtype == good::oil ) picIdx = 48;
+  else if( gtype == good::iron ) picIdx = 52;
+  else if( gtype == good::timber ) picIdx = 56;
+  else if( gtype == good::clay ) picIdx = 60;
+  else if( gtype == good::marble ) picIdx = 64;
+  else if( gtype == good::weapon ) picIdx = 68;
+  else if( gtype == good::furniture ) picIdx = 72;
+  else if( gtype == good::pottery ) picIdx = 76;
+  else if( gtype == good::fish ) picIdx = 80;
+  else if( gtype == good::prettyWine ) picIdx = 44;
+  else
   {
-  case good::none: picIdx = 19; break;
-  case good::wheat: picIdx = 20; break;
-  case good::vegetable: picIdx = 24; break;
-  case good::fruit: picIdx = 28; break;
-  case good::olive: picIdx = 32; break;
-  case good::grape: picIdx = 36; break;
-  case good::meat: picIdx = 40; break;
-  case good::wine: picIdx = 44; break;
-  case good::oil: picIdx = 48; break;
-  case good::iron: picIdx = 52; break;
-  case good::timber: picIdx = 56; break;
-  case good::clay: picIdx = 60; break;
-  case good::marble: picIdx = 64; break;
-  case good::weapon: picIdx = 68; break;
-  case good::furniture: picIdx = 72; break;
-  case good::pottery: picIdx = 76; break;
-  case good::fish: picIdx = 80; break;
-  case good::prettyWine: picIdx = 44; break;
-  case good::goodCount:
     Logger::warning( "Unexpected good type: in warehouse");
-    _stock.setType( good::none );
+    setType( good::none );
     picIdx = 19;
-  break;
-  default:
-    _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
   }
 
-  if (_stock.type() != good::none)
+  if( gtype != good::none)
   {
-    int qty = _stock.qty();
+
     // (0  , 100] -> 0
     // (100, 200] -> 1
     // (200, 300] -> 2
     // (300, 400] -> 3
-    picIdx += (qty == 0) ?  0 : (qty - 1 ) / 100;
+    Unit units = Unit::fromQty( qty() );
+    picIdx += math::max<int>( 0, units.ivalue() - 1 );
   }
 
-  _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-  _picture.addOffset( tile::tilepos2screen( _pos ) );
+  picture.load( ResourceGroup::warehouse, picIdx );
+  picture.addOffset( location.toScreenCoordinates() );
 }
-
-
-class WarehouseStore : public good::Store
-{
-public:
-  typedef std::map< good::Type, int > StockMap;
-
-  //using GoodStore::applyStorageReservation;
-  //using GoodStore::applyRetrieveReservation;
-
-  WarehouseStore();
-
-  void init(Warehouse &_warehouse);
-
-  virtual int qty(const good::Type &goodType) const;
-  virtual int qty() const;
-  virtual int capacity() const;
-  virtual void setCapacity( const int maxcap);
-  virtual int capacity(const good::Type& goodType ) const;
-
-  // returns the max quantity that can be stored now
-  virtual int getMaxStore(const good::Type goodType);
-
-  // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
-
-private:
-  Warehouse* _warehouse;
-};
 
 class Warehouse::Impl
 {
 public:
   Animation animFlag;  // the flag above the warehouse
-  typedef std::vector<WarehouseTile> WhTiles;
+  bool isTradeCenter;
 
-  WhTiles subTiles;
+  Warehouse::Rooms rooms;
   WarehouseStore goodStore;
 };
 
-WarehouseStore::WarehouseStore()
+static Picture strafePic(const std::string& rc, int index, int i, int j )
 {
-  _warehouse = NULL;
+  Picture ret( rc, index );
+  ret.addOffset( TilePos( i, j ).toScreenCoordinates() );
 
-  for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
-  {
-    setOrder( (good::Type)goodType, good::Orders::accept );
-  }
+  return ret;
 }
 
-void WarehouseStore::init(Warehouse& warehouse){  _warehouse = &warehouse; }
-
-int WarehouseStore::qty(const good::Type &goodType) const
+Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size::square( 3 )), _d( new Impl )
 {
-  if( _warehouse->numberWorkers() == 0 )
-    return 0;
+  setPicture( strafePic( ResourceGroup::warehouse, 19, 0, 2 ) );
 
-  int amount = 0;
+  _fgPictures().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    if ( whTile->_stock.type() == goodType || goodType == good::goodCount )
-    {
-      amount += whTile->_stock.qty();
-    }
-  }
-
-  return amount;
-}
-
-int WarehouseStore::qty() const {  return qty( good::goodCount ); }
-
-int WarehouseStore::getMaxStore(const good::Type goodType)
-{
-  if( getOrder( goodType ) == good::Orders::reject || isDevastation() || _warehouse->onlyDispatchGoods() )
-  { 
-    return 0;
-  }
-
-  // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  StockMap maxStore;
-
-  // init the map
-  for (int i = good::none; i != good::goodCount; ++i)
-  {
-    maxStore[ (good::Type)i ] = 0;
-  }
-  // put current stock in the map
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    good::Stock &subTileStock = whTile->_stock;
-    maxStore[ subTileStock.type() ] += subTileStock.qty();
-  }
-
-  // add reservations
-  good::Reservations& reservations = _getStoreReservations();
-  foreach( i, reservations )
-  {
-    const good::Stock& reservationStock = i->stock;
-    maxStore[ reservationStock.type() ] += reservationStock.qty();
-  }
-
-  // compute number of free tiles
-  int nbFreeTiles = _warehouse->_d->subTiles.size();
-  foreach( mapItem, maxStore )
-  {
-    good::Type otherGoodType = mapItem->first;
-    if (otherGoodType == goodType)
-    {
-      // don't count this goodType
-      continue;
-    }
-    int qty = mapItem->second;
-    int nbTiles = ((qty/100)+3)/4;  // nb of subTiles this goodType occupies
-    nbFreeTiles -= nbTiles;
-  }
-
-  int freeRoom = 400 * nbFreeTiles - maxStore[goodType];
-
-  // std::cout << "MaxStore for good is " << freeRoom << " on free tiles:" << nbFreeTiles << std::endl;
-
-  return freeRoom;
-}
-
-void WarehouseStore::applyStorageReservation( good::Stock &stock, const int reservationID )
-{
-  good::Stock reservedStock = getStorageReservation(reservationID, true);
-
-  if (stock.type() != reservedStock.type())
-  {
-    Logger::warning( "Warehouse: GoodType does not match reservation" );
-    return;
-  }
-
-  if (stock.qty() < reservedStock.qty())
-  {
-    Logger::warning( "Warehouse: Quantity does not match reservation" );
-    return;
-  }
-
-
-  int amount = reservedStock.qty();
-  // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
-
-  // first we look at the half filled subTiles
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    good::Stock& whStock = whTile->_stock;
-    if( whStock.type() == stock.type() && whStock.freeQty() > 0 )
-    {
-      int tileAmount = std::min(amount, whStock.capacity() - whStock.qty());
-      // std::cout << "put in half filled" << std::endl;
-      whStock.append(stock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  // then we look at the empty subTiles
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    good::Stock& whStock = whTile->_stock;
-    if( whStock.type() == good::none)
-    {
-      int tileAmount = std::min(amount, whStock.capacity() );
-      // std::cout << "put in empty tile" << std::endl;
-      whStock.append(stock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  _warehouse->computePictures();
-}
-
-void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
-{
-  good::Stock reservedStock = getRetrieveReservation(reservationID, true);
-
-  if( stock.type() != reservedStock.type() )
-  {   
-    Logger::warning( "Warehouse: GoodType does not match reservation need=%s have=%s",
-                     good::Helper::name(reservedStock.type()).c_str(),
-                     good::Helper::name(stock.type()).c_str() );
-    return;
-  }
-  if( stock.capacity() < stock.qty() + reservedStock.qty() )
-  {
-    Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
-                     good::Helper::name(stock.type()).c_str(),
-                     reservedStock.qty(), stock.freeQty() );
-    reservedStock.setQty( stock.freeQty() );
-  }
-
-  int amount = reservedStock.qty();
-
-  // first we look at the half filled subTiles
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    good::Stock& whStock = whTile->_stock;
-    if( whStock.type() == stock.type() && whStock.freeQty() > 0 )
-    {
-      int tileAmount = std::min(amount, whStock.qty());
-      // std::cout << "retrieve from half filled" << std::endl;
-      stock.append( whStock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  // then we look at the filled subTiles
-  foreach( whTile, _warehouse->_d->subTiles )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    good::Stock& whStock = whTile->_stock;
-    if( whStock.type() == stock.type())
-    {
-      int tileAmount = std::min(amount, whStock.qty());
-      // std::cout << "retrieve from filled" << std::endl;
-      stock.append(whStock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  _warehouse->computePictures();
-}
-
-int WarehouseStore::capacity() const{  return 400 * _warehouse->_d->subTiles.size();}
-void WarehouseStore::setCapacity(const int){}
-int WarehouseStore::capacity( const good::Type& goodType ) const{  return capacity();}
-
-Warehouse::Warehouse() : WorkingBuilding( constants::objects::warehouse, Size( 3 )), _d( new Impl )
-{
-   // _name = _("Entrepot");
-  setPicture( ResourceGroup::warehouse, 19 );
-  _fgPicturesRef().resize(12+1);  // 8 tiles + 4 + 1 animation slot
-
-  _animationRef().load( ResourceGroup::warehouse, 2, 16 );
-  _animationRef().setDelay( 4 );
+  _animation().load( ResourceGroup::warehouse, 2, 16 );
+  _animation().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
   _setClearAnimationOnStop( false );
 
-  _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
-  _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
-  _fgPicturesRef()[ 3 ] = _d->animFlag.currentFrame();
+  _fgPictures()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
+  _fgPictures()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
+  _fgPictures()[ fgpic::idxAnimWork] = _animation().currentFrame();
+  _fgPictures()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
-  _d->subTiles.clear();
-  _d->subTiles.push_back( WarehouseTile( TilePos( 1, 2 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 0, 1 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 2, 2 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 1, 1 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 0, 0 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 2, 1 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 1, 0 ) ));
-  _d->subTiles.push_back( WarehouseTile( TilePos( 2, 0 ) ));
+  _d->rooms.clear();
+  _d->rooms.push_back( Room( TilePos( 1, 2 ) ));
+  _d->rooms.push_back( Room( TilePos( 0, 1 ) ));
+  _d->rooms.push_back( Room( TilePos( 2, 2 ) ));
+  _d->rooms.push_back( Room( TilePos( 1, 1 ) ));
+  _d->rooms.push_back( Room( TilePos( 0, 0 ) ));
+  _d->rooms.push_back( Room( TilePos( 2, 1 ) ));
+  _d->rooms.push_back( Room( TilePos( 1, 0 ) ));
+  _d->rooms.push_back( Room( TilePos( 2, 0 ) ));
 
   _d->goodStore.init(*this);
+  _d->isTradeCenter = false;
 
   computePictures();
 }
@@ -397,9 +179,9 @@ void Warehouse::timeStep(const unsigned long time)
 {
   if( numberWorkers() > 0 )
   {
-   _d->animFlag.update( time );
+    _d->animFlag.update( time );
 
-   _fgPicturesRef()[3] = _d->animFlag.currentFrame();
+    _fgPicture(3) = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )
@@ -412,6 +194,9 @@ void Warehouse::timeStep(const unsigned long time)
     {
       _resolveDeliverMode();
     }
+
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
+    _d->goodStore.removeExpired( game::Date::current() );
   }
 
   WorkingBuilding::timeStep( time );
@@ -420,10 +205,12 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
-  foreach( whTile, _d->subTiles )
+  std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
+  _fgPictures()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
+  for( auto& room : _d->rooms )
   {
-     whTile->computePicture();
-     _fgPicture( index ) = whTile->_picture;
+     room.computePicture();
+     _fgPicture( index ) = room.picture;
      index++;
   }
 }
@@ -435,39 +222,52 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
-  stream[ lc_goodStore ] = _d->goodStore.save();
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(Warehouse) ) );
+  stream[ literals::goodStore ] = _d->goodStore.save();
+
+  VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
 
   VariantList vm_tiles;
-  foreach( whTile, _d->subTiles ) { vm_tiles.push_back( whTile->_stock.save() ); }
+  for( auto& room : _d->rooms )
+    vm_tiles.push_back( room.save() );
 
-  stream[ lc_tiles ] = vm_tiles;
+  stream[ literals::tiles ] = vm_tiles;
 }
 
 void Warehouse::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
 
-  _d->goodStore.load( stream.get( lc_goodStore ).toMap() );
+  _d->goodStore.load( stream.get( literals::goodStore ).toMap() );
   
-  VariantList vm_tiles = stream.get( lc_tiles ).toList();
+  VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
-  foreach( it, vm_tiles )
+  for( const auto& it : vm_tiles )
   {
-    _d->subTiles[ tileIndex ]._stock.load( it->toList() );
+    _d->rooms[ tileIndex ].load( it.toList() );
     tileIndex++;
   }
+
+  VARIANT_LOAD_ANY_D( _d, isTradeCenter, stream )
 
   computePictures();
 }
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
+bool Warehouse::isTradeCenter() const { return _d->isTradeCenter; }
+Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
+
+void Warehouse::setTradeCenter(bool enabled)
+{
+  _d->isTradeCenter = enabled;
+  computePictures();
+}
 
 bool Warehouse::isGettingFull() const
 {
-  foreach( whTile, _d->subTiles )
+  for( auto& room : _d->rooms )
   {
-    if( whTile->_stock.qty() == 0 )
+    if( room.qty() == 0 )
       return false;
   }
 
@@ -476,14 +276,13 @@ bool Warehouse::isGettingFull() const
 
 float Warehouse::tradeBuff(Warehouse::Buff type) const
 {
-  SmartList<WarehouseBuff> buffs;
-  buffs << extensions();
+  auto buffs = extensions().select<WarehouseBuff>();
 
   float res = 0;
-  foreach( it, buffs )
+  for( auto& buff : buffs )
   {
-    if( (*it)->group() == type )
-      res += (*it)->value();
+    if( buff->group() == type )
+      res += buff->value();
   }
 
   return res;
@@ -515,20 +314,19 @@ void Warehouse::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
+  for( auto& gType : good::all() )
   {
-    good::Type gType = (good::Type)goodType;
     good::Orders::Order order = _d->goodStore.getOrder( gType );
-    int goodFreeQty = math::clamp( _d->goodStore.freeQty( gType ), 0, 400 );
+    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
+      auto supplier = Walker::create<CartSupplier>( _city() );
+      supplier->send2city( this, gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !supplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( supplier.object() );
         return;
       }
     }
@@ -540,22 +338,25 @@ void Warehouse::_resolveDevastationMode()
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
-    for( int goodType=good::wheat; goodType <= good::goodCount; goodType++ )
+    const int maxCapacity = CartPusher::megaCart;
+    for( auto& goodType : good::all() )
     {
-      int goodQty = _d->goodStore.qty( (good::Type)goodType );
-      goodQty = math::clamp( goodQty, 0, 400);
+      int goodQty = _d->goodStore.qty( goodType );
+      goodQty = math::clamp( goodQty, 0, maxCapacity);
 
       if( goodQty > 0 )
       {
-        good::Stock stock( (good::Type)goodType, goodQty, goodQty);
-        CartPusherPtr walker = CartPusher::create( _city() );
-        walker->send2city( BuildingPtr( this ), stock );
+        good::Stock stock( goodType, goodQty, goodQty);
+        auto pusher = Walker::create<CartPusher>( _city() );
+        pusher->stock().setCapacity( maxCapacity );
+        pusher->send2city( BuildingPtr( this ), stock );
 
-        if( !walker->isDeleted() )
+        if( !pusher->isDeleted() )
         {
-          good::Stock tmpStock( (good::Type)goodType, goodQty );;
+          good::Stock tmpStock( goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
-          addWalker( walker.object() );
+          addWalker( pusher.object() );
+          break;
         }
       }
     }   

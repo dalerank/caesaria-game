@@ -26,7 +26,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutConstruction : public Simple
+class AboutConstruction : public Infobox
 {
 public:
   AboutConstruction(Widget* parent, Rect rect, Rect blackArea);
@@ -35,14 +35,29 @@ public:
   virtual bool onEvent(const NEvent &event);
 
   virtual ConstructionPtr base() const;
-  virtual void setBase( ConstructionPtr base );
+
+  template<class T>
+  void setBase( SmartPtr<T> a )
+  {
+    _construction = ptr_cast<Construction>( a );
+    _baseAssigned();
+  }
+
+protected:
+  void _setWorkingVisible( bool show );
+  virtual void _setWorkingActive( bool working );
+  void _updateWorkingText();
+  virtual void _resolveToggleWorking();
+  virtual void _baseAssigned();
+  PushButton* _buttonToggleWorking();
 
 private:
   void _switch( int flag );
   ConstructionPtr _construction;
+  PushButton* _btnToggleWorking;
 };
 
-}
+}//end namespace infogbox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CONSTRUCTION_H_INCLUDE_

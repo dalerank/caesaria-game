@@ -18,8 +18,10 @@
 #include "image.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
@@ -27,15 +29,13 @@ using namespace gfx;
 namespace gui
 {
 
+REGISTER_CLASS_IN_WIDGETFACTORY(Image)
+
 class Image::Impl
 {
 public:
   Picture bgPicture;
   Image::Mode mode;
-
-  ~Impl()
-  {
-  }
 
 public signals:
 	Signal0<> onClickedSignal;
@@ -44,7 +44,7 @@ public signals:
 //! constructor
 Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
-	_d->mode = Image::fit;
+  _d->mode = Image::fit;
 }
 
 Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int id)
@@ -59,7 +59,7 @@ Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int 
 	}
 
   _d->bgPicture = pic;
-  #ifdef _DEBUG
+#ifdef _DEBUG
     setDebugName( "Image");
 #endif
 }
@@ -105,6 +105,37 @@ void Image::draw(gfx::Engine& painter )
                                           height() - _d->bgPicture.height() ) / 2, &absoluteClippingRectRef() );
     break;
 
+    case Image::best:
+    {
+       Size rSize;
+       Size ItemSize = _d->bgPicture.size();
+       const Size& rectSize = size();
+       if (ItemSize.height()<=rectSize.height() && ItemSize.width()<=rectSize.width())
+       {
+         rSize = ItemSize;
+       }
+
+       // анализ высоты
+       if (ItemSize.height()>rectSize.height()) {
+           // обнаружено превышение, применяем сдвиг
+           float dh = ItemSize.width() / (float)ItemSize.height();
+           ItemSize.setHeight( rectSize.height() );
+           ItemSize.setWidth( rectSize.height() * dh );
+       }
+
+       // анализ ширины
+       if (ItemSize.width()>rectSize.width()) {
+           // обнаружено превышение, применяем сдвиг
+           float dw = ItemSize.height() / (float)ItemSize.width();
+           ItemSize.setWidth( rectSize.width() );
+           ItemSize.setHeight( rectSize.width() * dw );
+       }
+
+       painter.draw( _d->bgPicture, Rect( Point(), _d->bgPicture.size() ),
+                     Rect( Point(), ItemSize ) + absoluteRect().lefttop(),
+                     &absoluteClippingRectRef() );
+    }
+    break;
     }
   }
 
@@ -113,29 +144,47 @@ void Image::draw(gfx::Engine& painter )
 
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
-void Image::setPicture( Picture picture )
+void Image::setPicture(const Picture& picture)
 {
   _d->bgPicture = picture;
 
 	if( _d->mode == image )
 	{
-		setWidth( picture.width() );
-		setHeight( picture.height() );
-	}
+    setWidth( picture.width() );
+    setHeight( picture.height() );
+  }
+}
+
+void Image::setPicture(const string& rc)
+{
+  _d->mode = Image::image;
+  setPicture(Picture(rc));
+}
+
+void Image::setPicture(const string& rc, int id)
+{
+  setPicture(Picture(rc, id));
 }
 
 void Image::setupUI(const VariantMap& ui)
 {
-  Widget::setupUI( ui );
+  Widget::setupUI(ui);
 
-  setPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setPicture( Picture( ui.get( "image" ).toString() ) );
   std::string mode = ui.get( "mode" ).toString();
   if( mode == "fit" ) { _d->mode = Image::fit; }
   else if( mode == "image" ) { _d->mode = Image::image; }
   else if( mode == "native" ) { _d->mode = Image::native; }
   else if( mode == "center" ) { _d->mode = Image::center; }
+  else if( mode == "best" ) { _d->mode = Image::best; }
   else { _d->mode = Image::image; }
 
+  setMode(_d->mode);
+}
+
+void Image::setMode(Image::Mode mode)
+{
+  _d->mode = mode;
   if( _d->mode == Image::image )
   {
     setWidth( picture().width() );

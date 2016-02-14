@@ -19,7 +19,8 @@
 #define __CAESARIA_ANIMATION_H_INCLUDE_
 
 #include "picturesarray.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
+#include "core/scopedptr.hpp"
 
 // several frames for a basic visual animation
 namespace gfx
@@ -28,14 +29,14 @@ namespace gfx
 class Animation
 {
 public:
-  static const bool reverse = true;
-  static const bool straight = false;
-  static const bool loopAnimation = true;
+  enum { nodelay=0, fast=1, middle=2, slow=3, verySlow=4, hugeSlow=8 };
+  enum { reverse=true, straight=false, isLooped=true, isOnce=false };
 
   Animation();
   virtual ~Animation();
 
   Animation( const Animation& other );
+  Animation( const std::string& alias );
   Animation& operator=(const Animation& other);
 
   void start(bool loop=true);
@@ -74,8 +75,11 @@ public:
   void load( const std::string &prefix,
              const int start, const int number,
              bool reverse = false, const int step = 1);
-  VariantMap save() const;
+  void load( const std::string& alias );
   void load( const VariantMap& stream );
+  void simple( const VariantMap& stream );
+
+  VariantMap save() const;
 
   bool isValid() const;
   void addFrame( const Picture& pic );

@@ -28,27 +28,42 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = utils::hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( TEXT(WindowMessageStack) );
 
-class WindowMessageStack::LabelA : public Label
+class LabelA : public Label
 {
 public:
-  LabelA( Widget* parent, const Rect& rectangle, const std::string& message )
+  Decorator::Mode style;
+
+  LabelA( Widget* parent, const Rect& rectangle, const std::string& message, WindowMessageStack::MsgLevel lvl )
     : Label( parent, rectangle, message )
   {
+    style = (lvl == WindowMessageStack::warning ? Decorator::redPanelSmall
+                      : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
+
     setTextAlignment( align::center, align::center );
-    new WidgetDeleter( this, 5000 );
+    add<WidgetDeleter>( 5000 );
   }
 
 protected:
-  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text)
+  virtual void _updateBackground(gfx::Engine&, bool&)
   {
-    _backgroundRef().clear();
-    Decorator::draw( _backgroundRef(), Rect( Point(), size() ), Decorator::brownPanelSmall );
+    _background().destroy();
 
-    Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
-    _backgroundRef().append( emlbPic, Point( 4, -2 ) );
-    _backgroundRef().append( emlbPic, Point( width() - emlbPic.width()-4, -2 ) );
+    Pictures pics;
+    Decorator::draw( pics, Rect( Point(), size() ), style );
+
+    Picture emlbPic( gui::rc.panel, config::id.empire.stamp );
+    pics.append( emlbPic, Point( 4, 2 ) );
+    pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
+
+    bool batchOk = _background().load( pics, absoluteRect().lefttop() );
+    if( !batchOk )
+    {
+      _background().destroy();
+      Decorator::reverseYoffset( pics );
+      _backgroundNb() = pics;
+    }
   }
 };
 
@@ -70,9 +85,9 @@ void WindowMessageStack::_update()
   Point offsetLb( width() / 2, 12 );
   Point offset( 0, 23 );
   Widgets wds = children();
-  foreach( widget, wds )
+  for( auto widget : wds )
   {
-    (*widget)->setCenter( offsetLb );
+    widget->setCenter( offsetLb );
     offsetLb += offset;
   }
 }
@@ -83,14 +98,14 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
   unsigned int myWidth = width();
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
-  foreach( widget, wds )
+  for( auto widget : wds )
   {    
-    unsigned int wd = (*widget)->width();
+    unsigned int wd = widget->width();
     if( wd != myWidth )
     {
-      Point center = (*widget)->center();
-      (*widget)->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
-      (*widget)->setCenter( center );
+      Point center = widget->center();
+      widget->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
+      widget->setCenter( center );
     }
   }
 
@@ -99,26 +114,26 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
 
 bool WindowMessageStack::onEvent( const NEvent& ) {  return false; }
 
-void WindowMessageStack::addMessage( std::string message )
+void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
 {
   if( children().size() > 3 )
   {
     removeChild( *children().begin() );
   }
 
-  new LabelA( this, Rect( 0, 0, 2, 20), message );
+  add<LabelA>( Rect( 0, 0, 2, 20), text, lvl );
 
   _update();
 }
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  WindowMessageStack* wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                                    Rect( 0, 0, parent->width() / 2, 92 ) );
-  wnd->setPosition( Point( parent->width() / 4, 33 ) );
-  wnd->sendToBack();
+  auto& wnd = parent->add<WindowMessageStack>( WindowMessageStack::defaultID,
+                                               Rect( 0, 0, parent->width() / 2, 92 ) );
+  wnd.setPosition( Point( parent->width() / 4, 33 ) );
+  wnd.sendToBack();
 
-  return wnd;
+  return &wnd;
 }
 
 }//end namespace gui

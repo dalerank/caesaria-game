@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe02_00003"
+  title : "100 AD - Final assignment"
+	
+  items : {
+    lindum : {
+      title : "##lindum_title##"
+      location : [ 570, 280 ]
+      mission : ":/missions/lindum.mission"
+    }
+
+    massilia : {
+      title : "##massilia_title##"
+      mission : ":/missions/massilia.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

@@ -13,111 +13,267 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
-#include "gfx/picture.hpp"
-#include "gfx/decorator.hpp"
-#include "gui/label.hpp"
-#include "texturedbutton.hpp"
-#include "core/event.hpp"
-#include "gfx/engine.hpp"
+#include <GameGfx>
+#include <GameEvents>
+#include <GameLogger>
+#include <GameGui>
 
 using namespace gfx;
 
 namespace gui
 {
 
-namespace {
-  int okBtnPicId = 239;
-  int cancelBtnPicId = 243;
-}
+REGISTER_CLASS_IN_WIDGETFACTORY(Dialogbox)
 
-class DialogBox::Impl
+class Dialogbox::Impl
 {
-signals public:
-  Signal1<int> onResultSignal;
-  Signal0<> onOkSignal;
-  Signal0<> onCancelSignal;
-  Signal0<> onNeverSignal;
+public:
+  enum { okPicId=239, cancelPicId=243 };
+  bool never=true;
+
+  struct {
+    Signal1<int> onResult;
+    Signal0<> onOk;
+    Signal0<> onCancel;
+    Signal1<bool> onNever;
+    Signal1<Widget*> onOkEx;
+    Signal1<Widget*> onCancelEx;
+    Signal2<Widget*,bool> onNeverEx;
+  } signal;
 };
 
-DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
-                      const std::string& text, int buttons )
-                      : Window( parent, rectangle, "" ), _d( new Impl )
+Dialogbox::Dialogbox(Widget* parent)
+ : Window( parent->ui()->rootWidget() ), _d( new Impl )
 {
-  if( rectangle.size() == Size( 0, 0 ) )
-  {
-    setGeometry( Rect( 0, 0, 480, 160 ) );
-    setCenter( parent->center() );
-  }
-  
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
-  lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );
-
-  Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
-  lbText->setTextAlignment( align::center, align::center );
-
-  if( (buttons == btnOk) || (buttons == btnCancel) )
-  {
-    new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
-                        Size( 39, 26 ), buttons,
-                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
-  }
-  else if( buttons & (btnOk | btnCancel) )
-  {
-    new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
-                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
-  }
-
-  if( buttons & btnNever )
-  {
-    new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnNever, cancelBtnPicId );
-
-  }
+  _initSimpleDialog();
 }
 
-Signal1<int>& DialogBox::onResult()
+Dialogbox::Dialogbox( Ui *ui, const Rect& rectangle, const std::string& title,
+                      const std::string& text, int buttons)
+                      : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
-  return _d->onResultSignal;
+  _initSimpleDialog();
+
+  setText(text);
+  setTitle(title);
+  setButtons(buttons);
 }
 
-bool DialogBox::onEvent( const NEvent& event )
+Signal1<int>& Dialogbox::onResult()
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
-  {
-    int id = event.gui.caller->ID();
-    emit _d->onResultSignal( id );
+  return _d->signal.onResult;
+}
 
-    switch( id )
+bool Dialogbox::onEvent( const NEvent& event )
+{
+  switch( event.EventType )
+  {
+    case sEventGui:
+      if( event.gui.type == guiButtonClicked )
+      {
+        int id = event.gui.caller->ID();
+        emit _d->signal.onResult( id );
+
+        switch( id )
+        {
+        case btnYes:
+          emit _d->signal.onOk();
+          emit _d->signal.onOkEx(this);
+        break;
+
+        case btnNo:
+          emit _d->signal.onCancel();
+          emit _d->signal.onCancelEx(this);
+        break;
+
+        case btnNever:
+        {
+          _d->never = !_d->never;
+          event.gui.caller->setText(_d->never ? "X" : " ");
+          emit _d->signal.onNever(_d->never);
+          emit _d->signal.onNeverEx(this, _d->never);
+        }
+        break;
+        }
+
+        return true;
+      }
+    break;
+
+    case sEventKeyboard:
     {
-    case btnOk: emit _d->onOkSignal(); break;
-    case btnCancel: emit _d->onCancelSignal(); break;
-    case btnNever: emit _d->onNeverSignal(); break;
-    }
+      switch( event.keyboard.key )
+      {
+      case KEY_ESCAPE: emit _d->signal.onCancel(); break;
+      case KEY_RETURN: emit _d->signal.onOk(); break;
+      default: break;
+      }
 
-    return true;
+      return true;
+    }
+    break;
+
+    default:
+    break;
   }
 
   return Widget::onEvent( event );
 }
 
-Signal0<>& DialogBox::onOk() {  return _d->onOkSignal;}
-Signal0<>& DialogBox::onCancel(){  return _d->onCancelSignal;}
-Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
+void Dialogbox::setupUI(const VariantMap& ui)
+{
+  Window::setupUI( ui );
+}
 
-void DialogBox::draw(gfx::Engine& painter )
+Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
+
+Signal1<Widget*>&      Dialogbox::onYesEx()   { return _d->signal.onOkEx; }
+Signal0<>&             Dialogbox::onNo()      { return _d->signal.onCancel;}
+Signal1<Widget*>&      Dialogbox::onNoEx()    { return _d->signal.onCancelEx;  }
+Signal1<bool>&         Dialogbox::onNever()   { return _d->signal.onNever; }
+Signal2<Widget*,bool>& Dialogbox::onNeverEx() { return _d->signal.onNeverEx; }
+
+void Dialogbox::_initSimpleDialog()
+{
+  Window::setupUI(":/gui/dialogbox.gui");
+  _setSystemButtonsVisible(false);
+  GameAutoPauseWidget::insertTo(this);
+  onYes().connect( this, &Dialogbox::deleteLater );
+  onNo().connect( this, &Dialogbox::deleteLater );
+
+  moveToCenter();
+  setModal();
+}
+
+void Dialogbox::draw(gfx::Engine& painter )
 {
   if( !visible() )
-  {
     return;
-  }
 
   Window::draw( painter );
 }
+
+void Dialogbox::setTitle(const std::string& title)
+{
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  if( lbTitle )
+      lbTitle->setText( title );
+}
+
+void Dialogbox::setText(const std::string& text)
+{
+  INIT_WIDGET_FROM_UI( Label*, lbText )
+
+  Font titleFont = _titleWidget() ? _titleWidget()->font() : Font::create( FONT_4 );
+
+  Font textFont = lbText
+                ? lbText->font()
+                : Font::create( FONT_3 );
+
+  int titleHeight = titleFont.getTextSize( "A" ).height();
+  int textLineHeight = textFont.getTextSize( "A" ).height() + textFont.kerningHeight();
+  Size size = textFont.getTextSize( text );
+
+  if( size.width() > 440 )
+  {
+    size.setHeight( size.width() / 440 * textLineHeight );
+    size.setWidth( 480 );
+  }
+  else
+    size = Size( 480, 40 );
+
+  size += Size( 0, titleHeight ); //title
+  size += Size( 0, 50 ); //buttons
+  size += Size( 0, 30 ); //borders
+
+  if( lbText )
+    lbText->setText(text);
+
+  setGeometry( Rect( Point( 0, 0 ), size ) );
+  moveToCenter();
+}
+
+void Dialogbox::setNeverValue(bool value)
+{
+  _d->never = value;
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  if( btnActionNever )
+  {
+    btnActionNever->show();
+    btnActionNever->setText(_d->never ? "X" : " ");
+  }
+}
+
+void Dialogbox::setButtons(int buttons)
+{
+  if( (buttons & btnYesNo) == btnYesNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_yesno.gui" );
+  }
+  else if( (buttons & btnYes) == btnYes || (buttons & btnNo) == btnNo )
+  {
+    Window::setupUI( ":/gui/dialogbox_confirmation.gui" );
+    INIT_WIDGET_FROM_UI( TexturedButton*, btnAction )
+    if( btnAction )
+    {
+      TexturedButton::States states( (buttons & btnYes)== btnYes ? Impl::okPicId : Impl::cancelPicId );
+      btnAction->changeImageSet( states );
+      btnAction->setID( btnYes );
+    }
+  }
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnActionNever )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionYes )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnActionNo )
+  if( btnActionNever )
+  {
+    btnActionNever->setVisible( (buttons & btnNever) == btnNever );
+    btnActionNever->setID( btnNever );
+  }
+
+  if( btnActionYes )
+    btnActionYes->setID( btnYes );
+
+  if( btnActionNo )
+    btnActionNo->setID( btnNo );
+}
+
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui, const std::string &title, const std::string &text, bool showNever)
+{
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYes | (showNever ? Dialogbox::btnNever : 0) );
+  return ret;
+}
+
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback)
+{
+  auto& dialog = Confirmation( ui, title, text);
+  dialog.onYes().connect( callback );
+
+  return dialog;
+}
+
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel)
+{
+  auto& dialog = Confirmation( ui, title, text);
+  dialog.onYes().connect( callbackOk );
+  dialog.onNo().connect( callbackCancel );
+
+  return dialog;
+}
+
+Dialogbox& Confirmation(Ui* ui, const std::string &title, const std::string &text)
+{
+  Dialogbox& ret = ui->add<Dialogbox>( Rect(), title, text, Dialogbox::btnYesNo );
+  return ret;
+}
+
+}//end namespace dialog
 
 }//end namespace gui

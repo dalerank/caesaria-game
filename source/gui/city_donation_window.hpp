@@ -31,12 +31,17 @@ class CityDonation : public Window
 {
 public:
   CityDonation( Widget* parent, int money );
-
   virtual ~CityDonation();
-  virtual bool onEvent(const NEvent &event);
+  void setAvailableMoney( int money );
 
 public signals:
   Signal1<int>& onSendMoney();
+
+protected:
+  virtual bool _onButtonClicked( Widget* sender );
+  void _updateDonationText();
+  void _linkButtons2Actions();
+  void _sendMoney();
 
 private:  
   __DECLARE_IMPL(CityDonationWindow)

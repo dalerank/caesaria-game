@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Caesa    std::string text = rIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
@@ -19,12 +19,10 @@
 #define _CAESARIA_GAME_EVENT_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
-#include "core/smartptr.hpp"
-#include "core/position.hpp"
-#include "objects/building.hpp"
 #include "predefinitions.hpp"
 
 class Game;
+class VariantMap;
 
 namespace events
 {

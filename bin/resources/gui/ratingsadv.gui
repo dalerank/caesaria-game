@@ -1,0 +1,71 @@
+{
+  size : [ 640, 432 ]
+  bgtype : "whiteFrame"
+  static : true
+  
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00258"
+  }
+
+  lbRatingInfo#Label : {
+    geometry : [ 66, 360, 576, 420 ]
+    bgtype : "blackFrame"
+    font : "FONT_1"
+    multiline : true
+    text.align : [ "upperLeft", "upperLeft" ]
+    text.offset : [ 5, 5 ]
+    text : "##click_on_rating_for_info##"
+  }
+
+  btnCulture#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 80,  290 ]
+    text : "##wndrt_culture##"
+    tooltip : "##wndrt_culture_tooltip##"
+  }
+
+  btnProsperity#RatingButton :
+  {
+    size : [108, 65]
+    position : [200, 290]
+    text : "##wndrt_prosperity##"
+    tooltip : "##wndrt_prosperity_tooltip##"
+  }
+
+  btnPeace#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 320, 290 ]
+    text : "##wndrt_peace##"
+    tooltip : "##wndrt_peace_tooltip##"
+  }
+
+  btnFavour#RatingButton :
+  {
+    size : [ 108, 65 ]
+    position : [ 440, 290 ]
+    text : "##wndrt_favour##"
+    tooltip : "##wndrt_favour_tooltip##"
+  }
+
+  imgBg#Image : {
+    image : "panelwindows_00027"
+    geometry : [ 60, 50, 12, 120 ]
+    mode : "image"
+  }
+
+  lbNeedPopulation#Label : {
+    geometry : [ 225, 15, "pw-20", 35 ]
+    font : "FONT_2"
+  }
+
+  lbTitle#Label : {
+    geometry : [ 60, 10, 225, 50 ]
+    font : "FONT_5"
+    text : "##wnd_ratings_title##"
+    textAlign : [ "upperLeft", "center" ]
+  }
+}
+

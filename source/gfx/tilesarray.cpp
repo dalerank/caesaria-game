@@ -14,19 +14,43 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "objects/overlay.hpp"
 
 namespace gfx
 {
 
-bool TilesArray::contain(TilePos tilePos) const
+bool TilesArray::contain(const TilePos &tilePos) const
 {
-  foreach( it, *this )
+  for( auto tile : *this )
   {
-    if( (*it)->epos() == tilePos )
+    if( tile->epos() == tilePos )
       return true;
   }
 
   return false;
+}
+
+bool TilesArray::contain(Tile* a) const
+{
+  for( auto tile : *this )
+  {
+    if( tile == a )
+      return true;
+  }
+
+  return false;
+}
+
+Tile* TilesArray::find(const TilePos& tilePos) const
+{
+  for( auto tile : *this )
+  {
+    if( tile->epos() == tilePos )
+      return tile;
+  }
+
+  return 0;
 }
 
 TilesArray::TilesArray(const TilesArray& a)
@@ -34,15 +58,46 @@ TilesArray::TilesArray(const TilesArray& a)
   *this = a;
 }
 
+TilesArray::Corners TilesArray::corners() const
+{
+  if( empty() )
+    return Corners();
+
+  Corners ret;
+  ret.leftup    = TilePos( INT_MAX, 0 );
+  ret.leftdown  = TilePos( INT_MAX, INT_MAX );
+  ret.rightdown = TilePos( 0, INT_MAX );
+  ret.rightup   = TilePos( 0, 0 );
+
+  for( auto tile : *this )
+  {
+    const TilePos& cpos = tile->epos();
+
+    if( cpos.i() < ret.leftup.i() ) { ret.leftup.setI( cpos.i() ); }
+    if( cpos.j() > ret.leftup.j() ) { ret.leftup.setJ( cpos.j() ); }
+
+    if( cpos.j() < ret.rightdown.j() ) { ret.rightdown.setJ( cpos.j() ); }
+    if( cpos.i() > ret.rightdown.i() ) { ret.rightdown.setI( cpos.i() ); }
+
+    if( cpos.j() < ret.leftdown.j() ) { ret.leftdown.setJ( cpos.j() ); }
+    if( cpos.i() < ret.leftdown.i() ) { ret.leftdown.setI( cpos.i() ); }
+
+    if( cpos.j() > ret.rightup.j() ) { ret.rightup.setJ( cpos.j() ); }
+    if( cpos.i() > ret.rightup.i() ) { ret.rightup.setI( cpos.i() ); }
+  }
+
+  return ret;
+}
+
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return TilePos( -1, -1 );
+    return TilePos::invalid();
 
-  TilePos ret( 9999, 0 );
-  foreach( it, *this )
+  TilePos ret( INT_MAX, 0 );
+  for( auto tile : *this )
   {
-    const TilePos& cpos = (*it)->epos();
+    const TilePos& cpos = tile->epos();
     if( cpos.i() < ret.i() ) { ret.setI( cpos.i() ); }
     if( cpos.j() > ret.j() ) { ret.setJ( cpos.j() ); }
   }
@@ -53,12 +108,12 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return TilePos( -1, -1 );
+    return TilePos::invalid();
 
-  TilePos ret( 0, 9999 );
-  foreach( it, *this )
+  TilePos ret( 0, INT_MAX );
+  for( auto tile : *this )
   {
-    const TilePos& cpos = (*it)->epos();
+    const TilePos& cpos = tile->epos();
     if( cpos.j() < ret.j() ) { ret.setJ( cpos.j() ); }
     if( cpos.i() > ret.i() ) { ret.setI( cpos.i() ); }
   }
@@ -66,7 +121,7 @@ TilePos TilesArray::rightDownCorner() const
   return ret;
 }
 
-TilesArray&TilesArray::operator=(const TilesArray& a)
+TilesArray& TilesArray::operator=(const TilesArray& a)
 {
   clear();
   if( a.size() == 1 )
@@ -76,20 +131,113 @@ TilesArray&TilesArray::operator=(const TilesArray& a)
   return *this;
 }
 
-TilesArray&TilesArray::append(const TilesArray& a)
+TilesArray& TilesArray::append(const TilesArray& a)
 {
   insert( end(), a.begin(), a.end() );
 
   return *this;
 }
 
-TilesArray TilesArray::walkableTiles(bool alllands) const
+TilesArray &TilesArray::append(Tile *a)
+{
+  push_back( a );
+  return *this;
+}
+
+bool TilesArray::appendOnce(Tile* a)
+{
+  if( contain( a ) )
+    return false;
+
+  push_back( a );
+  return true;
+}
+
+TilesArray TilesArray::walkables(bool alllands) const
 {
   TilesArray ret;
-  foreach( i, *this)
+  for( auto tile : *this)
   {
-    if( (*i)->isWalkable( alllands ) )
-      ret.push_back( *i );
+    if( tile->isWalkable( alllands ) )
+      ret.push_back( tile );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::select(Tile::Type flag) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->getFlag( flag ) )
+      ret.push_back( tile );
+
+  return ret;
+}
+
+TilesArray TilesArray::select(Tile::Param param) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->param( param ) )
+      ret.push_back( tile );
+
+  return ret;
+}
+
+int TilesArray::count(Tile::Type flag) const
+{
+  int result=0;
+  for( auto tile : *this )
+    if( tile->getFlag( flag ) )
+      result++;
+
+  return result;
+}
+
+TilesArray TilesArray::terrains() const
+{
+  TilesArray ret;
+  for( auto tile : *this)
+  {
+    if( tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlDeepWater )
+        || tile->getFlag( Tile::tlRock ) || tile->getFlag( Tile::tlCoast )
+        || tile->getFlag( Tile::tlRift) )
+      continue;
+
+    ret.push_back( tile );
+  }
+
+  return ret;
+}
+
+TilesArray TilesArray::masters() const
+{
+  TilesArray masterTiles;
+  for( auto tile : *this )
+    if( tile->master() != 0 )
+      masterTiles.appendOnce( tile->master() );
+
+  return masterTiles;
+}
+
+TilesArray TilesArray::children(Tile* master) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->master() == master )
+      ret.push_back( tile );
+
+  return ret;
+}
+
+TilesArray TilesArray::waters() const
+{
+  TilesArray ret;
+  for( auto tile : *this)
+  {
+    if( tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlDeepWater ) )
+      ret.push_back( tile );
   }
 
   return ret;
@@ -97,35 +245,47 @@ TilesArray TilesArray::walkableTiles(bool alllands) const
 
 TilesArray& TilesArray::remove( const TilePos& pos)
 {
-  foreach( it, *this )
+  for( iterator it=begin(); it!=end(); )
   {
-    if( (*it)->pos() == pos )
-    {
-      erase( it );
-      break;
-    }
+    if( (*it)->pos() == pos ) { it = erase( it ); }
+    else { ++it; }
   }
 
   return *this;
 }
 
-TileOverlayList TilesArray::overlays() const
+PointsArray TilesArray::mappositions() const
 {
-  TileOverlayList ret;
-  foreach( i, *this)
-  {
-    if( (*i)->overlay().isValid() )
-      ret << (*i)->overlay();
-  }
+  PointsArray ret;
+  for( auto tile : *this )
+    ret << tile->mappos();
 
   return ret;
 }
 
-Tile*TilesArray::random() const
+Locations TilesArray::locations() const
 {
-  return size() > 0 ? (*this)[ math::random( size() ) ] : 0;
+  Locations ret;
+  for( auto tile : *this )
+    ret << tile->pos();
+
+  return ret;
 }
 
+OverlayList TilesArray::overlays() const
+{
+  OverlayList ret;
+  for( auto tile : *this )
+    ret.addIfValid( tile->overlay() );
 
+  return ret;
+}
+
+void TilesArray::pop_front() { erase( this->begin() ); }
+
+Tile* TilesArray::random() const
+{
+  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : nullptr;
+}
 
 }//end namespace

@@ -25,10 +25,11 @@ public:
   void toThrow( TilePos src, TilePos dst );
 
   virtual void timeStep(const unsigned long time);
-  virtual Point mappos() const;
+  virtual const Point& mappos() const;
   virtual void turn(TilePos pos);
   virtual void setPicOffset( Point offset );
   virtual const gfx::Picture& getMainPicture();
+  virtual void initialize(const VariantMap &options);
 
   TilePos dstPos() const;
   TilePos startPos() const;
@@ -36,7 +37,6 @@ public:
   virtual ~ThrowingWeapon();
 protected:
   virtual void _reachedPathway();
-
   virtual void _onTarget() = 0;
   virtual const char* rcGroup() const = 0;
   virtual int _rcStartIndex() const = 0;

@@ -17,16 +17,17 @@
 
 #include "start_work.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "scene/level.hpp"
 #include "objects/colosseum.hpp"
 #include "postpone.hpp"
-
-using namespace constants;
+#include "factory.hpp"
 
 namespace events
 {
+
+REGISTER_EVENT_IN_FACTORY(StartWork,"start_work")
 
 GameEventPtr StartWork::create()
 {
@@ -57,10 +58,9 @@ bool StartWork::isDeleted() const {  return _isDeleted; }
 
 void StartWork::_exec(Game& game, unsigned int)
 {
-  foreach( i, _options )
+  for( auto& i : _options )
   {
-    GameEventPtr e = PostponeEvent::create( i->first, i->second.toMap() );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( i.first, i.second.toMap() );
   }
 }
 
@@ -68,13 +68,11 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
 {
   if( game::Date::isWeekChanged() )
   {
-    city::Helper helper( game.city() );
-
     bool ret = false;
 
-    foreach( i, _bldTypes )
+    for( auto& type : _bldTypes )
     {
-      WorkingBuildingList bld = helper.find<WorkingBuilding>( gfx::TileOverlay::Type(*i) );
+      WorkingBuildingList bld = game.city()->statistic().objects.find<WorkingBuilding>( type );
 
       ret = !bld.empty();
 

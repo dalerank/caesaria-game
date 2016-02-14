@@ -20,44 +20,99 @@
 
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
-#include "game/enums.hpp"
 #include "core/variant.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "vfs/path.hpp"
+#include "objects/constants.hpp"
 
 namespace city
+{  
+
+namespace development
 {
 
-class BuildOptions : public ReferenceCounted
+typedef enum
+{
+  unknown,
+  water,
+  health,
+  security,
+  education,
+  engineering,
+  administration,
+  entertainment,
+  commerce,
+  farm,
+  raw_material,
+  factory,
+  religion,
+  temple,
+  big_temple,
+  all
+} Branch;
+
+/** convert name to Branch
+ *  return Branch::unkown if not found
+ */
+Branch findBranch( const std::string& name );
+
+/**
+ * @brief convert Branch type to string
+ * @param branch type
+ * @return string, empty string if not found
+ */
+std::string toString( Branch branch );
+void loadBranchOptions(vfs::Path filename );
+
+class Range : public object::TypeSet
 {
 public:
-  BuildOptions();
-  virtual ~BuildOptions();
+  static Range fromBranch( const Branch branch);
+  static Range fromSequence( const object::Type start, const object::Type stop );
 
-  void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
-  void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
-  bool isGroupAvailable(const BuildMenuType type ) const;
-  unsigned int getBuildingsQuote( const gfx::TileOverlay::Type type ) const;
-  TilePos memPoint( unsigned int index ) const;
-  void setMemPoint(unsigned int index, TilePos point );
+  /**
+   * @brief Add type to range
+   * @param object type
+   * @return ref to self
+   */
+  Range& operator<<( const object::Type type );
+protected:
+  static Range _defaultRange( const Branch branch );
+};
 
-  bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
+/**
+ * @brief The city build options class
+ */
+class Options : public ReferenceCounted
+{
+public:
+  Options();
+  virtual ~Options();
+
+  void setBuildingAvailable( const object::Type type, bool mayBuild );
+  void setGroupAvailable(const Branch type, Variant mayBuild );
+  bool isGroupAvailable(const Branch type ) const;
+  unsigned int getBuildingsQuote( const object::Type type ) const;
+
+  bool isBuildingAvailable( const object::Type type ) const;
 
   void clear();
-
   void load( const VariantMap& options );
   VariantMap save() const;
 
-  BuildOptions& operator=(const BuildOptions& a);
+  Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
+  void setBuildingAvailable(const Range& range, bool mayBuild);
+  void toggleBuildingAvailable( const object::Type type );
+  bool isBuildingsAvailable(const Range& range) const;
   bool isCheckDesirability() const;
-  unsigned int getMaximumForts() const;
+  unsigned int maximumForts() const;
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace development
 
 }//end namespace city
 #endif //__CAESARIA_BUILD_OPTIONS_H_INCLUDED__

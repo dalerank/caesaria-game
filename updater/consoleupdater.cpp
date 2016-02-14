@@ -24,51 +24,44 @@ namespace updater
 class ConsoleUpdater::Impl
 {
 public:
+  // Most recent progress info
+  ProgressInfo info;
+
+  static Delegate1<int> abortSignalHandler;
+
+  UpdaterOptions options;
+
 	// The status
 	ConsoleUpdater::Outcome outcome;
+
+  // The update controller manages the logic
+  ScopedPtr<UpdateController> controller;
+
+  // Exit flag
+  volatile bool done;
+
+  bool progressDone;
 };
 
-namespace
+const std::size_t PROGRESS_METER_WIDTH = 25;
+
+void ConsoleUpdater::_initAbortSignalHandler()
 {
-	const std::size_t PROGRESS_METER_WIDTH = 25;
-
-	std::string GetShortenedString(const std::string& input, std::size_t maxLength)
-	{
-		if (input.length() > maxLength)
-		{
-			if (maxLength == 0)
-			{
-				return "";
-			}
-			else if (maxLength < 3)
-			{
-				return std::string(maxLength, '.');
-			}
-
-			std::size_t diff = input.length() - maxLength + 3; // 3 chars for the ellipsis
-			std::size_t curLength = input.length();
-
-			return input.substr(0, (curLength - diff) / 2) + "..." +
-				input.substr((curLength + diff) / 2);
-		}
-
-		return input;
-	}
+  signal(SIGABRT, resolveAbortSignal);
+  signal(SIGTERM, resolveAbortSignal);
+  signal(SIGINT, resolveAbortSignal);
 }
 
 ConsoleUpdater::ConsoleUpdater(int argc, char* argv[]) :
-	_options(argc, argv),
-	_controller(*this, vfs::Path( argv[0] ), _options),
-	_done(false),
 	_d( new Impl )
 {
-	_abortSignalHandler = makeDelegate( this, &ConsoleUpdater::onAbort);
+  _d->options.reset( argc, argv );
+  _d->controller.reset( new UpdateController( *this, vfs::Path( argv[0] ), _d->options ) );
+  _d->done = false;
+  _d->abortSignalHandler = makeDelegate( this, &ConsoleUpdater::onAbort);
+  _d->outcome = ConsoleUpdater::None;
 
-	signal(SIGABRT, resolveAbortSignal);
-	signal(SIGTERM, resolveAbortSignal);
-	signal(SIGINT, resolveAbortSignal);
-
-	_d->outcome = ConsoleUpdater::None;
+  _initAbortSignalHandler();
 }
 
 ConsoleUpdater::~ConsoleUpdater() {}
@@ -81,45 +74,44 @@ ConsoleUpdater::Outcome ConsoleUpdater::GetOutcome()
 void ConsoleUpdater::run()
 {
 	// Parse the command line
-	if( _options.isSet("help") )
+  if( _d->options.isSet("help") )
 	{
-		_options.PrintHelp();
+    _d->options.printHelp();
 		_d->outcome = ConsoleUpdater::Ok;
 		return;
 	}
 
-	//VariantMap saveSettings = SaveAdapter::load( "/resources/settings.model" );
-	_controller.StartOrContinue();
+  _d->controller->start();
 
 	// Main loop, just keep the controller object going
-	while( /*!_done*/ !_controller.IsDone() )
+  while( !_d->controller->isDone() )
 	{
 		Sleep(50);
 	}
 
-	if (!_controller.AllThreadsDone())
+  if (!_d->controller->allThreadsDone())
 	{
 		// Termination seems to be abnormal, attempt to exit gracefully 
 
 		Logger::warning( " Waiting 5 seconds for threads to finish their work..." );
 		std::size_t count = 0;
 
-		while (count++ < 100 && !_controller.AllThreadsDone())
+    while (count++ < 100 && !_d->controller->allThreadsDone())
 		{
 			Sleep(50);
 		}
 
 		// Exit anyway after 5000 milliseconds
 
-		_controller.PerformPostUpdateCleanup();
+    _d->controller->doPostUpdateCleanup();
 	}
 }
 
 void ConsoleUpdater::resolveAbortSignal(int signal)
 {
-	if (_abortSignalHandler)
+  if( !Impl::abortSignalHandler.empty() )
 	{
-		_abortSignalHandler(signal);
+    Impl::abortSignalHandler( signal );
 	}
 }
 
@@ -127,9 +119,9 @@ void ConsoleUpdater::onAbort(int)
 {
 	Logger::warning( "\nAbort signal received, trying to exit gracefully.");
 
-	_controller.Abort();
+  _d->controller->abort();
 
-	_done = true; // exit main loop
+  _d->done = true; // exit main loop
 }
 
 void ConsoleUpdater::onStartStep(UpdateStep step)
@@ -215,20 +207,20 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	case UpdateMirrors:
 	{
 		// Mirrors
-		bool keepMirrors = _options.isSet("keep-mirrors");
+    bool keepMirrors = _d->options.isSet("keep-mirrors");
 
 		Logger::warning( keepMirrors ? "\n Skipped downloading mirrors." : "\n Done downloading mirrors.");
 
-		std::size_t numMirrors = _controller.GetNumMirrors();
+    std::size_t numMirrors = _d->controller->mirrors_n();
 
-		Logger::warning( "   Found %d mirror%s.", numMirrors, (numMirrors == 1 ? "" : "s") );
+    Logger::warning( "   Found {} mirror{}.", numMirrors, (numMirrors == 1 ? "" : "s") );
 
 		if( numMirrors == 0 )
 		{
 			Logger::warning( " No mirror information available - cannot continue.");
 
 			// Stop right here
-			_controller.Abort();
+      _d->controller->abort();
 		}
 	}
 	break;
@@ -243,9 +235,9 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done downloading versions.");
 
-		if (!_controller.GetNewestVersion().empty())
+    if (!_d->controller->farVersion().empty())
 		{
-			Logger::warning( "Newest version is " + _controller.GetNewestVersion() );
+      Logger::warning( "Newest version is " + _d->controller->farVersion() );
 		}
 		else
 		{
@@ -258,13 +250,13 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done comparing local files: ");
 
-		if (_controller.GetLocalVersion().empty())
+    if (_d->controller->localVersion().empty())
 		{
 			Logger::warning( "no luck, zip files do not match.");
 		}
 		else
 		{
-			std::string versionFound = utils::format( 0xff, "local version is %s.", _controller.GetLocalVersion().c_str() );
+      std::string versionFound = utils::format( 0xff, "local version is %s.", _d->controller->localVersion().c_str() );
 			Logger::warning( versionFound );
 		}
 	}
@@ -274,8 +266,8 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	{
 		Logger::warning( " Done comparing local files to server definitions.");
 
-		std::string sizeStr = Util::getHumanReadableBytes(_controller.GetTotalDownloadSize());
-		std::size_t numFiles = _controller.GetNumFilesToBeUpdated();
+    std::string sizeStr = Util::getHumanReadableBytes(_d->controller->totalDownloadSize());
+    std::size_t numFiles = _d->controller->flesToBeUpdated_n();
 
 		std::string totalSize = utils::format( 0xff, "%d %s to be downloaded (size: %s).",
 																									numFiles,
@@ -286,29 +278,29 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 		if( settingsPath.exist() )
 		{
 			Logger::warning( "User also have own settings, remove it from downloading list" );
-			_controller.removeDownload( settingsPath.toString() );
+      _d->controller->removeDownload( settingsPath.toString() );
 		}        
 
-        if( _options.isSet( "no-exec" ) )
-        {
-            Logger::warning( "Remove executable files" );
-            StringArray extensions;
-            extensions << "linux" << "macos" << "exe" << "haiku";
+    if( _d->options.isSet( "no-exec" ) )
+    {
+        Logger::warning( "Remove executable files" );
+        StringArray extensions;
+        extensions << "linux" << "macos" << "exe" << "haiku";
 
-            std::string bin="caesaria.", upd="updater.";
-            foreach( it, extensions )
-            {
-              _controller.removeDownload( bin + *it );
-              _controller.removeDownload( upd + *it );
-            }
+        std::string bin="caesaria.", upd="updater.";
+        for( auto ext : extensions )
+        {
+          _d->controller->removeDownload( bin + ext );
+          _d->controller->removeDownload( upd + ext );
         }
+    }
 
 		// Print a summary
-		if( _controller.NewUpdaterAvailable() )
+    if( _d->controller->haveNewUpdater() )
 		{
 			Logger::warning( " A new updater is available: " + totalSize );
 		}
-		else if (_controller.LocalFilesNeedUpdate())
+    else if (_d->controller->haveNewFiles())
 		{
 			Logger::warning( " Updates are available.");
 			Logger::warning( totalSize );
@@ -343,10 +335,10 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 		Logger::warning( " Done downloading updates.");
 
 		std::string totalBytesStr = utils::format( 0xff, " Total bytes downloaded: %s",
-																											Util::getHumanReadableBytes(_controller.GetTotalBytesDownloaded()).c_str() );
+                                                      Util::getHumanReadableBytes(_d->controller->totalDownloadedBytes()).c_str() );
 		Logger::warning( totalBytesStr);
 
-		if (!_controller.LocalFilesNeedUpdate())
+    if (!_d->controller->haveNewFiles())
 		{
 			Logger::warning( "----------------------------------------------------------------------------");
 			Logger::warning( " Your CaesarIA installation is up to date.");
@@ -355,15 +347,13 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 	break;
 
 	case PostUpdateCleanup:
-		break;
+  break;
 
-	case Done:
-		_done = true; // break main loop
-		break;
+  case Done: _d->done = true; // break main loop
+  break;
 
-	case RestartUpdater:
-		_done = true; // break main loop
-		break;
+  case RestartUpdater: _d->done = true; // break main loop
+  break;
 	};
 }
 
@@ -372,16 +362,16 @@ void ConsoleUpdater::OnFailure(UpdateStep step, const std::string& errorMessage)
 	Logger::warning( "\n");
 	Logger::warning( errorMessage );
 
-	_done = true; // break main loop
+  _d->done = true; // break main loop
 }
 
-void ConsoleUpdater::OnMessage(const std::string& message)
+void ConsoleUpdater::onMessage(const std::string& message)
 {
 	Logger::warning( "=======================================");
 	Logger::warning( message);
 }
 
-void ConsoleUpdater::OnWarning(const std::string& message)
+void ConsoleUpdater::onWarning(const std::string& message)
 {
 	Logger::warning( "============== WARNING ================");
 	Logger::warning( message);
@@ -402,44 +392,44 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 			break;
 
 		// Download progress
-		if (!_info.file.toString().empty()
-				&& info.file.toString() != _info.file.toString() )
+    if (!_d->info.file.toString().empty()
+        && info.file.toString() != _d->info.file.toString() )
 		{
 			// New file, finish the current download
-			_info.progressFraction = 1.0f;
-			_progressDone = false;
+      _d->info.progressFraction = 1.0f;
+      _d->progressDone = false;
 			progressPrinted = true;
-			PrintProgress();
+      printProgress();
 
 			// Add a line break when a new file starts
-			Logger::warning( utils::format( 0xff, "\nDownloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
+      Logger::warning( fmt::format( "\nDownloading from Mirror {}: {}", info.mirrorDisplayName, info.file.toString() ) );
 		}
-		else if (_info.file.toString().empty())
+    else if (_d->info.file.toString().empty())
 		{
 			// First file
-			Logger::warning( utils::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
+      Logger::warning( fmt::format( " Downloading from Mirror {}: {}", info.mirrorDisplayName, info.file.toString() ) );
 		}
 
-		_info = info;
+    _d->info = info;
 
 		// Print the new info
 		if( !progressPrinted )
-			PrintProgress();
+      printProgress();
 
 		// Add a new line if we're done here
-		if( info.progressFraction >= 1 && !_progressDone)
+    if( info.progressFraction >= 1 && !_d->progressDone)
 		{
-			_progressDone = true;
+      _d->progressDone = true;
 			Logger::warning( "\n" );
 		}
 		break;
 
 	case ProgressInfo::FileOperation:
 
-		_info = info;
+    _d->info = info;
 
 		// Print the new info
-		PrintProgress();
+    printProgress();
 
 		// Add a new line if we're done here
 		if (info.progressFraction >= 1)
@@ -452,25 +442,25 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 	};
 }
 
-void ConsoleUpdater::PrintProgress()
+void ConsoleUpdater::printProgress()
 {
 	// Progress bar
 	Logger::update( "\r" );
 
-	std::size_t numTicks = static_cast<std::size_t>(floor(_info.progressFraction * PROGRESS_METER_WIDTH));
+  std::size_t numTicks = static_cast<std::size_t>(floor(_d->info.progressFraction * PROGRESS_METER_WIDTH));
 	std::string progressBar(numTicks, '=');
 	std::string progressSpace(PROGRESS_METER_WIDTH - numTicks, ' ');
 
 	std::string line = " [" + progressBar + progressSpace + "]";
 	
 	// Percent
-	line += utils::format( 0xff, " %2.1f%%", _info.progressFraction*100 );
+  line += utils::format( 0xff, " %2.1f%%", _d->info.progressFraction*100 );
 
-	switch (_info.type)
+  switch (_d->info.type)
 	{
 	case ProgressInfo::FileDownload:	
 	{
-		line += " at " + Util::getHumanReadableBytes( _info.downloadSpeed ) + "/sec ";
+    line += " at " + Util::getHumanReadableBytes( _d->info.connection.speed ) + "/sec ";
 	}
 	break;
 
@@ -478,31 +468,20 @@ void ConsoleUpdater::PrintProgress()
 	{
 		std::string verb;
 
-		switch (_info.operationType)
+    switch (_d->info.operationType)
 		{
-		case ProgressInfo::Check: 
-			verb = "Checking: "; 
-			break;
-		case ProgressInfo::Remove: 
-			verb = "Removing: ";
-			break;
-		case ProgressInfo::Replace: 
-			verb = "Replacing: ";
-			break;
-		case ProgressInfo::Add: 
-			verb = "Adding: ";
-			break;
-		case ProgressInfo::RemoveFilesFromPK4: 
-			verb = "Preparing PK4: ";
-			break;
-		default: 
-			verb = "File: ";
-		};
+		case ProgressInfo::Check: 			verb = "Checking: "; 			break;
+		case ProgressInfo::Remove: 			verb = "Removing: ";			break;
+    case ProgressInfo::Replace: 			verb = "Replacing: ";		break;
+    case ProgressInfo::Add: 			verb = "Adding: ";    			break;
+		case ProgressInfo::RemoveFilesFromPK4: 			verb = "Preparing PK4: ";			break;
+    default: 			verb = "File: ";
+    };
 
 		line += " " + verb;
 
 		std::size_t remainingLength = line.length() > 79 ? 0 : 79 - line.length();
-		line += GetShortenedString(_info.file.baseName().toString(), remainingLength);
+    line += utils::toShortString( _d->info.file.baseName().toString(), remainingLength);
 	}
 	break;
 
@@ -522,6 +501,7 @@ void ConsoleUpdater::PrintProgress()
 	Logger::update( line );
 }
 
-Delegate1<int> ConsoleUpdater::_abortSignalHandler;
+//create static signal
+Delegate1<int> ConsoleUpdater::Impl::abortSignalHandler;
 
 } // namespace

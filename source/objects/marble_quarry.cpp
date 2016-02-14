@@ -21,16 +21,18 @@
 #include "core/gettext.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
+
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::quarry, MarbleQuarry)
 
 MarbleQuarry::MarbleQuarry()
-  : Factory(good::none, good::marble, objects::marbleQuarry, Size(2) )
+  : Factory(good::none, good::marble, object::quarry, Size(2,2) )
 {
-  _animationRef().load( ResourceGroup::commerce, 44, 10);
-  _animationRef().setDelay( 4 );
-  _fgPicturesRef().resize(2);
+  _animation().load( ResourceGroup::commerce, 44, 10);
+  _animation().setDelay( 4 );
+  _fgPictures().resize(2);
 
   _setClearAnimationOnStop( false );
 }
@@ -40,17 +42,14 @@ void MarbleQuarry::timeStep( const unsigned long time )
   Factory::timeStep( time );
 }
 
-bool MarbleQuarry::canBuild( const CityAreaInfo& areaInfo ) const
+bool MarbleQuarry::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners);
-  foreach( tile, perimetr )
-  {
-    near_mountain |= (*tile)->getFlag( Tile::tlRock );
-  }
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos(-1, -1), size() + Size(2, 2), Tilemap::CheckCorners);
+
+  bool near_mountain = !perimetr.select( Tile::tlRock ).empty();  // tells if the factory is next to a mountain
 
   const_cast< MarbleQuarry* >( this )->_setError( near_mountain ? "" : _("##build_near_mountain_only##") );
 

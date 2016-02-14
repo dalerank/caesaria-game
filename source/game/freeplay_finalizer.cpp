@@ -18,13 +18,17 @@
 #include "freeplay_finalizer.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
+#include "world/config.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace events;
+using namespace gfx;
 
 namespace game
 {
@@ -34,37 +38,50 @@ namespace freeplay
 
 void __loadEventsFromSection( const VariantMap& vm )
 {
-  foreach( it, vm )
+  for( auto& it : vm )
   {
-    events::GameEventPtr e = events::PostponeEvent::create( it->first, it->second.toMap() );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( it.first, it.second.toMap() );
   }
 }
 
-void addPopulationMilestones(PlayerCityPtr city)
+Finalizer::Finalizer(PlayerCityPtr city) :
+  _city( city )
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+
+}
+
+void Finalizer::addPopulationMilestones()
+{
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "population_milestones" ].toMap() );
 }
 
-void addEvents(PlayerCityPtr city)
+void Finalizer::addEvents()
 {
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
 }
 
-void resetFavour(PlayerCityPtr city)
+void Finalizer::resetIronCovery(int qty)
 {
-  world::Emperor& emperor = city->empire()->emperor();
-  emperor.updateRelation( city->name(), 50 );
+  TilesArray tiles = _city->tilemap().allTiles().select( Tile::tlRock );
+
+  for( auto tile : tiles )
+    tile->setParam( Tile::pIron, math::random( qty ) );
 }
 
-void initBuildOptions(PlayerCityPtr city)
+void Finalizer::resetFavour()
 {
-  city::BuildOptions bopts;
-  bopts = city->buildOptions();
-  bopts.setGroupAvailable( BM_MAX, true );
-  city->setBuildOptions( bopts );
+  world::Emperor& emperor = _city->empire()->emperor();
+  emperor.updateRelation( _city->name(), config::emperor::defaultFavor );
+}
+
+void Finalizer::initBuildOptions()
+{
+  city::development::Options bopts;
+  bopts = _city->buildOptions();
+  bopts.setGroupAvailable( city::development::all, true );
+  _city->setBuildOptions( bopts );
 }
 
 }//end namespace freeplay

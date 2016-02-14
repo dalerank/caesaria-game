@@ -20,14 +20,61 @@
 
 #include <vector>
 #include <string>
+#include "core/color_list.hpp"
 #include "core/math.hpp"
+#include "core/foreach.hpp"
 
-class StringArray : public std::vector< std::string >
+class StringArray : public std::vector<std::string>
 {
 public:
   inline std::string random() const
   {
-    return empty() ? "" : (*this)[ (int)math::random( size() ) ];
+    return empty() ? "" : (*this)[ (int)math::random( size()-1 ) ];
+  }
+
+  bool contains( const std::string& str )
+  {
+    auto it = std::find( this->begin(), this->end(), str );
+    return it != this->end();
+  }  
+
+  StringArray& push_front( const std::string& str )
+  {
+    insert( this->begin(), str );
+    return *this;
+  }
+
+  StringArray& addIfValid( const std::string& str )
+  {
+    if( !str.empty() )
+      this->push_back( str );
+
+    return *this;
+  }
+
+  const std::string& valueOrEmpty( unsigned int index ) const
+  {
+    static std::string emptyStr;
+    return (index < size()) ? at( index ) : emptyStr;
+  }
+
+  const std::string& valueOrDefault( unsigned int index, const std::string& defaultStr ) const
+  {
+    return (index < size()) ? at( index ) : defaultStr;
+  }
+
+  bool remove( const std::string& str )
+  {
+    foreach( it, *this )
+    {
+      if( *it == str )
+      {
+        erase( it );
+        return true;
+      }
+    }
+
+    return false;
   }
 
   inline StringArray& operator << ( const std::string& a )
@@ -35,6 +82,44 @@ public:
     push_back( a );
     return *this;
   }
+
+  inline StringArray& operator << ( const StringArray& a )
+  {
+    for( const auto& item : a )
+      push_back( item );
+
+    return *this;
+  }
 };
 
-#endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__
+class ColoredString : public std::string
+{
+public:
+  NColor color;
+
+  ColoredString( const std::string& r, NColor c=ColorList::black)
+    : std::string( r )
+  { color = c; }
+};
+
+class ColoredStrings : public std::vector<ColoredString>
+{
+public:
+  ColoredStrings& addIfValid( const ColoredString& text )
+  {
+    if( !text.empty() )
+      this->push_back( text );
+
+    return *this;
+  }
+
+  ColoredString random() const
+  {
+    if( this->empty() )
+      return ColoredString( "no_reason", ColorList::red );
+
+    return this->at( math::random( this->size() - 1 ) );
+  }
+};
+
+#endif //__CAESARIA_STRINGARRAY_H_INCLUDED__

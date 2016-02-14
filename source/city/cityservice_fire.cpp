@@ -19,30 +19,25 @@
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(Fire,fire)
+
 class Fire::Impl
 {
 public:
-  Fire::Locations locations;
+  UqLocations locations;
 };
 
-city::SrvcPtr Fire::create( PlayerCityPtr city )
-{
-  city::SrvcPtr ret( new Fire( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
+std::string Fire::defaultName() { return TEXT(Fire); }
 
 Fire::Fire( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
 }
 
@@ -52,6 +47,6 @@ void Fire::timeStep( const unsigned int time )
 
 void Fire::addLocation(const TilePos& location) { _d->locations.insert( location ); }
 void Fire::rmLocation(const TilePos& location) { _d->locations.erase( location ); }
-const Fire::Locations&Fire::locations() const { return _d->locations;  }
+const UqLocations &Fire::locations() const { return _d->locations;  }
 
 }//end namespace city

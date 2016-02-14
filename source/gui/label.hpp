@@ -22,6 +22,8 @@
 #include "gfx/picturesarray.hpp"
 #include "core/signals.hpp"
 
+namespace gfx { class Batch; }
+
 namespace gui
 {
 
@@ -36,6 +38,8 @@ public:
 
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
          BackgroundMode background = bgNone, int id=-1);
+
+  Label( Widget* parent, const Rect& rectangle, const std::string& text, Font font);
 
   //! destructor
   virtual ~Label();
@@ -56,9 +60,21 @@ public:
   //! Return background draw
   virtual BackgroundMode backgroundMode() const;
 
+  //!
   virtual bool onEvent(const NEvent &event);
 
+  //!
   virtual bool isBorderVisible() const;
+
+  //!
+  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
+
+  //!
+  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=0,
+                          Alignment halign=align::automatic, Alignment valign=align::automatic );
+
+  //!
+  virtual void canvasDraw(const gfx::Picture& picture, const Point& point);
 
   //! Sets whether to draw the border
   virtual void setBorderVisible(bool draw);
@@ -74,7 +90,7 @@ public:
   virtual void setWordwrap(bool enable);
 
   //! Checks if word wrap is enabled
-  virtual bool isWordWrapEnabled() const;
+  virtual bool isWordwrapEnabled() const;
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
@@ -101,14 +117,21 @@ public:
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
   virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
+  virtual void setIcon( const std::string& rc, int index );
+
+  virtual void setIconOffset( const Point& offset );
 
   virtual void setFont( const Font& font );
+  virtual void setFont( const std::string& fontname );
+  virtual void setFont( FontType type, NColor color=0 );
 
   virtual void setAlpha( unsigned int value );
 
-  virtual void setColor( NColor color );
+  virtual void setColor(NColor color);
+  virtual void setColor(const std::string& color);
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment( const std::string& horizontal, const std::string& vertical );
 
   virtual void setLineIntervalOffset( const int offset );
 
@@ -118,18 +141,19 @@ public:
     
 signals public:
   virtual Signal0<>& onClicked();
+  virtual Signal1<Widget*>& onClickedA();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
 
-  gfx::PictureRef& _textPictureRef();
-  gfx::Pictures& _backgroundRef();
+  gfx::Picture& _textPicture();
+  gfx::Batch& _background();
+  gfx::Pictures& _backgroundNb();
 
 private:
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

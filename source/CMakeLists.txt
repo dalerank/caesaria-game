@@ -6,15 +6,12 @@ include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${SDL2_INCLUDE_DIR}
-  ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
+  ${STEAM_API_DIR}/public/opensteam
+  include
 )
 
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
@@ -31,14 +28,19 @@ file(GLOB SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/*.*")
 file(GLOB OBJECTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/objects/*.*")
 file(GLOB WALKER_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/walker/*.*")
 file(GLOB WORLD_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/world/*.*")
-file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/game/*.model")
-file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.gui")
+file(GLOB GAME_MODELS_LIST "${GAME_CONFIG_DIR}/*.*")
+file(GLOB GUI_MODELS_LIST "${GAME_CONFIG_DIR}/gui/*.*")
+file(GLOB JSE_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scripting/*.*")
+file(GLOB SCRIPT_SYSTEM_LIST "${GAME_CONFIG_DIR}/system/*.*")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
+file(GLOB THREAD_LIST "${CMAKE_CURRENT_SOURCE_DIR}/thread/*.*")
+file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
+file(GLOB CHANGES_LIST "${GAME_CONFIG_DIR}/changes/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
@@ -48,12 +50,17 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST}
+               ${SCRIPT_SYSTEM_LIST} ${JSE_SOURCES_LIST})
 
-target_link_libraries(${PROJECT_NAME}
-  ${SDL2_LIBRARY}
-  ${SDL2_MIXER_LIBRARY}
-)
+include_directories(${SDL2MINI_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
+
+include_directories(${MIXER_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${MIXER_LIBRARY})
+
+include_directories(${PNG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
@@ -73,21 +80,17 @@ target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
-include_directories(${PNG_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${PICOC_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
-add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
-add_definitions( -DCAESARIA_USE_SHADERS )
+add_definitions( -DGAME_USE_FRAMEBUFFER )
+add_definitions( -DGAME_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
-
-if( DEBUG_TIMERS )
-add_definitions( -DCAESARIA_USE_DEBUGTIMERS )
-endif(DEBUG_TIMERS)
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
   target_link_libraries(${PROJECT_NAME} "winmm")
+  target_link_libraries(${PROJECT_NAME} "imagehlp")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
@@ -95,16 +98,42 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
   if(NOT APPLE)
     target_link_libraries(${PROJECT_NAME} "GL")
+    target_link_libraries(${PROJECT_NAME} "dl")
   endif()  
 endif(UNIX)
 
+if(UNIX)
+  message("Get locales from server")
+  execute_process(COMMAND ${DEP_SOURCE_DIR}/localeconv/loadtable.py)
+  set(RPATH ${GAME_CONFIG_DIR}/locale/caesar.)
+  message("Move files to locale folder")
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/2.csv ${RPATH}en)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/3.csv ${RPATH}de)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/4.csv ${RPATH}ru)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/5.csv ${RPATH}sv)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/6.csv ${RPATH}sp)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/7.csv ${RPATH}ro)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/8.csv ${RPATH}fr)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/9.csv ${RPATH}hu)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/10.csv ${RPATH}cs)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/11.csv ${RPATH}it)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/12.csv ${RPATH}nn)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/13.csv ${RPATH}pl)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/14.csv ${RPATH}ua)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/15.csv ${RPATH}fn)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/16.csv ${RPATH}pr)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/17.csv ${RPATH}sb)
+  execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/18.csv ${RPATH}bg)
+endif(UNIX)
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(X64_BUILD 1)
+endif()
+
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win64/steam_api.lib")
-    else()
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win32/steam_api.lib")
-    endif()
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
   elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
   elseif(UNIX)
@@ -134,6 +163,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
   endif()
+
+  if(WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+  endif()
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
@@ -142,16 +175,16 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"clang\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"gcc\"")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"icc\"" )
+  add_definitions("-DGAME_COMPILER_NAME=\"icc\"" )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # using Visual Studio C++
-  add_definitions("-DCAESARIA_COMPILER_NAME=\"msvc\"")
+  add_definitions("-DGAME_COMPILER_NAME=\"msvc\"")
 endif()
 
 message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
@@ -165,19 +198,16 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif(HAIKU)
 endif()
 
-# tests for C++11 suport
+# Enforce C++11
+set(USE_CPP11 ON)
+
+# Check for C++11 suport
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
-  if(USE_CPP11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
-  if(USE_CPP11)
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use proper compiler or disable USE_CPP11 option.")
-  else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
-  endif()
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
 if(WIN32)
@@ -197,70 +227,20 @@ ADD_CUSTOM_COMMAND(
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
 )
 
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/game" "${WORK_DIR}/resources"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/gui" "${WORK_DIR}/resources/gui"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/missions" "${WORK_DIR}/resources/missions"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/help" "${WORK_DIR}/resources/help"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/tutorial" "${WORK_DIR}/resources/tutorial"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/locale" "${WORK_DIR}/resources/locale"
-)
-
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${GAME_CONFIG_DIR}/shaders" "${WORK_DIR}/resources/shaders"
-)
-
 if(USE_STEAM)
   if(WIN32)
-    if(X64_BUILD)
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/dkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win64/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    else()
-      ADD_CUSTOM_COMMAND(
-          TARGET ${PROJECT_NAME}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win32/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-      )
-    endif()
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
+    )
   elseif(APPLE)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
     )
   elseif(UNIX)
@@ -268,14 +248,14 @@ if(USE_STEAM)
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
       )
     else()
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
+          #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsdkencryptedappticket.so" "${WORK_DIR}/libsdkencryptedappticket.so"
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux32/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
      )
     endif()
@@ -290,29 +270,3 @@ if(EXT_BINDIR)
       COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${GAME_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
-
-
-
-# Copy DLL to build output directory
-if(WIN32)
-  set(_LIBS_FOR_DLL_SOURCE
-    ${SDL2_LIBRARY}
-    ${SDL2_MIXER_LIBRARY}
-    ${SDL2_TTF_LIBRARY}
-  )
-
-  foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
-    GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
-    GET_FILENAME_COMPONENT(_lib_path ${_lib} PATH)
-
-    # Gather list of all .xml and .conf files in "/config"
-    file(GLOB DLLs ${_lib_path}/*.dll
-      ${_lib_path}/../bin/*.dll)
-
-    foreach(dll ${DLLs})
-      add_custom_command( TARGET ${PROJECT_NAME}
-                          POST_BUILD
-                          COMMAND ${CMAKE_COMMAND} -E copy ${dll} ${WORK_DIR})
-    endforeach()
-  endforeach(_lib)
-endif(WIN32)

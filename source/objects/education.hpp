@@ -20,42 +20,47 @@
 
 #include "objects/service.hpp"
 
-class School : public ServiceBuilding
+class EducationBuilding : public ServiceBuilding
 {
 public:
-  School();
+  EducationBuilding( const Service::Type service,
+                     const object::Type type, const Size& size );
 
-  int getVisitorsNumber() const;
+  virtual int currentVisitors() const;
+  virtual int maxVisitors() const;
+  virtual void initialize(const object::Info& mdata);
 
-  virtual void deliverService();
-
-  virtual unsigned int walkerDistance() const;
-  virtual void buildingsServed(const std::set<BuildingPtr> &buildings, ServiceWalkerPtr walker);
 protected:
-  virtual int _getWalkerOrders() const;
-
-private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-class Library : public ServiceBuilding
+class School : public EducationBuilding
 {
 public:
-   Library();
+  School();
 
-   int getVisitorsNumber() const;
+  virtual void deliverService();
+  virtual unsigned int walkerDistance() const;  
+  virtual void buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker);
+protected:
+  virtual int _getWalkerOrders() const;
 };
 
-class Academy : public ServiceBuilding
+class Library : public EducationBuilding
 {
 public:
-   Academy();
+  Library();
+};
 
-   int getVisitorsNumber() const;
-   virtual void deliverService();
-   virtual std::string sound() const;
-   virtual unsigned int walkerDistance() const;
+class Academy : public EducationBuilding
+{
+public:
+  Academy();
+
+  virtual void deliverService();
+  virtual std::string sound() const;
+  virtual unsigned int walkerDistance() const;
 };
 
 

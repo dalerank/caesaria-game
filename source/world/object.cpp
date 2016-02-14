@@ -16,29 +16,32 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "object.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"
 #include "gfx/animation.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 
 namespace world
 {
 
+REGISTER_CLASS_IN_WORLDFACTORY(Object)
+
 class Object::Impl
 {
 public:
   Picture pic;
+  std::string emtype;
   Point location;
   EmpirePtr empire;
   std::string name;
-  Animation animation;
-  Pictures pictures;
   unsigned int time;
   bool isDeleted;
+  Nation nation;
 };
 
 ObjectPtr Object::create( EmpirePtr empire)
@@ -50,7 +53,7 @@ ObjectPtr Object::create( EmpirePtr empire)
 }
 
 bool Object::isDeleted() const { return _d->isDeleted; }
-std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+std::string Object::type() const { return TEXT(Object); }
 void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
@@ -59,52 +62,43 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: %s added to %s", obj->name().c_str(), name().c_str() );
+  Logger::warning( "WorldObjects: {} added to {}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
-Picture Object::picture() const { return _d->pic; }
+Nation Object::nation() const {  return _d->nation; }
 
-const Pictures& Object::pictures() const
+std::string Object::about(Object::AboutType type)
 {
-  _d->animation.update( _d->time++ );
-  _d->pictures[ 1 ] = _d->animation.currentFrame();
+  if( type == aboutEmtype )
+    return _d->emtype;
 
-  return _d->pictures;
+  return "";
 }
-
-void Object::setPicture(Picture pic)
-{
-  _d->pic = pic;
-  _d->pictures[ 0 ] = pic;
-}
-
-bool Object::isMovable() const { return false; }
 
 void Object::save( VariantMap& stream ) const
 {
   VARIANT_SAVE_ANY_D( stream, _d, location )
   stream[ "picture" ] = Variant( _d->pic.name() );
-  stream[ "name" ] = Variant( _d->name );
-  stream[ "animation" ] = _d->animation.save();
-  stream[ "isDeleted" ] = _d->isDeleted;
+  VARIANT_SAVE_STR_D( stream, _d, name )    
+  VARIANT_SAVE_STR_D( stream, _d, emtype )
+  VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   stream[ "type" ] = Variant( type() );
+  stream[ "nation" ] = world::toString( _d->nation );
 }
 
 void Object::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANYDEF_D( _d, location, _d->location, stream )
+  VARIANT_LOAD_STRDEF_D( _d, name, _d->name, stream )
+  VARIANT_LOAD_STRDEF_D( _d, emtype, "unknown", stream )
 
-  Variant name = stream.get( "name" );
-  if( name.isValid() )
-  {
-    _d->name = name.toString();
-  }
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
-  _d->animation.load( stream.get( "animation" ).toMap() );
-  _d->isDeleted = stream.get( "isDeleted" );
+  VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
+  Variant vNation = stream.get( "nation" );
+  if( vNation.isValid() )
+    _d->nation = world::toNation( vNation.toString() );
 }
 
 void Object::attach()
@@ -115,17 +109,16 @@ void Object::attach()
 
 Object::~Object() {}
 
-void Object::deleteLater() { _d->isDeleted = true; }
-
-Object::Object( EmpirePtr empire) : _d( new Impl )
+Object::Object(EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
+  _d->nation = nation::unknown;
   _d->empire = empire;
-  _d->pictures.resize( 2 );
+  _d->emtype = "unknown";
   _d->isDeleted = false;
 }
 
-Animation& Object::_animation() { return _d->animation; }
-Pictures &Object::_pictures() { return _d->pictures; }
+void Object::deleteLater() { _d->isDeleted = true; }
+void Object::_setNation(Nation nation) { _d->nation = nation; }
 
-}
+}//end namespace world

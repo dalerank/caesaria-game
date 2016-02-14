@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "listboxitem.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 
@@ -25,10 +26,11 @@ namespace gui
 class ListBoxItem::Impl
 {
 public:
-  PictureRef textPic;
+  Picture textPic;
   std::string text;
-  Variant data;
-	int tag;
+  std::string tooltip;
+  VariantMap data;
+  Variant tag;
   float currentHovered;
   Picture icon;
   Point iconOffset;
@@ -43,7 +45,10 @@ public:
 };
 
 void ListBoxItem::setText(const std::string& text){ _d->text = text;}
+void ListBoxItem::setTooltip(const std::string& text) { _d->tooltip = text; }
+const std::string&ListBoxItem::tooltip() const{ return _d->tooltip; }
 void ListBoxItem::setIcon( Picture icon ){    _d->icon = icon; }
+void ListBoxItem::setIcon( const std::string& rc, int index ) { _d->icon.load( rc, index ); }
 const std::string& ListBoxItem::text() const{    return _d->text;}
 const Alignment& ListBoxItem::verticalAlign() const{    return _d->vertical;}
 bool ListBoxItem::isAlignEnabled() const{ return _d->enabled; }
@@ -79,9 +84,9 @@ ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )
 
 	for( unsigned int i=0; i < count;i++ )
 	{
-		OverrideColors[ i ].Use = other.OverrideColors[ i ].Use;
-		OverrideColors[ i ].font = other.OverrideColors[ i ].font;
-		OverrideColors[ i ].color = other.OverrideColors[ i ].color;
+		overrideColors[ i ].Use = other.overrideColors[ i ].Use;
+		overrideColors[ i ].font = other.overrideColors[ i ].font;
+		overrideColors[ i ].color = other.overrideColors[ i ].color;
 	}
 
 	return *this;
@@ -102,34 +107,51 @@ void ListBoxItem::setTextAlignment( Alignment horizontal, Alignment vertical )
 
 void ListBoxItem::setTextColor(ListBoxItem::ColorType type, NColor color)
 {
-  OverrideColors[ type ].color = color;
-  OverrideColors[ type ].Use = true;
+  overrideColors[ type ].color = color;
+  overrideColors[ type ].Use = true;
 }
 
 void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 {
-  if( _d->textPic.isNull() || ( _d->textPic != 0 && _d->textPic->size() != s ) )
-  {
-    _d->textPic.reset( Picture::create( s, 0, true ) );
-  }
+  resetPicture( s );
 
-  if( _d->textPic )
+  if( _d->textPic.isValid() )
   {
-    f.draw( *_d->textPic, _d->text, p );
+    f.draw( _d->textPic, _d->text, p );
+  }
+}
+
+void ListBoxItem::resetPicture( const Size& s )
+{
+  if( !_d->textPic.isValid() )
+  {
+    _d->textPic = Picture( s, 0, true );
+  }
+  else if( _d->textPic.size() != s )
+  {
+    _d->textPic = Picture( s, 0, true );
   }
 }
 
 void ListBoxItem::draw(const std::string& text, Font f, const Point& p )
 {
-  if( _d->textPic )
+  if( _d->textPic.isValid() )
   {
-    f.draw( *_d->textPic, text, p );
+    f.draw( _d->textPic, text, p );
+  }
+}
+
+void ListBoxItem::clear()
+{
+  if( _d->textPic.isValid() )
+  {
+    _d->textPic.fill( 0x0 );
   }
 }
 
 ListBoxItem::~ListBoxItem(){}
-void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
-int ListBoxItem::tag() const{	return _d->tag;}
+void ListBoxItem::setTag( const Variant& tag ){	_d->tag = tag;}
+const Variant& ListBoxItem::tag() const{	return _d->tag;}
 bool ListBoxItem::isEnabled() const{    return _d->enabled;}
 void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
 ElementState ListBoxItem::state() const{    return _d->state;}
@@ -138,11 +160,12 @@ Point ListBoxItem::textOffset() const{  return _d->offset;}
 void ListBoxItem::setTextOffset(Point p){  _d->offset = p;}
 Point ListBoxItem::iconOffset() const{ return _d->iconOffset; }
 void ListBoxItem::setIconOffset(Point p) { _d->iconOffset = p; }
-const Picture &ListBoxItem::picture() const { return _d->textPic ? *_d->textPic : Picture::getInvalid(); }
+const Picture& ListBoxItem::picture() const { return _d->textPic; }
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
-Variant ListBoxItem::data() const{ return _d->data; }
-void ListBoxItem::setData( const Variant& value ){ _d->data = value; }
+Variant ListBoxItem::data( const std::string &name) const{ return _d->data[ name ]; }
+void ListBoxItem::setData( const std::string &name, const Variant& value ){ _d->data[name] = value; }
+void ListBoxItem::setData(const VariantMap& map) { _d->data = map; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}
 void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
 Picture ListBoxItem::icon() { return _d->icon; }

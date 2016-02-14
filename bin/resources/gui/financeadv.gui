@@ -1,0 +1,57 @@
+{
+  size : [ 640, 420 ]
+  bgtype : "whiteFrame"
+  static : true
+  
+  lbBlackframe#Label : {
+    geometry : [ 70, 50, "pw-16", 120 ]
+    bgtype : "blackFrame"
+  }
+
+  lbCityHave#Label : {
+    font : "FONT_1_WHITE"
+    geometry : [ 75, 55, 400, 80 ]
+    text : "##city_have##"
+  }
+
+  lbTaxRate#Label : {
+    font : "FONT_1_WHITE"
+    geometry : [ 75, 75, 240, 100 ]
+    text : "##tax_rate##"
+  }
+
+  lbTaxRateNow#Label : {
+    geometry : [ 245, 75, 595, 95 ]
+    font : "FONT_1_WHITE"  
+  }
+
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00265"
+  }
+
+  lbRegPayers#Label : { 
+    font : "FONT_1_WHITE"  
+    geometry : [ 75, 95, 300, 120 ]
+  }
+
+  lbLastYear#Label : {
+    geometry : [ 265, 130, 365, 155 ]
+    text : "##last_year##"
+    font : "FONT_1"
+  }
+
+  lbThisYear#Label : {
+    geometry : [ 400, 130, 500, 155 ]
+    text : "##this_year##"
+    font : "FONT_1"
+  }
+
+  lbTitle#Label : {
+    geometryf : [ 0.1, 0.05, 0.95, 0.1 ]
+    font : "FONT_5"
+    text : "##finance_advisor##"
+    textAlign : [ "center", "center" ]
+  }
+}
+

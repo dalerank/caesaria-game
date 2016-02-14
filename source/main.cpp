@@ -14,81 +14,94 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+ 
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
+#include "steam.hpp"
 
-#ifdef CAESARIA_USE_STEAM
-  #include "steam.hpp"
-#endif
-
-#if defined(CAESARIA_PLATFORM_WIN)
+#ifdef GAME_PLATFORM_WIN
   #undef main
 #endif
 
-#if defined(CAESARIA_PLATFORM_ANDROID)
+#ifdef GAME_PLATFORM_ANDROID
 #include <SDL.h>
 #include <SDL_system.h>
-int SDL_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
 #endif
-{  
+
+int main(int argc, char* argv[])
+{
+  crashhandler::install();
+
   vfs::Directory workdir;
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   workdir = vfs::Path( argv[0] ).directory();
 #endif
+  game::Settings& options = game::Settings::instance();
   Logger::registerWriter( Logger::consolelog, "" );
 
-  game::Settings::instance().setwdir( workdir.toString() );
-  game::Settings::instance().checkwdir( argv, argc );  
+  options.setwdir( workdir.toString() );
+  options.checkwdir( argv, argc );
+  options.resetIfNeed( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
-  Logger::warning( "Game: setting workdir to " + SETTINGS_VALUE( workDir ).toString()  );
+  SimpleLogger LOG("Game");
 
-  Logger::warning( "Game: load game settings" );
-  game::Settings::load();
-  game::Settings::instance().checkCmdOptions( argv, argc );
+  LOG.info("Setting workdir to " + SETTINGS_STR(workDir));
 
-  Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
-  Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
-  Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
+  LOG.info("Loading game settings");
+  if( options.haveLastConfig() )
+    options.loadLastConfig();
 
-#ifdef CAESARIA_USE_STEAM
-  /*if( !steamapi::Handler::checkSteamRunning() )
+  options.checkCmdOptions( argv, argc );
+  options.checkC3present();
+
+  std::string systemLang = SETTINGS_STR( language );
+
+  if( steamapi::available() )
   {
-    Logger::warning( "Steam not running. Exit." );
-    return EXIT_FAILURE;
-  }*/
+    if( !steamapi::connect() )
+    {
+      LOG.fatal("Failed to connect to steam");
+      return EXIT_FAILURE;
+    }
 
-  if( !steamapi::Handler::connect() )
-    return EXIT_FAILURE;
-#endif
+    if( systemLang.empty() )
+      systemLang = steamapi::language();
+  }
+
+  options.changeSystemLang( systemLang );
+
+  LOG.info("Language set to " + SETTINGS_STR(language));
+  LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
+  LOG.info("Cell width set to {}", SETTINGS_VALUE(cellw).toInt());
 
   try
   {
     Game game;
     game.initialize();
     while( game.exec() );
+
+    game.destroy();
   }
   catch( Exception& e )
   {
-    Logger::warning( "Critical error: " + e.getDescription() );
-    Stacktrace::print();
+    LOG.fatal("Critical error: " + e.getDescription());
+
+    crashhandler::printstack();
   }
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::close();
-#endif
+  if( steamapi::available() )
+    steamapi::close();
+
+  crashhandler::remove();
 
   return 0;
 }

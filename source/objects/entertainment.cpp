@@ -19,15 +19,14 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/trainee.hpp"
 #include "walker/helper.hpp"
-
-using namespace constants;
 
 namespace {
 static const int idleDecreaseLevel = 10;
@@ -39,10 +38,11 @@ class EntertainmentBuilding::Impl
 public:
   EntertainmentBuilding::NecessaryWalkers necWalkers;
   unsigned int showCounter;
+  TraineeWays incomes;
 };
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const TileOverlay::Type type,
+                                             const object::Type type,
                                              Size size )
   : ServiceBuilding(service, type, size), _d( new Impl )
 {
@@ -56,11 +56,12 @@ void EntertainmentBuilding::deliverService()
   // we need all trainees types for the show
   if( !mayWork() )
   {
-    _animationRef().stop();
+    _animation().stop();
     return;
   }
 
   bool isWalkerReady = _isWalkerReady();
+  _d->incomes.removeExpired( game::Date::current() ); //remove expired incomes for last 2 months
 
   int decreaseLevel = idleDecreaseLevel;
   // all trainees are there for the show!
@@ -73,7 +74,7 @@ void EntertainmentBuilding::deliverService()
       if( !_specificWorkers().empty() )
       {
         _d->showCounter++;
-        _animationRef().start();
+        _animation().start();
         decreaseLevel = workDecreaseLevel;
       }
     }
@@ -81,18 +82,19 @@ void EntertainmentBuilding::deliverService()
 
   if( _specificWorkers().empty() )
   {
-    _animationRef().stop(); //have no actors for the show
+    _animation().stop(); //have no actors for the show
   }
 
-  foreach( item, _d->necWalkers )
+  for( auto item : _d->necWalkers )
   {
-    int level = traineeValue( *item );
-    setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
+    int level = traineeValue( item );
+    setTraineeValue( item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
 
-int EntertainmentBuilding::visitorsNumber() const{  return 0;}
-unsigned int EntertainmentBuilding::walkerDistance() const {  return 35; }
+int EntertainmentBuilding::currentVisitors() const{  return 0;}
+int EntertainmentBuilding::maxVisitors() const { return 0; }
+unsigned int EntertainmentBuilding::walkerDistance() const { return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
@@ -102,19 +104,22 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
+const EntertainmentBuilding::IncomeWays& EntertainmentBuilding::incomes() const { return _d->incomes; }
 unsigned int EntertainmentBuilding::showsCount() const { return _d->showCounter; }
 bool EntertainmentBuilding::isShow() const {   return animation().isRunning(); }
 
 void EntertainmentBuilding::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, showCounter );
+  VARIANT_SAVE_ANY_D( stream, _d, showCounter )
+  VARIANT_SAVE_CLASS_D( stream, _d, incomes )
 }
 
 void EntertainmentBuilding::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
-  VARIANT_LOAD_ANY_D( _d, showCounter, stream );
+  VARIANT_LOAD_ANY_D( _d, showCounter, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, incomes, stream )
 }
 
 std::string EntertainmentBuilding::troubleDesc() const
@@ -123,12 +128,12 @@ std::string EntertainmentBuilding::troubleDesc() const
 
   if( ret.empty() )
   {
-    foreach( item, _d->necWalkers )
+    for( auto item : _d->necWalkers )
     {
-      int level = traineeValue( *item );
+      int level = traineeValue( item );
       if( level == 0 )
       {
-        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( *item ).c_str() );
+        ret = fmt::format( "##need_trainee_{}##", WalkerHelper::getTypename( item ));
         break;
       }
     }
@@ -137,20 +142,65 @@ std::string EntertainmentBuilding::troubleDesc() const
   return ret;
 }
 
+void EntertainmentBuilding::updateTrainee(TraineeWalkerPtr walker)
+{
+  ServiceBuilding::updateTrainee( walker );
+
+  TraineeWayInfo info{ game::Date::current(),
+                       walker->places( Walker::plOrigin ),
+                       pos() };
+
+  _d->incomes.push_back( info );
+}
+
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }
 WalkerList EntertainmentBuilding::_specificWorkers() const { return walkers(); }
 
 void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
 {
   _d->necWalkers.push_back( type );
- setTraineeValue( type, 0 );
+  setTraineeValue( type, 0 );
 }
 
 bool EntertainmentBuilding::_isWalkerReady()
 {
   int maxLevel = 0;
-  foreach( item, _d->necWalkers )
-  {  maxLevel = std::max( maxLevel, traineeValue( *item ) ); }
+  for( auto item : _d->necWalkers )
+    maxLevel = std::max( maxLevel, traineeValue( item ) );
 
   return maxLevel;
+}
+
+VariantList TraineeWays::save() const
+{
+  VariantList ret;
+  for( const auto& item : *this )
+  {
+    VariantList vl;
+    vl << item.time << item.base << item.destination;
+    ret.push_back( vl );
+  }
+
+  return ret;
+}
+
+void TraineeWays::load(const VariantList& stream)
+{
+  for( const auto& item : stream )
+  {
+    VariantList vl = item.toList();
+    TraineeWayInfo info{ vl.get( 0 ).toDateTime(),
+                         vl.get( 1 ).toTilePos(),
+                         vl.get( 2 ).toTilePos() };
+    push_back( info );
+    }
+}
+
+void TraineeWays::removeExpired(const DateTime& current, int expsMonth)
+{
+  for( auto it = begin(); it != end(); )
+  {
+    if( it->time.monthsTo( current ) > expsMonth ) { it = erase( it ); }
+    else { ++it; }
+  }
 }

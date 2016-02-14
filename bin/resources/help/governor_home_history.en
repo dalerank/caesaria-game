@@ -1,0 +1,15 @@
+{  
+ title : "##governorHouse##"
+ sound : "fanfare"
+ text  : "A ruler's home makes an important statement about who he is and how he wields power. It must be more lavish than those of his wealthiest subjects, in order to express his superiority over them. Yet, it should not be so extravagant as to foment resentment, or even rebellion, among the citizenry.\n The Emperor Nero crossed this line with the Domus Aurea (Golden House). After fire destroyed most of Rome in AD 64 (a fire that most historians agree was set at Nero's command, both to clear land for his buildings and to justify a pogrom against Christians), Nero's plan for urban renewal consisted entirely of a monumental palace for himself. The Domus covered four districts and projected incredible luxury. Gold, silver and precious stones decorated every room and corridor. A round dining room revolved continuously in sync with the earth's rotation. Sprawling grounds featured vineyards, orchards, parks and gardens, pastures and whole forests. Nero's greatest conceit was the @Colossus Neronis&, a giant bronze statue portraying the Emperor as a sun god.\n After Nero's suicide in AD 69, his successor Neronis spent a few million more sesterces on the Domus, but work stopped when his three-month reign ended. Subsequent emperors tried to find more popular uses for the Domus, and over time the complex was reabsorbed into the city. The @Colosseum& rose where Nero had created a lake. Public @baths& replaced some of the former imperial residence."
+ uri : {
+  "Colossus Neronis" : "colossus_neronis"
+	"amphitheaters" : "amphitheater"
+	"shops" : "shop"
+	"baths" : "bath"
+	"temples" : "temple"
+	"statuary" : "statuary"
+	"Colosseum" : "colosseum"
+	"hippodromes" : "hippodrome"
+	}
+}

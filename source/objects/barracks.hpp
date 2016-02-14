@@ -19,7 +19,7 @@
 #define __CAESARIA_BARRACKS_H_INCLUDED__
 
 #include "training.hpp"
-#include "good/goodstore.hpp"
+#include "good/good.hpp"
 
 class Barracks : public TrainingBuilding
 {
@@ -29,7 +29,7 @@ public:
   virtual void timeStep(const unsigned long time);
 
   bool isNeedWeapons() const;
-  int goodQty( good::Type type ) const;
+  int goodQty( good::Product type ) const;
   virtual void storeGoods( good::Stock &stock, const int amount);
   virtual std::string workersProblemDesc() const;
 

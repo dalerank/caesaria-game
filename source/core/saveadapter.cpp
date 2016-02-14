@@ -21,22 +21,29 @@
 #include "logger.hpp"
 #include "vfs/file.hpp"
 #include "vfs/path.hpp"
+#include "core/variant_map.hpp"
 
 using namespace vfs;
 
-VariantMap SaveAdapter::load( const vfs::Path& filename )
+namespace config
 {
-  Logger::warning( "SaveAdapter: try load model from " + filename.toString() );
+
+VariantMap load( const vfs::Path& filename )
+{
+  Logger::warning( "SaveAdapter: try load model from {}", filename.toString() );
   NFile f = NFile::open( filename );
 
   return load( f );
 }
 
-VariantMap SaveAdapter::load( vfs::NFile f )
+VariantMap load( vfs::NFile f )
 {
   if( f.isOpen() )
   {
     ByteArray data = f.readAll();
+
+    if( data.empty() )
+      return VariantMap();
 
     bool jsonParsingOk;
     Variant ret = Json::parse( data.toString(), jsonParsingOk );
@@ -46,24 +53,19 @@ VariantMap SaveAdapter::load( vfs::NFile f )
     }
     else
     {
-     Logger::warning( "Can't parse file " + f.path().toString() + " error: " + ret.toString() );
-     Logger::warning( "Last parsed object is " + Json::lastParsedObject() );
+     Logger::warning( "Can't parse file {} error: {}", f.path().toString(), ret.toString() );
+     Logger::warning( "Last parsed object is {}", Json::lastParsedObject() );
     }
   }
   else
   {
-    Logger::warning( "Can't find file " + f.path().toString() );
+    Logger::warning( "Can't find file {}", f.path().toString() );
   }
 
   return VariantMap();
 }
 
-SaveAdapter::SaveAdapter()
-{
-
-}
-
-bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
+bool save( const VariantMap& options, const vfs::Path& filename )
 {
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )
@@ -74,4 +76,11 @@ bool SaveAdapter::save( const VariantMap& options, const vfs::Path& filename )
   }
 
   return true;
+}
+
+std::string save(const VariantMap &options)
+{
+  return Json::serialize( options.toVariant(), " " );
+}
+
 }

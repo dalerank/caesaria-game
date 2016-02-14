@@ -12,11 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
 #include "infobox_senate.hpp"
-
 #include "gfx/tile.hpp"
 #include "objects/metadata.hpp"
 #include "objects/senate.hpp"
@@ -24,13 +25,15 @@
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
+#include "events/playsound.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -38,32 +41,45 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(senate,AboutSenate)
+
 namespace {
   int advisorBtnId = 0x2552;
   Signal0<> invalidBtnClickedSignal;
+  Point lbStartPos( 60, 35 );
 }
 
 AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
-  SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
-  std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
-  setTitle( _(title) );
+  setupUI( ":/gui/infoboxsenate.gui" );
+
+  SenatePtr senate = tile.overlay<Senate>();
+  if( senate.isNull() )
+    return;
+
+  events::dispatch<PlaySound>( "bmsel_senate", 1, 100, audio::infobox, true );
+
+  setTitle( _( senate->info().prettyName() ) );
 
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
-  std::string denariesStr = utils::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
+  std::string denariesStr = fmt::format( "{} {}", _("##senate_save##"), senate->funds() );
 
-  Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
-  lb->setIcon( good::Helper::picture( good::denaries ) );
-  lb->setText( denariesStr );
-  lb->setTextOffset( Point( 30, 0 ));
+  Size lbSize( width() - 32, 30 );
+  Label& lb = add<Label>( Rect( lbStartPos, lbSize ), denariesStr );
+  lb.setIcon( good::Info( good::denaries ).picture() );
+  lb.setTextOffset( Point( 30, 0 ));
 
-  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
-  TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::_showRatingAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::deleteLater );
+  std::string taxThisYearStr = fmt::format( "{} {}", _("##senate_thisyear_tax##"), senate->thisYearTax() );
+  add<Label>( Rect( lb.leftbottom(), lbSize ), taxThisYearStr );
+
+  add<Label>( Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
+
+  TexturedButton& btnAdvisor = add<TexturedButton>( Point(350, 215), Size(28,28), advisorBtnId, 289 );
+  CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::_showRatingAdvisor );
+  CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::deleteLater );
 }
 
 AboutSenate::~AboutSenate() {}
@@ -76,10 +92,9 @@ Signal0<>& AboutSenate::onButtonAdvisorClicked()
 
 void AboutSenate::_showRatingAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::ratings );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

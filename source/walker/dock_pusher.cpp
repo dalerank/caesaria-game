@@ -14,24 +14,18 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dock_pusher.hpp"
 #include "city/city.hpp"
+#include "good/stock.hpp"
+#include "walkers_factory.hpp"
 
-using namespace constants;
+REGISTER_CLASS_IN_WALKERFACTORY(walker::docker, Docker)
 
 Docker::Docker( PlayerCityPtr city )
   : CartPusher( city )
 {
   _setType( walker::docker );
   stock().setCapacity( bigCart );
-}
-
-DockerPtr Docker::create(PlayerCityPtr city )
-{
-  DockerPtr ret( new Docker( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
 }

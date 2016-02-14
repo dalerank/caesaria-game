@@ -12,18 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
-#define _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+#ifndef _CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_
+#define _CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_
 
-#include "core/scopedptr.hpp"
+#include "widget.hpp"
 
-class GameAutoPause
+namespace gui
+{
+
+class GameAutoPauseWidget : public Widget
 {
 public:
-  GameAutoPause();
+  GameAutoPauseWidget( Widget* parent );
+  ~GameAutoPauseWidget();
+  static void insertTo(Widget* parent);
+
   void activate();
-  virtual ~GameAutoPause();
+private:
+  bool _activated;
 };
 
-#endif //_CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+}
+
+#endif //_CAESARIA_GAMEAUTOPAUSEWIDGET_H_INCLUDE_

@@ -13,23 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_EMIGRANT_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_EMIGRANT_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Migration)
+
 class Migration : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
 
   int value() const;
@@ -40,6 +39,8 @@ public:
 
   int lastMonthComing() const;
   int lastMonthLeaving() const;
+  float getMigrationKoeff();
+  bool haveTroubles() const;
 
   int lastMonthMigration() const;
   virtual VariantMap save() const;
@@ -47,14 +48,12 @@ public:
 
   void citizenLeaveCity( WalkerPtr walker );
 
-private:
   Migration( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Migration> MigrationPtr;
 
 }//end namespace city
 

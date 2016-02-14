@@ -20,41 +20,46 @@
 #include "game/resourcegroup.hpp"
 #include "objects/aqueduct.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "core/utils.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
+#include "events/warningmessage.hpp"
+#include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::road, Road)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plaza, Plaza)
+
 namespace {
-static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
 typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 0x8 } RoadDirection;
 }
 
 Road::Road()
-  : Construction( objects::road, Size(1) )
+  : Construction( object::road, Size::square(1) )
 {
   _paved = 0;
 }
 
-bool Road::build( const CityAreaInfo& info )
+bool Road::build( const city::AreaInfo& info )
 {
-  info.city->setOption( PlayerCity::updateRoads, 1 );
+  info.city->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
 
   Tilemap& tilemap = info.city->tilemap();
-  TileOverlayPtr overlay = tilemap.at( info.pos ).overlay();
+  OverlayPtr overlay = tilemap.at( info.pos ).overlay();
 
-  if( is_kind_of<Road>( overlay ) )
+  if( overlay.is<Road>() )
   {
     return false;
   }
 
-  if( is_kind_of<Aqueduct>( overlay ) )
+  if( overlay.is<Aqueduct>() )
   {
-    AqueductPtr aq = ptr_cast<Aqueduct>( overlay );
-    aq->addRoad();
+    auto aqueduct = overlay.as<Aqueduct>();
+    aqueduct->addRoad();
 
     return false;
   }
@@ -64,19 +69,30 @@ bool Road::build( const CityAreaInfo& info )
   return true;
 }
 
-bool Road::canBuild( const CityAreaInfo& areaInfo ) const
+bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_free = Construction::canBuild( areaInfo );
 
   if( is_free )
     return true; // we try to build on free tile
 
-  TileOverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
+  OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( areaInfo );
+  Picture pic;
+  if( overlay.is<Aqueduct>() )
+  {
+    TilesArray tiles = areaInfo.tiles();
+    tiles.push_back( &tile() );
+    city::AreaInfo advInfo( areaInfo.city, areaInfo.pos, &tiles );
+    pic = overlay.as<Aqueduct>()->picture( advInfo );
+  }
+  else
+  {
+    pic = picture( areaInfo );
+  }
   const_cast<Road*>( this )->setPicture( pic );
 
-  return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
+  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
 }
 
 void Road::initTerrain(Tile& terrain)
@@ -84,38 +100,42 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
+const Picture& Road::picture( const city::AreaInfo& areaInfo) const
 {
-  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  if (!areaInfo.aroundTiles.empty())
-  {
-    foreach( it, areaInfo.aroundTiles )
-    {
-      const TilePos& epos = (*it)->epos();
+  if( areaInfo.city.isNull() )
+    return Picture::getInvalid();
 
-      if( (*it)->getFlag( Tile::tlRoad ) || is_kind_of<Road>( (*it)->overlay() ) )
+  Tilemap& tmap = areaInfo.city->tilemap();
+  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+  if (!areaInfo.tiles().empty())
+  {
+    for( auto tile : areaInfo.tiles() )
+    {
+      const TilePos& epos = tile->epos();
+
+      if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
       {
         const TilePos& p = areaInfo.pos;
-        if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
-        else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
-        else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
-        else if ( epos == p.westnb() ) directionFlags |= road2west; // road to the west
+        TilePos::Neighbors nb = p.nb();
+        if( epos == nb.north() ) directionFlags |= road2north; // road to the north
+        else if ( epos == nb.south() ) directionFlags |= road2south; // road to the south
+        else if ( epos == nb.east() ) directionFlags |= road2east; // road to the east
+        else if ( epos == nb.west() ) directionFlags |= road2west; // road to the west
       }
     }
   }
 
   TilesArray roads;
   if( areaInfo.city.isValid() )
-    roads = areaInfo.city->tilemap().getNeighbors( areaInfo.pos, Tilemap::FourNeighbors );
+    roads = tmap.getNeighbors( areaInfo.pos, Tilemap::FourNeighbors );
 
-  foreach( it, roads )
+  for( auto tile : roads )
   {
-    Tile* tile = *it;
     const TilePos& epos = tile->epos();
     const TilePos& p = areaInfo.pos;
-    if( tile->getFlag( Tile::tlRoad ) || is_kind_of<Road>( tile->overlay() ) )
+    if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
     {
-      if (epos.j() > p.j())      { directionFlags |= road2north; } // road to the north
+      if      (epos.j() > p.j()) { directionFlags |= road2north; } // road to the north
       else if (epos.j() < p.j()) { directionFlags |= road2south; } // road to the south
       else if (epos.i() > p.i()) { directionFlags |= road2east; } // road to the east
       else if (epos.i() < p.i()) { directionFlags |= road2west; } // road to the west
@@ -125,10 +145,10 @@ const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
   const TilePos& p = areaInfo.pos;
   if( areaInfo.city.isValid() )
   {
-    int mapBorder = areaInfo.city->tilemap().size()-1;
-    if( p.i() == 0 ) { directionFlags |= road2west; }
+    int mapBorder = tmap.size()-1;
+    if( p.i() == 0 )         { directionFlags |= road2west; }
     if( p.i() == mapBorder ) { directionFlags |= road2east; }
-    if( p.j() == 0 ) { directionFlags |= road2south; }
+    if( p.j() == 0 )         { directionFlags |= road2south; }
     if( p.j() == mapBorder ) { directionFlags |= road2north; }
   }
 
@@ -138,16 +158,46 @@ const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
     switch (directionFlags)
     {
     case 0: index = 101; break; // no road!
-    case 1: index = 101; break; // North
-    case 2: index = 102; break; // East
-    case 4: index = 103; break; // South
-    case 8: index = 104; break; // West
+    case 1: // North
+    {
+      index = 101;
+      _changeIndexIfAqueduct( areaInfo, index, 120 );
+    }
+    break;
+    case 2: // East
+    {
+      index = 102;
+      _changeIndexIfAqueduct( areaInfo, index, 119 );
+    }
+    break;
+    case 4: // South
+    {
+      index = 103;
+      _changeIndexIfAqueduct( areaInfo, index, 120 );
+    }
+    break;
+    case 8: // West
+    {
+      index = 104;
+      _changeIndexIfAqueduct( areaInfo, index, 119 );
+    }
+    break;
     case 3: index = 97;  break; // North+East
-    case 5: index = 93+2*((p.i() + p.j()) % 2); break;  // 93/95 // North+South
+    case 5: // 93/95 // North+South
+    {
+      index = 93+2*((p.i() + p.j()) % 2);
+      _changeIndexIfAqueduct( areaInfo, index, 120);
+    }
+    break;
     case 6: index = 98;  break; // East+South
     case 7: index = 106; break; // North+East+South
     case 9: index = 100; break; // North+West
-    case 10: index = 94+2*((p.i() + p.j())%2); break;  // 94/96 // East+West
+    case 10: // 94/96 // East+West
+    {
+      index = 94+2*((p.i() + p.j())%2);
+      _changeIndexIfAqueduct( areaInfo, index, 119);
+    }
+    break;
     case 11: index = 109; break; // North+East+West
     case 12: index = 99; break;  // South+West
     case 13: index = 108; break; // North+South+West
@@ -171,40 +221,47 @@ const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
     case 10: index = 45+2*((p.i() + p.j())%2); break;  // 94/96 // East+West
     case 12: index = 50; break;  // South+West
 
-    case 7:
-    case 11:
-    case 13:
-    case 14:
-    case 15:
-      index = 78 + (p.i() + p.j()) % 14;
-    break;
+    case 7: index = 57; break;
+    case 11: index = 60; break;
+    case 13: index = 59; break;
+    case 14: index = 58; break;
+      //index = 78 + (p.i() + p.j()) % 14; break;
+
+    case 15: index = 61; break;
     }
   }
 
-  return Picture::load( ResourceGroup::road, index);
+  static Picture ret;
+  ret.load( ResourceGroup::road, index);
+
+  return ret;
+}
+
+void Road::_changeIndexIfAqueduct(  const city::AreaInfo& areaInfo, int& m, int index ) const
+{
+  OverlayPtr ov = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
+  if( ov.is<Aqueduct>() )
+    m = index;
 }
 
 bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
 void Road::updatePicture()
 {
-  CityAreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
+  city::AreaInfo info( _city(), _masterTile() ? _masterTile()->epos() : TilePos() );
   setPicture( picture( info ) );
 }
-bool Road::isNeedRoadAccess() const {  return false; }
+bool Road::isNeedRoad() const {  return false; }
 
 void Road::destroy()
 {
-  if( state( lockTerrain ) > 0 )
+  if( state( pr::lockTerrain ) > 0 )
     return;
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
 
-  foreach( it, tiles )
-  {
-    (*it)->setFlag( Tile::tlRoad, false );
-  }
+  for( auto it : tiles )
+    it->setFlag( Tile::tlRoad, false );
 }
 
 void Road::burn() {}
@@ -220,9 +277,9 @@ void Road::appendPaved( int value )
   }
 }
 
-void Road::computeAccessRoads()
+void Road::computeRoadside()
 {
-  Construction::computeAccessRoads();
+  Construction::computeRoadside();
   updatePicture();
 }
 
@@ -233,7 +290,6 @@ void Road::changeDirection(Tile *masterTile, Direction direction)
 }
 
 int Road::pavedValue() const {  return _paved; }
-Renderer::PassQueue Road::passQueue() const{  return roadPassQueue;}
 
 void Road::save(VariantMap& stream) const
 {
@@ -250,6 +306,8 @@ void Road::load(const VariantMap& stream)
   updatePicture();
 }
 
+REGISTER_PARAM_H( errorBuild )
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
@@ -257,59 +315,66 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(objects::plaza);
-  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
-  setSize( Size( 1 ) );
+  setType(object::plaza);
+  _picture().load( ResourceGroup::entertainment, 102 ); // 102 ~ 107
+  setSize( Size::square( 1 ) );
 }
 
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool Plaza::canBuild(const CityAreaInfo& areaInfo) const
+bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
-  foreach( tile, area )
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
+  for( auto tile : area )
   {
-    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
+    object::Type type = object::typeOrDefault( tile->overlay() );
+    is_constructible &= (type == object::road);
   }
+
+  const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
 
   return is_constructible;
 }
 
-const Picture& Plaza::picture(const CityAreaInfo& areaInfo) const
+std::string Plaza::errorDesc() const
+{
+  if( state( pr::errorBuild ) )
+    return "##need_road_for_build##";
+
+  return "";
+}
+
+const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
 }
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const CityAreaInfo& info )
+bool Plaza::build( const city::AreaInfo& areainfo )
 {
-  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
+  RoadPtr road = areainfo.city->getOverlay( areainfo.pos ).as<Road>();
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      PlazaPtr plaza = ptr_cast<Plaza>( (*tile)->overlay() );
-      if( plaza.isValid() )
-      {
-        plaza->updatePicture();
-      }
-    }
+    auto plazas = areainfo.city->tilemap()
+                               .getNeighbors( pos(), Tilemap::AllNeighbors)
+                               .overlays<Plaza>();
+    for( auto plaza : plazas )
+      plaza->updatePicture();
   }
 
   return true;
@@ -328,48 +393,45 @@ void Plaza::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 const Picture& Plaza::picture() const
 {
-  return tile().masterTile()
-           ? Construction::picture()
-           : Picture::load( ResourceGroup::entertaiment, 102);
+  return Construction::picture();
 }
 
 void Plaza::updatePicture()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size::square(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  for( auto tile : nearTiles )
   {
-    PlazaPtr garden = ptr_cast<Plaza>( (*tile)->overlay() );
+    PlazaPtr garden = tile->overlay<Plaza>();
     canGrow2squarePlaza &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
   if( canGrow2squarePlaza )
   {
     nearTiles.remove( pos() );
-    foreach( tile, nearTiles )
+    for( auto tile : nearTiles )
     {
-      if( (*tile)->overlay().isValid() )
+      if( tile->overlay().isValid() )
       {
-        (*tile)->overlay()->deleteLater();
+        tile->overlay()->deleteLater();
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
-    setSize( 2 );
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::off );
+    setSize( Size::square( 2 ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

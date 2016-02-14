@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
 #define _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
@@ -25,29 +25,65 @@
 namespace  gui
 {
 
-class DialogBox : public Window
+class Dialogbox : public Window
 {
 public:
-  enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,
-         btnOkCancel=btnOk|btnCancel,
+  enum { btnYes=0x1, btnNo=0x2, btnYesNo=btnYes|btnNo,
          btnNever=0x10 };
-  DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
-             const std::string& text, int buttons );
 
-  bool onEvent(const NEvent& event);
+  Dialogbox( Widget* parent );
+  Dialogbox( Ui* ui, const Rect& rectangle, const std::string& title,
+             const std::string& text, int buttons);
 
-  void draw( gfx::Engine& painter );
+  virtual bool onEvent(const NEvent& event);
+  virtual void setupUI(const VariantMap &ui);
+  virtual void draw(gfx::Engine& painter);
+  virtual void setTitle(const std::string& title);
+  virtual void setText(const std::string &text);
+  void setNeverValue(bool value);
+  void setButtons(int buttons);
 
 signals public:  
   Signal1<int>& onResult();
-  Signal0<>& onOk();
-  Signal0<>& onCancel();
-  Signal0<> &onNever();
+  Signal0<>& onYes();
+  Signal1<Widget*>& onYesEx();
+  Signal0<>& onNo();
+  Signal1<Widget*>& onNoEx();
+  Signal1<bool>& onNever();
+  Signal2<Widget*,bool>& onNeverEx();
 
 private:
+  void _initSimpleDialog();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui,
+                      const std::string& title,
+                      const std::string& text,
+                      bool showNever=false);
+
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text);
+
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callback);
+
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callbackOk,
+                      Callback callbackCancel);
+
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //_CAESARIA_GUI_DIALOGBOX_INCLUDE_H_

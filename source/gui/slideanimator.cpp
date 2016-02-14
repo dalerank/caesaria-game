@@ -24,37 +24,37 @@ SlideAnimator::SlideAnimator(Widget* node,
 {
 	_d->mode = mode;
 	_d->invert = false;
-    _d->checkMode( this );
+  _d->checkMode( this );
 }
 
 void SlideAnimator::Impl::checkMode( SlideAnimator* anim )
 {
-    if( anim->parent() )
+  if( anim->parent() )
+  {
+    Rect parentRect = anim->parent()->relativeRect();
+    anim->setStopPos( parentRect.lefttop() );
+    Rect hRect = anim->parent()->parent()
+                                ? anim->parent()->parent()->relativeRect()
+                                : Rect( Point( 0, 0 ), anim->ui()->rootWidget()->size() );
+    switch( mode )
     {
-        Rect parentRect = anim->parent()->relativeRect();
-        anim->setStopPos( parentRect.UpperLeftCorner );
-        Rect hRect = anim->parent()->parent()
-                                    ? anim->parent()->parent()->relativeRect()
-                                    : Rect( Point( 0, 0 ), anim->ui()->rootWidget()->size() );
-        switch( mode )
-        {
-        case SlideAnimator::SlideTop: anim->setStopPos( Point( anim->getStopPos().x(), -parentRect.height() ) ); break;
-        case SlideAnimator::SlideBottom: anim->setStopPos( Point( anim->getStopPos().x(), hRect.LowerRightCorner.y() ) ); break;
-        case SlideAnimator::SlideLeft: anim->setStopPos( Point( - parentRect.width(), anim->getStopPos().y() ) ); break;
-        case SlideAnimator::SlideRight: anim->setStopPos( Point( hRect.LowerRightCorner.x(), anim->getStopPos().y() ) ); break;
-        case SlideAnimator::SlideTopLeft: anim->setStopPos( Point( -parentRect.height(), -parentRect.width() ) ); break;
-        case SlideAnimator::SlideTopRight: anim->setStopPos( Point( -parentRect.height(), hRect.LowerRightCorner.x() ) ); break;
-        case SlideAnimator::SlideBottomLeft: anim->setStopPos( Point( -parentRect.width(), hRect.LowerRightCorner.y() ) ); break;
-        case SlideAnimator::SlideBottomRight: anim->setStopPos( Point( hRect.LowerRightCorner.x(), hRect.LowerRightCorner.y() ) ); break;
-        }
+    case SlideAnimator::SlideTop: anim->setStopPos( Point( anim->getStopPos().x(), -parentRect.height() ) ); break;
+    case SlideAnimator::SlideBottom: anim->setStopPos( Point( anim->getStopPos().x(), hRect.bottom() ) ); break;
+    case SlideAnimator::SlideLeft: anim->setStopPos( Point( - parentRect.width(), anim->getStopPos().y() ) ); break;
+    case SlideAnimator::SlideRight: anim->setStopPos( Point( hRect.right(), anim->getStopPos().y() ) ); break;
+    case SlideAnimator::SlideTopLeft: anim->setStopPos( Point( -parentRect.height(), -parentRect.width() ) ); break;
+    case SlideAnimator::SlideTopRight: anim->setStopPos( Point( -parentRect.height(), hRect.right() ) ); break;
+    case SlideAnimator::SlideBottomLeft: anim->setStopPos( Point( -parentRect.width(), hRect.bottom() ) ); break;
+    case SlideAnimator::SlideBottomRight: anim->setStopPos( Point( hRect.right(), hRect.bottom() ) ); break;
     }
+  }
 
-    if( invert )
-    {
-        Point tmp = anim->getStartPos();
-        anim->setStartPos( anim->getStopPos() );
-        anim->setStopPos( tmp );
-    }
+  if( invert )
+  {
+    Point tmp = anim->getStartPos();
+    anim->setStartPos( anim->getStopPos() );
+    anim->setStopPos( tmp );
+  }
 }
 
 SlideAnimator::~SlideAnimator(void)

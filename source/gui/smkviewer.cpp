@@ -21,6 +21,7 @@
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "widget_factory.hpp"
 
 #include <stdio.h>
 
@@ -30,18 +31,31 @@ using namespace gfx;
 namespace gui
 {
 
+REGISTER_CLASS_IN_WIDGETFACTORY(SmkViewer)
+
 class SmkViewer::Impl
 {
 public:
   SmkViewer::Mode mode;
-  PictureRef background;
+  Picture background;
   bool needUpdateTexture;
   unsigned int lastFrameTime;
-  smk smkfile;
 
-  unsigned long smkfileWidth, smkfileHeight;
-  unsigned long frameCount, currentFrame;
+  struct {
+    smk source = nullptr;
 
+    struct {
+      unsigned long width;
+      unsigned long height;
+    } size;
+
+    struct {
+      unsigned long count;
+      unsigned long current;
+    } frame;
+
+    unsigned char* image = nullptr;
+  } smkf;
   double usecsInFrame;
 
   /* arrays for audio track metadata */
@@ -49,7 +63,6 @@ public:
   unsigned long   a_rate[7];
 
   //unsigned char *palette_data;
-  unsigned char* image_data;
   unsigned char* pallete;
 
   int colors[256];
@@ -57,8 +70,6 @@ public:
   void updateTexture(gfx::Engine& painter, const Size& size );
   void updatePallete();
   void nextFrame();
-
-  Impl() : smkfile( 0 ), image_data( 0 ) {}
 
 public signals:
   Signal0<> onFinishSignal;
@@ -73,7 +84,7 @@ SmkViewer::SmkViewer( Widget* parent )
 
 void SmkViewer::beforeDraw( gfx::Engine& painter )
 {
-  if( isFocused() && _d->smkfile != NULL && DateTime::elapsedTime() - _d->lastFrameTime > (_d->usecsInFrame / 1000) )
+  if( isFocused() && _d->smkf.source != nullptr && DateTime::elapsedTime() - _d->lastFrameTime > (_d->usecsInFrame / 1000) )
   {
     _d->lastFrameTime = DateTime::elapsedTime();
     _d->needUpdateTexture = true;
@@ -82,7 +93,7 @@ void SmkViewer::beforeDraw( gfx::Engine& painter )
 
     _d->updatePallete();
     /* Retrieve the palette and image */
-    _d->image_data = smk_get_video( _d->smkfile );
+    _d->smkf.image = smk_get_video( _d->smkf.source );
   }
 
   if( _d->needUpdateTexture )
@@ -102,30 +113,30 @@ void SmkViewer::setFilename(const vfs::Path& path)
   if( !rpath.exist() )
     return;
 
-  _d->smkfile = smk_open_file( rpath.toString().c_str(), SMK_MODE_MEMORY );
-  if( _d->smkfile != NULL )
+  _d->smkf.source = smk_open_file( rpath.toCString(), SMK_MODE_MEMORY );
+  if( _d->smkf.source != nullptr )
   {
-    smk_info_all( _d->smkfile, &_d->currentFrame, &_d->frameCount, &_d->usecsInFrame );
-    smk_info_video( _d->smkfile, &_d->smkfileWidth, &_d->smkfileHeight, NULL );
-    smk_info_audio( _d->smkfile, &_d->a_trackmask, _d->a_channels, _d->a_depth, _d->a_rate);
+    smk_info_all( _d->smkf.source, &_d->smkf.frame.current, &_d->smkf.frame.count, &_d->usecsInFrame );
+    smk_info_video( _d->smkf.source, &_d->smkf.size.width, &_d->smkf.size.height, NULL );
+    smk_info_audio( _d->smkf.source, &_d->a_trackmask, _d->a_channels, _d->a_depth, _d->a_rate);
 
-    Logger::warning( "Opened file %s\nWidth: %d\nHeight: %d\nFrames: %d\nFPS: %lf\n", path.toString().c_str(),
-                     _d->smkfileWidth, _d->smkfileHeight, _d->frameCount, 1000000.0 / _d->usecsInFrame );
+    Logger::warning( "Opened file {0}\nWidth: {1}\nHeight: {2}\nFrames: {3}\nFPS: {4}\n", path.toString(),
+                     _d->smkf.size.width, _d->smkf.size.height, _d->smkf.frame.count, 1000000.0 / _d->usecsInFrame );
 
-    smk_enable_video( _d->smkfile, 1 );
+    smk_enable_video( _d->smkf.source, 1 );
 
     /* process first frame */
-    smk_first( _d->smkfile );
+    smk_first( _d->smkf.source );
     _d->updatePallete();
-    _d->image_data = smk_get_video(_d->smkfile);
+    _d->smkf.image = smk_get_video(_d->smkf.source);
 
     _d->lastFrameTime = DateTime::elapsedTime();
     _d->needUpdateTexture = true;
 
     if( _d->mode == SmkViewer::video )
     {
-      setWidth( _d->smkfileWidth );
-      setHeight( _d->smkfileHeight );
+      setWidth( _d->smkf.size.width );
+      setHeight( _d->smkf.size.height );
     }
   }
 }
@@ -138,7 +149,7 @@ SmkViewer::SmkViewer(Widget* parent, const Rect& rectangle, Mode mode)
   _d->mode = mode;
   _d->needUpdateTexture = true;
   #ifdef DEBUG
-    setDebugName( CAESARIA_STR_EXT(SmkViewer) );
+    setDebugName( TEXT(SmkViewer) );
   #endif
 }
 
@@ -146,41 +157,42 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 {
   Size imageSize = size;
 
-  if( background && background->size() != imageSize )
+  if( background.isValid() && background.size() != imageSize )
   {
-    background.reset();
+    background = Picture();
   }
 
-  if( background.isNull() )
+  if( !background.isValid() )
   {
-    background.reset( Picture::create( imageSize, 0, true ) );
+    background = Picture( imageSize, 0, true );
   }
 
-  unsigned int* pixels = background->lock();
-  unsigned int bw = background->width();
+  unsigned int* pixels = background.lock();
+  unsigned int bw = background.width();
 
-  Size safe( math::min<unsigned int>( background->width(), smkfileWidth ),
-                 math::min<unsigned int>( background->height(), smkfileHeight ) );
-  if( smkfile )
+  Size safe( math::min<unsigned int>( background.width(), smkf.size.width ),
+             math::min<unsigned int>( background.height(), smkf.size.height ) );
+
+  if( smkf.source )
   {
     for( int i = safe.height() - 1; i >= 0; i--)
     {
       for( int j = 0; j < safe.width(); j++ )
       {
-        unsigned char index = image_data[i * smkfileWidth + j];
+        unsigned char index = smkf.image[i * smkf.size.width + j];
         unsigned int* bufp32;
         bufp32 = pixels + i * bw + j;
         *bufp32 = colors[ index ];
       }
     }
   }
-  background->unlock();
-  background->update();
+  background.unlock();
+  background.update();
 }
 
 void SmkViewer::Impl::updatePallete()
 {
-  pallete = smk_get_palette( smkfile );
+  pallete = smk_get_palette( smkf.source );
 
   for( int i = 0; i < 256; i++)
   {
@@ -195,39 +207,28 @@ void SmkViewer::Impl::updatePallete()
 void SmkViewer::Impl::nextFrame()
 {
   /* get frame number */
-  if( currentFrame == frameCount )
+  if( smkf.frame.current == smkf.frame.count )
     return;
 
-  smk_info_all(smkfile, &currentFrame, NULL, NULL);
+  smk_info_all( smkf.source, &smkf.frame.current, NULL, NULL);
 
-  if( currentFrame+1 == frameCount )
+  if( smkf.frame.current+1 == smkf.frame.count )
   {
-    currentFrame++;
+    smkf.frame.current++;
     emit onFinishSignal();
   }
 
-  Logger::warning( " -> Frame %d...", currentFrame );
+  Logger::warning( " -> Frame {}...", smkf.frame.current );
 
-  /* Get the audio chunk for this frame from track 0 */
-  /* printf("Audio info for track 0: bit-depth %u, channels %u, rate %u\n",
-    a_depth[0],
-  a_channels[0],
-  a_rate[0] );
-
-  audio_data = smk_get_audio(s,0);
-
-  printf(" done.\n");
-   */
-  /* Advance to next frame */
-  smk_next(smkfile);
+  smk_next( smkf.source );
 }
 
 //! destructor
 SmkViewer::~SmkViewer()
 {
-  if( _d->smkfile )
+  if( _d->smkf.source )
   {
-    smk_close( _d->smkfile );
+    smk_close( _d->smkf.source );
   }
 }
 
@@ -238,14 +239,14 @@ void SmkViewer::draw(gfx::Engine& painter )
     return;
 
   // draw background
-  if( _d->background )
+  if( _d->background.isValid() )
   {
-    painter.draw( *_d->background, _d->background->originRect(), absoluteRect(), &absoluteClippingRectRef() );
+    painter.draw( _d->background, _d->background.originRect(), absoluteRect(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
 }
 
-void SmkViewer::_resizeEvent() {  _d->needUpdateTexture = true;}
+void SmkViewer::_finalizeResize() { _d->needUpdateTexture = true;}
 
 }//end namespace gui

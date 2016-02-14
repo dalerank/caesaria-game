@@ -18,14 +18,14 @@
 #include "tile.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
-#include "helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "game/gamedate.hpp"
-
-using namespace constants;
 
 namespace gfx
 {
@@ -35,16 +35,7 @@ namespace
   static Animation invalidAnimation;
 }
 
-void Tile::Terrain::reset()
-{
-  clearFlags();
-  params[ Tile::pDesirability ] = 0;
-  params[ Tile::pWellWater ] = 0;
-  params[ Tile::pFountainWater ] = 0;
-  params[ Tile::pReservoirWater ] = 0;
-}
-
-void Tile::Terrain::clearFlags()
+void Tile::Terrain::clear()
 {
   water      = false;
   rock       = false;
@@ -63,23 +54,18 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
   _master = NULL;
-  _wasDrawn = false;
+  _rendered = false;
   _overlay = NULL;
-  _terrain.reset();
+  _terrain.clear();
   _terrain.imgid = 0;
   _height = 0;
   setEPos( pos );
 }
 
-int Tile::i() const    {   return _pos.i();   }
-int Tile::j() const    {   return _pos.j();   }
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
-void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
-
-const Picture& Tile::picture() const {  return _picture; }
-Tile* Tile::masterTile() const{  return _master;}
-void Tile::setMasterTile(Tile* master){  _master = master; }
+void Tile::setPicture(const std::string& group, const int index){ _picture.load( group, index );}
+void Tile::setPicture(const std::string& name){ _picture.load( name );}
+void Tile::setMaster(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
 {
@@ -94,23 +80,23 @@ bool Tile::isFlat() const
 }
 
 
-Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * tilemap::cellSize().height() + tilemap::cellCenter(); }
-bool Tile::isMasterTile() const{  return (_master == this);}
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * config::tilemap.cell.size().height() + config::tilemap.cell.center(); }
+bool Tile::isMaster() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
   _epos = epos;
-  _mappos = Point( tilemap::cellSize().width() * ( _epos.i() + _epos.j() ),
-                   tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
+  _mappos = Point( config::tilemap.cell.size().width() * ( _epos.i() + _epos.j() ),
+                   config::tilemap.cell.size().height() * ( _epos.i() - _epos.j() ) - _height * config::tilemap.cell.size().height() );
 }
 
-void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, Direction newDirection)
 {
   if( masterTile && _overlay.isValid() )
   {
     _overlay->changeDirection( masterTile, newDirection);
   }
 
-  if( _terrain.coast )
+  if( _terrain.coast || _terrain.water )
   {
     int iid = tile::turnCoastTile( _terrain.imgid, newDirection );
 
@@ -129,8 +115,8 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation& Tile::animation() const{  return _overlay.isValid() ? invalidAnimation : _animation; }
-void Tile::setAnimation(const Animation& animation){ _animation = animation;}
+const Animation& Tile::animation() const{ return _animation; }
+void Tile::setAnimation(const Animation& animation){ _animation = animation; }
 
 bool Tile::isWalkable( bool alllands ) const
 {
@@ -165,12 +151,12 @@ bool Tile::getFlag(Tile::Type type) const
   {
     return _overlay.isValid()
               ? _overlay->isDestructible()
-              : _terrain.tree || _terrain.road;
+              : !(_terrain.rock || _terrain.water);
   }
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;
   case tlWall: return _terrain.wall;
-  case wasDrawn: return _wasDrawn;
+  case isRendered: return _rendered;
   case tlDeepWater: return _terrain.deepWater;
   default: break;
   }
@@ -191,25 +177,29 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
   case tlRubble: _terrain.rubble = value; break;
-  case clearAll: _terrain.clearFlags(); break;
+  case clearAll:
+  {
+    _terrain.clear();
+    _params.clear();
+  }
+  break;
   case tlWall: _terrain.wall = value; break;
-  case wasDrawn: _wasDrawn = value; break;
+  case isRendered: _rendered = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
   }
 }
 
-TileOverlayPtr Tile::overlay() const{ return _overlay;}
-void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
-void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
-void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
-void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }
+OverlayPtr Tile::overlay() const  { return _overlay;}
+void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
+void Tile::setImgId(ImgID id){  _terrain.imgid = id;}
+void Tile::setParam(Param param, int value) { _params[ param ] = value; }
+void Tile::changeParam(Param param, int value) { _params[ param ] += value; }
 
 int Tile::param( Param param) const
 {
-  std::map<Param, int>::const_iterator it = _terrain.params.find( param );
-  return it != _terrain.params.end() ? it->second : 0;
+  auto it = _params.find( param );
+  return it != _params.end() ? it->second : 0;
 }
 
 }//end namespace gfx

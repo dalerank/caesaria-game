@@ -28,13 +28,26 @@ public:
 
   religion::DivinityPtr divinity() const;
 
-  virtual unsigned int parishionerNumber() const = 0;
+  virtual unsigned int currentVisitors() const;
   virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
+  virtual void initialize(const object::Info& mdata);
+  virtual bool build(const city::AreaInfo &info);
+  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
 protected:
-  Temple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
+  Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
-  virtual unsigned int walkerDistance() const;
+  virtual void _updateBuffs();
+  virtual void _changeAnimationState( bool value );
+  virtual void _updateAnimation( const unsigned long time );
+
+  int _relationMultiplier() const;
+  void _setBuffValue( float value );
+  float _buffValue() const;
+  DateTime _lastBuffDate() const;
+  gfx::Pictures& _ground();
+  const gfx::Pictures& _ground() const;
 
 private:
   class Impl;
@@ -44,23 +57,27 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
-  virtual unsigned int parishionerNumber() const;
+  SmallTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
+  virtual unsigned int currentVisitors() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
-  virtual unsigned int parishionerNumber() const;
+  BigTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
+  virtual unsigned int currentVisitors() const;
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 class TempleCeres : public SmallTemple
 {
 public:
   TempleCeres();
+
+protected:
+  virtual void _updateBuffs();
+  virtual void initialize(const object::Info& mdata);
 };
 
 class TempleNeptune : public SmallTemple
@@ -84,6 +101,7 @@ public:
 class TempleMercury : public SmallTemple
 {
 public:
+  virtual void _updateBuffs();
   TempleMercury();
 };
 
@@ -121,9 +139,9 @@ class TempleOracle : public BigTemple
 {
 public:
   TempleOracle();
-  virtual unsigned int parishionerNumber() const;
+  virtual unsigned int currentVisitors() const;
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
 };
 
 

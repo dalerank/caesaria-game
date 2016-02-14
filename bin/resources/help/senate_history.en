@@ -1,0 +1,14 @@
+{  
+ title : "##senate##"
+ sound : "fanfare"
+ text  : "Rome's Senate grew from Romulus' advisory board of 100 elders to be the Republic's main body of governance. The 300 senators proposed legislation, controlled state finances and decided questions of war and foreign policy, and were the upper class of Roman society. The waning days of the almost 500-year-old Republic saw, in response to decades of civil war, the rise of the office of 'dictator' and erosion of the Senate's power. Julius Caesar's acceptance of the dictatorship for life fatally weakened the Senate and cleared the way for the establishment of an Emperor. Although the Senate continued to exist, and republican sentiment lived on, it was forever subordinate to the Emperor's will.\n The Senate was housed in the Curia Hostilia, which dated back to the kingdom era, until it burned down and was rebuilt as the Curia Julia (named for Julius Caesar; also called the Basilica Julia), in 29 BC."
+ uri : {
+  "amphitheater" : "amphitheater"
+	"amphitheaters" : "amphitheater"
+	"shops" : "shop"
+	"temples" : "temple"
+	"statuary" : "statuary"
+	"Colosseum" : "colosseum"
+	"hippodromes" : "hippodrome"
+	}
+}

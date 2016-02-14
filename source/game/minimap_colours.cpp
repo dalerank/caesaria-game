@@ -23,7 +23,7 @@ namespace constants
 namespace minimap
 {
 
-Colors::Colors(ClimateType climate) {
+Colors::Colors(const ClimateType climate) {
 	if (climate == game::climate::central)
 	{
 		int colours[][8] = {
@@ -38,7 +38,7 @@ Colors::Colors(ClimateType climate) {
 			{0x31417B, 0x314173, 0x314173, 0x39497B}, // water 2
 			{0xD6BA63, 0x948A39, 0xD6BA63, 0x848231}, // fertile 1
 			{0x9C8A39, 0xD6BA63, 0x9C9239, 0xADA24A}, // fertile 2
-			{0x736963, 0x4A3021}, // road
+      {0xF4A460, 0xF4A460}, // road
 			{0xD6D3C6, 0xF7F3DE}, // wall
 			{0x84BAFF, 0x5282BD}, // aqua buildings
 			{0xFFA273, 0xEF824A, 0xFFB28C, 0xD65110}, // housing
@@ -67,7 +67,7 @@ Colors::Colors(ClimateType climate) {
 			{0x31417B, 0x314173, 0x314173, 0x39497B}, // water 2
 			{0x427118, 0xB5AA4A, 0x8C8A39, 0x527131}, // fertile 1
 			{0x8C9242, 0x738A39, 0x6B7929, 0x5A8242}, // fertile 2
-			{0x736963, 0x4A3021}, // road
+      {0xF4A460, 0xF4A460}, // road
 			{0xD6D3C6, 0xF7F3DE}, // wall
 			{0x84BAFF, 0x5282BD}, // aqua buildings
 			{0xFFA273, 0xEF824A, 0xFFB28C, 0xD65110}, // housing
@@ -114,10 +114,7 @@ Colors::Colors(ClimateType climate) {
 	}
 }
 
-int Colors::colour(int type, int number)
-{
-	return map[type][number];
-}
+
 
 
 }//end namespace minimap

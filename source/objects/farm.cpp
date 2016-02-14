@@ -18,10 +18,10 @@
 #include "farm.hpp"
 #include "core/position.hpp"
 #include "core/exception.hpp"
+#include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
-#include "city/helper.hpp"
-#include "good/goodhelper.hpp"
+#include "good/stock.hpp"
+#include "good/helper.hpp"
 #include "city/city.hpp"
 #include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
@@ -29,108 +29,202 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "walker/locust.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
+#include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
+#include "events/clearland.hpp"
+#include "objects_factory.hpp"
+#include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
-class FarmTile
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm,       FarmFruit    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm,     FarmWheat    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard,         FarmGrape    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm,      FarmMeat     )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm,     FarmOlive    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
+
+class FarmTile : public Construction
 {
 public:
-  FarmTile(const good::Type outGood, const TilePos& pos );
-  virtual ~FarmTile();
-  void computePicture(const int percent);
+  FarmTile() : Construction( object::farmtile, Size(1,1) ) {}
+  FarmTile(const good::Product outGood, const TilePos& farmpos);
+  virtual ~FarmTile() {}
   Picture& getPicture();
+  virtual void initTerrain(gfx::Tile&) {}
+  virtual bool isFlat() const { return false; }
+  virtual bool build(const city::AreaInfo &info);
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+  static Picture computePicture( const good::Product outGood, const int percent);
 
 private:
-  TilePos _pos;
-  Picture _picture;
-  Animation _animation;
+  TilePos _farmpos;
 };
 
-FarmTile::FarmTile(const good::Type outGood, const TilePos& pos )
-{
-  _pos = pos;
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
+FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
+ : Construction( object::farmtile, Size(1,1) )
+{
+  _farmpos = farmpos;
+  setPicture( computePicture( outGood, 0 ) );
+}
+
+Picture FarmTile::computePicture( const good::Product outGood, const int percent)
+{
   int picIdx = 0;
-  switch (outGood)
+  int sequenceSize = 5;
+
+  std::map<good::Product, int> good2pics;
+  good2pics[ good::wheat     ] = 13;
+  good2pics[ good::vegetable ] = 18;
+  good2pics[ good::fruit     ] = 23;
+  good2pics[ good::olive     ] = 28;
+  good2pics[ good::grape     ] = 33;
+  good2pics[ good::meat      ] = 38;
+
+  auto rIt = good2pics.find( outGood );
+  if( rIt != good2pics.end() )
   {
-  case good::wheat: picIdx = 13; break;
-  case good::vegetable: picIdx = 18; break;
-  case good::fruit: picIdx = 23; break;
-  case good::olive: picIdx = 28; break;
-  case good::grape: picIdx = 33; break;
-  case good::meat: picIdx = 38; break;
-  default:
+    picIdx = rIt->second;
+  }
+  else
+  {
     Logger::warning( "Unexpected farmType in farm" + good::Helper::name( outGood ) );
-    _CAESARIA_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 
-  _animation.load( ResourceGroup::commerce, picIdx, 5);
-  computePicture(0);
+  picIdx += math::clamp<int>( (percent * sequenceSize) / 100, 0, sequenceSize-1);
+  return Picture( ResourceGroup::commerce, picIdx );
 }
 
-void FarmTile::computePicture(const int percent)
+bool FarmTile::build(const city::AreaInfo &info)
 {
-  Pictures& pictures = _animation.frames();
-
-  int picIdx = (percent * (pictures.size()-1)) / 100;
-  _picture = pictures[picIdx];
-  _picture.addOffset( tile::tilepos2screen( _pos ));
+  return Construction::build( info );
 }
 
-Picture& FarmTile::getPicture() {  return _picture; }
-FarmTile::~FarmTile() {}
+void FarmTile::save(VariantMap &stream) const
+{
+  Construction::save( stream );
+  VARIANT_SAVE_ANY( stream, _farmpos )
+}
+
+void FarmTile::load(const VariantMap &stream)
+{
+  Construction::load( stream );
+  VARIANT_LOAD_ANY( _farmpos, stream )
+}
 
 class Farm::Impl
 {
 public:
-  typedef std::vector<FarmTile> SubTiles;
-  SubTiles subTiles;
-  Picture pictureBuilding;  // we need to change its offset
+  Locations sublocs;
+  float meadowsCoverage;
+  int lastProgress;
 };
 
-Farm::Farm(const good::Type outGood, const Type type )
-  : Factory( good::none, outGood, type, Size(3) ), _d( new Impl )
+Farm::Farm(const good::Product outGood, const object::Type farmType )
+  : Factory( good::none, outGood, farmType, Size(3,3) ), _d( new Impl )
 {
-  _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
-  _d->pictureBuilding.addOffset( 30, 15);
+  outStock().setCapacity( 100 );
 
-  setPicture( _d->pictureBuilding );
-  outStockRef().setCapacity( 100 );
+  _d->lastProgress = 0;
+  _d->meadowsCoverage = 1.f;
+  _d->sublocs.append(0, 0)
+             .append(2, 2)
+             .append(2, 1)
+             .append(1, 0)
+             .append(2, 0);
 
-  init();
+  Picture mainPic = _getMainPicture();
+  mainPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
+  _fgPictures().push_back( mainPic );  // farm building
+
+  for( auto& pos : _d->sublocs )
+  {
+    Picture tPic = FarmTile::computePicture( outGood, 0 );
+    tPic.addOffset( pos.toScreenCoordinates() );
+    _fgPictures().push_back( tPic );
+  }
+  setPicture( Picture::getInvalid() );
+
+  //init();
 }
 
-bool Farm::canBuild( const CityAreaInfo& areaInfo ) const
+bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool on_meadow = false;
 
-  TilesArray area = areaInfo.city->tilemap().getArea( areaInfo.pos, size() );
-  foreach( tile, area )
-  {
-    on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
-  }
+  TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
+  bool on_meadow = area.count( Tile::tlMeadow ) > 0;
 
-  const_cast< Farm* >( this )->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
+  Farm* non_const_this = const_cast< Farm* >( this );
+  non_const_this->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
 
-  return (is_constructible && on_meadow);  
+  return (is_constructible && on_meadow);
 }
 
+void Farm::burn()
+{
+  Factory::burn();
+  for( auto& pos : _d->sublocs )
+  {
+    OverlayPtr ov = _map().overlay( pos );
+    if( ov.isValid() )
+      ov->burn();
+  }
+}
+
+void Farm::collapse()
+{
+  Factory::collapse();
+  for( auto& pos : _d->sublocs )
+  {
+    OverlayPtr ov = _map().overlay( pos );
+    if( ov.isValid() )
+      ov->collapse();
+  }
+}
+
+void Farm::destroy()
+{
+  for( auto& pos : _d->sublocs )
+  {
+    OverlayPtr ov = _map().overlay( pos );
+    if( ov.isValid() && ov->type() == object::farmtile )
+    {
+      events::dispatch<ClearTile>( ov->pos() );
+    }
+  }
+
+  Factory::destroy();
+}
+
+math::Percent Farm::productivity() const
+{
+  return Factory::productivity() * _d->meadowsCoverage;
+}
+
+void Farm::computeRoadside()
+{
+  Factory::computeRoadside();
+
+  for( auto& pos : _d->sublocs )
+  {
+    auto construction = _map().overlay<Construction>( pos );
+    if( object::typeOrDefault( construction ) == object::farmtile )
+    {
+      _roadside().append( construction->roadside() );
+    }
+  }
+}
 
 void Farm::init()
 {
-  good::Type farmType = produceGoodType();
-  // add subTiles in draw order
-  _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
-  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));
-  _d->subTiles.push_back(FarmTile(farmType, TilePos( 1, 0 ) ));
-  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
-  _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
-
-  _fgPicturesRef().resize(5+1);
+  _fgPictures().resize(5+1);
   computePictures();
 }
 
@@ -139,7 +233,7 @@ void Farm::computePictures()
   int amount = progress();
   int percentTile;
 
-  for (int n = 0; n<5; ++n)
+  for(unsigned int n = 0; n<_d->sublocs.size(); ++n)
   {
     if (amount >= 20)   // 20 = 100 / nbSubTiles
     {
@@ -153,28 +247,54 @@ void Farm::computePictures()
       percentTile = 5 * amount;
       amount = 0;  // for next subTiles
     }
-    _d->subTiles[n].computePicture(percentTile);
-  }
 
-  for (int n = 0; n<5; ++n)
-  {
-    _fgPicturesRef()[n] = _d->subTiles[n].getPicture();
+    auto farmTile = _map().overlay<FarmTile>( _d->sublocs[n] );
+    if( farmTile.isValid() )
+      farmTile->setPicture( FarmTile::computePicture( produce().type(), percentTile ));
   }
+}
+
+void Farm::assignTile(const TilePos &pos)
+{
+  _d->sublocs.addUnique( pos );
 }
 
 void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( game::Date::isDayChanged() && mayWork() && progress() < 100 )
+  if( game::Date::isDayChanged() && mayWork()
+      && _d->lastProgress != progress() )
   {
+    _d->lastProgress = progress();
     computePictures();
   }
 }
 
-bool Farm::build( const CityAreaInfo& info )
+bool Farm::build( const city::AreaInfo& info )
 {
-  Factory::build( info );
+  setSize(Size(2,2));
+  city::AreaInfo upInfo = info;
+  if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
+  {
+    upInfo.pos += TilePos(0,1);
+
+    _buildFarmTiles( info, upInfo.pos );
+  }
+
+  _fgPictures().resize( 0 );
+  Factory::build( upInfo );
+
+  if( info.city->getOption( PlayerCity::farmUseMeadows ) )
+  {
+    auto tiles = area();
+    _d->meadowsCoverage = (float)tiles.count( Tile::tlMeadow ) / (float)tiles.size();
+  }
+
+  if( _d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0 )
+    _d->meadowsCoverage = 1.f;
+
+  setPicture( _getMainPicture() );
   computePictures();
 
   return true;
@@ -183,32 +303,73 @@ bool Farm::build( const CityAreaInfo& info )
 void Farm::save( VariantMap& stream ) const
 {
   Factory::save( stream );
+  stream[ "locations" ] = _d->sublocs.save();
 }
 
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
+  _d->sublocs.load( stream.get( "locations").toList() );
+
+  //el muleta for broken farmtiles
+  if( !_d->sublocs.empty() && _d->sublocs[ 0 ] == TilePos(0,0) )
+    _d->sublocs.clear();
+
+  if( _d->sublocs.empty() )
+  {
+    Logger::warning( "!!! WARNING: Farm [{0},{1}] lost tiles. Will add default locations", pos().i(), pos().j() );
+    _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
+                << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
+    for( auto& location : _d->sublocs )
+      location += pos() - TilePos( 0, 1 );
+  }
 
   computePictures();
 }
 
-unsigned int Farm::getProduceQty() const
+TilesArray Farm::meadows() const
+{
+  return area().select( Tile::tlMeadow );
+}
+
+TilesArray Farm::area() const
+{
+  TilesArray ret;
+  ret.append( Factory::area() );
+  for( const auto& st : _d->sublocs )
+    ret.append( &_map().at( st ) );
+
+  return ret;
+}
+
+unsigned int Farm::produceQty() const
 {
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
+void Farm::initialize(const object::Info& mdata)
+{
+  Factory::initialize( mdata );
+  //picture will be setting on build
+  setPicture( Picture::getInvalid() );
+}
+
+Picture Farm::_getMainPicture()
+{
+  return info().randomPicture()
+               .withFallback( ResourceGroup::commerce, 12 );
+}
+
 Farm::~Farm() {}
 
-FarmWheat::FarmWheat() : Farm(good::wheat, objects::wheatFarm)
+FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 {
 }
 
 std::string FarmWheat::troubleDesc() const
 {
-  city::Helper helper( _city() );
-
-  LocustList lc = helper.find<Locust>( walker::locust, pos() );
-  if( !lc.empty() )
+  int locust_n = _city()->statistic().walkers.count( walker::locust, pos() );
+  if( locust_n > 0 )
   {
     return "##trouble_farm_was_blighted_by_locust##";
   }
@@ -216,7 +377,7 @@ std::string FarmWheat::troubleDesc() const
   return Factory::troubleDesc();
 }
 
-bool FarmWheat::build( const CityAreaInfo& info )
+bool FarmWheat::build( const city::AreaInfo& info )
 {
   bool ret = Farm::build( info );
   if( info.city->climate() == game::climate::central )
@@ -227,22 +388,42 @@ bool FarmWheat::build( const CityAreaInfo& info )
   return ret;
 }
 
-FarmOlive::FarmOlive() : Farm(good::olive, objects::oliveFarm)
+FarmOlive::FarmOlive() : Farm(good::olive, object::olive_farm)
 {
 }
 
-FarmGrape::FarmGrape() : Farm(good::grape, objects::grapeFarm)
+FarmGrape::FarmGrape() : Farm(good::grape, object::vinard)
 {
 }
 
-FarmMeat::FarmMeat() : Farm(good::meat, objects::pigFarm)
+FarmMeat::FarmMeat() : Farm(good::meat, object::meat_farm)
 {
 }
 
-FarmFruit::FarmFruit() : Farm(good::fruit, objects::fruitFarm)
+FarmFruit::FarmFruit() : Farm(good::fruit, object::fig_farm)
 {
 }
 
-FarmVegetable::FarmVegetable() : Farm(good::vegetable, objects::vegetableFarm)
+FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 {
+}
+
+OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
+{
+  OverlayPtr farmtile( new FarmTile( produce().type(), ppos ) );
+  farmtile->drop();
+  farmtile->build( info );
+  info.city->addOverlay( farmtile );
+  return farmtile;
+}
+
+void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
+{
+  for( auto& location : _d->sublocs )
+  {
+    city::AreaInfo tInfo = info;
+    tInfo.pos += location;
+    _buildFarmTile( tInfo, ppos );
+    location = tInfo.pos;
+  }
 }

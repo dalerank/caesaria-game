@@ -19,30 +19,28 @@
 #define __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
 
-class HealthCare : public city::Srvc
+PREDEFINE_CLASS_SMARTPOINTER(HealthCare)
+
+class HealthCare : public Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
   virtual void timeStep( const unsigned int time );
   unsigned int value() const;
   std::string reason() const;
 
-private:
   HealthCare( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<HealthCare> HealthCarePtr;
 
 }//end namespace city
 

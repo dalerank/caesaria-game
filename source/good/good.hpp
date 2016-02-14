@@ -14,80 +14,65 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_GOOD_H_INCLUDE_
 #define _CAESARIA_GOOD_H_INCLUDE_
 
-#include <string>
-#include <vector>
+#include "core/namedtype.hpp"
+#include <set>
 #include <map>
 
-class VariantList;
+class StringArray;
 
 namespace good
 {
 
-typedef enum
-{
-  none=0,
-  wheat, fish, meat, fruit, vegetable,
-  olive, oil,
-  grape, wine,
-  timber, furniture,
-  clay, pottery,
-  iron, weapon,
-  marble,
-  denaries,
-  prettyWine,
-  goodCount
-} Type;
+BEGIN_NAMEDTYPE(Product,none)
+APPEND_NAMEDTYPE_ID(wheat,      1 )
+APPEND_NAMEDTYPE_ID(fish,       2 )
+APPEND_NAMEDTYPE_ID(meat,       3 )
+APPEND_NAMEDTYPE_ID(fruit,      4 )
+APPEND_NAMEDTYPE_ID(vegetable,  5 )
+APPEND_NAMEDTYPE_ID(olive,      6 )
+APPEND_NAMEDTYPE_ID(oil,        7 )
+APPEND_NAMEDTYPE_ID(grape,      8 )
+APPEND_NAMEDTYPE_ID(wine,       9 )
+APPEND_NAMEDTYPE_ID(timber,     10)
+APPEND_NAMEDTYPE_ID(furniture,  11)
+APPEND_NAMEDTYPE_ID(clay,       12)
+APPEND_NAMEDTYPE_ID(pottery,    13)
+APPEND_NAMEDTYPE_ID(iron,       14)
+APPEND_NAMEDTYPE_ID(weapon,     15)
+APPEND_NAMEDTYPE_ID(marble,     16)
+APPEND_NAMEDTYPE_ID(denaries,   17)
+APPEND_NAMEDTYPE_ID(prettyWine, 18)
+END_NAMEDTYPE(Product)
 
-
-class Product
-{
-public:  
-  Type type() const { return _type; }
-
-protected:
-  Type _type;
-};
-
-class Stock : public Product
+class Products : public std::set<Product>
 {
 public:
-  Stock();
-  Stock(const Type &goodType, const int maxQty, const int currentQty=0);
-  ~Stock();
-
-  void setType( Type goodType );
-
-  void setCapacity( const int maxQty );
-  int capacity() const { return _capacity; }
-
-  void setQty( const int qty ) { _qty = qty; }
-  int qty() const { return _qty; }
-
-  int freeQty() const;
-
-  void push( const int qty ) { _qty += qty; }
-  void pop( const int qty );
-
-  /** amount: if -1, amount=stock._currentQty */
-  void append( Stock& stock, const int amount = -1);
-
-  VariantList save() const;
-  void load( const VariantList& options );
-
-  bool empty() const;
-
-protected:
-  int _capacity;
-  int _qty;
+  Products& operator<<(const Product& a);
+  Products& operator<<(const Products& other);
+  bool contain( const Product& type ) const;
+  Products& exclude( const Product& type);
+  Products& exclude( const Products& types);
+  StringArray names() const;
 };
 
-class Store;
+const Product& any();
+const Products& foods();
+inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
+const Products& materials();
+const Products& all();
+const Products& tradable();
 
+Product getMaterial( const Product& pr );
+Product toType( const std::string& typeName );
+
+class Stock;
+class ProductMap;
+class Store;
 }//end namespace good
     
 #endif //_CAESARIA_GOOD_H_INCLUDE_

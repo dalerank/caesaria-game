@@ -39,9 +39,10 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual void killSoldiers(int percent);
+  virtual std::string about(Object::AboutType type);
 
   Mode mode() const;
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
 
   virtual void addSoldiers(RomeSoldierList soldiers);
 
@@ -60,6 +61,6 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace world
 
 #endif //__CAESARIA_WORLD_PLAYERARMY_H_INCLUDED__
