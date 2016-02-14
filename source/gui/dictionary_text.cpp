@@ -376,12 +376,7 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 			richText.offset = linewidth;
       richText.font = font.current;
 			richText.uri = true;
-<<<<<<< HEAD
-      NColor color = DefaultColors::blue;
-=======
       NColor color = ColorList::blue;
-
->>>>>>> master
       if(rText[i+1] == '#')
       {
         std::string colorStr = rText.substr(i+2, i+10);
