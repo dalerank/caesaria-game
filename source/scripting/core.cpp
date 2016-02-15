@@ -113,6 +113,7 @@ void push(js_State *J, const VariantMap& items)
 
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
+inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n), js_tonumber(J, n+1) );}
 
 inline Rect to(js_State *J, int n, Rect)
 {
@@ -338,7 +339,7 @@ void constructor_Session(js_State *J)
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  paramType3 paramValue3 = internal::to( J, 3, paramType2() ); \
+  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
   js_pushundefined(J); \
 }
@@ -374,13 +375,14 @@ void constructor_Session(js_State *J)
 
 #include "window.implementation"
 #include "button.implementation"
-#include "label.implementation"
 #include "session.implementation"
+#include "label.implementation"
 #include "dialogbox.implementation"
 #include "exitbutton.implementation"
 #include "listbox.implementation"
 #include "texturedbutton.implementation"
 #include "image.implementation"
+#include "animators.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -400,13 +402,14 @@ REGISTER_GLOBAL_OBJECT(engine)
 
 #include "window.interface"
 #include "button.interface"
-#include "label.interface"
 #include "session.interface"
+#include "label.interface"
 #include "dialogbox.interface"
 #include "exitbutton.interface"
 #include "listbox.interface"
 #include "texturedbutton.interface"
 #include "image.interface"
+#include "animators.interface"
 
   Core::loadModule(":/system/modules.js");
   {

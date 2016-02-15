@@ -22,6 +22,8 @@
 #include <GameScene>
 #include <GameGfx>
 #include <GameGood>
+#include <GameCore>
+#include "sound/engine.hpp"
 #include "core/osystem.hpp"
 #include "steam.hpp"
 #include <string>
@@ -44,6 +46,24 @@ void Session::continuePlay(int years)
 int Session::lastChangesNum()
 {
   return game::Settings::findLastChanges();
+}
+
+StringArray Session::getCredits()
+{
+  StringArray strs;
+#define _X(a) strs << a;
+#include "core/credits.in"
+#undef _X
+
+  return strs;
+}
+
+void Session::playAudio(const std::string& filename, int volume, const std::string& mode)
+{
+  audio::SoundType type = audio::unknown;
+  if( mode == "theme" )
+    type = audio::theme;
+  audio::Engine::instance().play( filename, volume, type );
 }
 
 int Session::videoModesCount() { return _game->engine()->modes().size(); }

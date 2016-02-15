@@ -39,7 +39,9 @@ public:
   void quitGame();
   void openUrl(const std::string& url);
   int lastChangesNum();
+  StringArray getCredits();
   int videoModesCount();
+  void playAudio(const std::string& filename, int volume, const std::string& mode);
   Size getVideoMode(int index);
   void setResolution(Size size);
   StringArray tradableGoods();

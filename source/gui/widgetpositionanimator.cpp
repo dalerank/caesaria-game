@@ -18,9 +18,12 @@
 
 #include "widgetpositionanimator.hpp"
 #include "core/time.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(PositionAnimator)
 
 class PositionAnimator::Impl
 {
@@ -33,7 +36,11 @@ public:
   PointF speed;
 };
 
-PositionAnimator::PositionAnimator( Widget* node, 
+PositionAnimator::PositionAnimator(Widget* parent)
+  : WidgetAnimator( parent, 0 ), _d( new Impl )
+{}
+
+PositionAnimator::PositionAnimator( Widget* node,
                                     int flags,
                                     const Point& stopPos,
                                     int time )
@@ -105,12 +112,17 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
+void PositionAnimator::setDestination( const Point& p )
+{
+  _d->pos.stop = p;
+  restart();
+}
+
 PositionAnimator::~PositionAnimator( void ) {}
 void PositionAnimator::setStartPos( const Point& p ){	_d->pos.start = p;}
-void PositionAnimator::setStopPos( const Point& p ){	_d->pos.stop = p;}
 Point PositionAnimator::getStartPos() const{	return _d->pos.start;}
 void PositionAnimator::setTime( int time ){	_d->time = time;}
 void PositionAnimator::setSpeed(PointF speed) { _d->speed = speed; }
-Point PositionAnimator::getStopPos() const{	return _d->pos.stop; }
+Point PositionAnimator::destination() const{	return _d->pos.stop; }
 
 }//end namespace gui

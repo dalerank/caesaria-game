@@ -11,7 +11,9 @@ Session.prototype = {
     quitGame     : function() { return this.session.quitGame(); },
     tradableGoods : function() { return this.session.tradableGoods(); },
     getGoodInfo : function(name) { return this.session.getGoodInfo(name); },
+	  playAudio : function(name,volume,type) { return this.session.playAudio(name,volume,type); },
 		
+		get credits ()  { return this.session.getCredits(); },
     get videoModesCount () { return this.session.videoModesCount(); },
     get lastChangesNum () { return this.session.lastChangesNum(); },
     get resolution () { return this.session.getResolution(); }

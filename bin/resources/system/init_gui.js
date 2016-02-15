@@ -6,10 +6,24 @@ Label.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
-  set textAlign (align) { this.widget.setTextAlignment(align.h,align.h); },
+  set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set textColor (color) { this.widget.setColor(color); },
+	set subElelment (value) { this.widget.setSubElement(value); },
 
+  deleteLater : function() { this.widget.deleteLater(); }
+}
+
+function Fade(parent) {
+  this.widget = new _Fade(parent);	
+}
+
+Fade.prototype = {
+  set alpha (value) { this.widget.setAlpha(value); },
+	get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
+	
+	addCloseCode : function(code) { this.widget.addCloseCode(code); },
   deleteLater : function() { this.widget.deleteLater(); }
 }
 
@@ -31,6 +45,16 @@ TexturedButton.prototype = {
   set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set callback (func) { this.widget.onClickedEx(func); },
+}
+
+function PositionAnimator(parent) {
+  this.widget = new _PositionAnimator(parent);
+}
+
+PositionAnimator.prototype = {
+  set destination (point) { this.widget.setDestination(point.x,point.y); },
+	set speed (point) { this.widget.setSpeed(point.x,point.y); },
+	set removeParent (value) { this.widget.setFlag("removeParent", value );}
 }
 
 function Image(parent) {
@@ -159,6 +183,12 @@ Ui.prototype = {
     dialog.buttons = 1;
     return dialog; 
   },
+	
+	addFade : function(value) {
+	  var fade = new Fade(0);
+		fade.alpha = value;
+		return fade;
+	},
 
   addConfirmationDialog : function(title, text) {
     var dialog = new Dialogbox(0);

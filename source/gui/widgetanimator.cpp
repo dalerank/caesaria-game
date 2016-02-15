@@ -17,6 +17,7 @@
 
 #include "widgetanimator.hpp"
 #include "gfx/engine.hpp"
+#include <GameLogger>
 
 namespace gui
 {
@@ -25,11 +26,7 @@ WidgetAnimator::WidgetAnimator( Widget* parent, int flags )
     : Widget( parent, -1, Rect( 0, 0, 1, 1 ) )
 {
   setFlags( flags );
-  setFlag( isActive );
-}
-
-WidgetAnimator::~WidgetAnimator( void )
-{
+  FlagHolder::setFlag( isActive );
 }
 
 void WidgetAnimator::beforeDraw(gfx::Engine& painter )
@@ -45,6 +42,20 @@ void WidgetAnimator::beforeDraw(gfx::Engine& painter )
   }
 
   Widget::beforeDraw( painter );
+}
+
+void WidgetAnimator::setFlag(const std::string& flagname, bool enabled)
+{
+  std::map<std::string,int> flags = { {TEXT(showParent), showParent},
+                                      {TEXT(removeSelf), removeSelf},
+                                      {TEXT(removeParent), removeParent},
+                                      {TEXT(debug), debug},
+                                      {TEXT(isActive), isActive} };
+  auto it = flags.find(flagname);
+  if (it != flags.end())
+    FlagHolder::setFlag(it->second, enabled);
+  else
+    Logger::warning("WARNING !!! WidgetAnimator cant find flag with name " + flagname);
 }
 
 void WidgetAnimator::_afterFinished()

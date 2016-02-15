@@ -84,3 +84,38 @@ function OnLobbyStart()
   btnTranslationPage.callback = function() { g_session.openUrl( "https://docs.google.com/spreadsheets/d/1vpV9B6GLUX5G5z3ftucBFl7pXr-I0QvHPI9vW6K4xlY" ); }
   btnTranslationPage.tooltip = "Help with translation!";
 }
+
+function OnShowCredits()
+{
+	var g_ui = new Ui();
+  var g_session = new Session();
+	g_session.playAudio( "combat_long", 50, "theme" );
+
+	var fade = g_ui.addFade(0xA0); 
+	fade.addCloseCode(0x1B); //escape
+  fade.addCloseCode(0x4);//right mouse button	
+
+	var credits = g_session.credits;
+  for( var i=0; i < credits.length; i++ )
+  {
+    var lb = new Label(fade);
+		lb.geometry = { x:0, y:/*fade.height*/0 + i * 15, w:fade.width, h:15};
+		lb.text = credits[i];
+    lb.textAlign = { h:"center", v:"center" };
+    lb.font = "FONT_2_WHITE";
+		lb.subElement = true;
+		
+    /*var animator = new PositionAnimator(lb);
+		animator.removeParent = true;
+		animator.destination = {x:0, y:-20};
+    animator.speed = {x:0, y:-0.5};*/
+  }
+
+  var btnExit = new Button(fade.widget);
+	btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
+	btnExit.text = "##close##";
+	btnExit.callback = function() { 
+                                                fade.deleteLater();  
+																								g_session.playAudio( "main_menu", 50, "theme" );
+																						 }
+}

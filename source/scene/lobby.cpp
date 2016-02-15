@@ -278,33 +278,7 @@ void Lobby::Impl::handleNewGame()
 
 void Lobby::Impl::showCredits()
 {
-  audio::Engine::instance().play( "combat_long", 50, audio::theme );
-
-  StringArray strs;
-#define _X(a) strs << a;
-#include "core/credits.in"
-#undef _X
- 
-  Size size = ui().vsize();
-  Fade& frame = ui().add<Fade>( 0xA0 );
-  WidgetClosers::insertTo( &frame, KEY_RBUTTON );
-  int h = size.height();
-  for( int i=0; !strs[i].empty(); i++ )
-  {
-    Label& lb = frame.add<Label>( Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
-    lb.setTextAlignment( align::center, align::center );
-    lb.setFont( FONT_2_WHITE );
-    lb.setSubElement( true );
-    auto& animator = lb.add<PositionAnimator>( WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
-    animator.setSpeed( PointF( 0, -0.5 ) );
-  }
-
-  auto& buttonClose = frame.add<PushButton>( Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
-                                             _("##close##") );
-  frame.setFocus();
-
-  CONNECT( &buttonClose, onClicked(), &frame, Label::deleteLater );
-  CONNECT( &buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
+  events::dispatch<events::ScriptFunc>( "OnShowCredits" );
 }
 
 #define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
