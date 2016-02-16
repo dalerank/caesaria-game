@@ -75,7 +75,7 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  List< T > findChildren( bool indepth=false )
+  List< T > findChildren( bool indepth=false ) const
   {
     List< T > ret;
     for( auto child : children() )
