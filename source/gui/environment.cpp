@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+//This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -596,15 +596,9 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
 
     element = standart( rootWidget, hovered.object(), cursor );
     element->addProperty( "tooltip", 1 );
-    element->setGeometry( element->relativeRect() + Point( 1, 1 ) );
-    if( element->screenBottom() > (int)rootWidget.height() ||
-        element->screenLeft() < (int)0 )
-    {
-      Rect geom = element->absoluteRect();
-      geom.constrainTo( rootWidget.absoluteRect() );
-      element->setGeometry( geom );
-      element->setVisible( showTooltips );
-    }
+    element->setGeometry( element->relativeRect() + Point( 2, 5 ) );
+    element->setVisible( showTooltips );
+    lastPos = Point();
   }
 
   if( element.isValid() && element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
@@ -613,7 +607,9 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
 
     if( lastPos != cursor )
     {
-      element->setPosition( cursor + offset );
+      Rect geom = element->absoluteRect();
+      geom.constrainTo( rootWidget.absoluteRect() );
+      element->setGeometry( geom );
     }
 
     // got invisible or removed in the meantime?
