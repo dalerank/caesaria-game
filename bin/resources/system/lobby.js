@@ -98,17 +98,17 @@ function OnShowCredits()
 	var credits = g_session.credits;
   for( var i=0; i < credits.length; i++ )
   {
-    var lb = new Label(fade);
-		lb.geometry = { x:0, y:/*fade.height*/0 + i * 15, w:fade.width, h:15};
+    var lb = new Label(fade.widget);
+		lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
 		lb.text = credits[i];
     lb.textAlign = { h:"center", v:"center" };
     lb.font = "FONT_2_WHITE";
 		lb.subElement = true;
 		
-    /*var animator = new PositionAnimator(lb);
+    var animator = new PositionAnimator(lb.widget);
 		animator.removeParent = true;
 		animator.destination = {x:0, y:-20};
-    animator.speed = {x:0, y:-0.5};*/
+    animator.speed = {x:0, y:-0.5};
   }
 
   var btnExit = new Button(fade.widget);

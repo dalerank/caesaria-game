@@ -37,7 +37,7 @@ public:
 };
 
 PositionAnimator::PositionAnimator(Widget* parent)
-  : WidgetAnimator( parent, 0 ), _d( new Impl )
+  : PositionAnimator( parent, 0, Point(), 1000 )
 {}
 
 PositionAnimator::PositionAnimator( Widget* node,

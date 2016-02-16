@@ -9,7 +9,7 @@ Label.prototype = {
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set textColor (color) { this.widget.setColor(color); },
-	set subElelment (value) { this.widget.setSubElement(value); },
+	set subElement (value) { this.widget.setSubElement(value); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 }
