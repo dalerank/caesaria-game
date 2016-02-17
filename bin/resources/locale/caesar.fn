@@ -405,6 +405,8 @@
 "##smcurse_of_venus_title##":"Venus on pettynyt",
 "##blessing_of_venus_description##":"",
 "##smcurse_of_venus_description##":"",
+"##smcurse1_of_venus_description##":"",
+"##smcurse2_of_venus_description##":"",
 "##return_2_fort##":"Palaaminen linnakkeeseen",
 "##return_to_main_map##":"Palaa pää karttaan",
 "##shipyard##":"Telakka",

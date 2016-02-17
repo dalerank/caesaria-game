@@ -399,6 +399,8 @@
 "##smcurse_of_venus_title##":"Venus is upset",
 "##blessing_of_venus_description##":"Venus sends a feeling of goodwill to your city. It lifts the mood of all your citizens.",
 "##smcurse_of_venus_description##":"Venus, bringer of love and harmony, is upset. This does not bode well for your city's prefects!",
+"##smcurse1_of_venus_description##":"Venus, bringer of love and harmony, is upset. This does bad health and illness in city's houses!",
+"##smcurse2_of_venus_description##":"Venus, bringer of love and harmony, is upset. Citizens avoid live in this city!",
 "##return_2_fort##":"Return to fort",
 "##return_to_main_map##":"Return to main game map",
 "##shipyard##":"Shipyard",
@@ -1765,8 +1767,7 @@
 "##advpopulation_text_society##":"Population composition by income",
 "##save_already_exist##":"Save with this name already exist. Continue?
 ",
-"##savedlg_continue##":"Save
-",
+"##savedlg_continue##":"Save",
 "##gmenu_file_save##":"Save game",
 "##save_city##":"Save game",
 "##save_map##":"Save map",

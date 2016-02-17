@@ -392,6 +392,8 @@
 "##smcurse_of_venus_title##":"Venus está disgustada",
 "##blessing_of_venus_description##":"Venus envía un sentimiento de buena voluntad a tu ciudad. El humor de tus ciudadanos ha mejorado notablemente.",
 "##smcurse_of_venus_description##":"Venus, portavoz del amor y la armonía, está triste. Esto no es bueno para los prefectos de la ciudad.",
+"##smcurse1_of_venus_description##":"",
+"##smcurse2_of_venus_description##":"",
 "##return_2_fort##":"Volver al fuerte",
 "##return_to_main_map##":"Volver a mapa principal",
 "##shipyard##":"Astillero",

@@ -407,6 +407,8 @@
 "##smcurse_of_venus_title##":"Venus är upprörd",
 "##blessing_of_venus_description##":"Venus förmedlar en känsla av välvilja till din stad, vilket får alla dina medborgare på bättre humör.",
 "##smcurse_of_venus_description##":"Venus, förmedlare av kärlek och harmoni, är upprörd. Detta bådar inget gott för prefekterna i din stad!",
+"##smcurse1_of_venus_description##":"",
+"##smcurse2_of_venus_description##":"",
 "##return_2_fort##":"Återvänd till fortet",
 "##return_to_main_map##":"Återvänd till spelets huvudkarta",
 "##shipyard##":"Fartygsvarv",
