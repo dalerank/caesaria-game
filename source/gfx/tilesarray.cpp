@@ -258,7 +258,7 @@ PointsArray TilesArray::mappositions() const
 {
   PointsArray ret;
   for( auto tile : *this )
-    ret << tile->mappos();
+    ret.push_back(tile->mappos());
 
   return ret;
 }

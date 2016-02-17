@@ -120,7 +120,7 @@ class Logger::Impl
 {
 public:
   typedef std::map<std::string,LogWriterPtr> Writers;
-  typedef List<std::string> Filters;
+  typedef StringArray Filters;
 
   Filters filters;
 
@@ -158,8 +158,10 @@ void Logger::update(const std::string& text, bool newline){  instance()._d->writ
 
 void Logger::addFilter(const std::string& text)
 {
-  if (hasFilter(text)) return;
-  instance()._d->filters.append(text);
+  if (hasFilter(text))
+    return;
+
+  instance()._d->filters.addIfValid(text);
 }
 
 bool Logger::hasFilter(const std::string& text)

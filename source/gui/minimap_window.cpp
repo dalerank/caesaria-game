@@ -16,23 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "minimap_window.hpp"
-#include "gfx/tilemap.hpp"
+#include <GameGfx>
 #include "game/minimap_colours.hpp"
-#include "gfx/tile.hpp"
 #include "objects/overlay.hpp"
 #include "core/time.hpp"
-#include "gfx/engine.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "objects/constants.hpp"
-#include "gfx/camera.hpp"
 #include "walker/walker.hpp"
 #include "core/tilerect.hpp"
 #include "core/color_list.hpp"
 #include "texturedbutton.hpp"
-#include "gfx/tilemap_config.hpp"
-#include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;

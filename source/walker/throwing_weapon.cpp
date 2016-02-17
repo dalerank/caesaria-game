@@ -17,6 +17,7 @@
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "objects/overlay.hpp"
+#include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"

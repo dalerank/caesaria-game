@@ -25,6 +25,7 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/flowlist.hpp"
 #include "core/common.hpp"

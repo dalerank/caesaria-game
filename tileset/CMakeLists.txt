@@ -21,6 +21,8 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/variant_map.cpp"
+      "${BASE_SOURCE_DIR}/core/variant_list.cpp"
+      "${BASE_SOURCE_DIR}/core/position_array.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
       "${BASE_SOURCE_DIR}/core/font.cpp"
       "${BASE_SOURCE_DIR}/core/color_list.cpp"
@@ -44,6 +46,7 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
       "${BASE_SOURCE_DIR}/core/osystem.cpp"
+      "${BASE_SOURCE_DIR}/core/line.cpp"
       "tileset.model"
 )
 

@@ -28,6 +28,7 @@ class Point;
 class FointF;
 class Size;
 class Variant;
+class VariantList;
 class VariantMap;
 class DateTime;
 

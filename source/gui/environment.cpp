@@ -37,7 +37,7 @@ namespace gui
 {
 typedef std::map<Ui::Flag, int> Flags;
 
-struct UiTooltipWorker
+struct TooltipWorker
 {
   WidgetPtr element;
   Point lastPos;
@@ -48,20 +48,24 @@ struct UiTooltipWorker
   unsigned int relaunchTime;
 
   Widget* standart(Widget& parent , Widget *hovered, Point cursor);
+  void beforeDraw();
   void update( unsigned int time, Widget& rootWidget, bool showTooltips,
                WidgetPtr hovered, Point cursor);
+};
+
+struct FocusedWorker
+{
+  WidgetPtr element;
 };
 
 class Ui::Impl
 {
 public:  
-  UiTooltipWorker tooltip;
+  TooltipWorker tooltip;
+  FocusedWorker focused;
   bool preRenderFunctionCalled;
 
-  WidgetPtr focusedElement;
-
-  struct
-  {
+  struct {
     WidgetPtr noSubelement;
     WidgetPtr current;
     Point lastMousePos;
@@ -86,7 +90,7 @@ Ui::Ui(Engine& painter )
   setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
-  _d->focusedElement = 0;
+  _d->focused.element = 0;
   _d->size = painter.screenSize();
   _d->engine = &painter;
   _dfunc()->environment = this;
@@ -102,7 +106,8 @@ Ui::Ui(Engine& painter )
   setGeometry( Rect( Point(), _d->size ) );
 
   _d->consoleId = Hash( TEXT(Console) );
-  _d->console = 0;
+  _d->console = &add<Console>(-1,Rect(30,0,width()-30,300));;
+  _children().remove(_d->console);
 
   setFlag( drawDebugArea, 0 );
   setFlag( showTooltips, 1 );
@@ -111,7 +116,7 @@ Ui::Ui(Engine& painter )
 //! Returns if the element has focus
 bool Ui::hasFocus( const Widget* element) const
 {
-  return ( _d->focusedElement.object() == element );
+  return ( _d->focused.element.object() == element );
 }
 
 Ui::~Ui() {}
@@ -137,21 +142,18 @@ void Ui::clear()
   _updateHovered( Point( -9999, -9999 ) );
 
   for( auto widget : children() )
-  {
-    if( widget != _d->console )
-      deleteLater( widget );
-  }
+    deleteLater( widget );
 }
 
 void Ui::setFocus() {}
 void Ui::removeFocus() {}
-void Ui::beforeDraw(Engine& painter) {}
 void Ui::draw(Engine& painter) {}
 bool Ui::isHovered() const { return false; }
+void Ui::beforeDraw(Engine&) {}
 
 void Ui::draw()
 {
-  if( !_d->preRenderFunctionCalled )
+  if (!_d->preRenderFunctionCalled)
   {
     Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
@@ -159,17 +161,20 @@ void Ui::draw()
 
   Widget::draw( *_d->engine );  
 
-  if( hasFlag( drawDebugArea ) )
-    Widget::debugDraw( *_d->engine );
+  if (hasFlag(drawDebugArea))
+    Widget::debugDraw(*_d->engine);
 
   _d->tooltip.update( DateTime::elapsedTime(), *this, _d->flags[ showTooltips ],
                       _d->hovered.noSubelement, _d->cursorPos );
   _d->preRenderFunctionCalled = false;
+
+  if (_d->console)
+    _d->console->draw(*_d->engine);
 }
 
 bool Ui::setFocus( Widget* element )
 {
-  if( _d->focusedElement == element )
+  if( _d->focused.element == element )
   {
     return false;
   }
@@ -180,11 +185,11 @@ bool Ui::setFocus( Widget* element )
 
   // focus may change or be removed in this call
   WidgetPtr currentFocus;
-  if( _d->focusedElement.isValid() )
+  if( _d->focused.element.isValid() )
   {
-    currentFocus = _d->focusedElement;
+    currentFocus = _d->focused.element;
 
-    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(), element, guiElementFocusLost ) ) )
     {
       return false;
     }
@@ -194,10 +199,10 @@ bool Ui::setFocus( Widget* element )
 
   if( element )
   {
-    currentFocus = _d->focusedElement;
+    currentFocus = _d->focused.element;
 
     // send focused event
-    if( element->onEvent( NEvent::ev_gui( element, _d->focusedElement.object(), guiElementFocused ) ))
+    if( element->onEvent( NEvent::ev_gui( element, _d->focused.element.object(), guiElementFocused ) ))
     {
       currentFocus = WidgetPtr();
 
@@ -206,12 +211,12 @@ bool Ui::setFocus( Widget* element )
   }
 
   // element is the new focus so it doesn't have to be dropped
-  _d->focusedElement = element;
+  _d->focused.element = element;
 
   return true;
 }
 
-Widget* Ui::getFocus() const { return _d->focusedElement.object(); }
+Widget* Ui::getFocus() const { return _d->focused.element.object(); }
 
 bool Ui::isHovered( const Widget* element )
 {
@@ -245,7 +250,7 @@ void Ui::deleteLater( Widget* ptrElement )
 
     if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
     {
-      _d->focusedElement = WidgetPtr();
+      _d->focused.element = WidgetPtr();
     }
 
     if( _d->hovered.current.object() == ptrElement || ptrElement->isMyChild( _d->hovered.current.object() ) )
@@ -518,33 +523,28 @@ void Ui::beforeDraw()
 
   _updateHovered( _d->cursorPos );
 
-  Widgets rchildren = children();
+  _d->tooltip.beforeDraw();
 
-  if( _d->tooltip.element.isValid() )
-  {
-    _d->tooltip.element->bringToFront();
-  }
+  for (auto widget : _children())
+    widget->beforeDraw(*_d->engine);
 
-  for( auto widget : rchildren )
-    widget->beforeDraw( *_d->engine );
+  if (_d->console)
+    _d->console->beforeDraw(*_d->engine);
 
   _d->preRenderFunctionCalled = true;
 }
 
 bool Ui::removeFocus( Widget* element)
 {
-  if( _d->focusedElement.isValid() && _d->focusedElement == element )
+  if( _d->focused.element.isValid() && _d->focused.element == element )
   {
-    if( _d->focusedElement->onEvent( NEvent::ev_gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(),  0, guiElementFocusLost )) )
     {
       return false;
     }
   }
 
-  if( _d->focusedElement.isValid() )
-  {
-    _d->focusedElement = WidgetPtr();
-  }
+  _d->focused.element = WidgetPtr();
 
   return true;
 }
@@ -557,7 +557,7 @@ void Ui::animate( unsigned int time )
 Size Ui::vsize() const {  return size(); }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
-Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
+Widget* TooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 {
   Label& elm = parent.add<Label>( Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
   elm.setSubElement(true);
@@ -577,7 +577,13 @@ Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
   return &elm;
 }
 
-void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,
+void TooltipWorker::beforeDraw()
+{
+  if (element.isValid())
+    element->bringToFront();
+}
+
+void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,
                               WidgetPtr hovered, Point cursor )
 {
   // launch tooltip

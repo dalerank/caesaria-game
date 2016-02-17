@@ -18,6 +18,7 @@
 #include "cityservice_fire.hpp"
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
 #include "cityservice_factory.hpp"
 

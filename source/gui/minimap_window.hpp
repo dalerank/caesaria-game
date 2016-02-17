@@ -20,7 +20,6 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-#include "gfx/picture.hpp"
 #include "core/signals.hpp"
 #include "city/predefinitions.hpp"
 

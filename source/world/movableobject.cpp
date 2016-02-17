@@ -23,6 +23,7 @@
 #include "city.hpp"
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
+#include "core/variant_list.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant_map.hpp"
 

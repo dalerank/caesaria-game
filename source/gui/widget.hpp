@@ -367,10 +367,10 @@ public:
   void setTop( int newTop );
 
   //! Gets the absolute rectangle of this element
-  Rect absoluteRect() const;
+  const Rect& absoluteRect() const;
 
   //! Returns the visible area of the element.
-  Rect absoluteClippingRect() const;
+  const Rect& absoluteClippingRect() const;
 
   //! Returns the visible area of the element.
   Rect& absoluteClippingRectRef() const;
@@ -448,7 +448,7 @@ protected:
   virtual bool _onListboxChanged( Widget* sender ) { return false; }
   virtual void _finalizeMove();
 
-  Widgets& _getChildren();
+  Widgets& _children();
 
   // not virtual because needed in constructor
   void _addChild(Widget* child);

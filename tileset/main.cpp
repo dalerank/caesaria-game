@@ -30,6 +30,7 @@
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
+#include "core/variant_list.hpp"
 #include "zlib.h"
 #include "zip.h"
 

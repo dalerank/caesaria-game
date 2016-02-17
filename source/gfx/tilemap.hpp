@@ -21,9 +21,9 @@
 
 #include "core/serializer.hpp"
 #include "predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
-#include "gfx/tilesarray.hpp"
 #include "game/climate.hpp"
 
 namespace gfx

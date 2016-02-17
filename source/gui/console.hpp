@@ -12,7 +12,7 @@ namespace gui
 class Console : public Widget , public CommandDispatcher, public MessageSink
 {
 public:
-    Console( Widget* parent, int id, const Rect& rectangle );
+    Console(Widget* parent, int id, const Rect& rectangle);
     virtual ~Console();
 
     void setVisible( bool vis );
@@ -51,7 +51,7 @@ private:
     TOGGLE_TYPE toggle_visible_;
 
     std::string currentCommand_;
-    gfx::Picture _bgpic;
+    int _opacity;
     unsigned int cursorPos_;
 
     void SaveCommands_();
