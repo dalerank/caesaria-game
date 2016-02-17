@@ -106,6 +106,13 @@ void Session::quitGame()
     level->quit();
 }
 
+void Session::startCareer()
+{
+  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
+  if( lobby )
+    lobby->newGame();
+}
+
 void Session::openUrl(const std::string& url)
 {
   OSystem::openUrl( url, steamapi::ld_prefix() );

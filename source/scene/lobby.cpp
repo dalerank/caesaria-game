@@ -53,7 +53,6 @@ public:
   gui::Label* lbSteamName;
 
 public:
-  void handleNewGame();
   void showCredits();
   void showLoadMenu();
   void showNewGame();
@@ -67,7 +66,6 @@ public:
   void showMissionSelector();
   void quitGame();
   void selectFile( std::string fileName );
-  void setPlayerName( std::string name );
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -131,16 +129,8 @@ void Lobby::Impl::showChangesWindowIfNeed()
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
 {
-  std::string playerName = SETTINGS_STR( playerName );
-  if( playerName.empty() || force )
-  {
-    auto& dlg = ui().add<dialog::ChangePlayerName>();
-    dlg.setName( playerName );
-    dlg.setMayExit( false );
-
-    CONNECT( &dlg, onNameChange(), this, Impl::setPlayerName );
-    CONNECT( &dlg, onContinue(), &dlg, dialog::ChangePlayerName::deleteLater );
-  }
+  VariantList vl; vl << force;
+  script::Core::execFunction( "OnChangePlayerName", vl );
 }
 
 void Lobby::Impl::fitScreenResolution()
@@ -238,7 +228,7 @@ void Lobby::Impl::showPackageOptions()
 }
 
 void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
-{  
+{
   std::string currentFont = SETTINGS_STR( font );
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
@@ -259,21 +249,16 @@ void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::str
 
 void Lobby::Impl::startCareer()
 {
-  menu->clear();
+  //menu->clear();
 
-  std::string playerName = SETTINGS_STR( playerName );
+  events::dispatch<events::ScriptFunc>( "OnStartCareer" );
 
-  auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
-  selectPlayerNameDlg.setName( playerName );
-
-  CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
-  CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
-  CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
+  //CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
-void Lobby::Impl::handleNewGame()
-{  
-  result=startNewGame; isStopped=true;
+void Lobby::newGame()
+{
+  _d->result=startNewGame; _d->isStopped=true;
 }
 
 void Lobby::Impl::showCredits()
@@ -423,8 +408,6 @@ void Lobby::Impl::selectFile(std::string fileName)
   fileMap = fileName;
   isStopped = true;
 }
-
-void Lobby::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
 
 void Lobby::Impl::showMapSelectDialog()
 {

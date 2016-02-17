@@ -29,11 +29,13 @@ public:
 
   VariantList save() const;
 
-  void move(const Point& offset);
+  void move( const Point& offset );
 
-  Point valueOrEmpty(unsigned int index) const;
+  PointsArray& operator<<(const Point& point);
 
-  PointsArray& load(const VariantList& vl);
+  Point valueOrEmpty( unsigned int index ) const;
+
+  PointsArray& load( const VariantList& vl );
 };
 
 #endif  //_CAESARIA_POSITIONARRAY_INCLUDE_H_

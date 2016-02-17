@@ -382,6 +382,7 @@ void constructor_Session(js_State *J)
 #include "listbox.implementation"
 #include "texturedbutton.implementation"
 #include "image.implementation"
+#include "editbox.implementation"
 #include "animators.implementation"
 
 void Core::registerFunctions( Game& game )
@@ -393,9 +394,9 @@ void Core::registerFunctions( Game& game )
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
 
 DEF_GLOBAL_OBJECT(engine)
-  REGISTER_FUNCTION(engineLog,"log",1);  
+  REGISTER_FUNCTION(engineLog,"log",1);
   REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
-  REGISTER_FUNCTION(engineTranslate,"translate",1);   
+  REGISTER_FUNCTION(engineTranslate,"translate",1);
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
 REGISTER_GLOBAL_OBJECT(engine)
@@ -409,6 +410,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "listbox.interface"
 #include "texturedbutton.interface"
 #include "image.interface"
+#include "editbox.interface"
 #include "animators.interface"
 
   Core::loadModule(":/system/modules.js");
