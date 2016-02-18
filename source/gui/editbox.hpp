@@ -32,7 +32,7 @@ public:
   EditBox( Widget* parent );
 
   //! constructor
-  EditBox( Widget* parent, const Rect& rectangle, 
+  EditBox( Widget* parent, const Rect& rectangle,
            const std::string& text="", const int id=-1, bool border=false );
 
   //! destructor
@@ -40,6 +40,7 @@ public:
 
   //! Sets another skin independent font.
   virtual void setFont( const Font& font );
+  virtual void setFont( const std::string& font );
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
@@ -85,11 +86,11 @@ public:
   //! \return true if mult-line is enabled, false otherwise
   virtual bool isMultilineEnabled() const;
 
-  virtual void moveCursor( int index );
+  virtual void moveCursor(int index);
 
   //! Enables or disables automatic scrolling with cursor position
   //! \param enable: If set to true, the text will move around with the cursor position
-  virtual void setAutoscroll( bool enable );
+  virtual void setAutoscroll(bool enable);
 
   //! Checks to see if automatic scrolling is enabled
   //! \return true if automatic scrolling is enabled, false if not
@@ -136,7 +137,9 @@ public:
 
 signals public:
   Signal1<std::string>& onTextChanged();
+  Signal2<Widget*,std::string>& onTextChangedEx();
   Signal0<>& onEnterPressed();
+  Signal1<Widget*>& onEnterPressedEx();
 
 protected:
   //! Updates the position, splits text if required

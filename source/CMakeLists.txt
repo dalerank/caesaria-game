@@ -51,7 +51,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
                ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST}
-               ${SCRIPT_SYSTEM_LIST} ${JSE_SOURCES_LIST})
+               ${SCRIPT_SYSTEM_LIST} ${JSE_SOURCES_LIST} ${PK_RESOURCES_LIST})
 
 include_directories(${SDL2MINI_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
@@ -99,7 +99,7 @@ if(UNIX)
   if(NOT APPLE)
     target_link_libraries(${PROJECT_NAME} "GL")
     target_link_libraries(${PROJECT_NAME} "dl")
-  endif()  
+  endif()
 endif(UNIX)
 
 if(UNIX)

@@ -46,6 +46,61 @@ function OnShowChanges(force)
   }
 }
 
+function OnStartCareer()
+{
+  OnChangePlayerName(true, function() {
+      var g_session = new Session(); 
+      g_session.startCareer();
+    }
+  );
+}
+
+function OnChangePlayerName(force,continueCallback)
+{
+  var playerName = engine.getOption("playerName");
+  if (playerName === null || playerName.length === 0)
+    playerName = "##new_governor##";
+
+  if (playerName.length === 0 || force)
+  {
+    var g_ui = new Ui();
+    var wnd = g_ui.addWindow(0);
+    wnd.geometry = { x:0, y:0, w:380, h:128 }
+    wnd.mayMove = false;
+    wnd.title = "##enter_your_name##";
+    
+    var exitFunc =  function() {
+                                  wnd.deleteLater();
+                                  if(continueCallback)
+                                      continueCallback();
+                               }
+
+    var editbox = wnd.addEditbox(32, 50, 320, 32);
+    editbox.textAlign = { h:"upperLeft", v:"center" };
+    editbox.font = "FONT_2_WHITE";
+    editbox.textOffset = { x:20, y:0 };
+    editbox.tooltip = "##enter_dinasty_name_here##";
+    editbox.text = playerName;
+    editbox.cursorPos = playerName.length;
+    editbox.onEnterCallback = exitFunc;
+    editbox.onChange = function(text) { engine.setOption( "playerName", text ); }
+
+    var lbNext = wnd.addLabel(180, 90, 100, 20);
+    lbNext.text = "##plname_continue##";
+    lbNext.font = "FONT_2";
+    lbNext.textAlign = { h:"lowerRight", v:"center" };
+
+    var btnContinue = wnd.addTexturedButton(300, 85, 27, 27);
+    btnContinue.states = { rc:"paneling", normal:179, hover:180, pressed:181, disabled:179 };
+    btnContinue.tooltip = "##plname_start_new_game##";
+    btnContinue.callback = exitFunc;
+
+    var lbExitHelp = wnd.addLabel(18, 90, 200, 20);
+    lbExitHelp.text = "##press_escape_to_exit##";
+    lbExitHelp.font = "FONT_1";
+  }
+}
+
 function OnLobbyStart()
 {
   engine.log( "JS:OnLobbyStart" );
@@ -115,7 +170,7 @@ function OnShowCredits()
 	btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
 	btnExit.text = "##close##";
 	btnExit.callback = function() { 
-                                 fade.deleteLater();
-																 g_session.playAudio( "main_menu", 50, "theme" );
-  }
+                                    fade.deleteLater();
+                                    g_session.playAudio( "main_menu", 50, "theme" );
+                                  }
 }

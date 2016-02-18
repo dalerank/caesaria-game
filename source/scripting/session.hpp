@@ -37,6 +37,7 @@ public:
   void continuePlay(int years);
   void loadNextMission();
   void quitGame();
+  void startCareer();
   void openUrl(const std::string& url);
   int lastChangesNum();
   StringArray getCredits();

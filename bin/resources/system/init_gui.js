@@ -9,21 +9,21 @@ Label.prototype = {
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set textColor (color) { this.widget.setColor(color); },
-	set subElement (value) { this.widget.setSubElement(value); },
+  set subElement (value) { this.widget.setSubElement(value); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 };
 
 function Fade(parent) {
-  this.widget = new _Fade(parent);	
+  this.widget = new _Fade(parent);
 }
 
 Fade.prototype = {
   set alpha (value) { this.widget.setAlpha(value); },
-	get width () { return this.widget.width(); },
+  get width () { return this.widget.width(); },
   get height () { return this.widget.height(); },
-	
-	addCloseCode : function(code) { this.widget.addCloseCode(code); },
+
+  addCloseCode : function(code) { this.widget.addCloseCode(code); },
   deleteLater : function() { this.widget.deleteLater(); }
 };
 
@@ -34,6 +34,25 @@ function ExitButton(parent) {
 ExitButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); }
 };
+
+function Editbox(parent) {
+  this.widget = new _EditBox(parent);
+}
+
+Editbox.prototype = {
+  set position (point) { this.widget.setPosition(point.x,point.y); },
+  get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set font (fname) { this.widget.setFont(fname); },
+  set text (str) { this.widget.setText( engine.translate(str) ); },
+  set cursorPos (index) { this.widget.moveCursor(index); },
+  set onTextChangeCallback (func) { this.widget.onTextChangedEx(func); },
+  set onEnterPressedCallback (func) { this.widget.onEnterPressedEx(func); },
+
+  moveToCenter : function() { this.widget.moveToCenter(); },
+  deleteLater : function() { this.widget.deletLater(); }
+}
 
 function TexturedButton(parent) {
   this.widget = new _TexturedButton(parent);
@@ -53,8 +72,8 @@ function PositionAnimator(parent) {
 
 PositionAnimator.prototype = {
   set destination (point) { this.widget.setDestination(point.x,point.y); },
-	set speed (point) { this.widget.setSpeed(point.x,point.y); },
-	set removeParent (value) { this.widget.setFlag("removeParent", value );}
+  set speed (point) { this.widget.setSpeed(point.x,point.y); },
+  set removeParent (value) { this.widget.setFlag("removeParent", value );}
 };
 
 function Image(parent) {
@@ -92,20 +111,30 @@ Window.prototype = {
         this.widget.addCloseCode(0x4);
   },
   addLabel : function(rx,ry,rw,rh) {
-    var label = new Label(this.widget); 
+    var label = new Label(this.widget);
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label; 
+    return label;
   },
   addListbox : function(rx,ry,rw,rh) {
     var listbox = new Listbox(this.widget);
     listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
     return listbox;
   },
+  addEditbox : function(rx,ry,rw,rh) {
+    var edit = new Editbox(this.widget);
+    edit.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return edit;
+  },
   addImage : function(rx,ry,picname) {
     var image = new Image(this.widget);
     image.picture = picname;
     image.position = {x:rx,y:ry};
     return image;
+  },
+  addTexturedButton : function(rx,ry,rw,rh) {
+    var button = new TexturedButton(this.widget);
+    button.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return button;
   },
   addButton : function(rx,ry,rw,rh) {
     var button = new Button(this.widget);
@@ -128,7 +157,7 @@ Button.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.onClickedEx(func); },
-  set style (sname) { this.widget.setBackgroundStyle(sname); },   
+  set style (sname) { this.widget.setBackgroundStyle(sname); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set textAlign (obj) { this.widget.setTextAlignment(obj.h,obj.v); },
 
@@ -137,7 +166,7 @@ Button.prototype = {
 };
 
 function Listbox(parent) {
-	this.widget = new _ListBox(parent);
+    this.widget = new _ListBox(parent);
 }
 
 Listbox.prototype = {
@@ -145,7 +174,7 @@ Listbox.prototype = {
   set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
   get itemsCount () { return this.widget.itemsCount(); },
- 
+
   addLine : function(text) { return this.widget.addLine(text); },
   setData : function(index,data) { this.widget.setItemData(index,data); },
   deleteLater : function() { this.widget.deleteLater(); },
@@ -153,7 +182,7 @@ Listbox.prototype = {
 };
 
 function Dialogbox(parent) {
-	this.widget = new _Dialogbox(parent);
+    this.widget = new _Dialogbox(parent);
 }
 
 Dialogbox.prototype = {
@@ -167,7 +196,7 @@ Dialogbox.prototype = {
 };
 
 function Ui() {
-}    
+}
 
 Ui.prototype = {
   addWindow : function(rx,ry,rw,rh) {
@@ -181,14 +210,15 @@ Ui.prototype = {
     dialog.title = title;
     dialog.text = text;
     dialog.buttons = 1;
-    return dialog; 
+    return dialog;
   },
-	
-	addFade : function(value) {
-	  var fade = new Fade(0);
-		fade.alpha = value;
-		return fade;
-	},
+
+
+  addFade : function(value) {
+    var fade = new Fade(0);
+    fade.alpha = value;
+    return fade;
+  },
 
   addConfirmationDialog : function(title, text) {
     var dialog = new Dialogbox(0);
@@ -200,4 +230,3 @@ Ui.prototype = {
 
   elog : function(a) { engine.log(a); }
 };
-  

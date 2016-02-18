@@ -58,6 +58,7 @@ public:
   std::string playerName() const;
 
   int result() const;
+  void newGame();
   bool isStopped() const;
 
 private:

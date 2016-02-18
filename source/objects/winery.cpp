@@ -50,9 +50,3 @@ bool Winery::build( const city::AreaInfo& info )
 
   return true;
 }
-
-void Winery::_storeChanged()
-{
-  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 153 );
-  _fgPicture(1).setOffset( 40, -10 );
-}
