@@ -26,33 +26,13 @@ class VariantList : public std::list<Variant>
 public:
   VariantList() {}
 
-  Variant get( const unsigned int index, Variant defaultVal=Variant() ) const
-  {
-    VariantList::const_iterator it = begin();
-    if( index >= size() )
-    {
-      return defaultVal;
-    }
-    else
-    {
-      std::advance( it, index );
-      return *it;
-    }
-  }
+  Variant get( const unsigned int index, Variant defaultVal=Variant() ) const;
 
   typedef Delegate1< const Variant& > Visitor;
 
-  void visitEach( Visitor visitor )
-  {
-    for( auto&& item : *this )
-      visitor( item );
-  }
+  void visitEach( Visitor visitor );
 
-  VariantList& operator <<( const Variant& v )
-  {
-    push_back( v );
-    return *this;
-  }
+  VariantList& operator <<( const Variant& v );
 
   template<class T>
   VariantList( const std::vector<T>& array )
@@ -75,30 +55,13 @@ public:
 class VariantListReader
 {
 public:
-  VariantListReader( const VariantList& list )
-    : _list( list )
-  {
-    _initialized = false;
-  }
+  VariantListReader( const VariantList& list );
 
-  const Variant& next()
-  {
-    if( !_initialized )
-    {
-      _it = _list.begin();
-      _initialized = true;
-    }
+  const Variant& next();
 
-    const Variant& value = *_it;
-    ++_it;
-
-    return value;
-  }
-
-  bool atEnd() { return _it == _list.end(); }
+  bool atEnd();
 
 private:
-  bool _initialized;
   VariantList::const_iterator _it;
   const VariantList& _list;
 };
@@ -106,7 +69,7 @@ private:
 template<class T>
 typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 {
-  for( auto& it : vars )
+  for( const auto& it : vars )
     v.push_back( (T)it );
 
   return v;

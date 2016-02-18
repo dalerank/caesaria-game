@@ -15,18 +15,19 @@
 
 #include "pathway.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/direction.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace gfx;
 
 namespace {
 static Tile invalidTile( TilePos(-1, -1) );
-CAESARIA_LITERALCONST(tiles)
+GAME_LITERALCONST(tiles)
 }
 
 bool operator<(const Pathway& v1, const Pathway& v2)
@@ -101,12 +102,12 @@ Direction Pathway::direction() const
     if(_d->reverse )
     {
       if( _d->step > 0 )
-        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
+        return _d->tiles[_d->step]->epos().directionTo( _d->tiles[ _d->step-1]->epos() );
     }
     else
     {
       if( _d->step < _d->tiles.size()-1 )
-        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
+        return _d->tiles[_d->step]->epos().directionTo( _d->tiles[ _d->step+1]->epos() );
     }
   }
 
@@ -158,7 +159,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   case direction::northWest  : _d->endPos += TilePos( -1, 1 ); break;
   default:
     _d->endPos += TilePos( 0, 1 );  break;
-    Logger::warning( "Unexpected Direction:{0}", direction);
+    Logger::warning( "WARNING !!! Unexpected Direction:{}", direction);
   break;
   }
 
@@ -200,13 +201,13 @@ bool Pathway::contains(const Tile& tile)
 
 void Pathway::prettyPrint() const
 {
-  Logger::warning( "pathWay from [{0},{1}] to [{2},{3}]",
+  Logger::warning( "pathWay from [{},{}] to [{},{}]",
                    _d->startPos.i(), _d->startPos.j(), _d->endPos.i(), _d->endPos.j() );
 
   std::string strDir = "";
   for( unsigned int k=0; k < _d->tiles.size()-1; k++ )
   {
-    Direction direction = tilemap::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
+    Direction direction = _d->tiles[k]->pos().directionTo( _d->tiles[k+1]->pos() );
 
     switch (direction)
     {
@@ -220,7 +221,7 @@ void Pathway::prettyPrint() const
     case direction::northWest: strDir += "NW"; break;
     default:
       //"Unexpected Direction:"
-      _CAESARIA_DEBUG_BREAK_IF( direction );
+      _GAME_DEBUG_BREAK_IF( direction );
     break;
     }
 
@@ -257,10 +258,8 @@ void Pathway::load(const Tilemap& tmap, const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, startPos, stream )
   VARIANT_LOAD_ANY_D( _d, endPos,   stream )
   VariantList vmTiles = stream.get( literals::tiles ).toList();
-  foreach( it, vmTiles )
-  {
-    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it->toTilePos() )) );
-  }
+  for( const auto& it : vmTiles )
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it.toTilePos() )) );
 
   VARIANT_LOAD_ANY_D( _d, reverse, stream )
   VARIANT_LOAD_ANY_D( _d, step, stream )

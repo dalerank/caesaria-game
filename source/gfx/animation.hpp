@@ -19,7 +19,7 @@
 #define __CAESARIA_ANIMATION_H_INCLUDE_
 
 #include "picturesarray.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/scopedptr.hpp"
 
 // several frames for a basic visual animation
@@ -30,9 +30,7 @@ class Animation
 {
 public:
   enum { nodelay=0, fast=1, middle=2, slow=3, verySlow=4, hugeSlow=8 };
-  static const bool reverse = true;
-  static const bool straight = false;
-  static const bool loopAnimation = true;
+  enum { reverse=true, straight=false, isLooped=true, isOnce=false };
 
   Animation();
   virtual ~Animation();
@@ -79,6 +77,7 @@ public:
              bool reverse = false, const int step = 1);
   void load( const std::string& alias );
   void load( const VariantMap& stream );
+  void simple( const VariantMap& stream );
 
   VariantMap save() const;
 

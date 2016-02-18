@@ -20,6 +20,8 @@
 
 #include "objects/overlay.hpp"
 
+PREDEFINE_CLASS_SMARTLIST(Coast,List)
+
 class Coast : public Overlay
 {
 public:
@@ -27,7 +29,7 @@ public:
 
   virtual gfx::Picture computePicture();
   void updatePicture();
-  RiverList neighbors() const;
+  CoastList neighbors() const;
 
   virtual bool build( const city::AreaInfo& info );
   virtual void initTerrain( gfx::Tile &terrain);
@@ -35,8 +37,11 @@ public:
   virtual bool isFlat() const;
   virtual void destroy();
   virtual bool isDestructible() const;
-
   virtual gfx::Renderer::PassQueue passQueue() const;
+
+  int _rindex;
+protected:
+  gfx::Picture calcPicture();
 };
 
 #endif //__CAESARIA_COAST_H_INCLUDE__

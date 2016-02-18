@@ -15,37 +15,37 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PLATFORM_H_INCLUDED__
-#define __CAESARIA_PLATFORM_H_INCLUDED__
+#ifndef __GAME_PLATFORM_H_INCLUDED__
+#define __GAME_PLATFORM_H_INCLUDED__
 
 #if defined(__WIN32__) || defined(_WIN32)
-  #define CAESARIA_PLATFORM_WIN
-  #define CAESARIA_PLATFORM_WIN32
-  #define CAESARIA_PLATFORM_NAME "win32"
+  #define GAME_PLATFORM_WIN
+  #define GAME_PLATFORM_WIN32
+  #define GAME_PLATFORM_NAME "win32"
 #elif defined(WIN64) || defined(_WIN64)
-  #define CAESARIA_PLATFORM_WIN
-  #define CAESARIA_PLATFORM_WIN64
-  #define CAESARIA_PLATFORM_NAME "win64"
+  #define GAME_PLATFORM_WIN
+  #define GAME_PLATFORM_WIN64
+  #define GAME_PLATFORM_NAME "win64"
 #elif defined(__APPLE_CC__) || defined(__APPLE__) || defined(__APPLE_CPP__) || defined(__MACOS_CLASSIC__)
-  #define CAESARIA_PLATFORM_UNIX
-  #define CAESARIA_PLATFORM_MACOSX
-  #define CAESARIA_PLATFORM_NAME "macosx"
+  #define GAME_PLATFORM_UNIX
+  #define GAME_PLATFORM_MACOSX
+  #define GAME_PLATFORM_NAME "macosx"
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
-  #define CAESARIA_PLATFORM_UNIX
-  #define CAESARIA_PLATFORM_XBSD
-  #define CAESARIA_PLATFORM_NAME "freebsd"
+  #define GAME_PLATFORM_UNIX
+  #define GAME_PLATFORM_XBSD
+  #define GAME_PLATFORM_NAME "freebsd"
 #elif defined(__HAIKU__) || defined(HAIKU)
-  #define CAESARIA_PLATFORM_BEOS
-  #define CAESARIA_PLATFORM_HAIKU
-  #define CAESARIA_PLATFORM_NAME "haiku"
+  #define GAME_PLATFORM_BEOS
+  #define GAME_PLATFORM_HAIKU
+  #define GAME_PLATFORM_NAME "haiku"
 #elif defined(ANDROID)
-  #define CAESARIA_PLATFORM_UNIX
-  #define CAESARIA_PLATFORM_ANDROID
-  #define CAESARIA_PLATFORM_NAME "android"
+  #define GAME_PLATFORM_UNIX
+  #define GAME_PLATFORM_ANDROID
+  #define GAME_PLATFORM_NAME "android"
 #else
-  #define CAESARIA_PLATFORM_UNIX
-  #define CAESARIA_PLATFORM_LINUX
-  #define CAESARIA_PLATFORM_NAME "linux"
+  #define GAME_PLATFORM_UNIX
+  #define GAME_PLATFORM_LINUX
+  #define GAME_PLATFORM_NAME "linux"
 #endif
 
-#endif //__CAESARIA_PLATFORM_H_INCLUDED__
+#endif //__GAME_PLATFORM_H_INCLUDED__

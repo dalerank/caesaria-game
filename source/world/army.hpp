@@ -34,6 +34,7 @@ public:
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
   virtual std::string type() const;
+  virtual std::string about(AboutType type);
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
   virtual void setStrength( int value );
@@ -42,7 +43,13 @@ public:
   virtual void addObject(ObjectPtr);
   std::string target() const;
 
-  static void battle(unsigned int attackers, unsigned int defenders, int &atcLoss, int &defLoss);
+  struct BattleResult
+  {
+    int atcLoss = 0;
+    int defLoss = 0;
+  };
+
+  static BattleResult battle(unsigned int attackers, unsigned int defenders);
 
 protected:
   virtual bool _isAgressiveArmy(ArmyPtr other) const;

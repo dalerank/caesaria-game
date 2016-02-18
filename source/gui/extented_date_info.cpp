@@ -19,7 +19,7 @@ ExtentedDateInfo::ExtentedDateInfo(Widget *parent, const Rect& rect, int id)
 {
   setGeometry( Rect( 0, 0, parent->width(), parent->height()) );
   setWordwrap( true );
-  setFont( Font::create( FONT_1 ));
+  setFont( FONT_1 );
 }
 
 ExtentedDateInfo::~ExtentedDateInfo() {}

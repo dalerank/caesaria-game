@@ -18,6 +18,7 @@
 
 #include "good.hpp"
 #include "core/priorities.hpp"
+#include "helper.hpp"
 
 namespace good
 {
@@ -28,6 +29,7 @@ struct Stage
   Products materials;
   Products all;
   Products merchandise;
+  Products tradable;
   Product any;
 
   Stage()
@@ -43,6 +45,12 @@ struct Stage
     foods << wheat << fish << meat << fruit << vegetable;
     materials << olive << grape << timber << clay << iron << marble;
     merchandise << wine << furniture << pottery << weapon << marble << prettyWine;
+
+    tradable = all;
+    tradable.exclude(fish )
+            .exclude(denaries)
+            .exclude(none);
+
     any = Product( all.size() );
   }
 };
@@ -53,6 +61,7 @@ const Product& any() { return stage.any; }
 const Products& all() { return stage.all; }
 const Products& materials() { return stage.materials; }
 const Products& foods() { return stage.foods; }
+const Products& tradable() { return stage.tradable; }
 
 Product getMaterial(const Product &pr)
 {
@@ -68,6 +77,53 @@ Product getMaterial(const Product &pr)
   }
 
   return none;
+}
+
+Products& Products::operator<<(const Product& a)
+{
+  insert( a );
+  return *this;
+}
+
+Products&Products::operator<<(const Products& other)
+{
+  for( auto& goodType : other )
+    insert( goodType );
+
+  return *this;
+}
+
+bool Products::contain(const Product& type) const
+{
+  return this->count( type ) > 0;
+}
+
+Products& Products::exclude(const Product& type)
+{
+  erase( type );
+  return *this;
+}
+
+Products& Products::exclude(const Products& types)
+{
+  for( auto& goodType : types )
+    erase( goodType );
+
+  return *this;
+}
+
+StringArray Products::names() const
+{
+  StringArray ret;
+  for( auto g : *this )
+    ret.addIfValid(good::Helper::name( g ));
+
+  return ret;
+}
+
+Product toType(const std::string& typeName)
+{
+  return Helper::type( typeName );
 }
 
 }

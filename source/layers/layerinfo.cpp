@@ -36,15 +36,6 @@ public:
     Picture body;
     Picture header;
   } columnPic;
-
-  struct PictureInfo {
-    Point pos;
-    Picture pic;
-  };
-
-  typedef std::vector<PictureInfo> Pictures;
-
-  Pictures pictures;
 };
 
 void Info::render(Engine& engine)
@@ -123,20 +114,8 @@ void Info::drawColumn( const RenderInfo& rinfo, const Point& pos, const int perc
 
 Info::~Info() {  }
 
-void Info::beforeRender(Engine& engine)
-{
-  _d->pictures.clear();
-}
-
 void Info::afterRender(Engine& engine)
 {
-  Point camOffset = _camera()->offset();
-
-  for( auto& pic : _d->pictures )
-  {
-    engine.draw( pic.pic, camOffset + pic.pos );
-  }
-
   Layer::afterRender( engine );
 }
 
@@ -144,12 +123,6 @@ Info::Info( Camera& camera, PlayerCityPtr city, int columnIndex )
   : Layer( &camera, city ), _d( new Impl )
 {
   _loadColumnPicture( ResourceGroup::sprites, columnIndex );
-}
-
-void Info::_addPicture(Point pos, const Picture& pic)
-{
-  Impl::PictureInfo info = { pos, pic };
-  _d->pictures.push_back( info );
 }
 
 }//end namespace citylayer

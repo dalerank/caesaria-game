@@ -20,6 +20,7 @@
 
 #include "position.hpp"
 #include "size.hpp"
+#include "line.hpp"
 
 //! RectT.
 /** Mostly used by 2D GUI elements and for 2D drawing methods.
@@ -73,6 +74,16 @@ public:
           _lefttop -= pos;
           _bottomright -= pos;
           return *this;
+  }
+
+  RectT<T> crop( T value )
+  {
+    return RectT<T>( left()+value, top() + value, right() - value, bottom() - value );
+  }
+
+  RectT<T> crop( T w, T h )
+  {
+    return RectT<T>( left()+w, top()+h, right()-w, bottom()-h );
   }
 
   //! equality operator
@@ -311,6 +322,12 @@ public:
   Rect(const Point& pos, const Size& size)
     : RectT<int>( pos, pos + Point( size.width(), size.height() ) ) {}
 
+  Rect( const RectT<int>& r )
+    : RectT<int>( r.lefttop(), r.rightbottom() )
+  {
+
+  }
+
   Rect( int x1, int y1, int x2, int y2 )
     : RectT<int>( x1, y1, x2, y2 ) {}
 
@@ -334,6 +351,17 @@ public:
   Size size() const
   {
     return Size(width(), height());
+  }
+
+  Lines lines() const
+  {
+    Lines lines;
+    lines.append(lefttop(),righttop())
+         .append(righttop(),rightbottom())
+         .append(rightbottom(),leftbottom())
+         .append(leftbottom(),lefttop());
+
+    return lines;
   }
 
   Rect( const Point& p1, const Point& p2 ) 

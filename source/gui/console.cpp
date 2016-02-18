@@ -4,6 +4,7 @@
 #include "core/saveadapter.hpp"
 #include "gfx/engine.hpp"
 #include "core/utils.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 
@@ -26,6 +27,8 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
 	cursorPos_ = 1;
 
   _font = Font::create( FONT_1_WHITE );
+  _opacity = 0;
+  Widget::setVisible(false);
 
   appendMessage( "Console initialized" );								//append a message
 }
@@ -35,11 +38,8 @@ void Console::SaveCommands_()
   vfs::Path path( ":/commands.model" );
 
   VariantMap commands;
-
-  foreach( it, console_history_ )
-  {
-    commands[ *it ] = Variant( "" );
-  }
+  for( const auto& it : console_history_ )
+    commands[ it ] = Variant( "" );
 
   config::save( commands, path );
 }
@@ -49,10 +49,8 @@ void Console::LoadSaveCommands_()
   vfs::Path path( ":/commands.model" );
 
   VariantMap commands = config::load( path );
-  foreach( it, commands )
-	{
-    console_history_.push_back( it->first );
-	}	
+  for( const auto& it : commands )
+    console_history_.push_back( it.first );
 }
 
 Console::~Console()													//! destructor
@@ -123,29 +121,26 @@ void Console::draw( gfx::Engine& painter )
 		{
 			if( toggle_visible_ == DOWNLIGTH )
 			{
-        //if( getOpacity() > 5 ) setOpacity( getOpacity() - 3 );
-        //else _isVisible = false;
+        if( _opacity > 5 ) _opacity -= 9;
+        else setVisible( false );
 			}
 			else
 			{
-        //if( (int)getOpacity() < (int)conf[ MAX_BLEND ] )	setOpacity( getOpacity() + 3 );
-        //else toggle_visible_ = NONE;
+        if( _opacity < 0xff )	_opacity += 3;
+        else toggle_visible_ = NONE;
 			}
 		}
 
-    if( _bgpic.isValid() )
-    {
-      painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
-    }
-    else
-    {
-      PointsArray array;
-      array << absoluteRect().lefttop() << absoluteRect().righttop()
-            << absoluteRect().righttop() << absoluteRect().rightbottom()
-            << absoluteRect().rightbottom() << absoluteRect().leftbottom()
-            << absoluteRect().leftbottom() << absoluteRect().lefttop();
-      painter.drawLines( DefaultColors::red, array );
-    }
+    PointsArray array = absoluteRect().lines().points();
+
+    NColor color = ColorList::red;
+
+    color.setAlpha(_opacity);
+    painter.drawLines(color, array);
+
+    color = ColorList::blue;
+    color.setAlpha(_opacity / 2);
+    painter.fillRect(color, absoluteRect());
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
@@ -360,12 +355,7 @@ void Console::addToHistory( const std::string& wstr)								//! add to history a
 
 void Console::calculateConsoleRect( const Size& screenSize )	//! calculate the whole console rect
 {
-  Rect rect( 0, 0,
-             screenSize.width()  * 0.9,
-             screenSize.height() * 0.3 );
-  rect.setLeft( screenSize.width() * 0.15 );
-
-  setGeometry( rect );
+  setGeometry( RectF(0.1,0,0.9,0.3) );
 }
 
 void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calculate the messages rect and prompt / shell rect

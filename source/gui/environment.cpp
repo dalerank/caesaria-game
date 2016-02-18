@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+//This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include "console.hpp"
 #include "core/logger.hpp"
 #include "core/hash.hpp"
+#include "core/osystem.hpp"
 #include "widgetprivate.hpp"
 
 using namespace gfx;
@@ -36,29 +37,35 @@ namespace gui
 {
 typedef std::map<Ui::Flag, int> Flags;
 
-struct UiTooltipWorker
+struct TooltipWorker
 {
   WidgetPtr element;
+  Point lastPos;
+  Point offset;
   unsigned int lastTime;
   unsigned int enterTime;
   unsigned int launchTime;
   unsigned int relaunchTime;
 
   Widget* standart(Widget& parent , Widget *hovered, Point cursor);
+  void beforeDraw();
   void update( unsigned int time, Widget& rootWidget, bool showTooltips,
                WidgetPtr hovered, Point cursor);
+};
+
+struct FocusedWorker
+{
+  WidgetPtr element;
 };
 
 class Ui::Impl
 {
 public:  
-  UiTooltipWorker tooltip;
+  TooltipWorker tooltip;
+  FocusedWorker focused;
   bool preRenderFunctionCalled;
 
-  WidgetPtr focusedElement;
-
-  struct
-  {
+  struct {
     WidgetPtr noSubelement;
     WidgetPtr current;
     Point lastMousePos;
@@ -83,11 +90,12 @@ Ui::Ui(Engine& painter )
   setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
-  _d->focusedElement = 0;
+  _d->focused.element = 0;
   _d->size = painter.screenSize();
   _d->engine = &painter;
   _dfunc()->environment = this;
   _d->tooltip.element;
+  _d->tooltip.offset = Point( 0, 5 );
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;
   _d->tooltip.launchTime = 1000;
@@ -97,16 +105,18 @@ Ui::Ui(Engine& painter )
 
   setGeometry( Rect( Point(), _d->size ) );
 
-  _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
-  _d->console = 0;
+  _d->consoleId = Hash( TEXT(Console) );
+  _d->console = &add<Console>(-1,Rect(30,0,width()-30,300));;
+  _children().remove(_d->console);
 
-  setFlag( buttonShowDebugArea, 0 );
+  setFlag( drawDebugArea, 0 );
+  setFlag( showTooltips, 1 );
 }
 
 //! Returns if the element has focus
 bool Ui::hasFocus( const Widget* element) const
 {
-  return ( _d->focusedElement.object() == element );
+  return ( _d->focused.element.object() == element );
 }
 
 Ui::~Ui() {}
@@ -132,21 +142,18 @@ void Ui::clear()
   _updateHovered( Point( -9999, -9999 ) );
 
   for( auto widget : children() )
-  {
-    if( widget != _d->console )
-      deleteLater( widget );
-  }
+    deleteLater( widget );
 }
 
 void Ui::setFocus() {}
 void Ui::removeFocus() {}
-void Ui::beforeDraw(Engine& painter) {}
 void Ui::draw(Engine& painter) {}
 bool Ui::isHovered() const { return false; }
+void Ui::beforeDraw(Engine&) {}
 
 void Ui::draw()
 {
-  if( !_d->preRenderFunctionCalled )
+  if (!_d->preRenderFunctionCalled)
   {
     Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
@@ -154,14 +161,20 @@ void Ui::draw()
 
   Widget::draw( *_d->engine );  
 
+  if (hasFlag(drawDebugArea))
+    Widget::debugDraw(*_d->engine);
+
   _d->tooltip.update( DateTime::elapsedTime(), *this, _d->flags[ showTooltips ],
                       _d->hovered.noSubelement, _d->cursorPos );
   _d->preRenderFunctionCalled = false;
+
+  if (_d->console)
+    _d->console->draw(*_d->engine);
 }
 
 bool Ui::setFocus( Widget* element )
 {
-  if( _d->focusedElement == element )
+  if( _d->focused.element == element )
   {
     return false;
   }
@@ -172,11 +185,11 @@ bool Ui::setFocus( Widget* element )
 
   // focus may change or be removed in this call
   WidgetPtr currentFocus;
-  if( _d->focusedElement.isValid() )
+  if( _d->focused.element.isValid() )
   {
-    currentFocus = _d->focusedElement;
+    currentFocus = _d->focused.element;
 
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(), element, guiElementFocusLost ) ) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(), element, guiElementFocusLost ) ) )
     {
       return false;
     }
@@ -186,10 +199,10 @@ bool Ui::setFocus( Widget* element )
 
   if( element )
   {
-    currentFocus = _d->focusedElement;
+    currentFocus = _d->focused.element;
 
     // send focused event
-    if( element->onEvent( NEvent::Gui( element, _d->focusedElement.object(), guiElementFocused ) ))
+    if( element->onEvent( NEvent::ev_gui( element, _d->focused.element.object(), guiElementFocused ) ))
     {
       currentFocus = WidgetPtr();
 
@@ -198,12 +211,12 @@ bool Ui::setFocus( Widget* element )
   }
 
   // element is the new focus so it doesn't have to be dropped
-  _d->focusedElement = element;
+  _d->focused.element = element;
 
   return true;
 }
 
-Widget* Ui::getFocus() const { return _d->focusedElement.object(); }
+Widget* Ui::getFocus() const { return _d->focused.element.object(); }
 
 bool Ui::isHovered( const Widget* element )
 {
@@ -217,9 +230,7 @@ Widget* Ui::findWidget(int id)
 
 Widget* Ui::findWidget(const Point &p)
 {
-  const Widgets& widgets = children();
-
-  for( auto widget : widgets )
+  for( auto widget : children() )
   {
     if( widget->visible() && widget->isPointInside( p ) )
       return widget;
@@ -239,7 +250,7 @@ void Ui::deleteLater( Widget* ptrElement )
 
     if( ptrElement == getFocus() || ptrElement->isMyChild( getFocus() ) )
     {
-      _d->focusedElement = WidgetPtr();
+      _d->focused.element = WidgetPtr();
     }
 
     if( _d->hovered.current.object() == ptrElement || ptrElement->isMyChild( _d->hovered.current.object() ) )
@@ -314,12 +325,12 @@ void Ui::_updateHovered( const Point& mousePos )
   {
     if( lastHovered.isValid() )
     {
-      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
+      lastHovered->onEvent( NEvent::ev_gui( lastHovered.object(), 0, guiElementLeft ) );
     }
 
     if( _d->hovered.current.isValid() )
     {
-      _d->hovered.current->onEvent( NEvent::Gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
+      _d->hovered.current->onEvent( NEvent::ev_gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
     }
   }
 
@@ -399,14 +410,15 @@ bool Ui::handleEvent( const NEvent& event )
 
 //!!! android fix. update hovered element on every mouse event,
 //!   that beforeDraw() function cannot do it correctly
-#ifdef CAESARIA_PLATFORM_ANDROID
-        _updateHovered( _d->cursorPos );
-#endif
+        if( OSystem::isAndroid() )
+        {
+          _updateHovered( _d->cursorPos );
+        }
 //!!! end android fix
         switch( event.mouse.type )
         {
-        case mouseLbtnPressed:
-        case mouseRbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
+        case NEvent::Mouse::btnRightPressed:
         {
             if ( (_d->hovered.current.isValid() && _d->hovered.current != getFocus()) || !getFocus() )
             {
@@ -433,7 +445,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
         break;
 
-        case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
           if( getFocus() )
           {
             return getFocus()->onEvent( event );
@@ -449,7 +461,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
     break;
 
-    case sTextInput:
+    case sEventTextInput:
     case sEventKeyboard:
         {
           if( _d->console )
@@ -511,33 +523,28 @@ void Ui::beforeDraw()
 
   _updateHovered( _d->cursorPos );
 
-  Widgets rchildren = children();
+  _d->tooltip.beforeDraw();
 
-  if( _d->tooltip.element.isValid() )
-  {
-    _d->tooltip.element->bringToFront();
-  }
+  for (auto widget : _children())
+    widget->beforeDraw(*_d->engine);
 
-  for( auto widget : rchildren )
-    widget->beforeDraw( *_d->engine );
+  if (_d->console)
+    _d->console->beforeDraw(*_d->engine);
 
   _d->preRenderFunctionCalled = true;
 }
 
 bool Ui::removeFocus( Widget* element)
 {
-  if( _d->focusedElement.isValid() && _d->focusedElement == element )
+  if( _d->focused.element.isValid() && _d->focused.element == element )
   {
-    if( _d->focusedElement->onEvent( NEvent::Gui( _d->focusedElement.object(),  0, guiElementFocusLost )) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(),  0, guiElementFocusLost )) )
     {
       return false;
     }
   }
 
-  if( _d->focusedElement.isValid() )
-  {
-    _d->focusedElement = WidgetPtr();
-  }
+  _d->focused.element = WidgetPtr();
 
   return true;
 }
@@ -550,35 +557,39 @@ void Ui::animate( unsigned int time )
 Size Ui::vsize() const {  return size(); }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
-Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
+Widget* TooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 {
-  Label* elm = new Label( &parent, Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
-  elm->setSubElement(true);
-  elm->setTextAlignment( align::upperLeft, align::upperLeft );
-  elm->setTextOffset( Point( 5, 5 ) );
+  Label& elm = parent.add<Label>( Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
+  elm.setSubElement(true);
+  elm.setTextAlignment( align::upperLeft, align::upperLeft );
+  elm.setTextOffset( Point( 5, 5 ) );
 
-  Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  Size tooltipSize( elm.textWidth() + 20, elm.textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
   {
     tooltipSize.setWidth( parent.width() * 0.5 );
-    tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-    elm->setWordwrap( true );
+    tooltipSize.setHeight( elm.textHeight() * 2 + 10 );
+    elm.setWordwrap( true );
   }
 
-  Rect rect( cursor, tooltipSize );
+  elm.setGeometry( Rect( cursor + offset, tooltipSize ) );
 
-  rect -= Point( tooltipSize.width() + 20, -20 );
-  elm->setGeometry( rect );
-
-  return elm;
+  return &elm;
 }
 
-void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,
+void TooltipWorker::beforeDraw()
+{
+  if (element.isValid())
+    element->bringToFront();
+}
+
+void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,
                               WidgetPtr hovered, Point cursor )
 {
   // launch tooltip
   if( element.isNull()
-      && hovered.isValid() && hovered.object() != &rootWidget
+      && hovered.isValid()
+      && hovered.object() != &rootWidget
       && (time - enterTime >= launchTime
       || (time - lastTime >= relaunchTime && time - lastTime < launchTime))
       && hovered->tooltipText().size()
@@ -586,26 +597,26 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   {
     if( hovered.isValid() )
     {
-      NEvent e;
-      hovered->onEvent( e );
+      hovered->onEvent( NEvent::ev_none() );
     }
 
     element = standart( rootWidget, hovered.object(), cursor );
     element->addProperty( "tooltip", 1 );
-    element->setGeometry( element->relativeRect() + Point( 1, 1 ) );
-    if( element->screenBottom() > (int)rootWidget.height() ||
-        element->screenLeft() < (int)0 )
-    {
-      Rect geom = element->absoluteRect();
-      geom.constrainTo( rootWidget.absoluteRect() );
-      element->setGeometry( geom );
-      element->setVisible( showTooltips );
-    }
+    element->setGeometry( element->relativeRect() + Point( 2, 5 ) );
+    element->setVisible( showTooltips );
+    lastPos = Point();
   }
 
   if( element.isValid() && element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
   {
     lastTime = time;
+
+    if( lastPos != cursor )
+    {
+      Rect geom = element->absoluteRect();
+      geom.constrainTo( rootWidget.absoluteRect() );
+      element->setGeometry( geom );
+    }
 
     // got invisible or removed in the meantime?
     if( hovered.isNull()
@@ -616,6 +627,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
       element = WidgetPtr();
     }
   }
+
+  lastPos = cursor;
 }
 
 }//end namespace gui

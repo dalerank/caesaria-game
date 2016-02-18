@@ -36,7 +36,6 @@ public:
   virtual void setModeAI(AiMode mode);
   virtual AiMode modeAI() const;
 
-  bool isDistantCity() const;
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
   virtual SmartPtr<Player> mayor() const;
@@ -60,7 +59,6 @@ public:
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;
-  void _initTextures();
   void _resetGoodState(good::Product pr );
   void _checkMerchantsDeadline();
 

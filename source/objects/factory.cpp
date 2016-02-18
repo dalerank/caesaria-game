@@ -41,12 +41,10 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
-
-class FactoryStore : public good::Storage
+class FactoryStorage : public good::Storage
 {
 public:
-  FactoryStore() : factory( NULL ) {}
+  FactoryStorage() : factory( NULL ) {}
 
   virtual int getMaxStore(const good::Product goodType)
   {
@@ -58,17 +56,22 @@ public:
     return good::Storage::getMaxStore( goodType );
   }
 
-  virtual void applyStorageReservation( good::Stock &stock, const int reservationID )
+  virtual bool applyStorageReservation( good::Stock& stock, const int reservationID )
   {
-    good::Storage::applyStorageReservation( stock, reservationID );
+    bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
     emit onChangeState();
+    return isOk;
   }
 
-  virtual void applyRetrieveReservation( good::Stock &stock, const int reservationID)
+  virtual bool applyRetrieveReservation( good::Stock& stock, const int reservationID)
   {
-    good::Storage::applyRetrieveReservation( stock, reservationID );
+    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
+    stock.setInfo( game::Date::current(), factory->pos().hash() );
     emit onChangeState();
+    return isOk;
   }
+
+  virtual TilePos owner() const { return factory ? factory->pos() : TilePos::invalid(); }
 
   Factory* factory;
 
@@ -79,22 +82,24 @@ public signals:
 class Factory::Impl
 {
 public:
+  bool isActive;
   struct
   {
+    float rate;  // max production / year
+    float progress; // progress of the work, in percent (0-100).
+  } production;
 
-  };
+  struct {
+    good::Info in;
+    good::Info out;
+  } goods;
 
-  bool isActive;
-  float productionRate;  // max production / year
-  float progress;  // progress of the work, in percent (0-100).
-  Picture stockPicture; // stock of input good
-  FactoryStore goodStore;
-  good::Product inGoodType;
+  FactoryStorage goodStore;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
-  good::Product outGoodType;
   bool produceGood;
   unsigned int finishedQty;
+  std::map<int,Picture> stockImages;
 
 public:
   void productReady();
@@ -104,29 +109,29 @@ Factory::Factory(const good::Product inType, const good::Product outType,
                   const object::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-  _d->productionRate = 2.f;
-  _d->progress = 0.0f;
+  _d->production.rate = 2.f;
+  _d->production.progress = 0.0f;
   _d->isActive = true;
   _d->produceGood = false;
-  _d->inGoodType = inType;
-  _d->outGoodType = outType;
+  _d->goods.in = good::Info( inType );
+  _d->goods.out = good::Info( outType );
   _d->finishedQty = 100;
   _d->maxUnworkingWeeks = 0;
   _d->lowWorkerWeeksNumber = 0;
   _d->goodStore.factory = this;
   _d->goodStore.setCapacity( 1000 );
-  _d->goodStore.setCapacity(_d->inGoodType, 200);
-  _d->goodStore.setCapacity(_d->outGoodType, 100);
+  _d->goodStore.setCapacity(_d->goods.in.type(), 200);
+  _d->goodStore.setCapacity(_d->goods.out.type(), 100);
   CONNECT( &_d->goodStore, onChangeState, this, Factory::_storeChanged );
 }
 
-good::Stock& Factory::inStock(){   return _d->goodStore.getStock(_d->inGoodType);}
-const good::Stock& Factory::inStock() const { return _d->goodStore.getStock(_d->inGoodType);}
-good::Stock &Factory::outStock(){  return _d->goodStore.getStock(_d->outGoodType);}
-const good::Stock&Factory::outStock() const { return _d->goodStore.getStock(_d->outGoodType); }
-good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
-int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
-void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
+good::Stock& Factory::inStock() { return _d->goodStore.getStock(_d->goods.in.type()); }
+const good::Stock& Factory::inStock() const { return _d->goodStore.getStock(_d->goods.in.type());}
+good::Stock& Factory::outStock() { return _d->goodStore.getStock(_d->goods.out.type());}
+const good::Stock& Factory::outStock() const { return _d->goodStore.getStock(_d->goods.out.type()); }
+const good::Info& Factory::consume() const{  return _d->goods.in; }
+int Factory::progress(){ return math::clamp<int>( (int)_d->production.progress, 0, 100 );}
+void Factory::updateProgress(float value){  _d->production.progress = math::clamp<float>( _d->production.progress += value, 0.f, 101.f );}
 
 bool Factory::mayWork() const
 {
@@ -186,7 +191,7 @@ void Factory::_weekUpdate(unsigned int time)
 
 void Factory::_setConsumeGoodType(int, good::Product product)
 {
-   _d->inGoodType = product;
+   _d->goods.in = product;
 }
 
 void Factory::_setUnworkingInterval(unsigned int weeks)
@@ -196,7 +201,7 @@ void Factory::_setUnworkingInterval(unsigned int weeks)
 
 void Factory::_reachUnworkingTreshold() {}
 
-bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStock().empty()); }
+bool Factory::haveMaterial() const {  return (consume().type() != good::none && !inStock().empty()); }
 
 void Factory::timeStep(const unsigned long time)
 {
@@ -210,26 +215,24 @@ void Factory::timeStep(const unsigned long time)
 
   //no workers or no good in stock... stop animate
   if( !mayWork() )
-  {
     return;
-  }
-  
-  if( _d->progress >= 100.0 ) { _productReady();     }
-  else                        { _productProgress();  }
+
+  if( _d->production.progress >= 100.0 ) { _productReady();     }
+  else                                   { _productProgress();  }
 
   if( !_d->produceGood )
   {
     int consumeQty = (int)getConsumeQty();
-    if( _d->inGoodType == good::none ) //raw material
+    if( _d->goods.in.type() == good::none ) //raw material
     {
       _d->produceGood = true;
     }
-    else if( _d->goodStore.qty( _d->inGoodType ) >= consumeQty
-            && _d->goodStore.qty( _d->outGoodType ) < 100 )
+    else if( _d->goodStore.qty( _d->goods.in.type() ) >= consumeQty
+            && _d->goodStore.qty( _d->goods.out.type() ) < 100 )
     {
       _d->produceGood = true;
       //gcc fix temporaly ref object error
-      good::Stock tmpStock( _d->inGoodType, consumeQty, 0 );
+      good::Stock tmpStock( _d->goods.in.type(), consumeQty, 0 );
       _d->goodStore.retrieve( tmpStock, consumeQty  );
     }
   }
@@ -238,13 +241,13 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  int qty = _d->goodStore.qty( _d->outGoodType );
-  if( _mayDeliverGood() && qty >= 100 )
-  {      
-    auto cartPusher = CartPusher::create( _city() );
+  int qty = _d->goodStore.qty( _d->goods.out.type() );
+  if( _mayDeliverGood() && qty >= CartPusher::simpleCart )
+  {
+    auto cartPusher = Walker::create<CartPusher>( _city() );
 
-    good::Stock pusherStock( _d->outGoodType, qty, 0 );
-    _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
+    good::Stock pusherStock( _d->goods.out.type(), qty, 0 );
+    _d->goodStore.retrieve( pusherStock, math::clamp<int>( qty, 0, CartPusher::megaCart ) );
 
     cartPusher->send2city( this, pusherStock );
 
@@ -260,7 +263,7 @@ void Factory::deliverGood()
   }
 }
 
-good::Store& Factory::store() {   return _d->goodStore; }
+good::Store& Factory::store() { return _d->goodStore; }
 
 std::string Factory::troubleDesc() const
 {
@@ -268,14 +271,12 @@ std::string Factory::troubleDesc() const
 
   if( !isActive() )
   {
-    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = fmt::format( "##trade_advisor_blocked_{0}_production##", goodname );
+    ret = fmt::format( "##trade_advisor_blocked_{}_production##", consume().name() );
   }
 
-  if( ret.empty() && !haveMaterial() && consumeGoodType() != good::none )
+  if( ret.empty() && !haveMaterial() && consume().type() != good::none )
   {
-    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = fmt::format( "##trouble_need_{0}##", goodname );
+    ret = fmt::format( "##trouble_need_{}##", consume().name() );
   }
 
   return ret;
@@ -284,8 +285,8 @@ std::string Factory::troubleDesc() const
 void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, productionRate )
-  VARIANT_SAVE_ANY_D( stream, _d, progress )
+  VARIANT_SAVE_ANY_D( stream, _d, production.rate )
+  VARIANT_SAVE_ANY_D( stream, _d, production.progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
   VARIANT_SAVE_ANY_D( stream, _d, maxUnworkingWeeks )
   VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
@@ -295,8 +296,8 @@ void Factory::load( const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, progress, 0.f, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, productionRate, 9.6f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, production.progress, 0.f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, production.rate, 9.6f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxUnworkingWeeks, 0, stream )
 
@@ -306,13 +307,17 @@ void Factory::load( const VariantMap& stream)
 Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( !roadside().empty() ) && ( walkers().size() == 0 );}
 
-void Factory::_storeChanged(){}
-void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
-float Factory::productRate() const{  return _d->productionRate;}
+void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
+float Factory::productRate() const{  return _d->production.rate;}
 
-unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
-unsigned int Factory::getFinishedQty() const{ return _d->finishedQty;}
-unsigned int Factory::getConsumeQty()  const{ return 100;}
+void Factory::_storeChanged()
+{
+  _fgPicture(1) = _getSctockImage( inStock().qty() );
+}
+
+math::Percent Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
+unsigned int Factory::getFinishedQty() const { return _d->finishedQty; }
+unsigned int Factory::getConsumeQty()  const { return 100; }
 
 std::string Factory::cartStateDesc() const
 {
@@ -342,26 +347,45 @@ void Factory::initialize(const object::Info& mdata)
   Variant outputProduct = mdata.getOption( "output" );
   if( outputProduct.isValid() )
   {
-    good::Product pr = good::Helper::getType( outputProduct.toString() );
+    good::Product pr = good::Helper::type( outputProduct.toString() );
     if( pr != good::none )
-      _d->outGoodType = pr;
+      _d->goods.out = pr;
+  }
+
+  VariantMap vStockImages = mdata.getOption( "stock.image" ).toMap();
+  for( const auto& item : vStockImages )
+  {
+    VariantMap stageVm = item.second.toMap();
+    int index = stageVm.get( "qty" ).toInt();
+    Picture image; VARIANT_LOAD_PICTURE(image, stageVm);
+    image.addOffset( stageVm.get("offset"));
+    _d->stockImages[ index ] = image;
   }
 }
 
-good::Product Factory::produceGoodType() const{  return _d->outGoodType;}
+void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)
+{
+  if( oldFormat < 70 )
+  {
+     _d->production.rate = stream.get( "productionRate", 9.6f );
+     _d->production.progress = stream.get( "progress", 0.f );
+  }
+}
+
+const good::Info& Factory::produce() const{  return _d->goods.out;}
 
 void Factory::receiveGood()
 {
   //send cart supplier if stock not full
-  if( consumeGoodType() == good::none )
+  if( consume().type() == good::none )
     return;
 
-  unsigned int mayStoreQty = _d->goodStore.getMaxStore( consumeGoodType() );
-  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, 100 );
+  unsigned int mayStoreQty = _d->goodStore.getMaxStore( consume().type() );
+  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, CartPusher::simpleCart );
   if( _mayDeliverGood() && mayStoreQty > 0 )
   {
-    auto cartSupplier = CartSupplier::create( _city() );
-    cartSupplier->send2city( this, consumeGoodType(), mayStoreQty );
+    auto cartSupplier = Walker::create<CartSupplier>( _city() );
+    cartSupplier->send2city( this, consume().type(), mayStoreQty );
 
     addWalker( cartSupplier.object() );
   }
@@ -371,52 +395,32 @@ bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
 
-Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
-{
-  _picture().load( ResourceGroup::commerce, 99 );
-
-  _animation().load(ResourceGroup::commerce, 100, 8);
-  _animation().setDelay( 4 );
-  _fgPictures().resize( 3 );
-}
-
-bool Creamery::canBuild( const city::AreaInfo& areaInof ) const
-{
-  return Factory::canBuild( areaInof );
-}
-
-bool Creamery::build( const city::AreaInfo& info )
-{
-  Factory::build( info );
-
-  bool haveOliveFarm = info.city->statistic()
-                                  .objects
-                                  .count( object::olive_farm ) > 0;
-
-  _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
-
-  return true;
-}
-
-void Creamery::_storeChanged()
-{
-  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
-  _fgPicture(1).setOffset( 40, -5 );
-}
-
-
 void Factory::_productReady()
 {
   _d->produceGood = false;
 
-  if( _d->goodStore.qty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
+  if( _d->goodStore.qty( _d->goods.out.type() ) < _d->goodStore.capacity( _d->goods.out.type() )  )
   {
-    _d->progress -= 100.f;
+    _d->production.progress -= 100.f;
     unsigned int qty = getFinishedQty();
     //gcc fix for temporaly ref object
-    good::Stock tmpStock( _d->outGoodType, qty, qty );
+    good::Stock tmpStock( _d->goods.out.type(), qty, qty );
     _d->goodStore.store( tmpStock, qty );
   }
+}
+
+const Picture& Factory::_getSctockImage(int qty)
+{
+  if( qty == 0  )
+    return Picture::getInvalid();
+
+  qty = math::clamp( (qty / 100) * 100, 100, 1000);
+  auto it = _d->stockImages.find(qty);
+  if(it != _d->stockImages.end())
+    return it->second;
+
+  Logger::warning("WARNING !!! Cant find image for factory stock image {}", qty);
+  return Picture::getInvalid();
 }
 
 void Factory::_productProgress()
@@ -424,10 +428,10 @@ void Factory::_productProgress()
   if( _d->produceGood && game::Date::isDayChanged() )
   {
     //ok... factory is work, produce goods
-    float timeKoeff = _d->productionRate / 365.f;
+    float productionPerYear = _d->production.rate / 365.f;
     float laborAccessKoeff = laborAccessPercent() / 100.f;
-    float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+    float dayProgress = productivity() * productionPerYear * laborAccessKoeff;  // work is proportional to time and factory speed
 
-    _d->progress += dayProgress;
+    _d->production.progress += dayProgress;
   }
 }

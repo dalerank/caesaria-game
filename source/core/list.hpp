@@ -206,6 +206,18 @@ public:
   /** \param element Element to add to the list. */
   void append(const T& element)   {      push_back( element );  }
 
+  void remove(const T& element)
+  {
+    for (auto it=this->begin(); it != this->end(); ++it)
+    {
+      if (*it == element)
+      {
+        erase( it );
+        break;
+      }
+    }
+  }
+
   //! Adds an elements at the end of the list.
   /** \param other array of elements to add to the list. */
   void append( const List<T>& other )

@@ -31,6 +31,7 @@ public:
   typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
   typedef enum { bgNone, bgWhiteFrame } BackgroundType;
   //! constructor
+  Window( Widget* parent );
   Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1, BackgroundType style=bgWhiteFrame );
 
   //! destructor
@@ -56,10 +57,10 @@ public:
 
   //! Set if the window titlebar will be drawn
   //! Note: If the background is not drawn, then the titlebar is automatically also not drawn
-  virtual void setHeaderVisible(bool draw);
+  virtual void setTitleVisible(bool draw);
 
   //! Get if the window titlebar will be drawn
-  virtual bool headerVisible() const;
+  virtual bool titleVisible() const;
 
   virtual void setBackground( gfx::Picture texture );
   virtual void setBackground( BackgroundType type );
@@ -69,7 +70,8 @@ public:
   virtual Rect clientRect() const;
   virtual void setModal();
 
-  void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( const std::string& flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 
@@ -77,17 +79,32 @@ public:
 
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-  virtual void setText( const std::string& text );
+  virtual void setText(const std::string& text);
+  virtual void setTitleRect(const Rect& rect);
+
+  void addCloseCode(int code);
+
+public signals:
+  Signal1<Widget*>& onCloseEx();
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();
+  void _setSystemButtonsVisible(bool visible);
   virtual void _finalizeResize();
   virtual void _updateBackground();
+
+  Widget* _titleWidget() const;
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
+};
+
+class SimpleWindow : public Window
+{
+public:
+  SimpleWindow(Widget* parent, const Rect& rect, const std::string& title="", const std::string& ui="");
 };
 
 }//end namespace gui

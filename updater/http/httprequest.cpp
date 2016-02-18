@@ -21,7 +21,7 @@
 #include "core/utils.hpp"
 #include "../constants.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 #include <winsock2.h> // greebo: need to include winsock2 before curl/curl.h
 #include <ws2tcpip.h>
 #include <wspiapi.h>

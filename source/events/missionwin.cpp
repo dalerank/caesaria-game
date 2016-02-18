@@ -16,24 +16,38 @@
 #include "missionwin.hpp"
 #include "game/game.hpp"
 #include "steam.hpp"
+#include "city/city.hpp"
+#include "city/victoryconditions.hpp"
+#include "scripting/core.hpp"
+#include "core/variant_list.hpp"
 
 namespace events
 {
 
-GameEventPtr MissionWin::create(const std::string& name)
+GameEventPtr MissionWin::create(bool force)
 {
-#ifdef CAESARIA_USE_STEAM
-  steamapi::missionWin( name );
-#endif
-
-  GameEventPtr ret( new MissionWin( name ) );
+  GameEventPtr ret( new MissionWin( force ) );
   ret->drop();
 
   return ret;
 }
 
-void MissionWin::_exec(Game& game, unsigned int) {}
+void MissionWin::_exec(Game& game, unsigned int)
+{
+  const auto& conditions = game.city()->victoryConditions();
+  VariantList vl;
+  vl << conditions.newTitle()
+     << conditions.winText()
+     << conditions.winSpeech()
+     << conditions.mayContinue();
+
+  script::Core::execFunction( "OnMissionWin", vl );
+
+  if( !_force )
+    steamapi::missionWin( conditions.name() );
+}
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
 
-MissionWin::MissionWin( const std::string& name ) : _name( name ) {}
-}
+MissionWin::MissionWin( bool force ) : _force(force) {}
+
+}//end namespace events

@@ -41,8 +41,8 @@ public:
   virtual int getMaxStore(const good::Product goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID);
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID);
 
   virtual void retrieve( good::Stock& stock, const int amounts);
   virtual VariantMap save() const;

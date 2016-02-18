@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 #include "widget_factory.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace gfx;
 
@@ -47,57 +48,64 @@ public:
   Point textOffset;
   Font overrideFont;
   Font lastBreakFont;
-	bool mouseMarking;
-	bool border;
-	bool drawBackground;
-	bool overrideColorEnabled;
-	int markBegin;
-	int markEnd;
+  bool mouseMarking;
+  bool border;
+  bool overrideColorEnabled;
+  int markBegin;
+  int markEnd;
   bool needUpdateTexture;
-	NColor overrideColor;
+  NColor overrideColor;
 
-	int cursorPos, oldCursorPos;
-	int horizScrollPos, vertScrollPos; // scroll position in characters
-	unsigned int max;
-	std::string holderText;
-  Picture bgPicture;
-  Batch background;
-  Pictures backgroundNb;
+  int cursorPos, oldCursorPos;
+  int horizScrollPos, vertScrollPos; // scroll position in characters
+  unsigned int max;
+  std::string holderText;
+
+  struct {
+    bool visible;
+    Picture image;
+    Batch batch;
+    Pictures fallback;
+  } background;
+
   Picture textPicture;
 
-	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
-	char passwordChar;
+  bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
+  char passwordChar;
 
   Impl() : currentTextRect(0,0,1,1)
-	{
-		oldCursorPos = 0;
-		mouseMarking = false;
-		overrideColorEnabled = false;
-		markBegin = 0;
-		markEnd = 0;
-		border = false;
-		drawBackground = true;
-		overrideColor = NColor(101,255,255,255);
-		cursorPos = 0;
-		horizScrollPos = 0;
-		vertScrollPos = 0;
-		max = 0;
-		wordWrapEnabled = false;
-		multiLine = false;
-		autoScrollEnabled = true;
-		isPasswordBox = false;
-		passwordChar = '*';
-		needUpdateTexture = true;
-	}
+  {
+    oldCursorPos = 0;
+    mouseMarking = false;
+    overrideColorEnabled = false;
+    markBegin = 0;
+    markEnd = 0;
+    border = false;
+    background.visible = true;
+    overrideColor = NColor(101,255,255,255);
+    cursorPos = 0;
+    horizScrollPos = 0;
+    vertScrollPos = 0;
+    max = 0;
+    wordWrapEnabled = false;
+    multiLine = false;
+    autoScrollEnabled = true;
+    isPasswordBox = false;
+    passwordChar = '*';
+    needUpdateTexture = true;
+  }
 
-	int getCursorPos( EditBox* who, int x, int y );
+  int getCursorPos( EditBox* who, int x, int y );
 
   //! sets the area of the given line
   void setTextRect( EditBox* who, int line, const std::string& r="");
 
-signals public:
-  Signal1<std::string> onTextChangedSignal;
-  Signal0<> onEnterPressedSignal;
+  struct {
+    Signal1<std::string> onTextChanged;
+    Signal2<Widget*,std::string> onTextChangedEx;
+    Signal0<> onEnterPressed;
+    Signal1<Widget*> onEnterPressedEx;
+  } signal;
 };
 
 std::string __ucs2utf8( const std::wstring& text )
@@ -132,7 +140,6 @@ void EditBox::_init()
   setTaborder(-1);
 
   _breakText();
-
   _calculateScrollPos();
 
   setTextAlignment( align::upperLeft, align::center );
@@ -141,7 +148,7 @@ void EditBox::_init()
 void EditBox::_setText(const std::wstring& r)
 {
   _d->text = r;
-  emit _d->onTextChangedSignal( __ucs2utf8( r ) );
+  emit _d->signal.onTextChanged( __ucs2utf8( r ) );
 
   if( (unsigned int)_d->cursorPos > _d->text.size())
   {
@@ -161,23 +168,31 @@ EditBox::EditBox( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _
 
 //! constructor
 EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text, int id, bool border )
-	: Widget( parent, id, rectangle), _d( new Impl )
+  : Widget( parent, id, rectangle), _d( new Impl )
 {
-	_init();
+  _init();
 
-	setText( text );
+  setText( text );
 }
 
-Signal1<std::string>& EditBox::onTextChanged() {	return _d->onTextChangedSignal;}
-Signal0<>&EditBox::onEnterPressed(){ return _d->onEnterPressedSignal;	}
+Signal1<std::string>& EditBox::onTextChanged() {	return _d->signal.onTextChanged;}
+
+Signal2<Widget*, std::string>& EditBox::onTextChangedEx() { return _d->signal.onTextChangedEx; }
+Signal0<>& EditBox::onEnterPressed(){ return _d->signal.onEnterPressed;	}
+Signal1<Widget*>& EditBox::onEnterPressedEx() { return _d->signal.onEnterPressedEx; }
 EditBox::~EditBox() {}
 
 //! Sets another skin independent font.
-void EditBox::setFont( const Font& font )
+void EditBox::setFont(const Font& font)
 {
   _d->overrideFont = font;
   _breakText();
-	_d->needUpdateTexture = true;
+  _d->needUpdateTexture = true;
+}
+
+void EditBox::setFont(const std::string& font)
+{
+  Widget::setFont(font);
 }
 
 //! Gets the override font (if any)
@@ -188,15 +203,15 @@ Font EditBox::activeFont()
 {
   if ( _d->overrideFont.isValid() )
     return _d->overrideFont;
-  
+
   return Font::create( FONT_2 );
 }
 
 //! Sets another color for the text.
 void EditBox::setOverrideColor( NColor color )
 {
-	_d->overrideColor = color;
-	_d->overrideColorEnabled = true;
+  _d->overrideColor = color;
+  _d->overrideColorEnabled = true;
 }
 
 //! Turns the border on or off
@@ -209,8 +224,8 @@ bool EditBox::isOverrideColorEnabled() const{	return _d->overrideColorEnabled; }
 //! Enables or disables word wrap
 void EditBox::setWordWrap(bool enable)
 {
-	_d->wordWrapEnabled = enable;
-	_breakText();
+  _d->wordWrapEnabled = enable;
+  _breakText();
 }
 
 void EditBox::_finalizeResize()
@@ -225,536 +240,530 @@ void EditBox::setMultiline(bool enable) {	_d->multiLine = enable; }       //! En
 bool EditBox::isMultilineEnabled() const {	return _d->multiLine; }       //! Checks if multi line editing is enabled
 
 void EditBox::moveCursor(int index)
-{  
+{
   _d->cursorPos = math::clamp<int>( index, 0, _d->text.size() );
 }
 
 void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 {
-	_d->isPasswordBox = passwordBox;
-	if (_d->isPasswordBox)
-	{
-		_d->passwordChar = passwordChar;
-		setMultiline(false);
-		setWordWrap(false);
-		_d->brokenText.clear();
-	}
+  _d->isPasswordBox = passwordBox;
+  if (_d->isPasswordBox)
+  {
+    _d->passwordChar = passwordChar;
+    setMultiline(false);
+    setWordWrap(false);
+    _d->brokenText.clear();
+  }
 }
 
 bool EditBox::isPasswordBox() const {	return _d->isPasswordBox;}
 void EditBox::setupUI(const VariantMap& ui)
 {
-	Widget::setupUI( ui );
+  Widget::setupUI( ui );
 
   setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
 
-	_d->textOffset = ui.get( "textOffset" ).toPoint();
+  _d->textOffset = ui.get( "textOffset" ).toPoint();
 
-	Variant vOffset = ui.get( "text.offset" );
-	if( vOffset.isValid() )
-		_d->textOffset = vOffset.toPoint();
+  Variant vOffset = ui.get( "text.offset" );
+  if( vOffset.isValid() )
+    _d->textOffset = vOffset.toPoint();
 
-	_d->needUpdateTexture = true;
-}
-
-//! Sets text justification
-void EditBox::setTextAlignment(Alignment horizontal, Alignment vertical)
-{
-	Widget::setTextAlignment( horizontal, vertical );
+  _d->needUpdateTexture = true;
 }
 
 //! called if an event happened.
 bool EditBox::onEvent(const NEvent& event)
 {
-	if (enabled())
-	{
-		switch(event.EventType)
-		{
-		case sEventGui:
-			if (event.gui.type == guiElementFocusLost)
-			{
-				if (event.gui.caller == this)
-				{
-					_d->mouseMarking = false;
-					_setTextMarkers(0,0);
-				}
-			}
-			break;
-		case sTextInput:
-			_inputChar(*(unsigned short*)event.text.text);
-		break;
+  if (enabled())
+  {
+    switch(event.EventType)
+    {
+    case sEventGui:
+      if (event.gui.type == guiElementFocusLost)
+      {
+        if (event.gui.caller == this)
+        {
+          _d->mouseMarking = false;
+          _setTextMarkers(0,0);
+        }
+      }
+      break;
+    case sEventTextInput:
+      _inputChar(*(unsigned short*)event.text.text);
+    break;
 
-		case sEventKeyboard:
-			if (_processKey(event))
-				return true;
-			break;
-		case sEventMouse:
-			if (_processMouse(event))
-				return true;
-			break;
-		default:
-			break;
-		}
-	}
+    case sEventKeyboard:
+      if (_processKey(event))
+        return true;
 
-	return Widget::onEvent(event);
+    case sEventMouse:
+      if (_processMouse(event))
+        return true;
+
+    default:
+    break;
+    }
+  }
+
+  return Widget::onEvent(event);
 }
 
 
 bool EditBox::_processKey(const NEvent& event)
 {
-	if (!event.keyboard.pressed)
-		return false;
+  if (!event.keyboard.pressed)
+    return false;
 
-	bool textChanged = false;
-	int newMarkBegin = _d->markBegin;
-	int newMarkEnd = _d->markEnd;
+  bool textChanged = false;
+  int newMarkBegin = _d->markBegin;
+  int newMarkEnd = _d->markEnd;
 
   // control shortcut handling
   if (event.keyboard.control)
-	{
-		// german backlash '\' entered with control + '?'
-		if ( event.keyboard.symbol == L'\\' )
-		{
-			_inputChar(event.keyboard.symbol);
-			return true;
-		}
+  {
+    // german backlash '\' entered with control + '?'
+    if ( event.keyboard.symbol == L'\\' )
+    {
+      _inputChar(event.keyboard.symbol);
+      return true;
+    }
 
-		switch(event.keyboard.key)
-		{
-		case KEY_KEY_A:
-			// select all
-			newMarkBegin = 0;
-			newMarkEnd = _d->text.size();
-		break;
+    switch(event.keyboard.key)
+    {
+    case KEY_KEY_A:
+      // select all
+      newMarkBegin = 0;
+      newMarkEnd = _d->text.size();
+    break;
 
-		case KEY_KEY_C:
-			// copy to clipboard
-			/*if (!_d->isPasswordBox && _d->osOperator && _d->markBegin != _d->markEnd)
-			{
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+    case KEY_KEY_C:
+      // copy to clipboard
+      /*if (!_d->isPasswordBox && _d->osOperator && _d->markBegin != _d->markEnd)
+      {
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				String s;
-				s = _text.subString(realmbgn, realmend - realmbgn).c_str();
-				_d->osOperator->copyToClipboard( s );
-			}*/
-	  break;
-		
+        String s;
+        s = _text.subString(realmbgn, realmend - realmbgn).c_str();
+        _d->osOperator->copyToClipboard( s );
+      }*/
+    break;
+
     case KEY_KEY_X:
-			// cut to the clipboard
-			/*if (!_d->isPasswordBox && _d->osOperator && _d->markBegin != _d->markEnd)
-			{
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      // cut to the clipboard
+      /*if (!_d->isPasswordBox && _d->osOperator && _d->markBegin != _d->markEnd)
+      {
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				// copy
-				String sc;
-				sc = _text.subString(realmbgn, realmend - realmbgn).c_str();
-				_d->osOperator->copyToClipboard( sc );
+        // copy
+        String sc;
+        sc = _text.subString(realmbgn, realmend - realmbgn).c_str();
+        _d->osOperator->copyToClipboard( sc );
 
-				if (isEnabled())
-				{
-					// delete
-					String s;
-					s = _text.subString(0, realmbgn);
-					s.append( _text.subString(realmend, _text.size()-realmend) );
-					_text = s;
+        if (isEnabled())
+        {
+          // delete
+          String s;
+          s = _text.subString(0, realmbgn);
+          s.append( _text.subString(realmend, _text.size()-realmend) );
+          _text = s;
 
-					_d->cursorPos = realmbgn;
-					newMarkBegin = 0;
-					newMarkEnd = 0;
-					textChanged = true;
-				}
-			}*/
-	  break;
-		case KEY_KEY_V:
-			if ( !enabled() )
-				break;
+          _d->cursorPos = realmbgn;
+          newMarkBegin = 0;
+          newMarkEnd = 0;
+          textChanged = true;
+        }
+      }*/
+    break;
+    case KEY_KEY_V:
+      if ( !enabled() )
+        break;
 
-			// paste from the clipboard
-			/*if (_d->osOperator)
-			{
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      // paste from the clipboard
+      /*if (_d->osOperator)
+      {
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				// add new character
+        // add new character
                 String p( _d->osOperator->getTextFromClipboard() );
-				if( p.size() )
-				{
-					if (_d->markBegin == _d->markEnd)
-					{
-						// insert text
-						String s = _text.subString(0, _d->cursorPos);
+        if( p.size() )
+        {
+          if (_d->markBegin == _d->markEnd)
+          {
+            // insert text
+            String s = _text.subString(0, _d->cursorPos);
                         s.append( p );
-						s.append( _text.subString(_d->cursorPos, _text.size()-_d->cursorPos) );
+            s.append( _text.subString(_d->cursorPos, _text.size()-_d->cursorPos) );
 
-						if (!_d->max || s.size()<=_d->max) // thx to Fish FH for fix
-						{
-							_text = s;
-							s = p;
-							_d->cursorPos += s.size();
-						}
-					}
-					else
-					{
-						// replace text
+            if (!_d->max || s.size()<=_d->max) // thx to Fish FH for fix
+            {
+              _text = s;
+              s = p;
+              _d->cursorPos += s.size();
+            }
+          }
+          else
+          {
+            // replace text
 
-						String s = _text.subString(0, realmbgn);
-						s.append(p);
-						s.append( _text.subString(realmend, _text.size()-realmend) );
+            String s = _text.subString(0, realmbgn);
+            s.append(p);
+            s.append( _text.subString(realmend, _text.size()-realmend) );
 
-						if (!_d->max || s.size()<=_d->max)  // thx to Fish FH for fix
-						{
-							_text = s;
-							s = p;
-							_d->cursorPos = realmbgn + s.size();
-						}
-					}
-				}
+            if (!_d->max || s.size()<=_d->max)  // thx to Fish FH for fix
+            {
+              _text = s;
+              s = p;
+              _d->cursorPos = realmbgn + s.size();
+            }
+          }
+        }
 
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-				textChanged = true;
-			}*/
-	  break;
-		
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+        textChanged = true;
+      }*/
+    break;
+
     case KEY_HOME:
-			// move/highlight to start of text
-			if (event.keyboard.shift)
-			{
-				newMarkEnd = _d->cursorPos;
-				newMarkBegin = 0;
-				_d->cursorPos = 0;
-			}
-			else
-			{
-				_d->cursorPos = 0;
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
-			break;
-		case KEY_END:
-			// move/highlight to end of text
-			if (event.keyboard.shift)
-			{
-				newMarkBegin = _d->cursorPos;
-				newMarkEnd = _d->text.size();
-				_d->cursorPos = 0;
-			}
-			else
-			{
-				_d->cursorPos = _d->text.size();
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
-			break;
-		default:
-			return false;
-		}
-	} 
-	// default keyboard handling
-	else
-	switch(event.keyboard.key)
-	{
-	case KEY_END:
-		{
-			int p = _d->text.size();
-			if (_d->wordWrapEnabled || _d->multiLine)
-			{
-				p = _getLineFromPos(_d->cursorPos);
-				p = _d->brokenTextPositions[p] + (int)_d->brokenText[p].size();
-				if (p > 0 && (_d->text[ p-1 ] == L'\r' || _d->text[ p-1 ] == L'\n' ))
-					p-=1;
-			}
+      // move/highlight to start of text
+      if (event.keyboard.shift)
+      {
+        newMarkEnd = _d->cursorPos;
+        newMarkBegin = 0;
+        _d->cursorPos = 0;
+      }
+      else
+      {
+        _d->cursorPos = 0;
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
+      break;
+    case KEY_END:
+      // move/highlight to end of text
+      if (event.keyboard.shift)
+      {
+        newMarkBegin = _d->cursorPos;
+        newMarkEnd = _d->text.size();
+        _d->cursorPos = 0;
+      }
+      else
+      {
+        _d->cursorPos = _d->text.size();
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
+      break;
+    default:
+      return false;
+    }
+  }
+  // default keyboard handling
+  else
+  switch(event.keyboard.key)
+  {
+  case KEY_END:
+    {
+      int p = _d->text.size();
+      if (_d->wordWrapEnabled || _d->multiLine)
+      {
+        p = _getLineFromPos(_d->cursorPos);
+        p = _d->brokenTextPositions[p] + (int)_d->brokenText[p].size();
+        if (p > 0 && (_d->text[ p-1 ] == L'\r' || _d->text[ p-1 ] == L'\n' ))
+          p-=1;
+      }
 
-			if (event.keyboard.shift)
-			{
-				if (_d->markBegin == _d->markEnd)
-					newMarkBegin = _d->cursorPos;
+      if (event.keyboard.shift)
+      {
+        if (_d->markBegin == _d->markEnd)
+          newMarkBegin = _d->cursorPos;
 
-				newMarkEnd = p;
-			}
-			else
-			{
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
-			_d->cursorPos = p;
-		}
-		break;
-	case KEY_HOME:
-		{
+        newMarkEnd = p;
+      }
+      else
+      {
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
+      _d->cursorPos = p;
+    }
+    break;
+  case KEY_HOME:
+    {
 
-			int p = 0;
-			if (_d->wordWrapEnabled || _d->multiLine)
-			{
-				p = _getLineFromPos(_d->cursorPos);
-				p = _d->brokenTextPositions[p];
-			}
+      int p = 0;
+      if (_d->wordWrapEnabled || _d->multiLine)
+      {
+        p = _getLineFromPos(_d->cursorPos);
+        p = _d->brokenTextPositions[p];
+      }
 
-			if (event.keyboard.shift)
-			{
-				if (_d->markBegin == _d->markEnd)
-					newMarkBegin = _d->cursorPos;
-				newMarkEnd = p;
-			}
-			else
-			{
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
-			_d->cursorPos = p;
-		}
-		break;
-	case KEY_RETURN:
-		if (_d->multiLine)
-		{
-			_inputChar(L'\n');
-			return true;
-		}
-		else
-		{
-			emit _d->onEnterPressedSignal();
-			_sendGuiEvent( guiEditboxEnter );
-		}
-		break;
-	case KEY_LEFT:
-		if (event.keyboard.shift)
-		{
-			if (_d->cursorPos > 0)
-			{
-				if (_d->markBegin == _d->markEnd)
-					newMarkBegin = _d->cursorPos;
+      if (event.keyboard.shift)
+      {
+        if (_d->markBegin == _d->markEnd)
+          newMarkBegin = _d->cursorPos;
+        newMarkEnd = p;
+      }
+      else
+      {
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
+      _d->cursorPos = p;
+    }
+    break;
+  case KEY_RETURN:
+    if (_d->multiLine)
+    {
+      _inputChar(L'\n');
+      return true;
+    }
+    else
+    {
+      emit _d->signal.onEnterPressed();
+      _sendGuiEvent( guiEditboxEnter );
+    }
+    break;
+  case KEY_LEFT:
+    if (event.keyboard.shift)
+    {
+      if (_d->cursorPos > 0)
+      {
+        if (_d->markBegin == _d->markEnd)
+          newMarkBegin = _d->cursorPos;
 
-				newMarkEnd = _d->cursorPos-1;
-			}
-		}
-		else
-		{
-			newMarkBegin = 0;
-			newMarkEnd = 0;
-		}
+        newMarkEnd = _d->cursorPos-1;
+      }
+    }
+    else
+    {
+      newMarkBegin = 0;
+      newMarkEnd = 0;
+    }
 
-		if (_d->cursorPos > 0)
-			_d->cursorPos -= 1;
-		break;
+    if (_d->cursorPos > 0)
+      _d->cursorPos -= 1;
+    break;
 
-	case KEY_RIGHT:
-		if (event.keyboard.shift)
-		{
-			if( _d->text.size() > (unsigned int)_d->cursorPos)
-			{
-				if (_d->markBegin == _d->markEnd)
-					newMarkBegin = _d->cursorPos;
+  case KEY_RIGHT:
+    if (event.keyboard.shift)
+    {
+      if( _d->text.size() > (unsigned int)_d->cursorPos)
+      {
+        if (_d->markBegin == _d->markEnd)
+          newMarkBegin = _d->cursorPos;
 
-				newMarkEnd = _d->cursorPos+1;
-			}
-		}
-		else
-		{
-			newMarkBegin = 0;
-			newMarkEnd = 0;
-		}
+        newMarkEnd = _d->cursorPos+1;
+      }
+    }
+    else
+    {
+      newMarkBegin = 0;
+      newMarkEnd = 0;
+    }
 
-		if( _d->text.size() > (unsigned int)_d->cursorPos)
-		{
-			_d->cursorPos+=1;
-		}
-		break;
-	case KEY_UP:
-		if (_d->multiLine || (_d->wordWrapEnabled && _d->brokenText.size() > 1) )
-		{
-			int lineNo = _getLineFromPos(_d->cursorPos);
-			int mb = (_d->markBegin == _d->markEnd) ? _d->cursorPos : (_d->markBegin > _d->markEnd ? _d->markBegin : _d->markEnd);
-			if (lineNo > 0)
-			{
-				int cp = _d->cursorPos - _d->brokenTextPositions[lineNo];
-				if ((int)_d->brokenText[lineNo-1].size() < cp)
-					_d->cursorPos = _d->brokenTextPositions[lineNo-1] + (int)_d->brokenText[lineNo-1].size()-1;
-				else
-					_d->cursorPos = _d->brokenTextPositions[lineNo-1] + cp;
-			}
+    if( _d->text.size() > (unsigned int)_d->cursorPos)
+    {
+      _d->cursorPos+=1;
+    }
+    break;
+  case KEY_UP:
+    if (_d->multiLine || (_d->wordWrapEnabled && _d->brokenText.size() > 1) )
+    {
+      int lineNo = _getLineFromPos(_d->cursorPos);
+      int mb = (_d->markBegin == _d->markEnd) ? _d->cursorPos : (_d->markBegin > _d->markEnd ? _d->markBegin : _d->markEnd);
+      if (lineNo > 0)
+      {
+        int cp = _d->cursorPos - _d->brokenTextPositions[lineNo];
+        if ((int)_d->brokenText[lineNo-1].size() < cp)
+          _d->cursorPos = _d->brokenTextPositions[lineNo-1] + (int)_d->brokenText[lineNo-1].size()-1;
+        else
+          _d->cursorPos = _d->brokenTextPositions[lineNo-1] + cp;
+      }
 
-			if (event.keyboard.shift)
-			{
-				newMarkBegin = mb;
-				newMarkEnd = _d->cursorPos;
-			}
-			else
-			{
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
+      if (event.keyboard.shift)
+      {
+        newMarkBegin = mb;
+        newMarkEnd = _d->cursorPos;
+      }
+      else
+      {
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
 
-		}
-		else
-		{
-			return false;
-		}
-		break;
-	case KEY_DOWN:
-		if (_d->multiLine || (_d->wordWrapEnabled && _d->brokenText.size() > 1) )
-		{
-			int lineNo = _getLineFromPos(_d->cursorPos);
-			int mb = (_d->markBegin == _d->markEnd) ? _d->cursorPos : (_d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd);
-			if (lineNo < (int)_d->brokenText.size()-1)
-			{
-				int cp = _d->cursorPos - _d->brokenTextPositions[lineNo];
-				if ((int)_d->brokenText[lineNo+1].size() < cp)
-					_d->cursorPos = _d->brokenTextPositions[lineNo+1] + _d->brokenText[lineNo+1].size()-1;
-				else
-					_d->cursorPos = _d->brokenTextPositions[lineNo+1] + cp;
-			}
+    }
+    else
+    {
+      return false;
+    }
+    break;
+  case KEY_DOWN:
+    if (_d->multiLine || (_d->wordWrapEnabled && _d->brokenText.size() > 1) )
+    {
+      int lineNo = _getLineFromPos(_d->cursorPos);
+      int mb = (_d->markBegin == _d->markEnd) ? _d->cursorPos : (_d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd);
+      if (lineNo < (int)_d->brokenText.size()-1)
+      {
+        int cp = _d->cursorPos - _d->brokenTextPositions[lineNo];
+        if ((int)_d->brokenText[lineNo+1].size() < cp)
+          _d->cursorPos = _d->brokenTextPositions[lineNo+1] + _d->brokenText[lineNo+1].size()-1;
+        else
+          _d->cursorPos = _d->brokenTextPositions[lineNo+1] + cp;
+      }
 
-			if (event.keyboard.shift)
-			{
-				newMarkBegin = mb;
-				newMarkEnd = _d->cursorPos;
-			}
-			else
-			{
-				newMarkBegin = 0;
-				newMarkEnd = 0;
-			}
+      if (event.keyboard.shift)
+      {
+        newMarkBegin = mb;
+        newMarkEnd = _d->cursorPos;
+      }
+      else
+      {
+        newMarkBegin = 0;
+        newMarkEnd = 0;
+      }
 
-		}
-		else
-		{
-			return false;
-		}
-		break;
+    }
+    else
+    {
+      return false;
+    }
+    break;
 
-	case KEY_BACK:
-		if ( !enabled() )
-			break;
+  case KEY_BACK:
+    if ( !enabled() )
+      break;
 
-		if( _d->text.size() )
-		{
-			std::wstring s;
+    if( _d->text.size() )
+    {
+      std::wstring s;
 
-			if (_d->markBegin != _d->markEnd)
-			{
-				// delete marked text
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      if (_d->markBegin != _d->markEnd)
+      {
+        // delete marked text
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				s = _d->text.substr(0, realmbgn);
-				s.append( _d->text.substr( realmend, _d->text.size() - realmend ) );
-				_setText( s );
+        s = _d->text.substr(0, realmbgn);
+        s.append( _d->text.substr( realmend, _d->text.size() - realmend ) );
+        _setText( s );
 
-				_d->cursorPos = realmbgn;
-			}
-			else
-			{
-				// delete text behind cursor
-				s = _d->cursorPos>0 ? _d->text.substr( 0, _d->cursorPos-1) : L"";
+        _d->cursorPos = realmbgn;
+      }
+      else
+      {
+        // delete text behind cursor
+        s = _d->cursorPos>0 ? _d->text.substr( 0, _d->cursorPos-1) : L"";
 
-				s.append( _d->text.substr(_d->cursorPos, _d->text.size()-_d->cursorPos) );
-				_d->cursorPos -= 1;
-				_setText( s );
-			}
+        s.append( _d->text.substr(_d->cursorPos, _d->text.size()-_d->cursorPos) );
+        _d->cursorPos -= 1;
+        _setText( s );
+      }
 
-			if (_d->cursorPos < 0)
-				_d->cursorPos = 0;
+      if (_d->cursorPos < 0)
+        _d->cursorPos = 0;
 
-			newMarkBegin = 0;
-			newMarkEnd = 0;
-			textChanged = true;
-		}
-		break;
-	case KEY_DELETE:
-		if ( !enabled() )
-			break;
+      newMarkBegin = 0;
+      newMarkEnd = 0;
+      textChanged = true;
+    }
+    break;
+  case KEY_DELETE:
+    if ( !enabled() )
+      break;
 
-		if( _d->text.size() != 0)
-		{
-			std::wstring s;
+    if( _d->text.size() != 0)
+    {
+      std::wstring s;
 
-			if (_d->markBegin != _d->markEnd)
-			{
-				// delete marked text
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      if (_d->markBegin != _d->markEnd)
+      {
+        // delete marked text
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
-				s = _d->text.substr(0, realmbgn);
-				s.append( _d->text.substr(realmend, _d->text.size()-realmend) );
-				_setText( s );
+        s = _d->text.substr(0, realmbgn);
+        s.append( _d->text.substr(realmend, _d->text.size()-realmend) );
+        _setText( s );
 
-				_d->cursorPos = realmbgn;
-			}
-			else
-			{
-				// delete text before cursor
-				s = _d->text.substr(0, _d->cursorPos);
+        _d->cursorPos = realmbgn;
+      }
+      else
+      {
+        // delete text before cursor
+        s = _d->text.substr(0, _d->cursorPos);
         if( _d->cursorPos+1 < (int)_d->text.size() )
-				{
-					s.append( _d->text.substr(_d->cursorPos+1, _d->text.size()-_d->cursorPos-1) );
-				}
-				_setText( s );
-			}
+        {
+          s.append( _d->text.substr(_d->cursorPos+1, _d->text.size()-_d->cursorPos-1) );
+        }
+        _setText( s );
+      }
 
-			if (_d->cursorPos > (int)_d->text.size())
-				_d->cursorPos = (int)_d->text.size();
+      if (_d->cursorPos > (int)_d->text.size())
+        _d->cursorPos = (int)_d->text.size();
 
-			newMarkBegin = 0;
-			newMarkEnd = 0;
-			textChanged = true;
-		}
-		break;
+      newMarkBegin = 0;
+      newMarkEnd = 0;
+      textChanged = true;
+    }
+    break;
 
-	case KEY_ESCAPE:
-	case KEY_TAB:
-	case KEY_SHIFT:
-	case KEY_LSHIFT:
-	case KEY_RSHIFT:
-	case KEY_F1:
-	case KEY_F2:
-	case KEY_F3:
-	case KEY_F4:
-	case KEY_F5:
-	case KEY_F6:
-	case KEY_F7:
-	case KEY_F8:
-	case KEY_F9:
-	case KEY_F10:
-	case KEY_F11:
-	case KEY_F12:
-	case KEY_F13:
-	case KEY_F14:
-	case KEY_F15:
-	case KEY_F16:
-	case KEY_F17:
-	case KEY_F18:
-	case KEY_F19:
-	case KEY_F20:
-	case KEY_F21:
-	case KEY_F22:
-	case KEY_F23:
-	case KEY_F24:
-	case KEY_LALT:
-	case KEY_RALT:
-		// ignore these keys
-	return false;
+  case KEY_ESCAPE:
+  case KEY_TAB:
+  case KEY_SHIFT:
+  case KEY_LSHIFT:
+  case KEY_RSHIFT:
+  case KEY_F1:
+  case KEY_F2:
+  case KEY_F3:
+  case KEY_F4:
+  case KEY_F5:
+  case KEY_F6:
+  case KEY_F7:
+  case KEY_F8:
+  case KEY_F9:
+  case KEY_F10:
+  case KEY_F11:
+  case KEY_F12:
+  case KEY_F13:
+  case KEY_F14:
+  case KEY_F15:
+  case KEY_F16:
+  case KEY_F17:
+  case KEY_F18:
+  case KEY_F19:
+  case KEY_F20:
+  case KEY_F21:
+  case KEY_F22:
+  case KEY_F23:
+  case KEY_F24:
+  case KEY_LALT:
+  case KEY_RALT:
+    // ignore these keys
+  return false;
 
-	default:		
-	return false;
-	}
+  default:
+  return false;
+  }
 
     // Set new text markers
     _setTextMarkers( newMarkBegin, newMarkEnd );
 
-	// break the text if it has changed
-	if (textChanged)
-	{
-		_breakText();
+  // break the text if it has changed
+  if (textChanged)
+  {
+    _breakText();
     _d->needUpdateTexture = true;
     _sendGuiEvent( guiEditboxChanged );
-	}
+  }
 
-	_calculateScrollPos();
+  _calculateScrollPos();
 
-	return true;
+  return true;
 }
 
 void EditBox::_drawHolderText( Font font, Rect* clip )
@@ -762,12 +771,8 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   if( isFocused() )
   {
     _d->setTextRect( this, 0, _d->holderText );
-    Font holderFont = font;
-
-    if( holderFont.isValid() )
-    {
-        holderFont.draw( _d->textPicture, _d->holderText, 0, 0 );
-    }
+    if( font.isValid() )
+      font.draw( _d->textPicture, _d->holderText, 0, 0 );
   }
 }
 
@@ -786,18 +791,18 @@ void EditBox::beforeDraw(Engine& painter)
       _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 
-    if( !_d->bgPicture.isValid() )
+    if( !_d->background.image.isValid() )
     {
-      _d->background.destroy();
+      _d->background.batch.destroy();
 
       Pictures pics;
       Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
-      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.batch.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {
-        _d->background.destroy();
+        _d->background.batch.destroy();
         Decorator::reverseYoffset( pics );
-        _d->backgroundNb = pics;
+        _d->background.fallback = pics;
       }
     }
 
@@ -966,12 +971,12 @@ void EditBox::beforeDraw(Engine& painter)
 void EditBox::draw( Engine& painter )
 {
   if( !visible() )
-		return;
+    return;
 
   const bool focus = ui()->hasFocus(this);
 
   //const ElementStyle& style = getStyle().GetState( getActiveState() );
-	//const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
+  //const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
   //core::Point marginOffset = style.GetMargin().getRect().UpperLeftCorner;
 
   if( _d->markAreaRect.isValid() )
@@ -982,19 +987,13 @@ void EditBox::draw( Engine& painter )
   }
 
   // draw the background
-  if( _d->drawBackground )
+  if( _d->background.visible )
   {
-    if( _d->bgPicture.isValid() )
-    {
-      painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
-    else
-    {
-      if( _d->background.valid() )
-        painter.draw( _d->background, &absoluteClippingRectRef() );
-      else
-        painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+
+    pipe.draw( _d->background.image )
+        .fallback( _d->background.batch )
+        .fallback( _d->background.fallback );
   }
 
   // draw the text
@@ -1004,47 +1003,47 @@ void EditBox::draw( Engine& painter )
   }
 
   if( focus )
-	{
-		unsigned int t = DateTime::elapsedTime() % 1000;
+  {
+    unsigned int t = DateTime::elapsedTime() % 1000;
     if( t < 500 )
     {
       Point p = _d->textOffset + absoluteRect().lefttop();
       painter.drawLine( 0xff000000, p + _d->cursorRect.lefttop() + Point( 0, 3),
                                     p + _d->cursorRect.leftbottom() - Point( 0, 6 ) );
     }
-	}
+  }
 
-	// draw children
-	Widget::draw( painter );
+  // draw children
+  Widget::draw( painter );
 }
 
 //! Sets the new caption of this element.
 void EditBox::setText(const std::string& text)
 {
-	_d->text.clear();
-	foreach( i, text )
-	{
-		wchar_t t;
-		if( (unsigned char)*i < 0x80 )
-		{
-			t = (wchar_t)*i;
-		}
-		else
-		{
-			unsigned char t1 = (unsigned char)*i; i++;
-			unsigned char t2 = (unsigned char)*i;
-			t = (wchar_t)( (t1 << 8) + t2 );
-		}
+  _d->text.clear();
+  foreach( i, text )
+  {
+    wchar_t t;
+    if( (unsigned char)*i < 0x80 )
+    {
+      t = (wchar_t)*i;
+    }
+    else
+    {
+      unsigned char t1 = (unsigned char)*i; i++;
+      unsigned char t2 = (unsigned char)*i;
+      t = (wchar_t)( (t1 << 8) + t2 );
+    }
 
-		_d->text += t;
-	}
+    _d->text += t;
+  }
 
-	_setText( _d->text );
+  _setText( _d->text );
 }
 
 std::string EditBox::text() const
 {
-	return __ucs2utf8( _d->text );
+  return __ucs2utf8( _d->text );
 }
 
 
@@ -1060,19 +1059,19 @@ bool EditBox::isAutoscrollEnabled() const{	return _d->autoScrollEnabled;}
 //! \return Returns the size in pixels of the text
 Size EditBox::textDimension()
 {
-	Rect ret;
+  Rect ret;
 
   _d->setTextRect( this, 0 );
   ret = _d->currentTextRect;
 
-	for (unsigned int i=1; i < _d->brokenText.size(); ++i)
-	{
-		_d->setTextRect( this, i);
+  for (unsigned int i=1; i < _d->brokenText.size(); ++i)
+  {
+    _d->setTextRect( this, i);
     ret.addInternalPoint(_d->currentTextRect.lefttop());
     ret.addInternalPoint(_d->currentTextRect.rightbottom() );
-	}
+  }
 
-	return ret.size();
+  return ret.size();
 }
 
 
@@ -1081,10 +1080,10 @@ Size EditBox::textDimension()
 //! infinity.
 void EditBox::setMaxCharactersNumber(unsigned int max)
 {
-	_d->max = max;
+  _d->max = max;
 
-	if( _d->text.size() > _d->max && _d->max != 0)
-		_setText( _d->text.substr(0, _d->max ) );
+  if( _d->text.size() > _d->max && _d->max != 0)
+    _setText( _d->text.substr(0, _d->max ) );
 }
 
 
@@ -1093,256 +1092,256 @@ unsigned int EditBox::maxCharactersNumber() const{	return _d->max; }
 
 bool EditBox::_processMouse(const NEvent& event)
 {
-	switch(event.mouse.type)
-	{
-	case mouseLbtnRelease:
+  switch(event.mouse.type)
+  {
+  case NEvent::Mouse::mouseLbtnRelease:
     if (ui()->hasFocus(this))
-		{
-			Point rpos = event.mouse.pos() - _d->textOffset;
-			_d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y());
-			if (_d->mouseMarking)
-			{
-				_setTextMarkers( _d->markBegin, _d->cursorPos );
-			}
-			_d->mouseMarking = false;
-			_calculateScrollPos();
-			return true;
-		}
-		break;
-	case mouseMoved:
-		{
-			if (_d->mouseMarking)
-			{
-				_d->cursorPos = _d->getCursorPos( this, event.mouse.x, event.mouse.y);
-				_setTextMarkers( _d->markBegin, _d->cursorPos );
-				_calculateScrollPos();
-				return true;
-			}
-		}
-		break;
-	case mouseLbtnPressed:
+    {
+      Point rpos = event.mouse.pos() - _d->textOffset;
+      _d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y());
+      if (_d->mouseMarking)
+      {
+        _setTextMarkers( _d->markBegin, _d->cursorPos );
+      }
+      _d->mouseMarking = false;
+      _calculateScrollPos();
+      return true;
+    }
+    break;
+  case NEvent::Mouse::moved:
+    {
+      if (_d->mouseMarking)
+      {
+        _d->cursorPos = _d->getCursorPos( this, event.mouse.x, event.mouse.y);
+        _setTextMarkers( _d->markBegin, _d->cursorPos );
+        _calculateScrollPos();
+        return true;
+      }
+    }
+    break;
+  case NEvent::Mouse::btnLeftPressed:
     if (!ui()->hasFocus(this))
-		{
-			_d->mouseMarking = true;
-			Point rpos = event.mouse.pos() - _d->textOffset;
-			_d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y() );
-			_setTextMarkers(_d->cursorPos, _d->cursorPos );
-			_calculateScrollPos();
-			return true;
-		}
-		else
-		{
-			if( !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
-			{
-				return false;
-			}
-			else
-			{
-				// move cursor
-				_d->cursorPos = _d->getCursorPos( this, event.mouse.x, event.mouse.y);
+    {
+      _d->mouseMarking = true;
+      Point rpos = event.mouse.pos() - _d->textOffset;
+      _d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y() );
+      _setTextMarkers(_d->cursorPos, _d->cursorPos );
+      _calculateScrollPos();
+      return true;
+    }
+    else
+    {
+      if( !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
+      {
+        return false;
+      }
+      else
+      {
+        // move cursor
+        _d->cursorPos = _d->getCursorPos( this, event.mouse.x, event.mouse.y);
 
-				int newMarkBegin = _d->markBegin;
-				if (!_d->mouseMarking)
-					newMarkBegin = _d->cursorPos;
+        int newMarkBegin = _d->markBegin;
+        if (!_d->mouseMarking)
+          newMarkBegin = _d->cursorPos;
 
-				_d->mouseMarking = true;
-				_setTextMarkers( newMarkBegin, _d->cursorPos);
-				_calculateScrollPos();
-				return true;
-			}
-		}
-	default:
-		break;
-	}
+        _d->mouseMarking = true;
+        _setTextMarkers( newMarkBegin, _d->cursorPos);
+        _calculateScrollPos();
+        return true;
+      }
+    }
+  default:
+    break;
+  }
 
-	return false;
+  return false;
 }
 
 
 int EditBox::Impl::getCursorPos( EditBox* who, int x, int y)
 {
-	Font font = who->activeFont();
+  Font font = who->activeFont();
 
-	const unsigned int lineCount = (wordWrapEnabled || multiLine) ? brokenText.size() : 1;
+  const unsigned int lineCount = (wordWrapEnabled || multiLine) ? brokenText.size() : 1;
 
   std::wstring myText = text;
   std::wstring *txtLine=0;
-	int startPos=0;
-	x+=3;
+  int startPos=0;
+  x+=3;
 
-	for( unsigned int i=0; i < lineCount; ++i)
-	{
-		setTextRect( who, i);
-		if( i == 0 && y < currentTextRect.top() )
+  for( unsigned int i=0; i < lineCount; ++i)
+  {
+    setTextRect( who, i);
+    if( i == 0 && y < currentTextRect.top() )
     {
       y = currentTextRect.top();
     }
- 
+
     if( i == lineCount - 1 && y > currentTextRect.bottom() )
     {
       y = currentTextRect.bottom();
     }
 
-		// is it inside this region?
-		if( y >= currentTextRect.top() && y <= currentTextRect.bottom() )
-		{
-			// we've found the clicked line
-			txtLine = (wordWrapEnabled || multiLine) ? &brokenText[i] : &myText;
-			startPos = (wordWrapEnabled || multiLine) ? brokenTextPositions[i] : 0;
-			break;
-		}
-	}
+    // is it inside this region?
+    if( y >= currentTextRect.top() && y <= currentTextRect.bottom() )
+    {
+      // we've found the clicked line
+      txtLine = (wordWrapEnabled || multiLine) ? &brokenText[i] : &myText;
+      startPos = (wordWrapEnabled || multiLine) ? brokenTextPositions[i] : 0;
+      break;
+    }
+  }
 
   if( x < currentTextRect.left() )
   {
     x = currentTextRect.left();
   }
 
-	if ( !txtLine )
+  if ( !txtLine )
   {
-		return 0;
+    return 0;
   }
 
   int idx = font.getCharacterFromPos( *txtLine, x - currentTextRect.left() );
 
-	// click was on or left of the line
-	if (idx != -1)
-		return idx + startPos;
+  // click was on or left of the line
+  if (idx != -1)
+    return idx + startPos;
 
-	// click was off the right edge of the line, go to end.
-	return txtLine->size() + startPos;
+  // click was off the right edge of the line, go to end.
+  return txtLine->size() + startPos;
 }
 
 //! Breaks the single text line.
 void EditBox::_breakText()
 {
   Font font = activeFont();
-	if( !font.isValid() )
-		return;
+  if( !font.isValid() )
+    return;
 
-	_d->lastBreakFont = font;
+  _d->lastBreakFont = font;
 
-	if ((!_d->wordWrapEnabled && !_d->multiLine))
-		return;
+  if ((!_d->wordWrapEnabled && !_d->multiLine))
+    return;
 
-	_d->brokenText.clear(); // need to reallocate :/
-	_d->brokenTextPositions.clear();
+  _d->brokenText.clear(); // need to reallocate :/
+  _d->brokenTextPositions.clear();
 
-	std::wstring line;
-	std::wstring word;
-	std::wstring whitespace;
-	int lastLineStart = 0;
-	int size = _d->text.size();
-	int length = 0;
-	int elWidth = width() - 6;
-	wchar_t c;
+  std::wstring line;
+  std::wstring word;
+  std::wstring whitespace;
+  int lastLineStart = 0;
+  int size = _d->text.size();
+  int length = 0;
+  int elWidth = width() - 6;
+  wchar_t c;
 
-	for (int i=0; i<size; ++i)
-	{
-		c = _d->text[i];
-		bool lineBreak = false;
+  for (int i=0; i<size; ++i)
+  {
+    c = _d->text[i];
+    bool lineBreak = false;
 
-		if( c == L'\r' ) // Mac or Windows breaks
-		{
-			lineBreak = true;
-			c = 0;
-			if( _d->text[ i+1 ] == L'\n') // Windows breaks
-			{
-				_d->text.erase(i+1);
-				--size;
-			}
-		}
-		else if( c == L'\n' ) // Unix breaks
-		{
-			lineBreak = true;
-			c = 0;
-		}
+    if( c == L'\r' ) // Mac or Windows breaks
+    {
+      lineBreak = true;
+      c = 0;
+      if( _d->text[ i+1 ] == L'\n') // Windows breaks
+      {
+        _d->text.erase(i+1);
+        --size;
+      }
+    }
+    else if( c == L'\n' ) // Unix breaks
+    {
+      lineBreak = true;
+      c = 0;
+    }
 
-		// don't break if we're not a multi-line edit box
-		if (!_d->multiLine)
-			lineBreak = false;
+    // don't break if we're not a multi-line edit box
+    if (!_d->multiLine)
+      lineBreak = false;
 
-		if (c == L' ' || c == 0 || i == (size-1))
-		{
-			// here comes the next whitespace, look if
-			// we can break the last word to the next line
-			// We also break whitespace, otherwise cursor would vanish beside the right border.
-			int whitelgth = font.getTextSize( (char*)whitespace.c_str() ).width();
-			int worldlgth = font.getTextSize( (char*)word.c_str() ).width();
+    if (c == L' ' || c == 0 || i == (size-1))
+    {
+      // here comes the next whitespace, look if
+      // we can break the last word to the next line
+      // We also break whitespace, otherwise cursor would vanish beside the right border.
+      int whitelgth = font.getTextSize( (char*)whitespace.c_str() ).width();
+      int worldlgth = font.getTextSize( (char*)word.c_str() ).width();
 
-			if (_d->wordWrapEnabled && length + worldlgth + whitelgth > elWidth)
-			{
-				// break to next line
-				length = worldlgth;
-				_d->brokenText.push_back(line);
-				_d->brokenTextPositions.push_back(lastLineStart);
-				lastLineStart = i - (int)word.size();
-				line = word;
-			}
-			else
-			{
-				// add word to line
-				line += whitespace;
-				line += word;
-				length += whitelgth + worldlgth;
-			}
+      if (_d->wordWrapEnabled && length + worldlgth + whitelgth > elWidth)
+      {
+        // break to next line
+        length = worldlgth;
+        _d->brokenText.push_back(line);
+        _d->brokenTextPositions.push_back(lastLineStart);
+        lastLineStart = i - (int)word.size();
+        line = word;
+      }
+      else
+      {
+        // add word to line
+        line += whitespace;
+        line += word;
+        length += whitelgth + worldlgth;
+      }
 
-			word = L"";
-			whitespace = L"";
+      word = L"";
+      whitespace = L"";
 
-			if ( c )
-				whitespace += c;
+      if ( c )
+        whitespace += c;
 
-			// compute line break
-			if (lineBreak)
-			{
-				line += whitespace;
-				line += word;
-				_d->brokenText.push_back(line);
-				_d->brokenTextPositions.push_back(lastLineStart);
-				lastLineStart = i+1;
-				line = L"";
-				word = L"";
-				whitespace = L"";
-				length = 0;
-			}
-		}
-		else
-		{
-			// yippee this is a word..
-			word += c;
-		}
-	}
+      // compute line break
+      if (lineBreak)
+      {
+        line += whitespace;
+        line += word;
+        _d->brokenText.push_back(line);
+        _d->brokenTextPositions.push_back(lastLineStart);
+        lastLineStart = i+1;
+        line = L"";
+        word = L"";
+        whitespace = L"";
+        length = 0;
+      }
+    }
+    else
+    {
+      // yippee this is a word..
+      word += c;
+    }
+  }
 
-	line += whitespace;
-	line += word;
-	_d->brokenText.push_back(line);
-	_d->brokenTextPositions.push_back(lastLineStart);
+  line += whitespace;
+  line += word;
+  _d->brokenText.push_back(line);
+  _d->brokenTextPositions.push_back(lastLineStart);
 }
 
 void EditBox::Impl::setTextRect( EditBox* who, int line, const std::string& tempText )
 {
-	if ( line < 0 )
-		return;
+  if ( line < 0 )
+    return;
 
-	Font font = who->activeFont();
-	if( !font.isValid() )
-		return;
+  Font font = who->activeFont();
+  if( !font.isValid() )
+    return;
 
-	Size d;
+  Size d;
 
-	// get text dimension
+  // get text dimension
         //const unsigned int lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
   if (wordWrapEnabled || multiLine)
-	{
-		d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)brokenText[line].c_str() );
-	}
-	else
-	{
-		d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)text.c_str() );
-		d.setHeight( who->height() );
-	}
-	
+  {
+    d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)brokenText[line].c_str() );
+  }
+  else
+  {
+    d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)text.c_str() );
+    d.setHeight( who->height() );
+  }
+
   d.setHeight( d.height() + font.kerningHeight() );
 
   currentTextRect = who->absoluteRect();
@@ -1353,17 +1352,17 @@ void EditBox::Impl::setTextRect( EditBox* who, int line, const std::string& temp
 
 int EditBox::_getLineFromPos(int pos)
 {
-	if (!_d->wordWrapEnabled && !_d->multiLine)
-		return 0;
+  if (!_d->wordWrapEnabled && !_d->multiLine)
+    return 0;
 
-	int i=0;
-	while (i < (int)_d->brokenTextPositions.size())
-	{
-		if (_d->brokenTextPositions[i] > pos)
-			return i-1;
-		++i;
-	}
-	return (int)_d->brokenTextPositions.size() - 1;
+  int i=0;
+  while (i < (int)_d->brokenTextPositions.size())
+  {
+    if (_d->brokenTextPositions[i] > pos)
+      return i-1;
+    ++i;
+  }
+  return (int)_d->brokenTextPositions.size() - 1;
 }
 
 std::wstring __unic2utf8(unsigned short wc)
@@ -1398,87 +1397,87 @@ std::wstring __unic2utf8(unsigned short wc)
 
 void EditBox::_inputChar(unsigned short c)
 {
-	if (!enabled())
-		return;
+  if (!enabled())
+    return;
 
-	if (c != 0)
-	{
-		if( _d->text.size() < _d->max || _d->max == 0)
-		{
-			std::wstring s;
+  if (c != 0)
+  {
+    if( _d->text.size() < _d->max || _d->max == 0)
+    {
+      std::wstring s;
 
-			if (_d->markBegin != _d->markEnd)
-			{
-				// replace marked text
-				const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-				const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      if (_d->markBegin != _d->markEnd)
+      {
+        // replace marked text
+        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
 
         s = _d->text.substr(0, realmbgn);
         s += __unic2utf8( c );
         s += _d->text.substr(realmend, _d->text.size()-realmend);
         _setText( s );
-				_d->cursorPos = realmbgn+1;
-			}
-			else
-			{
-				// add new character
-				s = _d->text.substr(0, _d->cursorPos);
-				s += __unic2utf8( c );
-				s += _d->text.substr( _d->cursorPos, _d->text.size()-_d->cursorPos);
-				_setText( s );
-				++_d->cursorPos;
-			}
+        _d->cursorPos = realmbgn+1;
+      }
+      else
+      {
+        // add new character
+        s = _d->text.substr(0, _d->cursorPos);
+        s += __unic2utf8( c );
+        s += _d->text.substr( _d->cursorPos, _d->text.size()-_d->cursorPos);
+        _setText( s );
+        ++_d->cursorPos;
+      }
 
-			_setTextMarkers(0, 0);
-		}
-	}
+      _setTextMarkers(0, 0);
+    }
+  }
 
-	_breakText();
-	_sendGuiEvent( guiEditboxChanged );
-	_calculateScrollPos();
+  _breakText();
+  _sendGuiEvent( guiEditboxChanged );
+  _calculateScrollPos();
   _d->needUpdateTexture = true;
 }
 
 
 void EditBox::_calculateScrollPos()
 {
-	if (!_d->autoScrollEnabled)
-		return;
+  if (!_d->autoScrollEnabled)
+    return;
 
-	// calculate horizontal scroll position
-	int cursLine = _getLineFromPos(_d->cursorPos);
-	if ( cursLine < 0 )
-		return;
-	_d->setTextRect( this, cursLine);
+  // calculate horizontal scroll position
+  int cursLine = _getLineFromPos(_d->cursorPos);
+  if ( cursLine < 0 )
+    return;
+  _d->setTextRect( this, cursLine);
 
-	// don't do horizontal scrolling when wordwrap is enabled.
-	if (!_d->wordWrapEnabled)
-	{
-		// get cursor position
+  // don't do horizontal scrolling when wordwrap is enabled.
+  if (!_d->wordWrapEnabled)
+  {
+    // get cursor position
     Font font = activeFont();
-		if( !font.isValid() )
-			return;
+    if( !font.isValid() )
+      return;
 
-		std::wstring myText = _d->text;
-		std::wstring *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
-		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
+    std::wstring myText = _d->text;
+    std::wstring *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
+    int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
     int cStart = _d->currentTextRect.left() + _d->horizScrollPos +
                                 font.getTextSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
 
-		int cEnd = cStart + font.getTextSize( "_ " ).width();
+    int cEnd = cStart + font.getTextSize( "_ " ).width();
 
-		if ( screenRight() < cEnd)
-			_d->horizScrollPos = cEnd - screenRight();
-		else if ( screenLeft() > cStart)
-			_d->horizScrollPos = cStart - screenLeft();
-		else
-			_d->horizScrollPos = 0;
+    if ( screenRight() < cEnd)
+      _d->horizScrollPos = cEnd - screenRight();
+    else if ( screenLeft() > cStart)
+      _d->horizScrollPos = cStart - screenLeft();
+    else
+      _d->horizScrollPos = 0;
 
-		// todo: adjust scrollbar
-	}
+    // todo: adjust scrollbar
+  }
 
-	// vertical scroll position
+  // vertical scroll position
   if( screenBottom() < _d->currentTextRect.bottom() + _d->vertScrollPos)
   {
     _d->vertScrollPos = _d->currentTextRect.bottom() - screenBottom() + _d->vertScrollPos;
@@ -1487,10 +1486,10 @@ void EditBox::_calculateScrollPos()
   {
     _d->vertScrollPos = _d->currentTextRect.top()  - screenTop() + _d->vertScrollPos;
   }
-	else
-		_d->vertScrollPos = 0;
+  else
+    _d->vertScrollPos = 0;
 
-	// todo: adjust scrollbar
+  // todo: adjust scrollbar
 }
 
 //! set text markers
@@ -1508,68 +1507,14 @@ void EditBox::_setTextMarkers(int begin, int end)
 //! send some gui event to parent
 void EditBox::_sendGuiEvent( unsigned int type)
 {
-    parent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
+    parent()->onEvent( NEvent::ev_gui( this, 0, (GuiEventType)type ));
 }
-
-//! Writes attributes of the element.
-//void EditBox::save( core::VariantArray* out ) const
-//{
-	/*out->addBool  ("Border", 			  Border);
-	out->addBool  ("Background", 		  Background);
-	out->addBool  ("_d->overrideColorEnabled",_d->overrideColorEnabled );
-	//out->addColor ("OverrideColor",       OverrideColor);
-	// out->addFont("OverrideFont",OverrideFont);
-	out->addInt   ("MaxChars",            Max);
-	out->addBool  ("WordWrap",            WordWrap);
-	out->addBool  ("MultiLine",           MultiLine);
-	out->addBool  ("AutoScroll",          AutoScroll);
-	out->addBool  ("PasswordBox",         PasswordBox);
-	String ch = L" ";
-	ch[0] = PasswordChar;
-	out->addString("PasswordChar",        ch.c_str());
-	out->addEnum  ("HTextAlign",          _textHorzAlign, NrpAlignmentNames);
-	out->addEnum  ("VTextAlign",          _textVertAlign, NrpAlignmentNames);
-
-	INrpElement::serializeAttributes(out,options);
-    */
-//}
-
-
-//! Reads attributes of the element
-//void EditBox::load( core::VariantArray* in )
-//{
-//       Widget::load(in);
-/*
-	setDrawBorder( in->getAttributeAsBool("Border") );
-	setDrawBackground( in->getAttributeAsBool("Background") );
-	setOverrideColor(in->getAttributeAsColor("OverrideColor"));
-	enableOverrideColor(in->getAttributeAsBool("_d->overrideColorEnabled"));
-	setMax(in->getAttributeAsInt("MaxChars"));
-	setWordWrap(in->getAttributeAsBool("WordWrap"));
-	setMultiLine(in->getAttributeAsBool("MultiLine"));
-	setAutoScroll(in->getAttributeAsBool("AutoScroll"));
-	String ch = in->getAttributeAsStringW("PasswordChar");
-
-	if (!ch.size())
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"));
-	else
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"), ch[0]);
-
-	setTextAlignment( (CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
-			(CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
-
-	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
-    */
-//}
 
 NColor EditBox::overrideColor() const
 {
     return _d->overrideColor;
 }
 
-void EditBox::setDrawBackground( bool enabled )
-{
-    _d->drawBackground = enabled;
-}
+void EditBox::setDrawBackground( bool enabled ) { _d->background.visible = enabled; }
 
 }//end namespace gui

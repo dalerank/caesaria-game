@@ -40,8 +40,9 @@
 #include "objects/objects_factory.hpp"
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/coast.hpp"
 #include "city/statistic.hpp"
 #include "core/osystem.hpp"
 
@@ -61,7 +62,7 @@ public:
   TilePos lastTilePos;
   TilePos startTilePos;
   bool splineEnabled;
-  int drawRadius;
+  int drawRadius;  
   bool kbShift, kbCtrl;
   bool lmbPressed;
   bool overdrawBuilding;
@@ -71,7 +72,7 @@ public:
   int drawLayerIndex;
   int frameCount;
   Renderer* renderer;
-  LayerPtr lastLayer;
+  //LayerPtr lastLayer;
   std::string resForbiden;
   Picture grnPicture;
   Picture redPicture;
@@ -85,10 +86,9 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
-  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
-  bool canBuildOn( OverlayPtr overlay, city::AreaInfo& areaInfo);
+  bool canBuildOn( OverlayPtr overlay, const city::AreaInfo& areaInfo) const;
 };
 
 void Constructor::_discardPreview()
@@ -108,8 +108,8 @@ void Constructor::_discardPreview()
 
 void Constructor::_checkPreviewBuild(const TilePos& pos)
 {
-  __D_IMPL(d,Constructor);
-  auto command =  d->renderer->mode().as<EditorMode>();
+  __D_REF(d,Constructor);
+  auto command =  d.renderer->mode().as<EditorMode>();
 
   if (command.isNull())
     return;
@@ -124,8 +124,8 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
 
   Size size = overlay->size();
 
-  city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  if( d->canBuildOn( overlay, areaInfo ) )
+  city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
+  if( d.canBuildOn( overlay, areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
@@ -142,11 +142,11 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
           // this is the masterTile
           masterTile = tile;
         }
-        auto clone = TileOverlayFactory::instance().create( overlay->type() );
+        auto clone = Overlay::create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( clone );
-        bool added = d->buildTiles.appendOnce( tile );
+        bool added = d.buildTiles.appendOnce( tile );
         if( !added )
         {
           delete tile;
@@ -194,7 +194,7 @@ void Constructor::_checkBuildArea()
     _setStartCursorPos( _lastCursorPos() );
 
     Tile* tile = _camera()->at( _lastCursorPos(), true );
-    _d->startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+    _d->startTilePos = tile ? tile->epos() : TilePos::invalid();
   }
 }
 
@@ -230,8 +230,8 @@ void Constructor::_updatePreviewTiles( bool force )
     Tile* stopTile  = _camera()->at( _lastCursorPos(),  true );
 
     TilesArray pathTiles = RoadPropagator::createPath( _city()->tilemap(),
-                                                     startTile->epos(), stopTile->epos(),
-                                                     d->roadAssignment, d->kbShift );
+                                                       startTile->epos(), stopTile->epos(),
+                                                       d->roadAssignment, d->kbShift );
     Tilemap& tmap = _city()->tilemap();
     TilePos leftUpCorner = pathTiles.leftUpCorner();
     TilePos rigthDownCorner = pathTiles.rightDownCorner();
@@ -270,6 +270,11 @@ void Constructor::_updatePreviewTiles( bool force )
 
     for( auto tile : tiles )
     {
+      if( !tile )
+      {
+        Logger::warning( "WARNING !!!: ConstructorArea: tile is null" );
+        continue;
+      }
       Size size;
       Tile* master = tile->master() ? tile->master() : tile;
       if( tile->overlay().isValid() )
@@ -278,7 +283,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( gfx::tile::width2size( tile->picture().width() ) );
+         size = Size::square( config::tilemap.picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )
@@ -326,14 +331,13 @@ void Constructor::_buildAll()
 
 void Constructor::_exitBuildMode()
 {
-  __D_IMPL(_d,Constructor);
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
-  _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
+  _setNextLayer( citylayer::simple );
   _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
 }
 
-void Constructor::handleEvent(NEvent& event)
+void Constructor::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Constructor);
   if( event.EventType == sEventMouse )
@@ -347,7 +351,7 @@ void Constructor::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       _checkBuildArea();
@@ -355,14 +359,14 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _updatePreviewTiles( false );
       _d->lmbPressed = true;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -375,7 +379,7 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitBuildMode(); } break;
     default:    break;
     }
   }
@@ -397,8 +401,8 @@ void Constructor::handleEvent(NEvent& event)
           if( !_d->readyForExit )
           {
             _setStartCursorPos( Point(-1, -1) );
-            _d->startTilePos = tilemap::invalidLocation();
-            _d->lastTilePos = tilemap::invalidLocation();
+            _d->startTilePos = TilePos::invalid();
+            _d->lastTilePos = TilePos::invalid();
             _d->needUpdateTiles = true;
             _d->lmbPressed = false;
             _d->readyForExit = true;
@@ -493,7 +497,7 @@ void Constructor::_drawBuildTile( const RenderInfo& renderInfo, Tile* tile )
 void Constructor::_tryDrawBuildTile( const RenderInfo& renderInfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
-  auto it = cache.find( tile::hash( tile.epos() ) );
+  auto it = cache.find( tile.epos().hash() );
   if( it != cache.end() )
   {
     _drawBuildTile( renderInfo, it->second );
@@ -502,18 +506,16 @@ void Constructor::_tryDrawBuildTile( const RenderInfo& renderInfo, Tile &tile)
 
 void Constructor::_drawBuildTiles(const RenderInfo& renderInfo )
 {
-  __D_IMPL(_d,Constructor);
-
-  for( auto tile : _d->buildTiles )
+  for( auto tile : _dfunc()->buildTiles )
     _drawBuildTile( renderInfo, tile );
 }
 
 void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  __D_IMPL(_d,Constructor);
+  __D_REF(d,Constructor);
 
   auto overlay = tile.overlay();
-  city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
+  city::AreaInfo info( _city(), tile.epos(), &d.buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
@@ -530,23 +532,23 @@ void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
     rinfo.engine.draw( *picOver, screenPos );
     drawPass( rinfo, tile, Renderer::overlayAnimation );
   }
-  else if( _d->lastLayer.isValid() )
+  /*else if( d.lastLayer.isValid() )
   {
-    if( _d->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
-      _d->lastLayer->drawTile( rinfo, tile );
-  }
+    if( d.cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+      d.lastLayer->drawTile( rinfo, tile );
+  }*/
   else
   {
     Layer::drawTile( rinfo, tile );
   }
 
-  if( !_d->overdrawBuilding )
+  if( !d.overdrawBuilding )
     _tryDrawBuildTile( rinfo, tile );
 }
 
-void Constructor::drawProminentTile( RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
+void Constructor::drawProminentTile( const RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
 {
-  if( _dfunc()->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+  if( _dfunc()->cachedTiles.count( tile.epos().hash() ) == 0 )
     Layer::drawProminentTile( renderInfo, tile, depth, force );
 
   _tryDrawBuildTile( renderInfo, tile );
@@ -584,8 +586,8 @@ void Constructor::init(Point cursor)
   __D_IMPL(_d,Constructor);
   Layer::init( cursor );
 
-  _d->lastTilePos = tilemap::invalidLocation();
-  _d->startTilePos = tilemap::invalidLocation();
+  _d->lastTilePos = TilePos::invalid();
+  _d->startTilePos = TilePos::invalid();
   _d->readyForExit = false;
   _d->kbShift = false;
   _d->kbCtrl = false;
@@ -596,8 +598,7 @@ void Constructor::init(Point cursor)
 
   if( OSystem::isAndroid() )
   {
-    auto message = WarningMessage::create( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
-    message->dispatch();
+    events::dispatch<WarningMessage>( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
   }
 }
 
@@ -605,111 +606,91 @@ void Constructor::beforeRender(Engine& engine)
 {
   __D_IMPL(_d,Constructor);
   _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->beforeRender( engine );
-  else
-    Layer::beforeRender( engine );
+  Layer::beforeRender( engine );
 }
 
 void Constructor::drawPass(const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
-  __D_IMPL(_d,Constructor);
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->drawPass( rinfo, tile, pass );
-  else
-    Layer::drawPass( rinfo, tile, pass );
+  Layer::drawPass( rinfo, tile, pass );
 }
 
 void Constructor::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Constructor);
-  if( _d->needUpdateTiles )
+  __D_REF(d,Constructor);
+  if( d.needUpdateTiles )
   {
-   if( !OSystem::isAndroid() )
-   {
+    if( !OSystem::isAndroid() )
+    {
       _setLastCursorPos( engine.cursorPos() );
-   }
+    }
 
     _checkBuildArea();
     _updatePreviewTiles( false );
   }
 
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->afterRender( engine );
-  else
-    Layer::afterRender( engine );
+#ifdef DEBUG
+  const TilesArray& visibleTiles = _camera()->tiles();
+  for( auto tile : visibleTiles )
+  {
+    if( tile->terrain().coast )
+    {
+      CoastPtr coast = tile->overlay<Coast>();
+      if( coast != nullptr )
+      {
+        _addText( tile->mappos() + Point( 20, -15 ), utils::format( 0xff, "+%x", coast->_rindex ) );
+      }
+    }
+  }
+#endif
+
+  Layer::afterRender( engine );
 }
 
 const Layer::WalkerTypes& Constructor::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,Constructor);
-  if( _d->lastLayer.isValid() )
-    return _d->lastLayer->visibleTypes();
-
   return Layer::visibleTypes();
 }
 
 void Constructor::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
+  //engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Constructor::changeLayer(int layer)
 {
-  __D_IMPL(_d,Constructor);
   if( layer != type() )
   {
     if( layer == citylayer::destroyd )
     {
        _exitBuildMode();
     }
-    else
-    {
-      _d->lastLayer = _d->renderer
-                          ? _d->renderer->getLayer( layer )
-                          : LayerPtr();
-    }
   }
 
   _initBuildMode();
 }
 
-LayerPtr Constructor::create(Renderer& renderer, PlayerCityPtr city)
-{
-  LayerPtr ret( new Constructor( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-LayerPtr Constructor::drawLayer() const { return _dfunc()->lastLayer; }
 Constructor::~Constructor() {}
 
-Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ),
+Constructor::Constructor(Camera& camera, PlayerCityPtr city, Renderer* renderer)
+  : Layer( &camera, city ),
     __INIT_IMPL(Constructor)
 {
-  __D_IMPL(d,Constructor);
-  d->renderer = &renderer;
-  d->frameCount = 0;
-  d->needUpdateTiles = false;
-  d->resForbiden = SETTINGS_STR( forbidenTile );
-  d->startTilePos = gfx::tilemap::invalidLocation();
-  d->text.font = Font::create( FONT_5 );
-  d->readyForExit = false;
-  d->drawRadius = 1;
-  d->splineEnabled = false;
-  d->text.image = Picture( Size( 100, 30 ), 0, true );
+  __D_REF(d,Constructor);
+  d.renderer = renderer;
+  d.frameCount = 0;
+  d.needUpdateTiles = false;
+  d.resForbiden = SETTINGS_STR( forbidenTile );
+  d.startTilePos = TilePos::invalid();
+  d.text.font = Font::create( FONT_5 );
+  d.readyForExit = false;
+  d.drawRadius = 1;
+  d.splineEnabled = false;
+  d.text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 
-  d->grnPicture.load( d->resForbiden, 1 );
-  d->redPicture.load( d->resForbiden, 2 );
-}
-
-Signal3<object::Type,TilePos,int>& Constructor::onBuild()
-{
-  return _dfunc()->onBuildSignal;
+  d.grnPicture.load( d.resForbiden, 1 );
+  d.redPicture.load( d.resForbiden, 2 );
 }
 
 void Constructor::Impl::sortBuildTiles()
@@ -718,20 +699,36 @@ void Constructor::Impl::sortBuildTiles()
 
   cachedTiles.clear();
   for( auto t : buildTiles )
-    cachedTiles[ tile::hash( t->epos() ) ] = t;
+    cachedTiles[ t->epos().hash() ] = t;
 }
 
-bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
+bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
-  if( overlay->type() == object::terrain )
+  object::Type type = object::typeOrDefault( overlay );
+  if( type == object::terrain
+      || type == object::water )
   {
     return true;
   }
-  else if( overlay->type() == object::tree )
+  else if( type == object::tree
+           || type == object::meadow )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
     return (walkable || isTree );
+  }
+  else if( type == object::river )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool coast = areaInfo.tile().terrain().coast;
+    return (walkable || coast);
+  }
+  else if( type == object::rock
+           || type == object::plateau )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool isRock = areaInfo.tile().terrain().rock;
+    return (walkable || isRock );
   }
 
   return false;

@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <string>
+#include "core/color_list.hpp"
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 
@@ -37,9 +38,29 @@ public:
     return it != this->end();
   }  
 
-  std::string valueOrEmpty( unsigned int index ) const
+  StringArray& push_front( const std::string& str )
   {
-    return (index < size()) ? at( index ) : "";
+    insert( this->begin(), str );
+    return *this;
+  }
+
+  StringArray& addIfValid( const std::string& str )
+  {
+    if( !str.empty() )
+      this->push_back( str );
+
+    return *this;
+  }
+
+  const std::string& valueOrEmpty( unsigned int index ) const
+  {
+    static std::string emptyStr;
+    return (index < size()) ? at( index ) : emptyStr;
+  }
+
+  const std::string& valueOrDefault( unsigned int index, const std::string& defaultStr ) const
+  {
+    return (index < size()) ? at( index ) : defaultStr;
   }
 
   bool remove( const std::string& str )
@@ -64,10 +85,40 @@ public:
 
   inline StringArray& operator << ( const StringArray& a )
   {
-    for( auto& item : a )
+    for( const auto& item : a )
       push_back( item );
 
     return *this;
+  }
+};
+
+class ColoredString : public std::string
+{
+public:
+  NColor color;
+
+  ColoredString( const std::string& r, NColor c=ColorList::black)
+    : std::string( r )
+  { color = c; }
+};
+
+class ColoredStrings : public std::vector<ColoredString>
+{
+public:
+  ColoredStrings& addIfValid( const ColoredString& text )
+  {
+    if( !text.empty() )
+      this->push_back( text );
+
+    return *this;
+  }
+
+  ColoredString random() const
+  {
+    if( this->empty() )
+      return ColoredString( "no_reason", ColorList::red );
+
+    return this->at( math::random( this->size() - 1 ) );
   }
 };
 

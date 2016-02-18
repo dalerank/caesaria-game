@@ -41,8 +41,13 @@ public:
   typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
-  ListBox(Widget* parent,
+  ListBox( Widget* parent,
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
+           bool drawBack=false, bool mos=false);
+
+  //! constructor
+  ListBox( Widget* parent,
+           const RectF& rectangle, int id=-1, bool clip=true,
            bool drawBack=false, bool mos=false);
 
   //! destructor
@@ -61,6 +66,9 @@ public:
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
+
+  virtual void setSelectedTag(const Variant& tag);
+  virtual void setSelectedWithData(const std::string& name, const Variant& data);
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(const std::string &item);
@@ -109,6 +117,9 @@ public:
 
   //! set the item at the given index
   virtual void setItem( unsigned int index, std::string text);
+  virtual void setItemData(unsigned int index, const std::string& name, Variant tag);
+
+  virtual Variant getItemData(unsigned int index, const std::string& name);
 
   //! Insert the item at the given index
   //! Return the index on success or -1 on failure.
@@ -135,6 +146,8 @@ public:
   virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
   virtual ListBoxItem& addItem( gfx::Picture pic );
 
+  virtual int addLine(const std::string& text);
+
   virtual void fitText( const std::string& text );
 
   virtual void addItems( const StringArray& strings );
@@ -152,6 +165,7 @@ public:
 
 signals public:
   Signal1<const ListBoxItem&>& onItemSelectedAgain();
+  Signal2<Widget*,int>& onIndexSelectedEx();
   Signal1<const ListBoxItem&>& onItemSelected();
 
 protected:

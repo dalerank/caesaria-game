@@ -28,17 +28,16 @@ namespace audio
 class ThemePlayer : public city::Srvc
 {
 public:
-  static city::SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   void next();
 
   virtual ~ThemePlayer();
+  ThemePlayer(PlayerCityPtr city);
 public signals:
   Signal1<std::string>& onSwitch();
 
 private:
-  ThemePlayer(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

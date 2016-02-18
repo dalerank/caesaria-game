@@ -24,16 +24,15 @@
 /** Soldier, friend or enemy */
 class WallGuard : public RomeSoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WallGuardPtr create( PlayerCityPtr city, walker::Type type );
-
   void send2city(TowerPtr tower, Pathway pathway);
   void setBase( TowerPtr tower );
 
   virtual bool die();
   virtual void timeStep(const unsigned long time);
   virtual void fight();
-
+  virtual Gender gender() const;
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 

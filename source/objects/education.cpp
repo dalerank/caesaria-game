@@ -21,7 +21,6 @@
 #include "pathway/pathway.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 #include "core/logger.hpp"
@@ -41,10 +40,12 @@ public:
   unsigned int maxMonthVisitors;
 };
 
-School::School() : EducationBuilding(Service::school, object::school, Size(2))
+School::School()
+  : EducationBuilding(Service::school, object::school, Size(2,2))
 {
-  _picture().load( ResourceGroup::commerce, 83 );
+  setPicture( info().randomPicture( Size(2,2) ) );
   _d->maxMonthVisitors = config::educationbld::maxSchoolVisitors;
+  _d->currentPeopleServed = 0;
 }
 
 void School::deliverService()
@@ -71,10 +72,10 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
   if( walker->pathway().isReverse() )
     return;
 
-  auto houses = utils::uniques<House>( buildings );
+  auto houses = utils::select<House>( buildings );
   for( auto house : houses )
   {
-    unsigned int posHash = gfx::tile::hash(house->pos());
+    unsigned int posHash = house->pos().hash();
     _d->srvBuidings[ posHash ] = house->habitants().scholar_n();
   }
 
@@ -93,16 +94,16 @@ int School::_getWalkerOrders() const
   return ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
 }
 
-Library::Library() : EducationBuilding(Service::library, object::library, Size(2))
+Library::Library() : EducationBuilding(Service::library, object::library, Size(2,2))
 {
-  _picture().load( ResourceGroup::commerce, 84 );
+  setPicture( info().randomPicture( Size(2,2) ) );
   _d->maxMonthVisitors = config::educationbld::maxLibraryVisitors;
   _d->currentPeopleServed = _d->maxMonthVisitors;
 }
 
-Academy::Academy() : EducationBuilding(Service::academy, object::academy, Size(3))
+Academy::Academy() : EducationBuilding(Service::academy, object::academy, Size(3,3))
 {
-  _picture().load( ResourceGroup::commerce, 85 );
+  setPicture( info().randomPicture( Size(3,3) ) );
   _d->maxMonthVisitors = config::educationbld::maxAcademyVisitors;
   _d->currentPeopleServed = _d->maxMonthVisitors;
 }

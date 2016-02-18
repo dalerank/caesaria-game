@@ -58,16 +58,18 @@ void AboutMerchant::_updateExtInfo()
     good::ProductMap bmap = merchant->mayBuy();
 
     int index=0;
-    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 84, 24 ) ), _("##bougth##"));
+    add<Label>( Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 84, 24 ) ), _("##bougth##"));
     for( auto& it : bmap )
       _drawGood( it.first, mmap[ it.first ], index++, _lbBlackFrame()->bottom() + 2 );
 
     mmap = merchant->sold();
     index=0;
-    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 84, 24 ) ), _("##sold##"));
+    add<Label>(Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 84, 24 ) ), _("##sold##"));
     for( auto& it : mmap )
+    {
       if( it.second > 0 )
         _drawGood( it.first, it.second, index++, _lbBlackFrame()->bottom() + 26 );
+    }
   }
   break;
 
@@ -85,14 +87,13 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
   std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
-  gfx::Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  auto label = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  label->setFont( Font::create( FONT_2 ) );
-  label->setIcon( pic );
-  label->setText( outText );
-  label->setTextOffset( Point( 30, 0 ) );
+  auto& label = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
+  label.setFont( FONT_2 );
+  label.setIcon( good::Info( goodType ).picture() );
+  label.setText( outText );
+  label.setTextOffset( Point( 30, 0 ) );
 }
 
 }//end namespace citizen

@@ -24,7 +24,8 @@
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::actorColony, ActorColony)
 
-ActorColony::ActorColony() : TrainingBuilding( object::actorColony, Size(3) )
+ActorColony::ActorColony()
+  : TrainingBuilding( object::actorColony, Size(3,3) )
 {
   _fgPictures().resize(1);
 }
@@ -34,10 +35,10 @@ void ActorColony::deliverTrainee()
   if( haveWalkers() )
     return;
 
-  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::actor );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::actor );
   trainee->send2City( this );
 
-  addWalker( trainee.object() );
+  addWalker( trainee );
 }
 
 void ActorColony::timeStep(const unsigned long time)

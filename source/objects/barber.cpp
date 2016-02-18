@@ -28,7 +28,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
 
-Barber::Barber() : HealthBuilding(Service::barber, object::barber, Size(1))
+Barber::Barber() : HealthBuilding(Service::barber, object::barber, Size(1,1))
 {
 }
 

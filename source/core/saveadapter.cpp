@@ -42,6 +42,9 @@ VariantMap load( vfs::NFile f )
   {
     ByteArray data = f.readAll();
 
+    if( data.empty() )
+      return VariantMap();
+
     bool jsonParsingOk;
     Variant ret = Json::parse( data.toString(), jsonParsingOk );
     if( jsonParsingOk )

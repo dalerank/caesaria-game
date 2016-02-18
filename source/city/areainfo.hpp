@@ -20,7 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "gfx/predefinitions.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace city
 {

@@ -95,12 +95,10 @@ void Dispatcher::load(const VariantMap& stream)
 {
   for( auto& it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
+    auto event = PostponeEvent::create( it.first, it.second.toMap() );
 
-    if( e.isValid() )
-    {
-      append( e );
-    }
+    if( event.isValid() )
+      append( event );
   }
 }
 

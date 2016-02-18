@@ -32,12 +32,13 @@
 class Building : public Construction
 {
 public:
-  Building(const object::Type type, const Size& size=Size(1) );
+  Building(const object::Type type, const Size& size=Size(1,1) );
   virtual ~Building();
   virtual void initTerrain( gfx::Tile& terrain);
 
   virtual void timeStep(const unsigned long time);
   virtual void storeGoods(good::Stock& stock, const int amount = -1);
+  virtual good::Store& store();
 
   // evaluate the given service
   virtual bool build(const city::AreaInfo& info);
@@ -66,7 +67,6 @@ public:
 
 protected:
   void _updateBalanceKoeffs();
-
 
   class Impl;
   ScopedPtr< Impl > _d;

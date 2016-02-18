@@ -17,6 +17,7 @@
 
 #include "walkergrid.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tile.hpp"
 #include "core/logger.hpp"
 
 namespace city
@@ -31,7 +32,7 @@ unsigned int WalkersGrid::_offset( const TilePos& pos )
 
 void WalkersGrid::clear()
 {
-  for( auto&& cell : _grid)
+  for( auto& cell : _grid)
     cell.clear();
 }
 
@@ -69,7 +70,7 @@ void WalkersGrid::remove( WalkerPtr a)
 void WalkersGrid::update(const WalkerList& walkers)
 {
   clear();
-  for( auto&& wlk : walkers )
+  for( auto wlk : walkers )
     append( wlk );
 }
 
@@ -82,7 +83,7 @@ bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 
 void WalkersGrid::sort()
 {
-  for( auto&& cell : _grid )
+  for( auto& cell : _grid )
   {
     if( cell.size() > 1 )
     {

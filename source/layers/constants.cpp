@@ -54,7 +54,7 @@ const VariantMap& Helper::getConfig(Type t)
 Helper::Helper() 
   : EnumsHelper<Type>( count ), _d( new Impl )
 {
-#define LAYER(a) append( citylayer::a, CAESARIA_STR_EXT(a) );
+#define LAYER(a) append( citylayer::a, TEXT(a) );
     LAYER(simple)
     LAYER(water)
     LAYER(fire)
@@ -91,6 +91,8 @@ Helper::Helper()
     LAYER(destroyd)
     LAYER(market)
     LAYER(constructor)
+    LAYER(comturnover)
+    LAYER(products)
     LAYER(all)
 #undef LAYER
 

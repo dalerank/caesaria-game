@@ -38,8 +38,7 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -63,7 +62,7 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else if( workingBuilding.isValid() )
@@ -71,7 +70,7 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
       worklessPercent = math::percentage( workingBuilding->needWorkers(), workingBuilding->maximumWorkers() );
       needDrawAnimations = workingBuilding->needWorkers() > 0;
       if( !needDrawAnimations )
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -89,21 +88,13 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Unemployed::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Unemployed( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Unemployed::handleEvent(NEvent& event)
+void Unemployed::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -140,7 +131,7 @@ void Unemployed::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Unemployed::Unemployed( Camera& camera, PlayerCityPtr city)

@@ -19,6 +19,7 @@
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 
 #include "cityservice.hpp"
+#include "core/time.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -74,8 +75,6 @@ public:
     void load( const VariantMap& vm );
   };
 
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
   Parameters lastParams() const;
   Parameters params( unsigned int monthAgo ) const;
@@ -89,8 +88,8 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-private:
   Info(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

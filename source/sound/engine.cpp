@@ -368,7 +368,7 @@ void Engine::stop(int channel)
   if( !_d->useSound )
     return;
 
-  for( auto&& sample : _d->samples )
+  for( auto& sample : _d->samples )
   {
     if( sample.second.channel == channel )
     {
@@ -391,7 +391,7 @@ void Engine::_updateSamplesVolume()
 
   int gameLvl = volume( audio::game );
 
-  for( auto&& sample : _d->samples )
+  for( auto& sample : _d->samples )
   {
     int typeVlm = volume( sample.second.typeSound );
     sample.second.setVolume( gameLvl, typeVlm );

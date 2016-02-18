@@ -25,7 +25,7 @@
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
 #include "events/disaster.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "factory.hpp"
 
 using namespace gfx;
@@ -43,7 +43,7 @@ public:
   TilePos start, end, current;
 };
 
-GameEventPtr EarthQuake::create(TilePos start, TilePos stop)
+GameEventPtr EarthQuake::create(const TilePos& start, const TilePos& stop)
 {
   EarthQuake* eq = new EarthQuake();
   eq->_d->start = start;
@@ -85,20 +85,19 @@ void EarthQuake::_exec( Game& game, unsigned int time)
 
       if( mayDestruct )
       {
-        GameEventPtr e = Disaster::create( *currentTile, Disaster::rift );
-        e->dispatch();
+        events::dispatch<Disaster>( *currentTile, Disaster::rift );
       }
     }
 
     //calculate next point
     TilesArray nextPoints = tmap.getNeighbors(_d->current, Tilemap::FourNeighbors);
 
-    int lastDst = _d->current.getDistanceFromSQ(_d->end);
+    int lastDst = _d->current.distanceSqFrom(_d->end);
     for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
     {
       bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
       mayDestruct |= (*it)->overlay().is<Construction>();
-      int curDst = (*it)->pos().getDistanceFromSQ(_d->end);
+      int curDst = (*it)->pos().distanceSqFrom(_d->end);
 
       if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
       else { ++it; }
@@ -133,7 +132,7 @@ void EarthQuake::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, end, stream )
   VARIANT_LOAD_ANYDEF_D( _d, current, TilePos( -1, -1), stream )
 
-  if( _d->current == gfx::tilemap::invalidLocation() )
+  if( _d->current == TilePos::invalid() )
   {
     _d->current = _d->start;
   }
@@ -153,7 +152,7 @@ VariantMap EarthQuake::save() const
 
 EarthQuake::EarthQuake() : _d( new Impl )
 {
-  _d->current = gfx::tilemap::invalidLocation();
+  _d->current = TilePos::invalid();
   _d->lastTimeUpdate = 0;
 }
 

@@ -36,7 +36,6 @@ void ConsoleCommand::PrintUsage(MessageSink* pOutput)
 	wstr = " ";
 	wstr += GetUsage();
 	pOutput->appendMessage( wstr );
-
 }
 
 //! print the description to the message sink

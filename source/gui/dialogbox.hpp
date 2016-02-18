@@ -25,42 +25,63 @@
 namespace  gui
 {
 
-namespace dialog
-{
-
-class Dialog : public Window
+class Dialogbox : public Window
 {
 public:
-  enum { stillPlay=0, pauseGame=1 };
-  enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,
-         btnOkCancel=btnOk|btnCancel,
+  enum { btnYes=0x1, btnNo=0x2, btnYesNo=btnYes|btnNo,
          btnNever=0x10 };
 
-  Dialog( Ui* ui, const Rect& rectangle, const std::string& title,
-             const std::string& text, int buttons, bool lockGame=false );
+  Dialogbox( Widget* parent );
+  Dialogbox( Ui* ui, const Rect& rectangle, const std::string& title,
+             const std::string& text, int buttons);
 
-  bool onEvent(const NEvent& event);
-
-  void draw( gfx::Engine& painter );
+  virtual bool onEvent(const NEvent& event);
+  virtual void setupUI(const VariantMap &ui);
+  virtual void draw(gfx::Engine& painter);
+  virtual void setTitle(const std::string& title);
+  virtual void setText(const std::string &text);
+  void setNeverValue(bool value);
+  void setButtons(int buttons);
 
 signals public:  
   Signal1<int>& onResult();
-  Signal0<>& onOk();
-  Signal0<>& onCancel();
-  Signal0<> &onNever();
+  Signal0<>& onYes();
+  Signal1<Widget*>& onYesEx();
+  Signal0<>& onNo();
+  Signal1<Widget*>& onNoEx();
+  Signal1<bool>& onNever();
+  Signal2<Widget*,bool>& onNeverEx();
 
 private:
+  void _initSimpleDialog();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-Dialog* Information(  Ui* ui,
+namespace dialog
+{
+
+Dialogbox& Information(Ui* ui,
                       const std::string& title,
-                      const std::string& text );
-Dialog* Confirmation(Ui* ui,
+                      const std::string& text,
+                      bool showNever=false);
+
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text);
+
+Dialogbox& Confirmation( Ui* ui,
                       const std::string& title,
                       const std::string& text ,
-                      bool pauseGame = false);
+                      Callback callback);
+
+Dialogbox& Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callbackOk,
+                      Callback callbackCancel);
+
 
 }//end namespace dialog
 

@@ -24,17 +24,17 @@ namespace events
 class MissionWin : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& name);
+  static GameEventPtr create(bool force);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  MissionWin(const std::string &name);
-  std::string _name;
+  MissionWin(bool force);
+  bool _force;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_MISSIONWIN_H_INCLUDE_

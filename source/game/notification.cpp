@@ -22,24 +22,24 @@
 namespace notification
 {
 
-VariantList Base::save() const
+VariantList Note::save() const
 {
   VariantList ret;
-  ret << type << date << Variant( objectName ) << Variant( message ) << location;
+  ret << desc.type << date << Variant( desc.objectName ) << Variant( desc.message ) << location;
 
   return ret;
 }
 
-void Base::load(const VariantList& stream)
+void Note::load(const VariantList& stream)
 {
-  type = (Type)stream.get( ftype ).toInt();
+  desc.type = (Type)stream.get( ftype ).toInt();
   date = stream.get( fdate ).toDateTime();
-  objectName = stream.get( fname ).toString();
-  message = stream.get( fmessage ).toString();
+  desc.objectName = stream.get( fname ).toString();
+  desc.message = stream.get( fmessage ).toString();
   location = stream.get( flocation ).toPoint();
 }
 
-Notification create(const VariantList &stream)
+Note create(const VariantList &stream)
 {
   Notification ret;
   ret.load( stream );
@@ -55,11 +55,11 @@ void Array::eraseOld(const DateTime& date, int ageMonth)
   }
 }
 
-bool Array::contain(Base::Type type) const
+bool Array::contain( Type type) const
 {
   for( auto& notification : *this )
   {
-    if( notification.type == type )
+    if( notification.desc.type == type )
       return true;
   }
 

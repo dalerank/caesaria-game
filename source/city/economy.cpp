@@ -23,6 +23,8 @@
 #include "objects/house.hpp"
 #include "objects/forum.hpp"
 #include "objects/senate.hpp"
+#include "objects/fort.hpp"
+#include "game/difficulty.hpp"
 #include "events/showinfobox.hpp"
 
 using namespace events;
@@ -44,6 +46,7 @@ void Economy::payWages(PlayerCityPtr city)
   {
     HouseList houses = city->statistic().houses.find();
 
+    //usual workers wages
     float salary = city->statistic().workers.monthlyOneWorkerWages();
     float wages = 0;
     for( auto house : houses )
@@ -53,6 +56,21 @@ void Economy::payWages(PlayerCityPtr city)
       house->appendMoney( house_wages );
       wages += house_wages;
     }
+
+    //soldiers wages
+    if( city->getOption( PlayerCity::soldiersHaveSalary ) )
+    {
+      FortList forts = city->statistic().military.forts();
+      for( auto fort : forts )
+      {
+        int soldierType = fort->workerType();
+
+        int yearSalary = city->treasury().workerSalary( soldierType );
+        int monthSalary = yearSalary / (10.f * DateTime::monthsInYear);
+        wages += monthSalary * fort->soldiers_n();
+      }
+    }
+
     resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
   }
   else
@@ -65,11 +83,26 @@ void Economy::collectTaxes(PlayerCityPtr city)
 {
   float lastMonthTax = 0;
 
-  ForumList forums = city->statistic().objects.find<Forum>( object::forum );
-  for( auto forum : forums ) { lastMonthTax += forum->collectTaxes(); }
+  if( city->getOption( PlayerCity::housePersonalTaxes ) )
+  {
+    ForumList forums = city->statistic().objects.find<Forum>( object::forum );
+    for( auto forum : forums ) { lastMonthTax += forum->takeMoney(); }
 
-  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
-  for( auto senate : senates ) { lastMonthTax += senate->collectTaxes(); }
+    SenateList senates = city->statistic().objects.find<Senate>( object::senate );
+    for( auto senate : senates ) { lastMonthTax += senate->takeMoney(); }
+  }
+  else
+  {
+    HouseList houses = city->statistic().houses.all();
+    for( auto house : houses )
+    {
+      //collect money only from taxed houses
+      if( house->getServiceValue( Service::forum ) > 0 )
+      {
+        lastMonthTax += house->collectTaxes();
+      }
+    }
+  }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
 }
@@ -95,14 +128,14 @@ void Economy::checkIssue(econ::Issue::Type type)
   switch( type )
   {
   case econ::Issue::overdueEmpireTax:
-    {
-      int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-      std::string text = lastYearBrokenTribute > 0
-          ? "##for_second_year_broke_tribute##"
-          : "##current_year_notpay_tribute_warning##";
-      GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
-      e->dispatch();
-    }
+  {
+    int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+    std::string text = lastYearBrokenTribute > 0
+        ? "##for_second_year_broke_tribute##"
+        : "##current_year_notpay_tribute_warning##";
+
+    events::dispatch<ShowInfobox>( "##tribute_broken_title##", text );
+  }
   break;
 
   default:

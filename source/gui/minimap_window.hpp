@@ -20,7 +20,6 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-#include "gfx/picture.hpp"
 #include "core/signals.hpp"
 #include "city/predefinitions.hpp"
 
@@ -53,6 +52,7 @@ public signals:
   Signal1<int>& onZoomChange();
 
 private:
+  virtual bool _onMousePressed( const NEvent::Mouse& event);
   class Impl;
   ScopedPtr< Impl > _d;
 };

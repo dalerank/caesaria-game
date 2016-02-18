@@ -41,22 +41,27 @@ void initialize(ClimateType climate)
 {
   VariantMap climateArchives = config::load( SETTINGS_RC_PATH( climateModel ) );
 
-  std::string optName;
-  if( climate == central ) { optName = CAESARIA_STR_A(central); }
-  else if( climate == northen )  { optName = "north"; }
-  else if( climate == desert ) { optName = "south"; }
+  std::map<ClimateType,std::string> regions = { {central, TEXT(central) },
+                                                {northen, TEXT(northen) },
+                                                {desert,  TEXT(desert)  } };
 
-  StringArray archives = climateArchives.get( optName ).toStringArray();
+  auto it = regions.find( climate );
+  std::string regionType = it != regions.end() ? it->second : TEXT(central);
 
-  for( auto& str : archives )
+  StringArray archives = climateArchives.get( regionType ).toStringArray();
+  vfs::Directory c3resourceDirectory( SETTINGS_STR( c3gfx ) );
+
+  for( const auto& str : archives )
   {
     Path archivePath = str;
-    Directory dir = archivePath.directory();
 
-    archivePath = dir.find( archivePath.baseName(), Path::ignoreCase );
+    Directory dir = c3resourceDirectory.empty()
+                       ? archivePath.directory()
+                       : c3resourceDirectory;
 
-    ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
+    Path arcPath = dir.find( archivePath.baseName(), Path::ignoreCase );
 
+    ArchivePtr archive = FileSystem::instance().mountArchive( arcPath );
     if( archive.isNull() )
     {
       Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );

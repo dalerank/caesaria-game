@@ -1,0 +1,6 @@
+{
+  sounds : ":/audio/wavs_buildings.zip"
+  game_sounds : ":/audio/wavs_game.zip"
+  oc3addon : ":/gfx/pics_oc3.zip"
+  misc  : ":/gfx/misc.zip"
+}

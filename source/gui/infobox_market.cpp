@@ -22,9 +22,12 @@
 #include "core/gettext.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
+#include "gfx/engine.hpp"
 #include "core/metric.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "game/infoboxmanager.hpp"
+#include "gfx/maskstate.hpp"
 
 using namespace gfx;
 
@@ -45,17 +48,17 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( !market.isValid() )
   {
-    Logger::warning( "AboutMarket: market is null tile at [{0},{1}]", tile.i(), tile.j() );
+    Logger::warning( "AboutMarket: market is null tile at [{},{}]", tile.i(), tile.j() );
     return;
   }
 
   setBase( market );
   _setWorkingVisible( true );
 
-  Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
-  lbAbout->setWordwrap( true );
-  lbAbout->setFont( Font::create( FONT_1 ) );
-  lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
+  Label& lbAbout = add<Label>( Rect( 15, 30, width() - 15, 50) );
+  lbAbout.setWordwrap( true );
+  lbAbout.setFont( FONT_1 );
+  lbAbout.setTextAlignment( align::upperLeft, align::upperLeft );
 
   setTitle( _( market->info().prettyName() ) );
 
@@ -77,13 +80,13 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
       drawGood( market, good::meat, 2, paintY);
       drawGood( market, good::fruit, 3, paintY);
       drawGood( market, good::vegetable, 4, paintY);
-      lbAbout->setHeight( 60 );
+      lbAbout.setHeight( 60 );
     }
     else
     {
-      lbAbout->setHeight( 90 );
-      lbAbout->setWordwrap( true );
-      lbAbout->setTextAlignment( align::upperLeft, align::center );
+      lbAbout.setHeight( 90 );
+      lbAbout.setWordwrap( true );
+      lbAbout.setTextAlignment( align::upperLeft, align::center );
     }
 
     paintY += 24;
@@ -92,12 +95,12 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
     drawGood( market, good::oil, 2, paintY);
     drawGood( market, good::wine, 3, paintY);
 
-    lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
+    lbAbout.setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
   }
   else
   {
-    lbAbout->setHeight( 50 );
-    lbAbout->setText( _("##market_no_workers##") );
+    lbAbout.setHeight( 50 );
+    lbAbout.setText( _("##market_no_workers##") );
   }
 
   _updateWorkersLabel( Point( 32, 8 ), 542, market->maximumWorkers(), market->numberWorkers() );
@@ -105,26 +108,63 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
 AboutMarket::~AboutMarket() {}
 
-void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int index, int paintY )
+class MarketGoodButton : public PushButton
+{
+public:
+  MarketGoodButton( Widget* parent, const Rect& rect, const good::Product &goodType,
+                    int qty, good::Orders::Order order)
+    : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
+  {
+    setText( utils::i2str( metric::Measure::convQty( qty ) ) );
+    setIcon( good::Info( goodType ).picture() );
+    setFont( FONT_2 );
+    setTextAlignment( align::upperLeft, align::center );
+    setTextOffset( { 30, 0 } );
+
+    _order = order;
+    _goodType = goodType;
+  }
+
+  virtual void drawIcon(Engine &painter)
+  {
+    MaskState lock( painter, _order == good::Orders::reject
+                                ? NColor::ashade( 0xff, 0x60 )
+                                : ColorList::clear );
+    PushButton::drawIcon( painter );
+  }
+
+  Signal2<good::Product,good::Orders::Order> onSwitchOrder;
+protected:
+  virtual void _btnClicked()
+  {
+    PushButton::_btnClicked();
+    _order = (_order == good::Orders::accept
+                      ? good::Orders::reject
+                      : good::Orders::accept );
+    emit onSwitchOrder( _goodType, _order );
+  }
+
+  good::Product _goodType;
+  good::Orders::Order _order;
+};
+
+void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType,
+                            int index, int paintY )
 {
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  //std::string goodName = good::Helper::name( goodType );
-  int qty = market->goodStore().qty( goodType );
-  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
+  good::Store& store = market->goodStore();
+  good::Orders::Order order = store.getOrder( goodType );
 
   // pictures of goods
-  Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  auto& btn = add<MarketGoodButton>( Rect( pos, Size( 100, 24 )),
+                                     goodType, store.qty( goodType ), order );
+  CONNECT( &btn, onSwitchOrder, &store, good::Store::setOrder )
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+ // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include "core/predefinitions.hpp"
 #include "core/logger.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 #include <windows.h>
 typedef HINSTANCE addon_lib_t;
 #define __freeLibrary(a) ::FreeLibrary(a)
@@ -117,11 +117,11 @@ void Manager::load(vfs::Directory folder)
   vfs::Entries flist = folder.entries();
   std::string addonExtension = ".unk";
 
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   addonExtension = ".win";
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   addonExtension = ".linux";
-#elif  defined(CAESARIA_PLATFORM_MACOSX)
+#elif  defined(GAME_PLATFORM_MACOSX)
   addonExtension = ".macos";
 #endif
 

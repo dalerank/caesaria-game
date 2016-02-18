@@ -1,0 +1,33 @@
+{
+  geometry : [ 0, 0, 510, 400 ]
+  bgtype : "whiteFrame"
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 35 ]
+    text : "##governor_salary_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxTitles#ListBox : {
+    geometry : [ 16, 50, "100%-16", "100%-100" ]
+    textAlign : [ "center", "center" ]
+    itemfont : "FONT_2_WHITE"
+    itemheight : 22
+  }
+    
+  btnOk#PushButton : {
+    geometry : [ 176, "100%-55", 336, "100%-35" ]
+    text : "##ok##"
+    bgtype : "whiteBorderUp"      
+    font : "FONT_2"
+  }
+
+  btnCancel#PushButton : {
+    geometry : [ 176, "100%-32", 336, "100%-12" ]
+    text : "##cancel##"
+    bgtype : "whiteBorderUp"
+    tooltip : "##exit_salary_window##"
+    font : "FONT_2"
+  }
+}

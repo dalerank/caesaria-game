@@ -26,6 +26,7 @@
 #include "widget_helper.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
+#include "core/color_list.hpp"
 #include "widgetescapecloser.hpp"
 #include "core/utils.hpp"
 #include "game/gift.hpp"
@@ -55,31 +56,30 @@ public signals:
 EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGift)
 {
-  _dfunc()->maxMoney = money;
-  _dfunc()->wantSend = 0;
+  __D_REF(d,EmperorGift)
+  d.maxMoney = money;
+  d.wantSend = 0;
 
   setupUI( ":/gui/gift4emperor.gui" );
   setCenter( parent()->center() );
 
   INIT_WIDGET_FROM_UI( Label*, lbLastGiftDate )
   INIT_WIDGET_FROM_UI( ListBox*, lbxGifts )
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
   INIT_WIDGET_FROM_UI( Label*, lbPlayerMoney )
 
-  CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
-  CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
-  CONNECT( btnSend, onClicked(), this, EmperorGift::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, EmperorGift::deleteLater );
+  CONNECT( lbxGifts, onItemSelected(), &d, Impl::selectGift );
+  LINK_WIDGET_ACTION( PushButton*, btnSend, onClicked(), &d, Impl::sendGift );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(), EmperorGift::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), EmperorGift::deleteLater );
 
-  _dfunc()->fillGifts( lbxGifts );
+  d.fillGifts( lbxGifts );
 
   if( lbLastGiftDate )
   {
     int monthsLastGift = lastgift.monthsTo( game::Date::current() );
     std::string text = monthsLastGift > 100
                               ? _( "##too_old_sent_gift##")
-                              : utils::format( 0xff, "%s  %d  %s",
+                              : fmt::format( "{}  {}  {}",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,
                                              _("##mo##") );
@@ -88,26 +88,15 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   if( lbPlayerMoney )
   {
-    std::string text = utils::format( 0xff, "%s %d Dn", _( "##you_have_money##"), money );
+    std::string text = fmt::format( "{} {} Dn", _( "##you_have_money##"), money );
     lbPlayerMoney->setText( text );
   }
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClosers::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 
 EmperorGift::~EmperorGift() {}
-
-bool EmperorGift::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
 
 Signal1<int>& EmperorGift::onSendGift() { return _dfunc()->sendGiftSignal; }
 
@@ -134,7 +123,7 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
 
     ListBoxItem& item = lbx->addItem( giftDescription );
     item.setTag( tag );
-    item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );
+    item.setTextColor( ListBoxItem::simple, tag < maxMoney ? ColorList::black : ColorList::grey );
     item.setEnabled( tag < maxMoney );
   }
 }

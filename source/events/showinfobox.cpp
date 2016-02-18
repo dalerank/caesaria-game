@@ -92,7 +92,7 @@ void ShowInfobox::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, hidden, stream )
   VARIANT_LOAD_STR_D( _d, tip, stream )
 
-  _d->gtype = good::Helper::getType( stream.get( "good" ).toString() );
+  _d->gtype = good::Helper::type( stream.get( "good" ).toString() );
 }
 
 VariantMap ShowInfobox::save() const
@@ -120,27 +120,26 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   {
     if( _d->video.empty() )
     {
-      auto wnd = new gui::infobox::AboutEvent( game.gui()->rootWidget(), _(_d->title), _(_d->text),
-                                                  game::Date::current(), _d->gtype, _d->tip );
+      auto& wnd = game.gui()->add<gui::infobox::AboutEvent>( _(_d->title), _(_d->text),
+                                                            game::Date::current(), _d->gtype, _d->tip );
 
       for( auto& callback : _d->callbacks )
-        wnd->addCallback( callback.first, callback.second );
+        wnd.addCallback( callback.first, callback.second );
 
-      wnd->show();
+      wnd.show();
     }
     else
     {
-      auto wnd = new gui::FilmWidget( game.gui()->rootWidget(), _d->video );
-      wnd->setTitle( _( _d->title ) );
-      wnd->setText( _( _d->text ) );
-      wnd->show();
+      auto& wnd = game.gui()->add<gui::FilmWidget>( _d->video );
+      wnd.setTitle( _( _d->title ) );
+      wnd.setText( _( _d->text ) );
+      wnd.show();
     }
   }
 
   if( _d->send2scribe )
   {
-    auto event = ScribeMessage::create( _(_d->title), _(_d->text), _d->gtype, _d->position );
-    event->dispatch();
+    events::dispatch<ScribeMessage>( _(_d->title), _(_d->text), _d->gtype, _d->position );
   }
 }
 

@@ -28,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = Hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( TEXT(WindowMessageStack) );
 
 class LabelA : public Label
 {
@@ -42,7 +42,7 @@ public:
                       : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
 
     setTextAlignment( align::center, align::center );
-    new WidgetDeleter( this, 5000 );
+    add<WidgetDeleter>( 5000 );
   }
 
 protected:
@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ), style );
 
-    Picture emlbPic( ResourceGroup::panelBackground, config::id.empire.stamp );
+    Picture emlbPic( gui::rc.panel, config::id.empire.stamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 
@@ -121,19 +121,19 @@ void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
     removeChild( *children().begin() );
   }
 
-  new LabelA( this, Rect( 0, 0, 2, 20), text, lvl );
+  add<LabelA>( Rect( 0, 0, 2, 20), text, lvl );
 
   _update();
 }
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  auto wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                     Rect( 0, 0, parent->width() / 2, 92 ) );
-  wnd->setPosition( Point( parent->width() / 4, 33 ) );
-  wnd->sendToBack();
+  auto& wnd = parent->add<WindowMessageStack>( WindowMessageStack::defaultID,
+                                               Rect( 0, 0, parent->width() / 2, 92 ) );
+  wnd.setPosition( Point( parent->width() / 4, 33 ) );
+  wnd.sendToBack();
 
-  return wnd;
+  return &wnd;
 }
 
 }//end namespace gui

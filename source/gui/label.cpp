@@ -21,8 +21,9 @@
 #include "core/event.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "widget_factory.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace std;
 using namespace gfx;
@@ -53,46 +54,57 @@ class Label::Impl
 {
 public:
   StringArray brokenText;
-  Rect textMargin;
   Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
   Font font;
-  bool isBorderVisible;
   bool OverrideBGColorEnabled;
-  bool isWordwrap;
-  Point bgOffset;
   Label::BackgroundMode backgroundMode;
   bool RestrainTextInside;
-  bool RightToLeft;
-  bool lmbPressed;
-  string prefix;
-  bool needUpdatePicture;
   int lineIntervalOffset;
-  Point textOffset, iconOffset;
-  Picture bgPicture;
-  Picture icon;
-  Batch background;
-  Pictures backgroundNb;
-  Picture textPicture;
+
+  struct {
+    bool borderVisible = false;
+    bool wordwrap = false;
+    bool lmbPressed = false;
+    bool needUpdate = false;
+  } is;
+
+  struct {
+    Picture picture;
+    Point offset;
+  } icon;
+
+  struct {
+    Picture picture;
+    Point offset;
+    string prefix;
+    bool rightToLeft = false;
+    Rect margin;
+  } text;
+
+  struct {
+    Picture picture;
+    Batch batch;
+    Pictures fallback;
+    Point offset;
+  } background;
+
   unsigned int opaque;
 
-  Impl() : textMargin( Rect( 0, 0, 0, 0) ),
-           isBorderVisible( false ),
-           OverrideBGColorEnabled(false), isWordwrap(false),
+  Impl() : OverrideBGColorEnabled(false),
            backgroundMode( Label::bgNone ),
-           RestrainTextInside(true), RightToLeft(false),
-           needUpdatePicture(false), lineIntervalOffset( 0 )
+           RestrainTextInside(true),
+           lineIntervalOffset( 0 )
   {
     font = Font::create( FONT_2 );
-    lmbPressed = false;
     opaque = 0xff;
   }
 
   ~Impl()
   {
-    textPicture = Picture();
+    text.picture = Picture();
   }
 
-  void breakText( const std::string& text, const Size& size );
+  void breakText(const std::string& text, Size size );
 
 public signals:
   Signal0<> onClickedSignal;
@@ -102,11 +114,23 @@ public signals:
 //! constructor
 Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
-  _d->isBorderVisible = false;
+  _d->is.borderVisible = false;
   _d->backgroundMode = bgNone;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 
   setTextAlignment( align::automatic, align::automatic );
+}
+
+Label::Label(gui::Widget* parent, const Rect& rectangle, const std::string& text, Font font)
+  : Widget( parent, -1, rectangle ), _d( new Impl )
+{
+  _d->is.borderVisible = false;
+  _d->backgroundMode = bgNone;
+  _d->is.needUpdate = true;
+
+  setTextAlignment( align::automatic, align::automatic );
+  setFont( font );
+  setText( text );
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
@@ -114,9 +138,9 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
-  _d->isBorderVisible = border;
+  _d->is.borderVisible = border;
   _d->backgroundMode = background;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 
   #ifdef _DEBUG
     setDebugName( "label");
@@ -126,50 +150,52 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
   setText( text );
 }
 
-void Label::_updateTexture(gfx::Engine& painter )
+void Label::_updateTexture(gfx::Engine& painter)
 {
-  if( _d->textPicture.isValid() && _d->textPicture.size() != size() )
+  if( _d->text.picture.isValid() && _d->text.picture.size() != size() )
   {
-    _d->textPicture = Picture( size(), 0, true );
+    _d->text.picture = Picture( size(), 0, true );
   }
 
-  if( !_d->textPicture.isValid() )
+  if( !_d->text.picture.isValid() )
   {
-    _d->textPicture = Picture( size(), 0, true );
+    _d->text.picture = Picture( size(), 0, true );
   }
 
-  if( _d->textPicture.isValid() )
+  if( _d->text.picture.isValid() )
   {
-    _d->textPicture.fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( ColorList::clear, Rect( 0, 0, 0, 0) );
   }
 
   // draw button background
   bool useAlpha4Text = true;
-  if( !_d->bgPicture.isValid() )
+  if( !_d->background.picture.isValid() )
   {
     _updateBackground( painter, useAlpha4Text );
   }
 
   if( _d->font.isValid() )
-  {
-    Rect frameRect( Point( 0, 0 ), size() );
-    string rText = _d->prefix + text();
+  {    
+    Rect frameRect( _d->text.margin.left(), _d->text.margin.top(),
+                    width()-_d->text.margin.right(), height()-_d->text.margin.bottom() );
+
+    string rText = _d->text.prefix + text();
 
     if( rText.size() )
     {
       //eColor = GetResultColor( eColor );
-      if( !_d->isWordwrap )
+      if( !_d->is.wordwrap )
       {
         Rect textRect = _d->font.getTextRect( rText, frameRect, horizontalTextAlign(), verticalTextAlign() );
 
-        textRect += _d->textOffset;
-        _d->font.draw( _d->textPicture, text(), textRect.lefttop(), useAlpha4Text, false );
+        textRect += _d->text.offset;
+        _d->font.draw( _d->text.picture, text(), textRect.lefttop(), useAlpha4Text, false );
       }
       else
       {
         if( _d->font != _d->lastBreakFont )
         {
-            _d->breakText( text(), size() );
+          _d->breakText( text(), size() );
         }
 
         Rect r = frameRect;
@@ -180,42 +206,42 @@ void Label::_updateTexture(gfx::Engine& painter )
           r -= Point( 0, height * _d->brokenText.size() / 2 );
         }
 
-        foreach( it, _d->brokenText )
+        for( const auto& btext : _d->brokenText )
         {
-          Rect textRect = _d->font.getTextRect( *it, r, horizontalTextAlign(), verticalTextAlign() );
-          textRect += _d->textOffset;
-          _d->font.draw( _d->textPicture, *it, textRect.lefttop(), useAlpha4Text, false );
+          Rect textRect = _d->font.getTextRect( btext, r, horizontalTextAlign(), verticalTextAlign() );
+          textRect += _d->text.offset;
+          _d->font.draw( _d->text.picture, btext, textRect.lefttop(), useAlpha4Text, false );
           r += Point( 0, height + _d->lineIntervalOffset );
         }        
       }
     }
   }
 
-  if( _d->textPicture.isValid() )
+  if( _d->text.picture.isValid() )
   {
-    _d->textPicture.setAlpha( _d->opaque );
-    _d->textPicture.update();
+    _d->text.picture.setAlpha( _d->opaque );
+    _d->text.picture.update();
   }
 }
 
 void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
 {
   Rect r( Point( 0, 0 ), size() );
-  _d->background.destroy();
+  _d->background.batch.destroy();
 
   Pictures pics;
   switch( _d->backgroundMode )
   {
   case bgSimpleWhite:
-    _d->textPicture.fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( 0xffffffff, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
-    Decorator::draw( _d->textPicture, r, Decorator::lineBlackBorder );
+    Decorator::draw( _d->text.picture, r, Decorator::lineBlackBorder );
   break;
 
   case bgSimpleBlack:
-    _d->textPicture.fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( 0xff000000, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
-    Decorator::draw( _d->textPicture, r, Decorator::lineWhiteBorder );
+    Decorator::draw( _d->text.picture, r, Decorator::lineWhiteBorder );
   break;
 
   case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, nullptr, Decorator::normalY ); break;
@@ -228,12 +254,12 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, nullptr, Decorator::normalY  ); break;
   }
 
-  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->background.batch.load( pics, absoluteRect().lefttop() );
   if( !batchOk )
   {
-    _d->background.destroy();
+    _d->background.batch.destroy();
     Decorator::reverseYoffset( pics );
-    _d->backgroundNb = pics;
+    _d->background.fallback = pics;
   }
 }
 
@@ -253,27 +279,13 @@ void Label::draw(gfx::Engine& painter )
     return;
 
   // draw background
-  if( _d->bgPicture.isValid() )
-  {
-    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
-  else
-  {
-    if( _d->background.valid() )
-      painter.draw( _d->background, &absoluteClippingRectRef() );
-    else
-      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
+  DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
-  if( _d->icon.isValid() )
-  {
-    painter.draw( _d->icon, absoluteRect().lefttop() + _d->iconOffset, &absoluteClippingRectRef() );
-  }
-
-  if( _d->textPicture.isValid() )
-  {
-    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
+  pipe.draw( _d->background.picture )
+        .fallback( _d->background.batch )
+        .fallback( _d->background.fallback )
+      .draw( _d->icon.picture, _d->icon.offset )
+      .draw( _d->text.picture );
 
   Widget::draw( painter );
 }
@@ -293,18 +305,18 @@ Font Label::font() const
 
 	return Widget::getFont( index );*/
 
-    return _d->font;
+  return _d->font;
 }
 
 //! Sets whether to draw the background
 void Label::setBackgroundMode( BackgroundMode mode )
 {
   _d->backgroundMode = mode;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
 //! Sets whether to draw the border
-void Label::setBorderVisible(bool draw) {  _d->isBorderVisible = draw;}
+void Label::setBorderVisible(bool draw) {  _d->is.borderVisible = draw;}
 void Label::setTextRestrainedInside(bool restrainTextInside){  _d->RestrainTextInside = restrainTextInside;}
 bool Label::isTextRestrainedInside() const{  return _d->RestrainTextInside;}
 
@@ -312,30 +324,30 @@ bool Label::isTextRestrainedInside() const{  return _d->RestrainTextInside;}
 //! multiline text control.
 void Label::setWordwrap(bool enable)
 {
-  _d->isWordwrap = enable;
+  _d->is.wordwrap = enable;
   _d->breakText( text(), size() );
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
-bool Label::isWordWrapEnabled() const {  return _d->isWordwrap; }
+bool Label::isWordwrapEnabled() const {  return _d->is.wordwrap; }
 
 void Label::setRightToLeft(bool rtl)
 {
-  if( _d->RightToLeft != rtl )
+  if( _d->text.rightToLeft != rtl )
   {
-    _d->RightToLeft = rtl;
+    _d->text.rightToLeft = rtl;
     _d->breakText( text(), size() );
-    _d->needUpdatePicture = true;
+    _d->is.needUpdate = true;
   }
 }
 
-bool Label::isRightToLeft() const{	return _d->RightToLeft;}
+bool Label::isRightToLeft() const{	return _d->text.rightToLeft;}
 
 //! Breaks the single text line.
-void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
+void Label::Impl::breakText( const std::string& ntext, Size wdgSize )
 {
-  if (!isWordwrap)
-          return;
+  if( !is.wordwrap )
+    return;
 
   brokenText.clear();
 
@@ -347,17 +359,24 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
   string line;
   string word;
   string whitespace;
-  string rText = prefix + text;
+  string rText = text.prefix + ntext;
 	int size = rText.size();
 	int length = 0;
-	int elWidth = wdgSize.width();
+
+  struct {
+    int space;
+    int word;
+    inline int length() { return space+word; }
+  } textChunck;
+
+  const int widgetWidth = wdgSize.width() - (text.margin.left() + text.margin.right());
 
 	char c;
 
 	// We have to deal with right-to-left and left-to-right differently
 	// However, most parts of the following code is the same, it's just
 	// some order and boundaries which change.
-	if (!RightToLeft)
+  if (!text.rightToLeft)
 	{
 		// regular (left-to-right)
 		for (int i=0; i<size; ++i)
@@ -390,14 +409,14 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 
 			if ( isWhitespace || i == (size-1))
 			{
-				if (word.size())
+        if (word.size()>0)
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getTextSize( whitespace ).width();
-					const int wordlgth = font.getTextSize( word ).width();
+          textChunck.space = font.getTextSize( whitespace ).width();
+          textChunck.word = font.getTextSize( word ).width();
 
-					if (wordlgth > elWidth)
+          if( textChunck.word > widgetWidth )
 					{
 						// This word is too long to fit in the available space, look for
 						// the Unicode Soft HYphen (SHY / 00AD) character for a place to
@@ -419,15 +438,15 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 							// break to next line
 							if (length)
 								brokenText.push_back(line);
-							length = wordlgth;
+              length = textChunck.word;
 							line = word;
 						}
 					}
-					else if (length && (length + wordlgth + whitelgth > elWidth))
+          else if (length && (length + textChunck.length() > widgetWidth))
 					{
 						// break to next line
 						brokenText.push_back(line);
-						length = wordlgth;
+            length = textChunck.word;
 						line = word;
 					}
 					else
@@ -435,7 +454,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 						// add word to line
 						line += whitespace;
 						line += word;
-						length += whitelgth + wordlgth;
+            length += textChunck.length();
 					}
 
 					word = "";
@@ -473,36 +492,36 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 			c = rText[i];
 			bool lineBreak = false;
 
-			if (c == L'\r') // Mac or Windows breaks
+      if (c == '\r') // Mac or Windows breaks
 			{
 				lineBreak = true;
-				if ((i>0) && rText[i-1] == L'\n') // Windows breaks
+        if ((i>0) && rText[i-1] == '\n') // Windows breaks
 				{
 					rText.erase(i-1);
 					--size;
 				}
 				c = '\0';
 			}
-			else if (c == L'\n') // Unix breaks
+      else if (c == '\n') // Unix breaks
 			{
 				lineBreak = true;
 				c = '\0';
 			}
 
-			if (c==L' ' || c==0 || i==0)
+      if (c==' ' || c==0 || i==0)
 			{
 				if (word.size())
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getTextSize( whitespace ).width();
-					const int wordlgth = font.getTextSize( word ).width();
+          textChunck.space = font.getTextSize( whitespace ).width();
+          textChunck.word = font.getTextSize( word ).width();
 
-					if (length && (length + wordlgth + whitelgth > elWidth))
+          if (length && (length + textChunck.length() > widgetWidth))
 					{
 						// break to next line
 						brokenText.push_back(line);
-						length = wordlgth;
+            length = textChunck.word;
 						line = word;
 					}
 					else
@@ -510,7 +529,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 						// add word to line
 						line = whitespace + line;
 						line = word + line;
-						length += whitelgth + wordlgth;
+            length += textChunck.length();
 					}
 
 					word = "";
@@ -552,7 +571,7 @@ void Label::setText(const string& newText)
   Widget::setText( newText );
 
   _d->breakText( text(), size() );
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
 Signal0<>& Label::onClicked() { return _d->onClickedSignal; }
@@ -567,7 +586,7 @@ int Label::textHeight() const
 
   int height = font.getTextSize("A").height();// + font.GetKerningHeight();
 
-  if( _d->isWordwrap)
+  if( _d->is.wordwrap)
     height *= _d->brokenText.size();
 
   return height;
@@ -580,7 +599,7 @@ int Label::textWidth() const
   if( !font.isValid() )
       return 0;
 
-  if( _d->isWordwrap )
+  if( _d->is.wordwrap )
   {
     int widest = 0;
 
@@ -600,15 +619,15 @@ int Label::textWidth() const
   }
 }
 
-void Label::setPadding( const Rect& margin ) {  _d->textMargin = margin; }
+void Label::setPadding( const Rect& margin ) {  _d->text.margin = margin; }
 
 void Label::beforeDraw(gfx::Engine& painter )
 {
-  if( _d->needUpdatePicture )
+  if( _d->is.needUpdate )
   {
     _updateTexture( painter );
 
-    _d->needUpdatePicture = false;
+    _d->is.needUpdate = false;
   }
 
   Widget::beforeDraw( painter );
@@ -622,20 +641,20 @@ bool Label::onEvent(const NEvent& event)
   {
     switch( event.mouse.type )
     {
-    case mouseLbtnPressed: _d->lmbPressed = true;
+    case NEvent::Mouse::btnLeftPressed: _d->is.lmbPressed = true;
     break;
 
-    case mouseLbtDblClick:
+    case NEvent::Mouse::mouseLbtDblClick:
     {
       _handleClick();
     }
     break;
 
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
-      if( _d->lmbPressed )
+      if( _d->is.lmbPressed )
       {
-        _d->lmbPressed = false;
+        _d->is.lmbPressed = false;
         _handleClick();
       }
     }
@@ -648,58 +667,123 @@ bool Label::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
+bool Label::isBorderVisible() const {  return _d->is.borderVisible; }
+
+void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColor color)
+{
+  Picture& texture = _textPicture();
+  Font rfont = dfont.isValid() ? dfont : font();
+  if( color != 0 )
+    rfont.setColor( color );
+
+  rfont.draw( texture, text, point.x(), point.y(), true );
+}
+
+void Label::canvasDraw(const string& text, const Rect& rect, Font dfont, NColor color, Alignment halign, Alignment valign)
+{
+  if( halign == align::automatic )
+    halign = horizontalTextAlign();
+
+  if( valign == align::automatic )
+    valign = verticalTextAlign();
+
+  Font rfont = dfont.isValid() ? dfont : font();
+  if( !text.empty() )
+  {
+    Rect textRect = rfont.getTextRect( text, rect, halign, valign );
+    canvasDraw( text, textRect.lefttop(), rfont, color );
+  }
+}
+
+void Label::canvasDraw(const Picture& picture, const Point& point)
+{
+
+}
 
 void Label::setPrefixText( const string& prefix )
 {
-  _d->prefix = prefix;
-  _d->needUpdatePicture = true;
+  _d->text.prefix = prefix;
+  _d->is.needUpdate = true;
 }
 
 void Label::setBackgroundPicture(const Picture& picture, Point offset )
 {
-  _d->bgPicture = picture;
-  _d->bgOffset = offset;
-  _d->needUpdatePicture = true;
+  _d->background.picture = picture;
+  _d->background.offset = offset;
+  _d->is.needUpdate = true;
 }
 
 void Label::setIcon(const Picture& icon, Point offset )
 {
-  _d->icon = icon;
-  _d->iconOffset = offset;
-  _d->needUpdatePicture = true;
+  _d->icon.picture = icon;
+  _d->icon.offset = offset;
+  _d->is.needUpdate = true;
+}
+
+void Label::setIcon(const string& rc, int index)
+{
+  _d->icon.picture.load( rc, index );
+  _d->is.needUpdate = true;
+}
+
+void Label::setIconOffset(const Point& offset)
+{
+  _d->icon.offset = offset;
+  _d->is.needUpdate = true;
 }
 
 void Label::setFont( const Font& font )
 {
   _d->font = font;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
+}
+
+void Label::setFont(const string& fontname)
+{
+  Widget::setFont( fontname );
+}
+
+void Label::setFont(FontType type, NColor color)
+{
+  Widget::setFont(type, color);
 }
 
 void Label::setAlpha(unsigned int value)
 {
   _d->opaque = value;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
 void Label::setColor(NColor color)
 {
   _d->font.setColor( color );
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
+}
+
+void Label::setColor(const string& color)
+{
+  NColor c = ColorList::find(color);
+  if (c.color != 0)
+    setColor(c);
 }
 
 void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
   Widget::setTextAlignment( horizontal, vertical );
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
-void Label::_finalizeResize() {  _d->needUpdatePicture = true; }
+void Label::setTextAlignment(const string& horizontal, const string& vertical)
+{
+  Widget::setTextAlignment(horizontal,vertical);
+}
+
+void Label::_finalizeResize() {  _d->is.needUpdate = true; }
 
 void Label::setLineIntervalOffset( const int offset )
 {
   _d->lineIntervalOffset = offset;
-  _d->needUpdatePicture = true;
+  _d->is.needUpdate = true;
 }
 
 void Label::setupUI(const VariantMap& ui)
@@ -720,15 +804,29 @@ void Label::setupUI(const VariantMap& ui)
     setIcon( Picture( vIcon.toString() ), iconOffset );
   }
 
+  Variant marginLefttop = ui.get( "margin.lefttop" );
+  if( marginLefttop.isValid() )
+  {
+    Point value = marginLefttop.toPoint();
+    _d->text.margin.setLeft( value.x() );
+    _d->text.margin.setTop( value.y() );
+  }
+
+  Variant margin = ui.get( "margin" );
+  if( margin.isValid() )
+  {
+    _d->text.margin = margin.toRect();
+  }
+
   LabelBackgroundHelper helper;
   Label::BackgroundMode mode = helper.findType( ui.get( "bgtype" ).toString() );
   if( mode != bgNone )
     setBackgroundMode( mode );
 }
 
-void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-Picture& Label::_textPicture() { return _d->textPicture; }
-Batch& Label::_background() { return _d->background; }
-Pictures& Label::_backgroundNb() { return _d->backgroundNb; }
+void Label::setTextOffset(Point offset) {  _d->text.offset = offset;}
+Picture& Label::_textPicture() { return _d->text.picture; }
+Batch& Label::_background() { return _d->background.batch; }
+Pictures& Label::_backgroundNb() { return _d->background.fallback; }
 
 }//end namespace gui

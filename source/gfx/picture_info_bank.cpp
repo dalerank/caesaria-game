@@ -39,12 +39,12 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
 {
   // tiles
   Point offset = getDefaultOffset( tileOffset );
-  _d->setRange( ResourceGroup::land1a, 1, 303, offset);
+  _d->setRange( config::rc.land1a, 1, 303, offset);
   _d->setRange( "oc3_land", 1, 2, offset);
-  _d->setRange( ResourceGroup::land2a, 1, 151, offset);
-  _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
-  _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
-  _d->setRange( ResourceGroup::land3a, 47, 92, offset);
+  _d->setRange( config::rc.land2a, 1, 151, offset);
+  _d->setRange( config::rc.land2a, 187, 195, offset); //burning ruins start animation
+  _d->setRange( config::rc.land2a, 214, 231, offset); //burning ruins middle animation
+  _d->setRange( config::rc.land3a, 47, 92, offset);
   _d->setRange( ResourceGroup::plateau, 1, 44, offset);
   _d->setRange( ResourceGroup::commerce, 1, 167, offset);
   _d->setRange( ResourceGroup::transport, 1, 93, offset);
@@ -61,9 +61,9 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::wall, 152, 185, offset );
   _d->setRange( ResourceGroup::sprites, 114, 161, offset );
 
-  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
+  _d->setRange( config::layer.water, 1, 2, offset ); //wateroverlay building 1x1
+  _d->setRange( config::layer.water, 11, 12, offset ); //wateroverlay houses 1x1
+  _d->setRange( config::layer.water, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
   _d->setOne( ResourceGroup::entertainment, 12, 37, 62); // amphitheater
   _d->setOne( ResourceGroup::entertainment, 50, 70, 105);  // collosseum
@@ -78,7 +78,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture
   _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
 
-  _d->setOne( ResourceGroup::land3a, 43, Point( 0, 116 ) );
+  _d->setOne( config::rc.land3a, 43, Point( 0, 116 ) );
   _d->setOne( "circus", 5, 0, 106 );
 
   // stock of input good
@@ -131,13 +131,7 @@ void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, 
 Point PictureInfoBank::getOffset(const std::string& resource_name)
 {
   Impl::PictureInfoMap::iterator it = _d->data.find( Hash( resource_name ) );
-  if (it == _d->data.end())
-  {
-    return Point();
-    // THROW("Invalid resource name: " << resource_name);
-  }
-
-  return (*it).second;
+  return it != _d->data.end() ? it->second : Point();
 }
 
 void PictureInfoBank::setOffset(const std::string& preffix, const int index, const Point& data)
@@ -156,7 +150,7 @@ enum { idxIndex=0, idxXOffset, idxYOffset };
 
 void PictureInfoBank::initialize(vfs::Path filename)
 {
-  Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
+  Logger::warning( "PictureInfoBank: start load offsets from " + filename );
   VariantMap configVm = config::load( filename );
 
   std::string rc;

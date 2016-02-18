@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "coastalbuilding.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
@@ -107,7 +107,6 @@ void CoastalFactory::assignBoat(ShipPtr)
 
 const Tile& CoastalFactory::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -119,7 +118,7 @@ const Tile& CoastalFactory::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 CoastalFactory::~CoastalFactory()

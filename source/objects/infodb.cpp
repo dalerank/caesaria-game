@@ -40,7 +40,7 @@ class BuildingClassHelper : public EnumsHelper<object::Group>
 public:
   BuildingClassHelper() : EnumsHelper<object::Group>( object::group::unknown )
   {
-#define __REG_GROUPNAME(a) append( object::group::a, CAESARIA_STR_EXT(a) );
+#define __REG_GROUPNAME(a) append( object::group::a, TEXT(a) );
     __REG_GROUPNAME(industry)
     __REG_GROUPNAME(food)
     __REG_GROUPNAME(disaster)
@@ -80,7 +80,7 @@ void InfoDB::_loadConfig(object::Type type, const std::string& name, const Varia
 class ObjectsMap : public std::map<object::Type, Info>
 {
 public:
-  const Info& valueOrEmpty( object::Type type ) const
+  const Info& valueOrEmpty( object::Type type )
   {
     ObjectsMap::const_iterator mapIt = find( type );
     if( mapIt == end() )

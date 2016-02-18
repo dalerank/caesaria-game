@@ -39,7 +39,7 @@ public:
     if( !_scene )
       return;   
 
-    if( event.EventType == sEventMouse && event.mouse.type == mouseLbtnPressed )
+    if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::btnLeftPressed )
     {
       Camera* camera = _scene->camera();
       Tile* tile = camera->at( event.mouse.pos(), false );
