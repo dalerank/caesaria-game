@@ -12,7 +12,7 @@ Label.prototype = {
 	set subElement (value) { this.widget.setSubElement(value); },
 
   deleteLater : function() { this.widget.deleteLater(); }
-}
+};
 
 function Fade(parent) {
   this.widget = new _Fade(parent);	
@@ -25,7 +25,7 @@ Fade.prototype = {
 	
 	addCloseCode : function(code) { this.widget.addCloseCode(code); },
   deleteLater : function() { this.widget.deleteLater(); }
-}
+};
 
 function ExitButton(parent) {
   this.widget = new _ExitButton(parent);
@@ -33,7 +33,7 @@ function ExitButton(parent) {
 
 ExitButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); }
-}
+};
 
 function TexturedButton(parent) {
   this.widget = new _TexturedButton(parent);
@@ -45,7 +45,7 @@ TexturedButton.prototype = {
   set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set callback (func) { this.widget.onClickedEx(func); },
-}
+};
 
 function PositionAnimator(parent) {
   this.widget = new _PositionAnimator(parent);
@@ -55,7 +55,7 @@ PositionAnimator.prototype = {
   set destination (point) { this.widget.setDestination(point.x,point.y); },
 	set speed (point) { this.widget.setSpeed(point.x,point.y); },
 	set removeParent (value) { this.widget.setFlag("removeParent", value );}
-}
+};
 
 function Image(parent) {
   this.widget = new _Image(parent);
@@ -66,7 +66,7 @@ Image.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set picture (name) { this.widget.setPicture(name); }
-}
+};
 
 function Window(parent) {
   this.widget = new _Window(parent);
@@ -117,7 +117,7 @@ Window.prototype = {
     btn.position = { x:rx, y:ry }
     return btn;
   }
-}
+};
 
 function Button(parent) {
   this.widget = new _PushButton(parent);
@@ -134,7 +134,7 @@ Button.prototype = {
 
   deleteLater : function() { this.widget.deleteLater(); },
   setFocus : function() { this.widget.setFocus(); }
-}
+};
 
 function Listbox(parent) {
 	this.widget = new _ListBox(parent);
@@ -150,7 +150,7 @@ Listbox.prototype = {
   setData : function(index,data) { this.widget.setItemData(index,data); },
   deleteLater : function() { this.widget.deleteLater(); },
   setTextAlignment : function(h,v) { this.widget.setTextAlignment(h,v); }
-}
+};
 
 function Dialogbox(parent) {
 	this.widget = new _Dialogbox(parent);
@@ -164,7 +164,7 @@ Dialogbox.prototype = {
   set onNoCallback (func) { this.widget.onNoEx(func); },
   set neverValue (enabled) { this.widget.setNeverValue(enabled); },
   set onNeverCallback (func) { this.widget.onNeverEx(func); }
-}
+};
 
 function Ui() {
 }    
@@ -199,5 +199,5 @@ Ui.prototype = {
   },
 
   elog : function(a) { engine.log(a); }
-}
+};
   

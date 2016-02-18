@@ -36,7 +36,7 @@ function OnShowChanges(force)
                                 var showChanges = !engine.getOption("showLastChanges");
                                 engine.setOption( "showLastChanges", showChanges );
                                 btn.text = showChanges ? "##hide_this_msg##" : "##show_this_msg##";
-                              }
+                              };
 
     wnd.addExitButton(wnd.width-36,wnd.height-36);
 
@@ -64,7 +64,7 @@ function OnLobbyStart()
   btnSteamPage.geometry = { x:startx + 64, y:screen.h - 70, w:64, h:64 };
   btnSteamPage.states = { rc:"steam_icon", normal:1, hover:2, pressed:2, disabled:2 };
   btnSteamPage.callback = function() { g_session.openUrl("http://store.steampowered.com/app/327640"); }
-  btnSteamPage.tooltip = "Open steamstore page in browser";
+  btnSteamPage.tooltip = "Open steam store page in browser";
 
   var btnIrcPage = new TexturedButton(0);
   btnIrcPage.geometry = { x:startx + 64*2, y:screen.h - 70, w:64, h:64 };
@@ -115,7 +115,7 @@ function OnShowCredits()
 	btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
 	btnExit.text = "##close##";
 	btnExit.callback = function() { 
-                                                fade.deleteLater();  
-																								g_session.playAudio( "main_menu", 50, "theme" );
-																						 }
+                                 fade.deleteLater();
+																 g_session.playAudio( "main_menu", 50, "theme" );
+  }
 }

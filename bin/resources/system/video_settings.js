@@ -23,7 +23,7 @@ function OnShowVideoSettings()
                                         haveChanges = true;
                                         btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
                                         g_session.saveSettings();
-				      }
+				      };
      
   var lbxModes = wnd.addListbox( 25, 68, wnd.width-50, 160 );
   lbxModes.setTextAlignment( "center", "center" );
@@ -32,7 +32,7 @@ function OnShowVideoSettings()
 						var size = lbxModes.getItemData(index, "mode");
 						g_session.setResolution( size.w, size.h );
 						g_session.saveSettings();
-					}
+					};
 
   for( var i=0; i < g_session.videoModesCount; i++ )
   {
@@ -50,7 +50,7 @@ function OnShowVideoSettings()
 				if( haveChanges )
   				  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
 	        		wnd.deleteLater();		
-			}
+			};
   btnOk.setFocus();
 
   wnd.moveToCenter();

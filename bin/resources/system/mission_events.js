@@ -12,12 +12,12 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   var lbCaesarAssign = wnd.addLabel( 10, 40, wnd.width-20, 25 );
   lbCaesarAssign.text = "##caesar_assign_new_title##";
   lbCaesarAssign.font = "FONT_2";
-  lbCaesarAssign.textAlign = { h:"center", v:"center" }
+  lbCaesarAssign.textAlign = { h:"center", v:"center" };
 	
   var lbNewTitle = wnd.addLabel( 10, 70, wnd.width-20, 30 );
   lbNewTitle.text = newTitle;
   lbNewTitle.font = "FONT_5";
-  lbNewTitle.textAlign = { h:"center", v:"center" }
+  lbNewTitle.textAlign = { h:"center", v:"center" };
 	
   if( mayContinue )
   {
@@ -29,7 +29,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
                 engine.log( "continue_2_years" );
                 g_session.continuePlay(2);
                 wnd.deleteLater();
-            }
+            };
 
       var btn5years = wnd.addButton( 35, 165, wnd.width-70, 20 );
       btn5years.text = "##continue_5_years##";
@@ -50,7 +50,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
             engine.log( "accept_promotion" );
             wnd.deleteLater();
             g_session.loadNextMission();
-        }
+        };
 
   /*if (speech.length > 0)
     sound.play(speech);*/
@@ -113,23 +113,23 @@ function OnShowEmpirePrices()
   var size = { w:24, h:24 };
   for (var i=0; i < goods.length; i++)
   {
-    var goodinfo = g_session.getGoodInfo(goods[i]);
+    var goodInfo = g_session.getGoodInfo(goods[i]);
     engine.log( "pos.x="+pos.x+"    pos.y="+pos.y );
-    var img = wnd.addImage(pos.x, pos.y, goodinfo.picture);
-    img.tooltip = goodinfo.name;
+    var img = wnd.addImage(pos.x, pos.y, goodInfo.picture);
+    img.tooltip = goodInfo.name;
 
-    var rpos = pos.clone();
-    rpos.add({x:0,y:34});
+    var relPos = pos.clone();
+    relPos.add({x:0,y:34});
     
-    var lb = wnd.addLabel(rpos.x, rpos.y, size.w, size.h);
-    lb.text = goodinfo.importPrice;
+    var lb = wnd.addLabel(relPos.x, relPos.y, size.w, size.h);
+    lb.text = goodInfo.importPrice;
     lb.font = "FONT_1";
     lb.textAlign = {h:"center", v:"center"};
 
-    rpos = pos.clone();
-    rpos.add({x:0,y:58});
-    lb = wnd.addLabel(rpos.x, rpos.y, size.w, size.h);
-    lb.text = goodinfo.exportPrice;
+    relPos = pos.clone();
+    relPos.add({x:0,y:58});
+    lb = wnd.addLabel(relPos.x, relPos.y, size.w, size.h);
+    lb.text = goodInfo.exportPrice;
     lb.font = "FONT_1";
     lb.textAlign = {h:"center", v:"center"};
     lb.textColor = "darkOrange";
