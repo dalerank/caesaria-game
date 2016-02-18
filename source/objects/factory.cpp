@@ -97,7 +97,7 @@ public:
   FactoryStorage goodStore;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
-  bool produceGood;  
+  bool produceGood;
   unsigned int finishedQty;
   std::map<int,Picture> stockImages;
 
@@ -216,7 +216,7 @@ void Factory::timeStep(const unsigned long time)
   //no workers or no good in stock... stop animate
   if( !mayWork() )
     return;
-  
+
   if( _d->production.progress >= 100.0 ) { _productReady();     }
   else                                   { _productProgress();  }
 
@@ -243,7 +243,7 @@ void Factory::deliverGood()
   // make a cart pusher and send him away
   int qty = _d->goodStore.qty( _d->goods.out.type() );
   if( _mayDeliverGood() && qty >= CartPusher::simpleCart )
-  {      
+  {
     auto cartPusher = Walker::create<CartPusher>( _city() );
 
     good::Stock pusherStock( _d->goods.out.type(), qty, 0 );
@@ -307,9 +307,13 @@ void Factory::load( const VariantMap& stream)
 Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( !roadside().empty() ) && ( walkers().size() == 0 );}
 
-void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
 float Factory::productRate() const{  return _d->production.rate;}
+
+void Factory::_storeChanged()
+{
+  _fgPicture(1) = _getSctockImage( inStock().qty() );
+}
 
 math::Percent Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const { return _d->finishedQty; }

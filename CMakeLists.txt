@@ -28,6 +28,7 @@ option( SYSTEM_DEPS "Use system-installed dependencies (if found)" OFF)
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(GAME_CONFIG_DIR "${WORK_DIR}/resources" )
+set(PK_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources" )
 set(STEAM_API_DIR "${CMAKE_CURRENT_SOURCE_DIR}/steam" )
 
 if(USE_STEAM)

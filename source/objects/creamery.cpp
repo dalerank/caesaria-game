@@ -66,8 +66,3 @@ bool Creamery::build( const city::AreaInfo& info )
 
   return true;
 }
-
-void Creamery::_storeChanged()
-{
-  _fgPicture(1) = _getSctockImage( inStock().qty() );
-}
