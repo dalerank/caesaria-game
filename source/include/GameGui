@@ -21,7 +21,6 @@
 #include "gui/smkviewer.hpp"
 #include "gui/image.hpp"
 #include "gui/dlc_folder_viewer.hpp"
-#include "gui/window_language_select.hpp"
 #include "gui/groupbox.hpp"
 
 

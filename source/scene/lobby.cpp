@@ -73,13 +73,11 @@ public:
   void startCareer();
   void showLanguageOptions();
   void showPackageOptions();
-  void changeLanguage(std::string lang, std::string newFont, std::string sounds);
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
-  void reload();
   void restart();
   void openDlcDirectory(Widget* sender);
   void showLogFile();
@@ -142,7 +140,6 @@ void Lobby::Impl::fitScreenResolution()
   game::Settings::save();
 
   dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
-  //CONNECT( dlg, onOk(), this, Impl::restart );
 }
 
 void Lobby::Impl::playMenuSoundTheme()
@@ -178,10 +175,10 @@ void Lobby::Impl::resolveSteamStats()
   }
 }
 
-void Lobby::Impl::reload()
+void Lobby::reload()
 {
-  result = Lobby::reloadScreen;
-  isStopped = true;
+  _d->result = Lobby::reloadScreen;
+  _d->isStopped = true;
 }
 
 void Lobby::Impl::restart()
@@ -214,37 +211,12 @@ void Lobby::Impl::showSoundOptions()
 
 void Lobby::Impl::showLanguageOptions()
 {
-  auto& languageSelectDlg = ui().add<dialog::LanguageSelect>( SETTINGS_RC_PATH( langModel ),
-                                                              SETTINGS_STR( language ) );
-  languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
-
-  CONNECT_LOCAL( &languageSelectDlg, onChange,   Impl::changeLanguage )
-  CONNECT_LOCAL( &languageSelectDlg, onContinue, Impl::reload         )
+  script::Core::execFunction( "OnShowLanguageDialog" );
 }
 
 void Lobby::Impl::showPackageOptions()
 {
   ui().add<dialog::PackageOptions>( Rect() );
-}
-
-void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
-{
-  std::string currentFont = SETTINGS_STR( font );
-
-  SETTINGS_SET_VALUE( language, Variant( lang ) );
-  SETTINGS_SET_VALUE( talksArchive, Variant( sounds ) );
-
-  if( currentFont != newFont )
-  {
-    SETTINGS_SET_VALUE( font, newFont );
-    FontCollection::instance().initialize( game::Settings::rcpath().toString(), newFont );
-  }
-
-  game::Settings::save();
-
-  Locale::setLanguage( lang );
-  NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( sounds );
 }
 
 void Lobby::Impl::startCareer()

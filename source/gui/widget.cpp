@@ -119,6 +119,9 @@ Widget::~Widget()
     child->setParent( 0 );
     child->drop();
   }
+
+  if( ui() )
+    ui()->elementDestroyed(this);
 }
 
 void Widget::setGeometry( const Rect& r, GeometryType mode )
@@ -1004,6 +1007,11 @@ const Variant& Widget::getProperty(const std::string& name) const
 {
   VariantMap::const_iterator it = _dfunc()->properties.find( name );
   return it != _dfunc()->properties.end() ? it->second : invalidVariant;
+}
+
+const VariantMap&Widget::properties() const
+{
+  return _dfunc()->properties;
 }
 
 void Widget::installEventHandler( Widget* elementHandler )

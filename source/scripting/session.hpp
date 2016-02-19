@@ -37,6 +37,7 @@ public:
   void continuePlay(int years);
   void loadNextMission();
   void quitGame();
+  void reloadScene();
   void startCareer();
   void openUrl(const std::string& url);
   int lastChangesNum();
@@ -44,11 +45,12 @@ public:
   int videoModesCount();
   void playAudio(const std::string& filename, int volume, const std::string& mode);
   Size getVideoMode(int index);
-  void setResolution(Size size);
+  void setResolution(const Size& size);
   StringArray tradableGoods();
   VariantMap getGoodInfo(const std::string& goodName);
   Size getResolution();
-  void saveSettings();
+  void setFont(const std::string& fontname);
+  void setLanguage(const std::string& lang,const std::string& audio);
 
 private:
   Game* _game;

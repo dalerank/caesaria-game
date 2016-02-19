@@ -167,9 +167,11 @@ void engineSetOption(js_State *J)
   else if (js_isnumber(J,2))
     game::Settings::set(name, js_tonumber(J,2));
   else if (js_isstring(J,2))
-    game::Settings::set(name, js_tostring(J,2));
+    game::Settings::set(name, std::string(js_tostring(J,2)) );
   else
     Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
+
+  game::Settings::save();
 }
 
 Core& Core::instance()
@@ -254,6 +256,7 @@ void constructor_Session(js_State *J)
                                                     js_pcall(internal::J,0); \
                                                     js_pop(internal::J,1); \
                                                   } \
+                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
                                                 } \
                                                 void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -263,6 +266,7 @@ void constructor_Session(js_State *J)
                                                     parent->callback().connect( &name##_handle_##callback ); \
                                                     parent->addProperty( "js_"#callback, Variant(index) ); \
                                                   } \
+                                                  else Logger::warning( #name"_set_"#callback" parent is null" ); \
                                                   js_pushundefined(J); \
                                                 }
 
@@ -275,6 +279,7 @@ void constructor_Session(js_State *J)
                                                     js_pcall(internal::J,1); \
                                                     js_pop(internal::J,1); \
                                                   } \
+                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
                                                 } \
                                                 void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -284,6 +289,7 @@ void constructor_Session(js_State *J)
                                                     parent->callback().connect( &name##_handle_##callback ); \
                                                     parent->addProperty( "js_"#callback, Variant(index) ); \
                                                   } \
+                                                  else Logger::warning( #name"_set_"#callback" parent is null" ); \
                                                   js_pushundefined(J); \
                                                 }
 
@@ -344,19 +350,18 @@ void constructor_Session(js_State *J)
   js_pushundefined(J); \
 }
 
-
 #define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
                                   js_getproperty(internal::J, -1, "prototype"); \
                                   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
 
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_set_##funcname, TEXT(funcname), params); \
+                                  Logger::warning( "script://" #name"_set_"#funcname"->"#funcname); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
-
-#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 6); \
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 1); \
                                         js_defglobal(internal::J, "_"#name, JS_DONTENUM);
 
 #define SCRIPT_OBJECT_END(name)
@@ -418,7 +423,12 @@ REGISTER_GLOBAL_OBJECT(engine)
     internal::observers = new vfs::FileChangeObserver();
     internal::observers->watch( ":/system" );
     internal::observers->onFileChange().connect( &engineReloadFile );
-  }
+}
+}
+
+void Core::unref(const std::string& ref)
+{
+  js_unref(internal::J, ref.c_str());
 }
 
 Core::Core()

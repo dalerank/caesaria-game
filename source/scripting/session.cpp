@@ -25,6 +25,8 @@
 #include <GameCore>
 #include "sound/engine.hpp"
 #include "core/osystem.hpp"
+#include "core/font.hpp"
+#include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
 
@@ -68,9 +70,28 @@ void Session::playAudio(const std::string& filename, int volume, const std::stri
 
 int Session::videoModesCount() { return _game->engine()->modes().size(); }
 Size Session::getVideoMode(int index) { return _game->engine()->modes().at(index); }
-void Session::setResolution(Size size){SETTINGS_SET_VALUE(resolution, size);}
 Size Session::getResolution() { return _game->engine()->screenSize(); }
-void Session::saveSettings() { game::Settings::save(); }
+
+void Session::setResolution(const Size& size)
+{
+  SETTINGS_SET_VALUE(resolution, size);
+  game::Settings::save();
+}
+
+void Session::setFont(const std::string& fontname)
+{
+  FontCollection::instance().initialize(game::Settings::rcpath().toString(), fontname);
+}
+
+void Session::setLanguage(const std::string& lang, const std::string& audio)
+{
+  SETTINGS_SET_VALUE(language,lang);
+  SETTINGS_SET_VALUE(talksArchive,audio);
+
+  Locale::setLanguage( lang );
+  NameGenerator::instance().setLanguage( lang );
+  audio::Helper::initTalksArchive( audio );
+}
 
 StringArray Session::tradableGoods()
 {
@@ -104,6 +125,13 @@ void Session::quitGame()
   scene::Level* level = safety_cast<scene::Level*>(_game->scene());
   if( level )
     level->quit();
+}
+
+void Session::reloadScene()
+{
+  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
+  if( lobby )
+    lobby->reload();
 }
 
 void Session::startCareer()

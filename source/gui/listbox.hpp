@@ -67,6 +67,8 @@ public:
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
 
+  virtual int  findItem(const std::string& text);
+
   virtual void setSelectedTag(const Variant& tag);
   virtual void setSelectedWithData(const std::string& name, const Variant& data);
 
@@ -83,7 +85,7 @@ public:
   virtual void removeItem(unsigned int id);
 
   //! get the the id of the item at the given absolute coordinates
-  virtual int itemAt( Point pos ) const;
+  virtual int itemAt(Point pos) const;
 
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor( unsigned int index, const int color, 

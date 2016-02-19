@@ -13,9 +13,12 @@ Session.prototype = {
     getGoodInfo : function(name) { return this.session.getGoodInfo(name); },
     playAudio : function(name,volume,type) { return this.session.playAudio(name,volume,type); },
     startCareer : function() { this.session.startCareer(); },
+		setFont: function(fontname) { this.session.setFont(fontname); },
+		reloadScene : function() { this.session.reloadScene(); },
+		setLanguage : function(lang,sounds) { this.session.setLanguage(lang,sounds); },
 
     get credits ()  { return this.session.getCredits(); },
     get videoModesCount () { return this.session.videoModesCount(); },
-    get lastChangesNum () { return this.session.lastChangesNum(); },
+    get lastChangesNum () { return this.session.lastChangesNum(); },		
     get resolution () { return this.session.getResolution(); }
 }  
