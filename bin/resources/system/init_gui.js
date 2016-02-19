@@ -51,7 +51,8 @@ Editbox.prototype = {
   set onEnterPressedCallback (func) { this.widget.onEnterPressedEx(func); },
 
   moveToCenter : function() { this.widget.moveToCenter(); },
-  deleteLater : function() { this.widget.deletLater(); }
+  deleteLater : function() { this.widget.deletLater(); },
+	setFocus : function() { this.widget.setFocus(); }
 }
 
 function TexturedButton(parent) {
@@ -103,12 +104,13 @@ Window.prototype = {
   moveToCenter : function() { this.widget.moveToCenter(); },
   setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
+	addCloseCode : function(code) { this.widget.addCloseCode(code); },
 
   closeAfterKey : function(obj) {
       if(obj.escape)
-        this.widget.addCloseCode(0x1B);
+        this.addCloseCode(0x1B);
       if(obj.rmb)
-        this.widget.addCloseCode(0x4);
+        this.addCloseCode(0x4);
   },
   addLabel : function(rx,ry,rw,rh) {
     var label = new Label(this.widget);
@@ -173,10 +175,15 @@ Listbox.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
+  set selectedIndex (index) { this.widget.setSelected(index); },
+	set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
   get itemsCount () { return this.widget.itemsCount(); },
 
+	set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
+
   addLine : function(text) { return this.widget.addLine(text); },
-  setData : function(index,data) { this.widget.setItemData(index,data); },
+  findItem : function(text) { return this.widget.findItem(text); },
+  setData : function(index,name,data) { this.widget.setItemData(index,name,data); },
   deleteLater : function() { this.widget.deleteLater(); },
   setTextAlignment : function(h,v) { this.widget.setTextAlignment(h,v); }
 };

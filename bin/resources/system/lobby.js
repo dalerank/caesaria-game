@@ -35,7 +35,7 @@ function OnShowChanges(force)
     btn.callback = function() {
                                 var showChanges = !engine.getOption("showLastChanges");
                                 engine.setOption( "showLastChanges", showChanges );
-                                btn.text = showChanges ? "##hide_this_msg##" : "##show_this_msg##";
+                                btn.text = showChanges ?  "##show_this_msg##" : "##hide_this_msg##";
                               };
 
     wnd.addExitButton(wnd.width-36,wnd.height-36);
@@ -55,6 +55,76 @@ function OnStartCareer()
   );
 }
 
+function setLanguage(config)
+{
+  var currentFont = engine.getOption("font");
+
+  if (!config.talks)
+    config.talks = ":/audio/wavs_citizen_en.zip";
+
+	var g_session = new Session();
+  g_session.setLanguage(config.ext,config.talks);
+
+  if (confgi.font != undefined && currentFont != config.font)
+  {
+    engine.setOption("font",config.font);
+    g_session.setFont(config.font);
+  }
+}
+
+function OnShowLanguageDialog()
+{
+  var g_ui = new Ui();
+
+  var langModel = [
+                    { lang : "English",     ext : "en", },
+                    { lang : "Русский",      ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
+                    { lang : "Українська",    ext : "ua", },
+                    { lang : "Deutsch",     ext : "de", talks : ":/audio/wavs_citizen_de.zip" },
+                    { lang : "Svenska"    , ext : "sv", },
+                    { lang : "Español"    , ext : "sp", talks : ":/audio/wavs_citizen_sp.zip" },
+                    { lang : "Român"      , ext : "ro", },
+                    { lang : "Français"   , ext : "fr", },
+                    { lang : "Czech"      , ext : "cs", },
+                    { lang : "Hungarian"  , ext : "hu", },
+                    { lang : "Italian"    , ext : "it", talks : ":/audio/wavs_citizen_it.zip" },
+                    { lang : "Polish"     , ext : "pl", },
+                    { lang : "Suomi"     ,  ext : "fn", },
+                    { lang : "Português"  , ext : "pr", },
+                    { lang : "Cрпски"    ,   ext : "sb", },
+                    { lang : "Korean"     , ext : "kr", font : "HANBatangB.ttf" }
+                  ];
+
+  var wnd = g_ui.addWindow(0);
+  wnd.geometry = { x:0, y:0, w:512, h:384 };
+  wnd.moveToCenter();
+	wnd.closeAfterKey( {escape:true, rmb:true} );
+
+  var listbox = wnd.addListbox(15, 40, wnd.width-30, wnd.height-90);
+  listbox.setTextAlignment("center", "center");
+  listbox.background = true;
+  listbox.onSelectedCallback = function(index) { 
+                                                 setLanguage(langModel[index]);
+                                               }
+
+  for (var i in langModel)
+	{
+    var index = listbox.addLine(langModel[i].lang);
+		listbox.setData( index, "lang", langModel[i].ext );
+  }
+
+	var currentLang = engine.getOption("language");
+  listbox.selectedWithData = { name:"lang", data:currentLang };
+
+  var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
+  btn.text = "##continue##";
+  btn.callback = function () {
+				var g_session = new Session();
+				g_session.reloadScene(); 
+				wnd.deleteLater();
+	}
+}
+
 function OnChangePlayerName(force,continueCallback)
 {
   var playerName = engine.getOption("playerName");
@@ -66,6 +136,7 @@ function OnChangePlayerName(force,continueCallback)
     var g_ui = new Ui();
     var wnd = g_ui.addWindow(0);
     wnd.geometry = { x:0, y:0, w:380, h:128 }
+		wnd.closeAfterKey( {escape:true} );
     wnd.mayMove = false;
     wnd.title = "##enter_your_name##";
     
@@ -83,7 +154,7 @@ function OnChangePlayerName(force,continueCallback)
     editbox.text = playerName;
     editbox.cursorPos = playerName.length;
     editbox.onEnterCallback = exitFunc;
-    editbox.onChange = function(text) { engine.setOption( "playerName", text ); }
+    editbox.onTextChangeCallback = function(text) { engine.setOption( "playerName", text ); }
 
     var lbNext = wnd.addLabel(180, 90, 100, 20);
     lbNext.text = "##plname_continue##";
@@ -98,6 +169,11 @@ function OnChangePlayerName(force,continueCallback)
     var lbExitHelp = wnd.addLabel(18, 90, 200, 20);
     lbExitHelp.text = "##press_escape_to_exit##";
     lbExitHelp.font = "FONT_1";
+
+		wnd.moveToCenter();
+    wnd.setModal();
+		
+	  editbox.setFocus();
   }
 }
 

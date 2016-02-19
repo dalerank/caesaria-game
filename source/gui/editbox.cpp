@@ -149,6 +149,7 @@ void EditBox::_setText(const std::wstring& r)
 {
   _d->text = r;
   emit _d->signal.onTextChanged( __ucs2utf8( r ) );
+  emit _d->signal.onTextChangedEx( this, __ucs2utf8( r ) );
 
   if( (unsigned int)_d->cursorPos > _d->text.size())
   {

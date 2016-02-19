@@ -25,6 +25,8 @@ namespace gfx { class Engine; }
 namespace gui
 {
 
+class WidgetFinalizer;
+
 class Ui : Widget
 {
 public:
@@ -73,22 +75,25 @@ public:
   Size vsize() const;
   bool handleEvent(const NEvent& event);
 
-  virtual void deleteLater( Widget* ptrElement );
+  virtual void deleteLater(Widget* ptrElement);
 
   Widget* createWidget( const std::string& type, Widget* parent );
 
   void setFlag( Flag name, int value );
   bool hasFlag( Flag name );
   void clear();
-   
+
+  void elementDestroyed(Widget* w);
+  void installWidgetFinalizer(SmartPtr<WidgetFinalizer> finalizer);
+
 private:    
   virtual void setFocus();
   virtual void removeFocus();
-  virtual void beforeDraw( gfx::Engine& painter );
-  virtual void draw( gfx::Engine& painter );
+  virtual void beforeDraw(gfx::Engine& painter);
+  virtual void draw(gfx::Engine& painter);
   virtual bool isHovered() const;
 
-  void _updateHovered( const Point& mousePos);
+  void _updateHovered(const Point& mousePos);
   Widget* next(bool reverse, bool group);
 
   class Impl;
