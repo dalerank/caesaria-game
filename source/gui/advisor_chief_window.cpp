@@ -16,42 +16,23 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
-#include "gfx/decorator.hpp"
-#include "core/gettext.hpp"
-#include "gui/pushbutton.hpp"
-#include "gui/label.hpp"
+#include <GameGfx>
+#include <GameCore>
+#include <GameLogger>
+#include <GameGui>
+#include <GameCity>
 #include "game/resourcegroup.hpp"
-#include "core/utils.hpp"
-#include "gfx/engine.hpp"
-#include "core/gettext.hpp"
-#include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "core/color.hpp"
-#include "gui/texturedbutton.hpp"
 #include "game/funds.hpp"
 #include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
-#include "city/migration.hpp"
-#include "city/statistic.hpp"
 #include "dictionary.hpp"
-#include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
-#include "city/cityservice_military.hpp"
-#include "city/cityservice_disorder.hpp"
-#include "city/cityservice_health.hpp"
-#include "city/cityservice_religion.hpp"
-#include "city/cityservice_festival.hpp"
-#include "city/goods_updater.hpp"
-#include "city/sentiment.hpp"
 #include "world/barbarian.hpp"
 #include "game/gamedate.hpp"
-#include "city/cityservice_culture.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
-#include "core/logger.hpp"
-#include "core/color_list.hpp"
-#include "city/states.hpp"
 
 using namespace gfx;
 using namespace city;

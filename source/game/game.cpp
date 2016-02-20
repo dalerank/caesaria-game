@@ -62,6 +62,7 @@
 #include "core/metric.hpp"
 #include "city/build_options.hpp"
 #include "roman_celebrates.hpp"
+#include "gui/widget_factory.hpp"
 #include "gameloop.hpp"
 
 #include <list>
@@ -69,6 +70,20 @@
 using namespace gfx;
 using namespace scene;
 using namespace events;
+
+class ScriptWidgetFinalizer : public gui::WidgetFinalizer
+{
+public:
+  virtual void destroyed(gui::Widget* w)
+  {
+    VariantMap vm = w->properties();
+    for( const auto& item : vm )
+    {
+      if( item.first.find( "js_" ) == 0 )
+        script::Core::unref( item.second.toString() );
+    }
+  }
+};
 
 class Game::Impl
 {
@@ -352,6 +367,10 @@ void Game::Impl::initUI(bool& isOk, std::string& result)
   Logger::warning( "Game: initialize gui" );
 
   gui = new gui::Ui( *engine );
+  auto finalizer = SmartPtr<gui::WidgetFinalizer>(new ScriptWidgetFinalizer());
+  finalizer->drop();
+  gui->installWidgetFinalizer(finalizer);
+
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 

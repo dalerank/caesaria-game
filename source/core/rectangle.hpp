@@ -20,6 +20,7 @@
 
 #include "position.hpp"
 #include "size.hpp"
+#include "line.hpp"
 
 //! RectT.
 /** Mostly used by 2D GUI elements and for 2D drawing methods.
@@ -350,6 +351,17 @@ public:
   Size size() const
   {
     return Size(width(), height());
+  }
+
+  Lines lines() const
+  {
+    Lines lines;
+    lines.append(lefttop(),righttop())
+         .append(righttop(),rightbottom())
+         .append(rightbottom(),leftbottom())
+         .append(leftbottom(),lefttop());
+
+    return lines;
   }
 
   Rect( const Point& p1, const Point& p2 ) 

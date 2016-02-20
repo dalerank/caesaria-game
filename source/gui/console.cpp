@@ -7,9 +7,23 @@
 #include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
+#include <GameLogger>
 
 namespace gui
 {
+
+class ConsoleLogger : public LogWriter
+{
+public:
+  Console* console = nullptr;
+
+  virtual void write(const std::string& message, bool newLine)
+  {
+    console->appendMessage(message);
+  }
+
+  virtual bool isActive() const { return true; }
+};
 
 //! constructor
 Console::Console( Widget* parent, int id, const Rect& rectangle )
@@ -24,23 +38,22 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
   registerDefaultCommands_();
 
   hide();
-	cursorPos_ = 1;
+  cursorPos_ = 1;
 
   _font = Font::create( FONT_1_WHITE );
+  _opacity = 0;
+  Widget::setVisible(false);
 
   appendMessage( "Console initialized" );								//append a message
 }
 
 void Console::SaveCommands_()
-{					
+{
   vfs::Path path( ":/commands.model" );
 
   VariantMap commands;
-
-  foreach( it, console_history_ )
-  {
-    commands[ *it ] = Variant( "" );
-  }
+  for( const auto& it : console_history_ )
+    commands[ it ] = Variant( "" );
 
   config::save( commands, path );
 }
@@ -50,21 +63,19 @@ void Console::LoadSaveCommands_()
   vfs::Path path( ":/commands.model" );
 
   VariantMap commands = config::load( path );
-  foreach( it, commands )
-	{
-    console_history_.push_back( it->first );
-	}	
+  for( const auto& it : commands )
+    console_history_.push_back( it.first );
 }
 
 Console::~Console()													//! destructor
 {
-	SaveCommands_();
+  SaveCommands_();
 }
 
 void Console::registerDefaultCommands_()			//! loads a few default commands into the console
 {
-	LoadSaveCommands_();
-	
+  LoadSaveCommands_();
+
   RegisterCommand( new IC_Command_ECHO() );
   RegisterCommand( new IC_Command_HELP() );
   RegisterCommand( new IC_Command_LIST() );
@@ -78,17 +89,17 @@ void Console::resizeMessages()											//! resize the message count
   unsigned int lineHeight = 0;
   int fontHeight = 0;
   if( calculateLimits(maxLines,lineHeight,fontHeight) )
-	{
+  {
     unsigned int messageCount = console_messages_.size();
     if(messageCount > maxLines)
       console_messages_.erase( console_messages_.begin(), console_messages_.begin() + messageCount - maxLines );
-	}
+  }
 }
 
 void Console::toggleVisible()											//! toggle the visibility of the console
 {
    setVisible( (toggle_visible_ == NONE && visible())
-                ? false 
+                ? false
                 : toggle_visible_ != UPLIGTH );
 }
 
@@ -105,7 +116,7 @@ void Console::appendMessage( const std::string& message )
 
 void Console::clearMessages()											//! clear all the messages in the sink
 {
-	console_messages_.clear();
+  console_messages_.clear();
 }
 
 void Console::draw( gfx::Engine& painter )
@@ -119,45 +130,42 @@ void Console::draw( gfx::Engine& painter )
   }
 
   if( visible() )															// render only if the console is visible
-	{
-		if( toggle_visible_ != NONE )
-		{
-			if( toggle_visible_ == DOWNLIGTH )
-			{
-        //if( getOpacity() > 5 ) setOpacity( getOpacity() - 3 );
-        //else _isVisible = false;
-			}
-			else
-			{
-        //if( (int)getOpacity() < (int)conf[ MAX_BLEND ] )	setOpacity( getOpacity() + 3 );
-        //else toggle_visible_ = NONE;
-			}
-		}
+  {
+    if( toggle_visible_ != NONE )
+    {
+      if( toggle_visible_ == DOWNLIGTH )
+      {
+        if( _opacity > 5 ) _opacity -= 9;
+        else setVisible( false );
+      }
+      else
+      {
+        if( _opacity < 0xff )	_opacity += 3;
+        else toggle_visible_ = NONE;
+      }
+    }
 
-    if( _bgpic.isValid() )
-    {
-      painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
-    }
-    else
-    {
-      PointsArray array;
-      array << absoluteRect().lefttop() << absoluteRect().righttop()
-            << absoluteRect().righttop() << absoluteRect().rightbottom()
-            << absoluteRect().rightbottom() << absoluteRect().leftbottom()
-            << absoluteRect().leftbottom() << absoluteRect().lefttop();
-      painter.drawLines( ColorList::red, array );
-    }
-		
+    PointsArray array = absoluteRect().lines().points();
+
+    NColor color = ColorList::red;
+
+    color.setAlpha(_opacity);
+    painter.drawLines(color, array);
+
+    color = ColorList::blue;
+    color.setAlpha(_opacity / 2);
+    painter.fillRect(color, absoluteRect());
+
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
 
     unsigned int maxLines, lineHeight;											//now, render the messages
     int fontHeight=0;
     if(!calculateLimits(maxLines,lineHeight,fontHeight))
-		{
-			return;
-		}
-		
+    {
+      return;
+    }
+
     Rect lineRect( textRect.left(),						//calculate the line rectangle
                    textRect.top(),
                    textRect.right(),
@@ -181,19 +189,19 @@ void Console::draw( gfx::Engine& painter )
    shellText.append( L"$>" );
    size_t textSize = shellText.size();
    shellText.append( currentCommand_ );
-		
+
    _font.Draw(  shellText,
-			          shellRect,
+                shellRect,
                 fontcolor,
                 false, false,
                 &getAbsoluteClippingRectRef() );											//draw the prompt string
 
         if( ( DateTime::getElapsedTime() % 700 ) < 350 )
-		{
-			core::NSizeU pos = _font.getDimension( shellText.subString( 0, textSize + cursorPos_ - 1 ).c_str() );
-			_font.Draw( L"_", core::RectI( pos.Width , 0, pos.Width + 20, pos.Height ) + shellRect.UpperLeftCorner,
-						0xffff0000,
-						false, false, &getAbsoluteClippingRectRef() );
+    {
+      core::NSizeU pos = _font.getDimension( shellText.subString( 0, textSize + cursorPos_ - 1 ).c_str() );
+      _font.Draw( L"_", core::RectI( pos.Width , 0, pos.Width + 20, pos.Height ) + shellRect.UpperLeftCorner,
+            0xffff0000,
+            false, false, &getAbsoluteClippingRectRef() );
     }	*/
   }
 
@@ -205,168 +213,163 @@ void Console::resolveCommand_()											//  Enter
   addToHistory( currentCommand_ );
   handleCommandString( currentCommand_ );
   currentCommand_ = "";
-	consoleHistoryIndex_ = 0;
-	cursorPos_ = 1;
+  consoleHistoryIndex_ = 0;
+  cursorPos_ = 1;
 }
 
 void Console::setPrevCommand_()
 {
-	if(console_history_.size() > 0)
-	{
+  if(console_history_.size() > 0)
+  {
     int index = console_history_.size() - 1 - consoleHistoryIndex_;
     if(index >= 0 && index < int( console_history_.size() ) )
-		{
-			consoleHistoryIndex_++;
-			currentCommand_ = console_history_[index].c_str();
-			cursorPos_ = currentCommand_.size() + 1;
-		}
-		else
-		{
-			consoleHistoryIndex_ = 0;
-		}
-	}
-	else
-	{
-		consoleHistoryIndex_ = 0;
-	}
+    {
+      consoleHistoryIndex_++;
+      currentCommand_ = console_history_[index].c_str();
+      cursorPos_ = currentCommand_.size() + 1;
+    }
+    else
+    {
+      consoleHistoryIndex_ = 0;
+    }
+  }
+  else
+  {
+    consoleHistoryIndex_ = 0;
+  }
 }
 
 void Console::setNextCommand_()
 {
-	if(console_history_.size() > 0)
-	{
+  if(console_history_.size() > 0)
+  {
 
     int index = console_history_.size() - consoleHistoryIndex_;
     if(index >= 0 && index < static_cast< int >( console_history_.size() ) )
-		{
-			consoleHistoryIndex_--;
-			currentCommand_ = console_history_[index].c_str();
-			cursorPos_ = currentCommand_.size() + 1;
-		}
-		else
-		{
-			consoleHistoryIndex_ = console_history_.size() - 1;
-		}
-	}
-	else
-	{
-		consoleHistoryIndex_ = 0;
-	}
+    {
+      consoleHistoryIndex_--;
+      currentCommand_ = console_history_[index].c_str();
+      cursorPos_ = currentCommand_.size() + 1;
+    }
+    else
+    {
+      consoleHistoryIndex_ = console_history_.size() - 1;
+    }
+  }
+  else
+  {
+    consoleHistoryIndex_ = 0;
+  }
 }
 
 void Console::inputChar_( unsigned int key_char, bool shift_down )
 {
-	if(key_char)
-	{
+  if(key_char)
+  {
     char buf[2];
-		buf[0] = key_char;
-		buf[1] = 0;
+    buf[0] = key_char;
+    buf[1] = 0;
     std::string astr = buf;
-		
+
     //if(shift_down)
     //  astr = utils::localUpper( astr );
-		
+
     currentCommand_ = currentCommand_.substr( 0, cursorPos_-1 ) + astr + currentCommand_.substr( cursorPos_-1, 0xff );
-		cursorPos_++;
-	}
+    cursorPos_++;
+  }
 }
 
 void Console::keyPress( const NEvent& event )
 {
   if( event.keyboard.key == KEY_RETURN )
-	{
-		if( currentCommand_.size() > 0 )
+  {
+    if( currentCommand_.size() > 0 )
       resolveCommand_();
-	}
+  }
   else if( event.keyboard.pressed )
     {
       switch ( event.keyboard.key )
-			{
-				case KEY_BACK:	
-							if( currentCommand_.size() > 0 && cursorPos_ > 1 )
-							{	
-								cursorPos_--;
-								currentCommand_.erase( cursorPos_-1 );
-							}//  
-							break;
-				case KEY_DELETE:
-				  			if( cursorPos_ <= currentCommand_.size() )
-							{
-								 currentCommand_.erase( cursorPos_-1 );
-							}
-							break;
-				case KEY_UP:									//  
+      {
+        case KEY_BACK:
+              if( currentCommand_.size() > 0 && cursorPos_ > 1 )
+              {
+                cursorPos_--;
+                currentCommand_.erase( cursorPos_-1 );
+              }//
+              break;
+        case KEY_DELETE:
+                if( cursorPos_ <= currentCommand_.size() )
+              {
+                 currentCommand_.erase( cursorPos_-1 );
+              }
+              break;
+        case KEY_UP:									//
               setPrevCommand_();
-							break;
-				case KEY_LEFT:
-				case KEY_RIGHT:
+              break;
+        case KEY_LEFT:
+        case KEY_RIGHT:
               moveCursor_( event.keyboard.key == KEY_LEFT );
-							break;
-				case KEY_DOWN:
+              break;
+        case KEY_DOWN:
               setNextCommand_();
-							break;
-				case KEY_TAB:									// 
+              break;
+        case KEY_TAB:									//
               tabComplete();
-							break;
-				default:
+              break;
+        default:
               inputChar_( event.keyboard.symbol, event.keyboard.shift );
-						    break;
-			}
+                break;
+      }
     }
 }
 
 void Console::handleCommandString( const std::string& wstr)						//! handle the current command string
 {
-	if(wstr.size() > 0 )							//check if it is a command
-	{
+  if(wstr.size() > 0 )							//check if it is a command
+  {
     std::string cmdLine = wstr;
 
-		//append the message
+    //append the message
     std::string msg = ">> Command : ";
-		msg += cmdLine;
+    msg += cmdLine;
     appendMessage( msg );
 
-		//parsing logic
-		
+    //parsing logic
+
     StringArray args;
     std::string cmdName;
     ConsoleParser parser(cmdLine);
-		if( parser.parse(cmdName,args) )
-		{		
-			Dispatch(cmdName,args,this);
-		}
-		else
-		{
+    if( parser.parse(cmdName,args) )
+    {
+      Dispatch(cmdName,args,this);
+    }
+    else
+    {
       std::string errorMessage = "The command syntax is incorrect or it could not be parsed";
-			LogError(errorMessage);
-		}
-	}
-	else
-	{
+      LogError(errorMessage);
+    }
+  }
+  else
+  {
 
-	}
+  }
 }
 
 void Console::addToHistory( const std::string& wstr)								//! add to history and readjust history
 {
   for( size_t cnt=0; cnt < console_history_.size(); cnt++ )
     if( console_history_[ cnt ] == wstr )
-			return;
- 
+      return;
+
     if( (int)console_history_.size() >= 20 )
       console_history_.erase( console_history_.begin() );
 
-	console_history_.push_back( wstr.c_str() );
+  console_history_.push_back( wstr.c_str() );
 }
 
 void Console::calculateConsoleRect( const Size& screenSize )	//! calculate the whole console rect
 {
-  Rect rect( 0, 0,
-             screenSize.width()  * 0.9,
-             screenSize.height() * 0.3 );
-  rect.setLeft( screenSize.width() * 0.15 );
-
-  setGeometry( rect );
+  setGeometry( RectF(0.1,0,0.9,0.3) );
 }
 
 void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calculate the messages rect and prompt / shell rect
@@ -375,18 +378,18 @@ void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calcula
   int fontHeight;
 
   if( calculateLimits(maxLines,lineHeight,fontHeight) )
-	{
+  {
     shellRect = absoluteRect();
     shellRect.setTop( shellRect.bottom() - lineHeight );
 
     textRect = absoluteRect();
     textRect.setBottom( textRect.top() + lineHeight );
-	}
-	else
-	{
+  }
+  else
+  {
     textRect = Rect(0,0,0,0);
     shellRect = Rect(0,0,0,0);
-	}
+  }
 }
 
 bool Console::calculateLimits(unsigned int& maxLines, unsigned int& lineHeight,int& fontHeight)
@@ -394,74 +397,74 @@ bool Console::calculateLimits(unsigned int& maxLines, unsigned int& lineHeight,i
   unsigned int consoleHeight = height();
 
   if( _font.isValid() && consoleHeight > 0)
-	{
+  {
     fontHeight = _font.getTextSize("X").height() + 2;
     lineHeight = fontHeight + 5;
-		maxLines = consoleHeight / lineHeight;
-		if(maxLines > 2)
-		{
-			maxLines -= 2;
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    maxLines = consoleHeight / lineHeight;
+    if(maxLines > 2)
+    {
+      maxLines -= 2;
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void Console::tabComplete()
 {
-	if(currentCommand_.size() == 0)
-	{
-		return;
-	}
+  if(currentCommand_.size() == 0)
+  {
+    return;
+  }
 
   std::string ccStr = currentCommand_.substr(1,currentCommand_.size() - 1);
-	
+
   StringArray names;
 
-	GetRegisteredCommands( names );
+  GetRegisteredCommands( names );
 
   StringArray commands_find;
 
   for(unsigned int i = 0; i < names.size(); i++)
-	{
+  {
     std::string thisCmd = names[i];
-		if(thisCmd.size() == ccStr.size())				
-		{
-			if(thisCmd == ccStr)
-			{
-				return;
-			}
-		}
-		else if(thisCmd.size() > ccStr.size())
-		{
+    if(thisCmd.size() == ccStr.size())
+    {
+      if(thisCmd == ccStr)
+      {
+        return;
+      }
+    }
+    else if(thisCmd.size() > ccStr.size())
+    {
       if(thisCmd.substr(0,ccStr.size()) == ccStr)
       {
-				commands_find.push_back( thisCmd );
-			}
-		}
-	}
+        commands_find.push_back( thisCmd );
+      }
+    }
+  }
 
   if( commands_find.size() == 1 )
-	{	
-		currentCommand_ = commands_find[ 0 ];
-		return;
-	}
+  {
+    currentCommand_ = commands_find[ 0 ];
+    return;
+  }
   else
-	{
-		for( size_t cnt=0; cnt < commands_find.size(); cnt++ )
+  {
+    for( size_t cnt=0; cnt < commands_find.size(); cnt++ )
       appendMessage( commands_find[ cnt ] );
-	}
+  }
 }
 
 void Console::moveCursor_( bool leftStep )
 {
-	if( leftStep )
-		cursorPos_ -= (cursorPos_ > 0 && currentCommand_.size() ) & 1;
-	else 
-		cursorPos_ += (cursorPos_ < currentCommand_.size() + 1) & 1;
+  if( leftStep )
+    cursorPos_ -= (cursorPos_ > 0 && currentCommand_.size() ) & 1;
+  else
+    cursorPos_ += (cursorPos_ < currentCommand_.size() + 1) & 1;
 }
 
 int Console::initKey() const

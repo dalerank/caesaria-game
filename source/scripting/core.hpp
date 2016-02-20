@@ -36,6 +36,7 @@ public:
   static void execFunction(const std::string& funcname,
                            const VariantList& params);                           
   static void registerFunctions(Game& game);
+  static void unref(const std::string& ref);
 
 private:
   Core();

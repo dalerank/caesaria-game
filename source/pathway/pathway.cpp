@@ -21,6 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace gfx;
 

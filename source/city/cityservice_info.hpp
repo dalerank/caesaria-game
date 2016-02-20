@@ -19,6 +19,7 @@
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 
 #include "cityservice.hpp"
+#include "core/time.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city

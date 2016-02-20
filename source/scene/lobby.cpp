@@ -53,7 +53,6 @@ public:
   gui::Label* lbSteamName;
 
 public:
-  void handleNewGame();
   void showCredits();
   void showLoadMenu();
   void showNewGame();
@@ -67,7 +66,6 @@ public:
   void showMissionSelector();
   void quitGame();
   void selectFile( std::string fileName );
-  void setPlayerName( std::string name );
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -75,13 +73,11 @@ public:
   void startCareer();
   void showLanguageOptions();
   void showPackageOptions();
-  void changeLanguage(std::string lang, std::string newFont, std::string sounds);
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
-  void reload();
   void restart();
   void openDlcDirectory(Widget* sender);
   void showLogFile();
@@ -131,16 +127,8 @@ void Lobby::Impl::showChangesWindowIfNeed()
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
 {
-  std::string playerName = SETTINGS_STR( playerName );
-  if( playerName.empty() || force )
-  {
-    auto& dlg = ui().add<dialog::ChangePlayerName>();
-    dlg.setName( playerName );
-    dlg.setMayExit( false );
-
-    CONNECT( &dlg, onNameChange(), this, Impl::setPlayerName );
-    CONNECT( &dlg, onContinue(), &dlg, dialog::ChangePlayerName::deleteLater );
-  }
+  VariantList vl; vl << force;
+  script::Core::execFunction( "OnChangePlayerName", vl );
 }
 
 void Lobby::Impl::fitScreenResolution()
@@ -152,7 +140,6 @@ void Lobby::Impl::fitScreenResolution()
   game::Settings::save();
 
   dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
-  //CONNECT( dlg, onOk(), this, Impl::restart );
 }
 
 void Lobby::Impl::playMenuSoundTheme()
@@ -188,10 +175,10 @@ void Lobby::Impl::resolveSteamStats()
   }
 }
 
-void Lobby::Impl::reload()
+void Lobby::reload()
 {
-  result = Lobby::reloadScreen;
-  isStopped = true;
+  _d->result = Lobby::reloadScreen;
+  _d->isStopped = true;
 }
 
 void Lobby::Impl::restart()
@@ -224,12 +211,7 @@ void Lobby::Impl::showSoundOptions()
 
 void Lobby::Impl::showLanguageOptions()
 {
-  auto& languageSelectDlg = ui().add<dialog::LanguageSelect>( SETTINGS_RC_PATH( langModel ),
-                                                              SETTINGS_STR( language ) );
-  languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
-
-  CONNECT_LOCAL( &languageSelectDlg, onChange,   Impl::changeLanguage )
-  CONNECT_LOCAL( &languageSelectDlg, onContinue, Impl::reload         )
+  script::Core::execFunction( "OnShowLanguageDialog" );
 }
 
 void Lobby::Impl::showPackageOptions()
@@ -237,74 +219,23 @@ void Lobby::Impl::showPackageOptions()
   ui().add<dialog::PackageOptions>( Rect() );
 }
 
-void Lobby::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
-{  
-  std::string currentFont = SETTINGS_STR( font );
-
-  SETTINGS_SET_VALUE( language, Variant( lang ) );
-  SETTINGS_SET_VALUE( talksArchive, Variant( sounds ) );
-
-  if( currentFont != newFont )
-  {
-    SETTINGS_SET_VALUE( font, newFont );
-    FontCollection::instance().initialize( game::Settings::rcpath().toString(), newFont );
-  }
-
-  game::Settings::save();
-
-  Locale::setLanguage( lang );
-  NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( sounds );
-}
-
 void Lobby::Impl::startCareer()
 {
-  menu->clear();
+  //menu->clear();
 
-  std::string playerName = SETTINGS_STR( playerName );
+  events::dispatch<events::ScriptFunc>( "OnStartCareer" );
 
-  auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
-  selectPlayerNameDlg.setName( playerName );
-
-  CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
-  CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
-  CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
+  //CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
-void Lobby::Impl::handleNewGame()
-{  
-  result=startNewGame; isStopped=true;
+void Lobby::newGame()
+{
+  _d->result=startNewGame; _d->isStopped=true;
 }
 
 void Lobby::Impl::showCredits()
 {
-  audio::Engine::instance().play( "combat_long", 50, audio::theme );
-
-  StringArray strs;
-#define _X(a) strs << a;
-#include "core/credits.in"
-#undef _X
- 
-  Size size = ui().vsize();
-  Fade& frame = ui().add<Fade>( 0xA0 );
-  WidgetClosers::insertTo( &frame, KEY_RBUTTON );
-  int h = size.height();
-  for( int i=0; !strs[i].empty(); i++ )
-  {
-    Label& lb = frame.add<Label>( Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
-    lb.setTextAlignment( align::center, align::center );
-    lb.setFont( FONT_2_WHITE );
-    lb.setSubElement( true );
-    auto& animator = lb.add<PositionAnimator>( WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
-    animator.setSpeed( PointF( 0, -0.5 ) );
-  }
-
-  auto& buttonClose = frame.add<PushButton>( Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
-                                             _("##close##") );
-  frame.setFocus();
-
-  CONNECT( &buttonClose, onClicked(), &frame, Label::deleteLater );
-  CONNECT( &buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
+  events::dispatch<events::ScriptFunc>( "OnShowCredits" );
 }
 
 #define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
@@ -449,8 +380,6 @@ void Lobby::Impl::selectFile(std::string fileName)
   fileMap = fileName;
   isStopped = true;
 }
-
-void Lobby::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
 
 void Lobby::Impl::showMapSelectDialog()
 {

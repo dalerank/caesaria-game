@@ -1,0 +1,8 @@
+SCRIPT_OBJECT_BEGIN(PositionAnimator)
+  SCRIPT_OBJECT_FUNCTION(PositionAnimator,deleteLater,0)
+  SCRIPT_OBJECT_FUNCTION(PositionAnimator,setDestination,1)
+  SCRIPT_OBJECT_FUNCTION(PositionAnimator,setSpeed,1)
+  SCRIPT_OBJECT_FUNCTION(PositionAnimator,setTime,1)
+  SCRIPT_OBJECT_FUNCTION(PositionAnimator,setFlag,2)
+  SCRIPT_OBJECT_CONSTRUCTOR(PositionAnimator)
+SCRIPT_OBJECT_END(PositionAnimator)

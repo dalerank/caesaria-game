@@ -44,7 +44,7 @@
  }
 
   map : {
-   "0:  "Brundisium"
+   "0":  "Brundisium"
    "1" :  "Corinthus"
    "2" :  "Londinium"
    "3" :  "Mediolanum"

@@ -24,6 +24,7 @@
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "gfx/tilesarray.hpp"
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"

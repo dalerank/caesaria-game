@@ -19,6 +19,7 @@
 #include "gfx/tilemap_config.hpp"
 #include "objects/infodb.hpp"
 #include "city/city.hpp"
+#include "gfx/tilesarray.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"

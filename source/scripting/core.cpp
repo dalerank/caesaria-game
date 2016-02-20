@@ -113,6 +113,7 @@ void push(js_State *J, const VariantMap& items)
 
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
+inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n), js_tonumber(J, n+1) );}
 
 inline Rect to(js_State *J, int n, Rect)
 {
@@ -166,9 +167,11 @@ void engineSetOption(js_State *J)
   else if (js_isnumber(J,2))
     game::Settings::set(name, js_tonumber(J,2));
   else if (js_isstring(J,2))
-    game::Settings::set(name, js_tostring(J,2));
+    game::Settings::set(name, std::string(js_tostring(J,2)) );
   else
     Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
+
+  game::Settings::save();
 }
 
 Core& Core::instance()
@@ -253,6 +256,7 @@ void constructor_Session(js_State *J)
                                                     js_pcall(internal::J,0); \
                                                     js_pop(internal::J,1); \
                                                   } \
+                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
                                                 } \
                                                 void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -262,6 +266,7 @@ void constructor_Session(js_State *J)
                                                     parent->callback().connect( &name##_handle_##callback ); \
                                                     parent->addProperty( "js_"#callback, Variant(index) ); \
                                                   } \
+                                                  else Logger::warning( #name"_set_"#callback" parent is null" ); \
                                                   js_pushundefined(J); \
                                                 }
 
@@ -274,6 +279,7 @@ void constructor_Session(js_State *J)
                                                     js_pcall(internal::J,1); \
                                                     js_pop(internal::J,1); \
                                                   } \
+                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
                                                 } \
                                                 void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -283,6 +289,7 @@ void constructor_Session(js_State *J)
                                                     parent->callback().connect( &name##_handle_##callback ); \
                                                     parent->addProperty( "js_"#callback, Variant(index) ); \
                                                   } \
+                                                  else Logger::warning( #name"_set_"#callback" parent is null" ); \
                                                   js_pushundefined(J); \
                                                 }
 
@@ -338,24 +345,23 @@ void constructor_Session(js_State *J)
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  paramType3 paramValue3 = internal::to( J, 3, paramType2() ); \
+  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
   js_pushundefined(J); \
 }
-
 
 #define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
                                   js_getproperty(internal::J, -1, "prototype"); \
                                   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
 
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_set_##funcname, TEXT(funcname), params); \
+                                  Logger::warning( "script://" #name"_set_"#funcname"->"#funcname); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
                                   js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
 
-
-#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 6); \
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 1); \
                                         js_defglobal(internal::J, "_"#name, JS_DONTENUM);
 
 #define SCRIPT_OBJECT_END(name)
@@ -374,13 +380,15 @@ void constructor_Session(js_State *J)
 
 #include "window.implementation"
 #include "button.implementation"
-#include "label.implementation"
 #include "session.implementation"
+#include "label.implementation"
 #include "dialogbox.implementation"
 #include "exitbutton.implementation"
 #include "listbox.implementation"
 #include "texturedbutton.implementation"
 #include "image.implementation"
+#include "editbox.implementation"
+#include "animators.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -391,29 +399,36 @@ void Core::registerFunctions( Game& game )
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
 
 DEF_GLOBAL_OBJECT(engine)
-  REGISTER_FUNCTION(engineLog,"log",1);  
+  REGISTER_FUNCTION(engineLog,"log",1);
   REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
-  REGISTER_FUNCTION(engineTranslate,"translate",1);   
+  REGISTER_FUNCTION(engineTranslate,"translate",1);
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "window.interface"
 #include "button.interface"
-#include "label.interface"
 #include "session.interface"
+#include "label.interface"
 #include "dialogbox.interface"
 #include "exitbutton.interface"
 #include "listbox.interface"
 #include "texturedbutton.interface"
 #include "image.interface"
+#include "editbox.interface"
+#include "animators.interface"
 
   Core::loadModule(":/system/modules.js");
   {
     internal::observers = new vfs::FileChangeObserver();
     internal::observers->watch( ":/system" );
     internal::observers->onFileChange().connect( &engineReloadFile );
-  }
+}
+}
+
+void Core::unref(const std::string& ref)
+{
+  js_unref(internal::J, ref.c_str());
 }
 
 Core::Core()

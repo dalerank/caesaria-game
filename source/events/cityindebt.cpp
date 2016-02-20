@@ -24,6 +24,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
 #include "game/funds.hpp"

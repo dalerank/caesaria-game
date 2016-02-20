@@ -118,10 +118,24 @@ void DictionaryWindow::load(const std::string& uri)
 {
   vfs::Path filePath = _convUri2path( uri );
 
+  if(!filePath.exist())
+  {
+    _d->lbTitle->setText("##"+uri+"##");
+    _d->lbText->setText("##no_dictionary_page##");
+    return;
+  }
+
   VariantMap vm = config::load( filePath );
 
-  std::string text = vm.get( "text" ).toString();
-  std::string title = vm.get( "title" ).toString();
+  std::string import = vm.get("import").toString();
+  if( !import.empty() && import != uri)
+  {
+    load( import );
+    return;
+  }
+
+  std::string text = vm.get("text" ).toString();
+  std::string title = vm.get("title").toString();
 
   _d->aliases.clear();
   VariantMap uris = vm.get( "uri" ).toMap();

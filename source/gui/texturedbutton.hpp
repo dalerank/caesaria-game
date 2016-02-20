@@ -57,9 +57,10 @@ class HelpButton : public TexturedButton
 {
 public:
   HelpButton(Widget* parent);
-  HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId );
+  HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId);
 
-  virtual void setupUI( const VariantMap& ui );
+  virtual void setupUI(const VariantMap& ui);
+  void setHelpId(const std::string& id);
 
 protected:
   virtual void _btnClicked();
