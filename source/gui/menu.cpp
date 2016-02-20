@@ -42,6 +42,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
+#include "core/variant_list.hpp"
 #include "extented_date_info.hpp"
 #include "core/saveadapter.hpp"
 #include "core/osystem.hpp"

@@ -27,6 +27,8 @@ namespace gui
 class PositionAnimator : public WidgetAnimator
 {
 public:
+  PositionAnimator( Widget* parent );
+
 	PositionAnimator( Widget* node, 
                     int flags,
                     const Point& stopPos,
@@ -40,8 +42,8 @@ public:
 	void setStartPos( const Point& p );
 	Point getStartPos() const;
 
-  void setStopPos( const Point& p );
-	Point getStopPos() const;
+  void setDestination( const Point& p );
+  Point destination() const;
 
   void setTime( int time );
   void setSpeed( PointF speed );

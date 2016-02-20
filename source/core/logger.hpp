@@ -89,7 +89,7 @@ public:
   static bool hasFilter(const std::string& text);
   static bool removeFilter(const std::string& text);
 
-  static void registerWriter(Type type , const std::string &param);
+  static void registerWriter(Type type, const std::string &param);
   static void registerWriter(const std::string& name, LogWriterPtr writer );
 
   template <typename... Args>

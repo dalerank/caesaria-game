@@ -20,6 +20,7 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/thread/safethread.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/variant_map.cpp"
+      "${BASE_SOURCE_DIR}/core/variant_list.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
       "${BASE_SOURCE_DIR}/vfs/fileinfo.cpp"

@@ -27,7 +27,7 @@
 class VariantMap : public std::map<std::string, Variant>
 {
 public:
-  typedef Delegate2< const std::string&, const Variant& > Visitor;
+  typedef Delegate2<const std::string&, const Variant&> Visitor;
 
   /**
    * @brief default constructor

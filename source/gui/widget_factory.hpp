@@ -20,6 +20,7 @@
 
 #include "core/scopedptr.hpp"
 #include "core/singleton.hpp"
+#include "core/referencecounted.hpp"
 #include <string>
 
 namespace gui
@@ -30,17 +31,23 @@ class Widget;
 class WidgetCreator
 {
 public:
-  virtual Widget* create( Widget* parent ) = 0;
+  virtual Widget* create(Widget* parent) = 0;
 };
 
-template< class T >
+template<class T>
 class BaseWidgetCreator : public WidgetCreator
 {
 public:
   Widget* create( Widget* parent )
   {
-    return new T( parent );
+    return new T(parent);
   }
+};
+
+class WidgetFinalizer : public ReferenceCounted
+{
+public:
+  virtual void destroyed(Widget* w) {}
 };
 
 class WidgetFactory : public StaticSingleton<WidgetFactory>
@@ -49,11 +56,11 @@ class WidgetFactory : public StaticSingleton<WidgetFactory>
 public:
   ~WidgetFactory();
 
-  Widget* create(const std::string& type, Widget* parent ) const;
+  Widget* create(const std::string& type, Widget* parent) const;
 
-  bool canCreate( const std::string& type ) const;
+  bool canCreate(const std::string& type) const;
 
-  void addCreator( const std::string& type, WidgetCreator* ctor );
+  void addCreator(const std::string& type, WidgetCreator* ctor);
 private:
   WidgetFactory();
 

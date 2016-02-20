@@ -29,8 +29,6 @@ public:
   virtual bool build(const city::AreaInfo &info);
 
   FurnitureWorkshop();
-protected:
-  virtual void _storeChanged();
 };
 
 #endif //_CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_

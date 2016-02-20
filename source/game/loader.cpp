@@ -30,6 +30,7 @@
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
 #include "game.hpp"
+#include "gfx/tilesarray.hpp"
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"

@@ -147,7 +147,7 @@ void OrderGoodWidget::updateBtnText()
 
 void OrderGoodWidget::changeRule()
 {
-  good::Orders::Order rule = _storage.getOrder( _info.type() );
+  good::Orders::Order rule = _storage.getOrder( _info.type() );  
   _storage.setOrder( _info.type(), good::Orders::Order( (rule+1) % (good::Orders::none)) );
   updateBtnText();
 }

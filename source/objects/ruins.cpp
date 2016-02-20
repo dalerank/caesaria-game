@@ -63,7 +63,7 @@ void BurningRuins::timeStep(const unsigned long time)
   _fgPictures().back() = _animation().currentFrame();
 
   if( game::Date::isDayChanged() )
-  {   
+  {
     bool needSpread = ( state( pr::spreadFire ) == 0 && state( pr::fire ) < 50 );
     if( needSpread )
     {
@@ -153,7 +153,7 @@ bool BurningRuins::build( const city::AreaInfo& info)
   }
 
   return true;
-}   
+}
 
 bool BurningRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
@@ -186,6 +186,13 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 }
 
 bool BurningRuins::isNeedRoad() const{  return false; }
+
+std::string BurningRuins::pinfo() const
+{
+  std::string ret = utils::replace( _parent, "{}", "burning_ruins" );
+  return ret;
+}
+
 void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
@@ -209,6 +216,12 @@ bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoad() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
+std::string BurnedRuins::pinfo() const
+{
+  std::string ret = utils::replace(_parent, "{}", "burned_ruins");
+  return ret;
+}
+
 CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 {
   setState( pr::damage, 1 );
@@ -223,7 +236,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 }
 
 bool CollapsedRuins::build( const city::AreaInfo& info )
-{  
+{
   bool built = Ruins::build( info );
   if( !built )
     return false;
@@ -243,6 +256,12 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoad() const{  return false;}
+
+std::string CollapsedRuins::pinfo() const
+{
+  std::string ret = utils::replace(_parent, "{}", "collapsed_ruins");
+  return ret;
+}
 
 PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
 {
@@ -298,25 +317,31 @@ void PlagueRuins::destroy()
   events::dispatch<BuildAny>( pos(), p.object() );
 }
 
+std::string PlagueRuins::pinfo() const
+{
+  std::string ret = utils::replace(_parent, "{}", "plague_ruins");
+  return ret;
+}
+
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 bool PlagueRuins::build( const city::AreaInfo& info )
 {
   bool built = Ruins::build( info );
-  if( !built )
+  if (!built)
     return false;
 
   //while burning can't remove it
-  tile().setFlag( Tile::tlTree, false );
-  tile().setFlag( Tile::tlRoad, false );
-  tile().setFlag( Tile::tlRock, true );
+  tile().setFlag(Tile::tlTree, false);
+  tile().setFlag(Tile::tlRoad, false);
+  tile().setFlag(Tile::tlRock, true);
 
   return true;
 }
 
-bool PlagueRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
-bool PlagueRuins::isNeedRoad() const{  return false;}
+bool PlagueRuins::isWalkable() const { return (state(pr::fire) == 0); }
+bool PlagueRuins::isNeedRoad() const { return false; }
 
 Ruins::Ruins(object::Type type)
   : Building( type, Size::square(1) ), _alsoBuilt( true )
@@ -324,23 +349,27 @@ Ruins::Ruins(object::Type type)
 
 }
 
+void Ruins::setInfo(std::string parent) { _parent = parent; }
+
+std::string Ruins::pinfo() const { return _parent; }
+
 void Ruins::save(VariantMap& stream) const
 {
   Building::save( stream );
 
-  stream[ "text" ] = Variant( _parent );
+  stream["text"] = Variant(_parent);
 }
 
 void Ruins::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _parent = stream.get( "text" ).toString();
+  _parent = stream.get("text").toString();
 }
 
 bool Ruins::build(const city::AreaInfo& info)
 {
-  if( info.city->tilemap().at( info.pos ).getFlag( Tile::tlCoast ) )
+  if( info.city->tilemap().at( info.pos ).getFlag(Tile::tlCoast) )
   {
     return false;
   }

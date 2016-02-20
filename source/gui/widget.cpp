@@ -119,6 +119,9 @@ Widget::~Widget()
     child->setParent( 0 );
     child->drop();
   }
+
+  if( ui() )
+    ui()->elementDestroyed(this);
 }
 
 void Widget::setGeometry( const Rect& r, GeometryType mode )
@@ -146,7 +149,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 void Widget::_finalizeResize() {}
 void Widget::_finalizeMove() {}
 
-Widget::Widgets& Widget::_getChildren() { return _dfunc()->children;}
+Widget::Widgets& Widget::_children() { return _dfunc()->children;}
 
 void Widget::setPosition( const Point& position )
 {
@@ -191,8 +194,8 @@ void Widget::setGeometry(float left, float top, float rigth, float bottom)
   setGeometry( RectF( left, top, rigth, bottom ) );
 }
 
-Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute; }
-Rect Widget::absoluteClippingRect() const{ return _dfunc()->rect.clipping; }
+const Rect& Widget::absoluteRect() const { return _dfunc()->rect.absolute; }
+const Rect& Widget::absoluteClippingRect() const{ return _dfunc()->rect.clipping; }
 
 void Widget::setNotClipped( bool noClip )
 {
@@ -394,7 +397,7 @@ bool Widget::bringToFront()
 
 bool Widget::bringChildToFront( Widget* element )
 {
-  Widgets& children = _getChildren();
+  Widgets& children = _children();
   foreach( it, children )
   {
     if (element == (*it))
@@ -410,7 +413,7 @@ bool Widget::bringChildToFront( Widget* element )
 
 bool Widget::sendChildToBack( Widget* child )
 {
-  Widgets& children = _getChildren();
+  Widgets& children = _children();
   auto it = children.begin();
   if (child == (*it))	// already there
       return true;
@@ -1004,6 +1007,11 @@ const Variant& Widget::getProperty(const std::string& name) const
 {
   VariantMap::const_iterator it = _dfunc()->properties.find( name );
   return it != _dfunc()->properties.end() ? it->second : invalidVariant;
+}
+
+const VariantMap&Widget::properties() const
+{
+  return _dfunc()->properties;
 }
 
 void Widget::installEventHandler( Widget* elementHandler )

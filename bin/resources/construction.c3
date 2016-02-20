@@ -71,11 +71,11 @@
     cost : 0
     class : "road"
   }
-  
+
   wall : {
     desirability : { base : -12, range : 4, step : 3 }
     class : "wall"
-    cost : 10    
+    cost : 10
     inflammability : 0
     collapsibility : 0
   },
@@ -87,7 +87,7 @@
     inflammability : 0
     collapsibility : 0
   }
-  
+
   aqueduct : {
     cost : 8,
     desirability : { base: -2, range : 2, step : 1 }
@@ -99,7 +99,7 @@
   amphitheater : {
     cost : 100,
     desirability : { base : 4, range : 4, step : -1 }
-    class : "entertainment"    
+    class : "entertainment"
     animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 3 }
     image : [ "entertainment", 1 ]
     sound : [ "ampitheatre", 1 ]
@@ -122,7 +122,7 @@
     class : "entertainment"
     employers : 150
   },
-  
+
   colloseum : {
     cost : 500,
     desirability : { base : -3, range : 3, step : 1 }
@@ -130,7 +130,7 @@
     sound : [ "colloseum", 1 ]
     employers : 25
   },
-  
+
   gladiatorSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
@@ -140,7 +140,7 @@
     sound : [ "gladiatorpit", 1 ]
     employers : 8
   },
-  
+
   house : {
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
@@ -156,7 +156,7 @@
     animation : { rc : "entertainment", start : 63, count : 18, offset : [ 78, 21 ], delay : 2 }
     employers : 8
   },
-  
+
   actorColony : {
     cost : 50,
     desirability : { base : -2, range : 3, step : 1 }
@@ -176,7 +176,7 @@
     sound : [ "charioterspit", 1 ]
     employers : 10
   },
-  
+
   plaza : {
     cost : 15,
     desirability : { base : 4, range : 2,	step : -2 }
@@ -188,7 +188,7 @@
       type_2 : { size:2, rc : "entertainment", start : 108, count : 2 }
     }
     checkWalkersOnBuild : false
-  },  
+  },
 
   garden : {
     cost : 12,
@@ -202,7 +202,7 @@
     sound : [ "garden", 1 ]
     checkWalkersOnBuild : false
   },
-  
+
   fort_legionaries : {
     cost : 1000,
     desirability : { base :-20,	range : 10,	step : 2 }
@@ -226,18 +226,18 @@
     class : "sight"
     sound : [ "statue", 1 ]
   },
-  
+
   statue_middle : {
     cost : 60,
     desirability : { base :10,	range : 5,	step : -2 }
     class : "sight"
-  },  
+  },
 
   statue_big : {
     cost : 150,
     desirability : { base :15,	range : 5,	step : -3 }
     class : "sight"
-  },  
+  },
 
   fort_javelin : {
     cost : 1000,
@@ -247,7 +247,7 @@
     inflammability : 0
     collapsibility : 0
     employers : 16
-  }, 
+  },
 
   fort_horse : {
     cost : 1000,
@@ -257,7 +257,7 @@
     inflammability : 0
     collapsibility : 0
     employers : 16
-  }, 
+  },
 
   clinic : {
     cost : 30,
@@ -267,8 +267,8 @@
     service : "srvc_doctor"
     sound : [ "clinic", 1 ]
     employers : 2
-  },  
-  
+  },
+
   hospital : {
     cost : 300,
     desirability : { base :2,	range : 2,	step : -1 }
@@ -277,7 +277,7 @@
     employers : 30
     service : "srvc_hospital"
   },
-  
+
   baths : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
@@ -287,7 +287,7 @@
     sound : [ "baths", 1 ]
     service : "srvc_baths"
     employers : 10
-  }, 
+  },
 
   barber : {
     cost : 25,
@@ -297,8 +297,8 @@
     sound : [ "barber", 1 ]
     service : "srvc_barber"
     employers : 2
-  }, 
-  
+  },
+
   school : {
     cost : 50,
     desirability : { base :-2,	range : 2,	step : 1 }
@@ -306,8 +306,8 @@
     image : [ "commerce", 83 ]
     sound : [ "school", 1 ]
     employers : 10
-  },    
-  
+  },
+
   academy : {
     cost : 100,
     desirability : { base :4,	range : 4,	step : -1 }
@@ -315,8 +315,8 @@
     image : [ "commerce", 85 ]
     sound : [ "academy", 1 ]
     employers : 30
-  },  
-  
+  },
+
   library : {
     cost : 75,
     desirability : { base : 4,	range : 4,	step : -1 }
@@ -333,14 +333,14 @@
     animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
     employers : 6
-  },  
- 
+  },
+
   triumphal_arch : {
     cost : 0,
     desirability : { base :18,	range : 6,	step : -3 }
     class : "sight"
-  }, 
-  
+  },
+
   gatehouse : {
     cost : 100,
     desirability : { base : -4, range : 4, step : -1 }
@@ -348,7 +348,7 @@
     inflammability : 0
     collapsibility : 0
     employers : 3
-  },  
+  },
 
   tower : {
     cost : 150,
@@ -357,8 +357,8 @@
     collapsibility : 0
     employers : 6
     inflammability : 0
-  },  
-  
+  },
+
   small_ceres_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
@@ -366,8 +366,8 @@
     employers : 2
     class : "religion"
     sound : [ "templeceres", 1 ]
-  },  
-  
+  },
+
   small_neptune_temple : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
@@ -376,8 +376,8 @@
     image : [ "security", 47 ]
     image.offset : [-1, -1]
     sound : [ "templeneptune", 1 ]
-  }, 
-  
+  },
+
   small_mercury_temple : {
     cost : 50,
     desirability : { base : 4, 	range : 4,	step : -1 }
@@ -387,7 +387,7 @@
     image.offset : [-1, -1]
     sound : [ "templemercury", 1 ]
   },
- 
+
   small_mars_temple : {
     cost : 50,
     desirability : { base : 4,	range : 4,	step : -1 }
@@ -407,7 +407,7 @@
     image.offset : [-1, -1]
     sound : [ "templevenus", 1 ]
   },
- 
+
   big_ceres_temple : {
     cost : 150,
     desirability : { base : 8,	range : 8,	step : -1 }
@@ -415,8 +415,8 @@
     class : "religion"
     image : [ "security", 46 ]
     sound : [ "templeceres", 2 ]
-  }, 
-  
+  },
+
   big_neptune_temple : {
     cost : 150,
     desirability : { base : 8,	range : 8,	step : -1 }
@@ -424,8 +424,8 @@
     class : "religion"
     image : [ "security", 48 ]
     sound : [ "templeneptune", 2 ]
-  }, 
-  
+  },
+
   big_mercury_temple : {
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
@@ -434,7 +434,7 @@
     image : [ "security", 50 ]
     sound : [ "templemercury", 2 ]
   },
-  
+
   big_mars_temple : {
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
@@ -443,7 +443,7 @@
     image : [ "security", 52 ]
     sound : [ "templemars", 2 ]
   },
-  
+
   big_venus_temple : {
     cost : 150,
     desirability : { base : 8, 	range : 8,	step : -1 }
@@ -451,7 +451,7 @@
     image : [ "security", 54 ]
     class : "religion"
     sound : [ "templevenus", 2 ]
-  }, 
+  },
 
   market : {
     cost : 40,
@@ -461,7 +461,7 @@
     image : [ "commerce", 1 ]
     animation : { rc : "commerce", start : 2, count : 10, delay : 4 }
     sound : [ "market", 1 ]
-  }, 
+  },
 
   granery : {
     cost : 100,
@@ -469,7 +469,7 @@
     employers : 6
     class : "food"
     sound : [ "granary", 1 ]
-  }, 
+  },
 
   warehouse : {
     cost : 70,
@@ -477,7 +477,7 @@
     employers : 6
     class : "trade"
     sound : [ "warehouse", 1 ]
-  }, 
+  },
 
   shipyard : {
     cost : 100,
@@ -485,8 +485,8 @@
     employers : 10
     class : "trade"
     sounde : [ "shipyard", 1 ]
-  }, 
-  
+  },
+
   dock : {
     cost : 100,
     desirability : { base : 8, 	range : 4,	step : -2 }
@@ -514,7 +514,7 @@
     }
 
     sound : [ "dock", 1 ]
-  }, 
+  },
 
   wharf : {
     cost : 60,
@@ -522,21 +522,21 @@
     employers : 6
     class : "food"
     sound : [ "wharf", 1 ]
-  }, 
-  
+  },
+
   governorHouse : {
     cost : 150,
     desirability : { base : 12, 	range : 3,	step : -2 }
     employers : 0
     class : "administration"
-  }, 
-  
+  },
+
   governorVilla : {
     cost : 400,
     desirability : { base : 20, 	range : 4,	step : -4 }
     employers : 0
     class : "administration"
-  }, 
+  },
 
   governorPalace : {
     cost : 700,
@@ -544,11 +544,11 @@
     employers : 0
     class : "administration"
   },
-  
+
   engineering_post : {
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
-    employers : 5   
+    employers : 5
     image : [ "transport", 56 ]
     animation : { rc : "transport", start : 57, count : 10, offset : [ 10, 42 ], delay : 4 }
     class : "engineer"
@@ -561,8 +561,8 @@
     class : "bridge"
     requestDestroy : true
     subtileOffset : [ 8, -10 ]
-  }, 
-  
+  },
+
   high_bridge : {
     cost : 100,
     desirability : { base : 0,	range : 0,	step : 0 }
@@ -584,30 +584,30 @@
       peace :      { rc : "govt", index: 7, offset : [ 200, -15 ] }
       favour :     { rc : "govt", index: 8, offset : [ 230, -10 ] }
     }
-  }, 
-   
+  },
+
   forum : {
     cost : 75,
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
     sound : [ "forum", 1 ]
-  }, 
-    
+  },
+
   native_hut : {
     cost : 50,
     desirability : { base : 0, 	range : 0,	step : 0 }
     employers : 0
     class : "native"
-  }, 
-  
+  },
+
   native_center : {
     cost : 50,
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "native"
-  }, 
-  
+  },
+
   reservoir : {
     cost : 80,
     desirability : { base : -6,	range : 3,	step : -2 }
@@ -619,16 +619,16 @@
     }
     fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
-  }, 
+  },
 
   fountain : {
     cost : 15,
-	  desirability : { base : 0,	  range : 0,	  step : 0 }
+    desirability : { base : 0,	  range : 0,	  step : 0 }
     employers : 4
-	  class : "water"
+    class : "water"
     sound : [ "fountain", 1 ]
-  }, 
-  
+  },
+
   well : {
     cost : 5,
     desirability : { base : -1,    range : 1,    step : 1 }
@@ -637,36 +637,36 @@
     image : [ "utilitya", 1 ]
     class : "water"
     sound : [ "well", 1 ]
-  }, 
- 
+  },
+
   native_field : {
     cost : 0,
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "native"
   },
-  
+
   military_academy : {
     cost : 1000,
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 20
     class : "military"
   },
-  
+
   barracks : {
     cost : 150,
     desirability : { base : -6,	range : 3,	step : 2 }
     employers : 10
     class : "military"
     sound : [ "barracks", 1 ]
-  }, 
+  },
 
   oracle : {
     cost : 20,
     desirability : { base : 8,	range : 7,	step : -1 }
     employers : 6
     class : "religion"
-  }, 
+  },
 
   burning_ruins : {
     cost : 0,
@@ -674,22 +674,22 @@
     employers : 0
     class : "disaster"
     sound : [ "burningruins", 1 ]
-  }, 
-  
+  },
+
   burned_ruins : {
     cost : 0,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 0
     class : "disaster"
-  }, 
-  
+  },
+
   collapsed_ruins : {
     cost : 0,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 0
     class : "disaster"
   },
-  
+
   plague_ruins :
   {
     cost : 0,
@@ -704,8 +704,8 @@
     desirability : { base : 0, range : 0,	step : 0 }
     class : "food"
   }
-  
-  wheat_farm : 
+
+  wheat_farm :
   {
     cost : 40,
     undoOffset : [ 0, -1 ]
@@ -715,7 +715,7 @@
     class : "food"
     productRate : 9.6
     sound : [ "wheatfarm", 1 ]
-  }, 
+  },
 
   vegetable_farm :
   {
@@ -728,8 +728,8 @@
     class : "food"
     sound : [ "vegetablefarm", 1 ]
   },
- 
-  fig_farm : 
+
+  fig_farm :
   {
     cost : 40,
     undoOffset : [ 0, -1 ]
@@ -739,8 +739,8 @@
     productRate : 9.6
     class : "food"
   },
-  
-  olive_farm : 
+
+  olive_farm :
   {
     cost : 40,
     undoOffset : [ 0, -1 ]
@@ -764,7 +764,7 @@
     sound : [ "grapefarm", 1 ]
   },
 
-  meat_farm : 
+  meat_farm :
   {
     cost : 40,
     undoOffset : [ 0, -1 ]
@@ -798,7 +798,7 @@
     productRate : 2.4
     sound : [ "ironmine", 1 ]
   },
-  
+
   lumber_mill :
   {
     cost : 40,
@@ -822,7 +822,7 @@
     animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
     sound : [ "claypit", 1 ]
   },
-  
+
   wine_workshop :
   {
     cost : 45,
@@ -834,6 +834,10 @@
     sound : [ "winery", 1 ]
     image : [ "commerce", 86 ]
     animation : { rc : "commerce", start : 87, count : 12, offset : [ 14, 36 ], delay : 4 }
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "commerce", 153 ], offset : [40, -10] }
+      qty_200 : { qty : 200, image : [ "commerce", 153 ], offset : [40, -10] }
+    }
   },
 
   oil_workshop :
@@ -852,7 +856,7 @@
       qty_200 : { qty : 200, image : [ "commerce", 154 ], offset : [40, -5] }
     }
   },
-  
+
   weapons_workshop :
   {
     cost : 50,
@@ -862,8 +866,13 @@
     productRate : 2.4
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
+
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "commerce", 156 ], offset : [20, 15] }
+      qty_200 : { qty : 200, image : [ "commerce", 156 ], offset : [20, 15] }
+    }
   },
-  
+
   furniture_workshop :
   {
     cost : 40,
@@ -875,8 +884,12 @@
     sound : [ "furniture", 1 ]
     image : [ "commerce", 117 ]
     animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "commerce", 155 ], offset : [47, 0] }
+      qty_200 : { qty : 200, image : [ "commerce", 155 ], offset : [47, 0] }
+    }
   },
-  
+
   pottery_workshop :
   {
     cost : 40,
@@ -887,5 +900,9 @@
     productRate : 4.8
     image : [ "commerce", 132 ]
     animation : { rc : "commerce", start : 133, count : 7, offset : [ 65, 42 ], delay : 3 }
+    stock.image : {
+      qty_100 : { qty : 100, image : [ "commerce", 157 ], offset : [45, -10] }
+      qty_200 : { qty : 200, image : [ "commerce", 157 ], offset : [45, -10] }
+    }
   }
 }

@@ -74,6 +74,19 @@ public:
     good::Storage::store( stock, amount );
   }
 
+  virtual int getMaxStore(const good::Product goodType)
+  {
+    auto order = getOrder(goodType);
+    if( (order == good::Orders::reject || order == good::Orders::none)
+        || isDevastation()
+        || granary->onlyDispatchGoods() )
+    {
+      return 0;
+    }
+
+    return good::Storage::getMaxStore(goodType);
+  }
+
   virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
     bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
@@ -89,12 +102,6 @@ public:
     return isOk;
   }
   
-  virtual void setOrder( const good::Product type, const good::Orders::Order order )
-  {
-    good::Storage::setOrder( type, order );
-    setCapacity( type, (order == good::Orders::reject || order == good::Orders::none) ? 0 : GranaryStore::maxCapacity );
-  }
-
   virtual TilePos owner() const { return granary ? granary->pos() : TilePos::invalid(); }
 
   Granary* granary;
@@ -144,6 +151,7 @@ void Granary::timeStep(const unsigned long time)
 
 good::Store& Granary::store() {  return _d->store; }
 
+bool Granary::onlyDispatchGoods() const {  return numberWorkers() <= maximumWorkers() / 2; }
 void Granary::initTerrain(Tile& terrain)
 {
   WorkingBuilding::initTerrain( terrain );

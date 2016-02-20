@@ -3,7 +3,6 @@ CMakeLists.txt.user
 *~
 \#*#
 stdout.txt
-settings.model
 caesar3
 .travis.yml
 
@@ -60,3 +59,4 @@ Win32
 
 # exclude ignore
 !bin/resources
+bin/resources/settings.model

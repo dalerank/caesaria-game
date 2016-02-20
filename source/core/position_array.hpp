@@ -17,39 +17,25 @@
 #define _CAESARIA_POSITIONARRAY_INCLUDE_H_
 
 #include "position.hpp"
-#include "variant_list.hpp"
+
+class VariantList;
 
 class PointsArray : public std::vector<Point>
 {
 public:
-  VariantList save() const
-  {
-    VariantList ret;
-    for( auto& item : *this ) ret << item;
-    return ret;
-  }
+  PointsArray() {}
 
-  void move( const Point& offset )
-  {
-    for( auto&& p : *this ) p += offset;
-  }
+  PointsArray(const std::vector<Point>& points);
 
-  PointsArray& operator<<(const Point& point)
-  {
-    push_back( point );
-    return *this;
-  }
+  VariantList save() const;
 
-  Point valueOrEmpty( unsigned int index ) const
-  {
-    return index < size() ? at( index ) : Point();
-  }
+  void move( const Point& offset );
 
-  PointsArray& load( const VariantList& vl )
-  {
-    for( auto& item : vl ) { push_back( item ); }
-    return *this;
-  }
+  PointsArray& operator<<(const Point& point);
+
+  Point valueOrEmpty( unsigned int index ) const;
+
+  PointsArray& load( const VariantList& vl );
 };
 
 #endif  //_CAESARIA_POSITIONARRAY_INCLUDE_H_

@@ -57,7 +57,7 @@
  "ranksModel" : "\/ranks.model",
  "remakeModel" : "\/remake.model",
  "render" : "sdl",
- "resolution" : [ 1400, 800 ],
+ "resolution" : [ 1024, 768 ],
  "resourcePath" : "\/home\/dalerank\/projects\/caesaria\/bin\/resources",
  "rightMenu" : true,
  "saveExt" : ".oc3save",

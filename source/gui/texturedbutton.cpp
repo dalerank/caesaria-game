@@ -86,6 +86,11 @@ void HelpButton::setupUI(const VariantMap& ui)
   _helpid = ui.get( "uri" ).toString();
 }
 
+void HelpButton::setHelpId(const std::string& id)
+{
+  _helpid = id;
+}
+
 void HelpButton::_btnClicked()
 {
   if( !_helpid.empty() )

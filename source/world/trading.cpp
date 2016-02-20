@@ -19,6 +19,7 @@
 #include "empire.hpp"
 #include "city.hpp"
 #include "good/storage.hpp"
+#include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"

@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
+#include "gfx/tilesarray.hpp"
 #include "walkers_factory.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::bow_arrow, BowArrow)

@@ -123,6 +123,6 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
   lb.setTextOffset( Point( 24, 0 ) );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

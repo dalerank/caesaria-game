@@ -16,9 +16,13 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "fade.hpp"
+#include "widget_factory.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Fade)
 
 Fade::Fade(Widget* parent, int alpha, const Rect& rect )
   : Label( parent, rect.width() > 0 ? rect : Rect( Point( 0, 0), parent->size() ),
@@ -27,6 +31,17 @@ Fade::Fade(Widget* parent, int alpha, const Rect& rect )
   setAlpha( alpha );
 }
 
-Fade::~Fade(){}
+void Fade::addCloseCode(int code)
+{
+  auto list = findChildren<WidgetClosers*>();
+  WidgetClosers* closers = nullptr;
+  if (list.empty())
+    closers = &add<WidgetClosers>();
+  else
+    closers = list.front();
+
+  if (closers != nullptr)
+    closers->addCloseCode(code);
+}
 
 }//end namespace gui

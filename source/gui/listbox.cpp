@@ -227,12 +227,26 @@ void ListBox::setSelected(int id)
   _recalculateScrollPos();
 }
 
-void ListBox::setSelectedTag(const Variant& tag)
+int ListBox::findItem(const std::string& text)
 {
   int index = 0;
   for( auto& it : _d->items )
   {
-    if( it.tag() == tag )
+    if( it.text() == text )
+      return index;
+
+    index++;
+  }
+
+  return -1;
+}
+
+void ListBox::setSelectedTag(const Variant& tag)
+{
+  int index = 0;
+  for (auto& it : _d->items)
+  {
+    if (it.tag() == tag)
     {
       setSelected( index );
       break;
@@ -244,11 +258,11 @@ void ListBox::setSelectedTag(const Variant& tag)
 void ListBox::setSelectedWithData(const std::string& name, const Variant& data)
 {
   int index = 0;
-  for( auto& it : _d->items )
+  for (auto& it : _d->items)
   {
-    if( it.data( name ) == data )
+    if( it.data(name) == data )
     {
-      setSelected( index );
+      setSelected(index);
       break;
     }
     index++;
@@ -260,13 +274,13 @@ void ListBox::setSelected( const std::string& item )
 {
 	int index = -1;
 
-  for ( index = 0; index < (int) _d->items.size(); ++index )
+  for (index = 0; index < (int) _d->items.size(); ++index)
   {
-    if ( _d->items[index].text() == item )
+    if (_d->items[index].text() == item)
 		  break;
   }
 
-  setSelected ( index );
+  setSelected(index);
 }
 
 void ListBox::_indexChanged( unsigned int eventType )
@@ -277,7 +291,7 @@ void ListBox::_indexChanged( unsigned int eventType )
   {
   case guiListboxChanged:
   {
-    emit _d->signal.onIndexSelected( _d->index.selected );
+    emit _d->signal.onIndexSelected(_d->index.selected);
     if( _d->index.selected >= 0 )
     {
       emit _d->signal.onTextSelected( _d->items[ _d->index.selected ].text() );
