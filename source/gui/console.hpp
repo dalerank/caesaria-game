@@ -9,7 +9,7 @@
 namespace gui
 {
 
-class Console : public Widget , public CommandDispatcher, public MessageSink
+class Console : public Widget, public CommandDispatcher, public MessageSink
 {
 public:
     Console(Widget* parent, int id, const Rect& rectangle);
