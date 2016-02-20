@@ -34,6 +34,7 @@ public:
   virtual void timeStep(const unsigned long time);
   void computePictures();
   good::Store& store();
+  bool onlyDispatchGoods() const;
 
   virtual void initTerrain(gfx::Tile& terrain);
   virtual void save( VariantMap& stream) const;

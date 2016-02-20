@@ -65,7 +65,7 @@ Storage::Storage() : _gsd( new Impl )
   _gsd->reset();
 }
 
-void Storage::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
+void Storage::setCapacity(const int maxQty) { _gsd->capacity = maxQty;}
 int Storage::capacity() const {  return _gsd->capacity; }
 
 int Storage::qty() const
