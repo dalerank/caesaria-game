@@ -17,13 +17,13 @@
 
 #include <cstdio>
 
+#include <GameCore>
+#include <GameLogger>
 #include "order_good_widget.hpp"
 #include "pushbutton.hpp"
-#include "core/logger.hpp"
 #include "gfx/engine.hpp"
 #include "good/helper.hpp"
-#include "core/gettext.hpp"
-#include "core/utils.hpp"
+#include "good/store.hpp"
 
 using namespace gfx;
 
