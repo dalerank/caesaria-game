@@ -119,7 +119,9 @@ inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n),
 inline Rect to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
-               js_toint32(J, n+2), js_toint32(J, n+3) ); }
+               js_toint32(J, n+2), js_toint32(J, n+3) );
+}
+
 } //end namespace internal
 
 void engineLog(js_State *J)
@@ -173,6 +175,33 @@ void engineSetOption(js_State *J)
     Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
 
   game::Settings::save();
+}
+
+void reg_object_callback(const std::string& name, const std::string& funcname, js_CFunction f, int params)
+{
+  js_newcfunction(internal::J, f, funcname.c_str(), params);
+  Logger::warning( "script://" + name + "_set_" + funcname + "->" + funcname);
+  js_defproperty(internal::J, -2, funcname.c_str(), JS_DONTENUM);
+}
+
+void reg_object_function(const std::string& name, const std::string& funcname, js_CFunction f, int params)
+{
+  js_newcfunction(internal::J, f, funcname.c_str(), params);
+  js_defproperty(internal::J, -2, funcname.c_str(), JS_DONTENUM);
+}
+
+void script_object_begin(const std::string& name)
+{
+  js_getglobal(internal::J, "Object");
+  js_getproperty(internal::J, -1, "prototype");
+  js_newuserdata(internal::J, "userdata", nullptr, nullptr);
+}
+
+void reg_object_function(const std::string& name, js_CFunction f)
+{
+  std::string _name = "_"+name;
+  js_newcconstructor(internal::J, name.c_str(), f, _name.c_str(), 1);
+  js_defglobal(internal::J, _name.c_str(), JS_DONTENUM);
 }
 
 Core& Core::instance()
@@ -308,14 +337,14 @@ void object_call_func_0(js_State *J, void (T::*f)())
 template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
- /* T* parent = (T*)js_touserdata(J, 0, "userdata");
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
     Rtype value = (parent->*f)();
     internal::push(J,value);
   }
   else
-    js_pushundefined(J);*/
+    js_pushundefined(J);
 }
 
 template<typename T,typename Rtype, typename P1Type>
@@ -324,7 +353,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type) const, P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    P1Type paramValue1 = internal::to(J, 1, def);
+    auto paramValue1 = internal::to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     internal::push(J,value);
   }
@@ -338,7 +367,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    P1Type paramValue1 = internal::to(J, 1, def );
+    auto paramValue1 = internal::to(J, 1, def );
     Rtype value = (parent->*f)(paramValue1);
     internal::push(J,value);
   }
@@ -392,16 +421,6 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   else js_pushundefined(J); \
 }
 
-template<typename T, typename P1, typename rtype>
-void object_func_impl_1(js_State *J, rtype (T::*f)(P1) )
-{
-  T* parent = (T*)js_touserdata(J, 0, "userdata");
-  P1 paramValue = internal::to( J, 1, P1() );
-  if( parent )
-    (parent->*f)( paramValue );
-  js_pushundefined(J);
-}
-
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType paramValue = internal::to( J, 1, paramType() ); \
@@ -437,19 +456,11 @@ void object_func_impl_1(js_State *J, rtype (T::*f)(P1) )
   js_pushundefined(J); \
 }
 
-#define SCRIPT_OBJECT_BEGIN(name) js_getglobal(internal::J, "Object"); \
-                                  js_getproperty(internal::J, -1, "prototype"); \
-                                  js_newuserdata(internal::J, "userdata", nullptr, nullptr);
+#define SCRIPT_OBJECT_BEGIN(name) script_object_begin(#name);
 
-#define SCRIPT_OBJECT_CALLBACK(name,funcname,params) js_newcfunction(internal::J, name##_set_##funcname, TEXT(funcname), params); \
-                                  Logger::warning( "script://" #name"_set_"#funcname"->"#funcname); \
-                                  js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
-
-#define SCRIPT_OBJECT_FUNCTION(name,funcname,params) js_newcfunction(internal::J, name##_##funcname, TEXT(funcname), params); \
-                                  js_defproperty(internal::J, -2, TEXT(funcname), JS_DONTENUM);
-
-#define SCRIPT_OBJECT_CONSTRUCTOR(name) js_newcconstructor(internal::J, constructor_##name, constructor_##name, "_"#name, 1); \
-                                        js_defglobal(internal::J, "_"#name, JS_DONTENUM);
+#define SCRIPT_OBJECT_CALLBACK(name,funcname,params) { auto p = &name##_set_##funcname; reg_object_callback(#name,#funcname,p,params); }
+#define SCRIPT_OBJECT_FUNCTION(name,funcname,params) { auto p = &name##_##funcname; reg_object_function(#name,#funcname,p,params); }
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) {auto p = &constructor_##name; reg_object_constructor(#name, p); }
 
 #define SCRIPT_OBJECT_END(name)
 
@@ -483,7 +494,7 @@ void Core::registerFunctions( Game& game )
   internal::game = &game;
   internal::session = new Session(&game);
 #define DEF_GLOBAL_OBJECT(name) js_newobject(internal::J);
-#define REGISTER_FUNCTION(func,name,params) js_newcfunction(internal::J, func, name, params); js_setproperty( internal::J, -2, name);
+#define REGISTER_FUNCTION(func,name,params) js_newcfunction(internal::J, func, name, params); js_setproperty(internal::J, -2, name);
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
 
 DEF_GLOBAL_OBJECT(engine)
@@ -508,11 +519,9 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "path.interface"
 
   Core::loadModule(":/system/modules.js");
-  {
-    internal::observers = new vfs::FileChangeObserver();
-    internal::observers->watch( ":/system" );
-    internal::observers->onFileChange().connect( &engineReloadFile );
-}
+  internal::observers = new vfs::FileChangeObserver();
+  internal::observers->watch( ":/system" );
+  internal::observers->onFileChange().connect( &engineReloadFile );
 }
 
 void Core::unref(const std::string& ref)
@@ -525,4 +534,4 @@ Core::Core()
   internal::J = js_newstate(NULL, NULL, JS_STRICT);
 }
 
-} //end namespace game
+} //end namespace script
