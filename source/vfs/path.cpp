@@ -95,7 +95,7 @@ void Path::splitToDirPathExt( Path* path,
 
               if ( path )
               {
-                std::string rp = utils::replace( name.substr( 0, i + 1 ), "\\", "/" ) ;   
+                std::string rp = utils::replace( name.substr( 0, i + 1 ), "\\", "/" ) ;
                 *path = Path( rp );
               }
               return;
@@ -127,9 +127,9 @@ Path Path::addEndSlash() const
 Path Path::removeBeginSlash() const
 {
   std::string pathTo = _d->path;
- 
+
   if( pathTo.empty() )
-      return Path( "" ); 
+      return Path( "" );
 
   char endsym = *pathTo.begin();
   if( endsym == '/' || endsym == '\\' )
@@ -141,7 +141,7 @@ Path Path::removeBeginSlash() const
 Path Path::removeEndSlash() const
 {
   std::string pathTo = _d->path;
-    
+
   if( pathTo.empty() )
       return "";
 
@@ -231,11 +231,9 @@ Path::Path(const Path& nPath) : _d( new Impl )
   _d->checkRcPrefix();
 }
 
-Path::Path( const char* nPath ) : _d( new Impl )
-{
-  _d->path = utils::replace( nPath, "\\", "/" );
-  _d->checkRcPrefix();
-}
+Path::Path(const char* nPath )
+   : Path(std::string(nPath))
+{}
 
 Path::Path() : _d( new Impl )
 {
@@ -248,7 +246,7 @@ const char *Path::toCString() const { return _d->path.c_str(); }
 std::string Path::removeExtension() const
 {
   std::string::size_type index = _d->path.find_last_of( '.' );
-  if( index != std::string::npos )
+  if (index != std::string::npos)
   {
     return _d->path.substr( 0, index );
   }
@@ -259,7 +257,7 @@ std::string Path::removeExtension() const
 Path Path::changeExtension( const std::string& newExtension ) const
 {
   std::string ext = newExtension;
-  if( !ext.empty() )
+  if (!ext.empty())
   {
     ext = ( ext[0] == '.' ? ext : ("." + ext) );
   }
@@ -303,11 +301,11 @@ Path Path::absolutePath() const
 
 
 //! flatten a path and file name for example: "/you/me/../." becomes "/you"
-Path Path::flattenFilename( const Path& root ) const
+Path Path::flattenFilename(const Path& root) const
 {
   std::string directory = addEndSlash().toString();
-  directory = utils::replace( directory, "\\", "/" );
-  
+  directory = utils::replace(directory, "\\", "/");
+
   Directory dir;
   Path subdir;
 
@@ -319,7 +317,7 @@ Path Path::flattenFilename( const Path& root ) const
   {
     subdir = Path( directory.substr(lastpos, pos - lastpos + 1) );
 
-    if( subdir.toString() == "../" )
+    if (subdir.toString() == "../")
     {
       if (lastWasRealDir)
       {
@@ -392,7 +390,7 @@ Path Path::getRelativePathTo( const Directory& directory ) const
 #endif //GAME_PLATFORM_WIN
 
 
-  for (; i<list1.size() && i<list2.size() 
+  for (; i<list1.size() && i<list2.size()
 #if defined (GAME_PLATFORM_WIN)
     && ( utils::isEquale( list1[ it1 ], list2[ it2 ], utils::equaleIgnoreCase ) )
 #elif defined(GAME_PLATFORM_UNIX)
@@ -513,7 +511,7 @@ Path Path::operator +(const Path& other)
 
 Path Path::canonical() const
 {
-  return utils::localeLower( _d->path );
+  return utils::localeLower(_d->path);
 }
 
 Info Path::info() const { return Info( *this ); }

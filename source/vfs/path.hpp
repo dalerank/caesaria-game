@@ -42,7 +42,7 @@ public:
   Path( const Path& );
   virtual ~Path();
 
-  bool exist( SensType sens) const;
+  bool exist(SensType sens) const;
   bool exist() const;
   bool empty() const;
   bool isFolder() const;
@@ -51,7 +51,7 @@ public:
   //Returns the suffix of the file.
   //The suffix consists of all characters in the file after (but not including) the last '.'.
   std::string suffix() const;
-  
+
   Path addEndSlash() const;
   Path removeEndSlash() const;
 
@@ -59,7 +59,7 @@ public:
 
   char lastChar() const;
   char firstChar() const;
- 
+
   const std::string& toString() const;
   const char* toCString() const;
 

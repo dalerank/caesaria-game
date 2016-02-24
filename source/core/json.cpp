@@ -34,7 +34,7 @@ static std::string sanitizeString( const std::string& str)
       switch (str[i])
       {
       case '"':              output += "\\\"";              break;
-      case '/':              output += "\\/";               break;
+      //case '/':              output += "\\/";               break;
       case '\b':             output += "\\b";               break;
       case '\f':             output += "\\f";               break;
       case '\n':             output += "\\n";               break;
@@ -157,7 +157,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::Map: // variant is a map?
     {
       VariantMap vmap = data.toMap();
-      
+
       if( vmap.empty() )
       {
         str = "{}";
@@ -169,7 +169,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         std::string serializedValue;
         serializedValue.reserve( 512 );
         for( auto& item : vmap )
-        {        
+        {
           serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
@@ -300,15 +300,15 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
     {
       case JsonTokenString:      return Json::parseString(json, index, success);
       case JsonTokenNumber:      return Json::parseNumber(json, index);
-      
+
       case JsonTokenCommentOpen:
-        Json::parseComment(json, index, success); 
+        Json::parseComment(json, index, success);
       break;
-      
-      case JsonTokenCurlyOpen: 
-      case JsonTokenObjectName: 
+
+      case JsonTokenCurlyOpen:
+      case JsonTokenObjectName:
           return Json::parseObject(json, index, success);
-      
+
       case JsonTokenSquaredOpen: return Json::parseArray(json, index, success);
       case JsonTokenTrue:  Json::nextToken(json, index); return Variant(true);
       case JsonTokenFalse: Json::nextToken(json, index); return Variant(false);
@@ -520,7 +520,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
 
   int lastIndex = math::clamp<int>( index + 64, 0, json.size() );
   for( int i=index; i < lastIndex; i++ )
-  {    
+  {
     if( json[i+1] != limiter )
     {
       s += json[ i ];
@@ -623,15 +623,15 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
             else if(c == 'u')
             {
 //                                 int remainingLength = json.size() - index;
-// 
+//
 //                                 if(remainingLength >= 4)
 //                                 {
 //                                         std::string unicodeStr = json.substr(index, 4);
-// 
+//
 //                                         int symbol = utils::fromHex( unicodeStr.c_str() );
-// 
+//
 //                                         s.append( symbol );
-// 
+//
 //                                         index += 4;
 //                                 }
 //                                 else
