@@ -16,15 +16,14 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "build.hpp"
-#include "objects/objects_factory.hpp"
-#include "game/game.hpp"
-#include "game/funds.hpp"
-#include "playsound.hpp"
+#include <GameApp>
+#include <GameCore>
+#include <GameEvents>
+#include <GameObjects>
+#include <GameLogger>
+
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
-#include "core/logger.hpp"
-#include "objects/working.hpp"
-#include "warningmessage.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -132,6 +131,11 @@ void BuildAny::_exec( Game& game, unsigned int )
     {
       events::dispatch<WarningMessage>( construction->errorDesc(), 1 );
     }
+  }
+
+  if(game.isPaused())
+  {
+    events::dispatch<Step>(Step::once);
   }
 }
 

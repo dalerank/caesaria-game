@@ -55,15 +55,15 @@ OverlayPtr Overlay::create(object::Type type)
   return TileOverlayFactory::instance().create( type );
 }
 
-Overlay::Overlay(const object::Type type, const Size& size)
-  : _d( new Impl )
+Overlay::Overlay(object::Type type, const Size& size)
+  : _d(new Impl)
 {
   _d->masterTile = 0;
   _d->size = size;
   _d->isDeleted = false;
   _d->name = "unknown";
 
-  setType( type );
+  setType(type);
 
 #ifdef DEBUG
   OverlayDebugQueue::instance().add( this );
@@ -231,14 +231,14 @@ const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}
 void Overlay::deleteLater() { _d->isDeleted  = true;}
-void Overlay::destroy(){}
+void Overlay::destroy() {}
 const Size& Overlay::size() const{ return _d->size;}
 bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
-object::Type Overlay::type() const{ return _d->overlayType;}
+object::Type Overlay::type() const { return _d->overlayType;}
 
-TilePos Overlay::pos() const
+const TilePos& Overlay::pos() const
 {
   if( !_d->masterTile )
   {

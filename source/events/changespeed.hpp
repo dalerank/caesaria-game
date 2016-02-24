@@ -43,6 +43,7 @@ private:
 class Step : public GameEvent
 {
 public:
+  enum { once=1, day=25 };
   static GameEventPtr create(unsigned int count);
 
 protected:

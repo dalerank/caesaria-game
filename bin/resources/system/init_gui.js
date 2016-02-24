@@ -45,6 +45,7 @@ Editbox.prototype = {
   get height () { return this.widget.height(); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
+	set textOffset(p) { this.widget.setTextOffset(p.x,p.y); },
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set cursorPos (index) { this.widget.moveCursor(index); },
   set onTextChangeCallback (func) { this.widget.onTextChangedEx(func); },
@@ -237,3 +238,5 @@ Ui.prototype = {
 
   elog : function(a) { engine.log(a); }
 };
+
+var gg_ui = new Ui();

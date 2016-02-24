@@ -40,15 +40,15 @@ public:
   void reloadScene();
   void startCareer();
   void openUrl(const std::string& url);
-  int lastChangesNum();
-  StringArray getCredits();
-  int videoModesCount();
+  int lastChangesNum() const;
+  StringArray getCredits() const;
+  int videoModesCount() const;
   void playAudio(const std::string& filename, int volume, const std::string& mode);
-  Size getVideoMode(int index);
+  Size getVideoMode(int index) const;
   void setResolution(const Size& size);
-  StringArray tradableGoods();
-  VariantMap getGoodInfo(const std::string& goodName);
-  Size getResolution();
+  StringArray tradableGoods() const;
+  VariantMap getGoodInfo(std::string goodName) const;
+  Size getResolution() const;
   void setFont(const std::string& fontname);
   void setLanguage(const std::string& lang,const std::string& audio);
 

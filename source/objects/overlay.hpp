@@ -59,11 +59,11 @@ public:
 
   static OverlayPtr create( object::Type type );
 
-  Overlay( const object::Type type, const Size& size=Size(1,1));
+  Overlay(object::Type type, const Size& size=Size(1,1));
   virtual ~Overlay();
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
-  TilePos pos() const;
+  const TilePos& pos() const;
   const Size& size() const;  // size in tiles (1x1, 2x2, ...)
   void setSize( const Size& size );
 

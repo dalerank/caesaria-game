@@ -1,7 +1,7 @@
 DEFINE_OBJECT_FUNCTION_0(EditBox,deleteLater)
 DEFINE_OBJECT_FUNCTION_0(EditBox,setFocus)
 DEFINE_OBJECT_FUNCTION_0(EditBox,moveToCenter)
-DEFINE_OBJECT_GETTER(EditBox,width)
+DEFINE_OBJECT_GETTER_0(EditBox,unsigned int,width)
 DEFINE_OBJECT_FUNCTION_1(EditBox,setText,std::string)
 DEFINE_OBJECT_FUNCTION_1(EditBox,setFont,std::string)
 DEFINE_OBJECT_FUNCTION_1(EditBox,moveCursor,int)

@@ -45,12 +45,12 @@ void Session::continuePlay(int years)
   _game->city()->setVictoryConditions( vc );
 }
 
-int Session::lastChangesNum()
+int Session::lastChangesNum() const
 {
   return game::Settings::findLastChanges();
 }
 
-StringArray Session::getCredits()
+StringArray Session::getCredits() const
 {
   StringArray strs;
 #define _X(a) strs << a;
@@ -68,9 +68,9 @@ void Session::playAudio(const std::string& filename, int volume, const std::stri
   audio::Engine::instance().play( filename, volume, type );
 }
 
-int Session::videoModesCount() { return _game->engine()->modes().size(); }
-Size Session::getVideoMode(int index) { return _game->engine()->modes().at(index); }
-Size Session::getResolution() { return _game->engine()->screenSize(); }
+int Session::videoModesCount() const { return _game->engine()->modes().size(); }
+Size Session::getVideoMode(int index) const { return _game->engine()->modes().at(index); }
+Size Session::getResolution() const { return _game->engine()->screenSize(); }
 
 void Session::setResolution(const Size& size)
 {
@@ -93,12 +93,12 @@ void Session::setLanguage(const std::string& lang, const std::string& audio)
   audio::Helper::initTalksArchive( audio );
 }
 
-StringArray Session::tradableGoods()
+StringArray Session::tradableGoods() const
 {
   return good::tradable().names();
 }
 
-VariantMap Session::getGoodInfo(const std::string& goodName)
+VariantMap Session::getGoodInfo(std::string goodName) const
 {
   VariantMap ret;
   good::Info info(good::toType(goodName));

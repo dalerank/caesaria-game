@@ -11,6 +11,7 @@
 #include "events/showtileinfo.hpp"
 #include "events/postpone.hpp"
 #include "events/loadgame.hpp"
+#include "events/playsound.hpp"
 #include "events/script_event.hpp"
 #include "events/dispatcher.hpp"
 #include "events/movecamera.hpp"

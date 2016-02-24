@@ -747,7 +747,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_KEY_P:
     {
       _d->simulationPaused =  !_d->simulationPaused;
-      events::dispatch<Pause>( _d->simulationPaused ? Pause::pause : Pause::play );
+      events::dispatch<Pause>(_d->simulationPaused ? Pause::pause : Pause::play);
       handled = true;
     }
     break;
@@ -755,7 +755,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      events::dispatch<Step>( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      events::dispatch<Step>(event.keyboard.key == KEY_COMMA ? Step::once : Step::day);
       handled = true;
     }
     break;

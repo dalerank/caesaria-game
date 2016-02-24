@@ -1,3 +1,15 @@
+function Path () {
+	this.path = new _Path();
+}
+
+Path.prototype = {
+	get exist () { return this.path.exist(); }, 
+	
+	add : function(str) { return this.path.add(str); },
+	assign : function(str) { this.path.set(str); },
+	str : function() { return this.path.toString(); }
+}
+
 function Session() {
 	this.session = new _Session();
 } 
@@ -20,5 +32,17 @@ Session.prototype = {
     get credits ()  { return this.session.getCredits(); },
     get videoModesCount () { return this.session.videoModesCount(); },
     get lastChangesNum () { return this.session.lastChangesNum(); },		
-    get resolution () { return this.session.getResolution(); }
+    get resolution () { return this.session.getResolution(); },
+		
+		get workdir () { 
+			var path = new _Path();
+			path.assign(engine.getOption("workDir"));
+			return path;
+		},
+		
+		get logfile()  {
+			var path = this.workdir;
+			path = path.add(engine.getOption("logFile"));
+			return path;
+		},
 }  

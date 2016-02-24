@@ -105,30 +105,25 @@ void Lobby::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
 
 void Lobby::Impl::showLogFile()
 {
-  vfs::Directory logfile = SETTINGS_STR( workDir );
-  logfile = logfile/SETTINGS_STR( logfile );
-  if( !logfile.exist() )
-      dialog::Information( &ui(), "", "Cant found logfile");
-
-  OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
+  script::Core::execFunction("OnShowLogs");
 }
 
 void Lobby::Impl::showChanges()
 {
   VariantList vl; vl << true;
-  script::Core::execFunction( "OnShowChanges", vl );
+  script::Core::execFunction("OnShowChanges", vl);
 }
 
 void Lobby::Impl::showChangesWindowIfNeed()
 {
   VariantList vl; vl << false;
-  script::Core::execFunction( "OnShowChanges", vl );
+  script::Core::execFunction("OnShowChanges", vl);
 }
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
 {
   VariantList vl; vl << force;
-  script::Core::execFunction( "OnChangePlayerName", vl );
+  script::Core::execFunction("OnChangePlayerName", vl);
 }
 
 void Lobby::Impl::fitScreenResolution()
@@ -150,7 +145,7 @@ void Lobby::Impl::playMenuSoundTheme()
 void Lobby::Impl::continuePlay()
 {
   result = Lobby::loadSavedGame;
-  selectFile( SETTINGS_STR( lastGame ) );
+  selectFile( SETTINGS_STR(lastGame) );
 }
 
 void Lobby::Impl::resolveSteamStats()
@@ -221,11 +216,7 @@ void Lobby::Impl::showPackageOptions()
 
 void Lobby::Impl::startCareer()
 {
-  //menu->clear();
-
   events::dispatch<events::ScriptFunc>( "OnStartCareer" );
-
-  //CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
 void Lobby::newGame()
@@ -263,7 +254,6 @@ void Lobby::Impl::constructorMode()
   loadFileDialog.setText( _("##start_this_map##") );
 
   changePlayerNameIfNeed();
-
 }
 
 void Lobby::Impl::playRandomap()
@@ -511,10 +501,10 @@ void Lobby::afterFrame()
   }
 }
 
-int Lobby::result() const{  return _d->result;}
-bool Lobby::isStopped() const{  return _d->isStopped;}
+int Lobby::result() const { return _d->result;}
+bool Lobby::isStopped() const { return _d->isStopped;}
 Ui& Lobby::Impl::ui() { return *game->gui(); }
-std::string Lobby::mapName() const{  return _d->fileMap;}
+std::string Lobby::mapName() const { return _d->fileMap;}
 std::string Lobby::playerName() const { return SETTINGS_STR( playerName ); }
 
 }//end namespace scene

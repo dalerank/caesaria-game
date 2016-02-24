@@ -42,7 +42,8 @@ public:
   Path( const Path& );
   virtual ~Path();
 
-  bool exist( SensType sens=nativeCase ) const;
+  bool exist( SensType sens) const;
+  bool exist() const;
   bool empty() const;
   bool isFolder() const;
   bool isDirectoryEntry() const;
@@ -100,7 +101,10 @@ public:
   /** \param filename: The file to get the directory from */
   virtual std::string directory() const;
 
-private:  
+  void set(const std::string& path);
+  vfs::Path add(const std::string& path);
+
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

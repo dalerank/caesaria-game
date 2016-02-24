@@ -168,6 +168,8 @@ bool Path::exist(SensType sens) const
   return FileSystem::instance().existFile( *this, sens );
 }
 
+bool Path::exist() const { return exist(nativeCase); }
+
 
 bool Path::isFolder() const
 {
@@ -217,13 +219,13 @@ std::string Path::suffix() const
   return ret.empty() ? "" : ret.substr(1);
 }
 
-Path::Path( const std::string& nPath ) : _d( new Impl )
+Path::Path(const std::string& nPath) : _d( new Impl )
 {
   _d->path = utils::replace( nPath, "\\", "/" );
   _d->checkRcPrefix();
 }
 
-Path::Path( const Path& nPath ) : _d( new Impl )
+Path::Path(const Path& nPath) : _d( new Impl )
 {
   _d->path = nPath._d->path;
   _d->checkRcPrefix();
@@ -515,6 +517,7 @@ Path Path::canonical() const
 }
 
 Info Path::info() const { return Info( *this ); }
+void Path::set(const std::string& path) { *this = path; }
+vfs::Path Path::add(const std::string& path) { return vfs::Directory(*this)/path; }
 
 } //end namespace vfs
-

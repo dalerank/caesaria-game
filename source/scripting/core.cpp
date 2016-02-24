@@ -29,6 +29,7 @@
 #include "scripting/session.hpp"
 
 using namespace gui;
+using namespace vfs;
 
 namespace script
 {
@@ -240,35 +241,121 @@ void constructor_Session(js_State *J)
   js_newuserdata(J, "userdata", internal::session, nullptr);
 }
 
+template<typename T>
+void desctructor_jsobject(js_State *J, void* p)
+{
+  T* ptr = (T*)p;
+  delete ptr;
+}
 
-#define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) \
-                                { \
-                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  if( parent ) parent->funcname(); \
-                                  js_pushundefined(J); \
-                                }
+template<typename T>
+void constructor_jsobject(js_State *J)
+{
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", new T(), &desctructor_jsobject<T>);
+}
 
-#define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_handle_##callback(Widget* widget) {\
-                                                  if(widget) { \
-                                                    std::string index = widget->getProperty( "js_"#callback); \
-                                                    js_getregistry(internal::J,index.c_str()); \
-                                                    js_pushnull(internal::J); \
-                                                    js_pcall(internal::J,0); \
-                                                    js_pop(internal::J,1); \
-                                                  } \
-                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
-                                                } \
+template<typename T>
+void widget_handle_callback_0(Widget* widget,const std::string& callback, const std::string& className)
+{
+  try
+  {
+    if(widget)
+    {
+      std::string index = widget->getProperty(callback);
+      js_getregistry(internal::J,index.c_str());
+      js_pushnull(internal::J);
+      js_pcall(internal::J,0);
+      js_pop(internal::J,1);
+    }
+    else
+      Logger::warning( className + "_handle_" + callback + " widget is null" );
+  }
+  catch(...)
+  {}
+}
+
+template<typename T>
+void widget_set_callback_0(js_State *J,Signal1<Widget*>& (T::*f)(),
+                           void (*handler)(Widget*),
+                           const std::string& callback, const std::string& className)
+{
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
+  if (parent && js_iscallable(J,1))
+  {
+    js_copy(J,1);
+    std::string index = js_ref(J);
+    (parent->*f)().connect(handler);
+    parent->addProperty(callback, Variant(index));
+  }
+  else
+    Logger::warning( className + "_set_" + callback + " parent is null" );
+
+  js_pushundefined(J);
+}
+
+
+template<typename T>
+void object_call_func_0(js_State *J, void (T::*f)())
+{
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
+  if (parent)
+    (parent->*f)();
+  js_pushundefined(J);
+}
+
+template<typename T, typename Rtype>
+void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
+{
+ /* T* parent = (T*)js_touserdata(J, 0, "userdata");
+  if (parent)
+  {
+    Rtype value = (parent->*f)();
+    internal::push(J,value);
+  }
+  else
+    js_pushundefined(J);*/
+}
+
+template<typename T,typename Rtype, typename P1Type>
+void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type) const, P1Type def)
+{
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
+  if (parent)
+  {
+    P1Type paramValue1 = internal::to(J, 1, def);
+    Rtype value = (parent->*f)(paramValue1);
+    internal::push(J,value);
+  }
+  else
+    js_pushundefined(J);
+}
+
+template<typename T,typename Rtype, typename P1Type>
+void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
+{
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
+  if (parent)
+  {
+    P1Type paramValue1 = internal::to(J, 1, def );
+    Rtype value = (parent->*f)(paramValue1);
+    internal::push(J,value);
+  }
+  else
+    js_pushundefined(J);
+}
+
+#define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { desctructor_jsobject<name>(J,p); }
+#define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
+#define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) { auto p=&name::funcname; object_call_func_0<name>(J,p); }
+
+#define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_handle_##callback(Widget* widget) { widget_handle_callback_0<name>(widget, "js_"#callback, #name); } \
                                                 void name##_set_##callback(js_State *J) { \
-                                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                                  if (parent && js_iscallable(J,1)) { \
-                                                    js_copy(J,1); \
-                                                    std::string index = js_ref(J); \
-                                                    parent->callback().connect( &name##_handle_##callback ); \
-                                                    parent->addProperty( "js_"#callback, Variant(index) ); \
-                                                  } \
-                                                  else Logger::warning( #name"_set_"#callback" parent is null" ); \
-                                                  js_pushundefined(J); \
-                                                }
+                                                      auto handler=&name##_handle_##callback; \
+                                                      auto widgetCallback=&name::callback; \
+                                                      widget_set_callback_0<name>(J, widgetCallback, handler, "js_"#callback, #name);  \
+                                                    }
 
 #define DEFINE_WIDGET_CALLBACK_1(name,callback,type) void name##_handle_##callback(Widget* widget,type value) {\
                                                   if(widget) { \
@@ -294,18 +381,8 @@ void constructor_Session(js_State *J)
                                                 }
 
 
-#define DEFINE_OBJECT_GETTER(name,funcname) void name##_##funcname(js_State* J) { \
-                              name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                              if (parent) internal::push(J,parent->funcname()); \
-                              else js_pushundefined(J); \
-                            }
-
-#define DEFINE_OBJECT_GETTER_1(name,funcname,paramType) void name##_##funcname(js_State* J) { \
-  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-  paramType paramValue = internal::to( J, 1, paramType() ); \
-  if (parent) internal::push(J,parent->funcname(paramValue)); \
-  else js_pushundefined(J); \
-}
+#define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
+#define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
 #define DEFINE_OBJECT_GETTER_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State* J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -313,6 +390,16 @@ void constructor_Session(js_State *J)
   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
   if (parent) internal::push(J,parent->funcname(paramValue1,paramValue2)); \
   else js_pushundefined(J); \
+}
+
+template<typename T, typename P1, typename rtype>
+void object_func_impl_1(js_State *J, rtype (T::*f)(P1) )
+{
+  T* parent = (T*)js_touserdata(J, 0, "userdata");
+  P1 paramValue = internal::to( J, 1, P1() );
+  if( parent )
+    (parent->*f)( paramValue );
+  js_pushundefined(J);
 }
 
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
@@ -389,6 +476,7 @@ void constructor_Session(js_State *J)
 #include "image.implementation"
 #include "editbox.implementation"
 #include "animators.implementation"
+#include "path.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -417,6 +505,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "image.interface"
 #include "editbox.interface"
 #include "animators.interface"
+#include "path.interface"
 
   Core::loadModule(":/system/modules.js");
   {

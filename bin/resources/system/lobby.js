@@ -27,7 +27,7 @@ function OnShowChanges(force)
 
     var wnd = g_ui.addWindow(0,0,400,500);
     wnd.model = ":/changes/" + lastChangesNumber + ".changes";
-
+ 
     var btn = wnd.addButton( 13, wnd.height-36, 300, 24 );
     btn.text = "##hide_this_msg##";
     btn.font = "FONT_2";
@@ -49,7 +49,7 @@ function OnShowChanges(force)
 function OnStartCareer()
 {
   OnChangePlayerName(true, function() {
-      var g_session = new Session();
+      var g_session = new Session(); 
       g_session.startCareer();
     }
   );
@@ -62,7 +62,7 @@ function setLanguage(config)
   if (!config.talks)
     config.talks = ":/audio/wavs_citizen_en.zip";
 
-    var g_session = new Session();
+	var g_session = new Session();
   g_session.setLanguage(config.ext,config.talks);
 
   if (confgi.font != undefined && currentFont != config.font)
@@ -98,31 +98,45 @@ function OnShowLanguageDialog()
   var wnd = g_ui.addWindow(0);
   wnd.geometry = { x:0, y:0, w:512, h:384 };
   wnd.moveToCenter();
-    wnd.closeAfterKey( {escape:true, rmb:true} );
+	wnd.closeAfterKey( {escape:true, rmb:true} );
 
   var listbox = wnd.addListbox(15, 40, wnd.width-30, wnd.height-90);
   listbox.setTextAlignment("center", "center");
   listbox.background = true;
-  listbox.onSelectedCallback = function(index) {
+  listbox.onSelectedCallback = function(index) { 
                                                  setLanguage(langModel[index]);
                                                }
 
   for (var i in langModel)
-    {
+	{
     var index = listbox.addLine(langModel[i].lang);
-        listbox.setData( index, "lang", langModel[i].ext );
+		listbox.setData( index, "lang", langModel[i].ext );
   }
 
-    var currentLang = engine.getOption("language");
+	var currentLang = engine.getOption("language");
   listbox.selectedWithData = { name:"lang", data:currentLang };
 
   var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
   btn.text = "##continue##";
   btn.callback = function () {
-                var g_session = new Session();
-                g_session.reloadScene();
-                wnd.deleteLater();
-    }
+				var g_session = new Session();
+				g_session.reloadScene(); 
+				wnd.deleteLater();
+	}
+}
+
+function OnShowLogs()
+{
+	var g_session = new Session();
+  var logfile = g_session.logfile();
+  if (!logfile.exist())
+	{
+	   gg_ui.addInformationDialog( "", "Can't found logfile" );
+	}
+  else 
+	{
+    g_session.openUrl(logfile.str());
+  }
 }
 
 function OnChangePlayerName(force,continueCallback)
@@ -136,10 +150,10 @@ function OnChangePlayerName(force,continueCallback)
     var g_ui = new Ui();
     var wnd = g_ui.addWindow(0);
     wnd.geometry = { x:0, y:0, w:380, h:128 }
-        wnd.closeAfterKey( {escape:true} );
+		wnd.closeAfterKey( {escape:true} );
     wnd.mayMove = false;
     wnd.title = "##enter_your_name##";
-
+    
     var exitFunc =  function() {
                                   wnd.deleteLater();
                                   if(continueCallback)
@@ -170,10 +184,10 @@ function OnChangePlayerName(force,continueCallback)
     lbExitHelp.text = "##press_escape_to_exit##";
     lbExitHelp.font = "FONT_1";
 
-        wnd.moveToCenter();
+		wnd.moveToCenter();
     wnd.setModal();
-
-      editbox.setFocus();
+		
+	  editbox.setFocus();
   }
 }
 
@@ -218,34 +232,34 @@ function OnLobbyStart()
 
 function OnShowCredits()
 {
-  var g_ui = new Ui();
+	var g_ui = new Ui();
   var g_session = new Session();
-  g_session.playAudio( "combat_long", 50, "theme" );
+	g_session.playAudio( "combat_long", 50, "theme" );
 
-  var fade = g_ui.addFade(0xA0);
-  fade.addCloseCode(0x1B); //escape
-  fade.addCloseCode(0x4);//right mouse button
+	var fade = g_ui.addFade(0xA0); 
+	fade.addCloseCode(0x1B); //escape
+  fade.addCloseCode(0x4);//right mouse button	
 
-  var credits = g_session.credits;
+	var credits = g_session.credits;
   for( var i=0; i < credits.length; i++ )
   {
     var lb = new Label(fade.widget);
-        lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
-        lb.text = credits[i];
+		lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
+		lb.text = credits[i];
     lb.textAlign = { h:"center", v:"center" };
     lb.font = "FONT_2_WHITE";
-        lb.subElement = true;
-
+		lb.subElement = true;
+		
     var animator = new PositionAnimator(lb.widget);
-        animator.removeParent = true;
-        animator.destination = {x:0, y:-20};
+		animator.removeParent = true;
+		animator.destination = {x:0, y:-20};
     animator.speed = {x:0, y:-0.5};
   }
 
   var btnExit = new Button(fade.widget);
-    btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
-    btnExit.text = "##close##";
-    btnExit.callback = function() {
+	btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
+	btnExit.text = "##close##";
+	btnExit.callback = function() { 
                                     fade.deleteLater();
                                     g_session.playAudio( "main_menu", 50, "theme" );
                                   }

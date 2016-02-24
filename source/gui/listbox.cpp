@@ -227,7 +227,7 @@ void ListBox::setSelected(int id)
   _recalculateScrollPos();
 }
 
-int ListBox::findItem(const std::string& text)
+int ListBox::findItem(const std::string& text) const
 {
   int index = 0;
   for( auto& it : _d->items )

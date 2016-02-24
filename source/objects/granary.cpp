@@ -70,7 +70,7 @@ public:
     {
       return;
     }
-    
+
     good::Storage::store( stock, amount );
   }
 
@@ -114,7 +114,7 @@ public:
   Pictures granarySprite;
 };
 
-Granary::Granary() : WorkingBuilding( object::granery, Size(3,3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding(object::granery, Size(3,3)), _d(new Impl)
 {
   _d->store.granary = this;
 
