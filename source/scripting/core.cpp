@@ -197,10 +197,10 @@ void script_object_begin(const std::string& name)
   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
 }
 
-void reg_object_function(const std::string& name, js_CFunction f)
+void reg_object_constructor(const std::string& name, js_CFunction f)
 {
   std::string _name = "_"+name;
-  js_newcconstructor(internal::J, name.c_str(), f, _name.c_str(), 1);
+  js_newcconstructor(internal::J, f, f, _name.c_str(), 1);
   js_defglobal(internal::J, _name.c_str(), JS_DONTENUM);
 }
 
@@ -460,7 +460,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
 
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) { auto p = &name##_set_##funcname; reg_object_callback(#name,#funcname,p,params); }
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) { auto p = &name##_##funcname; reg_object_function(#name,#funcname,p,params); }
-#define SCRIPT_OBJECT_CONSTRUCTOR(name) {auto p = &constructor_##name; reg_object_constructor(#name, p); }
+#define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
 
 #define SCRIPT_OBJECT_END(name)
 

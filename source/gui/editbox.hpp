@@ -106,6 +106,9 @@ public:
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
 
+  //!
+  virtual void setTextOffset(const Point& offset);
+
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
   virtual std::string text() const;

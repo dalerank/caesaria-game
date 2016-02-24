@@ -1018,6 +1018,12 @@ void EditBox::draw( Engine& painter )
   Widget::draw( painter );
 }
 
+void EditBox::setTextOffset(const Point& offset)
+{
+  _d->textOffset = offset;
+  _d->needUpdateTexture = true;
+}
+
 //! Sets the new caption of this element.
 void EditBox::setText(const std::string& text)
 {
