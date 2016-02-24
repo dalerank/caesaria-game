@@ -305,6 +305,27 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
   {}
 }
 
+template<typename T,typename P1>
+void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callback, const std::string& className)
+{
+  try
+  {
+    if(widget)
+    {
+      std::string index = widget->getProperty( callback );
+      js_getregistry(internal::J,index.c_str());
+      js_pushnull(internal::J);
+      internal::push(internal::J, value);
+      js_pcall(internal::J,1);
+      js_pop(internal::J,1);
+    }
+    else
+      Logger::warning( className + "_handle_" + callback + " widget is null" );
+  }
+  catch(...)
+  {}
+}
+
 template<typename T>
 void widget_set_callback_0(js_State *J,Signal1<Widget*>& (T::*f)(),
                            void (*handler)(Widget*),
@@ -386,17 +407,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
                                                       widget_set_callback_0<name>(J, widgetCallback, handler, "js_"#callback, #name);  \
                                                     }
 
-#define DEFINE_WIDGET_CALLBACK_1(name,callback,type) void name##_handle_##callback(Widget* widget,type value) {\
-                                                  if(widget) { \
-                                                    std::string index = widget->getProperty( "js_"#callback); \
-                                                    js_getregistry(internal::J,index.c_str()); \
-                                                    js_pushnull(internal::J); \
-                                                    internal::push(internal::J, value); \
-                                                    js_pcall(internal::J,1); \
-                                                    js_pop(internal::J,1); \
-                                                  } \
-                                                  else Logger::warning( #name"_handle_"#callback" widget is null" ); \
-                                                } \
+#define DEFINE_WIDGET_CALLBACK_1(name,callback,type) void name##_handle_##callback(Widget* widget,type value) { widget_handle_callback_1<name,type>(widget, value, "js_"#callback, #name); } \
                                                 void name##_set_##callback(js_State *J) { \
                                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                                   if (parent && js_iscallable(J,1)) { \

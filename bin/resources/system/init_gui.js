@@ -45,7 +45,7 @@ Editbox.prototype = {
   get height () { return this.widget.height(); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
-	set textOffset(p) { this.widget.setTextOffset(p.x,p.y); },
+  set textOffset(p) { this.widget.setTextOffset(p.x,p.y); },
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set cursorPos (index) { this.widget.moveCursor(index); },
   set onTextChangeCallback (func) { this.widget.onTextChangedEx(func); },
@@ -177,10 +177,10 @@ Listbox.prototype = {
   set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
   set selectedIndex (index) { this.widget.setSelected(index); },
-	set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
+  set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
   get itemsCount () { return this.widget.itemsCount(); },
 
-	set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
+  set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
 
   addLine : function(text) { return this.widget.addLine(text); },
   findItem : function(text) { return this.widget.findItem(text); },

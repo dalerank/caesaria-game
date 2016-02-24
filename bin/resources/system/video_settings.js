@@ -1,10 +1,6 @@
 var haveChanges = false;
 var fullscreen = false;
 
-function OnShowIndex(index) {
-	engine.log(index);
-}
-
 function OnShowVideoSettings()
 {
   engine.log( "JS:OnShowVideoSettings" );
@@ -33,26 +29,27 @@ function OnShowVideoSettings()
   lbxModes.setTextAlignment( "center", "center" );
   lbxModes.background = true;
   lbxModes.onSelectedCallback = function(index) {
-						var size = lbxModes.getItemData(index, "mode");
-						g_session.setResolution( size.w, size.h );
+						var mode = g_session.getVideoMode(index);
+						engine.log("w: " + mode.w + " h:" + mode.h );
+						g_session.resolution = mode;
+                                                haveChanges = true;
 					};
 					
   for( var i=0; i < g_session.videoModesCount; i++ )
   {
     var mode = g_session.getVideoMode(i);
-    var index = lbxModes.addLine( mode.w+"x"+mode.h );
-    lbxModes.setData( index, "mode", (mode.w << 16) + mode.h );
+    lbxModes.addLine( mode.w+"x"+mode.h );
   }
 
   var resolution = g_session.resolution;
-	lbxModes.selectedWithData = { name:"mode", data:(resolution.w << 16) + resolution.h };
+  lbxModes.selectedWithData = { name:"mode", data:(resolution.w << 16) + resolution.h };
 
   var btnOk = wnd.addButton( 25, 237, wnd.width-50, 20 );
   btnOk.style = "smallGrayBorderLine";
   btnOk.text = "##ok##";
   btnOk.callback = function() {
 				if( haveChanges )
-  				  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
+				  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
 	        		wnd.deleteLater();		
 			};
   btnOk.setFocus();

@@ -98,7 +98,7 @@ function OnShowLanguageDialog()
   var wnd = g_ui.addWindow(0);
   wnd.geometry = { x:0, y:0, w:512, h:384 };
   wnd.moveToCenter();
-	wnd.closeAfterKey( {escape:true, rmb:true} );
+  wnd.closeAfterKey( {escape:true, rmb:true} );
 
   var listbox = wnd.addListbox(15, 40, wnd.width-30, wnd.height-90);
   listbox.setTextAlignment("center", "center");
