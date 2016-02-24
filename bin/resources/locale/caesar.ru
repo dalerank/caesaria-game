@@ -2309,7 +2309,9 @@
 "##click_on_city_for_info_tlp##":"Выберите город для дополнительной информации
 ",
 "##farm_working_bad##":"",
+"##market_too_far_from_granary##":"",
 "##farm_working_normally##":"",
+"##market_too_far_from_warehouse##":"",
 "##god_mercury_short##":"",
 "##statue_desc##":"",
 "##ruins_house02_text##":"",
