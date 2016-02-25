@@ -31,27 +31,19 @@ static std::string sanitizeString( const std::string& str)
 
   for (std::string::size_type i = 0; i < str.length(); ++i)
   {
-      switch (str[i])
-      {
-      case '"':              output += "\\\"";              break;
-      //case '/':              output += "\\/";               break;
-      case '\b':             output += "\\b";               break;
-      case '\f':             output += "\\f";               break;
-      case '\n':             output += "\\n";               break;
-      case '\r':             output += "\\r";               break;
-      case '\t':             output += "\\t";               break;
-      case '\\':             output += "\\\\";              break;
-      default:               output += str[i];            break;
-      }
+    switch (str[i])
+    {
+    case '\"':              output += "\\\"";              break;
+    //case '/':              output += "\\/";               break;
+    case '\b':             output += "\\b";               break;
+    case '\f':             output += "\\f";               break;
+    case '\n':             output += "\\n";               break;
+    case '\r':             output += "\\r";               break;
+    case '\t':             output += "\\t";               break;
+    case '\\':             output += "\\\\";              break;
+    default:               output += str[i];            break;
+    }
   }
-
-  /*str = utils::replace( str, "\\", "\\\\");
-  str = utils::replace( str, "\"", "\\\"");
-  str = utils::replace( str, "\b", "\\b");
-  str = utils::replace( str, "\f", "\\f");
-  str = utils::replace( str, "\n", "\\n");
-  str = utils::replace( str, "\r", "\\r");
-  str = utils::replace( str, "\t", "\\t");*/
   output += "\"";
   return output;
 }

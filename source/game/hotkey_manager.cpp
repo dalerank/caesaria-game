@@ -41,7 +41,8 @@ public:
     _HK(KEY_KEY_7) _HK(KEY_KEY_8) _HK(KEY_KEY_9)
     _HK(KEY_KEY_A) _HK(KEY_KEY_H) _HK(KEY_KEY_F)
     _HK(KEY_KEY_D) _HK(KEY_KEY_C) _HK(KEY_KEY_T)
-    _HK(KEY_KEY_W) _HK(KEY_KEY_G)
+    _HK(KEY_KEY_W) _HK(KEY_KEY_G) _HK(KEY_EQUALS)
+    _HK(KEY_BACK)
 #undef _HK
   }
 };

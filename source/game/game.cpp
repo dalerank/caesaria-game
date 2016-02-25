@@ -715,13 +715,6 @@ void Game::clear()
   //_d->empire = world::EmpirePtr();
   _dfunc()->city->clean();
   _dfunc()->city = PlayerCityPtr();
-#ifdef DEBUG
-  WalkerDebugQueue::print();
-  WalkerDebugQueue::instance().clear();
-
-  OverlayDebugQueue::print();
-  OverlayDebugQueue::instance().clear();
-#endif
 }
 
 void Game::destroy()

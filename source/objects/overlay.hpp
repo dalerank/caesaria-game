@@ -138,12 +138,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#ifdef DEBUG
-class OverlayDebugQueue : public DebugQueue<Overlay>
-{
-public:
-  static void print();
-};
-#endif
-
 #endif //_CAESARIA_OVERLAY_H_INCLUDE_

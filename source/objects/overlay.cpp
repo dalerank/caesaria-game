@@ -64,10 +64,6 @@ Overlay::Overlay(object::Type type, const Size& size)
   _d->name = "unknown";
 
   setType(type);
-
-#ifdef DEBUG
-  OverlayDebugQueue::instance().add( this );
-#endif
 }
 
 const Desirability& Overlay::desirability() const
@@ -273,26 +269,4 @@ bool Overlay::getMinimapColor(int& color1, int& color2) const { return false; }
 
 Overlay::~Overlay()
 {
-#ifdef DEBUG
-  OverlayDebugQueue::instance().rem( this );
-#endif
 }  // what we shall to do here?
-
-#ifdef DEBUG
-void OverlayDebugQueue::print()
-{
-  OverlayDebugQueue& inst = (OverlayDebugQueue&)instance();
-  if( !inst._pointers.empty() )
-  {
-    LOG_OVERLAY.debug( "PRINT OVERLAY DEBUG QUEUE" );
-    foreach( it, inst._pointers )
-    {
-      Overlay* ov = (Overlay*)*it;
-      LOG_OVERLAY.debug( "{} - {} [{},{}] ref:{}", ov->name(),
-                         object::toString( ov->type() ),
-                         ov->pos().i(), ov->pos().j(), ov->rcount() );
-    }
-  }
-}
-#endif
-

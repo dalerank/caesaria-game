@@ -1,5 +1,8 @@
 {
-  KEY_KEY_1 :
+  /*advisor.employers : { key:KEY_KEY_1 }*/
+  /*advisor.military : { key:KEY_KEY_2 }*/
+
+  KEY_KEY_1
   {
     employers#advisor_window :
     {
@@ -169,7 +172,7 @@
     }
   }
 
-  KEY_KEY_00 :
+  KEY_EQUALS :
   {
     finance#advisor_window :
     {
@@ -179,7 +182,7 @@
     }
   }
 
-  KEY_KEY_01 :
+  KEY_BACK :
   {
     main#advisor_window :
     {

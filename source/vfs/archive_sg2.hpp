@@ -33,12 +33,6 @@ namespace gfx
 namespace vfs
 {
 
-typedef unsigned int uint32_t;
-typedef unsigned short uint16_t;
-typedef unsigned char uint8_t;
-typedef int int32_t;
-typedef short int16_t;
-
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
 #	pragma pack( push, packing )
 #	pragma pack( 1 )

@@ -37,7 +37,7 @@ void VariantList::visitEach(VariantList::Visitor visitor)
     visitor( item );
 }
 
-VariantList&VariantList::operator <<(const Variant& v)
+VariantList& VariantList::operator <<(const Variant& v)
 {
   push_back( v );
   return *this;
