@@ -297,7 +297,7 @@ void Settings::checkwdir(char* argv[], int argc)
 void Settings::checkCmdOptions(char* argv[], int argc)
 {
   for (int i = 0; i < argc; i++)
-  {    
+  {
     if( !strcmp( argv[i], "-Lc" ) )
     {
       std::string opts = argv[i+1];
@@ -432,17 +432,17 @@ bool Settings::haveLastConfig()
 
 void Settings::loadLastConfig()
 {
-  VariantMap settings = config::load( SETTINGS_RC_PATH( settingsPath ) );
+  VariantMap settings = config::load(SETTINGS_RC_PATH(settingsPath));
 
-  if( !settings.empty() )
+  if (!settings.empty())
   {
-    for( auto& v : settings ) { set( v.first, v.second ); }
+    for (auto& v : settings) { set(v.first, v.second); }
   }
 }
 
 void Settings::save()
 {
-  config::save( instance()._d->options, rcpath( Settings::settingsPath ) );
+  config::save(instance()._d->options, SETTINGS_RC_PATH(settingsPath));
 }
 
 }//end namespace game

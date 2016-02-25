@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##carthago_preview_title##"
+	sound.overview : "carthago_speech"
+    sound.win      : "carthago_win_speech"
     overview :  [ "##carthago_overview##" ]
   }
 	

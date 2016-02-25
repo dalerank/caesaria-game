@@ -1,8 +1,5 @@
 function OnMissionWin(newTitle,winText,speech,mayContinue)
 { 
-  var g_ui = new Ui();
-  var g_session = new Session();
-	
   engine.log( "JS:OnMissionWin" );
 
   var wnd = g_ui.addWindow(0,0,540,240);
@@ -65,7 +62,6 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
 
 function OnMissionStart()
 {
-  var g_ui = new Ui();
   var showAware = engine.getOption("showStartAware");
   if( showAware )
   {
@@ -79,7 +75,6 @@ function OnMissionStart()
 
 function OnRequestExitGame()
 {
-  var g_ui = new Ui();
   var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
   dialog.onYesCallback = function() {
                 var g_session = new Session();
@@ -89,8 +84,6 @@ function OnRequestExitGame()
 
 function OnShowEmpirePrices()
 {
-  var g_ui = new Ui();
-  var g_session = new Session();
   engine.log( "JS:OnShowEmpirePrices" );
 
   var wnd = g_ui.addWindow(0,0,610,180);

@@ -14,6 +14,24 @@ Label.prototype = {
   deleteLater : function() { this.widget.deleteLater(); }
 };
 
+function Spinbox(parent) {
+  this.widget = new _SpinBox(parent);
+}
+
+Spinbox.prototype = {
+  set text (str) { this.widget.setText( engine.translate(str) ); },
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set font (fname) { this.widget.setFont(fname); },
+  set tooltip (text) { this.widget.setTooltipText(text); },
+  set textColor (color) { this.widget.setColor(color); },
+  set subElement (value) { this.widget.setSubElement(value); },
+	set postfix (text) { this.widget.setPostfix(text); },
+	set callback (func) { this.widget.onChangeA(func); },
+	set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
+
+  deleteLater : function() { this.widget.deleteLater(); }
+};
+
 function Fade(parent) {
   this.widget = new _Fade(parent);
 }
@@ -45,6 +63,7 @@ Editbox.prototype = {
   get height () { return this.widget.height(); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
+  set textOffset(p) { this.widget.setTextOffset(p.x,p.y); },
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set cursorPos (index) { this.widget.moveCursor(index); },
   set onTextChangeCallback (func) { this.widget.onTextChangedEx(func); },
@@ -117,6 +136,11 @@ Window.prototype = {
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label;
   },
+	addSpinbox : function(rx,ry,rw,rh) {
+    var spinbox = new Spinbox(this.widget);
+    spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return spinbox;
+  },
   addListbox : function(rx,ry,rw,rh) {
     var listbox = new Listbox(this.widget);
     listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
@@ -176,10 +200,10 @@ Listbox.prototype = {
   set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
   set selectedIndex (index) { this.widget.setSelected(index); },
-	set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
+  set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
   get itemsCount () { return this.widget.itemsCount(); },
 
-	set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
+  set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
 
   addLine : function(text) { return this.widget.addLine(text); },
   findItem : function(text) { return this.widget.findItem(text); },
@@ -191,7 +215,7 @@ Listbox.prototype = {
 function Dialogbox(parent) {
     this.widget = new _Dialogbox(parent);
 }
-
+ 
 Dialogbox.prototype = {
   set title (str) { this.widget.setTitle( engine.translate(str) ); },
   set text  (str) { this.widget.setText( engine.translate(str) ); },
@@ -237,3 +261,5 @@ Ui.prototype = {
 
   elog : function(a) { engine.log(a); }
 };
+
+var g_ui = new Ui();

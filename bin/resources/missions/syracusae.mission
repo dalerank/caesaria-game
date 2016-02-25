@@ -26,6 +26,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##syracusae_4_title##"
+	sound.overview : "syracusae_speech"
+    sound.win      : "syracusae_win_speech"
     overview :  [ "##syracusae_4_overview##" ]
   }
 	

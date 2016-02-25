@@ -43,15 +43,18 @@ static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass
 class GranaryStore : public good::Storage
 {
 public:
-  static const int maxCapacity = 2400;
+  enum { maxCapacity = 2400, startCapacity = maxCapacity/4 };
 
   GranaryStore()
   {
-    for( auto& gtype : good::foods() )
-      setOrder( gtype, good::Orders::accept );
+    for (auto gtype : good::foods())
+    {
+      setOrder(gtype, good::Orders::accept);
+      setCapacity(gtype, startCapacity);
+    }
 
-    setOrder( good::fish, good::Orders::none );
-    setCapacity( GranaryStore::maxCapacity );
+    setOrder(good::fish, good::Orders::none);
+    setCapacity(GranaryStore::maxCapacity);
 
     granary = nullptr;
   }
@@ -60,17 +63,17 @@ public:
   virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
-              ? good::Storage::reserveStorage( stock, time )
+              ? good::Storage::reserveStorage(stock, time)
               : 0;
   }
 
   virtual void store( good::Stock& stock, const int amount)
   {
-    if( granary->numberWorkers() == 0 )
+    if (granary->numberWorkers() == 0)
     {
       return;
     }
-    
+
     good::Storage::store( stock, amount );
   }
 
@@ -97,11 +100,11 @@ public:
 
   virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
+    bool isOk = good::Storage::applyRetrieveReservation(stock, reservationID);
     granary->computePictures();
     return isOk;
   }
-  
+
   virtual TilePos owner() const { return granary ? granary->pos() : TilePos::invalid(); }
 
   Granary* granary;
@@ -114,7 +117,7 @@ public:
   Pictures granarySprite;
 };
 
-Granary::Granary() : WorkingBuilding( object::granery, Size(3,3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding(object::granery, Size(3,3)), _d(new Impl)
 {
   _d->store.granary = this;
 
@@ -124,14 +127,14 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3,3) ), _d( new Impl
   _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
   _animation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animation().setDelay( 4 );
+  _animation().setDelay(4);
 
-  _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
-  _fgPicture( 5 ) = _animation().currentFrame();
+  _fgPicture(0) = Picture(ResourceGroup::commerce, 141);
+  _fgPicture(5) = _animation().currentFrame();
   computePictures();
 
-  _d->granarySprite.push_back( Picture( ResourceGroup::commerce, 141 ) );
-  _d->granarySprite.push_back( Picture::getInvalid() );
+  _d->granarySprite.push_back(Picture(ResourceGroup::commerce, 141));
+  _d->granarySprite.push_back(Picture::getInvalid());
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -326,5 +329,5 @@ void Granary::_tryDevastateGranary()
           return;
       }
     }
-  }   
+  }
 }

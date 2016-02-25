@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarsus_preview_title##"
+	sound.overview : "tarsus_speech"
+    sound.win      : "tarsus_win_speech"
     overview :  [ "##tarsus_overview##" ]
   }
 	

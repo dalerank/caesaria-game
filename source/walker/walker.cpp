@@ -122,29 +122,16 @@ Walker::Walker(PlayerCityPtr city)
   : _d( new Impl )
 {
   _d->reset( city );
-
-#ifdef DEBUG
-  WalkerDebugQueue::instance().add( this );
-#endif
 }
 
 Walker::Walker(PlayerCityPtr city, walker::Type type)
-  : _d( new Impl )
+  : Walker(city)
 {
-  _d->reset( city );
   _d->type = type;
-
-#ifdef DEBUG
-  WalkerDebugQueue::instance().add( this );
-#endif
 }
 
 Walker::~Walker()
-{
-#ifdef DEBUG
-  WalkerDebugQueue::instance().rem( this );
-#endif
-}
+{}
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -656,25 +643,6 @@ void Walker::mapTurned()
 
   _updateMappos();
 }
-
-#ifdef DEBUG
-void WalkerDebugQueue::print()
-{
-  WalkerDebugQueue& inst = (WalkerDebugQueue&)instance();
-  if( !inst._pointers.empty() )
-  {
-    Logger::warning( "PRINT WALKER DEBUG QUEUE" );
-    foreach( it, inst._pointers )
-    {
-      Walker* wlk = (Walker*)*it;
-      Logger::warning( "{0} - {1} [{2},{3}] ref:{4}", wlk->name(),
-                       wlk->info().typeName(),
-                       wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
-    }
-  }
-}
-#endif
-
 
 void Walker::Impl::reset(PlayerCityPtr pcity )
 {

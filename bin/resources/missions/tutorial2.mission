@@ -31,9 +31,9 @@
     caption : "##tt2_caption##"
     overview :  [ "##tutorial_priority##",
                   "@img=picture3_00004",
-                  "##tutorial_granary_text2##",
-                  "@img=picture3_00005",
                   "##tutorial_granary_text##",
+                  "@img=picture3_00005",
+                  "##tutorial_granary_text2##",
                   "@img=picture3_00006",
                   "##tutorial_markets_text##",
                   "@img=picture2_00008" ]

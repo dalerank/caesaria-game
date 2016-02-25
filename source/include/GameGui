@@ -20,6 +20,7 @@
 #include "gui/widgetescapecloser.hpp"
 #include "gui/smkviewer.hpp"
 #include "gui/image.hpp"
+#include "gui/spinbox.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "gui/groupbox.hpp"
 

@@ -95,7 +95,6 @@ public:
   }
 };
 
-
 class TraineeMap : public std::map<walker::Type,int>
 {
 public:
@@ -137,8 +136,8 @@ public:
   CityKoeffs cityKoeffs;
 };
 
-Building::Building(const object::Type type, const Size& size )
-  : Construction( type, size ), _d( new Impl )
+Building::Building(object::Type type, const Size& size)
+  : Construction(type, size), _d(new Impl)
 {
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );

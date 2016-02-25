@@ -59,4 +59,4 @@ Win32
 
 # exclude ignore
 !bin/resources
-bin/resources/settings.model
+/bin/resources/settings.model

@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##valentia_title##"
+	sound.overview : "valentia_speech"
+    sound.win      : "valentia_win_speech"
     overview :  [ "##valentia_overview##" ]
   }
 	

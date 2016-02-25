@@ -26,6 +26,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##famine_in_the_empire##"
+	sound.overview : "tarraco_speech"
+    sound.win      : "tarraco_win_speech"
     overview :  [ "##tarraco_overview##" ]
   }
 	

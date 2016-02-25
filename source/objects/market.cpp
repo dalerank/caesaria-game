@@ -106,7 +106,7 @@ good::Products Market::mostNeededGoods()
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for( auto& goodType : good::all() )
+  for( const auto& goodType : good::all() )
   {
     // for all types of good
     good::Stock &stock = _d->goodStore.getStock(goodType);
@@ -138,14 +138,14 @@ int Market::getGoodDemand(const good::Product &goodType)
 void Market::save( VariantMap& stream) const 
 {
   ServiceBuilding::save( stream );
-  VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
+  VARIANT_SAVE_CLASS_D(stream, _d, goodStore)
 }
 
 void Market::load( const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
+  VARIANT_LOAD_CLASS_D(_d, goodStore, stream)
 
   _d->initStore();
 }

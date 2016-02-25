@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##mediolanum_5_title##"
+	sound.overview : "mediolanum_speech"
+    sound.win      : "mediolanum_win_speech"
     overview :  [ "##mediolanum_5_overview##" ]
   }
 	

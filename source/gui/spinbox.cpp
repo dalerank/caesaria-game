@@ -45,62 +45,62 @@ public:
     int step = 10;
   } value;
 
-  struct
+  typedef struct
   {
-    Point decBtn;
-    Point incBtn;
-  } position;
+    TexturedButton* widget = nullptr;
+    Point pos;
+
+    void setPos(const Point& p)
+    {
+      if (!widget)
+        return;
+
+      widget->setPosition(p);
+      if (pos.x() > 0)
+        widget->setPosition(pos);
+    }
+  } Action;
 
   std::string postfix;
-  TexturedButton* btnDecrease;
-  TexturedButton* btnIncrease;
+
+  struct {
+    Action dec;
+    Action inc;
+  } actions;
 
   struct {
     Signal1<int> onChange;
-    Signal2<SpinBox*,int> onChangeA;
+    Signal2<Widget*,int> onChangeA;
   } signal;
-
-  Impl() : btnDecrease( 0 ), btnIncrease( 0 ) {}
 };
 
 //! constructor
 SpinBox::SpinBox( Widget* parent )
-    : Label( parent, Rect( 0, 0, 1, 1) ), _d( new Impl )
+    : Label( parent, Rect( 0, 0, 1, 1) ), _d(new Impl)
 {
   _initButtons();
 }
 
 void SpinBox::_initButtons()
 {
-  _d->btnDecrease = &add<TexturedButton>( Point( width() * 0.5, 1 ), Size( 24, 24), -1, 601 );
-  _d->btnIncrease = &add<TexturedButton>( Point( width() * 0.5 + 25, 1), Size( 24, 24 ), -1, 605 );
+  _d->actions.dec.widget = &add<TexturedButton>( Point( width() * 0.5, 1 ), Size( 24, 24), -1, 601 );
+  _d->actions.inc.widget = &add<TexturedButton>( Point( width() * 0.5 + 25, 1), Size( 24, 24 ), -1, 605 );
 
-  CONNECT_LOCAL( _d->btnDecrease, onClicked(), SpinBox::_decrease )
-  CONNECT_LOCAL( _d->btnIncrease, onClicked(), SpinBox::_increase )
+  CONNECT_LOCAL( _d->actions.dec.widget, onClicked(), SpinBox::_decrease )
+  CONNECT_LOCAL( _d->actions.inc.widget, onClicked(), SpinBox::_increase )
 }
 
 void SpinBox::_finalizeResize()
 {
   Label::_finalizeResize();
-  if( _d->btnDecrease )
-  {
-    _d->btnDecrease->setPosition( Point( width() * 0.5, 1 ) );
-    if( _d->position.decBtn.x() > 0 )
-      _d->btnDecrease->setPosition( _d->position.decBtn );
-  }
-
-  if( _d->btnIncrease )
-  {
-    _d->btnIncrease->setPosition( Point( width() * 0.5 + 25, 1 ) );
-    if( _d->position.incBtn.x() > 0 )
-      _d->btnIncrease->setPosition( _d->position.incBtn );
-  }
+  _d->actions.dec.setPos(Point(width()/2,1));
+  _d->actions.inc.setPos(Point(width() * 0.5 + 25, 1));
   _update();
 }
 
 SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text, const std::string& postfix, int id)
- : Label( parent, rectangle, text, false, bgNone, id ),
-	_d( new Impl )
+ : Label(parent, rectangle, text, false, bgNone, id),
+  _d(new Impl)
 { 
   _d->postfix = postfix;
   _initButtons();
@@ -127,8 +127,14 @@ void SpinBox::setValue(int value)
   _update();
 }
 
+void SpinBox::setPostfix(const string& str)
+{
+  _d->postfix = str;
+  _update();
+}
+
 Signal1<int>& SpinBox::onChange(){ return _d->signal.onChange;}
-Signal2<SpinBox*,int>& SpinBox::onChangeA(){ return _d->signal.onChangeA; }
+Signal2<Widget*, int>& SpinBox::onChangeA(){ return _d->signal.onChangeA; }
 
 void gui::SpinBox::_updateTexture(Engine& painter)
 {
@@ -156,10 +162,10 @@ void SpinBox::_update()
   {
     _textPicture().fill( ColorList::clear, Rect() );
     canvasDraw( text(),
-                Rect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  ) );
+                Rect(Point(0, 0), _d->actions.dec.widget->leftbottom()));
 
     canvasDraw( fmt::format( "{} {}", _d->value.current, _d->postfix ),
-                Rect( _d->btnIncrease->right() + 5, 0, width(), height() ) );
+                Rect( _d->actions.inc.widget->right() + 5, 0, width(), height() ) );
   }
 }
 
@@ -171,8 +177,8 @@ void SpinBox::setupUI(const VariantMap& ui)
   _d->value.minimum = ui.get( "min", _d->value.minimum );
   _d->value.current = ui.get( "value", _d->value.current );
   _d->postfix = ui.get( "postfix", _d->postfix ).toString();
-  _d->position.decBtn = ui.get( "decpos" );
-  _d->position.incBtn = ui.get( "incpos" );
+  _d->actions.dec.pos = ui.get( "decpos" );
+  _d->actions.inc.pos = ui.get( "incpos" );
 }
 
 }//end namespace gui

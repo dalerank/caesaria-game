@@ -25,6 +25,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##sarmizegetusa_title##"
+	sound.overview : "sarmizegetusa_speech"
+    sound.win      : "sarmizegetusa_win_speech"
     overview :  [ "##sarmizegetusa_overview##" ]
     win.text : "##sarmizegetusa_win_text##"
   }

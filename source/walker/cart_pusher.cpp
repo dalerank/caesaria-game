@@ -89,7 +89,7 @@ void CartPusher::_reachedPathway()
   _d->anim = CartAnimation();
 
   if( consumerBuilding() != nullptr )
-  {   
+  {
     good::Store& store = consumerBuilding()->store();
 
     if( store.capacity() > 0 )
@@ -160,13 +160,13 @@ BuildingPtr CartPusher::producerBuilding()
 BuildingPtr CartPusher::consumerBuilding()
 {
    Logger::warningIf( _d->consumerBuilding.isNull(), "!!! WARNING: ConsumerBuilding is not initialized");
-   
+
    return _d->consumerBuilding;
 }
 
 Animation& CartPusher::getCartPicture()
 {
-   if( !_d->anim.isValid() )
+   if (!_d->anim.isValid())
    {
      _d->anim.load(_d->stock, direction());
    }
@@ -241,7 +241,7 @@ void CartPusher::_computeWalkerDestination()
      return;
    }
 
-   pathPropagator.init( ptr_cast<Construction>(_d->producerBuilding) );
+   pathPropagator.init(ptr_cast<Construction>(_d->producerBuilding));
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
@@ -300,7 +300,7 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
                                  Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
-  DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectPRoutes pathWayList = pathPropagator.getRoutes(buildingType);
 
   //remove factories with improrer storage
   auto pathWayIt= pathWayList.begin();
@@ -387,7 +387,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return BuildingPtr();
    }
 
-   res = reserveShortestPath<Granary>( object::granery, stock, reservationID, pathPropagator, oPathWay );
+   res = reserveShortestPath<Granary>(object::granery, stock, reservationID, pathPropagator, oPathWay);
 
    return res;
 }
@@ -403,10 +403,10 @@ void CartPusher::send2city(BuildingPtr building, good::Stock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( !waitInterval() )
-    _d->anim.update( time );
+  if (!waitInterval())
+    _d->anim.update(time);
 
-  if( game::Date::isWeekChanged() && !_pathway().isValid() )
+  if (game::Date::isWeekChanged() && !_pathway().isValid())
   {
     _computeWalkerDestination();
   }
@@ -419,7 +419,7 @@ CartPusher::~CartPusher(){}
 void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  
+
   stream[ literals::stock ] = _d->stock.save();
   stream[ literals::producerPos ] = utils::objPosOrDefault( _d->producerBuilding );
   stream[ literals::consumerPos ] = utils::objPosOrDefault( _d->consumerBuilding );

@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lutetia_title##"
+	sound.overview : "lutetia_speech"
+    sound.win      : "lutetia_win_speech"
     overview :  [ "##lutetia_overview##" ]
   }
 	

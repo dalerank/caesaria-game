@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tingis_title##"
+	sound.overview : "tingis_speech"
+    sound.win      : "tingis_win_speech"
     overview :  [ "##tingis_overview##" ]
   }
 	

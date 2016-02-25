@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lugdunum_preview_title##"
+	sound.overview : "lugdunum_speech"
+    sound.win      : "lugdunum_win_speech"
     overview :  [ "##lugdunum_overview##" ]
   }
 	
