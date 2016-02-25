@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##londinium_10_title##"
+	sound.overview : "londinium_speech"
+    sound.win      : "londinium_win_speech"
     overview :  [ "##ondinium_10_overview##" ]
   }
 

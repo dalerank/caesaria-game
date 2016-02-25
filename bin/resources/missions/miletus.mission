@@ -27,6 +27,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##miletus_preview_title##"
+	sound.overview : "miletus_speech"
+    sound.win      : "miletus_win_speech"
     overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
                   "##miletus_5_overview_2##" ]

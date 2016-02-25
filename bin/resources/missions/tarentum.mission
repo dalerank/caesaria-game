@@ -26,6 +26,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarentum_3_title##"
+	sound.overview : "tarentum_speech"
+    sound.win      : "tarentum_win_speech"
     overview :  [ "##tarentum_3_overview##",
                   "@img=picture5_00013",
                   "##tarentum_3_overview_2##"]

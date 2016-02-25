@@ -26,6 +26,8 @@
     maxHouseLevel : "big_villa"
     caption : "##damascus_title##"
     overview :  [ "##damascus_overview##" ]
+	sound.overview : "damascus_speech"
+    sound.win      : "damascus_win_speech"
     win.text : "##damascus_win_text##"
   }
 

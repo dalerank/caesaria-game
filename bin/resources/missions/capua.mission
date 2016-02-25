@@ -26,6 +26,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
+	sound.overview : "capua_speech"
+    sound.win      : "capua_win_speech"
     overview :  [ "##capua_overview##",
                   "@img=picture5_00006",
                   "##capua_overview2##",

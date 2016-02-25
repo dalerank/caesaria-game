@@ -25,6 +25,8 @@
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##caesarea_title##"
+	sound.overview : "caesarea_speech"
+    sound.win      : "caesarea_win_speech"
     overview :  [ "##caesarea_overview##" ]
     win.text : "##caesarea_win_text##"
   }
