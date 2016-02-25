@@ -43,6 +43,20 @@ file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB CHANGES_LIST "${GAME_CONFIG_DIR}/changes/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
+if(MSVC)
+  if(CMAKE_CXX_FLAGS MATCHES "/EHsc ")
+    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc before end of string replaced...")
+    message(STATUS "")
+  endif()
+
+  if(CMAKE_CXX_FLAGS MATCHES "/EHsc$")
+    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc at end of string replaced...")
+    message(STATUS "")
+  endif()
+endif()
+
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
                ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST}
@@ -148,7 +162,7 @@ endif(USE_STEAM)
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
   INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
-  FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
+  FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
   target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY} )
 endif(APPLE)
 
@@ -158,7 +172,7 @@ endif(HAIKU)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
   message("CaesarIA-game: building in release mode")
   if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
@@ -171,18 +185,15 @@ else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
   add_definitions( -DDEBUG )
-endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if (CMAKE_COMPILER_IS_CLANG)
   # using Clang
   add_definitions("-DGAME_COMPILER_NAME=\"clang\"")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+elseif (CMAKE_COMPILER_IS_GNUCXX)
   # using GCC
   add_definitions("-DGAME_COMPILER_NAME=\"gcc\"")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-  # using Intel C++
-  add_definitions("-DGAME_COMPILER_NAME=\"icc\"" )
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+elseif (MSVC)
   # using Visual Studio C++
   add_definitions("-DGAME_COMPILER_NAME=\"msvc\"")
 endif()
@@ -190,7 +201,7 @@ endif()
 message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 # set compiler options
-if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   if(HAIKU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
   else(HAIKU)
@@ -204,16 +215,16 @@ set(USE_CPP11 ON)
 # Check for C++11 suport
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+
 if(COMPILER_SUPPORTS_CXX11)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
   message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-if(WIN32)
+if(WIN32 AND NOT MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
-  #set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -static-libgcc -static-libstdc++ -static")
-endif(WIN32)
+endif()
 
 # prepare working directory
 set(GAME_BINARY_FILENAME ${EXECUTABLE_FILENAME})
@@ -221,18 +232,21 @@ if(WIN32)
   set(GAME_BINARY_FILENAME ${GAME_BINARY_FILENAME}.exe)
 endif(WIN32)
 
+if(NOT MSVC)
 ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
 )
+else()
+  set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
+endif()
 
 if(USE_STEAM)
   if(WIN32)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
         POST_BUILD
-        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/sdkencryptedappticket.dll" "${WORK_DIR}/sdkencryptedappticket.dll"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
         COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
     )
@@ -261,12 +275,3 @@ if(USE_STEAM)
     endif()
   endif()
 endif()
-
-if(EXT_BINDIR)
-  message( "game: ext bindir=${CMAKE_SOURCE_DIR}/${EXT_BINDIR}")
-  ADD_CUSTOM_COMMAND(
-      TARGET ${PROJECT_NAME}
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${GAME_BINARY_FILENAME}"
-  )
-endif(EXT_BINDIR)

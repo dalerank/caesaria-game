@@ -119,6 +119,14 @@ void Decorator::drawLine( Picture& dstpic, const Point& p1, const Point& p2, NCo
     lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
 }
 
+void Decorator::drawLines(Picture& dstpic, NColor color, const Lines& lines)
+{
+  for( const auto& line : lines )
+    lineColor( dstpic.surface(), line.begin.x(), line.begin.y(),
+                                 line.end.x(), line.end.y(),
+                                 color.rgba() );
+}
+
 void Decorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)
 {
   stringColor( dstpic.surface(), pos.x(), pos.y(), text.c_str(), color.color );

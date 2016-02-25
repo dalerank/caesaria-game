@@ -9,6 +9,8 @@
 namespace gui
 {
 
+class ConsoleLogger;
+
 class Console : public Widget, public CommandDispatcher, public MessageSink
 {
 public:
@@ -28,6 +30,7 @@ public:
     void keyPress( const NEvent& event );
 
 private:
+    void _updateCommandRect();
     void handleCommandString( const std::string& wstr);
     void addToHistory( const std::string& line);
     void calculateConsoleRect(const Size& screenSize);
@@ -49,6 +52,7 @@ private:
 
     typedef enum { NONE=0, UPLIGTH, DOWNLIGTH } TOGGLE_TYPE;
     TOGGLE_TYPE toggle_visible_;
+    SmartPtr<ConsoleLogger> _logger;
 
     std::string currentCommand_;
     int _opacity;
@@ -56,6 +60,9 @@ private:
 
     void SaveCommands_();
     void LoadSaveCommands_();
+
+    class Impl;
+    ScopedPtr<Impl> _d;
 };
 
 }
