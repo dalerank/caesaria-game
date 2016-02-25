@@ -5,8 +5,6 @@ function OnShowVideoSettings()
 {
   engine.log( "JS:OnShowVideoSettings" );
 
-  var g_ui = new Ui();
-  var g_session = new Session();
 
   haveChanges = false;
   fullscreen = engine.getOption( "fullscreen" );

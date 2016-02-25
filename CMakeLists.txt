@@ -173,9 +173,6 @@ add_subdirectory(source source)
 message("\nBuilding CaesarIA-updater")
 add_subdirectory(updater updater)
 
-message("\nBuilding AveC3-addon")
-add_subdirectory(addon/ave_c3 addon/ave_c3)
-
 message("\nBuilding tileset")
 add_subdirectory(tileset tileset)
 

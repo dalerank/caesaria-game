@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+//This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <GameCore>
 #include <GameCity>
 
+#include "sound/engine.hpp"
 #include "scripting/session.hpp"
 
 using namespace gui;
@@ -139,6 +140,13 @@ void engineReloadFile(vfs::Path path)
   }
 }
 
+void engineSetVolume(js_State *J)
+{
+  int type = js_toint32(J, 1);
+  int value = js_toint32(J, 2);
+  audio::Engine::instance().setVolume((audio::SoundType)type, value);
+}
+
 void engineLoadModule(js_State *J)
 {
   vfs::Path scriptName = js_tostring(J, 1);
@@ -170,7 +178,7 @@ void engineSetOption(js_State *J)
   else if (js_isnumber(J,2))
     game::Settings::set(name, js_tonumber(J,2));
   else if (js_isstring(J,2))
-    game::Settings::set(name, std::string(js_tostring(J,2)) );
+    game::Settings::set(name, std::string(js_tostring(J,2)));
   else
     Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
 
@@ -212,10 +220,10 @@ Core& Core::instance()
 
 void Core::loadModule(const std::string& path)
 {
-  vfs::Path rpath( path );
-  if( !rpath.exist() )
+  vfs::Path rpath(path);
+  if (!rpath.exist())
   {
-    Logger::warning( "WARNING !!! Cant find script at {}", rpath.toString() );
+    Logger::warning("WARNING !!! Cant find script at {}", rpath.toString());
     return;
   }
 
@@ -238,26 +246,26 @@ void Core::loadModule(const std::string& path)
 
 void Core::execFunction(const std::string& funcname)
 {
-  execFunction( funcname, VariantList() );
+  execFunction(funcname, VariantList());
 }
 
 void Core::execFunction(const std::string& funcname, const VariantList& params)
 {
-  js_getglobal(internal::J, funcname.c_str() );
+  js_getglobal(internal::J, funcname.c_str());
   js_pushnull(internal::J);
-  for( const auto& param : params )
+  for (const auto& param : params)
   {
     int error = internal::push(internal::J,param);
     if (error)
-      Logger::warning( "WARNING !!! Undefined value for js.pcall " + funcname );
+      Logger::warning("WARNING !!! Undefined value for js.pcall " + funcname);
   }
   int error = js_pcall(internal::J,params.size());
 
   if (error)
   {
-    Logger::warning( "WARNING !!! Some errors in js.pcall " + funcname );
+    Logger::warning("WARNING !!! Some errors in js.pcall " + funcname);
     std::string str = js_tostring(internal::J,-1);
-    Logger::warning( str );
+    Logger::warning(str);
   }
   else
     js_pop(internal::J,1);
@@ -290,7 +298,7 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
 {
   try
   {
-    if(widget)
+    if (widget)
     {
       std::string index = widget->getProperty(callback);
       js_getregistry(internal::J,index.c_str());
@@ -299,7 +307,7 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
       js_pop(internal::J,1);
     }
     else
-      Logger::warning( className + "_handle_" + callback + " widget is null" );
+      Logger::warning(className + "_handle_" + callback + " widget is null");
   }
   catch(...)
   {}
@@ -320,7 +328,7 @@ void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callb
       js_pop(internal::J,1);
     }
     else
-      Logger::warning( className + "_handle_" + callback + " widget is null" );
+      Logger::warning(className + "_handle_" + callback + " widget is null");
   }
   catch(...)
   {}
@@ -395,6 +403,22 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   else
     js_pushundefined(J);
 }
+
+void reg_widget_constructor(js_State *J, const std::string& name)
+{
+  Widget* parent = nullptr;
+  if (js_isuserdata( J, 1, "userdata" ))
+    parent = (Widget*)js_touserdata(J, 1, "userdata");
+
+  if (parent == 0)
+    parent = internal::game->gui()->rootWidget();
+
+  auto* widget = internal::game->gui()->createWidget( name, parent );
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", widget, nullptr);
+}
+
 
 #define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { desctructor_jsobject<name>(J,p); }
 #define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
@@ -472,20 +496,8 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) { auto p = &name##_set_##funcname; reg_object_callback(#name,#funcname,p,params); }
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) { auto p = &name##_##funcname; reg_object_function(#name,#funcname,p,params); }
 #define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
-
 #define SCRIPT_OBJECT_END(name)
-
-#define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { \
-  Widget* parent = nullptr; \
-  if( js_isuserdata( J, 1, "userdata" ) ) \
-    parent = (Widget*)js_touserdata(J, 1, "userdata"); \
-  if( parent == 0 ) \
-    parent = internal::game->gui()->rootWidget(); \
-  auto* widget = internal::game->gui()->createWidget( TEXT(name), parent ); \
-  js_currentfunction(J); \
-  js_getproperty(J, -1, "prototype"); \
-  js_newuserdata(J, "userdata", widget, nullptr); \
-}
+#define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 
 #include "window.implementation"
 #include "button.implementation"
@@ -499,6 +511,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
 #include "editbox.implementation"
 #include "animators.implementation"
 #include "path.implementation"
+#include "spinbox.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -514,6 +527,7 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineTranslate,"translate",1);
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
+  REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "window.interface"
@@ -528,6 +542,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "editbox.interface"
 #include "animators.interface"
 #include "path.interface"
+#include "spinbox.interface"
 
   Core::loadModule(":/system/modules.js");
   internal::observers = new vfs::FileChangeObserver();

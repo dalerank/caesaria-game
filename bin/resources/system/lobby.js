@@ -4,7 +4,6 @@ function OnShowChanges(force)
 {
   engine.log( "JS:OnShowChanges" );
 
-  var g_session = new Session();
   if( force )
   {
     engine.setOption( "showLastChanges", true);
@@ -22,8 +21,6 @@ function OnShowChanges(force)
   if( !g_wasChangesShow && engine.getOption( "showLastChanges" ) > 0 )
   {
     g_wasChangesShow = true;
-
-    var g_ui = new Ui();
 
     var wnd = g_ui.addWindow(0,0,400,500);
     wnd.model = ":/changes/" + lastChangesNumber + ".changes";
@@ -48,11 +45,10 @@ function OnShowChanges(force)
 
 function OnStartCareer()
 {
-  OnChangePlayerName(true, function() {
-      var g_session = new Session(); 
-      g_session.startCareer();
-    }
-  );
+  OnChangePlayerName( 
+																		true, 
+																	  function() {  g_session.startCareer(); } 
+																	);
 }
 
 function setLanguage(config)
@@ -62,7 +58,6 @@ function setLanguage(config)
   if (!config.talks)
     config.talks = ":/audio/wavs_citizen_en.zip";
 
-	var g_session = new Session();
   g_session.setLanguage(config.ext,config.talks);
 
   if (confgi.font != undefined && currentFont != config.font)
@@ -119,7 +114,6 @@ function OnShowLanguageDialog()
   var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
   btn.text = "##continue##";
   btn.callback = function () {
-				var g_session = new Session();
 				g_session.reloadScene(); 
 				wnd.deleteLater();
 	}
@@ -127,11 +121,10 @@ function OnShowLanguageDialog()
 
 function OnShowLogs()
 {
-	var g_session = new Session();
   var logfile = g_session.logfile();
   if (!logfile.exist())
 	{
-	   gg_ui.addInformationDialog( "", "Can't found logfile" );
+	   g_ui.addInformationDialog( "", "Can't found logfile" );
 	}
   else 
 	{
@@ -147,7 +140,6 @@ function OnChangePlayerName(force,continueCallback)
 
   if (playerName.length === 0 || force)
   {
-    var g_ui = new Ui();
     var wnd = g_ui.addWindow(0);
     wnd.geometry = { x:0, y:0, w:380, h:128 }
 		wnd.closeAfterKey( {escape:true} );
@@ -195,7 +187,6 @@ function OnLobbyStart()
 {
   engine.log( "JS:OnLobbyStart" );
 
-  var g_session = new Session();
   var screen = g_session.resolution;
 
   var btnHomePage = new TexturedButton(0);
@@ -232,8 +223,6 @@ function OnLobbyStart()
 
 function OnShowCredits()
 {
-	var g_ui = new Ui();
-  var g_session = new Session();
 	g_session.playAudio( "combat_long", 50, "theme" );
 
 	var fade = g_ui.addFade(0xA0); 

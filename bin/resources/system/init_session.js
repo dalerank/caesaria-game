@@ -46,3 +46,5 @@ Session.prototype = {
 	return path;
     },
 }  
+
+var g_session = new Session();

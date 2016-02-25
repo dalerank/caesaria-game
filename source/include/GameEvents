@@ -5,7 +5,6 @@
 #include "events/warningmessage.hpp"
 #include "events/dispatcher.hpp"
 #include "events/changespeed.hpp"
-#include "events/setsoundoptions.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "events/showtileinfo.hpp"

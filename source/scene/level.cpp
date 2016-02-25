@@ -56,7 +56,6 @@
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
 #include "gui/androidactions.hpp"
-#include "events/setsoundoptions.hpp"
 #include "gui/widgetescapecloser.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
@@ -169,7 +168,6 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
-  void changeShowNotification(bool value);
   void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
@@ -402,15 +400,10 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  events::dispatch<ChangeSoundOptions>();
+  events::dispatch<events::ScriptFunc>("OnShowAudioDialog");
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
-
-void Level::Impl::changeShowNotification(bool value)
-{
-  SETTINGS_SET_VALUE(showStartAware, value);
-}
 
 void Level::Impl::showMessagesWindow()
 {

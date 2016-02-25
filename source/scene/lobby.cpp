@@ -201,12 +201,12 @@ void Lobby::Impl::openDlcDirectory(Widget* sender)
 
 void Lobby::Impl::showSoundOptions()
 {
-  events::dispatch<events::ChangeSoundOptions>();
+  events::dispatch<events::ScriptFunc>("OnShowAudioDialog");
 }
 
 void Lobby::Impl::showLanguageOptions()
 {
-  script::Core::execFunction( "OnShowLanguageDialog" );
+  events::dispatch<events::ScriptFunc>("OnShowLanguageDialog");
 }
 
 void Lobby::Impl::showPackageOptions()
@@ -216,7 +216,7 @@ void Lobby::Impl::showPackageOptions()
 
 void Lobby::Impl::startCareer()
 {
-  events::dispatch<events::ScriptFunc>( "OnStartCareer" );
+  events::dispatch<events::ScriptFunc>("OnStartCareer");
 }
 
 void Lobby::newGame()
