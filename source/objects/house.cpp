@@ -1298,31 +1298,6 @@ void House::save( VariantMap& stream ) const
   VARIANT_SAVE_CLASS_D(stream, _d, services )
 } 
 
-void House::debugLoadOld( int saveFormat, const VariantMap& stream )
-{
-  if( saveFormat == 64 )
-  {
-    CitizenGroup group;
-    group.load( stream.get( "currentHubitants" ).toList() );
-    _d->habitants.set( group );
-    _d->habitants.capacity = stream.get( "habitants.maximum" );
-
-    VariantList vl_services = stream.get( "services" ).toList();
-
-    for( unsigned int i=0; i < vl_services.size(); i++ )
-    {
-      Service::Type type = Service::Type( vl_services.get( i ).toInt() );
-      int value = vl_services.get( i+1 ).toFloat(); //serviceValue
-
-      if( type == Service::recruter )
-      {
-        _d->habitants.workers.current = value;
-        _d->habitants.workers.max = _d->habitants.mature_n();
-      }
-    }
-  }
-}
-
 void House::load( const VariantMap& stream )
 {  
   Building::load( stream );

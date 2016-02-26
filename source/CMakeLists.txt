@@ -43,20 +43,6 @@ file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB CHANGES_LIST "${GAME_CONFIG_DIR}/changes/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
-if(MSVC)
-  if(CMAKE_CXX_FLAGS MATCHES "/EHsc ")
-    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc before end of string replaced...")
-    message(STATUS "")
-  endif()
-
-  if(CMAKE_CXX_FLAGS MATCHES "/EHsc$")
-    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc at end of string replaced...")
-    message(STATUS "")
-  endif()
-endif()
-
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
                ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST}
@@ -183,7 +169,10 @@ if(CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
   endif()
 else()
   message("CaesarIA-game: building in debug mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  endif()
+
   add_definitions( -DDEBUG )
 endif()
 
@@ -209,17 +198,21 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   endif(HAIKU)
 endif()
 
-# Enforce C++11
-set(USE_CPP11 ON)
+if(NOT MSVC)
+  # Enforce C++11
+  set(USE_CPP11 ON)
 
-# Check for C++11 suport
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+  # Check for C++11 suport
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 
-if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  endif()
 else()
-  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 endif()
 
 if(WIN32 AND NOT MSVC)

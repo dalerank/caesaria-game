@@ -225,7 +225,7 @@ unsigned int Statistic::_Tax::possible() const
   HouseList houses = _parent.houses.find();
 
   float taxValue = 0.f;
-  float taxRate = _parent.rcity.treasury().taxRate();
+  float taxRate = (float)_parent.rcity.treasury().taxRate();
 
   for( auto house : houses )
   {

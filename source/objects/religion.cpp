@@ -308,7 +308,7 @@ unsigned int BigTemple::currentVisitors() const { return 1500; }
 
 bool BigTemple::build( const city::AreaInfo& info )
 {  
-  if( info.city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
+  if(info.onload)  //load from savefiles
   {
     Temple::build( info );
     return true;

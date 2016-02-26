@@ -921,7 +921,7 @@ void Widget::setVisible( bool visible ){  _dfunc()->flag.visible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->flag.tabStop;}
 bool Widget::hasTabgroup() const{  return _dfunc()->isTabGroup;}
 void Widget::setText( const std::string& text ){  _dfunc()->text.value = text;}
-void Widget::setTooltipText( const std::string& text ) {  _dfunc()->text.tooltip = text;}
+void Widget::setTooltipText( const std::string& text ) { _dfunc()->text.tooltip = text;}
 std::string Widget::text() const{  return _dfunc()->text.value;}
 std::string Widget::tooltipText() const{  return _dfunc()->text.tooltip;}
 int Widget::ID() const{  return _dfunc()->id;}

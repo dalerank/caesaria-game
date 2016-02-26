@@ -181,29 +181,29 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
-  if( game::Date::isDayChanged() )
+  if (game::Date::isDayChanged())
   {
-    if( mayWork() )
+    if (mayWork())
     {
-      if( _animation().isStopped() )
+      if (_animation().isStopped())
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animation().isRunning() )
+      if (_animation().isRunning())
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animation().isRunning() )
+  if (_animation().isRunning())
   {
-    _animation().update( time );
+    _animation().update(time);
     const Picture& pic = _animation().currentFrame();
-    if( pic.isValid() && !_fgPictures().empty() )
+    if (pic.isValid() && !_fgPictures().empty())
     {
       _fgPictures().back() = _animation().currentFrame();
     }

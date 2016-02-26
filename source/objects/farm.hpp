@@ -26,7 +26,6 @@ public:
   Farm(const good::Product outGood, const object::Type type );
 
   virtual ~Farm();
-  void init();
 
   void computePictures();
   void assignTile( const TilePos& pos );
@@ -52,6 +51,7 @@ protected:
   gfx::Picture _getMainPicture();
   OverlayPtr _buildFarmTile( const city::AreaInfo& info, const TilePos& ppos );
   void _buildFarmTiles(const city::AreaInfo& info, const TilePos& pos );
+  void _updateMeadowsCoverage();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -41,7 +41,7 @@ class PlayerCity : public world::City
 public:  
   typedef enum { roadEntry=0, roadExit, boatEntry, boatExit } TileType;
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoadsOnNextFrame,
-                 forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
+                 warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
                  forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
@@ -53,7 +53,7 @@ public:
   virtual ~PlayerCity();
 
   /** Call every step */
-  virtual void timeStep(unsigned int time);  // performs one simulation step
+  virtual void timeStep(const unsigned int time);  // performs one simulation step
 
   /** Return array of walkers in current tile */
   const WalkerList& walkers(const TilePos& pos);

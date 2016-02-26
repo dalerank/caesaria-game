@@ -22,7 +22,7 @@ Spinbox.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set font (fname) { this.widget.setFont(fname); },
-  set tooltip (text) { this.widget.setTooltipText(text); },
+  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
   set textColor (color) { this.widget.setColor(color); },
   set subElement (value) { this.widget.setSubElement(value); },
     set postfix (text) { this.widget.setPostfix(text); },

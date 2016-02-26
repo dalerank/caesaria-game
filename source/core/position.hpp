@@ -26,21 +26,21 @@ class PointF;
 class Point : public Vector2<int>
 {
 public:
-  Point( const int x, const int y ) : Vector2<int>( x, y ) {}
+  Point(const int x, const int y) : Vector2<int>( x, y ) {}
   Point() : Vector2<int>( 0, 0 ) {}
-  Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
+  Point(const Vector2<int>& pos) : Vector2<int>( pos ) {}
 
-  Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
-  Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
+  Point operator+(const Point& other) const { return Point(_x + other._x, _y + other._y); }
+  Point operator-(const Point& other) const { return Point(_x - other._x, _y - other._y); }
   Point operator-() const { return Point( -_x, -_y); }
-  Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
-  Point operator/(float div) const{ return Point( _x/div, _y/div ); }
-  static Point polar( int rad, float radian ) { return Point( rad * sin( radian ), rad * cos( radian ) ); }
+  Point operator*(float mul) const{ return Point( (int)(_x*mul), (int)(_y*mul) ); }
+  Point operator/(float div) const{ return Point( (int)(_x/div), (int)(_y/div) ); }
+  static Point polar(int rad, float radian) { return Point( (int)(rad * sin(radian)), (int)(rad * cos(radian)) ); }
 
-  void setX( const int nx ) { _x = nx; }
-  void setY( const int ny ) { _y = ny; }
+  void setX(const int nx) { _x = nx; }
+  void setY(const int ny) { _y = ny; }
 
-  float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
+  float distanceTo(const Point& other) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
 
   PointF toPointF() const;
 };

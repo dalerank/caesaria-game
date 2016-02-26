@@ -80,7 +80,7 @@ void Military::timeStep(const unsigned int time )
 
     int enemiesInCity_n = _city()->walkers().count<EnemySoldier>();
 
-    _d->threatValue = enemiesInCity_n * enemySoldiertThreat;
+    _d->threatValue = (float)(enemiesInCity_n * enemySoldiertThreat);
   }  
 }
 
@@ -177,7 +177,7 @@ world::ObjectList Military::enemies() const
   return ret;
 }
 
-int Military::value() const{ return _d->threatValue; }
+int Military::value() const{ return (int)_d->threatValue; }
 std::string Military::defaultName(){  return TEXT(Military); }
 
 }//end namespace city

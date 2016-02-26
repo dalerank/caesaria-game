@@ -114,14 +114,14 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
 
-  virtual void initialize( const object::Info& mdata );
+  virtual void initialize(const object::Info& mdata);
   virtual void reinit();
 
   const object::Info& info() const;
 
-  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 
+  virtual void afterLoad();
 protected:
   void setType(const object::Type type);
   gfx::Animation& _animation();

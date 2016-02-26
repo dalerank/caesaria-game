@@ -150,9 +150,9 @@ Product Helper::type( const std::string& name )
 
 float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty)
 {
-  int price = city->tradeOptions().buyPrice( gtype );
+  unsigned int price = city->tradeOptions().buyPrice( gtype );
   Unit units = Unit::fromQty( qty );
-  return price * units.ivalue();
+  return (float)(price * units.ivalue());
 }
 
 float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)

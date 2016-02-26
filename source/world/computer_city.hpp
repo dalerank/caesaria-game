@@ -39,7 +39,7 @@ public:
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
   virtual SmartPtr<Player> mayor() const;
-  virtual void timeStep( unsigned int time );
+  virtual void timeStep(const unsigned int time );
   virtual DateTime lastAttack() const;
   virtual std::string about(AboutType type);
   virtual void save( VariantMap& options ) const;
