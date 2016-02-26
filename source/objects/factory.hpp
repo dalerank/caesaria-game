@@ -52,7 +52,7 @@ public:
   virtual void updateProgress( float value );
 
   virtual bool isActive() const;
-  virtual void setActive( bool active );
+  virtual void setActive(bool active);
 
   virtual bool mayWork() const;
   virtual bool haveMaterial() const;

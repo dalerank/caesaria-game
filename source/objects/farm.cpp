@@ -34,6 +34,7 @@
 #include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
 #include "events/clearland.hpp"
+#include "objects/config.hpp"
 #include "objects_factory.hpp"
 #include "city/states.hpp"
 
@@ -141,7 +142,7 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
 
   Picture mainPic = _getMainPicture();
   mainPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
-  _fgPictures().push_back( mainPic );  // farm building
+  _fgPicture(config::fgpic::idxMainPic) = mainPic;  // farm building
 
   for( auto& pos : _d->sublocs )
   {
@@ -150,8 +151,6 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
     _fgPictures().push_back( tPic );
   }
   setPicture( Picture::getInvalid() );
-
-  //init();
 }
 
 bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
@@ -222,12 +221,6 @@ void Farm::computeRoadside()
   }
 }
 
-void Farm::init()
-{
-  _fgPictures().resize(5+1);
-  computePictures();
-}
-
 void Farm::computePictures()
 {
   int amount = progress();
@@ -291,7 +284,7 @@ bool Farm::build(const city::AreaInfo& info)
     _updateMeadowsCoverage();
   }
 
-  _fgPictures().resize( 0 );
+  _fgPictures().resize(config::fgpic::idxFactoryMax);
   Factory::build(upInfo);
 
   if (_d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0)

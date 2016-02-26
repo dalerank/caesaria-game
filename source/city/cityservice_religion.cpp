@@ -213,7 +213,7 @@ void Religion::timeStep( const unsigned int time )
       }      
       else if( god->relation() < relation::minimum4wrath )
       {
-        godsUnhappy[ god->relation() ].push_back( god );
+        godsUnhappy[ (int)god->relation() ].push_back( god );
         _d->reasons << fmt::format( "##{0}_god_unhappy##", god->internalName() );
       }
     }       

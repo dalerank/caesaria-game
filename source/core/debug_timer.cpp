@@ -28,7 +28,7 @@ public:
   struct TimerInfo
   {
     std::string name;
-    unsigned int time;
+    uint64_t time;
 
     TimerInfo() : time( 0 ) {}
   };
@@ -44,7 +44,7 @@ unsigned int DebugTimer::ticks()
 void DebugTimer::reset(const std::string &name)
 {
   unsigned int namehash = Hash( name );
-  instance()._d->timers[ namehash ].time = SDL_GetPerformanceCounter();
+  instance()._d->timers[ namehash ].time = static_cast<uint32_t>(SDL_GetPerformanceCounter());
 }
 
 unsigned int DebugTimer::take(const std::string &name, bool reset)
@@ -66,7 +66,7 @@ unsigned int DebugTimer::delta(const std::string &name, bool reset)
 
   unsigned int ret = SDL_GetPerformanceCounter() - tinfo.time;
   if( reset )
-    tinfo.time = SDL_GetPerformanceCounter();
+    tinfo.time = static_cast<uint64_t>(SDL_GetPerformanceCounter());
 
   return ret;
 }

@@ -89,18 +89,22 @@ endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE_RELEASE)
   message("CaesarIA-tileset: building in release mode")
   if(NOT APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
   endif()
 else()
   message("CaesarIA-tileset: building in debug mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
-endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+	if(NOT MSVC)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+	endif()
+endif()
 
 if(WIN32)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+	if(NOT MSVC)
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+	endif()
   target_link_libraries(${PROJECT_NAME} "imagehlp")
 endif(WIN32)
 
@@ -111,18 +115,21 @@ if(WIN32)
 endif(WIN32)
 
 if(NOT MSVC)
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
-)
+	ADD_CUSTOM_COMMAND(
+			TARGET ${PROJECT_NAME}
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
+	)
 
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
-)
+	ADD_CUSTOM_COMMAND(
+			TARGET ${PROJECT_NAME}
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
+	)
+	# Enforce C++11
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
   set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR}/tools/tileset)
 endif()
 
@@ -134,5 +141,4 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   endif()
 endif()
 
-# Enforce C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+

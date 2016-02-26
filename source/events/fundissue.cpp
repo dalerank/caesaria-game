@@ -71,7 +71,7 @@ void Payment::_exec(Game& game, unsigned int )
   if( _type == Issue::importGoods )
   {
     int price = good::Helper::importPrice( game.city(), _gtype, _qty );
-    _value = -price * ( 1+_buff );
+    _value = (int)(-price * ( 1+_buff ));
   }
   else if( _type == Issue::exportGoods )
   {

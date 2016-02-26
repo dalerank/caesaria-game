@@ -26,7 +26,6 @@ public:
   Farm(const good::Product outGood, const object::Type type );
 
   virtual ~Farm();
-  void init();
 
   void computePictures();
   void assignTile( const TilePos& pos );

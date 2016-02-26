@@ -53,7 +53,7 @@ public:
   virtual ~PlayerCity();
 
   /** Call every step */
-  virtual void timeStep(unsigned int time);  // performs one simulation step
+  virtual void timeStep(const unsigned int time);  // performs one simulation step
 
   /** Return array of walkers in current tile */
   const WalkerList& walkers(const TilePos& pos);
