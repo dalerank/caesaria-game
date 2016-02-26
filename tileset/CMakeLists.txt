@@ -96,15 +96,15 @@ if(CMAKE_BUILD_TYPE_RELEASE)
   endif()
 else()
   message("CaesarIA-tileset: building in debug mode")
-	if(NOT MSVC)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
-	endif()
+  if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  endif()
 endif()
 
 if(WIN32)
-	if(NOT MSVC)
-		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
-	endif()
+  if(NOT MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
+  endif()
   target_link_libraries(${PROJECT_NAME} "imagehlp")
 endif(WIN32)
 
@@ -115,21 +115,19 @@ if(WIN32)
 endif(WIN32)
 
 if(NOT MSVC)
-	ADD_CUSTOM_COMMAND(
-			TARGET ${PROJECT_NAME}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
-	)
+  ADD_CUSTOM_COMMAND(
+      TARGET ${PROJECT_NAME}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
+  )
 
-	ADD_CUSTOM_COMMAND(
-			TARGET ${PROJECT_NAME}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
-	)
-	# Enforce C++11
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ADD_CUSTOM_COMMAND(
+      TARGET ${PROJECT_NAME}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
+  )
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
   set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR}/tools/tileset)
 endif()
 
@@ -139,6 +137,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   if(NOT HAIKU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
   endif()
+endif()
+
+if(NOT MSVC)
+  # Enforce C++11
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 

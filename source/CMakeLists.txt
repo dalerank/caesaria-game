@@ -169,10 +169,10 @@ if(CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
   endif()
 else()
   message("CaesarIA-game: building in debug mode")
-	if(NOT MSVC)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
   endif()
-	
+
   add_definitions( -DDEBUG )
 endif()
 
@@ -199,20 +199,20 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
 endif()
 
 if(NOT MSVC)
-	# Enforce C++11
-	set(USE_CPP11 ON)
+  # Enforce C++11
+  set(USE_CPP11 ON)
 
-	# Check for C++11 suport
-	include(CheckCXXCompilerFlag)
-	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-	
-	if(COMPILER_SUPPORTS_CXX11)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	else()
-		message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
-	endif()
+  # Check for C++11 suport
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+
+  if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
+  endif()
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 endif()
 
 if(WIN32 AND NOT MSVC)
