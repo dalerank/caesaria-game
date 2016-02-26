@@ -167,7 +167,7 @@ void engineGetOption(js_State *J)
   Variant value = game::Settings::get(name);
   int error = internal::push(J, value);
   if (error)
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption" );
+    Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption when find " + name );
 }
 
 void engineSetOption(js_State *J)
@@ -180,7 +180,7 @@ void engineSetOption(js_State *J)
   else if (js_isstring(J,2))
     game::Settings::set(name, std::string(js_tostring(J,2)));
   else
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
+    Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption when set " + name );
 
   game::Settings::save();
 }
@@ -188,7 +188,7 @@ void engineSetOption(js_State *J)
 void reg_object_callback(const std::string& name, const std::string& funcname, js_CFunction f, int params)
 {
   js_newcfunction(internal::J, f, funcname.c_str(), params);
-  Logger::warning( "script://" + name + "_set_" + funcname + "->" + funcname);
+  Logger::warning( "script-if://" + name + "_set_" + funcname + "->" + funcname);
   js_defproperty(internal::J, -2, funcname.c_str(), JS_DONTENUM);
 }
 

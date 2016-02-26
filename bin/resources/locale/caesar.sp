@@ -3,7 +3,7 @@
 "##small_food_on_next_month##":"-muy poca comida para el próximo mes.",
 "##build_your_rom##":"Región aleatoria",
 "##city_barbarian_off_tlp##":"Los barbaros no atacarán tu ciudad",
-"##theme_tome6##":"Tema romano",
+"##theme_rome6##":"Tema romano",
 "##rightMenu_on##":"Menú principal: derecha",
 "##rightMenu_off##":"Menú principal: left",
 "##city_border_on##":"Borde de pantalla: Activado",

@@ -2212,6 +2212,6 @@
 "##month_1_short##":"Jan",
 "##build_senate_for_advisors##":"Du solltest vorher einen Senat bauen",
 "##click_on_city_for_info_tlp##":"Klicke auf die Stadt für mehr Informationen",
-"##market_too_far_from_granary##":"Этот рынок слишком далеко от амбара.",
-"##market_too_far_from_warehouse##":"Этот рынок слишком далеко от склада",
+"##market_too_far_from_granary##":"Dieser Markt ist zu weit vom Silo entfernt.",
+"##market_too_far_from_warehouse##":"Dieser Markt ist zu weit vom Lagerhaus entfernt.",
 }

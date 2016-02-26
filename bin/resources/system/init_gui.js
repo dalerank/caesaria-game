@@ -25,9 +25,9 @@ Spinbox.prototype = {
   set tooltip (text) { this.widget.setTooltipText(text); },
   set textColor (color) { this.widget.setColor(color); },
   set subElement (value) { this.widget.setSubElement(value); },
-	set postfix (text) { this.widget.setPostfix(text); },
-	set callback (func) { this.widget.onChangeA(func); },
-	set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
+    set postfix (text) { this.widget.setPostfix(text); },
+    set callback (func) { this.widget.onChangeA(func); },
+    set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 };
@@ -71,7 +71,7 @@ Editbox.prototype = {
 
   moveToCenter : function() { this.widget.moveToCenter(); },
   deleteLater : function() { this.widget.deletLater(); },
-	setFocus : function() { this.widget.setFocus(); }
+    setFocus : function() { this.widget.setFocus(); }
 }
 
 function TexturedButton(parent) {
@@ -123,7 +123,7 @@ Window.prototype = {
   moveToCenter : function() { this.widget.moveToCenter(); },
   setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
-	addCloseCode : function(code) { this.widget.addCloseCode(code); },
+    addCloseCode : function(code) { this.widget.addCloseCode(code); },
 
   closeAfterKey : function(obj) {
       if(obj.escape)
@@ -136,7 +136,7 @@ Window.prototype = {
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label;
   },
-	addSpinbox : function(rx,ry,rw,rh) {
+    addSpinbox : function(rx,ry,rw,rh) {
     var spinbox = new Spinbox(this.widget);
     spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
     return spinbox;
@@ -181,6 +181,7 @@ function Button(parent) {
 Button.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set position (point) { this.widget.setPosition(point.x,point.y); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.onClickedEx(func); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },
@@ -215,7 +216,7 @@ Listbox.prototype = {
 function Dialogbox(parent) {
     this.widget = new _Dialogbox(parent);
 }
- 
+
 Dialogbox.prototype = {
   set title (str) { this.widget.setTitle( engine.translate(str) ); },
   set text  (str) { this.widget.setText( engine.translate(str) ); },

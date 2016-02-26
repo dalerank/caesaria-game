@@ -14,8 +14,8 @@
 "##theme_rome4##":"Сейчас играет - Побережье",
 "##theme_rome5##":"Сейчас играет - Пустынный ветер",
 "##theme_rome8##":"Markus Strübbe - Старый сад",
-"##theme_tome6##":"Roman theme'",
-"##theme_tome7##":"Омри Лахав - 'Правитель'",
+"##theme_rome6##":"Roman theme'",
+"##theme_rome7##":"Омри Лахав - 'Правитель'",
 "##city_farm_use_meadow_on##":"Ферма : +луга",
 "##city_farm_use_meadow_off##":"Ферма : +земля",
 "##city_warf_timber_on##":"Верфи нужно дерево",
@@ -2303,4 +2303,6 @@
 ",
 "##click_on_city_for_info_tlp##":"Выберите город для дополнительной информации
 ",
+"##market_too_far_from_granary##":"Этот рынок слишком далеко от амбара",
+"##market_too_far_from_warehouse##":"Этот рынок слишком далеко от склада",
 }

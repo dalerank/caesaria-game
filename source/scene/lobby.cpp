@@ -60,12 +60,10 @@ public:
   void showChangesWindowIfNeed();
   void playRandomap();
   void constructorMode();
-  void showMainMenu();
   void showSoundOptions();
   void showVideoOptions();
   void showMissionSelector();
-  void quitGame();
-  void selectFile( std::string fileName );
+  void selectFile(std::string fileName);
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -279,33 +277,7 @@ void Lobby::Impl::showOptionsMenu()
 
 void Lobby::Impl::showNewGame()
 {
-  menu->clear();
 
-  ADD_MENU_BUTTON( "##mainmenu_startcareer##", Impl::startCareer )
-  ADD_MENU_BUTTON( "##mainmenu_randommap##",   Impl::playRandomap )
-  ADD_MENU_BUTTON( "##mainmenu_constructor##", Impl::constructorMode )
-  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
-}
-
-void Lobby::Impl::showMainMenu()
-{
-  menu->clear();
-
-  std::string lastGame = SETTINGS_STR( lastGame );
-  if( !lastGame.empty() )
-    ADD_MENU_BUTTON( "##mainmenu_continueplay##", Impl::continuePlay )
-
-  ADD_MENU_BUTTON( "##mainmenu_newgame##",        Impl::showNewGame )
-  ADD_MENU_BUTTON( "##mainmenu_load##",           Impl::showLoadMenu )
-  ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
-  ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
-
-  if( vfs::Path( ":/dlc" ).exist() )
-    ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
-
-  ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
-
-  showChangesWindowIfNeed();
 }
 
 void Lobby::Impl::showAdvancedMaterials()
@@ -358,11 +330,11 @@ void Lobby::Impl::showMissionSelector()
   changePlayerNameIfNeed();
 }
 
-void Lobby::Impl::quitGame()
+void Lobby::quit()
 {
   game::Settings::save();
-  result=closeApplication;
-  isStopped=true;
+  _d->result=closeApplication;
+  _d->isStopped=true;
 }
 
 void Lobby::Impl::selectFile(std::string fileName)
@@ -412,9 +384,7 @@ void Lobby::draw()
 void Lobby::handleEvent( NEvent& event )
 {
   if (event.EventType == sEventQuit)
-  {
-    _d->quitGame();
-  }
+    quit();
 
   _d->ui().handleEvent( event );
 }

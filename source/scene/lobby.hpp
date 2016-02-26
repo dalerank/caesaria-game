@@ -59,6 +59,7 @@ public:
 
   int result() const;
   void reload();
+  void quit();
   void newGame();
   bool isStopped() const;
 

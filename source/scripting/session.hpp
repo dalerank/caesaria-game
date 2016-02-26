@@ -39,6 +39,7 @@ public:
   void quitGame();
   void reloadScene();
   void startCareer();
+  void clearUi();
   void openUrl(const std::string& url);
   int lastChangesNum() const;
   StringArray getCredits() const;

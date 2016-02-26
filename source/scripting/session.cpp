@@ -22,9 +22,9 @@
 #include <GameScene>
 #include <GameGfx>
 #include <GameGood>
+#include <GameGui>
 #include <GameCore>
 #include "sound/engine.hpp"
-#include "core/osystem.hpp"
 #include "core/font.hpp"
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
@@ -123,8 +123,12 @@ void Session::loadNextMission()
 void Session::quitGame()
 {
   scene::Level* level = safety_cast<scene::Level*>(_game->scene());
-  if( level )
+  if (level)
     level->quit();
+
+  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
+  if (lobby)
+    lobby->quit();
 }
 
 void Session::reloadScene()
@@ -139,6 +143,11 @@ void Session::startCareer()
   scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
   if( lobby )
     lobby->newGame();
+}
+
+void Session::clearUi()
+{
+  _game->gui()->clear();
 }
 
 void Session::openUrl(const std::string& url)
