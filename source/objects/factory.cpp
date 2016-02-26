@@ -363,15 +363,6 @@ void Factory::initialize(const object::Info& mdata)
   }
 }
 
-void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)
-{
-  if( oldFormat < 70 )
-  {
-     _d->production.rate = stream.get( "productionRate", 9.6f );
-     _d->production.progress = stream.get( "progress", 0.f );
-  }
-}
-
 const good::Info& Factory::produce() const{  return _d->goods.out;}
 
 void Factory::receiveGood()

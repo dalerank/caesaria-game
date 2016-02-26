@@ -271,30 +271,33 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-bool Farm::build( const city::AreaInfo& info )
+void Farm::_updateMeadowsCoverage()
+{
+  if (_city()->getOption(PlayerCity::farmUseMeadows))
+  {
+    auto tiles = area();
+    _d->meadowsCoverage = (float)tiles.count(Tile::tlMeadow) / (float)tiles.size();
+  }
+}
+
+bool Farm::build(const city::AreaInfo& info)
 {
   setSize(Size(2,2));
   city::AreaInfo upInfo = info;
-  if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
+  if (!info.onload) //it flag use real build
   {
     upInfo.pos += TilePos(0,1);
-
-    _buildFarmTiles( info, upInfo.pos );
+    _buildFarmTiles(info, upInfo.pos);
+    _updateMeadowsCoverage();
   }
 
   _fgPictures().resize( 0 );
-  Factory::build( upInfo );
+  Factory::build(upInfo);
 
-  if( info.city->getOption( PlayerCity::farmUseMeadows ) )
-  {
-    auto tiles = area();
-    _d->meadowsCoverage = (float)tiles.count( Tile::tlMeadow ) / (float)tiles.size();
-  }
-
-  if( _d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0 )
+  if (_d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0)
     _d->meadowsCoverage = 1.f;
 
-  setPicture( _getMainPicture() );
+  setPicture(_getMainPicture());
   computePictures();
 
   return true;
@@ -325,6 +328,7 @@ void Farm::load( const VariantMap& stream )
   }
 
   computePictures();
+  _updateMeadowsCoverage();
 }
 
 TilesArray Farm::meadows() const

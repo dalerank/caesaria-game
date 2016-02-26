@@ -73,8 +73,6 @@ public:
   std::string cartStateDesc() const;
   virtual void initialize(const object::Info& mdata);
 
-  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
-
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();

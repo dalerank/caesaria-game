@@ -308,12 +308,6 @@ void PlayerCity::load( const VariantMap& stream )
 {
   LOG_CITY.info( "Start parse savemap" );
   int saveFormat = stream.get( "saveFormat", minimumOldFormat );
-  bool needLoadOld = saveFormat < GAME_BUILD_NUMBER;
-
-  if( needLoadOld )
-  {
-    LOG_CITY.warn( "Trying to load from format {}", saveFormat );
-  }
 
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
@@ -331,7 +325,6 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse options" );
   VARIANT_LOAD_CLASS_D_LIST( _d, options, stream )
-  setOption( PlayerCity::forceBuild, 1 );
 
   LOG_CITY.info( "Parse funds" );
   VARIANT_LOAD_CLASS_D( _d, funds, stream )
@@ -340,35 +333,38 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Parse trade/build/win params" );
   VARIANT_LOAD_CLASS_D( _d, tradeOptions, stream )
   VARIANT_LOAD_CLASS_D( _d, buildOptions, stream )
-  _d->winTargets.load( stream.get( "winTargets").toMap() );
+  _d->winTargets.load(stream.get( "winTargets").toMap());
 
   LOG_CITY.info( "Load overlays" );
-  VariantMap overlays = stream.get( "overlays" ).toMap();
+  VariantMap vmOverlays = stream.get( "overlays" ).toMap();
 
-  for( const auto& item : overlays)
+  for( const auto& item : vmOverlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
+    object::Type overlayType = (object::Type)config.get(ovconfig::idxType).toInt();
     TilePos pos = config.get( ovconfig::idxLocation, TilePos::invalid() );
 
     auto overlay = Overlay::create( overlayType );
     if( overlay.isValid() && config::tilemap.isValidLocation( pos ) )
     {
-      city::AreaInfo info( this, pos );
-      overlay->build( info );
-      overlay->load( overlayParams );      
-      //support old formats
-      if( needLoadOld )
-        overlay->debugLoadOld( saveFormat, overlayParams );
+      city::AreaInfo info(this, pos);
+      info.onload = true;
 
-      _d->overlays.push_back( overlay );
+      overlay->build(info);
+      overlay->load(overlayParams);
+      _d->overlays.push_back(overlay);
     }
     else
     {
       LOG_CITY.warn( "Can't load overlay " + item.first );
     }
+  }
+
+  for( auto overlay : _d->overlays )
+  {
+    overlay->afterLoad();
   }
 
   LOG_CITY.info( "Parse walkers info" );
@@ -419,7 +415,6 @@ void PlayerCity::load( const VariantMap& stream )
     }
   }
 
-  setOption( PlayerCity::forceBuild, 0 );
   setOption( PlayerCity::constructorMode, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
