@@ -150,6 +150,13 @@ void Session::clearUi()
   _game->gui()->clear();
 }
 
+void Session::setMode(int mode)
+{
+  auto scene = _game->scene();
+  if (scene)
+      scene->setMode(mode);
+}
+
 void Session::openUrl(const std::string& url)
 {
   OSystem::openUrl( url, steamapi::ld_prefix() );

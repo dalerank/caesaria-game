@@ -58,7 +58,7 @@ function setLanguage(config)
 
   g_session.setLanguage(config.ext,config.talks);
 
-  if (confgi.font != undefined && currentFont != config.font)
+  if (confgi.font !== undefined && currentFont !== config.font)
   {
     engine.setOption("font",config.font);
     g_session.setFont(config.font);
@@ -71,8 +71,8 @@ function OnShowLanguageDialog()
 
   var langModel = [
                     { lang : "English",     ext : "en", },
-                    { lang : "Русский",      ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
-                    { lang : "Українська",    ext : "ua", },
+                    { lang : "Русский",     ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
+                    { lang : "Українська",  ext : "ua", },
                     { lang : "Deutsch",     ext : "de", talks : ":/audio/wavs_citizen_de.zip" },
                     { lang : "Svenska"    , ext : "sv", },
                     { lang : "Español"    , ext : "sp", talks : ":/audio/wavs_citizen_sp.zip" },
@@ -84,7 +84,7 @@ function OnShowLanguageDialog()
                     { lang : "Polish"     , ext : "pl", },
                     { lang : "Suomi"     ,  ext : "fn", },
                     { lang : "Português"  , ext : "pr", },
-                    { lang : "Cрпски"    ,   ext : "sb", },
+                    { lang : "Cрпски"    ,  ext : "sb", },
                     { lang : "Korean"     , ext : "kr", font : "HANBatangB.ttf" }
                   ];
 
@@ -121,7 +121,7 @@ function OnShowLogs()
 {
   var logfile = g_session.logfile();
   if (!logfile.exist())
-    g_ui.addInformationDialog( "", "Can't found logfile" );
+    g_ui.addInformationDialog( "", "Can't find logfile" );
   else
     g_session.openUrl(logfile.str());
 }
@@ -190,8 +190,11 @@ function addMainMenuButton(caption,callback)
   button.text = caption;
   if (callback)
   {
-      engine.log(callback.toString());
       button.callback = callback;
+  }
+  else
+  {
+      engine.log("callback is null")
   }
 
   g_lobbyButtons.push(button);
@@ -211,6 +214,8 @@ function mainMenuClear()
 {
   for (var i in g_lobbyButtons)
     g_lobbyButtons[i].deleteLater();
+
+  g_lobbyButtons = [];
 }
 
 function OnContinuePlay()
@@ -218,19 +223,74 @@ function OnContinuePlay()
     engine.log("OnContinuePlay");
 }
 
+function OnPlayRandomap()
+{
+    engine.log("OnPlayRandomap");
+}
+
+function OnConstructorMode()
+{
+    engine.log("OnConstructorMode");
+}
+
 function OnShowNewGameMenu()
 {
     engine.log("OnShowNewGameMenu");
+
+    mainMenuClear();
+
+    addMainMenuButton( "##mainmenu_startcareer##", OnStartCareer);
+    addMainMenuButton( "##mainmenu_randommap##",   OnPlayRandomap);
+    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);
+    addMainMenuButton( "##cancel##",               OnShowMainMenu);
+}
+
+function OnShowMissionSelector()
+{
+    engine.log("OnShowMissionSelector");
+}
+
+function OnShowSaveSelectDialog()
+{
+    engine.log("OnShowSaveSelectDialog");
+}
+
+function OnShowMapSelectDialog()
+{
+    engine.log("OnShowMapSelectDialog");
 }
 
 function OnShowLoadGameMenu()
 {
     engine.log("OnShowLoadGameMenu");
+
+    mainMenuClear();
+
+    addMainMenuButton("##mainmenu_playmission##", OnShowMissionSelector );
+    addMainMenuButton("##mainmenu_loadgame##",    OnShowSaveSelectDialog );
+    addMainMenuButton("##mainmenu_loadmap##",     OnShowMapSelectDialog );
+    addMainMenuButton("##cancel##",               OnShowMainMenu);
+}
+
+function OnShowPackageOptions()
+{
+    engine.log("OnShowPackageOptions");
 }
 
 function OnShowGameOptionsMenu()
 {
     engine.log("OnShowGameOptionsMenu");
+
+    mainMenuClear();
+
+    addMainMenuButton( "##mainmenu_language##", OnShowLanguageDialog);
+    addMainMenuButton( "##mainmenu_video##",    OnShowVideoSettings);
+    addMainMenuButton( "##mainmenu_sound##",    OnShowAudioDialog);
+    addMainMenuButton( "##mainmenu_package##",  OnShowPackageOptions );
+    addMainMenuButton( "##mainmenu_plname##",   function() { OnChangePlayerName(true); } );
+    addMainMenuButton( "##mainmenu_showlog##",  OnShowLogs);
+    addMainMenuButton( "##mainmenu_changes##",  function() { OnShowChanges(true); } );
+    addMainMenuButton( "##cancel##",            OnShowMainMenu);
 }
 
 function OnShowGameCredits()
@@ -260,9 +320,7 @@ function OnShowMainMenu()
   if (dlc.exist)
      addMainMenuButton("##mainmenu_mcmxcviii##", OnShowAdvancedMaterials);
 
-  addMainMenuButton("##mainmenu_quit##",         g_session.quitGame);
-
-  OnShowChanges(false);
+  addMainMenuButton("##mainmenu_quit##",         function() { g_session.quitGame(); } );
 }
 
 function OnLobbyStart()
@@ -304,6 +362,7 @@ function OnLobbyStart()
   btnTranslationPage.tooltip = "Help with translation!";
 
   OnShowMainMenu();
+  OnShowChanges(false);
 }
 
 function OnShowCredits()

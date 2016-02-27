@@ -40,6 +40,7 @@ public:
   void reloadScene();
   void startCareer();
   void clearUi();
+  void setMode(int mode);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
   StringArray getCredits() const;

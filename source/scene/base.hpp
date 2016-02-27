@@ -49,6 +49,7 @@ public:
 
   virtual void handleEvent( NEvent& event) {}
   virtual void draw() = 0;
+  virtual void setMode(int mode);
 
   // this method is executed after every frame. default: do nothing
   virtual void afterFrame() {}

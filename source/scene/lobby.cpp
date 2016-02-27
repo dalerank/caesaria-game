@@ -54,38 +54,26 @@ public:
 
 public:
   void showCredits();
-  void showLoadMenu();
-  void showNewGame();
-  void showOptionsMenu();
-  void showChangesWindowIfNeed();
   void playRandomap();
   void constructorMode();
-  void showSoundOptions();
-  void showVideoOptions();
   void showMissionSelector();
   void selectFile(std::string fileName);
   void showMapSelectDialog();
   void showSaveSelectDialog();
-  void changePlayerName();
   void showAdvancedMaterials();
-  void startCareer();
-  void showLanguageOptions();
   void showPackageOptions();
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
   void resolveSteamStats();
-  void changePlayerNameIfNeed(bool force=false);
   void restart();
   void openDlcDirectory(Widget* sender);
-  void showLogFile();
-  void showChanges();
   gui::Ui& ui();
 };
 
 void Lobby::Impl::showSaveSelectDialog()
 {
-  vfs::Path savesPath = SETTINGS_STR( savedir );
+ /* vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = Lobby::loadSavedGame;
   auto& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
@@ -96,32 +84,7 @@ void Lobby::Impl::showSaveSelectDialog()
   loadGameDialog.setTitle( _("##mainmenu_loadgame##") );
   loadGameDialog.setText( _("##load_this_game##") );
 
-  changePlayerNameIfNeed();
-}
-
-void Lobby::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
-
-void Lobby::Impl::showLogFile()
-{
-  script::Core::execFunction("OnShowLogs");
-}
-
-void Lobby::Impl::showChanges()
-{
-  VariantList vl; vl << true;
-  script::Core::execFunction("OnShowChanges", vl);
-}
-
-void Lobby::Impl::showChangesWindowIfNeed()
-{
-  VariantList vl; vl << false;
-  script::Core::execFunction("OnShowChanges", vl);
-}
-
-void Lobby::Impl::changePlayerNameIfNeed(bool force)
-{
-  VariantList vl; vl << force;
-  script::Core::execFunction("OnChangePlayerName", vl);
+  changePlayerNameIfNeed(); */
 }
 
 void Lobby::Impl::fitScreenResolution()
@@ -197,24 +160,9 @@ void Lobby::Impl::openDlcDirectory(Widget* sender)
   ui().add<DlcFolderViewer>( path );
 }
 
-void Lobby::Impl::showSoundOptions()
-{
-  events::dispatch<events::ScriptFunc>("OnShowAudioDialog");
-}
-
-void Lobby::Impl::showLanguageOptions()
-{
-  events::dispatch<events::ScriptFunc>("OnShowLanguageDialog");
-}
-
 void Lobby::Impl::showPackageOptions()
 {
   ui().add<dialog::PackageOptions>( Rect() );
-}
-
-void Lobby::Impl::startCareer()
-{
-  events::dispatch<events::ScriptFunc>("OnStartCareer");
 }
 
 void Lobby::newGame()
@@ -229,19 +177,9 @@ void Lobby::Impl::showCredits()
 
 #define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
 
-void Lobby::Impl::showLoadMenu()
-{
-  menu->clear();
-
-  ADD_MENU_BUTTON( "##mainmenu_playmission##", Impl::showMissionSelector )
-  ADD_MENU_BUTTON( "##mainmenu_loadgame##",    Impl::showSaveSelectDialog )
-  ADD_MENU_BUTTON( "##mainmenu_loadmap##",     Impl::showMapSelectDialog )
-  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
-}
-
 void Lobby::Impl::constructorMode()
 {
-  auto& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
+ /* auto& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
                                                      -1 );
   loadFileDialog.setMayDelete( false );
@@ -251,7 +189,7 @@ void Lobby::Impl::constructorMode()
   loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
   loadFileDialog.setText( _("##start_this_map##") );
 
-  changePlayerNameIfNeed();
+  changePlayerNameIfNeed(); */
 }
 
 void Lobby::Impl::playRandomap()
@@ -261,28 +199,9 @@ void Lobby::Impl::playRandomap()
   isStopped = true;
 }
 
-void Lobby::Impl::showOptionsMenu()
-{
-  menu->clear();
-
-  ADD_MENU_BUTTON( "##mainmenu_language##", Impl::showLanguageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_video##",    Impl::showVideoOptions )
-  ADD_MENU_BUTTON( "##mainmenu_sound##",    Impl::showSoundOptions )
-  ADD_MENU_BUTTON( "##mainmenu_package##",  Impl::showPackageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_plname##",   Impl::changePlayerName )
-  ADD_MENU_BUTTON( "##mainmenu_showlog##",  Impl::showLogFile )
-  ADD_MENU_BUTTON( "##mainmenu_changes##",  Impl::showChanges )
-  ADD_MENU_BUTTON( "##cancel##",            Impl::showMainMenu )
-}
-
-void Lobby::Impl::showNewGame()
-{
-
-}
-
 void Lobby::Impl::showAdvancedMaterials()
 {
-  menu->clear();
+  /*menu->clear();
 
   vfs::Directory dir( ":/dlc" );
   if( !dir.exist() )
@@ -312,22 +231,17 @@ void Lobby::Impl::showAdvancedMaterials()
     }
   }
 
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
-}
-
-void Lobby::Impl::showVideoOptions()
-{
-  events::dispatch<events::ScriptFunc>( "OnShowVideoSettings" );
+  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu ) */
 }
 
 void Lobby::Impl::showMissionSelector()
 {
-  result = Lobby::loadMission;
+  /*result = Lobby::loadMission;
   auto& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
 
   CONNECT( &wnd, onSelectFile(), this, Impl::selectFile );
 
-  changePlayerNameIfNeed();
+  changePlayerNameIfNeed();*/
 }
 
 void Lobby::quit()
@@ -345,7 +259,7 @@ void Lobby::Impl::selectFile(std::string fileName)
 
 void Lobby::Impl::showMapSelectDialog()
 {
-  auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
+  /*auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
                                                       vfs::Path( ":/maps/" ), ".map,.sav,.omap",
                                                       -1 );
   loadFileDialog.setMayDelete( false );
@@ -355,7 +269,7 @@ void Lobby::Impl::showMapSelectDialog()
   loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
   loadFileDialog.setText( _("##start_this_map##") );
 
-  changePlayerNameIfNeed();
+  changePlayerNameIfNeed();*/
 }
 
 Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
@@ -405,8 +319,6 @@ void Lobby::initialize()
   _d->menu = &_d->ui().add<gui::Lobby>();
 
   events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
-
-  _d->showMainMenu();
 
   if( OSystem::isAndroid() )
   {

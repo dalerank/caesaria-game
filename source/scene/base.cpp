@@ -38,15 +38,16 @@ Base::Base()
 }
 
 Base::~Base() {}
+void Base::setMode(int mode) {}
 
 void Base::drawFrame(gfx::Engine& engine)
 {
    engine.frame().start();
-   
+
    draw();
    if( engine.getFlag( gfx::Engine::showMetrics ) )
      engine.frame().drawMetrics();
-   
+
    engine.frame().finish();;
 }
 

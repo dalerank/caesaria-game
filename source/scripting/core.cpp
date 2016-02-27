@@ -298,6 +298,13 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
 {
   try
   {
+    auto* ptrCheck = safety_cast<Widget*>(widget);
+    if(!ptrCheck)
+    {
+      Logger::warning( "WARNING !!! Callback " + className + ":" + callback + " called not for widget");
+      return;
+    }
+
     if (widget)
     {
       std::string index = widget->getProperty(callback);
