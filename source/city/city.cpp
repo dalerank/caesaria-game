@@ -162,7 +162,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, game::Date::current() );      
+    _d->monthStep( this, game::Date::current() );
   }
 
   if( game::Date::isWeekChanged() )
@@ -202,7 +202,7 @@ const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.a
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
-{  
+{
   _d->border[ type ] = &_d->tilemap.at( pos );
 }
 
@@ -307,7 +307,6 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   LOG_CITY.info( "Start parse savemap" );
-  int saveFormat = stream.get( "saveFormat", minimumOldFormat );
 
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
