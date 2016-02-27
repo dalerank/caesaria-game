@@ -304,7 +304,11 @@ void Building::_updateBalanceKoeffs()
   float balance = std::max<float>( _city()->statistic().balance.koeff(), 0.1f );
 
   float fireKoeff = balance * _cityOpt(PlayerCity::fireKoeff) / 100.f;
+<<<<<<< HEAD
   if (!_cityOpt(PlayerCity::c3gameplay))
+=======
+  if (!_cityOption(PlayerCity::c3gameplay))
+>>>>>>> master
   {
     int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
     if( anyWater > 0 )

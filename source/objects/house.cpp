@@ -188,7 +188,7 @@ public:
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   good::Storage goodstore;
-  Services services;  // value=access to the service (0=no access, 100=good access)  
+  Services services;  // value=access to the service (0=no access, 100=good access)
   Point randomOffset;
   std::string evolveInfo;
   Habitants habitants;
@@ -326,9 +326,9 @@ void House::_checkPatricianDeals()
 }
 
 void House::_updateTax()
-{  
-  bool newEconomyModel = _city()->getOption( PlayerCity::housePersonalTaxes );
-  int difficulty = _city()->getOption( PlayerCity::difficulty );
+{
+  bool newEconomyModel = _cityOpt(PlayerCity::housePersonalTaxes);
+  int difficulty = _cityOpt(PlayerCity::difficulty);
   float multiply = 1.0f;
   switch (difficulty)
   {
@@ -451,7 +451,7 @@ void House::_updateCrime()
                   + foodStockInfluence
                   + poverityHouse
                   + desirabilityInfluence
-                  + (int)state( pr::happinessBuff );  
+                  + (int)state( pr::happinessBuff );
 
   _d->needHappiness = curHappiness;
 
@@ -519,7 +519,7 @@ void House::timeStep(const unsigned long time)
     {
       _levelDown();
     }
-    return; 
+    return;
   }
 
   if( _d->currentYear != game::Date::current().year() )
@@ -583,7 +583,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
         {
           mayGrow = false;
           break;
-        }            
+        }
       }
       else
       {
@@ -606,7 +606,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       {
         auto house = (*delIt)->overlay<House>();
         if( house.isValid() )
-        {          
+        {
           sumHabitants += house->habitants();
 
           house->deleteLater();
@@ -1009,12 +1009,12 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::senate:
     setServiceValue(Service::forum,100);
   break;
-  
+
   case Service::market:
     setServiceValue( Service::market, 100 );
     buyMarket(walker);
   break;
- 
+
   case Service::prefect:
     appendServiceValue(Service::crime, -25);
   break;
@@ -1086,7 +1086,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::recruter:
     res = spec().isPatrician() ? 0 : getServiceValue( service );
-  break;   
+  break;
 
   default:
   {
@@ -1114,7 +1114,7 @@ TilesArray House::enterArea() const
 
 bool House::build( const city::AreaInfo& info )
 {
-  bool ret = Building::build( info );  
+  bool ret = Building::build( info );
   _update( true );
   return ret;
 }
@@ -1155,7 +1155,7 @@ void House::_update( bool needChangeTexture )
       pic = Picture::getInvalid();
     }
 
-    if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
+    if( _city().isValid() && !_cityOpt(PlayerCity::c3gameplay) )
     {
       _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
       pic.addOffset( _d->randomOffset );
@@ -1178,10 +1178,10 @@ void House::_update( bool needChangeTexture )
 
 void House::_updateGround()
 {
-  if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
+  if (_city().isValid() && !_cityOpt(PlayerCity::c3gameplay))
   {
     _d->ground.clear();
-    _d->ground << Picture( "housng1g", size().width() );
+    _d->ground << Picture( "housgn1g", size().width() );
   }
 }
 
@@ -1246,7 +1246,7 @@ std::string House::troubleDesc() const
   std::string ret = Building::troubleDesc();
 
   if( ret.empty() && _d->changeCondition <= 0 )
-  {  
+  {
     ret = _d->evolveInfo;
   }
 
@@ -1287,7 +1287,7 @@ void House::save( VariantMap& stream ) const
   stream[ "desirability" ] = _d->desirability.base;
   stream[ "healthLevel" ] = state( pr::health );
   VARIANT_SAVE_CLASS_D( stream, _d, habitants )
-  VARIANT_SAVE_CLASS_D( stream, _d, goodstore )  
+  VARIANT_SAVE_CLASS_D( stream, _d, goodstore )
   VARIANT_SAVE_ANY_D  (stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D  (stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D  (stream, _d, economy.taxesThisYear)
@@ -1296,10 +1296,10 @@ void House::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D  (stream, _d, economy.money)
   VARIANT_SAVE_ANY_D  (stream, _d, economy.tax)
   VARIANT_SAVE_CLASS_D(stream, _d, services )
-} 
+}
 
 void House::load( const VariantMap& stream )
-{  
+{
   Building::load( stream );
 
   VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
@@ -1508,9 +1508,9 @@ void House::_updateHealthLevel()
 
   updateState( pr::health, -decrease );
 
-  if( state( pr::health ) < 25 && !_city()->getOption( PlayerCity::c3gameplay ))
+  if (state(pr::health) < 25 && !_cityOpt(PlayerCity::c3gameplay))
   {
-    HousePlague::create( _city(), pos(), game::Date::days2ticks( 5 ) );
+    HousePlague::create(_city(), pos(), game::Date::days2ticks(5) );
   }
 }
 

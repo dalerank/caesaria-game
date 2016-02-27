@@ -38,7 +38,7 @@ static Picture invalidSavePicture;
 
 class Overlay::Impl
 {
-public:  
+public:
   Pictures fgPictures;
   object::Type overlayType;
   object::Group overlayClass;
@@ -95,6 +95,18 @@ Tilemap& Overlay::_map() const
 
   Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
   return config::tilemap.invalid();
+}
+
+int Overlay::_cityOpt(int name)
+{
+  if(_city().isNull())
+  {
+    Logger::warning("WARNING !!! Try to get city option when city not initialized");
+    crashhandler::printstack(false);
+    return 0;
+  }
+
+  return _cityOpt((PlayerCity::OptionType)name);
 }
 
 void Overlay::setPicture(Picture picture)
@@ -234,8 +246,8 @@ Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const { return _d->overlayType;}
 
-Picture& Overlay::_fgPicture(unsigned int index) 
-{ 
+Picture& Overlay::_fgPicture(unsigned int index)
+{
   if (index >= _d->fgPictures.size())
   {
     Logger::warning( "Overlay::_fgPicture try get picture over array you need set size for fgpicture before" );
@@ -244,7 +256,7 @@ Picture& Overlay::_fgPicture(unsigned int index)
       return invalidSavePicture;
     _d->fgPictures.resize(index + 1);
   }
-  return _d->fgPictures[index]; 
+  return _d->fgPictures[index];
 }
 
 const TilePos& Overlay::pos() const

@@ -45,7 +45,7 @@ bool ClayPit::build(const city::AreaInfo& info)
 {
   bool isOk = Factory::build( info );
 
-  bool mayCollapse = info.city->getOption( PlayerCity::minesMayCollapse ) != 0;
+  bool mayCollapse = _cityOpt(PlayerCity::minesMayCollapse) != 0;
   if( !mayCollapse )
     _setUnworkingInterval( 0 );
 
@@ -93,7 +93,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
   const_cast<ClayPit*>( this )->_setError( near_water ? "" : "##clay_pit_need_water##" );
 
   return near_water;
-} 
+}
 
 FloodedClayPit::FloodedClayPit()
   : Ruins(object::flooded_clay_pit)
