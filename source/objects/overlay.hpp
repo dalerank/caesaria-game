@@ -128,6 +128,7 @@ protected:
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
   gfx::Tilemap& _map() const;
+  int _cityOpt(int name);
   gfx::Pictures& _fgPictures();
   gfx::Picture& _fgPicture(unsigned int index);
   const gfx::Picture &_fgPicture(unsigned int index) const;

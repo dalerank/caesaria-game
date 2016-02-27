@@ -266,7 +266,7 @@ void Farm::timeStep(const unsigned long time)
 
 void Farm::_updateMeadowsCoverage()
 {
-  if (_city()->getOption(PlayerCity::farmUseMeadows))
+  if (_cityOpt(PlayerCity::farmUseMeadows)>0)
   {
     auto tiles = area();
     _d->meadowsCoverage = (float)tiles.count(Tile::tlMeadow) / (float)tiles.size();
