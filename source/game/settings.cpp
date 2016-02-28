@@ -281,7 +281,7 @@ void Settings::resetIfNeed(char* argv[], int argc)
   }
 }
 
-void Settings::checkwdir(char* argv[], int argc)
+bool Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
   {
@@ -289,9 +289,11 @@ void Settings::checkwdir(char* argv[], int argc)
     {
       const char* opts = argv[i+1];
       setwdir( std::string( opts, strlen( opts ) ) );
-      return;
+      return true;
     }
   }
+
+  return false;
 }
 
 void Settings::checkCmdOptions(char* argv[], int argc)

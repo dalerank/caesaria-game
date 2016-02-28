@@ -160,10 +160,8 @@ bool Path::empty() const { return _d->path.empty(); }
 
 bool Path::exist(SensType sens) const
 {
-  if( empty() )
-  {
+  if (empty())
     return false;
-  }
 
   return FileSystem::instance().existFile( *this, sens );
 }
@@ -516,6 +514,10 @@ Path Path::canonical() const
 
 Info Path::info() const { return Info( *this ); }
 void Path::set(const std::string& path) { *this = path; }
-vfs::Path Path::add(const std::string& path) { return vfs::Directory(*this)/path; }
+
+void Path::add(const std::string& path)
+{
+  *this = vfs::Directory(*this)/path;
+}
 
 } //end namespace vfs

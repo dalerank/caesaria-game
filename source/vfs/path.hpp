@@ -102,7 +102,7 @@ public:
   virtual std::string directory() const;
 
   void set(const std::string& path);
-  vfs::Path add(const std::string& path);
+  void add(const std::string& path);
 
 private:
   class Impl;

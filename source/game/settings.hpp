@@ -133,7 +133,7 @@ public:
   static void save();
 
   void setwdir( const std::string& wdir );
-  void checkwdir( char* argv[], int argc );
+  bool checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
   void changeSystemLang( const std::string& newLang );

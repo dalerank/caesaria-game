@@ -6,10 +6,10 @@ function Path (path) {
 
 Path.prototype = {
     get exist () { return this.path.exist(); },
+    get str () { return this.path.toString(); },
 
     add : function(str) { return this.path.add(str); },
     assign : function(str) { this.path.set(str); },
-    str : function() { return this.path.toString(); }
 }
 
 function Session() {
@@ -38,14 +38,14 @@ Session.prototype = {
     set resolution (mode) { this.session.setResolution(mode.w,mode.h); },
 
     get workdir () {
-    var path = new _Path();
+      var path = new Path();
       path.assign(engine.getOption("workDir"));
       return path;
     },
 
-    get logfile()  {
+    get logfile () {
       var path = this.workdir;
-      path = path.add(engine.getOption("logFile"));
+      path.add(engine.getOption("logfile"));
       return path;
     },
 }

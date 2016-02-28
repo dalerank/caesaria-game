@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
- 
+
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"
@@ -48,7 +48,10 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::consolelog, "" );
 
   options.setwdir( workdir.toString() );
-  options.checkwdir( argv, argc );
+  bool wdirChanged = options.checkwdir( argv, argc );
+  if (wdirChanged)
+    workdir = SETTINGS_STR(workDir);
+
   options.resetIfNeed( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 

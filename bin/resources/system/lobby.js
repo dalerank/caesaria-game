@@ -119,11 +119,15 @@ function OnShowLanguageDialog()
 
 function OnShowLogs()
 {
-  var logfile = g_session.logfile();
-  if (!logfile.exist())
+  engine.log( "TEst2" );
+  var logfile = g_session.logfile;
+  if (!logfile.exist)
     g_ui.addInformationDialog( "", "Can't find logfile" );
   else
-    g_session.openUrl(logfile.str());
+  {
+    engine.log( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+    g_session.openUrl(logfile.str);
+  } 
 }
 
 function OnChangePlayerName(force,continueCallback)
