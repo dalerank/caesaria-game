@@ -109,20 +109,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
 
 void LoadMission::Impl::fillFiles()
 {
-  if( !lbxFiles )
-    return;
-  lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).entries();
-  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".mission" );
-
-  StringArray names;
-  for( auto& it : flist )
-    names << it.fullpath.toString();
-
-  std::sort( names.begin(), names.end() );
-
-  lbxFiles->addItems( names );
 }
 
 void LoadMission::Impl::emitSelectFile()

@@ -36,14 +36,14 @@ public:
   Session(Game* game) { _game = game; }
   void continuePlay(int years);
   void loadNextMission();
-  void quitGame();
+  void setMode(int mode);
   void reloadScene();
   void startCareer();
   void clearUi();
-  void setMode(int mode);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
   StringArray getCredits() const;
+  StringArray getFiles(const std::string& dir, const std::string& ext);
   int videoModesCount() const;
   void playAudio(const std::string& filename, int volume, const std::string& mode);
   Size getVideoMode(int index) const;

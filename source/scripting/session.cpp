@@ -60,6 +60,20 @@ StringArray Session::getCredits() const
   return strs;
 }
 
+StringArray Session::getFiles(const std::string& dir, const std::string& ext)
+{
+  auto flist = vfs::Directory(dir).entries()
+                                  .filter(vfs::Entries::file | vfs::Entries::extFilter, ext);
+
+  StringArray names;
+  for( auto& it : flist )
+    names << it.fullpath.toString();
+
+  std::sort( names.begin(), names.end() );
+
+  return names;
+}
+
 void Session::playAudio(const std::string& filename, int volume, const std::string& mode)
 {
   audio::SoundType type = audio::unknown;
@@ -120,15 +134,11 @@ void Session::loadNextMission()
     level->loadStage( vc.nextMission() );
 }
 
-void Session::quitGame()
+void Session::setMode(int mode)
 {
-  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
-  if (level)
-    level->quit();
-
-  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
-  if (lobby)
-    lobby->quit();
+  scene::Base* scene = _game->scene();
+  if(scene)
+    scene->setMode(mode);
 }
 
 void Session::reloadScene()
@@ -148,13 +158,6 @@ void Session::startCareer()
 void Session::clearUi()
 {
   _game->gui()->clear();
-}
-
-void Session::setMode(int mode)
-{
-  auto scene = _game->scene();
-  if (scene)
-      scene->setMode(mode);
 }
 
 void Session::openUrl(const std::string& url)

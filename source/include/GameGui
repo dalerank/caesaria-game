@@ -4,6 +4,7 @@
 #include "gui/texturedbutton.hpp"
 #include "gui/loadgamedialog.hpp"
 #include "gui/dictionary.hpp"
+#include "gui/dictionary_text.hpp"
 #include "gui/widget.hpp"
 #include "gui/window.hpp"
 #include "gui/startmenu.hpp"
@@ -12,6 +13,7 @@
 #include "gui/listbox.hpp"
 #include "gui/environment.hpp"
 #include "gui/widget_factory.hpp"
+#include "gui/filelistbox.hpp"
 #include "gui/widgetpositionanimator.hpp"
 #include "gui/loadmissiondialog.hpp"
 #include "gui/fade.hpp"
@@ -23,5 +25,3 @@
 #include "gui/spinbox.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "gui/groupbox.hpp"
-
-

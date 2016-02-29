@@ -21,7 +21,7 @@ Session.prototype = {
     loadNextMission : function() { this.session.loadNextMission(); } ,
     getVideoMode : function(index) { return this.session.getVideoMode(index); },
     openUrl      : function(url) { return this.session.openUrl(url); },
-    quitGame     : function() { return this.session.quitGame(); },
+    setMode      : function(mode) { return this.session.setMode(mode); },
     tradableGoods : function() { return this.session.tradableGoods(); },
     getGoodInfo : function(name) { return this.session.getGoodInfo(name); },
     playAudio   : function(name,volume,type) { return this.session.playAudio(name,volume,type); },

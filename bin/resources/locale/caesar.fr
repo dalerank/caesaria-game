@@ -1,7 +1,9 @@
-{"##some_food_on_next_month##":"De la nourriture pour le prochain mois",
-"##have_no_food_on_next_month##":"- pas de nourriture pour le prochain mois",
-"##small_food_on_next_month##":"Peu de nourriture pour le prochain mois",
+{"##some_food_on_next_month##":"- de la nourriture pour le mois prochain",
+"##have_no_food_on_next_month##":"- pas de nourriture pour le mois prochain",
+"##small_food_on_next_month##":"- peu de nourriture pour le mois prochain",
+"##build_your_rom##":"Région aléatoire",
 "##city_barbarian_off_tlp##":"Les barbares n'attaqueront pas votre citée",
+"##enter_dinasty_name_here##":"Entrez le nom de votre dynastie",
 "##city_barbarian_off##":"
 Barbares : Désactivés",
 "##city_barbarian_on##":"Barbares : Activés",

@@ -80,6 +80,11 @@ int push(js_State* J,const Variant& param)
     return 0;
   break;
 
+  case Variant::NStringArray:
+    push(J, param.toStringArray());
+    return 0;
+  break;
+
   case Variant::Char:
   case Variant::String:
     js_pushstring(J, param.toString().c_str());
@@ -465,7 +470,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType paramValue = internal::to( J, 1, paramType() ); \
+                                  paramType paramValue = internal::to(J, 1, paramType()); \
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
@@ -519,6 +524,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "animators.implementation"
 #include "path.implementation"
 #include "spinbox.implementation"
+#include "filelistbox.implementation"
 
 void Core::registerFunctions( Game& game )
 {
@@ -550,6 +556,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "animators.interface"
 #include "path.interface"
 #include "spinbox.interface"
+#include "filelistbox.interface"
 
   Core::loadModule(":/system/modules.js");
   internal::observers = new vfs::FileChangeObserver();

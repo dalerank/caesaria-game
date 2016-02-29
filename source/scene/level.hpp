@@ -34,7 +34,7 @@ namespace scene
 class Level: public Base
 {
 public:
-  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_quit} ResultType;
+  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_reserved, res_quit} ResultType;
   Level( Game& game, gfx::Engine& engine );
   virtual ~Level();
 
@@ -42,7 +42,7 @@ public:
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
-  virtual void draw();  
+  virtual void draw();
   virtual void animate( unsigned int time );
   virtual void afterFrame();
   virtual int result() const;

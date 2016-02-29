@@ -64,7 +64,6 @@ public:
   void showPackageOptions();
   void fitScreenResolution();
   void playMenuSoundTheme();
-  void continuePlay();
   void resolveSteamStats();
   void restart();
   void openDlcDirectory(Widget* sender);
@@ -101,12 +100,6 @@ void Lobby::Impl::fitScreenResolution()
 void Lobby::Impl::playMenuSoundTheme()
 {
   audio::Engine::instance().play( "main_menu", 50, audio::theme );
-}
-
-void Lobby::Impl::continuePlay()
-{
-  result = Lobby::loadSavedGame;
-  selectFile( SETTINGS_STR(lastGame) );
 }
 
 void Lobby::Impl::resolveSteamStats()
@@ -231,7 +224,7 @@ void Lobby::Impl::showAdvancedMaterials()
     }
   }
 
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu ) */
+  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )*/
 }
 
 void Lobby::Impl::showMissionSelector()
@@ -244,11 +237,21 @@ void Lobby::Impl::showMissionSelector()
   changePlayerNameIfNeed();*/
 }
 
-void Lobby::quit()
+void Lobby::setMode(int mode)
 {
-  game::Settings::save();
-  _d->result=closeApplication;
-  _d->isStopped=true;
+  switch(mode)
+  {
+  case loadSavedGame:
+    _d->result = Lobby::loadSavedGame;
+    _d->selectFile(SETTINGS_STR(lastGame));
+  break;
+
+  case closeApplication:
+    game::Settings::save();
+    _d->result=closeApplication;
+    _d->isStopped=true;
+  break;
+  }
 }
 
 void Lobby::Impl::selectFile(std::string fileName)
@@ -295,10 +298,10 @@ void Lobby::draw()
   }
 }
 
-void Lobby::handleEvent( NEvent& event )
+void Lobby::handleEvent(NEvent& event)
 {
   if (event.EventType == sEventQuit)
-    quit();
+    setMode(closeApplication);
 
   _d->ui().handleEvent( event );
 }

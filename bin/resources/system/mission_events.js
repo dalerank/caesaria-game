@@ -1,5 +1,5 @@
 function OnMissionWin(newTitle,winText,speech,mayContinue)
-{ 
+{
   engine.log( "JS:OnMissionWin" );
 
   var wnd = g_ui.addWindow(0,0,540,240);
@@ -10,12 +10,12 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   lbCaesarAssign.text = "##caesar_assign_new_title##";
   lbCaesarAssign.font = "FONT_2";
   lbCaesarAssign.textAlign = { h:"center", v:"center" };
-	
+
   var lbNewTitle = wnd.addLabel( 10, 70, wnd.width-20, 30 );
   lbNewTitle.text = newTitle;
   lbNewTitle.font = "FONT_5";
   lbNewTitle.textAlign = { h:"center", v:"center" };
-	
+
   if( mayContinue )
   {
       var btn2years = wnd.addButton( 35, 140, wnd.width-70, 20 );
@@ -55,7 +55,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   wnd.moveToCenter();
   wnd.setModal();
   wnd.mayMove = false;
-	
+
   if (winText.length > 0)
     g_ui.addInformationDialog( "", winText );
 }
@@ -68,18 +68,15 @@ function OnMissionStart()
     var dialog = g_ui.addInformationDialog( "##pls_note##", "##aware_black_objects##" );
     dialog.neverValue = true;
     dialog.onNeverCallback = function(value) {
-				engine.setOption( "showStartAware", value );
-			} 
+                engine.setOption( "showStartAware", value );
+            }
   }
 }
 
 function OnRequestExitGame()
 {
   var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
-  dialog.onYesCallback = function() {
-                var g_session = new Session();
-                g_session.quitGame();
-            }
+  dialog.onYesCallback = function() { g_session.setMode(5); }
 }
 
 function OnShowEmpirePrices()
@@ -113,7 +110,7 @@ function OnShowEmpirePrices()
 
     var relPos = pos.clone();
     relPos.add({x:0,y:34});
-    
+
     var lb = wnd.addLabel(relPos.x, relPos.y, size.w, size.h);
     lb.text = goodInfo.importPrice;
     lb.font = "FONT_1";

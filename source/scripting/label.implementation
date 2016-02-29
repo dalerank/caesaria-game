@@ -8,6 +8,13 @@ DEFINE_OBJECT_FUNCTION_1(Label,setSubElement,bool)
 DEFINE_OBJECT_FUNCTION_1(Label,setGeometry,Rect)
 DEFINE_WIDGET_CONSTRUCTOR(Label)
 
+DEFINE_OBJECT_GETTER_0(DictionaryText,unsigned int,width)
+DEFINE_OBJECT_GETTER_0(DictionaryText,unsigned int,height)
+DEFINE_OBJECT_FUNCTION_0(DictionaryText,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(DictionaryText,setText,std::string)
+DEFINE_OBJECT_FUNCTION_1(DictionaryText,setGeometry,Rect)
+DEFINE_WIDGET_CONSTRUCTOR(DictionaryText)
+
 DEFINE_OBJECT_GETTER_0(Fade,unsigned int,width)
 DEFINE_OBJECT_GETTER_0(Fade,unsigned int,height)
 DEFINE_OBJECT_FUNCTION_0(Fade,deleteLater)

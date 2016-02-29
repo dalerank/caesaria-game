@@ -25,9 +25,22 @@ Spinbox.prototype = {
   set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
   set textColor (color) { this.widget.setColor(color); },
   set subElement (value) { this.widget.setSubElement(value); },
-    set postfix (text) { this.widget.setPostfix(text); },
-    set callback (func) { this.widget.onChangeA(func); },
-    set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
+  set postfix (text) { this.widget.setPostfix(text); },
+  set callback (func) { this.widget.onChangeA(func); },
+  set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
+
+  deleteLater : function() { this.widget.deleteLater(); }
+};
+
+function DictionaryText(parent) {
+  this.widget = new _DictionaryText(parent);
+}
+
+DictionaryText.prototype = {
+  set text (str) { this.widget.setText(engine.translate(str)); },
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
 
   deleteLater : function() { this.widget.deleteLater(); }
 };
@@ -141,6 +154,16 @@ Window.prototype = {
     spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
     return spinbox;
   },
+  addFileSelector : function(rx,ry,rw,rh) {
+    var selector = new FileSelector(this.widget);
+    selector.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return selector;
+  },
+  addDictionaryText : function(rx,ry,rw,rh) {
+    var dtext = new DictionaryText(this.widget);
+    dtext.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return dtext;
+  },
   addListbox : function(rx,ry,rw,rh) {
     var listbox = new Listbox(this.widget);
     listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
@@ -201,6 +224,36 @@ Listbox.prototype = {
   set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
   set selectedIndex (index) { this.widget.setSelected(index); },
+  set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
+  set font (fname) { this.widget.setFont(fname); },
+  get itemsCount () { return this.widget.itemsCount(); },
+
+  set itemColor (obj)
+  {
+    if(obj.simple) this.widget.setItemDefaultColor("simple", setItemDefaultColor);
+    if(obj.hovered) this.widget.setItemDefaultColor("hovered", setItemDefaultColor);
+  },
+
+  set onSelectedCallback (func) { this.widget.onIndexSelectedEx(func); },
+
+  addLine : function(text) { return this.widget.addLine(text); },
+  findItem : function(text) { return this.widget.findItem(text); },
+  setData : function(index,name,data) { this.widget.setItemData(index,name,data); },
+  deleteLater : function() { this.widget.deleteLater(); },
+  setTextAlignment : function(h,v) { this.widget.setTextAlignment(h,v); }
+};
+
+function FileSelector(parent) {
+    this.widget = new _FileListBox(parent);
+}
+
+FileSelector.prototype = {
+  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set style (sname) { this.widget.setBackgroundStyle(sname); },
+  set background (enabled) { this.widget.setDrawBackground(enabled); },
+  set selectedIndex (index) { this.widget.setSelected(index); },
+  set itemHeight (h) { this.widget.setItemHeight(h); },
+  set items (paths) { this.widget.addItems(paths); },
   set selectedWithData (obj) { this.widget.setSelectedWithData(obj.name,obj.data); },
   get itemsCount () { return this.widget.itemsCount(); },
 

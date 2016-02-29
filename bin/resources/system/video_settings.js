@@ -7,11 +7,11 @@ function OnShowVideoSettings()
 
 
   haveChanges = false;
-  fullscreen = engine.getOption( "fullscreen" );
+  fullscreen = engine.getOption("fullscreen");
 
   var wnd = g_ui.addWindow(0,0,320,290);
   wnd.title = "##screen_settings##";
-	wnd.closeAfterKey( {escape:true,rmb:true} );
+    wnd.closeAfterKey( {escape:true,rmb:true} );
 
   var btnSwitchMode = wnd.addButton( 25, 45, wnd.width-50, 20 );
   btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
@@ -21,18 +21,18 @@ function OnShowVideoSettings()
                                         engine.setOption( "fullscreen", fullscreen );
                                         haveChanges = true;
                                         btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
-				      };
-     
+                      };
+
   var lbxModes = wnd.addListbox( 25, 68, wnd.width-50, 160 );
   lbxModes.setTextAlignment( "center", "center" );
   lbxModes.background = true;
   lbxModes.onSelectedCallback = function(index) {
-						var mode = g_session.getVideoMode(index);
-						engine.log("w: " + mode.w + " h:" + mode.h );
-						g_session.resolution = mode;
+                        var mode = g_session.getVideoMode(index);
+                        engine.log("w: " + mode.w + " h:" + mode.h );
+                        g_session.resolution = mode;
                                                 haveChanges = true;
-					};
-					
+                    };
+
   for( var i=0; i < g_session.videoModesCount; i++ )
   {
     var mode = g_session.getVideoMode(i);
@@ -46,13 +46,13 @@ function OnShowVideoSettings()
   btnOk.style = "smallGrayBorderLine";
   btnOk.text = "##ok##";
   btnOk.callback = function() {
-				if( haveChanges )
-				  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
-	        		wnd.deleteLater();		
-			};
+                if( haveChanges )
+                  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
+                    wnd.deleteLater();
+            };
   btnOk.setFocus();
 
   wnd.moveToCenter();
   wnd.mayMove = false;
-  wnd.setModal();  
+  wnd.setModal();
 }

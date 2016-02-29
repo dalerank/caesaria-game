@@ -119,15 +119,11 @@ function OnShowLanguageDialog()
 
 function OnShowLogs()
 {
-  engine.log( "TEst2" );
   var logfile = g_session.logfile;
   if (!logfile.exist)
     g_ui.addInformationDialog( "", "Can't find logfile" );
   else
-  {
-    engine.log( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
     g_session.openUrl(logfile.str);
-  } 
 }
 
 function OnChangePlayerName(force,continueCallback)
@@ -297,11 +293,6 @@ function OnShowGameOptionsMenu()
     addMainMenuButton( "##cancel##",            OnShowMainMenu);
 }
 
-function OnShowGameCredits()
-{
-    engine.log("OnShowGameCredits");
-}
-
 function OnShowAdvancedMaterials()
 {
     engine.log("OnShowAdvancedMaterials");
@@ -324,7 +315,7 @@ function OnShowMainMenu()
   if (dlc.exist)
      addMainMenuButton("##mainmenu_mcmxcviii##", OnShowAdvancedMaterials);
 
-  addMainMenuButton("##mainmenu_quit##",         function() { g_session.quitGame(); } );
+  addMainMenuButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
 }
 
 function OnLobbyStart()
@@ -369,34 +360,34 @@ function OnLobbyStart()
   OnShowChanges(false);
 }
 
-function OnShowCredits()
+function OnShowGameCredits()
 {
-    g_session.playAudio( "combat_long", 50, "theme" );
+  g_session.playAudio( "combat_long", 50, "theme" );
 
-    var fade = g_ui.addFade(0xA0);
-    fade.addCloseCode(0x1B); //escape
+  var fade = g_ui.addFade(0xA0);
+  fade.addCloseCode(0x1B); //escape
   fade.addCloseCode(0x4);//right mouse button
 
-    var credits = g_session.credits;
+  var credits = g_session.credits;
   for( var i=0; i < credits.length; i++ )
   {
     var lb = new Label(fade.widget);
-        lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
-        lb.text = credits[i];
+    lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
+    lb.text = credits[i];
     lb.textAlign = { h:"center", v:"center" };
     lb.font = "FONT_2_WHITE";
-        lb.subElement = true;
+    lb.subElement = true;
 
     var animator = new PositionAnimator(lb.widget);
-        animator.removeParent = true;
-        animator.destination = {x:0, y:-20};
+    animator.removeParent = true;
+    animator.destination = {x:0, y:-20};
     animator.speed = {x:0, y:-0.5};
   }
 
   var btnExit = new Button(fade.widget);
-    btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
-    btnExit.text = "##close##";
-    btnExit.callback = function() {
+  btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
+  btnExit.text = "##close##";
+  btnExit.callback = function() {
                                     fade.deleteLater();
                                     g_session.playAudio( "main_menu", 50, "theme" );
                                   }

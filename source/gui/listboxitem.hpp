@@ -50,9 +50,9 @@ public:
   };
 
   ListBoxItem();
-  ListBoxItem( const ListBoxItem& other );
+  ListBoxItem(const ListBoxItem& other);
 
-	ListBoxItem& operator=( const ListBoxItem& other );
+  ListBoxItem& operator=(const ListBoxItem& other);
   ~ListBoxItem();
 
   void setText( const std::string& text );
@@ -63,8 +63,8 @@ public:
 
   void setTag(const Variant& tag );
   const Variant& tag() const;
-	gfx::Picture icon();
-	void setIcon( gfx::Picture pic );
+  gfx::Picture icon();
+  void setIcon( gfx::Picture pic );
   void setIcon( const std::string& rc, int index );
 
   bool isEnabled() const;
@@ -104,6 +104,8 @@ public:
   void draw(const std::string& text, Font f , const Point& p);
   void clear();
 
+  static ColorType findColorType(const std::string& name);
+
   struct OverrideColor
   {
     OverrideColor() : Use(false), color( 0 ) {}
@@ -112,7 +114,7 @@ public:
     NColor color;
   };
 
-	//!sets the item text alignment
+  //!sets the item text alignment
   void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   OverrideColor overrideColors[ count ];
