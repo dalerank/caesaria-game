@@ -35,7 +35,6 @@ file(GLOB SCRIPT_SYSTEM_LIST "${GAME_CONFIG_DIR}/system/*.*")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
-file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB THREAD_LIST "${CMAKE_CURRENT_SOURCE_DIR}/thread/*.*")
 file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
@@ -49,7 +48,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
-               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
+               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST}
                ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST}
                ${SCRIPT_SYSTEM_LIST} ${JSE_SOURCES_LIST} ${PK_RESOURCES_LIST})
 
@@ -81,6 +80,37 @@ include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
 target_link_libraries(${PROJECT_NAME} ${PICOC_LIBRARY})
+
+if(MSVC)
+	source_group("events" FILES ${EVENTS_SOURCES_LIST})
+	source_group("core" FILES ${CORE_SOURCES_LIST})
+	source_group("pathway" FILES ${PATHWAY_SOURCES_LIST})
+	source_group("gui" FILES ${GUI_SOURCES_LIST})
+	source_group("game" FILES ${GAME_SOURCES_LIST})
+	source_group("city" FILES ${CITY_SOURCES_LIST})
+	source_group("good" FILES ${GOOD_SOURCES_LIST})
+	source_group("vfs" FILES ${VFS_SOURCES_LIST})
+	source_group("gfx" FILES ${GFX_SOURCES_LIST})
+	source_group("sound" FILES ${SOUND_SOURCES_LIST})
+	source_group("objects" FILES ${OBJECTS_SOURCES_LIST})
+	source_group("walkers" FILES ${WALKER_SOURCES_LIST})
+	source_group("world" FILES ${WORLD_SOURCES_LIST})
+	source_group("models" FILES ${GUI_MODELS_LIST} ${GAME_MODELS_LIST})
+	source_group("jse" FILES ${JSE_SOURCES_LIST})
+	source_group("scripts" FILES ${SCRIPT_SYSTEM_LIST})
+	source_group("tutorial" FILES ${TUTORIAL_MODELS_LIST})
+	source_group("mission" FILES ${MISSIONS_LIST})
+	source_group("help" FILES ${HELP_LIST})
+	source_group("scenes" FILES ${SCENES_LIST})
+	source_group("thread" FILES ${THREAD_LIST})
+	source_group("layers" FILES ${LAYERS_LIST})
+	source_group("religion" FILES ${RELIGION_LIST})
+	source_group("changes" FILES ${CHANGES_LIST})
+	source_group("steam" FILES ${STEAM_SOURCES_LIST})
+	
+	set_target_properties (${PROJECT_NAME} PROPERTIES COMMAND_LINE_ARGUMENTS "-R ${CMAKE_CURRENT_SOURCE_DIR}")
+endif()
+
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DGAME_USE_FRAMEBUFFER )

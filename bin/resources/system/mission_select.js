@@ -2,17 +2,18 @@ function OnShowMissionSelectDialog()
 {
     var wnd = g_ui.addWindow(0, 0, 1024, 768);
     wnd.title = "##mainmenu_playmission##";
+		wnd.closeAfterKey( {escape:true,rmb:true} );
 
     wnd.addImage(0,0,"ckit_00001");
 
     var selector = wnd.addFileSelector(210, 350, 300, 260);
-    selector.rtyle = "none";
+    selector.style = "none";
     selector.background = false;
     selector.itemHeight = 16;
     selector.font = "FONT_1_WHITE";
     selector.itemColor = { simple:"0xffffffff", hovered:"0xff000000" };
 
-    var files = g_session.getFiles(directory, ".mission");
+    var files = g_session.getFiles(g_session.missionsdir.str, ".mission");
     selector.items = files;
 
     var imgPreview = wnd.addImage(280, 175, 170, 150);

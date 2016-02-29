@@ -11,7 +11,7 @@ function OnShowVideoSettings()
 
   var wnd = g_ui.addWindow(0,0,320,290);
   wnd.title = "##screen_settings##";
-    wnd.closeAfterKey( {escape:true,rmb:true} );
+  wnd.closeAfterKey( {escape:true,rmb:true} );
 
   var btnSwitchMode = wnd.addButton( 25, 45, wnd.width-50, 20 );
   btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";

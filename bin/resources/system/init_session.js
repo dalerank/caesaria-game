@@ -23,6 +23,7 @@ Session.prototype = {
     openUrl      : function(url) { return this.session.openUrl(url); },
     setMode      : function(mode) { return this.session.setMode(mode); },
     tradableGoods : function() { return this.session.tradableGoods(); },
+		getFiles        : function(dir) { return this.session.getFiles(dir); },
     getGoodInfo : function(name) { return this.session.getGoodInfo(name); },
     playAudio   : function(name,volume,type) { return this.session.playAudio(name,volume,type); },
     startCareer : function() { this.session.startCareer(); },
@@ -48,6 +49,12 @@ Session.prototype = {
       path.add(engine.getOption("logfile"));
       return path;
     },
+		
+		get missionsdir () { 
+			var path = new Path();
+			path.assign(":/missions/");
+			return path;
+		}
 }
 
 var g_session = new Session();

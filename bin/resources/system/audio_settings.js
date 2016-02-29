@@ -1,44 +1,44 @@
 function OnShowAudioDialog()
 {
   var wnd = g_ui.addWindow(0);
-	wnd.geometry = { x:0, y:0, w:350, h:225 };
+  wnd.geometry = { x:0, y:0, w:350, h:225 };
   wnd.moveToCenter();
   wnd.closeAfterKey( {escape:true, rmb:true} );
-	wnd.title  = "##game_sound_options##";
-	
-	var saveGameValue = engine.getOption("soundVolume");
-	var saveAmbValue = engine.getOption("ambientVolume");
-	var saveMusicValue = engine.getOption("musicVolume");
-	var wasChanged = false;
-	
-	var spnGameVolume = wnd.addSpinbox(28, 60, wnd.width-28*2, 24);
-	spnGameVolume.text = "##gmsndwnd_game_volume##";
-	spnGameVolume.postfix = " %";
-	spnGameVolume.font = "FONT_2";
-	spnGameVolume.textAlign = { h:"center", v:"center" };
-	spnGameVolume.callback = function(value) { 
+  wnd.title  = "##game_sound_options##";
+  
+  var saveGameValue = engine.getOption("soundVolume");
+  var saveAmbValue = engine.getOption("ambientVolume");
+  var saveMusicValue = engine.getOption("musicVolume");
+  var wasChanged = false;
+  
+  var spnGameVolume = wnd.addSpinbox(28, 60, wnd.width-28*2, 24);
+  spnGameVolume.text = "##gmsndwnd_game_volume##";
+  spnGameVolume.postfix = " %";
+  spnGameVolume.font = "FONT_2";
+  spnGameVolume.textAlign = { h:"center", v:"center" };
+  spnGameVolume.callback = function(value) { 
 																																			engine.setOption("soundVolume",value); 
 																																			engine.setVolume(3,value);
 																																			wasChanged = true;
 																																	  }
      
   var spnAmbientVolume = wnd.addSpinbox(28, 96, wnd.width-28*2, 24);
-	spnAmbientVolume.text = "##gmsndwnd_ambient_sound##";
-	spnAmbientVolume.postfix = " %";
+  spnAmbientVolume.text = "##gmsndwnd_ambient_sound##";
+  spnAmbientVolume.postfix = " %";
   spnAmbientVolume.font = "FONT_2";
-	spnAmbientVolume.textAlign = { h:"center", v:"center" };
-	spnAmbientVolume.callback = function(value) { 
+  spnAmbientVolume.textAlign = { h:"center", v:"center" };
+  spnAmbientVolume.callback = function(value) { 
 		      																																engine.setOption("ambientVolume",value); 
 					     																														engine.setVolume(1,value);
 																																					wasChanged = true;
 								      																								  }
      
   var spnThemeVolume = wnd.addSpinbox(28, 132, wnd.width-28*2, 24);
-	spnThemeVolume.text = "##gmsndwnd_ambient_sound##";
-	spnThemeVolume.postfix = " %";
+  spnThemeVolume.text = "##gmsndwnd_ambient_sound##";
+  spnThemeVolume.postfix = " %";
   spnThemeVolume.font = "FONT_2";
-	spnThemeVolume.textAlign = { h:"center", v:"center" };
-	spnThemeVolume.callback = function(value) { 
+  spnThemeVolume.textAlign = { h:"center", v:"center" };
+  spnThemeVolume.callback = function(value) { 
 		      																														 engine.setOption("musicVolume",value); 
 					     																												 engine.setVolume(2,value);
 																																			 wasChanged = false;

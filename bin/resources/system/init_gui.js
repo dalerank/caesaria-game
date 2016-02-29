@@ -17,7 +17,7 @@ Label.prototype = {
 function Spinbox(parent) {
   this.widget = new _SpinBox(parent);
 }
-
+ 
 Spinbox.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },

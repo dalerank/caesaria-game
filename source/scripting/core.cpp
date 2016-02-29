@@ -118,6 +118,27 @@ void push(js_State *J, const VariantMap& items)
   }
 }
 
+inline StringArray to(js_State *J, int n, StringArray)
+{
+  if (!js_isarray(J, 1))
+  {
+    Logger::warning("WARNING !!! Object is not an string array");
+    return StringArray();
+  }
+    
+  int length = js_getlength(J, n);
+  StringArray ret;
+  for (int i = 0; i < length; ++i)
+  {
+    js_getindex(J, n, i);
+    std::string tmp = js_tostring(J, -1);
+    js_pop(J, 1);
+    ret.push_back(tmp);
+  }
+
+  return ret;
+}
+
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
 inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n), js_tonumber(J, n+1) );}

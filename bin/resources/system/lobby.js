@@ -206,7 +206,6 @@ function addMainMenuButton(caption,callback)
      button = g_lobbyButtons[i];
      button.position = offset;
      offset.y += offsetY;
-     engine.log( "i:" + i + "x:"+offset.x + " y:" + offset.y);
   }
 }
 
@@ -245,11 +244,6 @@ function OnShowNewGameMenu()
     addMainMenuButton( "##cancel##",               OnShowMainMenu);
 }
 
-function OnShowMissionSelector()
-{
-    engine.log("OnShowMissionSelector");
-}
-
 function OnShowSaveSelectDialog()
 {
     engine.log("OnShowSaveSelectDialog");
@@ -266,7 +260,7 @@ function OnShowLoadGameMenu()
 
     mainMenuClear();
 
-    addMainMenuButton("##mainmenu_playmission##", OnShowMissionSelector );
+    addMainMenuButton("##mainmenu_playmission##", OnShowMissionSelectDialog );
     addMainMenuButton("##mainmenu_loadgame##",    OnShowSaveSelectDialog );
     addMainMenuButton("##mainmenu_loadmap##",     OnShowMapSelectDialog );
     addMainMenuButton("##cancel##",               OnShowMainMenu);
