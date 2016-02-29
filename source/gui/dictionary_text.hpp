@@ -39,15 +39,18 @@ public:
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
 
-  virtual void setPadding( const Rect& margin );
+  virtual void setPadding(const Rect& margin);
 
   //! Get the font which is used right now for drawing
   virtual Font font() const;
 
+  //!
   virtual void beforeDraw( gfx::Engine& painter );
 
+  //!
   virtual bool onEvent(const NEvent &event);
 
+  //!
   virtual bool isBorderVisible() const;
 
   //! Sets whether to draw the border
@@ -68,21 +71,33 @@ public:
   //! Returns the width of the current text, in the current font
   virtual int textWidth() const;
 
+  //!
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
-  virtual void setFont( const Font& font );
+  //!
+  virtual void setFont(const Font& font );
+
+  //!
+  virtual void setFont(const std::string& fname);
+
+  //!
   virtual void setFont( FontType type, NColor color=0);
 
+  //!
   virtual void setAlpha( unsigned int value );
 
+  //!
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-  virtual void setLineIntervalOffset( const int offset );
+  //!
+  virtual void setLineIntervalOffset(const int offset);
 
+  //!
   virtual void setupUI( const VariantMap &ui );
 
+  //!
   virtual void setTextOffset( Point offset );
-    
+
 signals public:
   Signal1<std::string>& onWordClick();
 

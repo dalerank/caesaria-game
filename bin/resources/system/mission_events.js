@@ -6,7 +6,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   wnd.title = "##mission_win##";
   wnd.font = "FONT_5";
 
-  var lbCaesarAssign = wnd.addLabel( 10, 40, wnd.width-20, 25 );
+  var lbCaesarAssign = wnd.addLabel(10, 40, wnd.width-20, 25);
   lbCaesarAssign.text = "##caesar_assign_new_title##";
   lbCaesarAssign.font = "FONT_2";
   lbCaesarAssign.textAlign = { h:"center", v:"center" };

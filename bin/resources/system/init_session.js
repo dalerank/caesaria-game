@@ -12,6 +12,22 @@ Path.prototype = {
     assign : function(str) { this.path.set(str); },
 }
 
+function MissionInfo (path) {
+    this.info = _MissionInfo();
+    if (path)
+        this.load(path);
+}
+
+MissionInfo.prototype = {
+    load: function(path) { this.info.load(path); },
+
+    get title () { return this.info.get("preview.title"); },
+    get localization () { return this.info.get("localization.name"); },
+    get image () { return this.info.get("preview.image"); },
+    get desc  () { return this.info.get("preview.text"); },
+    get map   () { return this.info.get("map"); }
+}
+
 function Session() {
     this.session = new _Session();
 }
@@ -21,14 +37,14 @@ Session.prototype = {
     loadNextMission : function() { this.session.loadNextMission(); } ,
     getVideoMode : function(index) { return this.session.getVideoMode(index); },
     openUrl      : function(url) { return this.session.openUrl(url); },
+    setOption    : function(name,value) { this.session.setOption(name,value); },
     setMode      : function(mode) { return this.session.setMode(mode); },
     tradableGoods : function() { return this.session.tradableGoods(); },
-		getFiles        : function(dir) { return this.session.getFiles(dir); },
+    getFiles    : function(dir,ext) { return this.session.getFiles(dir,ext); },
     getGoodInfo : function(name) { return this.session.getGoodInfo(name); },
     playAudio   : function(name,volume,type) { return this.session.playAudio(name,volume,type); },
-    startCareer : function() { this.session.startCareer(); },
     setFont     : function(fontname) { this.session.setFont(fontname); },
-    reloadScene : function() { this.session.reloadScene(); },
+    loadLocalization : function(path) { this.session.loadLocalization(path); },
     setLanguage : function(lang,sounds) { this.session.setLanguage(lang,sounds); },
     clearUi     : function() { this.session.clearUi(); },
 
@@ -49,12 +65,12 @@ Session.prototype = {
       path.add(engine.getOption("logfile"));
       return path;
     },
-		
-		get missionsdir () { 
-			var path = new Path();
-			path.assign(":/missions/");
-			return path;
-		}
+
+    get missionsdir () {
+        var path = new Path();
+        path.assign(":/missions/");
+        return path;
+    }
 }
 
 var g_session = new Session();

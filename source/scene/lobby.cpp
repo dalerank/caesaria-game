@@ -43,7 +43,6 @@ public:
   Picture bgPicture;
   Point bgOffset;
   gui::Lobby* menu;         // menu to display
-  bool isStopped;
   Game* game;
   Engine* engine;
   std::string fileMap;
@@ -54,10 +53,7 @@ public:
 
 public:
   void showCredits();
-  void playRandomap();
   void constructorMode();
-  void showMissionSelector();
-  void selectFile(std::string fileName);
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void showAdvancedMaterials();
@@ -124,12 +120,6 @@ void Lobby::Impl::resolveSteamStats()
   }
 }
 
-void Lobby::reload()
-{
-  _d->result = Lobby::reloadScreen;
-  _d->isStopped = true;
-}
-
 void Lobby::Impl::restart()
 {
   std::string filename;
@@ -158,11 +148,6 @@ void Lobby::Impl::showPackageOptions()
   ui().add<dialog::PackageOptions>( Rect() );
 }
 
-void Lobby::newGame()
-{
-  _d->result=startNewGame; _d->isStopped=true;
-}
-
 void Lobby::Impl::showCredits()
 {
   events::dispatch<events::ScriptFunc>( "OnShowCredits" );
@@ -183,13 +168,6 @@ void Lobby::Impl::constructorMode()
   loadFileDialog.setText( _("##start_this_map##") );
 
   changePlayerNameIfNeed(); */
-}
-
-void Lobby::Impl::playRandomap()
-{
-  result = Lobby::loadMission;
-  fileMap = ":/missions/random.mission";
-  isStopped = true;
 }
 
 void Lobby::Impl::showAdvancedMaterials()
@@ -227,37 +205,38 @@ void Lobby::Impl::showAdvancedMaterials()
   ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )*/
 }
 
-void Lobby::Impl::showMissionSelector()
-{
-  /*result = Lobby::loadMission;
-  auto& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
-
-  CONNECT( &wnd, onSelectFile(), this, Impl::selectFile );
-
-  changePlayerNameIfNeed();*/
-}
-
 void Lobby::setMode(int mode)
 {
   switch(mode)
   {
+  case loadMission:
+    _isStopped = true;
+    if (!vfs::Path(_d->fileMap).exist())
+      Logger::warning("WARNING !!! File to load is empty in Lobby::setMode");
+  break;
+
+  case startNewGame:
+    _d->result=startNewGame;
+    _isStopped=true;
+  break;
+
   case loadSavedGame:
     _d->result = Lobby::loadSavedGame;
-    _d->selectFile(SETTINGS_STR(lastGame));
+    _d->fileMap = SETTINGS_STR(lastGame);
+    _isStopped = true;
+  break;
+
+  case reloadScreen:
+    _d->result = Lobby::reloadScreen;
+    _isStopped = true;
   break;
 
   case closeApplication:
     game::Settings::save();
     _d->result=closeApplication;
-    _d->isStopped=true;
+    _isStopped=true;
   break;
   }
-}
-
-void Lobby::Impl::selectFile(std::string fileName)
-{
-  fileMap = fileName;
-  isStopped = true;
 }
 
 void Lobby::Impl::showMapSelectDialog()
@@ -278,7 +257,7 @@ void Lobby::Impl::showMapSelectDialog()
 Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
-  _d->isStopped = false;
+  _isStopped = false;
   _d->game = &game;
   _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
@@ -304,6 +283,12 @@ void Lobby::handleEvent(NEvent& event)
     setMode(closeApplication);
 
   _d->ui().handleEvent( event );
+}
+
+void Lobby::setOption(const std::string& name, Variant value)
+{
+  if(name=="nextFile")
+    _d->fileMap = value.toString();
 }
 
 void Lobby::initialize()
@@ -355,10 +340,10 @@ void Lobby::initialize()
       SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
 
     _d->userImage = steamapi::userImage();
-    if( steamName.empty() )
+    if (steamName.empty())
     {
       OSystem::error( "Error", "Can't login in Steam" );
-      _d->isStopped = true;
+      _isStopped = true;
       _d->result = closeApplication;
       return;
     }
@@ -387,7 +372,6 @@ void Lobby::afterFrame()
 }
 
 int Lobby::result() const { return _d->result;}
-bool Lobby::isStopped() const { return _d->isStopped;}
 Ui& Lobby::Impl::ui() { return *game->gui(); }
 std::string Lobby::mapName() const { return _d->fileMap;}
 std::string Lobby::playerName() const { return SETTINGS_STR( playerName ); }

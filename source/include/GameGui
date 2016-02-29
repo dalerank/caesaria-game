@@ -15,7 +15,6 @@
 #include "gui/widget_factory.hpp"
 #include "gui/filelistbox.hpp"
 #include "gui/widgetpositionanimator.hpp"
-#include "gui/loadmissiondialog.hpp"
 #include "gui/fade.hpp"
 #include "gui/editbox.hpp"
 #include "gui/package_options_window.hpp"

@@ -5,3 +5,4 @@
 #include "game/difficulty.hpp"
 #include "game/player.hpp"
 #include "game/game.hpp"
+#include "game/mission_info.hpp"

@@ -46,7 +46,7 @@ function OnShowChanges(force)
 
 function OnStartCareer()
 {
-  OnChangePlayerName(true,function() {  g_session.startCareer(); } );
+  OnChangePlayerName(true,function() { g_session.setMode(0); } );
 }
 
 function setLanguage(config)
@@ -67,8 +67,6 @@ function setLanguage(config)
 
 function OnShowLanguageDialog()
 {
-  var g_ui = new Ui();
-
   var langModel = [
                     { lang : "English",     ext : "en", },
                     { lang : "Русский",     ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
@@ -112,7 +110,7 @@ function OnShowLanguageDialog()
   var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
   btn.text = "##continue##";
   btn.callback = function () {
-                  g_session.reloadScene();
+                  g_session.setMode(6);
                   wnd.deleteLater();
                 }
 }
@@ -220,11 +218,21 @@ function mainMenuClear()
 function OnContinuePlay()
 {
     engine.log("OnContinuePlay");
+
+    var lastGame = engine.getOption("lastGame");
+    if(lastGame !== undefined && lastGame.length>0)
+    {
+        g_session.setOption("nextFile", lastGame);
+        g_session.setMove(3);
+    }
 }
 
 function OnPlayRandomap()
 {
     engine.log("OnPlayRandomap");
+
+    g_session.setOption("nextFile", ":/missions/random.mission" );
+    g_session.setMode(3);
 }
 
 function OnConstructorMode()
@@ -297,7 +305,7 @@ function OnShowMainMenu()
   mainMenuClear();
 
   var lastGame = engine.getOption("lastGame");
-  if(!lastGame)
+  if(lastGame && lastGame.length > 0)
       addMainMenuButton("##mainmenu_continueplay##", OnContinuePlay);
 
   addMainMenuButton("##mainmenu_newgame##", OnShowNewGameMenu);

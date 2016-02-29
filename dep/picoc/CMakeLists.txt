@@ -9,6 +9,11 @@ add_library(${PROJECT_NAME} STATIC ${PICOC_SOURCES_LIST})
 set_target_properties(${PROJECT_NAME}
                       PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+if(NOT CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
+  message ("mujs built in debug mode")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+endif()
+
 # Expose public includes to other through cache variable.
 set(PICOC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)

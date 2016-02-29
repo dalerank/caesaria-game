@@ -15,38 +15,23 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_
-#define __CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_
+#ifndef _CAESARIA_MISSION_INFO_H_INCLUDE_
+#define _CAESARIA_MISSION_INFO_H_INCLUDE_
 
-#include "widget.hpp"
-#include "core/signals.hpp"
+#include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 
-namespace gui
-{
-
-namespace dialog
-{
-
-class LoadMission : public Widget
+class MissionInfo
 {
 public:
-  static LoadMission* create(Widget* parent, const vfs::Directory& dir );
-        
-  virtual void draw( gfx::Engine& engine );
-  LoadMission( Widget* parent, const vfs::Directory& dir );
+  MissionInfo();
 
-signals public:
-  Signal1<std::string>& onSelectFile();
+  bool load(const std::string& path);
+  Variant get(const std::string& name);
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-
+  VariantMap _info;
 };
 
-}//end namespace dialog
-
-}//end namespace gui
-
-#endif //__CAESARIA_LOADMISSIONDIALOG_H_INCLUDE_
+#endif //_CAESARIA_MISSION_INFO_H_INCLUDE_

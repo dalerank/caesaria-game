@@ -131,7 +131,7 @@ void Session::loadNextMission()
   vc = _game->city()->victoryConditions();
   scene::Level* level = safety_cast<scene::Level*>(_game->scene());
   if( level )
-    level->loadStage( vc.nextMission() );
+    level->loadStage(vc.nextMission());
 }
 
 void Session::setMode(int mode)
@@ -141,23 +141,21 @@ void Session::setMode(int mode)
     scene->setMode(mode);
 }
 
-void Session::reloadScene()
+void Session::setOption(const std::string& name, Variant v)
 {
-  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
-  if( lobby )
-    lobby->reload();
-}
-
-void Session::startCareer()
-{
-  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
-  if( lobby )
-    lobby->newGame();
+  scene::Base* scene = _game->scene();
+  if(scene)
+    scene->setOption(name,v);
 }
 
 void Session::clearUi()
 {
   _game->gui()->clear();
+}
+
+void Session::loadLocalization(const std::string& name)
+{
+  Locale::addTranslation(name);
 }
 
 void Session::openUrl(const std::string& url)

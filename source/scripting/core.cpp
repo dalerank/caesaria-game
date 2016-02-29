@@ -47,6 +47,24 @@ inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 
+Variant to(js_State *J, int n, Variant)
+{
+  if(js_isboolean(J,n))
+    return Variant(js_toboolean(J,n));
+
+  if(js_isnull(J,n))
+    return Variant();
+
+  if(js_isnumber(J,n))
+    return Variant(js_tonumber(J,n));
+
+  if(js_isstring(J,n))
+    return Variant(std::string(js_tostring(J,n)));
+
+  Logger::warning("WARNING !!! Cant convert jValue to Variant");
+  return Variant();
+}
+
 void push(js_State* J,const Size& size)
 {
   js_newobject(J);
@@ -125,7 +143,7 @@ inline StringArray to(js_State *J, int n, StringArray)
     Logger::warning("WARNING !!! Object is not an string array");
     return StringArray();
   }
-    
+
   int length = js_getlength(J, n);
   StringArray ret;
   for (int i = 0; i < length; ++i)

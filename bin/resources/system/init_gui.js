@@ -17,7 +17,7 @@ Label.prototype = {
 function Spinbox(parent) {
   this.widget = new _SpinBox(parent);
 }
- 
+
 Spinbox.prototype = {
   set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
@@ -38,6 +38,7 @@ function DictionaryText(parent) {
 
 DictionaryText.prototype = {
   set text (str) { this.widget.setText(engine.translate(str)); },
+  set font (fname) { this.widget.setFont(fname); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   get width () { return this.widget.width(); },
   get height () { return this.widget.height(); },
@@ -95,7 +96,7 @@ TexturedButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
-  set tooltip (text) { this.widget.setTooltipText(text); },
+  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
   set callback (func) { this.widget.onClickedEx(func); },
 };
 
@@ -202,13 +203,14 @@ function Button(parent) {
 }
 
 Button.prototype = {
-  set text (str) { this.widget.setText( engine.translate(str) ); },
+  set text (str) { this.widget.setText(engine.translate(str)); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set position (point) { this.widget.setPosition(point.x,point.y); },
   set font (fname) { this.widget.setFont(fname); },
   set callback (func) { this.widget.onClickedEx(func); },
+  set enabled (e) { this.widget.setEnabled(e); },
   set style (sname) { this.widget.setBackgroundStyle(sname); },
-  set tooltip (text) { this.widget.setTooltipText(text); },
+  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
   set textAlign (obj) { this.widget.setTextAlignment(obj.h,obj.v); },
 
   deleteLater : function() { this.widget.deleteLater(); },
@@ -249,7 +251,6 @@ function FileSelector(parent) {
 
 FileSelector.prototype = {
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-  set style (sname) { this.widget.setBackgroundStyle(sname); },
   set background (enabled) { this.widget.setDrawBackground(enabled); },
   set selectedIndex (index) { this.widget.setSelected(index); },
   set itemHeight (h) { this.widget.setItemHeight(h); },

@@ -25,6 +25,7 @@
 class Game;
 class VariantList;
 class VariantMap;
+class Variant;
 class StringArray;
 
 namespace script
@@ -37,9 +38,9 @@ public:
   void continuePlay(int years);
   void loadNextMission();
   void setMode(int mode);
-  void reloadScene();
-  void startCareer();
+  void setOption(const std::string& name,Variant v);
   void clearUi();
+  void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
   StringArray getCredits() const;
