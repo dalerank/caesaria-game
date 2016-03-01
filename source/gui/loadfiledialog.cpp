@@ -169,8 +169,8 @@ bool LoadFile::isPointInside( const Point& point ) const
 
 void LoadFile::setMayDelete(bool mayDelete)
 {
-  INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
-  INIT_WIDGET_FROM_UI( PushButton*, btnDelete )
+  INIT_WIDGET_FROM_UI(PushButton*, btnLoad)
+  INIT_WIDGET_FROM_UI(PushButton*, btnDelete)
 
   _d->mayDelete = mayDelete;
   if( btnDelete ) btnDelete->setVisible( mayDelete );

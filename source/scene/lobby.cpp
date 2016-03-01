@@ -42,7 +42,6 @@ class Lobby::Impl
 public:
   Picture bgPicture;
   Point bgOffset;
-  gui::Lobby* menu;         // menu to display
   Game* game;
   Engine* engine;
   std::string fileMap;
@@ -113,8 +112,15 @@ void Lobby::setMode(int mode)
   {
   case loadMission:
     _isStopped = true;
+    _d->result = loadMission;
     if (!vfs::Path(_d->fileMap).exist())
       Logger::warning("WARNING !!! File to load is empty in Lobby::setMode");
+  break;
+
+  case loadMap:
+  case loadConstructor:
+    _isStopped = true;
+    _d->result = mode;
   break;
 
   case startNewGame:
@@ -124,7 +130,6 @@ void Lobby::setMode(int mode)
 
   case loadSavedGame:
     _d->result = Lobby::loadSavedGame;
-    _d->fileMap = SETTINGS_STR(lastGame);
     _isStopped = true;
   break;
 
@@ -158,7 +163,7 @@ void Lobby::draw()
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->ui().draw();
 
-  if( steamapi::available() )
+  if (steamapi::available())
   {
     _d->engine->draw( _d->userImage, Point( 20, 20 ) );
   }
@@ -191,8 +196,6 @@ void Lobby::initialize()
 
   _d->ui().clear();
 
-  _d->menu = &_d->ui().add<gui::Lobby>();
-
   events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
 
   if( OSystem::isAndroid() )
@@ -205,7 +208,7 @@ void Lobby::initialize()
                                                     "Information", "Is need autofit screen resolution?",
                                                     Dialogbox::btnYesNo );
       CONNECT( &dialog, onYes(),     &dialog, Dialogbox::deleteLater );
-      CONNECT( &dialog, onNo(), &dialog, Dialogbox::deleteLater );
+      CONNECT( &dialog, onNo(),      &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 

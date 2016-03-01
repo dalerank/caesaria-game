@@ -109,10 +109,7 @@ function OnShowLanguageDialog()
 
   var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
   btn.text = "##continue##";
-  btn.callback = function () {
-                  g_session.setMode(6);
-                  wnd.deleteLater();
-                }
+  btn.callback = function () { g_session.setMode(6); }
 }
 
 function OnShowLogs()
@@ -223,7 +220,7 @@ function OnContinuePlay()
     if(lastGame !== undefined && lastGame.length>0)
     {
         g_session.setOption("nextFile", lastGame);
-        g_session.setMove(3);
+        g_session.setMode(4);
     }
 }
 
@@ -239,14 +236,14 @@ function OnConstructorMode()
 {
     engine.log("OnConstructorMode");
 		
-		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);                                                  
-		fileDialog.mayDeleteFiles = false;
-		fileDialog.title = "##mainmenu_loadmap##";
-		fileDialog.text = "##start_this_map##";
+    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);                                                  
+    fileDialog.mayDeleteFiles = false;
+    fileDialog.title = "##mainmenu_loadmap##";
+    fileDialog.text = "##start_this_map##";
     fileDialog.callback = function(path) { 
- 	                                                          g_session.setOption("nextFile",path);
-																														g_session.setMode(2);
-																											   }
+ 	                                   g_session.setOption("nextFile",path);
+					   g_session.setMode(2);
+					 }
 }
 
 function OnShowNewGameMenu()
@@ -265,28 +262,28 @@ function OnShowSaveSelectDialog()
 {
     engine.log("OnShowSaveSelectDialog");
 			
-		var fileDialog = g_ui.addFileDialog(":/maps/", "", true);                                                  
-		fileDialog.mayDeleteFiles = false;
-		fileDialog.title = "##mainmenu_loadgame##";
-		fileDialog.text = "##load_this_game##";
+    var fileDialog = g_ui.addFileDialog(g_session.savedir.str, "", true);                                                  
+    fileDialog.mayDeleteFiles = true;
+    fileDialog.title = "##mainmenu_loadgame##";
+    fileDialog.text = "##load_this_game##";
     fileDialog.callback = function(path) { 
- 	                                                          g_session.setOption("nextFile",path);
-																														g_session.setMode(4);
-																											   }
+ 	                                  g_session.setOption("nextFile",path);
+					  g_session.setMode(4);
+					 }
 }
 
 function OnShowMapSelectDialog()
 {
     engine.log("OnShowMapSelectDialog");
 
-		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
-		fileDialog.mayDeleteFiles = false;
-		fileDialog.title = "##mainmenu_loadmap##";
-		fileDialog.text = "##start_this_map##";
+    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
+    fileDialog.mayDeleteFiles = false;
+    fileDialog.title = "##mainmenu_loadmap##";
+    fileDialog.text = "##start_this_map##";
     fileDialog.callback = function(path) { 
- 	                                                          g_session.setOption("nextFile",path);
-																														g_session.setMode(1);
-																											   }
+	                                   g_session.setOption("nextFile",path);
+				           g_session.setMode(1);
+					 }
 }
 
 function OnShowLoadGameMenu()
@@ -320,27 +317,25 @@ function OnShowGameOptionsMenu()
 function OnShowAdvancedMaterials()
 {
     engine.log("OnShowAdvancedMaterials");
-		
-	  mainMenuClear(); 
+    mainMenuClear(); 
 
-		var path = new Path(":/dlc");
-		if (!path.exist)
-		{
+    var path = new Path(":/dlc");
+    if (!path.exist)
+    {
        g_ui.addInformationDialog( "##no_dlc_found_title##", "##no_dlc_found_text##" ); 
        OnShowMainMenu();
        return;
     }
 
-		var folders = g_session.getFolders(path.str,true);
-		for (var i in folders)
+    var folders = g_session.getFolders(path.str,true);
+    for (var i in folders)
     {
-		  var fullpath = new Path(folders[i]);
+      var fullpath = new Path(folders[i]);
       var folderName = fullpath.baseName;
       var locText = "##mainmenu_dlc_" + folderName + "##";
 
       addMainMenuButton(locText, function() { g_session.showDlcViewer(fullpath.str);  }	);
     }
-  }
 }
 
 function OnShowMainMenu()
@@ -366,7 +361,7 @@ function OnShowMainMenu()
 function OnLobbyStart()
 {
   engine.log( "JS:OnLobbyStart" );
-  //g_session.clearUi();
+  g_lobbyButtons = [];
 
   var screen = g_session.resolution;
 

@@ -54,16 +54,15 @@ public:
   void setCameraPos( TilePos pos, bool force=false );
   void switch2layer( int layer );
 
-public slots:
-  void loadStage(std::string filename);
-  void quit();
-  void restart();
-  void exit();
+  virtual void setOption(const std::string &name, Variant value);
+  virtual void setMode(int mode);
 
 private slots:
   void _resolveLoad();
   void _resolveEnterButton();
   void _requestExitGame();
+  void _exit();
+  void _restart();
   bool _tryExecHotkey( NEvent& event );
   void _handleDebugEvent( int event );
 

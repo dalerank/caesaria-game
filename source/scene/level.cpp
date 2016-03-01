@@ -206,7 +206,7 @@ void Level::Impl::initRender()
 }
 
 void Level::Impl::initMainUI()
-{  
+{
   PlayerCityPtr city = game->city();
   gui::Ui& ui = *game->gui();
 
@@ -275,8 +275,8 @@ void Level::Impl::initTabletUI( Level* scene )
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
-  CONNECT( topMenu, onRestart(),              scene,   Level::restart )
+  CONNECT( topMenu, onEnd(),                  scene,   Level::_exit )
+  CONNECT( topMenu, onRestart(),              scene,   Level::_restart )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
   CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
 
@@ -297,7 +297,7 @@ void Level::initialize()
   _d->initMainUI();
   _d->installHandlers( this );
   _d->initSound();
-  _d->initTabletUI( this );  
+  _d->initTabletUI( this );
   _d->connectTopMenu2scene( this );
   _d->undoStack.init( city );
 
@@ -515,7 +515,7 @@ void Level::Impl::showEmpireMapWindow()
 }
 
 void Level::draw()
-{ 
+{
   _d->renderer.render();
 
   _d->game->gui()->beforeDraw();
@@ -616,8 +616,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
       auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
-      CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
+      CONNECT( &btnRestart, onClicked(), lvl, Level::_restart );
+      CONNECT( &btnMenu, onClicked(), lvl, Level::_exit );
 
       window.moveToCenter();
       window.setModal();
@@ -654,12 +654,36 @@ void Level::setConstructorMode(bool enabled)
   _d->extMenu->setConstructorMode( enabled );
 }
 
-void Level::loadStage(std::string filename)
+void Level::setOption(const std::string& name, Variant value)
 {
-  _d->mapToLoad = filename;
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
-  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
-  stop();
+  if (name == "nextFile")
+  {
+    _d->mapToLoad = value.toString();
+    bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
+    _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
+    stop();
+  }
+}
+
+void Level::setMode(int mode)
+{
+  switch(mode)
+  {
+  case res_quit:
+    _d->result = Level::res_quit;
+    stop();
+  break;
+
+  case res_restart:
+    _d->result = Level::res_restart;
+    stop();
+  break;
+
+  case res_menu:
+    _d->result = Level::res_menu;
+    stop();
+  break;
+  }
 }
 
 void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
@@ -673,15 +697,15 @@ void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-void Level::quit(){ _d->result = Level::res_quit; stop(); }
-void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }
-void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
   events::dispatch<ScriptFunc>( "OnRequestExitGame" );
 }
+
+void Level::_exit() {  setMode(res_menu); }
+void Level::_restart() { setMode(res_restart); }
 
 bool Level::_tryExecHotkey(NEvent &event)
 {
@@ -759,7 +783,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F9:
-      loadStage( _d->createFastSaveName().toString() );
+      setOption("nextFile", _d->createFastSaveName().toString() );
       handled = true;
     break;
 
@@ -829,6 +853,6 @@ void Level::Impl::showMissionTargetsWindow()
 }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
-void Level::Impl::showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
+void Level::Impl::showLoadDialog() { events::dispatch<events::ScriptFunc>("OnShowSaveSelectDialog"); }
 
 }//end namespace scene

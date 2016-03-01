@@ -24,7 +24,7 @@
 #include "widget_helper.hpp"
 #include "events/showtileinfo.hpp"
 #include "events/savegame.hpp"
-#include "events/loadgame.hpp"
+#include "events/script_event.hpp"
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
 #include "gui/ingame_menu.hpp"
@@ -86,7 +86,7 @@ public:
   TexturedButton* btnZoomIn;
   TexturedButton* btnZoomOut;
 
-public signals:  
+public signals:
   Signal1<int> onChangeZoomSignal;
 };
 
@@ -211,20 +211,18 @@ void ActionsHandler::_showIngameMenu()
 }
 
 void ActionsHandler::_showSaveDialog() { ShowSaveDialog::create()->dispatch(); }
-void ActionsHandler::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+void ActionsHandler::_showLoadDialog() { events::dispatch<events::ScriptFunc>("OnShowSaveSelectDialog"); }
 
 void ActionsHandler::_restartGame()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->restart();
+  if( _scene )
+    _scene->setMode(scene::Level::res_restart);
 }
 
 void ActionsHandler::_exitToMainMenu()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->exit();
+  if( _scene )
+    _scene->setMode(scene::Level::res_menu);
 }
 
 void ActionsHandler::_showTileHelp()
@@ -237,4 +235,4 @@ void ActionsHandler::_showTileHelp()
 
 }//end namespace tablet
 
-}//end namespace gui
+}//end namespace gui-

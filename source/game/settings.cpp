@@ -239,7 +239,7 @@ void Settings::set( const std::string& option, const Variant& value )
   instance()._d->options[ option ] = value;
 }
 
-Variant Settings::get( const std::string& option )
+Variant Settings::get(const std::string& option)
 {
   VariantMap::iterator it = instance()._d->options.find( option );
   return  instance()._d->options.end() == it
@@ -247,7 +247,7 @@ Variant Settings::get( const std::string& option )
               : it->second;
 }
 
-void Settings::setwdir( const std::string& wdirstr )
+void Settings::setwdir(const std::string& wdirstr)
 {
   vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
@@ -266,7 +266,7 @@ void Settings::setwdir( const std::string& wdirstr )
   {
     saveDir = wdir/defaultSaveDir;
   }
-  _d->options[ savedir ] = Variant( saveDir.toString() );
+  _d->options[ savedir ] = Variant(saveDir.toString());
 }
 
 void Settings::resetIfNeed(char* argv[], int argc)

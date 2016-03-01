@@ -137,9 +137,9 @@ void Session::loadNextMission()
 {
   city::VictoryConditions vc;
   vc = _game->city()->victoryConditions();
-  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
-  if( level )
-    level->loadStage(vc.nextMission());
+  auto scene = _game->scene();
+  if (scene)
+    scene->setOption("nextFile", vc.nextMission());
 }
 
 void Session::setMode(int mode)

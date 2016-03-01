@@ -282,20 +282,20 @@ Dialogbox.prototype = {
 };
 
 function FileDialog(parent,advanced) {
-	if (advanced)
-		this.widget = new _LoadGame(parent);
-	else	
-	  this.widget = new _LoadFile(parent);
+    if (advanced)
+      this.widget = new _LoadGame(parent);
+    else
+      this.widget = new _LoadFile(parent);
 }
 
 FileDialog.prototype = {
-	set title (str) { this.widget.setTitle( engine.translate(str) ); },
-	set showExtensions (en) { this.widget.setShowExtensions(en); },
-	set text (str) { this.widget.setText( engine.translate(str) ); },
-	set directory (path) { this.widget.setDirectory(path); },
-	set filter (str) { this.widget.setFilter(str); },
-	set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
-	set callback (func) { this.widget.onFileSelectEx(func); }
+    set title (str) { this.widget.setTitle( engine.translate(str) ); },
+    set showExtensions (en) { this.widget.setShowExtensions(en); },
+    set text (str) { this.widget.setText( engine.translate(str) ); },
+    set directory (path) { this.widget.setDirectory(path); },
+    set filter (str) { this.widget.setFilter(str); },
+    set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
+    set callback (func) { this.widget.onSelectFileEx(func); }
 }
 
 function Ui() {
@@ -316,14 +316,14 @@ Ui.prototype = {
     return dialog;
   },
 
-	addFileDialog : function(dir,ext,adv) {
-		var dialog = new FileDialog(0,adv);
-		dialog.directory = dir;
-		if (ext.length > 0)
-			dialog.ext = ext;
-		return dialog;
-	},
-	
+  addFileDialog : function(dir,ext,adv) {
+    var dialog = new FileDialog(0,adv);
+    dialog.directory = dir;
+    if (ext.length > 0)
+      dialog.filter = ext;
+    return dialog;
+  },
+
   addFade : function(value) {
     var fade = new Fade(0);
     fade.alpha = value;

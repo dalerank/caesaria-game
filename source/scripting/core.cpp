@@ -412,23 +412,35 @@ void widget_set_callback_0(js_State *J,Signal1<Widget*>& (T::*f)(),
 template<typename T>
 void object_call_func_0(js_State *J, void (T::*f)())
 {
-  T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
-    (parent->*f)();
-  js_pushundefined(J);
+  try
+  {
+    T* parent = (T*)js_touserdata(J, 0, "userdata");
+    if (parent)
+      (parent->*f)();
+    js_pushundefined(J);
+  }
+  catch(...)
+  {}
 }
 
 template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
-  T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
+  try
   {
-    Rtype value = (parent->*f)();
-    internal::push(J,value);
+    T* parent = (T*)js_touserdata(J, 0, "userdata");
+    if (parent)
+    {
+      Rtype value = (parent->*f)();
+      internal::push(J,value);
+    }
+    else
+      js_pushundefined(J);
   }
-  else
-    js_pushundefined(J);
+  catch(...)
+  {
+    //something bad happens
+  }
 }
 
 template<typename T,typename Rtype, typename P1Type>

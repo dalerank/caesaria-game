@@ -1,6 +1,7 @@
 function OnShowMissionSelectDialog()
 {
     var wnd = g_ui.addWindow(0, 0, 1024, 768);
+    var missionInfo = null;
     wnd.title = "##mainmenu_playmission##";
     wnd.closeAfterKey( {escape:true,rmb:true} );
 
@@ -27,6 +28,13 @@ function OnShowMissionSelectDialog()
     btnLoad.style = "whiteBorderUp";
     btnLoad.textAlign = { v:"center", h:"center" };
     btnLoad.text = "##start_this_map##";
+    btnLoad.callback = function() {
+	if(missionInfo.map.length>0)
+	{
+	  g_session.setOption("nextFile",missionInfo.map);
+	  g_session.setMode(3);
+	}
+     };
 
     var lbExitHelp = wnd.addLabel(520, 598, 290, 20);
     lbExitHelp.text = "##press_escape_to_exit##";
@@ -35,13 +43,13 @@ function OnShowMissionSelectDialog()
 
     selector.onSelectedCallback = function(index) {
         var path = files[index];
-        var mission = new MissionInfo(path);
+        missionInfo = new MissionInfo(path);
 
-        g_session.loadLocalization(mission.localization);
+        g_session.loadLocalization(missionInfo.localization);
 
-        lbDescription.text = mission.desc;
-        wnd.title = mission.title;
-        imgPreview.picture = mission.image;
-        btnLoad.enabled = mission.map.lenght > 0;
+        lbDescription.text = missionInfo.desc;
+        wnd.title = missionInfo.title;
+        imgPreview.picture = missionInfo.image;
+        btnLoad.enabled = missionInfo.map.length > 0;
     }
 }

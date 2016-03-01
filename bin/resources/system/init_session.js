@@ -70,9 +70,15 @@ Session.prototype = {
         var path = new Path();
         path.assign(":/missions/");
         return path;
-    }
-		
-		get screenshotdir () {
+    },
+
+    get savedir () {
+        var path = new Path();
+        path.assign(engine.getOption("savedir"));
+        return path;
+    },
+
+    get screenshotdir () {
         var path = new Path();
         path.assign(engine.getOption("screenshotDir"));
         return path;

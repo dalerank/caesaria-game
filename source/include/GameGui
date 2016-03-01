@@ -8,7 +8,6 @@
 #include "gui/dictionary_text.hpp"
 #include "gui/widget.hpp"
 #include "gui/window.hpp"
-#include "gui/startmenu.hpp"
 #include "gui/dialogbox.hpp"
 #include "gui/pushbutton.hpp"
 #include "gui/listbox.hpp"

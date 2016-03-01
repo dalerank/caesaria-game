@@ -99,14 +99,14 @@ Tilemap& Overlay::_map() const
 
 int Overlay::_cityOpt(int name)
 {
-  if(_city().isNull())
+  if(_d->city.isNull())
   {
     Logger::warning("WARNING !!! Try to get city option when city not initialized");
     crashhandler::printstack(false);
     return 0;
   }
 
-  return _cityOpt((PlayerCity::OptionType)name);
+  return _d->city->getOption((PlayerCity::OptionType)name);
 }
 
 void Overlay::setPicture(Picture picture)
