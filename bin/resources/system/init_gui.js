@@ -281,12 +281,16 @@ Dialogbox.prototype = {
   set onNeverCallback (func) { this.widget.onNeverEx(func); }
 };
 
-function FileDialog(parent) {
-	this.widget = new _FileDialog(parent);
+function FileDialog(parent,advanced) {
+	if (advanced)
+		this.widget = new _LoadGame(parent);
+	else	
+	  this.widget = new _LoadFile(parent);
 }
 
 FileDialog.prototype = {
 	set title (str) { this.widget.setTitle( engine.translate(str) ); },
+	set showExtensions (en) { this.widget.setShowExtensions(en); },
 	set text (str) { this.widget.setText( engine.translate(str) ); },
 	set directory (path) { this.widget.setDirectory(path); },
 	set filter (str) { this.widget.setFilter(str); },
@@ -312,13 +316,14 @@ Ui.prototype = {
     return dialog;
   },
 
-	addFileDialog : function(dir,ext) {
-		var dialog = new _FileDialog(0);
+	addFileDialog : function(dir,ext,adv) {
+		var dialog = new FileDialog(0,adv);
 		dialog.directory = dir;
-		dialog.ext = ext;
+		if (ext.length > 0)
+			dialog.ext = ext;
 		return dialog;
 	},
-
+	
   addFade : function(value) {
     var fade = new Fade(0);
     fade.alpha = value;

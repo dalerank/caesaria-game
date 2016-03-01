@@ -30,7 +30,7 @@ function OnShowVideoSettings()
                         var mode = g_session.getVideoMode(index);
                         engine.log("w: " + mode.w + " h:" + mode.h );
                         g_session.resolution = mode;
-                                                haveChanges = true;
+                        haveChanges = true;
                     };
 
   for( var i=0; i < g_session.videoModesCount; i++ )
@@ -48,7 +48,8 @@ function OnShowVideoSettings()
   btnOk.callback = function() {
                 if( haveChanges )
                   g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
-                    wnd.deleteLater();
+                
+								wnd.deleteLater();
             };
   btnOk.setFocus();
 

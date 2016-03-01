@@ -239,7 +239,7 @@ function OnConstructorMode()
 {
     engine.log("OnConstructorMode");
 		
-		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
+		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);                                                  
 		fileDialog.mayDeleteFiles = false;
 		fileDialog.title = "##mainmenu_loadmap##";
 		fileDialog.text = "##start_this_map##";
@@ -264,6 +264,15 @@ function OnShowNewGameMenu()
 function OnShowSaveSelectDialog()
 {
     engine.log("OnShowSaveSelectDialog");
+			
+		var fileDialog = g_ui.addFileDialog(":/maps/", "", true);                                                  
+		fileDialog.mayDeleteFiles = false;
+		fileDialog.title = "##mainmenu_loadgame##";
+		fileDialog.text = "##load_this_game##";
+    fileDialog.callback = function(path) { 
+ 	                                                          g_session.setOption("nextFile",path);
+																														g_session.setMode(4);
+																											   }
 }
 
 function OnShowMapSelectDialog()

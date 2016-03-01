@@ -52,7 +52,6 @@ public:
   gui::Label* lbSteamName;
 
 public:
-  void showSaveSelectDialog();
   void showAdvancedMaterials();
   void fitScreenResolution();
   void resolveSteamStats();
@@ -60,22 +59,6 @@ public:
   void openDlcDirectory(Widget* sender);
   gui::Ui& ui();
 };
-
-void Lobby::Impl::showSaveSelectDialog()
-{
- /* vfs::Path savesPath = SETTINGS_STR( savedir );
-
-  result = Lobby::loadSavedGame;
-  auto& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
-  loadGameDialog.setShowExtension( false );
-  loadGameDialog.setMayDelete( true );
-
-  CONNECT( &loadGameDialog, onSelectFile(), this, Impl::selectFile );
-  loadGameDialog.setTitle( _("##mainmenu_loadgame##") );
-  loadGameDialog.setText( _("##load_this_game##") );
-
-  changePlayerNameIfNeed(); */
-}
 
 void Lobby::Impl::fitScreenResolution()
 {
