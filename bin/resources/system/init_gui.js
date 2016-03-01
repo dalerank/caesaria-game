@@ -281,6 +281,19 @@ Dialogbox.prototype = {
   set onNeverCallback (func) { this.widget.onNeverEx(func); }
 };
 
+function FileDialog(parent) {
+	this.widget = new _FileDialog(parent);
+}
+
+FileDialog.prototype = {
+	set title (str) { this.widget.setTitle( engine.translate(str) ); },
+	set text (str) { this.widget.setText( engine.translate(str) ); },
+	set directory (path) { this.widget.setDirectory(path); },
+	set filter (str) { this.widget.setFilter(str); },
+	set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
+	set callback (func) { this.widget.onFileSelectEx(func); }
+}
+
 function Ui() {
 }
 
@@ -299,6 +312,12 @@ Ui.prototype = {
     return dialog;
   },
 
+	addFileDialog : function(dir,ext) {
+		var dialog = new _FileDialog(0);
+		dialog.directory = dir;
+		dialog.ext = ext;
+		return dialog;
+	},
 
   addFade : function(value) {
     var fade = new Fade(0);

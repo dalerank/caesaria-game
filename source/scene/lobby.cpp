@@ -52,14 +52,9 @@ public:
   gui::Label* lbSteamName;
 
 public:
-  void showCredits();
-  void constructorMode();
-  void showMapSelectDialog();
   void showSaveSelectDialog();
   void showAdvancedMaterials();
-  void showPackageOptions();
   void fitScreenResolution();
-  void playMenuSoundTheme();
   void resolveSteamStats();
   void restart();
   void openDlcDirectory(Widget* sender);
@@ -91,11 +86,6 @@ void Lobby::Impl::fitScreenResolution()
   game::Settings::save();
 
   dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
-}
-
-void Lobby::Impl::playMenuSoundTheme()
-{
-  audio::Engine::instance().play( "main_menu", 50, audio::theme );
 }
 
 void Lobby::Impl::resolveSteamStats()
@@ -143,32 +133,7 @@ void Lobby::Impl::openDlcDirectory(Widget* sender)
   ui().add<DlcFolderViewer>( path );
 }
 
-void Lobby::Impl::showPackageOptions()
-{
-  ui().add<dialog::PackageOptions>( Rect() );
-}
-
-void Lobby::Impl::showCredits()
-{
-  events::dispatch<events::ScriptFunc>( "OnShowCredits" );
-}
-
 #define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
-
-void Lobby::Impl::constructorMode()
-{
- /* auto& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
-                                                     vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                     -1 );
-  loadFileDialog.setMayDelete( false );
-
-  result = Lobby::loadConstructor;
-  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
-  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
-  loadFileDialog.setText( _("##start_this_map##") );
-
-  changePlayerNameIfNeed(); */
-}
 
 void Lobby::Impl::showAdvancedMaterials()
 {
@@ -237,21 +202,6 @@ void Lobby::setMode(int mode)
     _isStopped=true;
   break;
   }
-}
-
-void Lobby::Impl::showMapSelectDialog()
-{
-  /*auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                      -1 );
-  loadFileDialog.setMayDelete( false );
-
-  result = Lobby::loadMap;
-  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
-  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
-  loadFileDialog.setText( _("##start_this_map##") );
-
-  changePlayerNameIfNeed();*/
 }
 
 Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
@@ -327,7 +277,7 @@ void Lobby::initialize()
   }
 
   if( !OSystem::isAndroid() )
-    _d->playMenuSoundTheme();
+    audio::Engine::instance().play( "main_menu", 50, audio::theme );
 
   if( steamapi::available() )
   {

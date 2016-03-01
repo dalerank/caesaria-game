@@ -71,6 +71,12 @@ Session.prototype = {
         path.assign(":/missions/");
         return path;
     }
+		
+		get screenshotdir () {
+        var path = new Path();
+        path.assign(engine.getOption("screenshotDir"));
+        return path;
+    }
 }
 
 var g_session = new Session();

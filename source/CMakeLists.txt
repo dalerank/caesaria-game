@@ -182,7 +182,7 @@ if(WIN32)
     #not show console window
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
-  endif(CMAKE_COMPILER_IS_GNUCXX)
+  endif()
 
   #include steam libraries
   set(GAME_BINARY_FILENAME "caesaria.exe")

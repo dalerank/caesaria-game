@@ -238,6 +238,15 @@ function OnPlayRandomap()
 function OnConstructorMode()
 {
     engine.log("OnConstructorMode");
+		
+		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
+		fileDialog.mayDeleteFiles = false;
+		fileDialog.title = "##mainmenu_loadmap##";
+		fileDialog.text = "##start_this_map##";
+    fileDialog.callback = function(path) { 
+ 	                                                          g_session.setOption("nextFile",path);
+																														g_session.setMode(2);
+																											   }
 }
 
 function OnShowNewGameMenu()
@@ -260,6 +269,15 @@ function OnShowSaveSelectDialog()
 function OnShowMapSelectDialog()
 {
     engine.log("OnShowMapSelectDialog");
+
+		var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
+		fileDialog.mayDeleteFiles = false;
+		fileDialog.title = "##mainmenu_loadmap##";
+		fileDialog.text = "##start_this_map##";
+    fileDialog.callback = function(path) { 
+ 	                                                          g_session.setOption("nextFile",path);
+																														g_session.setMode(1);
+																											   }
 }
 
 function OnShowLoadGameMenu()
@@ -272,11 +290,6 @@ function OnShowLoadGameMenu()
     addMainMenuButton("##mainmenu_loadgame##",    OnShowSaveSelectDialog );
     addMainMenuButton("##mainmenu_loadmap##",     OnShowMapSelectDialog );
     addMainMenuButton("##cancel##",               OnShowMainMenu);
-}
-
-function OnShowPackageOptions()
-{
-    engine.log("OnShowPackageOptions");
 }
 
 function OnShowGameOptionsMenu()

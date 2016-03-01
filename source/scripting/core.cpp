@@ -30,6 +30,7 @@
 #include "scripting/session.hpp"
 
 using namespace gui;
+using namespace gui::dialog;
 using namespace vfs;
 
 namespace script

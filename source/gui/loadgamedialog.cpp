@@ -25,12 +25,15 @@
 #include "core/gettext.hpp"
 #include "vfs/fileinfo.hpp"
 #include "core/logger.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
 
 namespace dialog
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(LoadGame)
 
 LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   : LoadFile( parent, Rect(), dir, ".oc3save", -1 )

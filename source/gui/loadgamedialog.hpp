@@ -32,7 +32,7 @@ namespace dialog
 class LoadGame : public LoadFile
 {
 public:
-  LoadGame( Widget* parent, const vfs::Directory& dir );
+  LoadGame(Widget* parent, const vfs::Directory& dir);
   virtual ~LoadGame();
 
 protected:
