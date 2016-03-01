@@ -52,11 +52,9 @@ public:
   gui::Label* lbSteamName;
 
 public:
-  void showAdvancedMaterials();
   void fitScreenResolution();
   void resolveSteamStats();
   void restart();
-  void openDlcDirectory(Widget* sender);
   gui::Ui& ui();
 };
 
@@ -107,51 +105,7 @@ void Lobby::Impl::restart()
   OSystem::restartProcess( appFile.toString(), appDir.toString(), StringArray() );
 }
 
-void Lobby::Impl::openDlcDirectory(Widget* sender)
-{
-  if( sender == 0 )
-    return;
-
-  vfs::Path path( sender->getProperty( "path" ).toString() );
-  ui().add<DlcFolderViewer>( path );
-}
-
 #define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
-
-void Lobby::Impl::showAdvancedMaterials()
-{
-  /*menu->clear();
-
-  vfs::Directory dir( ":/dlc" );
-  if( !dir.exist() )
-  {
-    auto& infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
-    infoDialog.show();
-    showMainMenu();
-    return;
-  }
-
-  StringArray excludeFolders;
-  excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
-  vfs::Entries::Items entries = dir.entries().items();
-  for( auto& it : entries )
-  {
-    if( it.isDirectory )
-    {
-      if( excludeFolders.contains( it.name.toString() ) )
-        continue;
-
-      vfs::Path path2subdir = it.fullpath;
-      std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
-
-      auto& btn = menu->addButton( _(locText), -1 );
-      btn.addProperty( "path", Variant( path2subdir.toString() ) );
-      CONNECT( &btn, onClickedEx(), this, Impl::openDlcDirectory )
-    }
-  }
-
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )*/
-}
 
 void Lobby::setMode(int mode)
 {

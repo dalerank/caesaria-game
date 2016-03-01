@@ -45,10 +45,12 @@ public:
   int lastChangesNum() const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);
+  StringArray getFolders(const std::string& dir, bool full);
   int videoModesCount() const;
   void playAudio(const std::string& filename, int volume, const std::string& mode);
   Size getVideoMode(int index) const;
   void setResolution(const Size& size);
+  void showDlcViewer(const std::string& path);
   StringArray tradableGoods() const;
   VariantMap getGoodInfo(std::string goodName) const;
   Size getResolution() const;

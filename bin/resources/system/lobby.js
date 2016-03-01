@@ -134,7 +134,7 @@ function OnChangePlayerName(force,continueCallback)
   {
     var wnd = g_ui.addWindow(0);
     wnd.geometry = { x:0, y:0, w:380, h:128 }
-        wnd.closeAfterKey( {escape:true} );
+    wnd.closeAfterKey( {escape:true} );
     wnd.mayMove = false;
     wnd.title = "##enter_your_name##";
 
@@ -320,6 +320,27 @@ function OnShowGameOptionsMenu()
 function OnShowAdvancedMaterials()
 {
     engine.log("OnShowAdvancedMaterials");
+		
+	  mainMenuClear(); 
+
+		var path = new Path(":/dlc");
+		if (!path.exist)
+		{
+       g_ui.addInformationDialog( "##no_dlc_found_title##", "##no_dlc_found_text##" ); 
+       OnShowMainMenu();
+       return;
+    }
+
+		var folders = g_session.getFolders(path.str,true);
+		for (var i in folders)
+    {
+		  var fullpath = new Path(folders[i]);
+      var folderName = fullpath.baseName;
+      var locText = "##mainmenu_dlc_" + folderName + "##";
+
+      addMainMenuButton(locText, function() { g_session.showDlcViewer(fullpath.str);  }	);
+    }
+  }
 }
 
 function OnShowMainMenu()

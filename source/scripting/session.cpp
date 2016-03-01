@@ -30,9 +30,6 @@
 #include "steam.hpp"
 #include <string>
 
-class Game;
-class VariantList;
-
 namespace script
 {
 
@@ -62,16 +59,22 @@ StringArray Session::getCredits() const
 
 StringArray Session::getFiles(const std::string& dir, const std::string& ext)
 {
-  auto flist = vfs::Directory(dir).entries()
-                                  .filter(vfs::Entries::file | vfs::Entries::extFilter, ext);
+  auto names = vfs::Directory(dir).entries()
+                                  .filter(vfs::Entries::file | vfs::Entries::extFilter, ext)
+                                  .items()
+                                  .fullnames();
 
-  StringArray names;
-  for( auto& it : flist )
-    names << it.fullpath.toString();
-
-  std::sort( names.begin(), names.end() );
-
+  std::sort(names.begin(), names.end());
   return names;
+}
+
+StringArray Session::getFolders(const std::string& dir, bool full)
+{
+  vfs::Directory fdir(dir);
+  if (!fdir.exist())
+    return StringArray();
+
+  return fdir.entries().items().folders(false);
 }
 
 void Session::playAudio(const std::string& filename, int volume, const std::string& mode)
@@ -90,6 +93,11 @@ void Session::setResolution(const Size& size)
 {
   SETTINGS_SET_VALUE(resolution, size);
   game::Settings::save();
+}
+
+void Session::showDlcViewer(const std::string& path)
+{
+  _game->gui()->add<gui::DlcFolderViewer>( path );
 }
 
 void Session::setFont(const std::string& fontname)

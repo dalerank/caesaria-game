@@ -46,7 +46,6 @@ js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
-inline void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 
 Variant to(js_State *J, int n, Variant)
 {
@@ -74,6 +73,10 @@ void push(js_State* J,const Size& size)
   js_pushnumber(J, size.height());
   js_setproperty(J, -2, "h");
 }
+
+void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+void push(js_State* J,const Path& p) { js_pushstring(J,p.toCString()); }
+void push(js_State* J,const std::string& p) { js_pushstring(J,p.c_str()); }
 
 int push(js_State* J,const Variant& param)
 {
@@ -122,7 +125,7 @@ void push(js_State *J, const StringArray& items)
   js_newarray(J);
   for (uint32_t i=0; i<items.size(); i++)
   {
-    push(J, items[i]);
+    js_pushstring(J,items[i].c_str());
     js_setindex(J, -2, i);
   }
 }
