@@ -238,7 +238,7 @@ unsigned int Statistic::_Tax::possible() const
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 
-  return taxValue;
+  return (unsigned int)taxValue;
 }
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const

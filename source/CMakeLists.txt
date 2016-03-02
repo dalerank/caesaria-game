@@ -175,14 +175,15 @@ if(WIN32)
     set(NEED_COPY_EXECUTABLE_TO_BINDIR 0)
   elseif(CMAKE_COMPILER_IS_GNUCXX)
     ####################### Win32 mingw settings ##################################
-    target_link_libraries(${PROJECT_NAME} "opengl32")
-    target_link_libraries(${PROJECT_NAME} "winmm")
-    target_link_libraries(${PROJECT_NAME} "imagehlp")
-
     #not show console window
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
   endif()
+
+   target_link_libraries(${PROJECT_NAME} "opengl32")
+   target_link_libraries(${PROJECT_NAME} "winmm")
+   target_link_libraries(${PROJECT_NAME} "imagehlp")
 
   #include steam libraries
   set(GAME_BINARY_FILENAME "caesaria.exe")
@@ -273,7 +274,9 @@ if(UNIX AND NOT APPLE)
 endif(UNIX AND NOT APPLE)
 
 if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	if(NOT MSVC)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	endif()
 else()
   message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()

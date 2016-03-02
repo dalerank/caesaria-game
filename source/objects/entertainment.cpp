@@ -168,7 +168,7 @@ bool EntertainmentBuilding::_isWalkerReady()
   for( auto item : _d->necWalkers )
     maxLevel = std::max( maxLevel, traineeValue( item ) );
 
-  return maxLevel;
+  return (maxLevel>0);
 }
 
 VariantList TraineeWays::save() const

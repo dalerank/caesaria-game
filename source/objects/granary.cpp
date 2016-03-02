@@ -234,12 +234,6 @@ std::string Granary::troubleDesc() const
 
 const Pictures& Granary::pictures(Renderer::Pass pass) const
 {
-  switch( pass )
-  {
-  //case Renderer::overWalker: return _d->granarySprite;
-  default: break;
-  }
-
   return Building::pictures( pass );
 }
 

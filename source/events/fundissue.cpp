@@ -70,13 +70,13 @@ void Payment::_exec(Game& game, unsigned int )
 {
   if( _type == Issue::importGoods )
   {
-    int price = good::Helper::importPrice( game.city(), _gtype, _qty );
+    float price = good::Helper::importPrice( game.city(), _gtype, _qty );
     _value = (int)(-price * ( 1+_buff ));
   }
   else if( _type == Issue::exportGoods )
   {
-    int price = good::Helper::exportPrice( game.city(), _gtype, _qty );
-    _value = price * ( 1+_buff );
+    float price = good::Helper::exportPrice( game.city(), _gtype, _qty );
+    _value = (int)(price * ( 1+_buff ));
   }
 
   game.city()->treasury().resolveIssue( Issue( (Issue::Type)_type, _value ) );

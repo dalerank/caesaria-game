@@ -66,7 +66,7 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 
     if( empire->workerSalary() != lastWorkerSalary )
     {
-      bool raiseSalary = empire->workerSalary() - lastWorkerSalary;
+      bool raiseSalary = (empire->workerSalary() > lastWorkerSalary);
 
       events::dispatch<ShowInfobox>( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
     }

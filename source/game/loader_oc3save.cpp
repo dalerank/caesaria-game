@@ -48,7 +48,7 @@ public:
   std::string restartFile;
 };
 
-bool OC3::load( const std::string& filename, Game& game )
+bool OC3::load(const std::string& filename, Game& game)
 {
   Logger::warning( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = config::load( filename );
@@ -90,13 +90,23 @@ bool OC3::load( const std::string& filename, Game& game )
 int OC3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
-  VariantMap vm = config::load( filename );
-  VariantMap scenario_vm = vm[ "scenario" ].toMap();
+  std::string str = vfs::NFile::open(filename).readAll().toString();
+  int indexScenario = str.find("scenario");
+  int indexClm = str.find("climate", indexScenario)+7;
+  for (int i = 0; i < 10; i++)
+  {
+    char clmType = str[indexClm + i];
+    switch (clmType) {
+    case '0': return 0;
+    case '1': return 1;
+    case '2': return 2;
+    }
+  }
 
-  return scenario_vm.get( "climate", -1 );
+  return -1;
 }
 
-bool OC3::isLoadableFileExtension( const std::string& filename )
+bool OC3::isLoadableFileExtension(const std::string& filename)
 {
   return vfs::Path( filename ).isMyExtension( ".oc3save" );
 }

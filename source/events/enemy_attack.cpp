@@ -135,7 +135,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
         enemy->send2City( location );
         enemy->wait( math::random( k * 30 ) );
         enemy->setAttackPriority( _d->attackPriority );
-        enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
+        enemy->setSpeedMultiplier( 0.7f + math::random( 60 ) / 100.f  );
       }           
     }
   }

@@ -387,7 +387,7 @@ void Chief::Impl::drawMilitary()
         if( is_kind_of<world::Barbarian>( obj ) ||
             is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( obj->location() );
+          float distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
             maxThreat = obj;
