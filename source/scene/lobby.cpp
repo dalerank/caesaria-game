@@ -205,8 +205,8 @@ void Lobby::initialize()
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
       auto& dialog = _d->ui().add<Dialogbox>( dialogRect,
-                                                    "Information", "Is need autofit screen resolution?",
-                                                    Dialogbox::btnYesNo );
+                                              "Information", "Is need autofit screen resolution?",
+                                              Dialogbox::btnYesNo );
       CONNECT( &dialog, onYes(),     &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onNo(),      &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
@@ -215,9 +215,6 @@ void Lobby::initialize()
       dialog.show();
     }
   }
-
-  if( !OSystem::isAndroid() )
-    audio::Engine::instance().play( "main_menu", 50, audio::theme );
 
   if( steamapi::available() )
   {

@@ -21,3 +21,4 @@
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant.hpp"
+#include "core/tilerect.hpp"

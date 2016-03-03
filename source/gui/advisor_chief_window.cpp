@@ -391,7 +391,7 @@ void Chief::Impl::drawMilitary()
           if( minDistance > distance )
           {
             maxThreat = obj;
-            minDistance = distance;
+            minDistance = (int)distance;
           }
         }
       }

@@ -1,12 +1,10 @@
 function OnShowPackageOptions()
 {
   var wnd = g_ui.addWindow(0, 0, 450, 300);
-  //buttons : "off"
   wnd.mayMove = false;
 	wnd.title = "##package_options##";
+	wnd.closeAfterKey( { escape:true,rmb:true } );
 	var needRestartPckg = false;
-  //bgtype : "whiteFrame"
-  //vars : { x1 : 12, x2 : 100, vh : 22 }
 
 	var ww = wnd.width;
 	var wh = wnd.height;
@@ -81,15 +79,18 @@ function OnShowPackageOptions()
 			 if( needRestartPckg )
 					g_ui.addInformationDialog( "Note", "Please restart game to apply change" );
 
-			var screenDir = g_session.screenshotdir;
-			if (!screenDir.exist)
-				g_session.createDir(screenDir.str);
-
+			if (!g_session.screenshotdir.exist)
+				g_session.createDir(g_session.screenshotdir.str);      
+			
 			engine.setOption("pckOptionsChanged",true);
 			wnd.deleteLater();
-	}
+	} 
 	
   var lbExitHelp = wnd.addLabel(18, wh-35,160, 20);
-  bExitHelp.text = "##press_escape_to_exit##";
+  lbExitHelp.text = "##press_escape_to_exit##";
   lbExitHelp.font = "FONT_1";
+	
+	wnd.moveToCenter();
+	wnd.mayMove = false;
+	wnd.setModal();
 }

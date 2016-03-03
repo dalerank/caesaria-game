@@ -20,6 +20,7 @@
 
 #include "core/namedtype.hpp"
 #include "core/size.hpp"
+#include "gui/predefinitions.hpp"
 #include <string>
 
 class Game;
@@ -46,6 +47,7 @@ public:
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);
   StringArray getFolders(const std::string& dir, bool full);
+  gui::Widget* findWidget(const std::string& name);
   int videoModesCount() const;
   void playAudio(const std::string& filename, int volume, const std::string& mode);
   Size getVideoMode(int index) const;

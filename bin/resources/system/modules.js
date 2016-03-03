@@ -7,5 +7,6 @@ engine.loadModule(":/system/video_settings.js");
 engine.loadModule(":/system/audio_settings.js");
 engine.loadModule(":/system/mission_events.js");
 engine.loadModule(":/system/mission_select.js");
+engine.loadModule(":/system/mission_debug.js");
 engine.loadModule(":/system/package_settings.js");
 engine.loadModule(":/system/lobby.js");

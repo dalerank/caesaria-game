@@ -14,6 +14,7 @@ function OnShowAudioDialog()
   var spnGameVolume = wnd.addSpinbox(28, 60, wnd.width-28*2, 24);
   spnGameVolume.text = "##gmsndwnd_game_volume##";
   spnGameVolume.postfix = " %";
+	spnGameVolume.value = saveGameValue;
   spnGameVolume.font = "FONT_2";
   spnGameVolume.textAlign = { h:"center", v:"center" };
   spnGameVolume.callback = function(value) { 
@@ -25,6 +26,7 @@ function OnShowAudioDialog()
   var spnAmbientVolume = wnd.addSpinbox(28, 96, wnd.width-28*2, 24);
   spnAmbientVolume.text = "##gmsndwnd_ambient_sound##";
   spnAmbientVolume.postfix = " %";
+	spnAmbientVolume.value = saveAmbValue;
   spnAmbientVolume.font = "FONT_2";
   spnAmbientVolume.textAlign = { h:"center", v:"center" };
   spnAmbientVolume.callback = function(value) { 
@@ -36,6 +38,7 @@ function OnShowAudioDialog()
   var spnThemeVolume = wnd.addSpinbox(28, 132, wnd.width-28*2, 24);
   spnThemeVolume.text = "##gmsndwnd_ambient_sound##";
   spnThemeVolume.postfix = " %";
+	spnThemeVolume.value = saveMusicValue;
   spnThemeVolume.font = "FONT_2";
   spnThemeVolume.textAlign = { h:"center", v:"center" };
   spnThemeVolume.callback = function(value) { 

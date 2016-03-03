@@ -61,10 +61,10 @@ void _THKERNEL(SafeThread* ptr)
 SafeThread::SafeThread(WorkFunction function) : _d( new Impl )
 {
   _d->function = function;
-  _d->thread = std::thread(_THKERNEL,this);
+  _d->abortFlag = false;  
   _d->delay = 0;
-  _d->abortFlag = false;
   _d->running = true;
+  _d->thread = std::thread(_THKERNEL, this);
 }
 
 SafeThreadPtr SafeThread::create(WorkFunction function)
@@ -78,11 +78,11 @@ SafeThread::SafeThread(WorkFunction function, StopFunction callbackOnFinish) :
   _d( new Impl )
 {
   _d->onFinish = callbackOnFinish;
-  _d->thread = std::thread(_THKERNEL,this);
+  _d->abortFlag = false;  
   _d->running = true;
   _d->delay = 0;
-  _d->abortFlag = false;
   _d->function = function;
+  _d->thread = std::thread(_THKERNEL, this);
 }
 
 bool SafeThread::failed() const
