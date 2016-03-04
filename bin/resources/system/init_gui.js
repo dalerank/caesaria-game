@@ -10,6 +10,10 @@ Widget.prototype = {
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
   set subElement (value) { this.widget.setSubElement(value); },
+	set name (str) { this.widget.setInternalName(str); },
+	
+	get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
 
   deleteLater : function() { this.widget.deleteLater(); },
   moveToCenter : function() { this.widget.moveToCenter(); },
@@ -27,6 +31,15 @@ Button.prototype = Object.create(Widget.prototype);
 Object.defineProperty( Button.prototype, "callback", { set: function(func) { this.widget.onClickedEx(func); }});
 Object.defineProperty( Button.prototype, "style", {  set: function(sname) { this.widget.setBackgroundStyle(sname); }});
 //*************************** button class end***************************************//
+
+//*************************** TexturedButton class ***************************************//
+function TexturedButton(parent) {
+  this.widget = new _TexturedButton(parent);
+}
+
+TexturedButton.prototype = Object.create(Button.prototype);
+Object.defineProperty( TexturedButton.prototype, "states", {  set: function(st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); }});
+//*************************** TexturedButton class end***************************************//
 
 //*************************** Spinbox class ***************************************//
 function Spinbox(parent) { this.widget = new _SpinBox(parent);}
@@ -59,6 +72,12 @@ Fade.prototype = {
 };
 //*************************** Fade class end***************************************//
 
+//*************************** ExitButton class ***************************************//
+function ExitButton(parent) {  this.widget = new _ExitButton(parent); }
+
+ExitButton.prototype = Object.create(Widget.prototype);
+//*************************** ExitButton class end***************************************//
+
 function DictionaryText(parent) {
   this.widget = new _DictionaryText(parent);
 }
@@ -71,28 +90,6 @@ DictionaryText.prototype = {
   get height () { return this.widget.height(); },
 
   deleteLater : function() { this.widget.deleteLater(); }
-};
-
-
-
-function ExitButton(parent) {
-  this.widget = new _ExitButton(parent);
-}
-
-ExitButton.prototype = {
-  set position (point) { this.widget.setPosition(point.x,point.y); }
-};
-
-function TexturedButton(parent) {
-  this.widget = new _TexturedButton(parent);
-}
-
-TexturedButton.prototype = {
-  set position (point) { this.widget.setPosition(point.x,point.y); },
-  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-  set states (st) { this.widget.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled); },
-  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
-  set callback (func) { this.widget.onClickedEx(func); },
 };
 
 function PositionAnimator(parent) {
@@ -271,7 +268,7 @@ FileDialog.prototype = {
   set directory (path) { this.widget.setDirectory(path); },
   set filter (str) { this.widget.setFilter(str); },
   set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
-  set callback (func) { this.widget.onSelectFileEx(func); }
+  set callback (func) { this.widget.onSelectFileEx(func); } 
 }
 
 function ContextMenu(parent) {
@@ -279,7 +276,7 @@ function ContextMenu(parent) {
 }
 
 ContextMenu.prototype = {
-  add: function(path,text) { this.widget.addItem(path,text); }
+  addItem: function(path,text) { engine.log("!!!!!!!!!!!!!!!!!!!!!!!!"); this.widget.addItem(path,text); }
 }
 
 function Ui() {
@@ -323,15 +320,13 @@ Ui.prototype = {
   },
 
   find: function(name,type) {
-      var o = new Object();
-      o.widget = g_session.findWidget(name);
+		engine.log("try find widget with name " + name);
 
-      if (!o.widget)
-          return null;
+		var wdg = {};
+		wdg.widget = new _Widget(name);     		
+		wdg.prototype = Object.create(type);			
 
-      o.prototype = type;
-      engine.log( "ui.find is !!! w:" + o.width + " h:" + o.height );
-      return o;
+    return wdg;
   },
 
   elog : function(a) { engine.log(a); }

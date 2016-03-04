@@ -80,10 +80,10 @@ SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list 
 {
   SmartPtr<Object> p;
 
-  int minDistance=99;
-  for( auto obj : list )
+  float minDistance=99.f;
+  for (auto obj : list)
   {
-    int distance = obj->pos().distanceFrom( pos );
+    float distance = obj->pos().distanceFrom(pos);
     if( distance < minDistance )
     {
       minDistance =  distance;

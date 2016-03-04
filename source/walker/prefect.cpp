@@ -165,8 +165,8 @@ void Prefect::_serveHouse( HousePtr house )
   if( !house.isValid() )
     return;
 
-  int healthLevel = house->state( pr::health );
-  if( healthLevel < 1 )
+  float healthLevel = house->state( pr::health );
+  if( healthLevel < 1.f )
   {
     house->deleteLater();
 

@@ -77,8 +77,6 @@ void push(js_State* J,const Size& size)
 void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 void push(js_State* J,const Path& p) { js_pushstring(J,p.toCString()); }
 void push(js_State* J,const std::string& p) { js_pushstring(J,p.c_str()); }
-void push(js_State *J, Widget* w) { js_newuserdata(J, "userdata", w, nullptr); }
-void push(js_State *J, ContextMenuItem* w) { js_newuserdata(J, "userdata", w, nullptr); }
 
 int push(js_State* J,const Variant& param)
 {
@@ -473,16 +471,29 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
     js_pushundefined(J);
 }
 
+void constructor_Widget(js_State *J)
+{
+  std::string name = js_tostring(J, 1);
+  Widget* widget = internal::game->gui()->rootWidget()->findChild(name, true);
+
+  if (widget == nullptr)
+    Logger::warning("WARNING !!! Cant found widget with name " + name);
+
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", widget, nullptr);
+}
+
 void reg_widget_constructor(js_State *J, const std::string& name)
 {
   Widget* parent = nullptr;
   if (js_isuserdata( J, 1, "userdata" ))
     parent = (Widget*)js_touserdata(J, 1, "userdata");
 
-  if (parent == 0)
+  if (parent == nullptr)
     parent = internal::game->gui()->rootWidget();
 
-  auto* widget = internal::game->gui()->createWidget( name, parent );
+  auto* widget = internal::game->gui()->createWidget(name, parent);
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", widget, nullptr);

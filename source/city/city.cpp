@@ -490,7 +490,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
   }
   else if( opt == svkBorderEnabled )
   {
-    _d->tilemap.setSvkBorderEnabled( value );
+    _d->tilemap.setSvkBorderEnabled(value>0);
   }
   else if( opt == climateType )
   {

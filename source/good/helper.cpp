@@ -157,8 +157,8 @@ float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int 
 
 float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 {
-  int price = city->tradeOptions().sellPrice( gtype );
-  Unit units = Unit::fromQty( qty );
+  int price = city->tradeOptions().sellPrice(gtype);
+  Unit units = Unit::fromQty(qty);
   return price * units.ivalue();
 }
 

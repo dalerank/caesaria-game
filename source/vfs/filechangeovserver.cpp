@@ -270,11 +270,11 @@ void FileChangeObserver::Impl::checkSnapshot()
     if( it != files.end() )
     {
       unsigned int newTime = item.fullpath.info().modified().hashtime();
-      unsigned int oldTime = files[ item.fullpath.toString() ];
+      unsigned int oldTime = files[item.fullpath.toString()];
       if( newTime != oldTime )
       {
-        files[ item.fullpath.toString() ] = newTime;
-        emit onFileChangeSignalA( item.fullpath );
+        files[item.fullpath.toString()] = newTime;
+        emit onFileChangeSignalA(item.fullpath);
       }
     }
   }

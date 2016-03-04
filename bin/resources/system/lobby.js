@@ -49,6 +49,19 @@ function OnStartCareer()
   OnChangePlayerName(true,function() { g_session.setMode(0); } );
 }
 
+function OnShowNewGameMenu()
+{
+    engine.log("OnShowNewGameMenu");
+
+    mainMenuClear();
+
+		addMainMenuButton( "##cancel##",               OnShowMainMenu);
+		
+    addMainMenuButton( "##mainmenu_startcareer##", OnStartCareer);
+    addMainMenuButton( "##mainmenu_randommap##",   OnPlayRandomap);
+    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);    
+}
+
 function setLanguage(config)
 {
   var currentFont = engine.getOption("font");
@@ -198,10 +211,12 @@ function addMainMenuButton(caption,callback)
   var offset = { x:(resolution.w - buttonSize.w) / 2, y:(resolution.h - offsetY * g_lobbyButtons.length) / 2 };
   for (var i in g_lobbyButtons)
   {
-     button = g_lobbyButtons[i];
-     button.position = offset;
+     var tmp = g_lobbyButtons[i];
+     tmp.position = offset;
      offset.y += offsetY;
   }
+	
+	return button;
 }
 
 function mainMenuClear()
@@ -241,21 +256,9 @@ function OnConstructorMode()
     fileDialog.title = "##mainmenu_loadmap##";
     fileDialog.text = "##start_this_map##";
     fileDialog.callback = function(path) { 
- 	                                   g_session.setOption("nextFile",path);
+ 	           g_session.setOption("nextFile",path);
 					   g_session.setMode(2);
 					 }
-}
-
-function OnShowNewGameMenu()
-{
-    engine.log("OnShowNewGameMenu");
-
-    mainMenuClear();
-
-    addMainMenuButton( "##mainmenu_startcareer##", OnStartCareer);
-    addMainMenuButton( "##mainmenu_randommap##",   OnPlayRandomap);
-    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);
-    addMainMenuButton( "##cancel##",               OnShowMainMenu);
 }
 
 function OnShowSaveSelectDialog()

@@ -47,11 +47,6 @@ int Session::lastChangesNum() const
   return game::Settings::findLastChanges();
 }
 
-gui::Widget* Session::findWidget(const std::string& name)
-{
-  return _game->gui()->rootWidget()->findChild(name,true);
-}
-
 StringArray Session::getCredits() const
 {
   StringArray strs;

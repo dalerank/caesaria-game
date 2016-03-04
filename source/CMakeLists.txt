@@ -176,9 +176,7 @@ if(WIN32)
   elseif(CMAKE_COMPILER_IS_GNUCXX)
     ####################### Win32 mingw settings ##################################
     #not show console window
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
-
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows -static-libstdc++ -static-libgcc")
   endif()
 
    target_link_libraries(${PROJECT_NAME} "opengl32")

@@ -85,8 +85,8 @@ void RomeSoldier::timeStep(const unsigned long time)
 
   if( game::Date::isMonthChanged() )
   {
-    unsigned int dst2base = pos().distanceFrom( _d->basePos );
-    if( dst2base > maxDistanceFromBase )
+    float dst2base = pos().distanceFrom( _d->basePos );
+    if (dst2base > (float)maxDistanceFromBase)
     {
       updateMorale( dst2base * -10 / maxDistanceFromBase );
       if( morale() == 0 )
