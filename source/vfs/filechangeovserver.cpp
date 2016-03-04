@@ -266,7 +266,7 @@ void FileChangeObserver::Impl::checkSnapshot()
   vfs::Entries::Items items = dir.entries().items();
   for( const auto& item : items )
   {
-    auto it = files.find( item.fullpath.toString() );
+    auto it = files.find(item.fullpath.toString());
     if( it != files.end() )
     {
       unsigned int newTime = item.fullpath.info().modified().hashtime();

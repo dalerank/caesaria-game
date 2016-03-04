@@ -66,7 +66,7 @@ void UpdateHouseService::_exec( Game& game, unsigned int time )
     HouseList houses = game.city()->statistic().houses.find();
 
     for( auto house : houses  )
-      house->appendServiceValue( _d->type, _d->value );
+      house->appendServiceValue( _d->type, (float)_d->value );
   }
 }
 

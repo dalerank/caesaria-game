@@ -47,12 +47,12 @@ void DebugTimer::reset(const std::string &name)
   instance()._d->timers[ namehash ].time = static_cast<uint32_t>(SDL_GetPerformanceCounter());
 }
 
-unsigned int DebugTimer::take(const std::string &name, bool reset)
+uint64_t DebugTimer::take(const std::string &name, bool reset)
 {
   unsigned int namehash = Hash( name );
   Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
 
-  unsigned int ret = tinfo.time;
+  uint64_t ret = tinfo.time;
   if( reset )
     tinfo.time = SDL_GetPerformanceCounter();
 

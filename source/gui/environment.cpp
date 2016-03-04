@@ -244,9 +244,9 @@ Widget* Ui::findWidget(int id)
 
 Widget* Ui::findWidget(const Point &p)
 {
-  for( auto widget : children() )
+  for (auto widget : children())
   {
-    if( widget->visible() && widget->isPointInside( p ) )
+    if (widget->visible() && widget->isPointInside(p))
       return widget;
   }
 

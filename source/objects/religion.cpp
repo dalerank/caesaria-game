@@ -258,7 +258,7 @@ void TempleMercury::_updateBuffs()
 
 TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), object::small_mercury_temple, 49 )
 {
-  _setBuffValue( 0.1 );
+  _setBuffValue( 0.1f );
 }
 
 BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), object::big_mercury_temple, 50 )

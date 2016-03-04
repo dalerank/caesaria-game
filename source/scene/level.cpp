@@ -19,63 +19,28 @@
 #include "level.hpp"
 #include <GameEvents>
 #include <GameGfx>
+#include <GameCity>
+#include <GameGui>
+#include <GameCore>
+#include <GameLogger>
 
-#include "city/victoryconditions.hpp"
-#include "core/exception.hpp"
-#include "gui/rightpanel.hpp"
-#include "gui/loadfiledialog.hpp"
 #include "game/resourcegroup.hpp"
-#include "gui/environment.hpp"
-#include "gui/topmenu.hpp"
-#include "gui/menu.hpp"
-#include "core/event.hpp"
-#include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "layers/constants.hpp"
-#include "gui/message_stack_widget.hpp"
-#include "core/time.hpp"
-#include "core/utils.hpp"
-#include "gui/empiremap_window.hpp"
-#include "gui/advisors_window.hpp"
 #include "game/alarm_event_holder.hpp"
 #include "game/game.hpp"
-#include "gui/senate_popup_info.hpp"
 #include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"
-#include "gui/mission_target_window.hpp"
-#include "gui/label.hpp"
-#include "core/gettext.hpp"
-#include "gui/minimap_window.hpp"
-#include "gui/window_gamespeed_options.hpp"
-#include "core/logger.hpp"
 #include "game/patrolpointeventhandler.hpp"
-#include "city/ambientsound.hpp"
-#include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "gui/androidactions.hpp"
-#include "gui/widgetescapecloser.hpp"
-#include "gui/scribesmessages.hpp"
-#include "core/foreach.hpp"
 #include "world/romechastenerarmy.hpp"
-#include "gui/city_options_window.hpp"
-#include "gui/widget_helper.hpp"
-#include "core/timer.hpp"
-#include "city/cityservice_military.hpp"
-#include "city/cityservice_info.hpp"
 #include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
-#include "city/build_options.hpp"
-#include "core/tilerect.hpp"
-#include "city/active_points.hpp"
-#include "city/statistic.hpp"
 #include "sound/themeplayer.hpp"
-#include "core/osystem.hpp"
-#include "city/states.hpp"
-#include "city/undo_stack.hpp"
 
 using namespace gui;
 using namespace events;
@@ -347,14 +312,14 @@ void Level::initialize()
   _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
-  _d->dhandler.setVisible( KILLSWITCH(debugMenu) );
+  _d->dhandler.setVisible(KILLSWITCH(debugMenu));
 
   CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
-  events::dispatch<events::ScriptFunc>( "OnMissionStart" );
+  events::dispatch<events::ScriptFunc>("OnMissionStart");
 
-  if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
+  if (_d->game->city()->getOption( PlayerCity::constructorMode ))
   {
     setConstructorMode( true );
   }

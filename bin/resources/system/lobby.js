@@ -396,6 +396,8 @@ function OnLobbyStart()
   btnTranslationPage.callback = function() { g_session.openUrl( "https://docs.google.com/spreadsheets/d/1vpV9B6GLUX5G5z3ftucBFl7pXr-I0QvHPI9vW6K4xlY" ); }
   btnTranslationPage.tooltip = "Help with translation!";
 
+	g_session.playAudio( "main_menu", 50, "theme" );
+	
   OnShowMainMenu();
   OnShowChanges(false);
 }

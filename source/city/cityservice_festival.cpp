@@ -122,7 +122,7 @@ void Festival::assign(RomeDivinity::Type name, int size )
   _d->fest.next.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->fest.next.divinity = name;
 
-  events::dispatch<Payment>( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
+  events::dispatch<Payment>( econ::Issue::sundries, -1 * _city()->statistic().festival.calcCost( (FestivalType)size ) );
 }
 
 Festival::Festival(PlayerCityPtr city)

@@ -1,36 +1,44 @@
-function Label(parent) {
-  this.widget = new _Label(parent);
-}
+//****************************** widget class *************************************//
+function Widget() {}
 
-Label.prototype = {
-  set text (str) { this.widget.setText( engine.translate(str) ); },
+Widget.prototype = {
+	set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
+  set position (point) { this.widget.setPosition(point.x,point.y); },
   set font (fname) { this.widget.setFont(fname); },
+  set enabled (e) { this.widget.setEnabled(e); },
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
-  set textColor (color) { this.widget.setColor(color); },
-  set subElement (value) { this.widget.setSubElement(value); },
+	set subElement (value) { this.widget.setSubElement(value); },
 
-  deleteLater : function() { this.widget.deleteLater(); }
-};
+	deleteLater : function() { this.widget.deleteLater(); },
+  setFocus : function() { this.widget.setFocus(); }
+}
 
+function Label(parent) {  this.widget = new _Label(parent);	}
+Label.prototype = Object.create(Widget.prototype);
+Object.defineProperty(Label.prototype, "textColor", {set: function(color) { this.widget.setColor(color); }});
+//************************** widget class end ************************************//
+
+//*************************** button class ***************************************//
+function Button(parent) {
+  this.widget = new _PushButton(parent);
+}
+Button.prototype = Object.create(Widget.prototype);
+Object.defineProperty( Button.prototype, "callback", { set: function(func) { this.widget.onClickedEx(func); }});
+Object.defineProperty( Button.prototype, "style", {  set: function(sname) { this.widget.setBackgroundStyle(sname); }});
+//*************************** button class end***************************************//
+
+//*************************** Spinbox class ***************************************//
 function Spinbox(parent) {
   this.widget = new _SpinBox(parent);
 }
 
-Spinbox.prototype = {
-  set text (str) { this.widget.setText( engine.translate(str) ); },
-  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-  set font (fname) { this.widget.setFont(fname); },
-  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
-  set textColor (color) { this.widget.setColor(color); },
-  set subElement (value) { this.widget.setSubElement(value); },
-  set postfix (text) { this.widget.setPostfix(text); },
-  set callback (func) { this.widget.onChangeA(func); },
-  set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
-
-  deleteLater : function() { this.widget.deleteLater(); }
-};
+Spinbox.prototype = Object.create(Label.prototype);
+Object.defineProperty(  Spinbox.prototype, "postfix", { set: function(text) { this.widget.setPostfix(text); }} );
+Object.defineProperty(  Spinbox.prototype, "value", { set: function(text) { this.widget.setValue(text); }} );
+Object.defineProperty(  Spinbox.prototype, "callback", { set: function(func) { this.widget.onChangeA(func); }} );
+//*************************** Spinbox class end***************************************//
 
 function DictionaryText(parent) {
   this.widget = new _DictionaryText(parent);
@@ -137,7 +145,7 @@ Window.prototype = {
   moveToCenter : function() { this.widget.moveToCenter(); },
   setModal : function() { this.widget.setModal(); },
   deleteLater : function() { this.widget.deleteLater(); },
-    addCloseCode : function(code) { this.widget.addCloseCode(code); },
+  addCloseCode : function(code) { this.widget.addCloseCode(code); },
 
   closeAfterKey : function(obj) {
       if(obj.escape)
@@ -196,25 +204,6 @@ Window.prototype = {
     btn.position = { x:rx, y:ry }
     return btn;
   }
-};
-
-function Button(parent) {
-  this.widget = new _PushButton(parent);
-}
-
-Button.prototype = {
-  set text (str) { this.widget.setText(engine.translate(str)); },
-  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-  set position (point) { this.widget.setPosition(point.x,point.y); },
-  set font (fname) { this.widget.setFont(fname); },
-  set callback (func) { this.widget.onClickedEx(func); },
-  set enabled (e) { this.widget.setEnabled(e); },
-  set style (sname) { this.widget.setBackgroundStyle(sname); },
-  set tooltip (text) { this.widget.setTooltipText(engine.translate(text)); },
-  set textAlign (obj) { this.widget.setTextAlignment(obj.h,obj.v); },
-
-  deleteLater : function() { this.widget.deleteLater(); },
-  setFocus : function() { this.widget.setFocus(); }
 };
 
 function Listbox(parent) {
@@ -298,6 +287,13 @@ FileDialog.prototype = {
     set callback (func) { this.widget.onSelectFileEx(func); }
 }
 
+function Menu() {
+}
+
+Menu.prototype = {
+
+}
+
 function Ui() {
 }
 
@@ -306,7 +302,7 @@ Ui.prototype = {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
     return window;
-  },
+  },	
 
   addInformationDialog : function(title, text) {
     var dialog = new Dialogbox(0);
@@ -337,6 +333,19 @@ Ui.prototype = {
     dialog.buttons = 3;
     return dialog;
   },
+	
+	findWidget : function(name,type) {
+		var o = new Object();
+		o.widget = g_session.findWidget(name);
+		
+		if (!o.widget)
+			return null;
+		
+		if(type=="Menu")
+			o.prototype = Menu.prototype;
+		
+    return o;		
+	},
 
   elog : function(a) { engine.log(a); }
 };

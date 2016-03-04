@@ -417,7 +417,7 @@ void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
 void Game::Impl::initAddons(bool& isOk, std::string& result)
 {
   addon::Manager& am = addon::Manager::instance();
-  am.load( vfs::Directory( std::string( ":/addons" ) ) );
+  am.load(std::string(":/addons"));
 }
 
 void Game::Impl::initScripting(bool& isOk, std::string& result)

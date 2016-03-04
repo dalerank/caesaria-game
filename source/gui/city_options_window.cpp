@@ -269,14 +269,14 @@ void CityOptions::Impl::changeDebugVisible(std::string,std::string, int value)
 {
   Widget* menu = findDebugMenu( widget->ui() );
   if( menu )
-    menu->setVisible( value );
+    menu->setVisible(value>0);
 }
 
 void CityOptions::Impl::changeAndroidBarVisible(std::string, std::string, int value)
 {
   Widget* abar = widget->ui()->findWidget( Hash( "AndroidActionsBar" ) );
   if( abar )
-    abar->setVisible( value );
+    abar->setVisible(value>0);
 }
 
 void CityOptions::Impl::changeCcAi(std::string, std::string, int value)
