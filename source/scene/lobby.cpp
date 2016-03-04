@@ -104,8 +104,6 @@ void Lobby::Impl::restart()
   OSystem::restartProcess( appFile.toString(), appDir.toString(), StringArray() );
 }
 
-#define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
-
 void Lobby::setMode(int mode)
 {
   switch(mode)
