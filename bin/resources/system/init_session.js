@@ -47,6 +47,7 @@ Session.prototype = {
     loadLocalization : function(path) { this.session.loadLocalization(path); },
     setLanguage : function(lang,sounds) { this.session.setLanguage(lang,sounds); },
     clearUi     : function() { this.session.clearUi(); },
+    findWidget  : function(name) { return this.session.findWidget(name); },
 
     get credits ()  { return this.session.getCredits(); },
     get videoModesCount () { return this.session.videoModesCount(); },

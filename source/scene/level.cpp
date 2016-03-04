@@ -105,7 +105,6 @@ public:
   std::string mapToLoad;
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
-  DebugHandler dhandler;
   bool simulationPaused;
   undo::UStack undoStack;
 
@@ -311,11 +310,11 @@ void Level::initialize()
   _d->renderer.camera()->setCenter( city->cameraPos() );
   _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
-  _d->dhandler.insertTo( _d->game, _d->topMenu );
-  _d->dhandler.setVisible(KILLSWITCH(debugMenu));
+  //_d->dhandler.insertTo( _d->game, _d->topMenu );
+  //_d->dhandler.setVisible(KILLSWITCH(debugMenu));
 
-  CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
-  CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
+  //CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
+  //CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
   events::dispatch<events::ScriptFunc>("OnMissionStart");
 

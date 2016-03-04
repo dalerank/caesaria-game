@@ -30,12 +30,12 @@ namespace gui
 class TopMenu : public MainMenu
 {
 public:
-  TopMenu( Widget* parent, const int height, bool useIcon );
+  TopMenu(Widget* parent, const int height, bool useIcon);
 
   // draw on screen
-  void draw( gfx::Engine& engine );  
-  void setFunds( int value );
-  void setPopulation( int value );
+  void draw(gfx::Engine& engine);
+  void setFunds(int value);
+  void setPopulation(int value);
 
 signals public:
   Signal0<>& onExit();

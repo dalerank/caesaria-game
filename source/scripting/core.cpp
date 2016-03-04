@@ -77,6 +77,8 @@ void push(js_State* J,const Size& size)
 void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 void push(js_State* J,const Path& p) { js_pushstring(J,p.toCString()); }
 void push(js_State* J,const std::string& p) { js_pushstring(J,p.c_str()); }
+void push(js_State *J, Widget* w) { js_newuserdata(J, "userdata", w, nullptr); }
+void push(js_State *J, ContextMenuItem* w) { js_newuserdata(J, "userdata", w, nullptr); }
 
 int push(js_State* J,const Variant& param)
 {
@@ -566,6 +568,8 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_END(name)
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 
+#include "widget.implementation"
+#include "menu.implementation"
 #include "window.implementation"
 #include "button.implementation"
 #include "session.implementation"
@@ -598,6 +602,8 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
 REGISTER_GLOBAL_OBJECT(engine)
 
+#include "widget.interface"
+#include "menu.interface"
 #include "window.interface"
 #include "button.interface"
 #include "session.interface"

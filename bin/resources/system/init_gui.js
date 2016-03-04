@@ -2,16 +2,17 @@
 function Widget() {}
 
 Widget.prototype = {
-	set text (str) { this.widget.setText( engine.translate(str) ); },
+  set text (str) { this.widget.setText( engine.translate(str) ); },
   set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
   set position (point) { this.widget.setPosition(point.x,point.y); },
   set font (fname) { this.widget.setFont(fname); },
   set enabled (e) { this.widget.setEnabled(e); },
   set textAlign (align) { this.widget.setTextAlignment(align.h,align.v); },
   set tooltip (text) { this.widget.setTooltipText(text); },
-	set subElement (value) { this.widget.setSubElement(value); },
+  set subElement (value) { this.widget.setSubElement(value); },
 
-	deleteLater : function() { this.widget.deleteLater(); },
+  deleteLater : function() { this.widget.deleteLater(); },
+  moveToCenter : function() { this.widget.moveToCenter(); },
   setFocus : function() { this.widget.setFocus(); }
 }
 
@@ -21,24 +22,42 @@ Object.defineProperty(Label.prototype, "textColor", {set: function(color) { this
 //************************** widget class end ************************************//
 
 //*************************** button class ***************************************//
-function Button(parent) {
-  this.widget = new _PushButton(parent);
-}
+function Button(parent) { this.widget = new _PushButton(parent);}
 Button.prototype = Object.create(Widget.prototype);
 Object.defineProperty( Button.prototype, "callback", { set: function(func) { this.widget.onClickedEx(func); }});
 Object.defineProperty( Button.prototype, "style", {  set: function(sname) { this.widget.setBackgroundStyle(sname); }});
 //*************************** button class end***************************************//
 
 //*************************** Spinbox class ***************************************//
-function Spinbox(parent) {
-  this.widget = new _SpinBox(parent);
-}
-
+function Spinbox(parent) { this.widget = new _SpinBox(parent);}
 Spinbox.prototype = Object.create(Label.prototype);
-Object.defineProperty(  Spinbox.prototype, "postfix", { set: function(text) { this.widget.setPostfix(text); }} );
-Object.defineProperty(  Spinbox.prototype, "value", { set: function(text) { this.widget.setValue(text); }} );
-Object.defineProperty(  Spinbox.prototype, "callback", { set: function(func) { this.widget.onChangeA(func); }} );
+Object.defineProperty( Spinbox.prototype, "postfix", { set: function(text) { this.widget.setPostfix(text); }} );
+Object.defineProperty( Spinbox.prototype, "value", { set: function(text) { this.widget.setValue(text); }} );
+Object.defineProperty( Spinbox.prototype, "callback", { set: function(func) { this.widget.onChangeA(func); }} );
 //*************************** Spinbox class end***************************************//
+
+//*************************** Editbox class ***************************************//
+function Editbox(parent) { this.widget = new _EditBox(parent); }
+
+Editbox.prototype = Object.create(Widget.prototype);
+Object.defineProperty( Editbox.prototype, "textOffset", { set: function(p) { this.widget.setTextOffset(p.x,p.y); }} );
+Object.defineProperty( Editbox.prototype, "cursorPos", { set: function(index) { this.widget.moveCursor(index); }} );
+Object.defineProperty( Editbox.prototype, "onTextChangeCallback", { set: function(func) { this.widget.onTextChangedEx(func); }} );
+Object.defineProperty( Editbox.prototype, "onEnterPressedCallback", { set: function(func) { this.widget.onEnterPressedEx(func); }} );
+//*************************** Editbox class end***************************************//
+
+//*************************** Fade class ***************************************//
+function Fade(parent) { this.widget = new _Fade(parent); }
+
+Fade.prototype = {
+  set alpha (value) { this.widget.setAlpha(value); },
+  get width () { return this.widget.width(); },
+  get height () { return this.widget.height(); },
+
+  addCloseCode : function(code) { this.widget.addCloseCode(code); },
+  deleteLater : function() { this.widget.deleteLater(); }
+};
+//*************************** Fade class end***************************************//
 
 function DictionaryText(parent) {
   this.widget = new _DictionaryText(parent);
@@ -54,18 +73,7 @@ DictionaryText.prototype = {
   deleteLater : function() { this.widget.deleteLater(); }
 };
 
-function Fade(parent) {
-  this.widget = new _Fade(parent);
-}
 
-Fade.prototype = {
-  set alpha (value) { this.widget.setAlpha(value); },
-  get width () { return this.widget.width(); },
-  get height () { return this.widget.height(); },
-
-  addCloseCode : function(code) { this.widget.addCloseCode(code); },
-  deleteLater : function() { this.widget.deleteLater(); }
-};
 
 function ExitButton(parent) {
   this.widget = new _ExitButton(parent);
@@ -74,27 +82,6 @@ function ExitButton(parent) {
 ExitButton.prototype = {
   set position (point) { this.widget.setPosition(point.x,point.y); }
 };
-
-function Editbox(parent) {
-  this.widget = new _EditBox(parent);
-}
-
-Editbox.prototype = {
-  set position (point) { this.widget.setPosition(point.x,point.y); },
-  get width () { return this.widget.width(); },
-  get height () { return this.widget.height(); },
-  set geometry (rect) { this.widget.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); },
-  set font (fname) { this.widget.setFont(fname); },
-  set textOffset(p) { this.widget.setTextOffset(p.x,p.y); },
-  set text (str) { this.widget.setText( engine.translate(str) ); },
-  set cursorPos (index) { this.widget.moveCursor(index); },
-  set onTextChangeCallback (func) { this.widget.onTextChangedEx(func); },
-  set onEnterPressedCallback (func) { this.widget.onEnterPressedEx(func); },
-
-  moveToCenter : function() { this.widget.moveToCenter(); },
-  deleteLater : function() { this.widget.deletLater(); },
-    setFocus : function() { this.widget.setFocus(); }
-}
 
 function TexturedButton(parent) {
   this.widget = new _TexturedButton(parent);
@@ -278,20 +265,21 @@ function FileDialog(parent,advanced) {
 }
 
 FileDialog.prototype = {
-    set title (str) { this.widget.setTitle( engine.translate(str) ); },
-    set showExtensions (en) { this.widget.setShowExtensions(en); },
-    set text (str) { this.widget.setText( engine.translate(str) ); },
-    set directory (path) { this.widget.setDirectory(path); },
-    set filter (str) { this.widget.setFilter(str); },
-    set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
-    set callback (func) { this.widget.onSelectFileEx(func); }
+  set title (str) { this.widget.setTitle( engine.translate(str) ); },
+  set showExtensions (en) { this.widget.setShowExtensions(en); },
+  set text (str) { this.widget.setText( engine.translate(str) ); },
+  set directory (path) { this.widget.setDirectory(path); },
+  set filter (str) { this.widget.setFilter(str); },
+  set mayDeleteFiles (en) { this.widget.setMayDelete(en); },
+  set callback (func) { this.widget.onSelectFileEx(func); }
 }
 
-function Menu() {
+function ContextMenu(parent) {
+  this.widget = new _ContextMenu(parent);
 }
 
-Menu.prototype = {
-
+ContextMenu.prototype = {
+  add: function(path,text) { this.widget.addItem(path,text); }
 }
 
 function Ui() {
@@ -302,9 +290,9 @@ Ui.prototype = {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
     return window;
-  },	
+  },
 
-  addInformationDialog : function(title, text) {
+  addInformationDialog: function(title, text) {
     var dialog = new Dialogbox(0);
     dialog.title = title;
     dialog.text = text;
@@ -312,7 +300,7 @@ Ui.prototype = {
     return dialog;
   },
 
-  addFileDialog : function(dir,ext,adv) {
+  addFileDialog: function(dir,ext,adv) {
     var dialog = new FileDialog(0,adv);
     dialog.directory = dir;
     if (ext.length > 0)
@@ -326,26 +314,25 @@ Ui.prototype = {
     return fade;
   },
 
-  addConfirmationDialog : function(title, text) {
+  addConfirmationDialog: function(title, text) {
     var dialog = new Dialogbox(0);
     dialog.title = title;
     dialog.text = text;
     dialog.buttons = 3;
     return dialog;
   },
-	
-	findWidget : function(name,type) {
-		var o = new Object();
-		o.widget = g_session.findWidget(name);
-		
-		if (!o.widget)
-			return null;
-		
-		if(type=="Menu")
-			o.prototype = Menu.prototype;
-		
-    return o;		
-	},
+
+  find: function(name,type) {
+      var o = new Object();
+      o.widget = g_session.findWidget(name);
+
+      if (!o.widget)
+          return null;
+
+      o.prototype = type;
+      engine.log( "ui.find is !!! w:" + o.width + " h:" + o.height );
+      return o;
+  },
 
   elog : function(a) { engine.log(a); }
 };

@@ -71,6 +71,8 @@ function OnMissionStart()
                 engine.setOption( "showStartAware", value );
             }
   }
+
+  CreateDebugMenu();
 }
 
 function OnRequestExitGame()

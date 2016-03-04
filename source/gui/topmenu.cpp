@@ -200,6 +200,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   _d->initBackground( size() );
   _d->useIcon = useIcon;
   _d->constructorMode = false;
+  setInternalName(TEXT(TopMenu));
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
