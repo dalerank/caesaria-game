@@ -12,7 +12,7 @@ function OnShowChanges(force)
     g_wasChangesShow = false;
   }
 
-  var lastChangesNumber = g_session.lastChangesNum;
+  var lastChangesNumber = g_session.lastChangesNum();
   var currentChangesNumber = engine.getOption( "lastChangesNumber" );
   engine.setOption( "lastChangesNumber", lastChangesNumber );
 
@@ -26,7 +26,7 @@ function OnShowChanges(force)
     var wnd = g_ui.addWindow(0,0,400,500);
     wnd.model = ":/changes/" + lastChangesNumber + ".changes";
 
-    var btn = wnd.addButton( 13, wnd.height-36, 300, 24 );
+    var btn = wnd.addButton( 13, wnd.h-36, 300, 24 );
     btn.text = "##hide_this_msg##";
     btn.font = "FONT_2";
     btn.style = "whiteBorderUp";
@@ -36,7 +36,7 @@ function OnShowChanges(force)
                                 btn.text = showChanges ?  "##show_this_msg##" : "##hide_this_msg##";
                               };
 
-    wnd.addExitButton(wnd.width-36,wnd.height-36);
+    wnd.addExitButton(wnd.w-36,wnd.h-36);
 
     wnd.moveToCenter();
     wnd.mayMove = false;
@@ -55,11 +55,10 @@ function OnShowNewGameMenu()
 
     mainMenuClear();
 
-		addMainMenuButton( "##cancel##",               OnShowMainMenu);
-		
     addMainMenuButton( "##mainmenu_startcareer##", OnStartCareer);
     addMainMenuButton( "##mainmenu_randommap##",   OnPlayRandomap);
-    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);    
+    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);
+    addMainMenuButton( "##cancel##",               OnShowMainMenu);
 }
 
 function setLanguage(config)
@@ -104,7 +103,7 @@ function OnShowLanguageDialog()
   wnd.moveToCenter();
   wnd.closeAfterKey( {escape:true, rmb:true} );
 
-  var listbox = wnd.addListbox(15, 40, wnd.width-30, wnd.height-90);
+  var listbox = wnd.addListbox(15, 40, wnd.w-30, wnd.h-90);
   listbox.setTextAlignment("center", "center");
   listbox.background = true;
   listbox.onSelectedCallback = function(index) {
@@ -120,7 +119,7 @@ function OnShowLanguageDialog()
   var currentLang = engine.getOption("language");
   listbox.selectedWithData = { name:"lang", data:currentLang };
 
-  var btn = wnd.addButton(15, wnd.height - 40, wnd.width-30, 24);
+  var btn = wnd.addButton(15, wnd.h - 40, wnd.w-30, 24);
   btn.text = "##continue##";
   btn.callback = function () { g_session.setMode(6); }
 }
@@ -128,7 +127,7 @@ function OnShowLanguageDialog()
 function OnShowLogs()
 {
   var logfile = g_session.logfile;
-  if (!logfile.exist)
+  if (!logfile.exist())
     g_ui.addInformationDialog( "", "Can't find logfile" );
   else
     g_session.openUrl(logfile.str);
@@ -215,8 +214,8 @@ function addMainMenuButton(caption,callback)
      tmp.position = offset;
      offset.y += offsetY;
   }
-	
-	return button;
+
+    return button;
 }
 
 function mainMenuClear()
@@ -250,43 +249,43 @@ function OnPlayRandomap()
 function OnConstructorMode()
 {
     engine.log("OnConstructorMode");
-		
-    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);                                                  
+
+    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);
     fileDialog.mayDeleteFiles = false;
     fileDialog.title = "##mainmenu_loadmap##";
     fileDialog.text = "##start_this_map##";
-    fileDialog.callback = function(path) { 
- 	           g_session.setOption("nextFile",path);
-					   g_session.setMode(2);
-					 }
+    fileDialog.callback = function(path) {
+               g_session.setOption("nextFile",path);
+                       g_session.setMode(2);
+                     }
 }
 
 function OnShowSaveSelectDialog()
 {
     engine.log("OnShowSaveSelectDialog");
-			
-    var fileDialog = g_ui.addFileDialog(g_session.savedir.str, "", true);                                                  
+
+    var fileDialog = g_ui.addFileDialog(g_session.savedir.str, "", true);
     fileDialog.mayDeleteFiles = true;
     fileDialog.title = "##mainmenu_loadgame##";
     fileDialog.text = "##load_this_game##";
-    fileDialog.callback = function(path) { 
- 	                                  g_session.setOption("nextFile",path);
-					  g_session.setMode(4);
-					 }
+    fileDialog.callback = function(path) {
+                       g_session.setOption("nextFile",path);
+                       g_session.setMode(4);
+                     }
 }
 
 function OnShowMapSelectDialog()
 {
     engine.log("OnShowMapSelectDialog");
 
-    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");                                                  
+    var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");
     fileDialog.mayDeleteFiles = false;
     fileDialog.title = "##mainmenu_loadmap##";
     fileDialog.text = "##start_this_map##";
-    fileDialog.callback = function(path) { 
-	                                   g_session.setOption("nextFile",path);
-				           g_session.setMode(1);
-					 }
+    fileDialog.callback = function(path) {
+                                       g_session.setOption("nextFile",path);
+                           g_session.setMode(1);
+                     }
 }
 
 function OnShowLoadGameMenu()
@@ -320,12 +319,12 @@ function OnShowGameOptionsMenu()
 function OnShowAdvancedMaterials()
 {
     engine.log("OnShowAdvancedMaterials");
-    mainMenuClear(); 
+    mainMenuClear();
 
-    var path = new Path(":/dlc");
-    if (!path.exist)
+    var path = g_session.getPath(":/dlc");
+    if (!path.exist())
     {
-       g_ui.addInformationDialog( "##no_dlc_found_title##", "##no_dlc_found_text##" ); 
+       g_ui.addInformationDialog( "##no_dlc_found_title##", "##no_dlc_found_text##" );
        OnShowMainMenu();
        return;
     }
@@ -333,7 +332,7 @@ function OnShowAdvancedMaterials()
     var folders = g_session.getFolders(path.str,true);
     for (var i in folders)
     {
-      var fullpath = new Path(folders[i]);
+      var fullpath = g_session.getPath(folders[i]);
       var folderName = fullpath.baseName;
       var locText = "##mainmenu_dlc_" + folderName + "##";
 
@@ -354,8 +353,8 @@ function OnShowMainMenu()
   addMainMenuButton("##mainmenu_options##", OnShowGameOptionsMenu);
   addMainMenuButton("##mainmenu_credits##", OnShowGameCredits);
 
-  var dlc = new Path(":/dlc");
-  if (dlc.exist)
+  var dlc = g_session.getPath(":/dlc");
+  if (dlc.exist())
      addMainMenuButton("##mainmenu_mcmxcviii##", OnShowAdvancedMaterials);
 
   addMainMenuButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
@@ -399,8 +398,8 @@ function OnLobbyStart()
   btnTranslationPage.callback = function() { g_session.openUrl( "https://docs.google.com/spreadsheets/d/1vpV9B6GLUX5G5z3ftucBFl7pXr-I0QvHPI9vW6K4xlY" ); }
   btnTranslationPage.tooltip = "Help with translation!";
 
-	g_session.playAudio( "main_menu", 50, "theme" );
-	
+  g_session.playAudio( "main_menu", 50, "theme" );
+
   OnShowMainMenu();
   OnShowChanges(false);
 }
@@ -416,24 +415,24 @@ function OnShowGameCredits()
   var credits = g_session.credits;
   for( var i=0; i < credits.length; i++ )
   {
-    var lb = new Label(fade.widget);
-    lb.geometry = { x:0, y:fade.height + i * 15, w:fade.width, h:15};
+    var lb = new Label(fade);
+    lb.geometry = { x:0, y:fade.h + i * 15, w:fade.w, h:15};
     lb.text = credits[i];
     lb.textAlign = { h:"center", v:"center" };
     lb.font = "FONT_2_WHITE";
     lb.subElement = true;
 
-    var animator = new PositionAnimator(lb.widget);
+    var animator = new PositionAnimator(lb);
     animator.removeParent = true;
     animator.destination = {x:0, y:-20};
     animator.speed = {x:0, y:-0.5};
   }
 
-  var btnExit = new Button(fade.widget);
-  btnExit.geometry = {x:fade.width - 150, y:fade.height-34, w:140, h:24};
+  var btnExit = new Button(fade);
+  btnExit.geometry = {x:fade.w - 150, y:fade.h-34, w:140, h:24};
   btnExit.text = "##close##";
   btnExit.callback = function() {
-                                    fade.deleteLater();
-                                    g_session.playAudio( "main_menu", 50, "theme" );
-                                  }
+                                  fade.deleteLater();
+                                  g_session.playAudio( "main_menu", 50, "theme" );
+                                }
 }

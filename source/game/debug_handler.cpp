@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
- 
+
 #include "debug_handler.hpp"
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
@@ -250,7 +250,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   _d->game = game;
 
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
-  _d->debugMenu = tmp->addSubMenu();
+  _d->debugMenu = tmp->addSubmenu();
 
 #define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( #section, #ev, ev ); \
                                        item->onAction().connect( _d.data(), &Impl::handleEvent ); }
@@ -719,7 +719,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
   case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
   case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
-  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;    
+  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;
 
   case all_furnitureworksop_fillstock: fillFactoryStock( object::furniture_workshop ); break;
   case all_creamery_fillstock: fillFactoryStock( object::oil_workshop ); break;
@@ -731,7 +731,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto ovs = game->city()->overlays().select<Tree>().random( 10 );
 
     for( auto tree : ovs )
-	tree->grow();
+  tree->grow();
   }
   break;
 
@@ -780,7 +780,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto walkers = game->city()->walkers().select<EnemySoldier>();
 
     for( auto wlk : walkers )
-	wlk->die();
+  wlk->die();
   }
   break;
 
@@ -926,7 +926,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_soldiers_in_fort:
   {
     FortList ovs = game->city()->overlays().select<Fort>();
-    
+
     for( auto fort : ovs )
     {
       int howMuchAdd = 16 - fort->walkers().size();

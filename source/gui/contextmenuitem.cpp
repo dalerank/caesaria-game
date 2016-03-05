@@ -76,7 +76,7 @@ void ContextMenuItem::_updateTexture(Engine& painter)
     updateTexture = true;
   }
 
-  if( d.submenu.iconVisible && subMenu() != nullptr )
+  if( d.submenu.iconVisible && submenu() != nullptr )
   {
     for( int k=7; k > 0; --k )
     {
@@ -93,16 +93,24 @@ void ContextMenuItem::_updateTexture(Engine& painter)
   }
 }
 
-ContextMenu* ContextMenuItem::addSubMenu( int id )
+ContextMenu* ContextMenuItem::addSubmenu(int id)
 {
   auto& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
-  setSubMenu( &sub );
+  setSubmenu( &sub );
   sub.bringToFront();
   return &sub;
 }
 
+ContextMenuItem*ContextMenuItem::addSubmenuItem(const std::string& text)
+{
+  if(!submenu())
+    addSubmenu();
+
+  submenu()->addItem(text,-1);
+}
+
 //! Adds a sub menu from an element that already exists.
-void ContextMenuItem::setSubMenu( ContextMenu* menu )
+void ContextMenuItem::setSubmenu( ContextMenu* menu )
 {
   __D_REF(d,ContextMenuItem)
   if( menu )
@@ -169,11 +177,11 @@ int ContextMenuItem::offset() const{  return _dfunc()->offset;}
 void ContextMenuItem::setChecked( bool check ) { _dfunc()->is.checked = check;}
 bool ContextMenuItem::isChecked() const{  return _dfunc()->is.checked;}
 void ContextMenuItem::setIsSeparator( bool separator ){  _dfunc()->is.separator = separator;}
-ContextMenu* ContextMenuItem::subMenu() const{  return _dfunc()->submenu.widget;}
-void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){ _dfunc()->submenu.align = align;}
+ContextMenu* ContextMenuItem::submenu() const{  return _dfunc()->submenu.widget;}
+void ContextMenuItem::setSubmenuAlignment( SubMenuAlign align ){ _dfunc()->submenu.align = align;}
 ContextMenuItem::SubMenuAlign ContextMenuItem::subMenuAlignment() const{ return _dfunc()->submenu.align;}
-void ContextMenuItem::setSubMenuIconVisible(bool visible) { _dfunc()->submenu.iconVisible = visible; }
-void ContextMenuItem::setIcon(const Picture& icon , Point offset){}
+void ContextMenuItem::setSubmenuIconVisible(bool visible) { _dfunc()->submenu.iconVisible = visible; }
+void ContextMenuItem::setIcon(const Picture& icon , const Point& offset){}
 void ContextMenuItem::setDimmension( const Size& size ) {  _dfunc()->dim = size;}
 const Size& ContextMenuItem::dimmension() const{  return _dfunc()->dim;}
 void ContextMenuItem::setOffset( int offset ){  _dfunc()->offset = offset;}

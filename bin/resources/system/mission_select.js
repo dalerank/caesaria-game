@@ -29,11 +29,11 @@ function OnShowMissionSelectDialog()
     btnLoad.textAlign = { v:"center", h:"center" };
     btnLoad.text = "##start_this_map##";
     btnLoad.callback = function() {
-	if(missionInfo.map.length>0)
-	{
-	  g_session.setOption("nextFile",missionInfo.map);
-	  g_session.setMode(3);
-	}
+       if(missionInfo.map.length>0)
+       {
+         g_session.setOption("nextFile",missionInfo.map);
+         g_session.setMode(3);
+       }
      };
 
     var lbExitHelp = wnd.addLabel(520, 598, 290, 20);
@@ -43,7 +43,7 @@ function OnShowMissionSelectDialog()
 
     selector.onSelectedCallback = function(index) {
         var path = files[index];
-        missionInfo = new MissionInfo(path);
+        missionInfo = g_session.getMissionInfo(path);
 
         g_session.loadLocalization(missionInfo.localization);
 

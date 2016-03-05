@@ -228,7 +228,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   }
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
-  ContextMenu* file = tmp->addSubMenu();
+  ContextMenu* file = tmp->addSubmenu();
 
   ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
   ContextMenuItem* load =    file->addItem( _("##mainmenu_loadgame##"),  -1, true, false, false, false );
@@ -243,7 +243,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   CONNECT( mainMenu, onClicked(), &_d->signal.onEnd, Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
-  ContextMenu* options = tmp->addSubMenu();
+  ContextMenu* options = tmp->addSubmenu();
   ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
   ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
@@ -258,14 +258,14 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
-  ContextMenu* helpMenu = tmp->addSubMenu();
+  ContextMenu* helpMenu = tmp->addSubmenu();
   ContextMenuItem* aboutItem = helpMenu->addItem( _("##gmenu_about##"), -1 );
   ContextMenuItem* shortkeysItem = helpMenu->addItem( _("##gmenu_shortkeys##"), -1 );
   CONNECT( aboutItem, onClicked(), _d.data(), Impl::showAboutInfo );
   CONNECT( shortkeysItem, onClicked(), _d.data(), Impl::showShortKeyInfo );
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
-  ContextMenu* advisersMenu = tmp->addSubMenu();
+  ContextMenu* advisersMenu = tmp->addSubmenu();
   advisersMenu->addItem( _("##visit_labor_advisor##"      ), advisor::employers );
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
   advisersMenu->addItem( _("##visit_imperial_advisor##"   ), advisor::empire );

@@ -138,7 +138,7 @@ public:
   virtual void setupUI( const VariantMap &ui );
 
   virtual void setTextOffset( Point offset );
-    
+
 signals public:
   virtual Signal0<>& onClicked();
   virtual Signal1<Widget*>& onClickedA();

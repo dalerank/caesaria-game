@@ -6,8 +6,8 @@ function OnShowPackageOptions()
   wnd.closeAfterKey( { escape:true,rmb:true } );
   var needRestartPckg = false;
 
-    var ww = wnd.width;
-    var wh = wnd.height;
+    var ww = wnd.w;
+    var wh = wnd.h;
     var lbResourcesPath = wnd.addLabel(15,45,ww*0.3,24);
     lbResourcesPath.font = "FONT_1";
     lbResourcesPath.text = "Resources: ";
@@ -48,7 +48,7 @@ function OnShowPackageOptions()
     edCaesar3Video.onTextChangeCallback = function(text) { engine.setOption("c3video", text); }
 
     var lbScreenshots = wnd.addLabel(15,154,ww*0.3,24);
-    lbScreenshots.font = "FONT_1";    
+    lbScreenshots.font = "FONT_1";
     lbScreenshots.text = "Screenshots: ";
 
     var edScreenshots = wnd.addEditbox(ww*0.3,154,ww*0.7-15,24);
@@ -69,7 +69,7 @@ function OnShowPackageOptions()
             if( needRestartPckg )
                 g_ui.addInformationDialog( "Note", "Please restart game to apply change" );
 
-            if (!g_session.screenshotdir.exist)
+            if (!g_session.screenshotdir.exist())
                 g_session.createDir(g_session.screenshotdir.str);
 
             engine.setOption("pckOptionsChanged",true);

@@ -120,6 +120,16 @@ int push(js_State* J,const Variant& param)
   return 1;
 }
 
+void pushud(js_State* J, const std::string& name, void* v)
+{
+  js_newobject(J);
+  js_getglobal(J, name.c_str());
+  js_getproperty( J, -1, "prototype");
+  js_newuserdata(J, "userdata", v, nullptr);
+}
+
+void push(js_State* J, ContextMenuItem* w) { pushud(J,TEXT(ContextMenuItem),w); }
+
 void push(js_State *J, const StringArray& items)
 {
   js_newarray(J);
@@ -255,9 +265,8 @@ void script_object_begin(const std::string& name)
 
 void reg_object_constructor(const std::string& name, js_CFunction f)
 {
-  std::string _name = "_"+name;
-  js_newcconstructor(internal::J, f, f, _name.c_str(), 1);
-  js_defglobal(internal::J, _name.c_str(), JS_DONTENUM);
+  js_newcconstructor(internal::J, f, f, name.c_str(), 1);
+  js_defglobal(internal::J, name.c_str(), JS_DONTENUM);
 }
 
 Core& Core::instance()
@@ -471,29 +480,28 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
     js_pushundefined(J);
 }
 
-void constructor_Widget(js_State *J)
-{
-  std::string name = js_tostring(J, 1);
-  Widget* widget = internal::game->gui()->rootWidget()->findChild(name, true);
-
-  if (widget == nullptr)
-    Logger::warning("WARNING !!! Cant found widget with name " + name);
-
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", widget, nullptr);
-}
-
 void reg_widget_constructor(js_State *J, const std::string& name)
 {
-  Widget* parent = nullptr;
-  if (js_isuserdata( J, 1, "userdata" ))
-    parent = (Widget*)js_touserdata(J, 1, "userdata");
+  Widget* widget = nullptr;
+  if (js_isstring(J,1))
+  {
+    std::string name = js_tostring(J, 1);
+    widget = internal::game->gui()->rootWidget()->findChild(name, true);
 
-  if (parent == nullptr)
-    parent = internal::game->gui()->rootWidget();
+    if (widget == nullptr)
+      Logger::warning("WARNING !!! Cant found widget with name " + name);
+  }
+  else
+  {
+    Widget* parent = nullptr;
+    if (js_isuserdata( J, 1, "userdata" ))
+      parent = (Widget*)js_touserdata(J, 1, "userdata");
+    if (parent == nullptr)
+      parent = internal::game->gui()->rootWidget();
 
-  auto* widget = internal::game->gui()->createWidget(name, parent);
+    widget = internal::game->gui()->createWidget(name, parent);
+  }
+
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", widget, nullptr);

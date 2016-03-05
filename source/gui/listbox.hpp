@@ -84,7 +84,7 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   //! removes an item from the list
   virtual void removeItem(unsigned int id);

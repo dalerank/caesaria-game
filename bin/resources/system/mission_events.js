@@ -6,19 +6,19 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   wnd.title = "##mission_win##";
   wnd.font = "FONT_5";
 
-  var lbCaesarAssign = wnd.addLabel(10, 40, wnd.width-20, 25);
+  var lbCaesarAssign = wnd.addLabel(10, 40, wnd.w-20, 25);
   lbCaesarAssign.text = "##caesar_assign_new_title##";
   lbCaesarAssign.font = "FONT_2";
   lbCaesarAssign.textAlign = { h:"center", v:"center" };
 
-  var lbNewTitle = wnd.addLabel( 10, 70, wnd.width-20, 30 );
+  var lbNewTitle = wnd.addLabel( 10, 70, wnd.w-20, 30 );
   lbNewTitle.text = newTitle;
   lbNewTitle.font = "FONT_5";
   lbNewTitle.textAlign = { h:"center", v:"center" };
 
   if( mayContinue )
   {
-      var btn2years = wnd.addButton( 35, 140, wnd.width-70, 20 );
+      var btn2years = wnd.addButton( 35, 140, wnd.w-70, 20 );
       btn2years.text = "##continue_2_years##";
       btn2years.font = "FONT_2";
       btn2years.style = "whiteBorderUp";
@@ -28,7 +28,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
                 wnd.deleteLater();
             };
 
-      var btn5years = wnd.addButton( 35, 165, wnd.width-70, 20 );
+      var btn5years = wnd.addButton( 35, 165, wnd.w-70, 20 );
       btn5years.text = "##continue_5_years##";
       btn5years.font = "FONT_2";
       btn5years.style = "whiteBorderUp";
@@ -39,7 +39,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
             }
   }
 
-  var btnAccept = wnd.addButton( 35, 115, wnd.width-70, 20 );
+  var btnAccept = wnd.addButton( 35, 115, wnd.w-70, 20 );
   btnAccept.text = "##accept_promotion##";
   btnAccept.font = "FONT_2";
   btnAccept.style = "whiteBorderUp";
@@ -95,7 +95,7 @@ function OnShowEmpirePrices()
   var lbSellPrice = wnd.addLabel(10, 108, 140, 128);
   lbSellPrice.text = "##sell_price##";
 
-  var lbHint = wnd.addLabel(140, wnd.height-30, wnd.width-10, wnd.height-10 );
+  var lbHint = wnd.addLabel(140, wnd.h-30, wnd.w-10, wnd.h-10 );
   lbHint.text = "##click_rmb_for_exit##";
 
   wnd.closeAfterKey({escape:true,rmb:true});

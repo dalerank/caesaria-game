@@ -86,21 +86,21 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
   items.erase( items.begin() );
   for( auto& item : items )
   {
-    if( lastItem->subMenu() == NULL )
+    if( lastItem->submenu() == NULL )
     {
-      lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
+      lastItem = lastItem->addSubmenu()->addItem( item, -1, true, true );
     }
     else
     {
-      lastItem = lastItem->subMenu()->findItem( item );
+      lastItem = lastItem->submenu()->findItem( item );
       if( !lastItem )
-        lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
+        lastItem = lastItem->addSubmenu()->addItem( item, -1, true, true );
     }
   }
 
-  if( lastItem->subMenu() )
+  if( lastItem->submenu() )
   {
-    lastItem = lastItem->subMenu()->addItem( text, commandId );
+    lastItem = lastItem->submenu()->addItem( text, commandId );
   }
 
   return lastItem;
@@ -114,8 +114,9 @@ ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
   return insertItem( _d->items.size(), text, commandId, enabled, hasSubMenu, checked, autoChecking);
 }
 
-ContextMenuItem*ContextMenu::addItem(const std::string& path, const std::string& text)
+ContextMenuItem* ContextMenu::addItem(const std::string& path, const std::string& text)
 {
+  updateItems();
   if(path.empty())
     return addItem(text,-1);
   else
@@ -139,7 +140,7 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
 
   if (hasSubMenu)
   {
-    ContextMenu* subMenu = newItem.addSubMenu( commandId );
+    ContextMenu* subMenu = newItem.addSubmenu( commandId );
     subMenu->setVisible( false );
   }
 
@@ -324,7 +325,7 @@ unsigned int ContextMenu::_sendClick(const Point& p)
   int openmenu = -1;
   int j;
   for( j=0; j<(int)_d->items.size(); ++j )
-    if (_d->items[j]->subMenu() && _d->items[j]->subMenu()->visible())
+    if (_d->items[j]->submenu() && _d->items[j]->submenu()->visible())
     {
       openmenu = j;
       break;
@@ -333,7 +334,7 @@ unsigned int ContextMenu::_sendClick(const Point& p)
   // delegate click operation to submenu
   if (openmenu != -1)
   {
-    t = _d->items[j]->subMenu()->_sendClick( p );
+    t = _d->items[j]->submenu()->_sendClick( p );
     if (t != 0)
       return t; // clicked something
   }
@@ -344,7 +345,7 @@ unsigned int ContextMenu::_sendClick(const Point& p)
   {
     if (!_d->items[_d->highlihted.index]->enabled() ||
       _d->items[_d->highlihted.index ]->isSeparator() ||
-      _d->items[_d->highlihted.index ]->subMenu() )
+      _d->items[_d->highlihted.index ]->submenu() )
       return 2;
 
     selectedItem()->toggleCheck();
@@ -378,7 +379,7 @@ void ContextMenu::setItemVisible( unsigned int index, bool visible )
   if( index >= _d->items.size() )
     return;
 
-  ContextMenu* menuPtr = item( index )->subMenu();
+  ContextMenu* menuPtr = item( index )->submenu();
   if( menuPtr )
   {
     menuPtr->setVisible( visible );
@@ -397,7 +398,7 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
   int openmenu = -1;
   foreach( it, _d->items )
   {
-    if( (*it)->enabled() && (*it)->subMenu() && (*it)->subMenu()->visible() )
+    if( (*it)->enabled() && (*it)->submenu() && (*it)->submenu()->visible() )
     {
       openmenu = std::distance( _d->items.begin(), it );
       break;
@@ -407,7 +408,7 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
   // delegate highlight operation to submenu
   if (openmenu != -1)
   {
-    if (_d->items[openmenu]->enabled() && _d->items[openmenu]->subMenu()->_isHighlighted(p, canOpenSubMenu))
+    if (_d->items[openmenu]->enabled() && _d->items[openmenu]->submenu()->_isHighlighted(p, canOpenSubMenu))
     {
       _d->highlihted.index = openmenu;
       _d->changeTime = DateTime::elapsedTime();
@@ -437,9 +438,9 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
         setItemVisible( _d->highlihted.last, false );
 
         ContextMenuItem* rItem = _d->items[ _d->highlihted.index ];
-        if( rItem->subMenu() && canOpenSubMenu && rItem->enabled() )
+        if( rItem->submenu() && canOpenSubMenu && rItem->enabled() )
         {
-          rItem->subMenu()->setVisible( true );
+          rItem->submenu()->setVisible( true );
           setItemVisible( _d->highlihted.index, true );
         }
 
@@ -526,10 +527,10 @@ void ContextMenu::_recalculateSize()
     Rect rectangle( 0, refItem->offset(), width(), refItem->offset() + refItem->dimmension().height() );
     refItem->setGeometry( rectangle );
 
-    if( refItem->subMenu() )
+    if( refItem->submenu() )
     {
       // move submenu
-      ContextMenu* subMenu = refItem->subMenu();
+      ContextMenu* subMenu = refItem->submenu();
       const Size subMenuSize = subMenu->absoluteRect().size();
 
       Rect subRect( maxSize.width()-5, refItem->offset(),
@@ -601,15 +602,15 @@ void ContextMenu::setEventParent( Widget *parent )
   _d->eventParent = parent;
 
   for( auto item : _d->items )
-    if( item->subMenu() )
-      item->subMenu()->setEventParent(parent);
+    if( item->submenu() )
+      item->submenu()->setEventParent(parent);
 }
 
 
 bool ContextMenu::_hasOpenSubMenu() const
 {
   for( auto i : _d->items )
-    if( i->subMenu() && i->subMenu()->visible() )
+    if( i->submenu() && i->submenu()->visible() )
       return true;
 
   return false;
@@ -620,7 +621,7 @@ void ContextMenu::_closeAllSubMenus()
 {
   for(unsigned int i=0; i<_d->items.size(); ++i)
   {
-    if( _d->items[i]->subMenu() && _d->items[i]->visible())
+    if( _d->items[i]->submenu() && _d->items[i]->visible())
     {
       setItemVisible( i, false );
     }

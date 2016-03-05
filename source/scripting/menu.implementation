@@ -1,2 +1,6 @@
-DEFINE_OBJECT_FUNCTION_2(ContextMenu,addItem,std::string,std::string)
+DEFINE_OBJECT_GETTER_2(ContextMenu,addItem,std::string,std::string)
 DEFINE_WIDGET_CONSTRUCTOR(ContextMenu)
+
+DEFINE_OBJECT_GETTER_1(ContextMenuItem,ContextMenuItem*,addSubmenuItem,const std::string&,"unknown")
+DEFINE_WIDGET_CALLBACK_0(ContextMenuItem,onClickedA)
+DEFINE_WIDGET_CONSTRUCTOR(ContextMenuItem)

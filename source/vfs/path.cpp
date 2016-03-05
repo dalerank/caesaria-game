@@ -480,7 +480,7 @@ bool Path::operator==( const std::string& other ) const
   return toString() == other;
 }
 
-char &Path::operator [](const unsigned int index)
+char& Path::operator [](const unsigned int index)
 {
   return _d->path[index];
 }

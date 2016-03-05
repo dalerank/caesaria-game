@@ -26,6 +26,7 @@
 #include "gui/rightpanel.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
+#include "gui/contextmenuitem.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "gui/empiremap_window.hpp"
 #include "gui/advisors_window.hpp"
