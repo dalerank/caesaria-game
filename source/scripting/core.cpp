@@ -192,11 +192,23 @@ void engineLog(js_State *J)
 
 void engineReloadFile(vfs::Path path)
 {
-  if( internal::files.count( path.toString() ) )
-  {
-    Core::loadModule( path.toString() );
-  }
+  if (internal::files.count( path.toString()))
+    Core::loadModule(path.toString());
 }
+
+void engineSetDrawsflag(js_State *J)
+{
+  const std::string name = js_tostring(J,1);
+  int value = js_tointeger(J,2);
+  citylayer::DrawOptions::setFlag(name,value);
+}
+
+void engineGetDrawsflag(js_State *J)
+{
+  const std::string name = js_tostring(J,1);
+  js_pushboolean(J,citylayer::DrawOptions::getFlag(name));
+}
+
 
 void engineSetVolume(js_State *J)
 {
@@ -619,6 +631,8 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
   REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engineSetDrawsflag,"setDrawsflag",2);
+  REGISTER_FUNCTION(engineGetDrawsflag,"getDrawsflag",1);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "widget.interface"

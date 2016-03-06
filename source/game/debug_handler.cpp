@@ -115,15 +115,7 @@ enum {
   send_player_army,
   screenshot,
   send_venus_wrath,
-  toggle_grid_visibility,
-  toggle_overlay_base,
-  toggle_show_path,
-  toggle_show_roads,
-  toggle_show_object_area,
-  toggle_show_walkable_tiles,
-  toggle_show_locked_tiles,
   add_soldiers_in_fort,
-  toggle_show_flat_tiles,
   send_barbarian_to_player,
   comply_rome_request,
   change_emperor,
@@ -141,7 +133,6 @@ enum {
   send_venus_smallcurse,
   send_neptune_wrath,
   send_mars_spirit,
-  run_script,
   show_fest,
   add_favor,
   add_wheat_to_granary,
@@ -188,10 +179,7 @@ enum {
   decrease_sentiment,
   increase_sentiment,
   reload_buildings_config,
-  toggle_show_buildings,
-  toggle_show_trees,
   toggle_show_empireMapTiles,
-  toggle_show_rocks,
   toggle_lock_empiremap,
   forest_fire,
   forest_grow,
@@ -891,29 +879,6 @@ void DebugHandler::Impl::handleEvent(int event)
   case send_mars_spirit:
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doBlessing, game->city() );
   break;
-
-  case run_script:
-  {
-    auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
-                                                       vfs::Path( ":/scripts/" ), ".model",
-                                                       -1 );
-    CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
-    dialog.setTitle( "Select file" );
-    dialog.setText( "open" );
-  }
-  break;
-
-  case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;
-  case toggle_overlay_base: DrawOptions::instance().toggle( DrawOptions::shadowOverlay );  break;
-  case toggle_show_path: DrawOptions::instance().toggle( DrawOptions::showPath );  break;
-  case toggle_show_roads: DrawOptions::instance().toggle( DrawOptions::showRoads );  break;
-  case toggle_show_object_area: DrawOptions::instance().toggle( DrawOptions::showObjectArea );  break;
-  case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
-  case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
-  case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
-  case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
-  case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
-  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {

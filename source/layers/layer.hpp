@@ -49,9 +49,12 @@ public:
                  showRocks=0x20000
                } Flag;
   static DrawOptions& instance();
-  static bool getFlag( Flag flag );
-  static void takeFlag( Flag flag, int value );
-  static DrawOptions::Flag findFlag( const std::string& name );
+  static bool getFlag(Flag flag);
+  static void takeFlag(Flag flag, int value);
+
+  static bool getFlag(const std::string& name);
+  static void takeFlag(const std::string& name, int value);
+  static DrawOptions::Flag findFlag(const std::string& name);
 
 private:
   DrawOptions();

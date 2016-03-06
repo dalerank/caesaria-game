@@ -819,6 +819,18 @@ void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
   instance().setFlag( flag, value );
 }
 
+bool DrawOptions::getFlag(const std::string& name)
+{
+  auto flag = findFlag(name);
+  return getFlag(flag);
+}
+
+void DrawOptions::takeFlag(const std::string& name, int value)
+{
+  auto flag = findFlag(name);
+  takeFlag(flag,value);
+}
+
 DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
 {
   return (Flag)instance()._helper.findType( name );

@@ -113,7 +113,6 @@ function CreateDebugMenu()
   topmenu.addItemWithCallback("Debug/house", "decrease_house_level", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/house", "lock_house_level", function() {engine.log("test")} )
 
-  topmenu.addItemWithCallback("Debug/options", "run_script", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/options", "all_sound_off", function() {
       engine.setVolume(1,0); engine.setOption("ambientVolume",0);
       engine.setVolume(2,0); engine.setOption("musicVolume",0);
@@ -123,19 +122,25 @@ function CreateDebugMenu()
   topmenu.addItemWithCallback("Debug/options", "toggle_experimental_options", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/options", "reload_buildings_config", function() {engine.log("test")} )
 
-  topmenu.addItemWithCallback("Debug/draw", "toggle_grid_visibility", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_overlay_base", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_path", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_roads", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_buildings", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_trees", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_object_area", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_walkable_tiles", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_locked_tiles", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_flat_tiles", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_rocks", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_grid_visibility", function() { toggleDrawFlag("drawGrid");} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_overlay_base", function() {toggleDrawFlag("shadowOverlay")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_path", function() {toggleDrawFlag("showPath")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_roads", function() {toggleDrawFlag("showRoads")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_buildings", function() {toggleDrawFlag("showBuildings")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_trees", function() {toggleDrawFlag("showTrees")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_object_area", function() {toggleDrawFlag("showObjectArea")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_walkable_tiles", function() {toggleDrawFlag("showWalkableTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_locked_tiles", function() {toggleDrawFlag("showLockedTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_flat_tiles", function() {toggleDrawFlag("showFlatTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_rocks", function() {toggleDrawFlag("showRocks")} )
 
   topmenu.addItemWithCallback("Debug/empiremap", "toggle_show_empireMapTiles", function() {engine.log("test")} )
 
   topmenu.addItemWithCallback("Debug/steam", "reset_steam_prefs", function() {engine.log("test")} )
+}
+
+function toggleDrawflag(name)
+{
+  var value = engine.getDrawsflag(name);
+  engine.setDrawsflag(name,value);
 }
