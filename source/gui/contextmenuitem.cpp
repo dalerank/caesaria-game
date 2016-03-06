@@ -95,18 +95,18 @@ void ContextMenuItem::_updateTexture(Engine& painter)
 
 ContextMenu* ContextMenuItem::addSubmenu(int id)
 {
-  auto& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
-  setSubmenu( &sub );
+  auto& sub = parent()->add<ContextMenu>(Rect(0,0,100,100), id, false, false);
+  setSubmenu(&sub);
   sub.bringToFront();
   return &sub;
 }
 
-ContextMenuItem*ContextMenuItem::addSubmenuItem(const std::string& text)
+ContextMenuItem* ContextMenuItem::addSubmenuItem(const std::string& text)
 {
   if(!submenu())
     addSubmenu();
 
-  submenu()->addItem(text,-1);
+  return submenu()->addItem(text,-1);
 }
 
 //! Adds a sub menu from an element that already exists.

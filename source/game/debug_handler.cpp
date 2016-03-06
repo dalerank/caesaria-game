@@ -115,7 +115,6 @@ enum {
   send_player_army,
   screenshot,
   send_venus_wrath,
-  all_sound_off,
   toggle_grid_visibility,
   toggle_overlay_base,
   toggle_show_path,
@@ -367,7 +366,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, lock_house_level )
 
   ADD_DEBUG_EVENT( options, run_script )
-  ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
   ADD_DEBUG_EVENT( options, reload_buildings_config )
@@ -507,7 +505,7 @@ void DebugHandler::Impl::updateSentiment(int delta)
 {
   auto houses = game->city()->statistic().houses.find();
   for( auto house : houses )
-    house->updateState( pr::happiness, delta );
+    house->updateState(pr::happiness, delta);
 }
 
 void DebugHandler::Impl::handleEvent(int event)
@@ -731,7 +729,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto ovs = game->city()->overlays().select<Tree>().random( 10 );
 
     for( auto tree : ovs )
-  tree->grow();
+      tree->grow();
   }
   break;
 
@@ -780,7 +778,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto walkers = game->city()->walkers().select<EnemySoldier>();
 
     for( auto wlk : walkers )
-  wlk->die();
+      wlk->die();
   }
   break;
 
@@ -892,12 +890,6 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_mars_spirit:
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doBlessing, game->city() );
-  break;
-
-  case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambient, 0 );
-    audio::Engine::instance().setVolume( audio::theme, 0 );
-    audio::Engine::instance().setVolume( audio::game, 0 );
   break;
 
   case run_script:

@@ -31,8 +31,8 @@ function OnShowAudioDialog()
   spnAmbientVolume.textAlign = { h:"center", v:"center" };
   spnAmbientVolume.callback = function(value) {
                                                   engine.setOption("ambientVolume",value);
-                                                      engine.setVolume(1,value);
-                                                          wasChanged = true;
+                                                  engine.setVolume(1,value);
+                                                  wasChanged = true;
                                             }
 
   var spnThemeVolume = wnd.addSpinbox(28, 132, wnd.w-28*2, 24);

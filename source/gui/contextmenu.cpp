@@ -70,31 +70,32 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
                                        bool enabled, bool hasSubMenu,
                                        bool checked, bool autoChecking)
 {
-  StringArray items = utils::split( path, "/" );
+  StringArray items = utils::split(path, "/");
 
-  if( items.empty() )
+  if (items.empty())
   {
     return addItem( text,  commandId, enabled, hasSubMenu, checked, autoChecking );
   }
 
-  ContextMenuItem* lastItem = findItem( items.front() );
-  if( lastItem == NULL )
+  ContextMenuItem* lastItem = findItem(items.front());
+  if (lastItem == NULL)
   {
     lastItem = addItem( items.front(), -1, true, true );
   }
 
-  items.erase( items.begin() );
-  for( auto& item : items )
+  items.erase(items.begin());
+  for (auto& item : items)
   {
-    if( lastItem->submenu() == NULL )
+    if (lastItem->submenu() == NULL)
     {
-      lastItem = lastItem->addSubmenu()->addItem( item, -1, true, true );
+      lastItem = lastItem->addSubmenu()->addItem(item, -1, true, true);
     }
     else
     {
-      lastItem = lastItem->submenu()->findItem( item );
-      if( !lastItem )
-        lastItem = lastItem->addSubmenu()->addItem( item, -1, true, true );
+      ContextMenuItem* saveItem = lastItem;
+      lastItem = lastItem->submenu()->findItem(item);
+      if (!lastItem)
+        lastItem = saveItem->submenu()->addItem(item, -1, true, true);
     }
   }
 
@@ -364,9 +365,9 @@ unsigned int ContextMenu::_sendClick(const Point& p)
     if( tItem )
     {
       emit tItem->onClicked()();
-      emit tItem->onAction()( tItem->commandId() );
-
-      emit _d->onItemActionSignal( tItem->commandId() );
+      emit tItem->onAction()(tItem->commandId());
+      emit tItem->onClickedA()(tItem);
+      emit _d->onItemActionSignal(tItem->commandId());
     }
     return 1;
   }
