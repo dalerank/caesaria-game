@@ -200,7 +200,7 @@ void engineSetDrawsflag(js_State *J)
 {
   const std::string name = js_tostring(J,1);
   int value = js_tointeger(J,2);
-  citylayer::DrawOptions::setFlag(name,value);
+  citylayer::DrawOptions::takeFlag(name,value);
 }
 
 void engineGetDrawsflag(js_State *J)
@@ -208,7 +208,6 @@ void engineGetDrawsflag(js_State *J)
   const std::string name = js_tostring(J,1);
   js_pushboolean(J,citylayer::DrawOptions::getFlag(name));
 }
-
 
 void engineSetVolume(js_State *J)
 {

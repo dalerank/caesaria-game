@@ -20,7 +20,10 @@ function CreateDebugMenu()
   topmenu.addItemWithCallback("Debug/divinity", "send_neptune_wrath", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/divinity", "send_venus_smallcurse", function() {engine.log("test")} )
 
-  topmenu.addItemWithCallback("Debug/money", "add_1000_dn", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/money", "add_1000_dn", function() {
+      engine.log("Added 1000 dn to city")
+      g_session.createIssue("donation",1000)
+  } )
   topmenu.addItemWithCallback("Debug/money", "add_player_money", function() {engine.log("test")} )
 
   topmenu.addItemWithCallback("Debug/goods", "add_wheat_to_warehouse", function() {engine.log("test")} )

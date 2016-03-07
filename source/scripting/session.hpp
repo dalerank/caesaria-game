@@ -41,6 +41,7 @@ public:
   void setMode(int mode);
   void setOption(const std::string& name,Variant v);
   void clearUi();
+  void createIssue(const std::string& type, int value);
   void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
   int lastChangesNum() const;

@@ -161,6 +161,12 @@ void Session::clearUi()
   _game->gui()->clear();
 }
 
+void Session::createIssue(const std::string& type, int value)
+{
+  econ::Issue::Type vtype = econ::findType(type);
+  _game->city()->treasury().resolveIssue( {vtype, value} );
+}
+
 void Session::loadLocalization(const std::string& name)
 {
   Locale::addTranslation(name);

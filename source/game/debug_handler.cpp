@@ -108,7 +108,6 @@ enum {
   send_mars_wrath,
   win_mission,
   fail_mission,
-  add_1000_dn,
   add_player_money,
   send_chastener,
   test_request,
@@ -260,7 +259,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
-  ADD_DEBUG_EVENT( money, add_1000_dn )
   ADD_DEBUG_EVENT( money, add_player_money )
 
   ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
@@ -353,22 +351,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
 
-  ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
   ADD_DEBUG_EVENT( options, reload_buildings_config )
-
-  ADD_DEBUG_EVENT( draw, toggle_grid_visibility )
-  ADD_DEBUG_EVENT( draw, toggle_overlay_base )
-  ADD_DEBUG_EVENT( draw, toggle_show_path )
-  ADD_DEBUG_EVENT( draw, toggle_show_roads )
-  ADD_DEBUG_EVENT( draw, toggle_show_buildings )
-  ADD_DEBUG_EVENT( draw, toggle_show_trees )
-  ADD_DEBUG_EVENT( draw, toggle_show_object_area )
-  ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 
   ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
 
@@ -506,10 +491,6 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_neptune_wrath:
     religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
-  break;
-
-  case add_1000_dn:
-    game->city()->treasury().resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   break;
 
   case add_wolves:

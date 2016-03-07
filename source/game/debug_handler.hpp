@@ -53,7 +53,7 @@ public:
   ~FileChangeObserver();
 
   void check();
-  void setFilename( const std::string& fname );
+  void setFilename(const std::string& fname);
 };
 
 #endif //_CAESARIA_DEBUGHANDLER_INCLUDE_H_
