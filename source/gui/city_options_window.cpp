@@ -48,93 +48,6 @@ using namespace citylayer;
 namespace gui
 {
 
-static void _setAutoText(Widget *widget, const std::string& text)
-{
-  if( widget )
-  {
-    widget->setText( _(text) );
-    if( utils::endsWith( text, "##" ) )
-    {
-      std::string tlp = text.substr( 0, text.length() - 2 );
-      tlp.append( "_tlp##" );
-      widget->setTooltipText( _( tlp ) );
-    }
-  }
-}
-
-static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
-{
-  _setAutoText( widget, fmt::format( "##{}_{}##", text, enabled ? "on" : "off" ) );
-}
-
-class OptionButton : public PushButton
-{
-public:
-  std::string basicName;
-  std::string group;
-  std::string type;
-  int index;
-
-  typedef std::map<int,std::string> States;
-  States states;
-
-  OptionButton( Widget* parent )
-   : PushButton( parent, Rect( 0, 0, 1, 1 ), "", -1, false, greyBorderLineSmall )
-  {    
-    index = 0;
-    setMaxSize( Size( 0, 24 ) );
-  }
-
-  virtual void setupUI( const VariantMap& ui )
-  {
-    basicName = ui.get( "base" ).toString();
-
-    setText( "##" + basicName + "_mode##" );
-
-    VariantMap vstates = ui.get( "states" ).toMap();
-    for( auto& st : vstates )
-      states[ st.second.toInt() ] = st.first;
-
-    VariantList vlink = ui.get( "link" ).toList();
-    group = vlink.get( 0 ).toString();
-    type = vlink.get( 1 ).toString();
-  }
-
-  void update(int value)
-  {
-    index = 0;
-    for( auto& item : states )
-    {
-      if( item.first == value )
-      {
-        std::string text = fmt::format( "##{}_{}##", basicName, item.second );
-        setText( _(text) );
-        _setAutoText( this, text );
-        break;
-      }
-      index++;
-    }
-  }
-
-  Signal3<std::string,std::string,int> onChange;
-protected:
-  virtual void _btnClicked()
-  {
-    PushButton::_btnClicked();
-
-    if( states.size() > 0 )
-    {
-      index = (index+1) % states.size();
-      States::iterator it = states.begin();
-      std::advance( it, index );
-
-      emit onChange(group,type,it->first);
-    }
-  }
-};
-
-REGISTER_CLASS_IN_WIDGETFACTORY(OptionButton)
-
 namespace dialog
 {
 
@@ -191,10 +104,10 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnRoadBlocks )
 
-  LINK_WIDGET_ACTION( OptionButton*, btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
+  /*LINK_WIDGET_ACTION( OptionButton*, btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
   LINK_WIDGET_ACTION( OptionButton*, btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
   LINK_WIDGET_ACTION( OptionButton*, btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
-  LINK_WIDGET_ACTION( OptionButton*, btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
+  LINK_WIDGET_ACTION( OptionButton*, btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )*/
 
   CONNECT( _d->sbFireRisk, onChange(), _d.data(), Impl::changeFireRisk )
   CONNECT( _d->sbCollapseRisk, onChange(), _d.data(), Impl::changeCollapseRisk )
@@ -208,10 +121,6 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
   if( btnClose ) btnClose->setFocus();
-
-  auto buttons = findChildren<OptionButton*>( true );
-  for( auto btn : buttons )
-    CONNECT( btn, onChange, _d.data(), Impl::resolveOptionChange );
 
   _d->update();
 
@@ -359,7 +268,7 @@ Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 
 void CityOptions::Impl::update()
 {
-  auto buttons = widget->findChildren<OptionButton*>( true );
+  /*auto buttons = widget->findChildren<OptionButton*>( true );
   for( auto btn : buttons )
   {
     int value = 0;
@@ -384,7 +293,7 @@ void CityOptions::Impl::update()
     }
 
     btn->update( value );
-  }
+  }*/
 
   if( sbFireRisk )
   {
@@ -400,33 +309,33 @@ void CityOptions::Impl::update()
   {
     int value = city->getOption( PlayerCity::difficulty );
     std::string text = fmt::format( "##city_df_{}##", game::difficulty::name[ value ] );
-    _setAutoText( btnDifficulty, text );
+    //_setAutoText( btnDifficulty, text );
   }
 
   if( btnC3Gameplay )
   {
     int value = city->getOption( PlayerCity::c3gameplay );
     std::string text = fmt::format( "##city_c3rules_{}##", value ? "on" : "off" );
-    _setAutoText( btnDifficulty, text );
+    //_setAutoText( btnDifficulty, text );
   }
 
   if( btnMetrics )
   {
     std::string text = fmt::format( "{}: {}" , _("##city_metric##"), _(metric::Measure::measureType()) );
-    _setAutoText( btnMetrics, text );
+    //_setAutoText( btnMetrics, text );
   }
 
   if( btnToggleBatching )
   {
     bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
-    _setAutoText( btnToggleBatching, "city_batching", value );
+    //_setAutoText( btnToggleBatching, "city_batching", value );
   }
 
   if( btnRoadBlocks )
   {
     const city::development::Options& opts = city->buildOptions();
     bool value = opts.isBuildingAvailable(object::roadBlock );
-    _setAutoText( btnRoadBlocks, "city_roadblock", value );
+   // _setAutoText( btnRoadBlocks, "city_roadblock", value );
   }
 }
 

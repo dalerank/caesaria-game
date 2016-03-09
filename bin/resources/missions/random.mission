@@ -22,7 +22,7 @@
     next : ""
     title : "##clerk##"
     finish : "300.01.01"
-    may_continue : false
+    winContinue : false
     short : "##win_or_die##"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"

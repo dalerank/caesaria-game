@@ -181,6 +181,14 @@ ContextMenuItem* ContextMenu::findItem(const std::string& name) const
   return nullptr;
 }
 
+bool ContextMenu::itemExist(const std::string& name) const
+{
+  if (name.empty())
+    return false;
+
+  return findItem(name) != nullptr;
+}
+
 //! Adds a separator item to the menu
 void ContextMenu::addSeparator() {  addItem(0, -1, true, false, false, false); }
 

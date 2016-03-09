@@ -22,15 +22,15 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##architect##"
-    win.text : "##tarentum_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarentum_3_title##"
 	sound.overview : "tarentum_speech"
-    sound.win      : "tarentum_win_speech"
     overview :  [ "##tarentum_3_overview##",
                   "@img=picture5_00013",
                   "##tarentum_3_overview_2##"]
+    winText : "##tarentum_win_text##"
+    winContinue : false
+    winSound      : "tarentum_win_speech"
   }
 	
   empire :

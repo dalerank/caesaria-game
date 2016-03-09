@@ -68,6 +68,11 @@ StringArray Session::getFiles(const std::string& dir, const std::string& ext)
   return names;
 }
 
+VariantMap Session::winConditions() const
+{
+  return _game->city()->victoryConditions().save();
+}
+
 StringArray Session::getFolders(const std::string& dir, bool full)
 {
   vfs::Directory fdir(dir);
@@ -185,6 +190,18 @@ void Session::setBuildflag(const std::string& type, bool value)
   options = _game->city()->buildOptions();
   options.setBuildingAvailable( vtype, options.isBuildingAvailable( vtype ) );
   _game->city()->setBuildOptions( options );
+}
+
+int Session::getCityflag(std::string flag) const
+{
+  PlayerCity::OptionType type = city::findOption(flag);
+  return _game->city()->getOption(type);
+}
+
+void Session::setCityflag(const std::string& flag, int value)
+{
+  PlayerCity::OptionType type = city::findOption(flag);
+  _game->city()->setOption(type, value);
 }
 
 void Session::loadLocalization(const std::string& name)

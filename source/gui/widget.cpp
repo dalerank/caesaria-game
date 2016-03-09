@@ -905,7 +905,7 @@ void Widget::setWidth( unsigned int width )
   setGeometry( rectangle );
 }
 
-void Widget::setHeight( unsigned int height )
+void Widget::setHeight(unsigned int height)
 {
   const Rect rectangle( relativeRect().lefttop(), Size( width(), height ) );
   setGeometry( rectangle );
@@ -972,26 +972,36 @@ Font Widget::font() const { return Font(); }
 
 void Widget::setFont(FontType type, NColor color)
 {
-  Font font = Font::create( type );
-  if( color.color != 0 )
-    font.setColor( color );
-  setFont( font );
+  Font font = Font::create(type);
+  if (color.color != 0)
+    font.setColor(color);
+  setFont(font);
 }
 
 
-void Widget::setRight( int newRight )
+void Widget::setRight(int newRight)
 {
   Rect r = relativeRect();
   r.rright() = newRight;
-  setGeometry( r );
+  setGeometry(r);
 }
 
 void Widget::moveToCenter() { setCenter( parent()->center() ); }
 
 void Widget::addProperty(const std::string& name, const Variant& value)
 {
-  _dfunc()->properties[ name ] = value;
+  auto it = _dfunc()->properties.find(name);
+  if (it != _dfunc()->properties.end())
+    Logger::warning("WARNING!!! Widget {} already have property {}", internalName(), name);
+
+  _dfunc()->properties[name] = value;
 }
+
+void Widget::setProperty(const std::string& name, const Variant& value)
+{
+  _dfunc()->properties[name] = value;
+}
+
 
 void Widget::canvasDraw(const std::string& text, const Point& point, Font font, NColor color)
 {
@@ -1005,31 +1015,38 @@ void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
 
 const Variant& Widget::getProperty(const std::string& name) const
 {
-  VariantMap::const_iterator it = _dfunc()->properties.find( name );
+  if (name.empty())
+  {
+    Logger::warning("WARNING !!! Try get property by empty name from {}", internalName());
+    static Variant inv;
+    return inv;
+  }
+
+  VariantMap::const_iterator it = _dfunc()->properties.find(name);
   return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 
-const VariantMap&Widget::properties() const
+const VariantMap& Widget::properties() const
 {
   return _dfunc()->properties;
 }
 
-void Widget::installEventHandler( Widget* elementHandler )
+void Widget::installEventHandler(Widget* elementHandler)
 {
   _dfunc()->eventHandlers.insert( elementHandler );
 }
 
 void Widget::setCenter(Point center)
 {
-  Rect newRect( Point( center.x() - width() / 2, center.y() - height() / 2), size() );
-  setGeometry( newRect );
+  Rect newRect(Point(center.x() - width() / 2, center.y() - height() / 2), size());
+  setGeometry(newRect);
 }
 
-void Widget::setBottom( int b )
+void Widget::setBottom(int b)
 {
   Rect r = _dfunc()->rect.relative;
-  r.setBottom(  b );
-  setGeometry( r );
+  r.setBottom(b);
+  setGeometry(r);
 }
 
 }//end namespace gui

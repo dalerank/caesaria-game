@@ -37,12 +37,10 @@ public:
   void setFunds(int value);
   void setPopulation(int value);
 
+  virtual void setProperty(const std::string& name, const Variant& value);
+
 signals public:
   Signal1<bool>& onToggleConstructorMode();
-  Signal0<>& onShowVideoOptions();
-  Signal0<>& onShowSoundOptions();
-  Signal0<>& onShowGameSpeedOptions();
-  Signal0<>& onShowCityOptions();
   Signal1<Advisor>& onRequestAdvisor();
   Signal1<int>& onShowExtentInfo();
 

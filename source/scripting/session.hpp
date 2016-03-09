@@ -43,8 +43,10 @@ public:
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
-  bool getBuildflag(const std::string& type);
+  bool getBuildflag(const std::string& type);  
   void setBuildflag(const std::string& type, bool value);
+  int getCityflag(std::string flag) const;
+  void setCityflag(const std::string& flag, int value);
   void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
@@ -57,6 +59,7 @@ public:
   void setResolution(const Size& size);
   void showDlcViewer(const std::string& path);
   StringArray tradableGoods() const;
+  VariantMap winConditions() const;
   VariantMap getGoodInfo(std::string goodName) const;
   Size getResolution() const;
   void setFont(const std::string& fontname);

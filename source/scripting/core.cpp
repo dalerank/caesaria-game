@@ -103,8 +103,16 @@ int push(js_State* J,const Variant& param)
   break;
 
   case Variant::NStringArray:
-    push(J, param.toStringArray());
+  {
+    auto items = param.toStringArray();
+    js_newarray(J);
+    for (uint32_t i = 0; i < items.size(); i++)
+    {
+      js_pushstring(J, items[i].c_str());
+      js_setindex(J, -2, i);
+    }
     return 0;
+  }
   break;
 
   case Variant::Char:

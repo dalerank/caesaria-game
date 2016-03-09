@@ -1,7 +1,7 @@
-function createDebugMenu()
+sim.ui.topmenu.init.debug = function()
 {
   var topmenu = new ContextMenu("TopMenu");
-  topmenu.addItem("","Debug");
+	
   topmenu.addItemWithCallback("Debug/enemies", "add_enemy_archers", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/enemies", "add_enemy_soldiers", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/enemies", "add_chastener_soldiers", function() {engine.log("test")} )
@@ -84,8 +84,9 @@ function createDebugMenu()
   topmenu.addItemWithCallback("Debug/disaster", "fill_random_claypit", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "forest_fire", function() {engine.log("test")} )
 
-  topmenu.addItemWithCallback("Debug/level", "win_mission", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/level", "fail_mission", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/level", "win_mission", OnMissionWin)
+  topmenu.addItemWithCallback("Debug/level", "fail_mission", OnMissionLose)
+
   topmenu.addItemWithCallback("Debug/level", "change_emperor", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/level", "property_browser", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/level", "show_requests", function() {engine.log("test")} )

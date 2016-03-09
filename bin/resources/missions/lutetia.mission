@@ -23,13 +23,13 @@
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##consul##"
-    win.text : "##lutetia_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lutetia_title##"
-	sound.overview : "lutetia_speech"
-    sound.win      : "lutetia_win_speech"
+	  sound.overview : "lutetia_speech"
     overview :  [ "##lutetia_overview##" ]
+    winText : "##lutetia_win_text##"
+    winContinue : false
+    winSound      : "lutetia_win_speech"
   }
 	
   empire : {

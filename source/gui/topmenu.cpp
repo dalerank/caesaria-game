@@ -70,10 +70,6 @@ public:
   } bg;
 
   struct {
-    Signal0<> onShowVideoOptions;
-    Signal0<> onShowSoundOptions;
-    Signal0<> onShowGameSpeedOptions;
-    Signal0<> onShowCityOptions;
     Signal1<bool> onToggleConstructorMode;
     Signal1<int> onShowExtentInfo;
     Signal1<Advisor> onRequestAdvisor;
@@ -83,7 +79,6 @@ slots public:
   void resolveSave();
   void updateDate();
   void resolveAdvisorShow(int);
-  void handleDebugEvent(int);
   void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
 };
@@ -108,9 +103,15 @@ void TopMenu::setPopulation( int value )
     _d->lbPopulation->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
+void TopMenu::setProperty(const std::string & name, const Variant & value)
+{
+  if (name == "funds") {setFunds(value); return;}
+  if (name == "population") { setPopulation(value); return; }
+}
+
 void TopMenu::setFunds( int value )
 {
-  if( _d->lbFunds )
+  if (_d->lbFunds)
     _d->lbFunds->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
@@ -145,7 +146,7 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
   }
 }
 
-void TopMenu::Impl::initBackground( const Size& size )
+void TopMenu::Impl::initBackground(const Size& size)
 {
   Pictures p_marble;
   p_marble.load( gui::rc.panel, 1, 12 );
@@ -205,22 +206,10 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 
-  auto tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
-  ContextMenu* options = tmp->addSubmenu();
-  ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
-  ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
-  ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
-  ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
-  ContextMenuItem* constrMode = options->addItem( _("##city_constr_mode##"), -1, true, false, false, false );
-  constrMode->setAutoChecking( true );
+  //CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
+  //CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
 
-  CONNECT( screen, onClicked(), &_d->signal.onShowVideoOptions,     Signal0<>::_emit );
-  CONNECT( speed,  onClicked(), &_d->signal.onShowGameSpeedOptions, Signal0<>::_emit );
-  CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
-  CONNECT( cityopts,  onClicked(), &_d->signal.onShowCityOptions,   Signal0<>::_emit );
-  CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
-
-  tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
+  auto tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubmenu();
   advisersMenu->addItem( _("##visit_labor_advisor##"      ), advisor::employers );
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
@@ -242,10 +231,6 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
 Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->signal.onRequestAdvisor; }
 Signal1<int> &TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
-Signal0<>& TopMenu::onShowVideoOptions(){  return _d->signal.onShowVideoOptions; }
-Signal0<>&TopMenu::onShowSoundOptions(){ return _d->signal.onShowSoundOptions; }
-Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->signal.onShowGameSpeedOptions; }
-Signal0<>&TopMenu::onShowCityOptions(){ return _d->signal.onShowCityOptions; }
 void TopMenu::Impl::resolveAdvisorShow(int id) { emit signal.onRequestAdvisor( (advisor::Type)id ); }
 Signal1<bool>&gui::TopMenu::onToggleConstructorMode() { return _d->signal.onToggleConstructorMode; }
 

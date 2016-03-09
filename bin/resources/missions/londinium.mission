@@ -23,13 +23,13 @@
     finishDate : "150.01.01"
     next : ":/missions/mission11.briefing"
     title : "##win_procurator_title##"
-    win.text : "##londinium_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##londinium_10_title##"
-	sound.overview : "londinium_speech"
-    sound.win      : "londinium_win_speech"
+	  sound.overview : "londinium_speech"
     overview :  [ "##ondinium_10_overview##" ]
+    winText : "##londinium_win_text##"
+    winContinue : false
+    winSound     : "londinium_win_speech"
   }
 
   empire : {
