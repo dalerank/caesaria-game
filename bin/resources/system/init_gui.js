@@ -223,6 +223,7 @@ ContextMenu.prototype.addItemWithCallback = function(path,caption,func) {
 
 //*************************** ContextMenuItem class begin ***************************************//
 Object.defineProperty( ContextMenuItem.prototype, "callback", {set: function (func) { this.onClickedA(func); }} )
+Object.defineProperty( ContextMenuItem.prototype, "autoChecking", {set: function(en) { this.setAutoChecking(en)}} )
 ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
     var item = this.addSubmenuItem(_t(caption));
     item.callback = func;

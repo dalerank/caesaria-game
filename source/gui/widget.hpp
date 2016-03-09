@@ -431,7 +431,8 @@ public:
 
   void setRight(int newRight);
 
-  void addProperty(const std::string& name, const Variant &value );
+  void addProperty(const std::string& name, const Variant &value);
+  void setProperty(const std::string& name, const Variant &value);
   const Variant& getProperty( const std::string& name ) const;  
   const VariantMap& properties() const;
 

@@ -59,11 +59,7 @@ public:
 
 private slots:
   void _resolveLoad();
-  void _resolveEnterButton();
-  void _exit();
-  void _restart();
   bool _tryExecHotkey( NEvent& event );
-  void _handleDebugEvent( int event );
 
 private:
   class Impl;

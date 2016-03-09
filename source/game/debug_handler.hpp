@@ -33,9 +33,6 @@ public:
 
   ~DebugHandler();
 
-public signals:
-  Signal2<scene::Level*,bool>& onFailedMission();
-
 private:
   class Impl;
   ScopedPtr<Impl> _d;

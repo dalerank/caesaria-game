@@ -125,14 +125,9 @@ public:
   void checkWinMission();
   void resolveRemoveTool();
   void makeScreenShot();
-  void setVideoOptions();
-  void showGameSpeedOptionsDialog();
-  void showCityOptionsDialog();
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
-  void showSoundOptionsWindow();
   void makeFastSave();
-  void showTileHelp();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
@@ -242,10 +237,6 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
   CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
 
   CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
-  CONNECT_LOCAL( topMenu, onShowVideoOptions(),        Impl::setVideoOptions )
-  CONNECT_LOCAL( topMenu, onShowSoundOptions(),        Impl::showSoundOptionsWindow )
-  CONNECT_LOCAL( topMenu, onShowGameSpeedOptions(),    Impl::showGameSpeedOptionsDialog )
-  CONNECT_LOCAL( topMenu, onShowCityOptions(),         Impl::showCityOptionsDialog )
 }
 
 void Level::initialize()
@@ -308,8 +299,6 @@ void Level::initialize()
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible(KILLSWITCH(debugMenu));
 
-  CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
-
   events::dispatch<events::ScriptFunc>("OnMissionStart");
 
   if (_d->game->city()->getOption( PlayerCity::constructorMode ))
@@ -319,25 +308,6 @@ void Level::initialize()
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
-void Level::Impl::setVideoOptions(){ events::dispatch<ScriptFunc>( "OnShowVideoSettings" ); }
-
-void Level::Impl::showGameSpeedOptionsDialog()
-{
-  dialog::SpeedOptions& dialog = game->gui()->add<dialog::SpeedOptions>( game->timeMultiplier(),
-                                                                         SETTINGS_VALUE( scrollSpeed ),
-                                                                         SETTINGS_VALUE( autosaveInterval ) );
-
-  CONNECT( &dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( &dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
-  CONNECT( &dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
-  CONNECT( &dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
-}
-
-void Level::Impl::showCityOptionsDialog()
-{
-  auto& wnd = game->gui()->add<dialog::CityOptions>( game->city() );
-  wnd.show();
-}
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
@@ -353,11 +323,6 @@ void Level::Impl::saveCameraPos(Point p)
   {
     game->city()->setCameraPos( tile->pos() );
   }
-}
-
-void Level::Impl::showSoundOptionsWindow()
-{
-  events::dispatch<events::ScriptFunc>("OnShowAudioDialog");
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -554,7 +519,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   MilitaryPtr mil = pcity->statistic().services.find<Military>();
   InfoPtr info = pcity->statistic().services.find<Info>();
 
-  if( mil.isValid() && info.isValid()  )
+  if (mil.isValid() && info.isValid())
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
@@ -564,22 +529,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
     if( failedByDestroy || failedByTime || forceFailed )
     {
       game->pause();
-      Window& window = game->gui()->add<Window>( Rect( 0, 0, 400, 220 ), "" );
-      Label& text = window.add<Label>( Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
-      text.setTextAlignment( align::center, align::center );
-      text.setFont( FONT_6 );
-
-      auto& btnRestart = window.add<PushButton>( Rect( 20, 120, 380, 144), _("##restart_mission##") );
-      btnRestart.setTooltipText( _("##restart_mission_tip##") );
-      auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
-
-      CONNECT( &btnRestart, onClicked(), lvl, Level::_restart );
-      CONNECT( &btnMenu, onClicked(), lvl, Level::_exit );
-
-      window.moveToCenter();
-      window.setModal();
-
-      events::dispatch<MissionLose>(forceFailed);
+      events::dispatch<ScriptFunc>("OnMissionLose");
+      steamapi::missionLose(vc.name());
     }
   }
 }
@@ -656,9 +607,6 @@ Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 int  Level::result() const {  return _d->result; }
-
-void Level::_exit() {  setMode(res_menu); }
-void Level::_restart() { setMode(res_restart); }
 
 bool Level::_tryExecHotkey(NEvent &event)
 {

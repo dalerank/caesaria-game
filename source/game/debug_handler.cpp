@@ -106,7 +106,6 @@ enum {
   add_chastener_soldiers,
   add_wolves,
   send_mars_wrath,
-  fail_mission,
   add_player_money,
   send_chastener,
   test_request,
@@ -217,10 +216,6 @@ public:
 #ifdef DEBUG
   FileChangeObserver configUpdater;
 #endif
-
-  struct {
-    Signal2<scene::Level*, bool> failedMission;
-  } signal;
 };
 
 void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
@@ -306,7 +301,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
-  ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
   ADD_DEBUG_EVENT( level, show_requests )
@@ -421,8 +415,6 @@ void DebugHandler::Impl::runScript(std::string filename)
   events::Dispatcher::instance().load( filename );
 }
 
-Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
-
 DebugHandler::DebugHandler() : _d(new Impl)
 {
   _d->debugMenu = 0;
@@ -440,12 +432,12 @@ void DebugHandler::Impl::fillFactoryStock( object::Type type )
 void DebugHandler::Impl::setFactoryReady( object::Type type )
 {
   auto factories = game->city()->statistic().objects.find<Factory>( type );
-  for( auto factory : factories )
+  for (auto factory : factories)
   {
-    if( factory->numberWorkers() > 0 )
+    if (factory->numberWorkers() > 0)
     {
-      float progress = factory->progress();
-      factory->updateProgress( 101.f - progress );
+      int progress = factory->progress();
+      factory->updateProgress(101 - progress);
     }
   }
 }
@@ -678,16 +670,6 @@ void DebugHandler::Impl::handleEvent(int event)
     HouseList houses = game->city()->statistic().houses.find();
     for( auto house : houses )
       house->__debugMakeGeneration();
-  }
-  break;
-
-  case fail_mission:
-  {
-    scene::Level* l = safety_cast<scene::Level*>( game->scene() );
-    if( l )
-    {
-      emit signal.failedMission(l, true);
-    }
   }
   break;
 

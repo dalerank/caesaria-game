@@ -192,6 +192,18 @@ void Session::setBuildflag(const std::string& type, bool value)
   _game->city()->setBuildOptions( options );
 }
 
+int Session::getCityflag(std::string flag) const
+{
+  PlayerCity::OptionType type = city::findOption(flag);
+  return _game->city()->getOption(type);
+}
+
+void Session::setCityflag(const std::string& flag, int value)
+{
+  PlayerCity::OptionType type = city::findOption(flag);
+  _game->city()->setOption(type, value);
+}
+
 void Session::loadLocalization(const std::string& name)
 {
   Locale::addTranslation(name);
