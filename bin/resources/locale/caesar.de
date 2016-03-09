@@ -862,7 +862,7 @@
 "##colloseums##":"Kolosseen",
 "##colloseum##":"Kolosseum",
 "##colloseum_info##":"Kolosseen und Amphitheater benötigen ständig neue Gladiatoren, um die Verlierer zu ersetzen.",
-"##ovrm_colloseum##":"Kolloseum",
+"##ovrm_colloseum##":"Kolosseum",
 "##well##":"Ziehbrunnen",
 "##column_info##":"Säulen-Formation",
 "##ovrm_commerce##":"Handel",
@@ -2214,4 +2214,8 @@
 "##click_on_city_for_info_tlp##":"Klicke auf die Stadt für mehr Informationen",
 "##market_too_far_from_granary##":"Dieser Markt ist zu weit vom Silo entfernt.",
 "##market_too_far_from_warehouse##":"Dieser Markt ist zu weit vom Lagerhaus entfernt.",
+"##advisor_chief##":"Hauptberater",
+"##school_and_academy##":"Schulen und Akademien",
+"##rating_advisor##":"Wertungsberater",
+"##content##":"Inhaltsverzeichnis",
 }

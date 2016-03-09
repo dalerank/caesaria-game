@@ -104,7 +104,6 @@ endif(BUILD_GL_FRAMEBUFFER)
 
 ######################## osx clang settings ##################################
 
-set(NEED_COPY_EXECUTABLE_TO_BINDIR 1)
 if(APPLE)
   #include steam libraries
   if(USE_STEAM)
@@ -171,8 +170,6 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 
     set(COMPILER_SUPPORTS_CXX11 1)
-    set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
-    set(NEED_COPY_EXECUTABLE_TO_BINDIR 0)
   elseif(CMAKE_COMPILER_IS_GNUCXX)
     ####################### Win32 mingw settings ##################################
     #not show console window
@@ -272,20 +269,14 @@ if(UNIX AND NOT APPLE)
 endif(UNIX AND NOT APPLE)
 
 if(COMPILER_SUPPORTS_CXX11)
-	if(NOT MSVC)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	endif()
+  if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  endif()
 else()
   message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${GAME_BINARY_FILENAME})
 message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
+set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
 
-if(NEED_COPY_EXECUTABLE_TO_BINDIR)
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
-)
-endif()
