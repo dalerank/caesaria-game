@@ -35,7 +35,6 @@ public:
 
 public signals:
   Signal2<scene::Level*,bool>& onFailedMission();
-  Signal2<scene::Level*,bool>& onWinMission();
 
 private:
   class Impl;

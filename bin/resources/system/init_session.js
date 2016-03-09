@@ -43,5 +43,6 @@ Object.defineProperty( Session.prototype, "logfile", { get: function () {
 Object.defineProperty( Session.prototype, "missionsdir", { get: function () { return getPath(":/missions/"); }});
 Object.defineProperty( Session.prototype, "savedir", { get: function () { return getPath(engine.getOption("savedir")); }});
 Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return getPath(engine.getOption("screenshotDir")); }});
+Object.defineProperty( Session.prototype, "city", { get: function() { return this.getCity(); }} )
 
 var g_session = new Session();

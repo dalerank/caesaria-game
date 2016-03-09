@@ -22,13 +22,13 @@
     finishDate : "-170.01.01"
     next : ":/missions/mission5.briefing"
     title : "##quaestor##"
-    win.text : "##tarraco_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##famine_in_the_empire##"
 	sound.overview : "tarraco_speech"
-    sound.win      : "tarraco_win_speech"
     overview :  [ "##tarraco_overview##" ]
+    winContinue : false
+    winText : "##tarraco_win_text##"
+    winSound      : "tarraco_win_speech"
   }
 	
   empire : {

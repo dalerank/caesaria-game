@@ -68,6 +68,11 @@ StringArray Session::getFiles(const std::string& dir, const std::string& ext)
   return names;
 }
 
+VariantMap Session::winConditions() const
+{
+  return _game->city()->victoryConditions().save();
+}
+
 StringArray Session::getFolders(const std::string& dir, bool full)
 {
   vfs::Directory fdir(dir);

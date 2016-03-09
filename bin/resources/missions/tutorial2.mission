@@ -23,11 +23,11 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission3.briefing"
     title : "##engineer##"
-    may_continue : false
+    winContinue : false
     short : "##tt2_short##"
-    win.text : "##tt2_win_text##"
+    winText : "##tt2_win_text##"
     sound.overview : "tutorial2_speech"
-    sound.win      : "tutorial2_win_speech"
+    winSound     : "tutorial2_win_speech"
     caption : "##tt2_caption##"
     overview :  [ "##tutorial_priority##",
                   "@img=picture3_00004",

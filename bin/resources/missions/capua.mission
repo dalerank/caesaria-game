@@ -23,10 +23,10 @@
     next : ":/missions/mission4.briefing"
     title : "##architect##"
     win.text : "##capua_win_text##"
-    may_continue : false
+    winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
-	sound.overview : "capua_speech"
+	  sound.overview : "capua_speech"
     sound.win      : "capua_win_speech"
     overview :  [ "##capua_overview##",
                   "@img=picture5_00006",

@@ -23,15 +23,16 @@
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
-    win.text : "##miletus_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##miletus_preview_title##"
-	sound.overview : "miletus_speech"
-    sound.win      : "miletus_win_speech"
+	  sound.overview : "miletus_speech"
     overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
                   "##miletus_5_overview_2##" ]
+    
+		winSound      : "miletus_win_speech"
+    winText : "##miletus_win_text##"
+    winContinue : false
   }
 	
   empire : {

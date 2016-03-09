@@ -83,7 +83,11 @@ public:
   //! Find a item which has the given CommandId starting from given index
   virtual ContextMenuItem* findItem( int commandId, unsigned int idxStartSearch ) const;
 
-  virtual ContextMenuItem* findItem( const std::string& name ) const;
+  //!
+  virtual ContextMenuItem* findItem(const std::string& name) const;
+
+  //!
+  bool itemExist(const std::string& name) const;
 
   //! Adds a separator item to the menu
   virtual void addSeparator();

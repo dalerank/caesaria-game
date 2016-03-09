@@ -41,6 +41,7 @@
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "sound/themeplayer.hpp"
+#include "steam.hpp"
 
 using namespace gui;
 using namespace events;
@@ -98,6 +99,7 @@ public:
   gui::TopMenu* topMenu;
   gui::Menu* menu;
   Engine* engine;
+  DebugHandler dhandler;
   gui::ExtentMenu* extMenu;
   CityRenderer renderer;
   Game* game; // current game
@@ -120,7 +122,7 @@ public:
   void resolveCreateObject( int type );
   void resolveSelectLayer( int type );
   void checkFailedMission(Level *lvl, bool forceFailed=false);
-  void checkWinMission(Level *lvl, bool forceWin=false);
+  void checkWinMission();
   void resolveRemoveTool();
   void makeScreenShot();
   void setVideoOptions();
@@ -303,11 +305,10 @@ void Level::initialize()
   _d->renderer.camera()->setCenter( city->cameraPos() );
   _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
-  //_d->dhandler.insertTo( _d->game, _d->topMenu );
-  //_d->dhandler.setVisible(KILLSWITCH(debugMenu));
+  _d->dhandler.insertTo( _d->game, _d->topMenu );
+  _d->dhandler.setVisible(KILLSWITCH(debugMenu));
 
-  //CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
-  //CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
+  CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
   events::dispatch<events::ScriptFunc>("OnMissionStart");
 
@@ -484,7 +485,7 @@ void Level::animate( unsigned int time )
 
   if( game::Date::isWeekChanged() )
   {
-    _d->checkWinMission( this );
+    _d->checkWinMission();
     _d->checkFailedMission( this );
   }
 
@@ -583,7 +584,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   }
 }
 
-void Level::Impl::checkWinMission( Level* lvl, bool force )
+void Level::Impl::checkWinMission()
 {
   auto city = game->city();
   auto& conditions = city->victoryConditions();
@@ -593,11 +594,12 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   int favour = city->favour();
   int peace = city->peace();
   int population = city->states().population;
-  bool success = conditions.isSuccess( culture, prosperity, favour, peace, population );
+  bool success = conditions.isSuccess(culture, prosperity, favour, peace, population);
 
-  if( success || force )
+  if (success)
   {
-    events::dispatch<MissionWin>( force );
+    events::dispatch<ScriptFunc>("OnMissionWin");    
+    steamapi::missionWin(conditions.name());
   }
 }
 

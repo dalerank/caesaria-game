@@ -23,13 +23,13 @@
     finishDate : "-100.01.01"
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
-    win.text : "##mediolanum_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##mediolanum_5_title##"
-	sound.overview : "mediolanum_speech"
-    sound.win      : "mediolanum_win_speech"
+	  sound.overview : "mediolanum_speech"
     overview :  [ "##mediolanum_5_overview##" ]
+    winText : "##mediolanum_win_text##"
+    winContinue : false
+    winSound      : "mediolanum_win_speech"
   }
 	
   empire : {

@@ -1,3 +1,4 @@
+DEFINE_OBJECT_GETTER_1(ContextMenu,bool,itemExist,const std::string&,"")
 DEFINE_OBJECT_GETTER_2(ContextMenu,addItem,std::string,std::string)
 DEFINE_WIDGET_CONSTRUCTOR(ContextMenu)
 

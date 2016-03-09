@@ -1,5 +1,11 @@
-function OnMissionWin(newTitle,winText,speech,mayContinue)
+function OnMissionWin()
 {
+  var minfo = g_session.winConditions();
+	var newTitle = minfo.title;
+	var winText  = minfo.winText;
+	var winSpeech = minfo.winSound;
+	var mayContinue = minfo.winContinue;
+
   engine.log( "JS:OnMissionWin" );
 
   var wnd = g_ui.addWindow(0,0,540,240);

@@ -1,5 +1,6 @@
 SCRIPT_OBJECT_BEGIN(ContextMenu)
   SCRIPT_OBJECT_FUNCTION(ContextMenu,addItem,2)
+  SCRIPT_OBJECT_FUNCTION(ContextMenu,itemExist,1)
   SCRIPT_OBJECT_CONSTRUCTOR(ContextMenu)
 SCRIPT_OBJECT_END(ContextMenu)
 

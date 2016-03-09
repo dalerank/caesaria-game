@@ -22,13 +22,13 @@
     finishDate : "-100.01.01"
     next : ":/missions/mission5.briefing"
     title : ""##quaestor##""
-    win.text : "##win_syracusae_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##syracusae_4_title##"
 	sound.overview : "syracusae_speech"
-    sound.win      : "syracusae_win_speech"
     overview :  [ "##syracusae_4_overview##" ]
+    winText : "##win_syracusae_text##"
+    winContinue : false
+    winSound      : "syracusae_win_speech"
   }
 	
   empire : {

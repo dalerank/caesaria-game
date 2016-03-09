@@ -23,12 +23,12 @@
     finishDate : "150.01.01"
     next : ":/missions/mission9.briefing"
     title : "##consul##"
-    win.text : "##valencia_win_text##"
-    may_continue : false
+    winText : "##valencia_win_text##"
+    winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##valentia_title##"
 	sound.overview : "valentia_speech"
-    sound.win      : "valentia_win_speech"
+    winSound     : "valentia_win_speech"
     overview :  [ "##valentia_overview##" ]
   }
 	

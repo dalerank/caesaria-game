@@ -24,14 +24,14 @@
     favour : 0
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
-    may_continue : false
+    winContinue : false
     short : "##build_some_houses##"
     finishDate : "-300.01.01"
     maxHouseLevel : "hut"
     caption : "##new_village##"
-    win.text : "##tutorial_win_text##"
+    winText : "##tutorial_win_text##"
     sound.overview : "tutorial_speech"
-    sound.win      : "tutorial_win_speech"
+    winSound     : "tutorial_win_speech"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002",
                   "##tutorial_text_roads##",

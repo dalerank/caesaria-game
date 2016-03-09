@@ -22,13 +22,13 @@
     finishDate : "100.01.01"
     next : ":/missions/mission10.briefing"
     title : "##сaesar##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##caesarea_title##"
-	sound.overview : "caesarea_speech"
-    sound.win      : "caesarea_win_speech"
+	  sound.overview : "caesarea_speech"
     overview :  [ "##caesarea_overview##" ]
-    win.text : "##caesarea_win_text##"
+    winContinue : false
+    winSound      : "caesarea_win_speech"
+    winText : "##caesarea_win_text##"
   }
 
   empire : {

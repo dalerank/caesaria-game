@@ -106,7 +106,6 @@ enum {
   add_chastener_soldiers,
   add_wolves,
   send_mars_wrath,
-  win_mission,
   fail_mission,
   add_player_money,
   send_chastener,
@@ -221,7 +220,6 @@ public:
 
   struct {
     Signal2<scene::Level*, bool> failedMission;
-    Signal2<scene::Level*, bool> winMission;
   } signal;
 };
 
@@ -308,7 +306,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
-  ADD_DEBUG_EVENT( level, win_mission )
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
@@ -425,7 +422,6 @@ void DebugHandler::Impl::runScript(std::string filename)
 }
 
 Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
-Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.winMission; }
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
@@ -685,14 +681,12 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case win_mission:
   case fail_mission:
   {
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& foremit = (event == win_mission ? signal.winMission : signal.failedMission);
-      emit foremit( l, true);
+      emit signal.failedMission(l, true);
     }
   }
   break;

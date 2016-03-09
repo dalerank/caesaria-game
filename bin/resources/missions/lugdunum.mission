@@ -23,13 +23,13 @@
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
     title : "##aedile##"
-    win.text : "##lugdunum_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lugdunum_preview_title##"
 	sound.overview : "lugdunum_speech"
-    sound.win      : "lugdunum_win_speech"
     overview :  [ "##lugdunum_overview##" ]
+    winContinue : false
+    winSound      : "lugdunum_win_speech"
+    winText : "##lugdunum_win_text##"
   }
 	
   empire : {

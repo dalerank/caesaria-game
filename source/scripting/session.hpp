@@ -57,6 +57,7 @@ public:
   void setResolution(const Size& size);
   void showDlcViewer(const std::string& path);
   StringArray tradableGoods() const;
+  VariantMap winConditions() const;
   VariantMap getGoodInfo(std::string goodName) const;
   Size getResolution() const;
   void setFont(const std::string& fontname);

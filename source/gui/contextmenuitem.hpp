@@ -41,7 +41,7 @@ public:
   } DrawFlag;
 
 
-  ContextMenuItem( Widget* parent, const std::string& text );
+  ContextMenuItem(Widget* parent, const std::string& text);
 
   virtual ~ContextMenuItem();
 

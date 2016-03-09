@@ -2,7 +2,8 @@ function createHelpMenu()
 {
   var topmenu = new ContextMenu("TopMenu");
 
-  var help = topmenu.addItem(_t("##gmenu_help##") );
+  var help = topmenu.addItem("",_t("##gmenu_help##"));
+	
   help.addItemWithCallback(_t("##gmenu_about##"), function() {
     var wnd = g_ui.addSimpleWindow(0,0,1,1);
     wnd.model = ":/gui/about.gui";

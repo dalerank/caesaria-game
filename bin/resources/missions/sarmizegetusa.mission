@@ -22,13 +22,13 @@
     finishDate : "200.01.01"
     next : ":/missions/mission11.briefing"
     title : "##new_ruler##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##sarmizegetusa_title##"
 	sound.overview : "sarmizegetusa_speech"
-    sound.win      : "sarmizegetusa_win_speech"
     overview :  [ "##sarmizegetusa_overview##" ]
-    win.text : "##sarmizegetusa_win_text##"
+    winContinue : false
+    winSound      : "sarmizegetusa_win_speech"
+    winText : "##sarmizegetusa_win_text##"
   }
 
   empire : {
