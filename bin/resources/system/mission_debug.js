@@ -1,4 +1,4 @@
-function CreateDebugMenu()
+function createDebugMenu()
 {
   var topmenu = new ContextMenu("TopMenu");
   topmenu.addItem("","Debug");
@@ -72,10 +72,10 @@ function CreateDebugMenu()
   topmenu.addItemWithCallback("Debug/other", "enable_constructor_mode", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/other", "next_theme", function() {engine.log("test")} )
 
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_shipyard_enable", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_reservoir_enable", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_wineshop_enable", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_vinard_enable", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_shipyard_enable", function() {toggleBuildOptions("shipyard")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_reservoir_enable", function() {toggleBuildOptions("reservoir")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_wineshop_enable", function() {toggleBuildOptions("wine_workshop")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_vinard_enable", function() {toggleBuildOptions("vinard")} )
 
   topmenu.addItemWithCallback("Debug/disaster", "random_fire", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "random_collapse", function() {engine.log("test")} )
@@ -142,8 +142,18 @@ function CreateDebugMenu()
   topmenu.addItemWithCallback("Debug/steam", "reset_steam_prefs", function() {engine.log("test")} )
 }
 
+function toggleBuildOptions(name)
+{
+  var value = g_session.getBuildflag(name);
+  g_session.setBuildflag(name,!value);
+
+  engine.log( "Change build flag " + name + " to " + (!value ? "true" : "false"))
+}
+
 function toggleDrawflag(name)
 {
   var value = engine.getDrawsflag(name);
-  engine.setDrawsflag(name,value);
+  engine.setDrawsflag(name,!value);
+
+  engine.log( "Change draw flag " + name + " to " + (!value ? "true" : "false"))
 }

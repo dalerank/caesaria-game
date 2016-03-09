@@ -152,7 +152,7 @@ function OnChangePlayerName(force,continueCallback)
                                   if(continueCallback)
                                       continueCallback();
                                }
-
+ 
     var editbox = wnd.addEditbox(32, 50, 320, 32);
     editbox.textAlign = { h:"upperLeft", v:"center" };
     editbox.font = "FONT_2_WHITE";

@@ -118,7 +118,6 @@ enum {
   send_barbarian_to_player,
   comply_rome_request,
   change_emperor,
-  add_city_border,
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
@@ -192,10 +191,6 @@ enum {
   show_attacks,
   reset_fire_risk,
   reset_collapse_risk,
-  toggle_shipyard_enable,
-  toggle_reservoir_enable,
-  toggle_wineshop_enable,
-  toggle_vinard_enable,
   fill_random_claypit,
   empire_toggle_capua,
   empire_toggle_londinium,
@@ -216,7 +211,6 @@ public:
   void addGoods2Gr( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
-  void toggleBuildOptions(object::Type type);
   void toggleEmpireCityEnable(const std::string &name);
   void fillFactoryStock(object::Type type);
   gui::ContextMenu* debugMenu;
@@ -307,11 +301,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
-  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_wineshop_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_vinard_enable )
-
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
@@ -332,7 +321,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( empire, empire_toggle_londinium )
 
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
-  ADD_DEBUG_EVENT( in_city, add_city_border )
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
   ADD_DEBUG_EVENT( in_city, show_fest )
@@ -388,14 +376,6 @@ void DebugHandler::Impl::toggleEmpireCityEnable( const std::string& name )
     text = fmt::format( "Empire city {} is not exit", name );
   }
   events::dispatch<WarningMessage>( text, WarningMessage::negative );
-}
-
-void DebugHandler::Impl::toggleBuildOptions( object::Type type )
-{
-  city::development::Options options;
-  options = game->city()->buildOptions();
-  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
-  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -511,11 +491,6 @@ void DebugHandler::Impl::handleEvent(int event)
     caravan->sendTo( game->empire()->capital() );
   }
   break;
-
-  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
-  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
-  case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
-  case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
 
   case empire_toggle_capua: toggleEmpireCityEnable( "Capua" ); break;
   case empire_toggle_londinium: toggleEmpireCityEnable( "Londinium" ); break;
@@ -750,8 +725,6 @@ void DebugHandler::Impl::handleEvent(int event)
       wlk->die();
   }
   break;
-
-  case add_city_border:   {    game->city()->tilemap().clearSvkBorder();  }  break;
 
   case toggle_experimental_options:
   {

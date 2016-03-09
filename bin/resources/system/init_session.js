@@ -22,6 +22,12 @@ Session.prototype.getPath = function(p) {
     return path;
 }
 
+Session.prototype.getOptPath = function(p) {
+    var path = new Path();
+    path.set(engine.getOption(p));
+    return path;
+}
+
 Object.defineProperty( Session.prototype, "resolution", { set: function(mode) { this.setResolution(mode.w,mode.h); },
                                                           get: function() { return this.getResolution(); }} );
 

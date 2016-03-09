@@ -1,4 +1,4 @@
-{  
+{
   lbx#ListBox : {
     geometry : [ 12, 12, "100%-12", "100%-36" ]
     itemheight : 18
@@ -36,10 +36,6 @@
       "we can use. Graphical artists to create new graphic "
       "set for the game, menus, etc."
       ""
-      { text : "Donations", font : "FONT_3", align : "center" }
-      { text : "see http://bitbucket.org/dalerank/caesaria/wiki/Donations",
-        url : "http://bitbucket.org/dalerank/caesaria/wiki/Donations", font : "FONT_2" },
-      "",
       ""
     ]
   }

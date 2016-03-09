@@ -111,7 +111,6 @@ public:
   int result;
 
 public:
-  void showSaveDialog();
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
   void showAdvisorsWindow();
@@ -132,7 +131,6 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
-  void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
@@ -238,14 +236,9 @@ void Level::Impl::initTabletUI( Level* scene )
 
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
-  CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onEnd(),                  scene,   Level::_exit )
-  CONNECT( topMenu, onRestart(),              scene,   Level::_restart )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
   CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
 
-  CONNECT_LOCAL( topMenu, onLoad(),                    Impl::showLoadDialog )
-  CONNECT_LOCAL( topMenu, onSave(),                    Impl::showSaveDialog )
   CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
   CONNECT_LOCAL( topMenu, onShowVideoOptions(),        Impl::setVideoOptions )
   CONNECT_LOCAL( topMenu, onShowSoundOptions(),        Impl::showSoundOptionsWindow )
@@ -325,7 +318,6 @@ void Level::initialize()
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
-void Level::Impl::showSaveDialog() { events::dispatch<ShowSaveDialog>(); }
 void Level::Impl::setVideoOptions(){ events::dispatch<ScriptFunc>( "OnShowVideoSettings" ); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
@@ -518,7 +510,7 @@ void Level::handleEvent( NEvent& event )
 
   if( event.EventType == sEventQuit )
   {
-    _requestExitGame();
+    events::dispatch<ScriptFunc>("OnRequestExitGame");
     return;
   }
 
@@ -662,11 +654,6 @@ Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 int  Level::result() const {  return _d->result; }
-
-void Level::_requestExitGame()
-{
-  events::dispatch<ScriptFunc>( "OnRequestExitGame" );
-}
 
 void Level::_exit() {  setMode(res_menu); }
 void Level::_restart() { setMode(res_restart); }
@@ -817,6 +804,5 @@ void Level::Impl::showMissionTargetsWindow()
 }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
-void Level::Impl::showLoadDialog() { events::dispatch<events::ScriptFunc>("OnShowSaveSelectDialog"); }
 
 }//end namespace scene

@@ -161,10 +161,30 @@ void Session::clearUi()
   _game->gui()->clear();
 }
 
+void Session::save(const std::string& path)
+{
+  _game->save(path);
+}
+
 void Session::createIssue(const std::string& type, int value)
 {
   econ::Issue::Type vtype = econ::findType(type);
   _game->city()->treasury().resolveIssue( {vtype, value} );
+}
+
+bool Session::getBuildflag(const std::string& type)
+{
+  object::Type vtype = object::findType(type);
+  return _game->city()->buildOptions().isBuildingAvailable(vtype);
+}
+
+void Session::setBuildflag(const std::string& type, bool value)
+{
+  city::development::Options options;
+  object::Type vtype = object::findType(type);
+  options = _game->city()->buildOptions();
+  options.setBuildingAvailable( vtype, options.isBuildingAvailable( vtype ) );
+  _game->city()->setBuildOptions( options );
 }
 
 void Session::loadLocalization(const std::string& name)

@@ -38,12 +38,7 @@ public:
   void setPopulation(int value);
 
 signals public:
-  Signal0<>& onExit();
-  Signal0<>& onSave();
-  Signal0<>& onEnd();
-  Signal0<>& onLoad();
   Signal1<bool>& onToggleConstructorMode();
-  Signal0<>& onRestart();
   Signal0<>& onShowVideoOptions();
   Signal0<>& onShowSoundOptions();
   Signal0<>& onShowGameSpeedOptions();

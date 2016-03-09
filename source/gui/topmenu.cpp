@@ -70,11 +70,6 @@ public:
   } bg;
 
   struct {
-    Signal0<> onExit;
-    Signal0<> onEnd;
-    Signal0<> onSave;
-    Signal0<> onLoad;
-    Signal0<> onRestart;
     Signal0<> onShowVideoOptions;
     Signal0<> onShowSoundOptions;
     Signal0<> onShowGameSpeedOptions;
@@ -87,10 +82,8 @@ public:
 slots public:
   void resolveSave();
   void updateDate();
-  void showAboutInfo();
   void resolveAdvisorShow(int);
   void handleDebugEvent(int);
-  void showShortKeyInfo();
   void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
 };
@@ -143,16 +136,6 @@ void TopMenu::Impl::updateDate()
   lbDate->setText( text );
 }
 
-void TopMenu::Impl::showShortKeyInfo()
-{
-  Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
-  shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
-
-  shortKeyInfo.moveToCenter();
-  WidgetClosers::insertTo( &shortKeyInfo, KEY_RBUTTON );
-}
-
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 {
   int tag = sender->getProperty( TEXT(ExtentInfo) );
@@ -183,11 +166,6 @@ void TopMenu::Impl::initBackground( const Size& size )
   bool batchOk = bg.batch.load( bg.fallback, bg.rects );
   if( !batchOk )
     bg.batch.destroy();
-}
-
-void TopMenu::Impl::showAboutInfo()
-{
-  lbDate->ui()->add<SimpleWindow>( Rect( 0, 0, 500, 300 ), "", ":/gui/about.gui" );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
@@ -227,22 +205,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 
-  ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
-  ContextMenu* file = tmp->addSubmenu();
-
-  ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
-  ContextMenuItem* load =    file->addItem( _("##mainmenu_loadgame##"),  -1, true, false, false, false );
-  ContextMenuItem* save =    file->addItem( _("##gmenu_file_save##"),    -1, true, false, false, false );
-  ContextMenuItem* mainMenu= file->addItem( _("##gmenu_file_mainmenu##"),-1, true, false, false, false );
-  ContextMenuItem* exit =    file->addItem( _("##gmenu_exit_game##"),    -1, true, false, false, false );
-
-  CONNECT( restart, onClicked(), &_d->signal.onRestart, Signal0<>::_emit );
-  CONNECT( exit, onClicked(), &_d->signal.onExit, Signal0<>::_emit );
-  CONNECT( save, onClicked(), &_d->signal.onSave, Signal0<>::_emit );
-  CONNECT( load, onClicked(), &_d->signal.onLoad, Signal0<>::_emit );
-  CONNECT( mainMenu, onClicked(), &_d->signal.onEnd, Signal0<>::_emit );
-
-  tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
+  auto tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubmenu();
   ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
   ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
@@ -256,13 +219,6 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
   CONNECT( cityopts,  onClicked(), &_d->signal.onShowCityOptions,   Signal0<>::_emit );
   CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
-
-  tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
-  ContextMenu* helpMenu = tmp->addSubmenu();
-  ContextMenuItem* aboutItem = helpMenu->addItem( _("##gmenu_about##"), -1 );
-  ContextMenuItem* shortkeysItem = helpMenu->addItem( _("##gmenu_shortkeys##"), -1 );
-  CONNECT( aboutItem, onClicked(), _d.data(), Impl::showAboutInfo );
-  CONNECT( shortkeysItem, onClicked(), _d.data(), Impl::showShortKeyInfo );
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubmenu();
@@ -284,13 +240,8 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   _d->updateDate();
 }
 
-Signal0<>& TopMenu::onExit() {  return _d->signal.onExit; }
-Signal0<>& TopMenu::onSave(){  return _d->signal.onSave; }
-Signal0<>& TopMenu::onEnd(){  return _d->signal.onEnd; }
 Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->signal.onRequestAdvisor; }
 Signal1<int> &TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
-Signal0<>& TopMenu::onLoad(){  return _d->signal.onLoad; }
-Signal0<>&TopMenu::onRestart() { return _d->signal.onRestart; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->signal.onShowVideoOptions; }
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->signal.onShowSoundOptions; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->signal.onShowGameSpeedOptions; }

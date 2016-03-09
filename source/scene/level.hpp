@@ -60,7 +60,6 @@ public:
 private slots:
   void _resolveLoad();
   void _resolveEnterButton();
-  void _requestExitGame();
   void _exit();
   void _restart();
   bool _tryExecHotkey( NEvent& event );

@@ -23,7 +23,6 @@
 #include "gfx/camera.hpp"
 #include "widget_helper.hpp"
 #include "events/showtileinfo.hpp"
-#include "events/savegame.hpp"
 #include "events/script_event.hpp"
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
@@ -210,8 +209,8 @@ void ActionsHandler::_showIngameMenu()
   }
 }
 
-void ActionsHandler::_showSaveDialog() { ShowSaveDialog::create()->dispatch(); }
-void ActionsHandler::_showLoadDialog() { events::dispatch<events::ScriptFunc>("OnShowSaveSelectDialog"); }
+void ActionsHandler::_showSaveDialog() { events::dispatch<ScriptFunc>("OnShowSaveDialog"); }
+void ActionsHandler::_showLoadDialog() { events::dispatch<ScriptFunc>("OnShowSaveSelectDialog"); }
 
 void ActionsHandler::_restartGame()
 {

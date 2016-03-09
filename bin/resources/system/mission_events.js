@@ -72,7 +72,26 @@ function OnMissionStart()
             }
   }
 
-  CreateDebugMenu();
+  createFileMenu();
+  createHelpMenu();
+  createDebugMenu();
+}
+
+function OnShowSaveDialog()
+{
+  var savedir = g_session.getOptPath("savedir");
+  var ext = engine.getOption("saveExt");
+
+  if( !savedir.exist() )
+  {
+    g_ui.addInformationDialog( "##warning##", "##save_directory_not_exist##");
+    return;
+  }
+
+  var dialog = g_ui.addSaveGameDialog(savedir, ext);
+  dialog.callback = function(path) {
+              g_session.save(path);
+          }
 }
 
 function OnRequestExitGame()

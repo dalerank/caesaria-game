@@ -15,4 +15,3 @@
 #include "events/movecamera.hpp"
 #include "events/missionwin.hpp"
 #include "events/missionlose.hpp"
-#include "events/savegame.hpp"

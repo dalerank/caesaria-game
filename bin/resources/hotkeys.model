@@ -2,7 +2,7 @@
   /*advisor.employers : { key:KEY_KEY_1 }*/
   /*advisor.military : { key:KEY_KEY_2 }*/
 
-  KEY_KEY_1
+  KEY_KEY_1 :
   {
     employers#advisor_window :
     {

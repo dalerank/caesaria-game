@@ -5,8 +5,7 @@
 "##primary_funds##":"Fonds principaux",
 "##city_barbarian_off_tlp##":"Les barbares n'attaqueront pas votre citée",
 "##enter_dinasty_name_here##":"Entrez le nom de votre dynastie",
-"##city_barbarian_off##":"
-Barbares : Désactivés",
+"##city_barbarian_off##":"Barbares : Désactivés",
 "##window_changes_title##":"Nouveautés de la mise à jour",
 "##rightMenu_on##":"Menu principal : droite",
 "##rightMenu_off##":"Menu principal : gauche",
@@ -1426,7 +1425,7 @@ allant voir un spéctacle ou un beau combat. Mais ce n'est pas dans cette
 "##trouble_most_fire##":"Ce batiment est un piège à flamme",
 "##trouble_low_fire_risk##":"Ce bâtiment ne risque pas de prendre feu",
 "##no_space_for_evolve##":"Cette habitation serait bientôt évoluer pour une des plus grande envergure si elle avait plus d'espace pour se développer dans.",
-"##moment_fire_risk##":"Ce bâtiment pourrait prendre feu à tout moment!",
+"##moment_fire_risk##":"Ce bâtiment pourrait prendre feu à tout moment !",
 "##trouble_some_fire##":"Ce batiment risque de prendre feu",
 "##trouble_no_damage##":"Ce bâtiment est en parfaite condition structurelle",
 "##very_high_damage_risk##":"Ce pont étend nos terres, mais permet le passage non seulement de nos citoyens, mais aussi nos ennemis!",
