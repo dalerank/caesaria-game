@@ -1,6 +1,7 @@
-sim.ui.topmenu.init.debug = function()
+sim.ui.topmenu.debug.init = function()
 {
-  var topmenu = new ContextMenu("TopMenu");
+  var topmenu = sim.ui.topmenu.widget;
+  sim.ui.topmenu.debugmenu = topmenu.findItem("Debug");
 	
   topmenu.addItemWithCallback("Debug/enemies", "add_enemy_archers", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/enemies", "add_enemy_soldiers", function() {engine.log("test")} )
@@ -33,7 +34,7 @@ sim.ui.topmenu.init.debug = function()
   topmenu.addItemWithCallback("Debug/goods", "add_fruit_to_warehouse", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_grape_to_warehouse", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_vegetable_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_clay_to_warehouse", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/goods", "add_clay_to_warehouse", function() {engine.log("test")} ) 
   topmenu.addItemWithCallback("Debug/goods", "add_timber_to_warehouse", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_iron_to_warehouse", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_marble_to_warehouse", function() {engine.log("test")} )

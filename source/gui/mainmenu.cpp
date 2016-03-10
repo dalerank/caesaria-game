@@ -38,13 +38,13 @@ MainMenu::MainMenu( Widget* parent, const Rect& rectangle, const int id )
 
 ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool enabled, bool hasSubMenu, bool checked, bool autoChecking)
 {
-  ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
+  ContextMenuItem* ret = ContextMenu::addItem(text, commandId, enabled, hasSubMenu, checked, autoChecking);
 
   if (ret)
   {
-    ret->setBackgroundMode( Label::bgNone );
-    ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
-    ret->setSubmenuIconVisible( false );
+    ret->setBackgroundMode(Label::bgNone);
+    ret->setFlag(ContextMenuItem::drawSubmenuSprite, false);
+    ret->setSubmenuIconVisible(false);
   }
 
   return ret;

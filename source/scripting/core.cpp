@@ -192,6 +192,11 @@ inline Rect to(js_State *J, int n, Rect)
 
 } //end namespace internal
 
+void enginePanic(js_State *J)
+{
+  Logger::warning("JSE !!! Uncaught exception: %s\n", js_tostring(J, -1));
+}
+
 void engineLog(js_State *J)
 {
   const char *text = js_tostring(J, 1);
@@ -503,7 +508,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    auto paramValue1 = internal::to(J, 1, def );
+    auto paramValue1 = internal::to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     internal::push(J,value);
   }
@@ -685,6 +690,7 @@ void Core::unref(const std::string& ref)
 Core::Core()
 {
   internal::J = js_newstate(NULL, NULL, JS_STRICT);
+  js_atpanic(internal::J, enginePanic);
 }
 
 } //end namespace script

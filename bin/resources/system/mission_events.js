@@ -97,11 +97,7 @@ function OnMissionStart()
             }
   }
 
-	var topmenu = sim.ui.topmenu;
-  topmenu.init.file();
-	topmenu.init.options();
-  topmenu.init.help();
-  topmenu.init.debug();
+  sim.ui.topmenu.initialize();
 }
 
 function OnShowSaveDialog()

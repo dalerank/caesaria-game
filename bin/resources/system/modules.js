@@ -7,14 +7,14 @@ var modules = [
 												 "init_city", 
 												 "vector", 
 												 "video_settings",
-												 "audio_settings", 
+												 "audio_settings",
+                                                 "city_settings",
+                                                 "gamespeed_settings",
 												 "mission_topmenu",
 												 "mission_events",
-												 "mission_select", 
+												 "mission_select",                                                 
 												 "mission_debug",
-												 "package_settings", 												 
-												 "city_settings",
-												 "gamespeed_settings", 
+												 "package_settings", 												 												 												 
 												 "lobby"
 											 ]
 

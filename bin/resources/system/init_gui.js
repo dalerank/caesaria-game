@@ -1,15 +1,15 @@
 function _t(text) { return engine.translate(text); }
 
 //****************************** widget class *************************************//
-Object.defineProperty( Widget.prototype, "text", { set: function(str) { this.setText( _t(str) ); }} );
-Object.defineProperty( Widget.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
-Object.defineProperty( Widget.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
-Object.defineProperty( Widget.prototype, "font", { set: function(fname) { this.setFont(fname); }} );
-Object.defineProperty( Widget.prototype, "enabled", { set: function(e) { this.setEnabled(e); }} );
-Object.defineProperty( Widget.prototype, "textAlign", { set: function(align) { this.setTextAlignment(align.h,align.v); }} );
-Object.defineProperty( Widget.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)); }} );
-Object.defineProperty( Widget.prototype, "subElement", { set: function(value) { this.setSubElement(value); }} );
-Object.defineProperty( Widget.prototype, "name", { set: function (str) { this.setInternalName(str); }} );
+Object.defineProperty(Widget.prototype, "text", { set: function (str) { this.setText(_t(str)); } })
+Object.defineProperty(Widget.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); } })
+Object.defineProperty(Widget.prototype, "position", { set: function (point) { this.setPosition(point.x, point.y); } })
+Object.defineProperty(Widget.prototype, "font", { set: function (fname) { this.setFont(fname); } })
+Object.defineProperty(Widget.prototype, "enabled", { set: function (e) { this.setEnabled(e); } })
+Object.defineProperty(Widget.prototype, "textAlign", { set: function (align) { this.setTextAlignment(align.h, align.v); } })
+Object.defineProperty(Widget.prototype, "tooltip", { set: function (text) { this.setTooltipText(_t(text)); } })
+Object.defineProperty(Widget.prototype, "subElement", { set: function (value) { this.setSubElement(value); } })
+Object.defineProperty(Widget.prototype, "name", { set: function (str) { this.setInternalName(str); } });
 
 Object.defineProperty( Widget.prototype, "w", { get: function() { return this.width(); }} );
 Object.defineProperty( Widget.prototype, "h", { get: function() { return this.height(); }} );
@@ -148,22 +148,22 @@ Object.defineProperty( EditBox.prototype, "cursorPos", { set: function(index) { 
 Object.defineProperty( EditBox.prototype, "onTextChangeCallback", { set: function(func) { this.onTextChangedEx(func); }} );
 Object.defineProperty( EditBox.prototype, "onEnterPressedCallback", { set: function(func) { this.onEnterPressedEx(func); }} );
 
-Object.defineProperty( EditBox.prototype, "w", { set:function () { return this.width(); }} )
-Object.defineProperty( EditBox.prototype, "h", { set:function () { return this.height(); }} )
+Object.defineProperty( EditBox.prototype, "w", { get:function () { return this.width(); }} )
+Object.defineProperty( EditBox.prototype, "h", { get:function () { return this.height(); }} )
 //*************************** Editbox class end***************************************//
 
 //*************************** Fade class ***************************************//
 Object.defineProperty( Fade.prototype, "alpha", { set:function (value) { this.setAlpha(value); }} )
-Object.defineProperty( Fade.prototype, "w", { set:function () { return this.width(); }} )
-Object.defineProperty( Fade.prototype, "h", { set:function () { return this.height(); }} )
+Object.defineProperty( Fade.prototype, "w", { get:function () { return this.width(); }} )
+Object.defineProperty( Fade.prototype, "h", { get:function () { return this.height(); }} )
 //*************************** Fade class end***************************************//
 
 //*************************** DictionaryText class begin ***************************************//
 Object.defineProperty( DictionaryText.prototype, "text", { set: function (str) { this.setText(_t(str)); }} )
 Object.defineProperty( DictionaryText.prototype, "font", { set: function (fname) { this.setFont(fname); }} )
 Object.defineProperty( DictionaryText.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
-Object.defineProperty( DictionaryText.prototype, "w", { set: function () { return this.width(); }} )
-Object.defineProperty( DictionaryText.prototype, "h", { set: function () { return this.height(); }} )
+Object.defineProperty( DictionaryText.prototype, "w", { get: function () { return this.width(); }} )
+Object.defineProperty( DictionaryText.prototype, "h", { get: function () { return this.height(); }} )
 //*************************** DictionaryText class end ***************************************//
 
 //*************************** PosisitionAnimator class begin ***************************************//
@@ -220,6 +220,7 @@ ContextMenu.prototype.addItemWithCallback = function(path,caption,func) {
     item.callback = func;
     return item;
 }
+Object.defineProperty(ContextMenu.prototype, "w", { get: function () { return this.width(); } })
 //*************************** ContextMenu class end ***************************************//
 
 //*************************** ContextMenuItem class begin ***************************************//

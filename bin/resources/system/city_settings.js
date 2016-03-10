@@ -1,69 +1,106 @@
+var _format = function() {
+    var formatted = arguments[0];
+    for (var arg in arguments) {
+				if(arg==0)
+					continue;
+        formatted = formatted.replace("{" + (arg-1) + "}", arguments[arg]);
+    }
+    return formatted;
+};
+
 var ctsettings = {
     getop : function(obj) {
-      engine.log("set" + obj.group + " " + obj.flag);
-        if (obj.group==="city")
-            return g_session.getCityflag(obj.flag);
-
-        if (obj.group==="game")
-            return engine.getOption(obj.flag);
-
-        if (obj.group==="draw")
-            return engine.getDrawsflag(obj.flag);
-
-        if (obj.group==="build")
-            return g_session.getBuildflag(obj.flag);
-
-        return 0;
+      engine.log("get" + obj.group + " " + obj.flag);
+      switch(obj.group) {
+			case "city": return g_session.getCityflag(obj.flag);
+		    case "game": return engine.getOption(obj.flag);
+			case "draw": return engine.getDrawsflag(obj.flag);
+			case "build": return g_session.getBuildflag(obj.flag);
+            case "gui": return this.getguiv(obj.flag);
+            case "risks": return g_session.getCityflag(obj.flag);
+			}
+      return 0;
     },
 
     setop : function(obj,value) {
-        engine.log("set" + obj.group + " " + obj.flag);
-        if (obj.group==="city")
-            g_session.setCityflag(obj.flag, value);
+        engine.log("set " + obj.group + " " + obj.flag);
+        switch(obj.group) {
+				case "city":  g_session.setCityflag(obj.flag, value); break;
+                case "game":  engine.setOption(obj.flag, value); break;
+				case "draw":  engine.setDrawsflag(obj.flag, value); break;
+				case "build": g_session.setBuildflag(obj.flag, value); break;
+				case "gui":   this.setguiv(obj.flag); break;
+				case "risks": g_session.setCityflag(obj.flag,value); break;
+			}
+    }, 
 
-        if (obj.group==="game")
-            engine.setOption(obj.flag, value);
+    getguiv : function(name)
+    {
+        engine.log("get guiopts " + name);
+        if(name=="debug_menu")
+        {
+            return sim.ui.topmenu.debugmenu.visible();
+        } 
+    },
 
-        if (obj.group==="draw")
-            engine.setDrawsflag(obj.flag, value);
-
-        if (obj.group==="build")
-            g_session.setBuildflag(obj.flag, value);
+    setguiv : function(name)
+    {
+        engine.log("set guiopts " + name);
+        if(name=="debug_menu")
+        {
+            var dm = sim.ui.topmenu.debugmenu;
+            dm.setVisible(!dm.visible());
+        }
     },
 
     next : function(obj) {
         var value = {}
-        if(obj.group==="risks")
+        if(obj.group==="risks") 
         {
-            value = this.getop(obj)
+            value =  g_session.getCityflag(obj.flag)
             value += 10;
             if(value>100)
                value=0;
-            return 0;
         }
-        else
+        else if(obj.group==="gui")
+		{
+            return obj.value ? 0 : 1;
+		}
+		else
         {
             value = this.getop(obj)
             value += 1;
-            if (value>=obj.states.length)
-                value = 0;
-
-            return value;
+            if (value>=obj.states.length) 
+                value = 0;            
         }
+				
+		return value;
     },
 
     text : function(obj) {
         var value = {};
         if(obj.group==="risks")
         {
-            value = this.getop(obj)
-            return _t("##"+obj.base+"##")+value+" %";
+            value = g_session.getCityflag(obj.flag);
+			var lb = _t("##"+obj.base+"##");
+            return _format( "{0} {1} %", lb, value);
         }
+		else if(obj.group==="gui")
+		{
+			if(obj.flag === "debug_menu")
+			{
+				var value = this.getguiv(obj.flag);
+				var tx =  _format("##{0}_{1}##",obj.base,obj.states[value]);
+				engine.log(tx);
+				return _t(tx);
+			}
+		}
         else
         {
-            value = this.getop(obj)
-            return _t("##"+obj.base+"_"+obj.states[value]+"##");
-        }
+		    value = this.getop(obj)
+		    var tx = _format("##{0}_{1}##", obj.base, obj.states[value]);
+            return _t(tx);
+        } 
     },
 
     tooltip : function(obj) {
@@ -71,15 +108,20 @@ var ctsettings = {
         {
             return "";
         }
+		else if(obj.group==="gui")
+		{
+			 if(obj.flag === "debug_menu")
+				return "";
+		} 
         else
         {
             var value = this.getop(obj)
-            return _t("##"+obj.base+"_"+states[value]+"_tlp##");
+            return _t("##"+obj.base+"_"+obj.states[value]+"_tlp##");
         }
     }
 }
 
-function OnShowCitySettings()
+sim.ui.topmenu.options.showCitySettings = function() 
 {
     var items = [ 	 {base:"city_opts_god", 		states : [ "off", "on" ],   group : "city", flag:"godEnabled"},
              {base:"city_warnings", 		states : [ "off", "on" ],   group : "city", flag:"warningsEnabled" },
@@ -110,16 +152,17 @@ function OnShowCitySettings()
              {base:"city_mines_collapse",	states : [ "off", "on" ],   group : "city", flag:"minesMayCollapse" },
              {base:"draw_svk_border",		states : [ "off", "on" ],   group : "city", flag:"svkBorderEnabled" },
              {base:"city_farm_use_meadow",	states : [ "off", "on" ],   group : "city", flag:"farmUseMeadows" },
-             //{base:"city_fire_risk",            group : "risks", flag : "fireCoeff" },
-             //{base:"city_collapse_risk",        group : "risks", flag : "collapseKoeff" },
-             //{base:"city_df",               states : [ "fun", "easy", "simple", "usual", "nicety", "hard", "impossible" ], group : "city", flag : "difficulty" },
-             //{base:"city_batching",         states : [ "off", "on" ],   group : "draw", flag:"batching" },
+             {base:"city_fire_risk",            group : "risks", flag : "fireCoeff" },
+             {base:"city_collapse_risk",        group : "risks", flag : "collapseKoeff" },
+             {base:"city_df",               states : [ "fun", "easy", "simple", "usual", "nicety", "hard", "impossible" ], group : "city", flag : "difficulty" },
+             {base:"city_batching",         states : [ "off", "on" ],   group : "draw", flag:"batching" },
              //{base:"city_c3rules",          states : [ "off", "on" ],   group : "city", flag:"c3gameplay" },
              //{base:"city_roadblock",        states : [ "off", "on" ],   group : "build", flag: "roadBlock" },
+			 {base:"city_debug", states : [ "off", "on" ], group : "gui", flag : "debug_menu" },
     ]
 
     var w = g_ui.addWindow(0, 0, 480, 540);
-    w.closeAfterKey( {escape:true,rmb:true} )
+    w.closeAfterKey( {escape:true,rmb:true} ) 
     w.title = "##city_options##";
 
     var lbHelp = w.addLabel(15,w.h-40,w.w-80,20);
@@ -159,5 +202,3 @@ function OnShowCitySettings()
     w.setModal()
     w.mayMove = false
 }
-
-sim.ui.topmenu.ctsettings.callback = OnShowCitySettings;

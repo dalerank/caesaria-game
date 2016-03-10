@@ -778,7 +778,7 @@ void ListBox::_recalculateScrollPos()
   }
 }
 
-void ListBox::_updateBackground( int scrollbarWidth)
+void ListBox::_updateBackground(int scrollbarWidth)
 {
   _d->bg.batch.destroy();
 

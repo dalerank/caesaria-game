@@ -157,19 +157,6 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
   return &newItem;
 }
 
-ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSearch ) const
-{
-  for( unsigned int i=idxStartSearch; i<_d->items.size(); ++i )
-  {
-    if ( _d->items[i]->commandId() == commandId )
-    {
-      return _d->items[i];
-    }
-  }
-
-  return NULL;
-}
-
 ContextMenuItem* ContextMenu::findItem(const std::string& name) const
 {
   for( auto it : _d->items )

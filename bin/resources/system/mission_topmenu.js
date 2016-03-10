@@ -1,7 +1,5 @@
-sim.ui.topmenu.init.help = function()
-{
-    var tmenu = new ContextMenu("TopMenu")
-    var m = tmenu.addItem("",_t("##gmenu_help##"));
+sim.ui.topmenu.help.init = function() {
+    var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_help##"));
 
     m.addItemWithCallback("##gmenu_about##", function() {
                 var wnd = g_ui.addSimpleWindow(0,0,1,1);
@@ -18,32 +16,39 @@ sim.ui.topmenu.init.help = function()
         })
 }
 
-sim.ui.topmenu.init.options = function()
-{
-     var tmenu = new ContextMenu("TopMenu")
-     var m = tmenu.addItem("",_t("##gmenu_options##"));
+sim.ui.topmenu.options.init = function() {
+    var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_options##"));
 
-     m.addItemWithCallback("##screen_settings##", OnShowVideoSettings)
-     m.addItemWithCallback("##sound_settings##",  OnShowAudioDialog)
-     m.addItemWithCallback("##speed_settings##",  function() {} )
-     sim.ui.topmenu.ctsettings = m.addItemWithCallback("##city_settings##", OnShowCitySettings )
-     var constrMode = m.addItemWithCallback("##city_constr_mode##", function() {} )
-     constrMode.autoChecking = true;
+    m.addItemWithCallback("##screen_settings##", OnShowVideoSettings)
+    m.addItemWithCallback("##sound_settings##",  OnShowAudioDialog)
+    m.addItemWithCallback("##speed_settings##",  function() {} )
+    m.addItemWithCallback("##city_settings##", function () { sim.ui.topmenu.options.showCitySettings() } )
+    var constrMode = m.addItemWithCallback("##city_constr_mode##", function() {} )
+    constrMode.autoChecking = true;
 }
 
-sim.ui.topmenu.init.file = function()
-{
-     var tmenu = new ContextMenu("TopMenu")
-     var m = tmenu.addItem("", _t("##gmenu_file##"));
+sim.ui.topmenu.file.init = function() {
+    var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_file##"));
 
-     m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
-     m.addItemWithCallback("##mainmenu_loadgame##",   OnShowSaveSelectDialog)
-     m.addItemWithCallback("##gmenu_file_save##",     OnShowSaveDialog)
-     m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
-     m.addItemWithCallback("##gmenu_exit_game##",     OnRequestExitGame)
+    m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
+    m.addItemWithCallback("##mainmenu_loadgame##",   OnShowSaveSelectDialog)
+    m.addItemWithCallback("##gmenu_file_save##",     OnShowSaveDialog)
+    m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
+    m.addItemWithCallback("##gmenu_exit_game##",     OnRequestExitGame)
 }
 
+sim.ui.topmenu.advisors.init = function() {
 
+}
+
+sim.ui.topmenu.initialize = function () {
+    sim.ui.topmenu.widget = new ContextMenu("TopMenu");
+    sim.ui.topmenu.file.init()
+    sim.ui.topmenu.options.init()
+    sim.ui.topmenu.help.init()
+    sim.ui.topmenu.debug.init();
+    sim.ui.topmenu.advisors.init();
+}
 
  /* dialog::SpeedOptions& dialog = game->gui()->add<dialog::SpeedOptions>( game->timeMultiplier(),
                                                                          SETTINGS_VALUE( scrollSpeed ),

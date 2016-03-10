@@ -80,9 +80,6 @@ public:
   virtual ContextMenuItem* insertItem( unsigned int idx, const std::string& text, int commandId, bool enabled,
                                        bool hasSubMenu, bool checked, bool autoChecking);
 
-  //! Find a item which has the given CommandId starting from given index
-  virtual ContextMenuItem* findItem( int commandId, unsigned int idxStartSearch ) const;
-
   //!
   virtual ContextMenuItem* findItem(const std::string& name) const;
 
