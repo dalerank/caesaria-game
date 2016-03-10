@@ -216,15 +216,23 @@ int Session::getAdvflag(const std::string & flag) const
   }
   else if (flag == "lockwindow")
   {
-    return infoboxLocked;
+    value = infoboxLocked;
   }
   else if (flag == "tooltips")
   {
-    return _game->gui()->hasFlag(gui::Ui::showTooltips);
+    value = _game->gui()->hasFlag(gui::Ui::showTooltips);
   }
   else if (flag == "metric")
   {
-    return metric::Measure::mode();
+    value = metric::Measure::mode();
+  }
+  else if (flag == "scrollSpeed")
+  {
+    value = SETTINGS_VALUE(scrollSpeed);
+  }
+  else if (flag == "gameSpeed")
+  {
+    value = _game->timeMultiplier();
   }
   else
   {
@@ -253,6 +261,15 @@ void Session::setAdvflag(const std::string & flag, int value)
   {
     metric::Measure::setMode((metric::Measure::Mode)value);
     SETTINGS_SET_VALUE(metricSystem, value);
+  }
+  else if (flag == "scrollSpeed")
+  {
+    SETTINGS_SET_VALUE(scrollSpeed, value);
+    _game->scene()->camera()->setScrollSpeed(value);
+  }
+  else if (flag == "gameSpeed")
+  {
+    _game->setTimeMultiplier(value);
   }
   else
   {

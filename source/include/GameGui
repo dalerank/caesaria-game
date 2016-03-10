@@ -33,7 +33,6 @@
 #include "gui/senate_popup_info.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/minimap_window.hpp"
-#include "gui/window_gamespeed_options.hpp"
 #include "gui/androidactions.hpp"
 #include "gui/scribesmessages.hpp"
 #include "city/cityservice_military.hpp"

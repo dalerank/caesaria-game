@@ -129,10 +129,8 @@ public:
   void saveCameraPos(Point p);
   void makeFastSave();
   void showMessagesWindow();
-  void setAutosaveInterval( int value );
   void layerChanged( int layer );
   void makeFullScreenshot();
-  void saveScrollSpeed( int speed );
   void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
   void initRender();
@@ -158,7 +156,7 @@ Level::~Level() {}
 
 void Level::Impl::initRender()
 {
-  bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
+  bool oldGraphics = KILLSWITCH(oldgfx) || !SETTINGS_STR(c3gfx).empty();
   renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
   renderer.setViewport( engine->viewportSize() );
   renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
@@ -340,12 +338,6 @@ void Level::Impl::showMessagesWindow()
   {
     wnd->bringToFront();
   }
-}
-
-void Level::Impl::setAutosaveInterval(int value)
-{
-  SETTINGS_SET_VALUE( autosaveInterval, value );
-  game::Settings::save();
 }
 
 void Level::Impl::layerChanged(int layer)
@@ -605,7 +597,6 @@ void Level::setCameraPos(TilePos pos, bool force) {  _d->renderer.camera()->setC
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }
-void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 int  Level::result() const {  return _d->result; }
 
 bool Level::_tryExecHotkey(NEvent &event)

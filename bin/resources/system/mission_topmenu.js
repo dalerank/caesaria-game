@@ -19,9 +19,9 @@ sim.ui.topmenu.help.init = function() {
 sim.ui.topmenu.options.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_options##"));
 
-    m.addItemWithCallback("##screen_settings##", OnShowVideoSettings)
-    m.addItemWithCallback("##sound_settings##",  OnShowAudioDialog)
-    m.addItemWithCallback("##speed_settings##",  function() {} )
+    m.addItemWithCallback("##screen_settings##", function () { sim.ui.topmenu.options.showVideoOptions() } )
+    m.addItemWithCallback("##sound_settings##", function () { sim.ui.topmenu.options.showAudioOptions() } )
+    m.addItemWithCallback("##speed_settings##",  function() { sim.ui.topmenu.options.showSpeedOptions() } )
     m.addItemWithCallback("##city_settings##", function () { sim.ui.topmenu.options.showCitySettings() } )
     var constrMode = m.addItemWithCallback("##city_constr_mode##", function() {} )
     constrMode.autoChecking = true;
@@ -49,12 +49,3 @@ sim.ui.topmenu.initialize = function () {
     sim.ui.topmenu.debug.init();
     sim.ui.topmenu.advisors.init();
 }
-
- /* dialog::SpeedOptions& dialog = game->gui()->add<dialog::SpeedOptions>( game->timeMultiplier(),
-                                                                         SETTINGS_VALUE( scrollSpeed ),
-                                                                         SETTINGS_VALUE( autosaveInterval ) );
-
-  CONNECT( &dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( &dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
-  CONNECT( &dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
-  CONNECT( &dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval ); */

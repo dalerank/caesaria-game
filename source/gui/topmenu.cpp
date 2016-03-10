@@ -206,7 +206,6 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 
-  //CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
   //CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
 
   auto tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );

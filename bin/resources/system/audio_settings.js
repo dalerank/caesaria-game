@@ -1,5 +1,10 @@
 function OnShowAudioDialog()
 {
+    sim.ui.topmenu.options.showAudioOptions()
+}
+
+sim.ui.topmenu.options.showAudioOptions = function()
+{
   var wnd = g_ui.addWindow(0);
   wnd.geometry = { x:0, y:0, w:350, h:225 };
   wnd.moveToCenter();
