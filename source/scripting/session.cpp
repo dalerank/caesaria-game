@@ -29,9 +29,12 @@
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
+#include "game/infoboxmanager.hpp"
 
 namespace script
 {
+
+static int infoboxLocked = 0;
 
 void Session::continuePlay(int years)
 {
@@ -202,6 +205,59 @@ void Session::setCityflag(const std::string& flag, int value)
 {
   PlayerCity::OptionType type = city::findOption(flag);
   _game->city()->setOption(type, value);
+}
+
+int Session::getAdvflag(const std::string & flag) const
+{
+  int value = 0;
+  if (flag == "batching")
+  {
+    value = gfx::Engine::instance().getFlag(gfx::Engine::batching) > 0;
+  }
+  else if (flag == "lockwindow")
+  {
+    return infoboxLocked;
+  }
+  else if (flag == "tooltips")
+  {
+    return _game->gui()->hasFlag(gui::Ui::showTooltips);
+  }
+  else if (flag == "metric")
+  {
+    return metric::Measure::mode();
+  }
+  else
+  {
+    value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
+  }
+  
+  return value;
+}
+
+void Session::setAdvflag(const std::string & flag, int value)
+{
+  if (flag == "batching")
+  {
+    gfx::Engine::instance().setFlag(gfx::Engine::batching, value);
+  }
+  else if (flag == "lockwindow")
+  {
+    infoboxLocked = value;
+    gui::infobox::Manager::instance().setBoxLock(value > 0);
+  }
+  else if (flag == "tooltips")
+  {
+    _game->gui()->setFlag(gui::Ui::showTooltips, value);
+  }
+  else if (flag == "metric")
+  {
+    metric::Measure::setMode((metric::Measure::Mode)value);
+    SETTINGS_SET_VALUE(metricSystem, value);
+  }
+  else
+  {
+    citylayer::DrawOptions::takeFlag(flag, value);
+  }
 }
 
 void Session::loadLocalization(const std::string& name)

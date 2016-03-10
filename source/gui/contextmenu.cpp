@@ -189,7 +189,7 @@ ContextMenuItem* ContextMenu::item( unsigned int idx ) const
 }
 
 //! Sets text of the menu item.
-void ContextMenu::updateItems() {  _d->flags.invalidate = true; }
+void ContextMenu::updateItems() { _d->flags.invalidate = true; }
 
 //! Removes a menu item
 void ContextMenu::removeItem(unsigned int idx)
@@ -451,32 +451,32 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
   return false;
 }
 
-void ContextMenu::beforeDraw(gfx::Engine& painter )
+void ContextMenu::beforeDraw(gfx::Engine& painter)
 {
-  if( !visible() )
+  if (!visible())
     return;
 
-  Font font = Font::create( FONT_2_WHITE );
+  Font font = Font::create(FONT_2_WHITE);
 
-  if( font != _d->lastFont )
+  if (font != _d->lastFont)
   {
     _d->lastFont = font;
     updateItems();
   }
 
-  if( _d->flags.invalidate )
+  if (_d->flags.invalidate)
   {
     _d->flags.invalidate = false;
     _recalculateSize();
   }
 
-  Widget::beforeDraw( painter );
+  Widget::beforeDraw(painter);
 }
 
 //! draws the element and its children
 void ContextMenu::draw(gfx::Engine& painter )
 {
-  if ( !visible() )
+  if (!visible())
     return;
 
   Widget::draw( painter );

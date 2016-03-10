@@ -94,6 +94,7 @@ ActionsBar::ActionsBar( Widget* parent)
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
+  setInternalName("AndroidActionsBar");
   GET_DWIDGET_FROM_UI( _d, btnMenu     )
   GET_DWIDGET_FROM_UI( _d, btnShowHelp )
   GET_DWIDGET_FROM_UI( _d, btnEnter    )

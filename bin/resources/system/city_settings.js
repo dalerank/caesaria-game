@@ -14,7 +14,7 @@ var ctsettings = {
       switch(obj.group) {
 			case "city": return g_session.getCityflag(obj.flag);
 		    case "game": return engine.getOption(obj.flag);
-			case "draw": return engine.getDrawsflag(obj.flag);
+			case "game": return g_session.getGameflag(obj.flag);
 			case "build": return g_session.getBuildflag(obj.flag);
             case "gui": return this.getguiv(obj.flag);
             case "risks": return g_session.getCityflag(obj.flag);
@@ -27,7 +27,7 @@ var ctsettings = {
         switch(obj.group) {
 				case "city":  g_session.setCityflag(obj.flag, value); break;
                 case "game":  engine.setOption(obj.flag, value); break;
-				case "draw":  engine.setDrawsflag(obj.flag, value); break;
+				case "game":  engine.setGameflag(obj.flag, value); break;
 				case "build": g_session.setBuildflag(obj.flag, value); break;
 				case "gui":   this.setguiv(obj.flag); break;
 				case "risks": g_session.setCityflag(obj.flag,value); break;
@@ -40,7 +40,12 @@ var ctsettings = {
         if(name=="debug_menu")
         {
             return sim.ui.topmenu.debugmenu.visible();
-        } 
+        }
+        else if(name == "andr_menu")
+        {
+            var dm = new Widget("AndroidActionsBar")
+            return dm.visible()
+        }
     },
 
     setguiv : function(name)
@@ -48,8 +53,13 @@ var ctsettings = {
         engine.log("set guiopts " + name);
         if(name=="debug_menu")
         {
-            var dm = sim.ui.topmenu.debugmenu;
-            dm.setVisible(!dm.visible());
+            var dm = sim.ui.topmenu.debugmenu
+            dm.setVisible(!dm.visible())
+        }
+        else if(name=="andr_menu")
+        {
+            var dm = new Widget("AndroidActionsBar")
+            dm.setVisible(!dm.visible())
         }
     },
 
@@ -79,28 +89,21 @@ var ctsettings = {
 
     text : function(obj) {
         var value = {};
-        if(obj.group==="risks")
-        {
+        if (obj.group === "risks") {
             value = g_session.getCityflag(obj.flag);
 			var lb = _t("##"+obj.base+"##");
-            return _format( "{0} {1} %", lb, value);
+			return _format("{0} {1} %", lb, value);
         }
-		else if(obj.group==="gui")
-		{
-			if(obj.flag === "debug_menu")
-			{
-				var value = this.getguiv(obj.flag);
-				var tx =  _format("##{0}_{1}##",obj.base,obj.states[value]);
-				engine.log(tx);
-				return _t(tx);
-			}
-		}
-        else
-        {
-		    value = this.getop(obj)
-		    var tx = _format("##{0}_{1}##", obj.base, obj.states[value]);
+        else if (obj.group === "gui") {
+            var value = this.getguiv(obj.flag);
+            var tx = _format("##{0}_{1}##", obj.base, obj.states[value]);
             return _t(tx);
-        } 
+        }
+        else {
+            value = this.getop(obj)
+            var tx = _format("##{0}_{1}##", obj.base, obj.states[value]);
+            return _t(tx);
+        }
     },
 
     tooltip : function(obj) {
@@ -110,8 +113,7 @@ var ctsettings = {
         }
 		else if(obj.group==="gui")
 		{
-			 if(obj.flag === "debug_menu")
-				return "";
+    		return "";
 		} 
         else
         {
@@ -127,7 +129,6 @@ sim.ui.topmenu.options.showCitySettings = function()
              {base:"city_warnings", 		states : [ "off", "on" ],   group : "city", flag:"warningsEnabled" },
              {base:"city_zoom",     		states : [ "off", "on" ],   group : "city", flag:"zoomEnabled" },
              {base:"city_zoominv",  		states : [ "off", "on" ],   group : "city", flag:"zoomInvert" },
-             {base:"city_lockinfo", 		states : [ "off", "on" ],   group : "game", flag:"lockInfobox" },
              {base:"city_barbarian",		states : [ "off", "on" ],   group : "city", flag:"barbarianAttack" },
              {base:"city_tooltips", 		states : [ "off", "on" ],   group : "game", flag:"tooltipEnabled" },
              {base:"city_buildoverdraw",	states : [ "off", "on" ],   group : "draw", flag:"overdrawOnBuild" },
@@ -139,7 +140,6 @@ sim.ui.topmenu.options.showCitySettings = function()
              {base:"cut_forest",		states : [ "off", "on" ],   group : "city", flag:"cutForest2timber" },
              {base:"rightMenu",			states : [ "off", "on" ],   group : "game", flag:"rightMenu" },
              {base:"city_mapmoving", 		states : [ "lmb", "mmb"],   group : "draw", flag:"mmbMoving" },
-             {base:"city_debug",     		states : [ "off", "on" ],   group : "game", flag:"debugMenu" },
              {base:"city_chastener", 		states : [ "off", "on" ],   group : "city", flag:"legionAttack" },
              {base:"city_androidbar",		states : [ "off", "on" ],   group : "game", flag:"showTabletMenu" },
              {base:"city_ccuseai",    		states : [ "off", "on" ],   group : "game", flag:"ccUseAI" },
@@ -155,10 +155,11 @@ sim.ui.topmenu.options.showCitySettings = function()
              {base:"city_fire_risk",            group : "risks", flag : "fireCoeff" },
              {base:"city_collapse_risk",        group : "risks", flag : "collapseKoeff" },
              {base:"city_df",               states : [ "fun", "easy", "simple", "usual", "nicety", "hard", "impossible" ], group : "city", flag : "difficulty" },
-             {base:"city_batching",         states : [ "off", "on" ],   group : "draw", flag:"batching" },
-             //{base:"city_c3rules",          states : [ "off", "on" ],   group : "city", flag:"c3gameplay" },
-             //{base:"city_roadblock",        states : [ "off", "on" ],   group : "build", flag: "roadBlock" },
-			 {base:"city_debug", states : [ "off", "on" ], group : "gui", flag : "debug_menu" },
+             {base:"city_batching",         states : [ "off", "on" ],   group : "game", flag:"batching" },
+             {base:"city_lockinfo", states: ["off", "on"], group: "game", flag: "lockwindow" },
+             {base:"city_roadblock",        states : [ "off", "on" ],   group : "build", flag: "roadBlock" },
+			 {base:"city_debug", states: ["off", "on"], group: "gui", flag: "debug_menu" },
+             {base:"city_metric", states: ["quantity", "kilogram", "modius"], group : "game", flag: "metric" }
     ]
 
     var w = g_ui.addWindow(0, 0, 480, 540);

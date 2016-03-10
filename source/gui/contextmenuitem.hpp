@@ -40,7 +40,6 @@ public:
     drawCount
   } DrawFlag;
 
-
   ContextMenuItem(Widget* parent, const std::string& text);
 
   virtual ~ContextMenuItem();
@@ -67,6 +66,7 @@ public:
 
   virtual void setHovered(bool hover);
 
+  //!
   virtual bool isAutoChecking();
 
   //!
@@ -98,6 +98,8 @@ public:
   virtual SubMenuAlign subMenuAlignment() const;
 
   void setSubmenuIconVisible(bool visible);
+
+  virtual void setVisible(bool visible);
 
 signals public:
   Signal1<bool>& onChecked();

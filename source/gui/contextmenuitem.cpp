@@ -166,6 +166,14 @@ void ContextMenuItem::setHovered( bool hover )
   setFont( hover ? FONT_2_RED : FONT_2 );
 }
 
+void ContextMenuItem::setVisible(bool visible)
+{
+  Label::setVisible(visible);
+  ContextMenu* menu = safety_cast<ContextMenu*>(parent());
+  if (menu)
+    menu->updateItems();
+}
+
 bool ContextMenuItem::isAutoChecking() { return _dfunc()->is.autoChecking; }
 bool ContextMenuItem::isSeparator() const {  return _dfunc()->is.separator; }
 void ContextMenuItem::setCommandId( int cmdId ){	_dfunc()->commandId = cmdId;}

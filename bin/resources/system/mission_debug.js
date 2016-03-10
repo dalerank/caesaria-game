@@ -154,8 +154,8 @@ function toggleBuildOptions(name)
 
 function toggleDrawflag(name)
 {
-  var value = engine.getDrawsflag(name);
-  engine.setDrawsflag(name,!value);
+  var value = g_session.getAdvflag(name);
+  g_session.setAdvflag(name, !value);
 
   engine.log( "Change draw flag " + name + " to " + (!value ? "true" : "false"))
 }

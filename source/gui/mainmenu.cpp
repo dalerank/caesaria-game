@@ -143,47 +143,46 @@ void MainMenu::_recalculateSize()
 {
   Rect parentRect = parent()->clientRect(); // client rect of parent
 
-  //AbstractSkin* skin = getEnvironment()->getSkin();
-  Font font = Font::create( FONT_2_WHITE );
+  Font font = Font::create(FONT_2_WHITE);
 
-  int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
-  setGeometry( Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ) );
+  int hg = std::max<int>(DEFAULT_MENU_HEIGHT, height());
+  setGeometry(Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ));
   Rect rect;
 
   rect._lefttop = parentRect.lefttop();
-  hg = std::max<int>( font.getTextSize("A").height(), hg );
-  //if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
-  //	height = skin->getSize(EGDS_MENU_HEIGHT);
-  int width = rect.left();
-  int i;
+  hg = std::max<int>(font.getTextSize("A").height(), hg);
 
-  for( i=0; i<(int)itemCount(); ++i)
+  int width = rect.left();
+  for (int i=0; i<(int)itemCount(); ++i)
   {
-    ContextMenuItem* refItem = item( i );
-    if ( refItem->isSeparator() )
+    ContextMenuItem* refItem = item(i);
+    if (!refItem->visible())
+      continue;
+
+    if (refItem->isSeparator())
     {
-      refItem->setDimmension( Size( 16, height() ) );
+      refItem->setDimmension(Size( 16, height()));
     }
     else
     {
-      Size itemSize = font.getTextSize( refItem->text() ) + Size( 20, 0 );
-      itemSize.setHeight( height() );
-      refItem->setDimmension( itemSize );
+      Size itemSize = font.getTextSize(refItem->text()) + Size(20, 0);
+      itemSize.setHeight(height());
+      refItem->setDimmension(itemSize);
     }
 
-    refItem->setOffset( width );
+    refItem->setOffset(width);
     width += refItem->dimmension().width();
   }
 
   // recalculate submenus
-  for( i=0; i<(int)itemCount(); ++i )
+  for(int i=0; i<(int)itemCount(); ++i )
   {
-    ContextMenuItem* refItem = item( i );
+    ContextMenuItem* refItem = item(i);
 
-    Rect rectangle( refItem->offset(), 0, refItem->offset() + refItem->dimmension().width(), hg );
+    Rect rectangle(refItem->offset(), 0, refItem->offset() + refItem->dimmension().width(), hg);
     refItem->setGeometry( rectangle );
 
-    if( refItem->submenu() )
+    if (refItem->submenu())
     {
       // move submenu
       Size itemSize = refItem->submenu()->absoluteRect().size();

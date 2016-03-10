@@ -87,9 +87,9 @@ public:
   void setShowDebugInfo( const bool showInfo );
 
   void addInfobox(const object::Type& type, InfoboxCreator* ctor );
-  bool canCreate( const object::Type type ) const;
+  bool canCreate(const object::Type type ) const;
 
-  void setBoxLock( bool lock );
+  void setBoxLock(bool lock);
 private:
   Manager();
   virtual ~Manager();
