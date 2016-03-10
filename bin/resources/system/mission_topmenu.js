@@ -20,7 +20,7 @@ sim.ui.topmenu.options.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_options##"));
 
     m.addItemWithCallback("##screen_settings##", function () { sim.ui.topmenu.options.showVideoOptions() } )
-    m.addItemWithCallback("##sound_settings##", function () { sim.ui.topmenu.options.showAudioOptions() } )
+    m.addItemWithCallback("##sound_settings##", function () { game.ui.dialogs.showAudioOptions() } )
     m.addItemWithCallback("##speed_settings##",  function() { sim.ui.topmenu.options.showSpeedOptions() } )
     m.addItemWithCallback("##city_settings##", function () { sim.ui.topmenu.options.showCitySettings() } )
     var constrMode = m.addItemWithCallback("##city_constr_mode##", function() {} )
@@ -31,7 +31,7 @@ sim.ui.topmenu.file.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_file##"));
 
     m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
-    m.addItemWithCallback("##mainmenu_loadgame##",   OnShowSaveSelectDialog)
+    m.addItemWithCallback("##mainmenu_loadgame##",   function() { lobby.ui.loadgame.loadsave()})
     m.addItemWithCallback("##gmenu_file_save##",     OnShowSaveDialog)
     m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
     m.addItemWithCallback("##gmenu_exit_game##",     OnRequestExitGame)

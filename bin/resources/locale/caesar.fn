@@ -163,6 +163,8 @@
 "##no_people_in_city##":"Kaupungissa ei ole ihmisiä!",
 "##advchief_employers_ok##":"Kaupungilla ei ole työttömyys ongelmia",
 "##no_industries_in_city##":"Kaupungissa ei ole teollisuutta",
+"##unhandled_key_value_23##":"Täällä ei ole tilaa näin paljolle missään kaupungissa
+",
 "##advchief_health_awesome##":"Kaupungin terveys on täydellinen.",
 "##advchief_health_awesome_clinic##":"Kaupungin terveys on täydellinen, odotus aikoja ei ole yhtään paikallisilla klinikoilla.",
 "##city_have##":"Kaupungilla on varoja",
@@ -467,7 +469,7 @@
 "##road_paved_title##":"Paremman luokan tie",
 "##animal_contests_run##":"
 ",
-"##lionNusery##":"Leijona monttu",
+"##lionsNursery##":"Leijona monttu",
 "##lgn_lions##":"Leijonat",
 "##venus_desc##":"Rakkaus",
 "##smallcurse_of_mars_title##":"Mars on pettynyt",

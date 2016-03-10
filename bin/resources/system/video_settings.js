@@ -1,11 +1,6 @@
 var haveChanges = false;
 var fullscreen = false;
 
-function OnShowVideoSettings()
-{
-    sim.ui.topmenu.options.showVideoOptions()
-}
-
 sim.ui.topmenu.options.showVideoOptions = function()
 {
   engine.log( "JS:OnShowVideoSettings" );

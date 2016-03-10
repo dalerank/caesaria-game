@@ -1,9 +1,9 @@
 var g_wasChangesShow = false;
-var g_lobbyButtons = [];
+lobby.ui.buttons = [];
 
-function OnShowChanges(force)
+lobby.ui.showChanges = function(force)
 {
-  engine.log( "JS:OnShowChanges" );
+  engine.log( "JS:lobby.ui.showChanges" );
 
   if( force )
   {
@@ -44,87 +44,54 @@ function OnShowChanges(force)
   }
 }
 
-function OnStartCareer()
+lobby.ui.newgame.startCareer = function ()
 {
-  OnChangePlayerName(true,function() { g_session.setMode(0); } );
+  lobby.ui.changePlayerName(true,function() { g_session.setMode(0); } );
 }
 
-function OnShowNewGameMenu()
+lobby.ui.newgame.showpage = function()
 {
-    engine.log("OnShowNewGameMenu");
+  engine.log("JS:lobby.ui.newgame.showpage");
 
-    mainMenuClear();
+  lobby.ui.clear();
 
-    addMainMenuButton( "##mainmenu_startcareer##", OnStartCareer);
-    addMainMenuButton( "##mainmenu_randommap##",   OnPlayRandomap);
-    addMainMenuButton( "##mainmenu_constructor##", OnConstructorMode);
-    addMainMenuButton( "##cancel##",               OnShowMainMenu);
+  lobby.ui.addButton( "##mainmenu_startcareer##", function() { lobby.ui.newgame.startCareer()})
+  lobby.ui.addButton( "##mainmenu_randommap##",   function() { lobby.ui.newgame.playRandom()})
+  lobby.ui.addButton( "##mainmenu_constructor##", function() { lobby.ui.newgame.openConstructor()})
+  lobby.ui.addButton( "##cancel##",               function() { lobby.ui.mainmenu.showpage() })
 }
 
-function setLanguage(config)
+lobby.ui.options.showLanguageSettings = function()
 {
-  var currentFont = engine.getOption("font");
-
-  if (!config.talks)
-    config.talks = ":/audio/wavs_citizen_en.zip";
-
-  g_session.setLanguage(config.ext,config.talks);
-
-  if (confgi.font !== undefined && currentFont !== config.font)
-  {
-    engine.setOption("font",config.font);
-    g_session.setFont(config.font);
-  }
-}
-
-function OnShowLanguageDialog()
-{
-  var langModel = [
-                    { lang : "English",     ext : "en", },
-                    { lang : "Русский",     ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
-                    { lang : "Українська",  ext : "ua", },
-                    { lang : "Deutsch",     ext : "de", talks : ":/audio/wavs_citizen_de.zip" },
-                    { lang : "Svenska"    , ext : "sv", },
-                    { lang : "Español"    , ext : "sp", talks : ":/audio/wavs_citizen_sp.zip" },
-                    { lang : "Român"      , ext : "ro", },
-                    { lang : "Français"   , ext : "fr", },
-                    { lang : "Czech"      , ext : "cs", },
-                    { lang : "Hungarian"  , ext : "hu", },
-                    { lang : "Italian"    , ext : "it", talks : ":/audio/wavs_citizen_it.zip" },
-                    { lang : "Polish"     , ext : "pl", },
-                    { lang : "Suomi"     ,  ext : "fn", },
-                    { lang : "Português"  , ext : "pr", },
-                    { lang : "Cрпски"    ,  ext : "sb", },
-                    { lang : "Korean"     , ext : "kr", font : "HANBatangB.ttf" }
-                  ];
-
   var wnd = g_ui.addWindow(0);
+  wnd.title = "##mainmenu_language##"
   wnd.geometry = { x:0, y:0, w:512, h:384 };
   wnd.moveToCenter();
   wnd.closeAfterKey( {escape:true, rmb:true} );
 
-  var listbox = wnd.addListbox(15, 40, wnd.w-30, wnd.h-90);
+  var listbox = wnd.addListbox(20, 50, wnd.w-40, wnd.h-90);
   listbox.setTextAlignment("center", "center");
   listbox.background = true;
   listbox.onSelectedCallback = function(index) {
-                                                 setLanguage(langModel[index]);
+                                                 game.setLanguage(g_config.languages[index]);
                                                }
 
-  for (var i in langModel)
+  for (var i in g_config.languages)
   {
-    var index = listbox.addLine(langModel[i].lang);
-    listbox.setData( index, "lang", langModel[i].ext );
+    var conf = g_config.languages;
+    var index = listbox.addLine(conf[i].lang);
+    listbox.setData(index, "lang", conf[i].ext);
   }
 
   var currentLang = engine.getOption("language");
   listbox.selectedWithData = { name:"lang", data:currentLang };
 
-  var btn = wnd.addButton(15, wnd.h - 40, wnd.w-30, 24);
+  var btn = wnd.addButton(20, wnd.h - 40, wnd.w-40, 24);
   btn.text = "##continue##";
   btn.callback = function () { g_session.setMode(6); }
 }
 
-function OnShowLogs()
+lobby.ui.showLogs = function()
 {
   var logfile = g_session.logfile;
   if (!logfile.exist())
@@ -133,7 +100,7 @@ function OnShowLogs()
     g_session.openUrl(logfile.str);
 }
 
-function OnChangePlayerName(force,continueCallback)
+lobby.ui.changePlayerName = function(force,continueCallback)
 {
   var playerName = engine.getOption("playerName");
   if (playerName === null || playerName.length === 0)
@@ -152,7 +119,7 @@ function OnChangePlayerName(force,continueCallback)
                                   if(continueCallback)
                                       continueCallback();
                                }
- 
+
     var editbox = wnd.addEditbox(32, 50, 320, 32);
     editbox.textAlign = { h:"upperLeft", v:"center" };
     editbox.font = "FONT_2_WHITE";
@@ -184,7 +151,7 @@ function OnChangePlayerName(force,continueCallback)
   }
 }
 
-function addMainMenuButton(caption,callback)
+lobby.ui.addButton = function(caption,callback)
 {
   var buttonSize = { w:200, h:25 };
   var btnFont = "FONT_2";
@@ -204,13 +171,13 @@ function addMainMenuButton(caption,callback)
       engine.log("callback is null")
   }
 
-  g_lobbyButtons.push(button);
+  lobby.ui.buttons.push(button);
 
   var resolution = g_session.resolution;
-  var offset = { x:(resolution.w - buttonSize.w) / 2, y:(resolution.h - offsetY * g_lobbyButtons.length) / 2 };
-  for (var i in g_lobbyButtons)
+  var offset = { x:(resolution.w - buttonSize.w) / 2, y:(resolution.h - offsetY * lobby.ui.buttons.length) / 2 };
+  for (var i in lobby.ui.buttons)
   {
-     var tmp = g_lobbyButtons[i];
+     var tmp = lobby.ui.buttons[i];
      tmp.position = offset;
      offset.y += offsetY;
   }
@@ -218,51 +185,51 @@ function addMainMenuButton(caption,callback)
     return button;
 }
 
-function mainMenuClear()
+lobby.ui.clear = function()
 {
-  for (var i in g_lobbyButtons)
-    g_lobbyButtons[i].deleteLater();
+  for (var i in lobby.ui.buttons)
+    lobby.ui.buttons[i].deleteLater();
 
-  g_lobbyButtons = [];
+  lobby.ui.buttons = [];
 }
 
-function OnContinuePlay()
+lobby.ui.continuePlay = function()
 {
-    engine.log("OnContinuePlay");
+  engine.log("JS:lobby.ui.continuePlay");
 
-    var lastGame = engine.getOption("lastGame");
-    if(lastGame !== undefined && lastGame.length>0)
-    {
-        g_session.setOption("nextFile", lastGame);
-        g_session.setMode(4);
-    }
+  var lastGame = engine.getOption("lastGame");
+  if(lastGame !== undefined && lastGame.length>0)
+  {
+      g_session.setOption("nextFile", lastGame);
+      g_session.setMode(4);
+  }
 }
 
-function OnPlayRandomap()
+lobby.ui.newgame.playRandom = function()
 {
-    engine.log("OnPlayRandomap");
+  engine.log("JS:lobby.ui.newgame.playRandom");
 
-    g_session.setOption("nextFile", ":/missions/random.mission" );
-    g_session.setMode(3);
+  g_session.setOption("nextFile", ":/missions/random.mission" );
+  g_session.setMode(3);
 }
 
-function OnConstructorMode()
+lobby.ui.newgame.openConstructor = function()
 {
-    engine.log("OnConstructorMode");
+    engine.log("JS:lobby.ui.newgame.openConstructor");
 
     var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap", false);
     fileDialog.mayDeleteFiles = false;
     fileDialog.title = "##mainmenu_loadmap##";
     fileDialog.text = "##start_this_map##";
     fileDialog.callback = function(path) {
-               g_session.setOption("nextFile",path);
-                       g_session.setMode(2);
+                        g_session.setOption("nextFile",path);
+                        g_session.setMode(2);
                      }
 }
 
-function OnShowSaveSelectDialog()
+lobby.ui.loadgame.loadsave = function()
 {
-    engine.log("OnShowSaveSelectDialog");
+    engine.log("JS:lobby.ui.loadgame.loadsave");
 
     var fileDialog = g_ui.addFileDialog(g_session.savedir.str, "", true);
     fileDialog.mayDeleteFiles = true;
@@ -274,58 +241,58 @@ function OnShowSaveSelectDialog()
                      }
 }
 
-function OnShowMapSelectDialog()
+lobby.ui.loadgame.loadmap = function()
 {
-    engine.log("OnShowMapSelectDialog");
+    engine.log("JS:lobby.ui.loadgame.loadmap");
 
     var fileDialog = g_ui.addFileDialog(":/maps/", ".map,.sav,.omap");
     fileDialog.mayDeleteFiles = false;
     fileDialog.title = "##mainmenu_loadmap##";
     fileDialog.text = "##start_this_map##";
     fileDialog.callback = function(path) {
-                                       g_session.setOption("nextFile",path);
+                           g_session.setOption("nextFile",path);
                            g_session.setMode(1);
                      }
 }
 
-function OnShowLoadGameMenu()
+lobby.ui.loadgame.showpage = function()
 {
-    engine.log("OnShowLoadGameMenu");
+    engine.log("JS:lobby.ui.loadgame.showpage");
 
-    mainMenuClear();
+    lobby.ui.clear();
 
-    addMainMenuButton("##mainmenu_playmission##", OnShowMissionSelectDialog );
-    addMainMenuButton("##mainmenu_loadgame##",    OnShowSaveSelectDialog );
-    addMainMenuButton("##mainmenu_loadmap##",     OnShowMapSelectDialog );
-    addMainMenuButton("##cancel##",               OnShowMainMenu);
+    lobby.ui.addButton("##mainmenu_playmission##", OnShowMissionSelectDialog );
+    lobby.ui.addButton("##mainmenu_loadgame##",    function() { lobby.ui.loadgame.loadsave() })
+    lobby.ui.addButton("##mainmenu_loadmap##",     function() { lobby.ui.loadgame.loadmap() })
+    lobby.ui.addButton("##cancel##",               function() { lobby.ui.mainmenu.showpage()})
 }
 
-function OnShowGameOptionsMenu()
+lobby.ui.options.showpage = function()
 {
-    engine.log("OnShowGameOptionsMenu");
+    engine.log("JS:lobby.ui.options.showpage");
 
-    mainMenuClear();
+    lobby.ui.clear();
 
-    addMainMenuButton( "##mainmenu_language##", OnShowLanguageDialog);
-    addMainMenuButton( "##mainmenu_video##",    OnShowVideoSettings);
-    addMainMenuButton( "##mainmenu_sound##",    OnShowAudioDialog);
-    addMainMenuButton( "##mainmenu_package##",  OnShowPackageOptions );
-    addMainMenuButton( "##mainmenu_plname##",   function() { OnChangePlayerName(true); } );
-    addMainMenuButton( "##mainmenu_showlog##",  OnShowLogs);
-    addMainMenuButton( "##mainmenu_changes##",  function() { OnShowChanges(true); } );
-    addMainMenuButton( "##cancel##",            OnShowMainMenu);
+    lobby.ui.addButton( "##mainmenu_language##", function() { lobby.ui.options.showLanguageSettings()} )
+    lobby.ui.addButton( "##mainmenu_video##",    function() { sim.ui.topmenu.options.showVideoOptions()} )
+    lobby.ui.addButton( "##mainmenu_sound##",    function() { game.ui.dialogs.showAudioOptions() })
+    lobby.ui.addButton( "##mainmenu_package##",  OnShowPackageOptions );
+    lobby.ui.addButton( "##mainmenu_plname##",   function() { lobby.ui.changePlayerName(true)} )
+    lobby.ui.addButton( "##mainmenu_showlog##",  function() { lobby.ui.showLogs() } )
+    lobby.ui.addButton( "##mainmenu_changes##",  function() { lobby.ui.showChanges(true)} )
+    lobby.ui.addButton( "##cancel##",            function() { lobby.ui.mainmenu.showpage()} )
 }
 
-function OnShowAdvancedMaterials()
+lobby.ui.options.showdlc = function()
 {
-    engine.log("OnShowAdvancedMaterials");
-    mainMenuClear();
+    engine.log("JS:lobby.ui.options.showdlc");
+    lobby.ui.clear();
 
     var path = g_session.getPath(":/dlc");
     if (!path.exist())
     {
        g_ui.addInformationDialog( "##no_dlc_found_title##", "##no_dlc_found_text##" );
-       OnShowMainMenu();
+       lobby.ui.mainmenu.showpage();
        return;
     }
 
@@ -336,34 +303,34 @@ function OnShowAdvancedMaterials()
       var folderName = fullpath.baseName;
       var locText = "##mainmenu_dlc_" + folderName + "##";
 
-      addMainMenuButton(locText, function() { g_session.showDlcViewer(fullpath.str);  }	);
+      lobby.ui.addButton(locText, function() { g_session.showDlcViewer(fullpath.str);  }	);
     }
 }
 
-function OnShowMainMenu()
+lobby.ui.mainmenu.showpage = function()
 {
-  mainMenuClear();
+  lobby.ui.clear();
 
   var lastGame = engine.getOption("lastGame");
   if(lastGame && lastGame.length > 0)
-      addMainMenuButton("##mainmenu_continueplay##", OnContinuePlay);
+      lobby.ui.addButton("##mainmenu_continueplay##", function() {lobby.ui.continuePlay()})
 
-  addMainMenuButton("##mainmenu_newgame##", OnShowNewGameMenu);
-  addMainMenuButton("##mainmenu_load##",    OnShowLoadGameMenu);
-  addMainMenuButton("##mainmenu_options##", OnShowGameOptionsMenu);
-  addMainMenuButton("##mainmenu_credits##", OnShowGameCredits);
+  lobby.ui.addButton("##mainmenu_newgame##", function() { lobby.ui.newgame.showpage() } )
+  lobby.ui.addButton("##mainmenu_load##",    function() { lobby.ui.loadgame.showpage() } )
+  lobby.ui.addButton("##mainmenu_options##", function() { lobby.ui.options.showpage() } )
+  lobby.ui.addButton("##mainmenu_credits##", function() { lobby.ui.showGameCredits() } )
 
   var dlc = g_session.getPath(":/dlc");
   if (dlc.exist())
-     addMainMenuButton("##mainmenu_mcmxcviii##", OnShowAdvancedMaterials);
+     lobby.ui.addButton("##mainmenu_mcmxcviii##", function() { lobby.ui.options.showdlc() } )
 
-  addMainMenuButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
+  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
 }
 
 function OnLobbyStart()
 {
   engine.log( "JS:OnLobbyStart" );
-  g_lobbyButtons = [];
+  lobby.ui.clear();
 
   var screen = g_session.resolution;
 
@@ -400,11 +367,11 @@ function OnLobbyStart()
 
   g_session.playAudio( "main_menu", 50, "theme" );
 
-  OnShowMainMenu();
-  OnShowChanges(false);
+  lobby.ui.mainmenu.showpage();
+  lobby.ui.showChanges(false);
 }
 
-function OnShowGameCredits()
+lobby.ui.showGameCredits = function()
 {
   g_session.playAudio( "combat_long", 50, "theme" );
 
