@@ -24,6 +24,7 @@
 #include <GameLogger>
 #include <GameScene>
 #include <GameCore>
+#include <GameGfx>
 #include <GameCity>
 
 #include "sound/engine.hpp"
@@ -208,13 +209,24 @@ void engineSetDrawsflag(js_State *J)
 {
   const std::string name = js_tostring(J,1);
   int value = js_tointeger(J,2);
-  citylayer::DrawOptions::takeFlag(name,value);
+
+  if (name == "batching")
+    gfx::Engine::instance().setFlag( gfx::Engine::batching, value );
+  else
+    citylayer::DrawOptions::takeFlag(name,value);
 }
 
 void engineGetDrawsflag(js_State *J)
 {
   const std::string name = js_tostring(J,1);
-  js_pushboolean(J,citylayer::DrawOptions::getFlag(name));
+  int value = 0;
+
+  if (name == "batching")
+    value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+  else
+    value = citylayer::DrawOptions::getFlag(name)?1:0;
+
+  js_pushnumber(J,value);
 }
 
 void engineSetVolume(js_State *J)

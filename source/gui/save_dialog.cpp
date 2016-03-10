@@ -72,7 +72,7 @@ void SaveGame::Impl::findFiles()
   if( lbxSaves )
   {
     lbxSaves->clear();
-    lbxSaves->addItems(names);
+    lbxSaves->addLines(names);
   }
 }
 

@@ -120,7 +120,7 @@ void LoadFile::_fillFiles()
 
   std::sort( names.begin(), names.end() );
 
-  _d->lbxFiles->addItems( names );
+  _d->lbxFiles->addLines( names );
 }
 
 void LoadFile::_resolveItemSelected(const ListBoxItem& item)

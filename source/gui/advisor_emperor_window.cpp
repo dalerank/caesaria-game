@@ -127,8 +127,8 @@ public:
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( Font::create( FONT_1 ) );
+    listbox.setItemsHeight( 16 );
 
     for( auto it=history.rbegin(); it != history.rend(); ++it )
     {
@@ -216,8 +216,8 @@ public:
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( Font::create( FONT_1 ) );
+    listbox.setItemsHeight( 16 );
 
     for( auto it=history.rbegin(); it != history.rend(); ++it )
     {

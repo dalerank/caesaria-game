@@ -99,6 +99,7 @@ Object.defineProperty( ListBox.prototype, "selectedIndex", { set: function(index
 Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(obj) { this.setSelectedWithData(obj.name,obj.data); }} );
 Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount(); }} );
 Object.defineProperty( ListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} );
+Object.defineProperty( ListBox.prototype, "onDblclickCallback", { set: function(func) { this.onIndexSelectedAgainEx(func); }} )
 
 Object.defineProperty( ListBox.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( ListBox.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
@@ -184,8 +185,8 @@ function FileSelector(parent) { this.widget = new FileListBox(parent); }
 Object.defineProperty( FileListBox.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( FileListBox.prototype, "background", {set: function (enabled) { this.setDrawBackground(enabled); }} )
 Object.defineProperty( FileListBox.prototype, "selectedIndex", {set:function (index) { this.setSelected(index); }} )
-Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemHeight(h); }} )
-Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addItems(paths); }} )
+Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h); }} )
+Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
 Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "count", {set: function () { return this.itemsCount(); }} )
 Object.defineProperty( FileListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} )
@@ -201,7 +202,7 @@ function FileDialog(parent,advanced) {
     if (advanced)
       this.widget = new LoadGame(parent);
     else
-      this.widget = new LoadFile(parent);
+      this.widget = new LoadFboxile(parent);
 }
 
 Object.defineProperty( FileDialog.prototype, "title", { set: function (str) { this.setTitle( _t(str) ); }} )

@@ -117,6 +117,7 @@ void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 
   if( _d->textPic.isValid() )
   {
+    _d->textPic.fill(ColorList::clear);
     f.draw( _d->textPic, _d->text, p );
   }
 }

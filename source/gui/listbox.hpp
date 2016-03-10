@@ -124,10 +124,13 @@ public:
   virtual void setItemDefaultColor(const std::string& typeName, const std::string& colorName );
 
   //!
-  virtual void setItemFont( Font font );
+  virtual void setItemsFont(Font font);
+
+  //!
+  virtual void setItemTooltip(unsigned int index, const std::string& text);
 
   //! set the item at the given index
-  virtual void setItem( unsigned int index, std::string text);
+  virtual void setItemText(unsigned int index,const std::string& text);
 
   //!
   virtual void setItemData(unsigned int index, const std::string& name, Variant tag);
@@ -143,10 +146,10 @@ public:
   virtual void swapItems(unsigned int index1, unsigned int index2);
 
   //! set global itemHeight
-  virtual void setItemHeight(int height);
+  virtual void setItemsHeight(int height);
 
   //!
-  virtual int itemHeight() const;
+  virtual int itemsHeight() const;
 
   //!
   virtual void setItemAlignment(int index, Alignment horizontal, Alignment vertical);
@@ -171,7 +174,7 @@ public:
   virtual void fitText(const std::string& text);
 
   //!
-  virtual void addItems(const StringArray& strings);
+  virtual void addLines(const StringArray& strings);
 
   //!
   virtual Font font() const;
@@ -180,21 +183,23 @@ public:
   virtual int selected();
 
   //!
-  virtual void beforeDraw( gfx::Engine& painter );
+  virtual void beforeDraw(gfx::Engine& painter);
 
   //!
   virtual void refresh();
 
   //!
-  virtual void setItemTextOffset(Point p);
+  virtual void setItemsTextOffset(Point p);
 
   //!
   virtual void setupUI(const VariantMap &ui);
 
 signals public:
   Signal1<const ListBoxItem&>& onItemSelectedAgain();
-  Signal2<Widget*,int>& onIndexSelectedEx();
   Signal1<const ListBoxItem&>& onItemSelected();
+
+  Signal2<Widget*,int>& onIndexSelectedEx();
+  Signal2<Widget*,int>& onIndexSelectedAgainEx();
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar

@@ -67,21 +67,21 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   {
     _muter.activate( 5 );
     _speechDel.assign( speech );
-    events::dispatch<PlaySound>( speech, 100, audio::speech );
+    events::dispatch<PlaySound>(speech, 100, audio::speech);
   }
 
   const std::string imgSeparator = "@img=";
-  for( const auto& text : items )
+  for (const auto& text : items)
   {
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbxHelp->addItem( pic );
-      item.setTextAlignment( align::center, align::upperLeft );
-      int lineCount = pic.height() / lbxHelp->itemHeight();
+      item.setTextAlignment(align::center, align::upperLeft);
+      int lineCount = pic.height() / lbxHelp->itemsHeight();
       StringArray lines;
-      lines.resize( lineCount );
-      lbxHelp->addItems( lines );
+      lines.resize(lineCount);
+      lbxHelp->addLines(lines);
     }
     else
     {

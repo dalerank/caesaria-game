@@ -163,10 +163,10 @@ void MissionTargets::setCity(PlayerCityPtr city)
         Picture pic( text.substr( 5 ) );
         ListBoxItem& item = _d->lbxHelp->addItem( pic );
         item.setTextAlignment( align::center, align::upperLeft );
-        int lineCount = pic.height() / _d->lbxHelp->itemHeight();
+        int lineCount = pic.height() / _d->lbxHelp->itemsHeight();
         StringArray lines;
         lines.resize( lineCount );
-        _d->lbxHelp->addItems( lines );
+        _d->lbxHelp->addLines( lines );
       }
       else { _d->lbxHelp->fitText( _( text ) ); }
     }
