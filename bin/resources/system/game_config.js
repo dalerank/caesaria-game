@@ -27,7 +27,7 @@ var game = {}
 game.ui = {}
 game.ui.dialogs = {}
 
-/********************** namespace **********************************/
+/********************** namespace level **********************************/
 var sim = {}
 sim.ui = {}
 sim.ui.topmenu = {}
@@ -37,7 +37,7 @@ sim.ui.topmenu.debug = {}
 sim.ui.topmenu.advisors = {}
 sim.ui.topmenu.options = {}
 
-/********************** namespace **********************************/
+/********************** namespace lobby **********************************/
 var lobby = {}
 lobby.ui = {}
 lobby.ui.newgame = {}

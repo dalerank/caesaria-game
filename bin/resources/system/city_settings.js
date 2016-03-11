@@ -1,38 +1,28 @@
-var _format = function() {
-    var formatted = arguments[0];
-    for (var arg in arguments) {
-				if(arg==0)
-					continue;
-        formatted = formatted.replace("{" + (arg-1) + "}", arguments[arg]);
-    }
-    return formatted;
-};
-
 var ctsettings = {
     getop : function(obj) {
       engine.log("get" + obj.group + " " + obj.flag);
       switch(obj.group) {
-			case "city": return g_session.getCityflag(obj.flag);
-		    case "game": return engine.getOption(obj.flag);
-			case "game": return g_session.getGameflag(obj.flag);
-			case "build": return g_session.getBuildflag(obj.flag);
+            case "city": return g_session.getCityflag(obj.flag);
+            case "game": return engine.getOption(obj.flag);
+            case "game": return g_session.getGameflag(obj.flag);
+            case "build": return g_session.getBuildflag(obj.flag);
             case "gui": return this.getguiv(obj.flag);
             case "risks": return g_session.getCityflag(obj.flag);
-			}
+            }
       return 0;
     },
 
     setop : function(obj,value) {
         engine.log("set " + obj.group + " " + obj.flag);
         switch(obj.group) {
-				case "city":  g_session.setCityflag(obj.flag, value); break;
+                case "city":  g_session.setCityflag(obj.flag, value); break;
                 case "game":  engine.setOption(obj.flag, value); break;
-				case "game":  engine.setGameflag(obj.flag, value); break;
-				case "build": g_session.setBuildflag(obj.flag, value); break;
-				case "gui":   this.setguiv(obj.flag); break;
-				case "risks": g_session.setCityflag(obj.flag,value); break;
-			}
-    }, 
+                case "game":  engine.setGameflag(obj.flag, value); break;
+                case "build": g_session.setBuildflag(obj.flag, value); break;
+                case "gui":   this.setguiv(obj.flag); break;
+                case "risks": g_session.setCityflag(obj.flag,value); break;
+            }
+    },
 
     getguiv : function(name)
     {
@@ -65,7 +55,7 @@ var ctsettings = {
 
     next : function(obj) {
         var value = {}
-        if(obj.group==="risks") 
+        if(obj.group==="risks")
         {
             value =  g_session.getCityflag(obj.flag)
             value += 10;
@@ -73,26 +63,26 @@ var ctsettings = {
                value=0;
         }
         else if(obj.group==="gui")
-		{
+        {
             return obj.value ? 0 : 1;
-		}
-		else
+        }
+        else
         {
             value = this.getop(obj)
             value += 1;
-            if (value>=obj.states.length) 
-                value = 0;            
+            if (value>=obj.states.length)
+                value = 0;
         }
-				
-		return value;
+
+        return value;
     },
 
     text : function(obj) {
         var value = {};
         if (obj.group === "risks") {
             value = g_session.getCityflag(obj.flag);
-			var lb = _t("##"+obj.base+"##");
-			return _format("{0} {1} %", lb, value);
+            var lb = _t("##"+obj.base+"##");
+            return _format("{0} {1} %", lb, value);
         }
         else if (obj.group === "gui") {
             var value = this.getguiv(obj.flag);
@@ -111,10 +101,10 @@ var ctsettings = {
         {
             return "";
         }
-		else if(obj.group==="gui")
-		{
-    		return "";
-		} 
+        else if(obj.group==="gui")
+        {
+            return "";
+        }
         else
         {
             var value = this.getop(obj)
@@ -123,7 +113,7 @@ var ctsettings = {
     }
 }
 
-sim.ui.topmenu.options.showCitySettings = function() 
+sim.ui.topmenu.options.showCitySettings = function()
 {
     var items = [ 	 {base:"city_opts_god", 		states : [ "off", "on" ],   group : "city", flag:"godEnabled"},
              {base:"city_warnings", 		states : [ "off", "on" ],   group : "city", flag:"warningsEnabled" },
@@ -158,12 +148,12 @@ sim.ui.topmenu.options.showCitySettings = function()
              {base:"city_batching",         states : [ "off", "on" ],   group : "game", flag:"batching" },
              {base:"city_lockinfo", states: ["off", "on"], group: "game", flag: "lockwindow" },
              {base:"city_roadblock",        states : [ "off", "on" ],   group : "build", flag: "roadBlock" },
-			 {base:"city_debug", states: ["off", "on"], group: "gui", flag: "debug_menu" },
+             {base:"city_debug", states: ["off", "on"], group: "gui", flag: "debug_menu" },
              {base:"city_metric", states: ["quantity", "kilogram", "modius"], group : "game", flag: "metric" }
     ]
 
     var w = g_ui.addWindow(0, 0, 480, 540);
-    w.closeAfterKey( {escape:true,rmb:true} ) 
+    w.closeAfterKey( {escape:true,rmb:true} )
     w.title = "##city_options##";
 
     var lbHelp = w.addLabel(15,w.h-40,w.w-80,20);
@@ -208,7 +198,7 @@ sim.ui.topmenu.options.showSpeedOptions = function()
 {
     var w = g_ui.addWindow(0, 0, 350, 225);
     w.title = "##game_speed_options##";
-      
+
     var wasChanged = false;
     var saveGameSpeed = g_session.getAdvflag("gameSpeed")
     var saveScroolSpeed = g_session.getAdvflag("scrollSpeed")
@@ -225,7 +215,7 @@ sim.ui.topmenu.options.showSpeedOptions = function()
         wasChanged = true;
         g_session.setAdvflag("gameSpeed", value)
     }
-     
+
     var spnScrollSpeed = w.addSpinbox(28, 60, w.w-28*2, 24);
     spnScrollSpeed.text = "##gmspdwnd_scroll_speed##";
     spnScrollSpeed.postfix = " %";
@@ -234,7 +224,7 @@ sim.ui.topmenu.options.showSpeedOptions = function()
     spnScrollSpeed.font = "FONT_2";
     spnScrollSpeed.textAlign = { h: "center", v: "center" };
     spnScrollSpeed.callback = function (value) {
-        wasChanged = true;        
+        wasChanged = true;
         g_session.setAdvflag("scrollSpeed",value)
     }
 
@@ -248,9 +238,9 @@ sim.ui.topmenu.options.showSpeedOptions = function()
     spnAutpsaveInterval.callback = function (value) {
         wasChanged = true;
         engine.setOption("autosaveInterval", value)
-    }      
-    
-   
+    }
+
+
     var btnOk = wnd.addButton(w.w*0.25, w.h-60, w.w*0.5,  22);
     btnOk.style = "smallGrayBorderLine";
     btnOk.text = "##ok##";

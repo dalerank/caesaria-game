@@ -1,5 +1,3 @@
-function _t(text) { return engine.translate(text); }
-
 //****************************** widget class *************************************//
 Object.defineProperty(Widget.prototype, "text", { set: function (str) { this.setText(_t(str)); } })
 Object.defineProperty(Widget.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); } })
@@ -16,19 +14,21 @@ Object.defineProperty( Widget.prototype, "h", { get: function() { return this.he
 //************************** widget class end ************************************//
 
 //****************************** Label class *************************************//
-Object.defineProperty( Label.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ); }} );
-Object.defineProperty( Label.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
-Object.defineProperty( Label.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
-Object.defineProperty( Label.prototype, "font", { set: function(fname) { this.setFont(fname); }} );
-Object.defineProperty( Label.prototype, "enabled", { set: function(e) { this.setEnabled(e); }} );
-Object.defineProperty( Label.prototype, "textAlign", { set: function(align) { this.setTextAlignment(align.h,align.v); }} );
-Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)); }} );
-Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value); }} );
-Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str); }} );
-Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color); }});
+Object.defineProperty( Label.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ) }} )
+Object.defineProperty( Label.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h) }} )
+Object.defineProperty( Label.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y) }} )
+Object.defineProperty( Label.prototype, "font", { set: function(fname) { this.setFont(fname) }} )
+Object.defineProperty( Label.prototype, "enabled", { set: function(e) { this.setEnabled(e) }} )
+Object.defineProperty( Label.prototype, "style", { set: function(s) { this.setBackgroundStyle(s) }} )
+Object.defineProperty( Label.prototype, "textAlign", { set: function(align) { this.setTextAlignment(align.h,align.v) }} )
+Object.defineProperty( Label.prototype, "textOffset", { set: function(p) { this.setTextOffset(p.x,p.y) }} )
+Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)) }} )
+Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )
+Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str) }} )
+Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 
-Object.defineProperty( Label.prototype, "w", { get: function() { return this.width(); }} );
-Object.defineProperty( Label.prototype, "h", { get: function() { return this.height(); }} );
+Object.defineProperty( Label.prototype, "w", { get: function() { return this.width() }} )
+Object.defineProperty( Label.prototype, "h", { get: function() { return this.height() }} )
 /************************************* label class end ******************************/
 
 //*************************** button class ***************************************/
@@ -202,16 +202,16 @@ function FileDialog(parent,advanced) {
     if (advanced)
       this.widget = new LoadGame(parent);
     else
-      this.widget = new LoadFboxile(parent);
+      this.widget = new LoadFile(parent);
 }
 
-Object.defineProperty( FileDialog.prototype, "title", { set: function (str) { this.setTitle( _t(str) ); }} )
-Object.defineProperty( FileDialog.prototype, "showExtensions", { set: function (en) { this.setShowExtensions(en); }} )
-Object.defineProperty( FileDialog.prototype, "text", { set: function (str) { this.setText( _t(str) ); }} )
-Object.defineProperty( FileDialog.prototype, "directory", { set: function (path) { this.setDirectory(path); }} )
-Object.defineProperty( FileDialog.prototype, "filter", {set: function (str) { this.setFilter(str); }} )
-Object.defineProperty( FileDialog.prototype, "mayDeleteFiles", { set: function (en) { this.setMayDelete(en); }} )
-Object.defineProperty( FileDialog.prototype, "callback", {set: function (func) { this.onSelectFileEx(func); }} )
+Object.defineProperty( FileDialog.prototype, "title", { set: function (str) { this.widget.setTitle( _t(str) ); }} )
+Object.defineProperty( FileDialog.prototype, "showExtensions", { set: function (en) { this.widget.setShowExtensions(en); }} )
+Object.defineProperty( FileDialog.prototype, "text", { set: function (str) { this.widget.setText( _t(str) ); }} )
+Object.defineProperty( FileDialog.prototype, "directory", { set: function (path) { this.widget.setDirectory(path); }} )
+Object.defineProperty( FileDialog.prototype, "filter", {set: function (str) { this.widget.setFilter(str); }} )
+Object.defineProperty( FileDialog.prototype, "mayDeleteFiles", { set: function (en) { this.widget.setMayDelete(en); }} )
+Object.defineProperty( FileDialog.prototype, "callback", {set: function (func) { this.widget.onSelectFileEx(func); }} )
 //*************************** FileDialog class end ***************************************//
 
 //*************************** ContextMenu class begin ***************************************//
@@ -233,6 +233,18 @@ ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
 }
 //*************************** ContextMenuItem class end ***************************************//
 
+//*************************** Groupbox class begin ***************************************//
+function Groupbox() { return new GroupBox() }
+
+Object.defineProperty( GroupBox.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
+
+GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
+    var label = new Label(this);
+    label.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return label;
+  }
+//*************************** Groupbox class end ***************************************//
+
 //*************************** Window class begin ***************************************//
 Object.defineProperty( Window.prototype, "title", { set: function (str) { this.setText( _t(str) ); }} );
 Object.defineProperty( Window.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
@@ -253,6 +265,12 @@ Window.prototype.addLabel = function(rx,ry,rw,rh) {
     var label = new Label(this);
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
     return label;
+  }
+
+Window.prototype.addGroupbox = function(rx,ry,rw,rh) {
+    var gbox = new Groupbox(this);
+    gbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+    return gbox;
   }
 
 Window.prototype.addSpinbox = function(rx,ry,rw,rh) {

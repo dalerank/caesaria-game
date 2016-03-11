@@ -42,7 +42,7 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
 
   if (ret)
   {
-    ret->setBackgroundMode(Label::bgNone);
+    ret->setBackgroundStyle(Label::bgNone);
     ret->setFlag(ContextMenuItem::drawSubmenuSprite, false);
     ret->setSubmenuIconVisible(false);
   }
