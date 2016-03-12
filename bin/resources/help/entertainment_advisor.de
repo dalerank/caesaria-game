@@ -1,0 +1,9 @@
+{  
+ title : "##entertainment_advisor##"
+ sound : "fanfare"
+ text  : "Diese Tafel listet alle funktionierenden Theater, Amphiteater, Kolossen und Hippodrome Ihrer Stadt auf. Die Anzahl der Menschen, die in diesen Einrichtungen Platz finden, und die allgemeine Versorgung in der Stadt ist ebenfalls dort festgehalten. Wenn ein funktionierender Unterhaltungsbetrieb keine Vorstellung bietet (oder weniger als er eigentlich könnte), benötigt er weitere Darsteller. Sie sollten daher eine neue Künstlerkolonie, eine Gladiatorenschule, ein Löwenhaus oder eine Wagenlenkerschule errichten. Jedes Amphitheater und Kolosseum kann zwei Darstellungen gleichzeitig aufführen. Es müsste also doppelt so viele Attraktionen wie Unterhaltungseinrichtungen geben, wenn diese mit voller Kapazität arbeiten. Prüfen Sie anhabnd der @Spezialkarte Unterhaltung&, welche Stelle für den Bau einer neuen Unterhaltungseinrichtung am besten geeignet ist. Klicken Sie @hier&, um mehr über das Konzept der Unterhaltung bei CaesarIA zu erfahren.\n\nBenutzen Sie diese Tafel, wenn Sie ein Fest arrangieren möchten. Die Bürger wünschen, das Sie mindestens ein Fest pro Jahr ausrichten. Mehr als zwei Feste pro Jahr bringen jedoch nicht mehr Nutzen, und das zweite Fest innerhalb eines Jahres ist weniger effektiv als das erste. Wählen Sie den Gott aus, den Sie damit ehren möchten, und widmen Sie ihm ein kleines, ein großes der ein gewaltiges Fest. Wenn Sie ein gewaltiges Fest abhalten möchten, muss in Ihren Lagerhäusern genügend Wein für alle Bürger vorhanden sein. Je größer Ihr Fest ist, desto länger dauern die Vorbereitungen und desto teuerer wird es sein - jedoch ist auch der Nutzen, den Sie daraus ziehen können, dementsprechend größer."
+ uri : {
+  "Spezialkarte Unterhaltung" : "Spezialkartenauswahl??"
+  "hier" : "entertainment"
+ }
+}

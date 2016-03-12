@@ -1,0 +1,9 @@
+{  
+ title : "##hospital##"
+ sound : "fanfare"
+ text  : "Nur die hochentwickelten Häuser benötigten individuellen Zugang zu Krankenhäusern. In Krankheits- und Seuchenzeiten braucht jedoch die Stadt als Ganzes eine bestimmte Anzahl Krankenbetten.\nIhr @Gesundheitsberater& weiß genau, wie viele Bürger von den Krankenhäusern Ihrer Stadt versorgt werden können. Wenn Krankheiten oder Seuchen ausbrechen, werden nur die Bürger gesund, denen Betten in Krankenhäusern zur Verfügung stehen. Diejenigen, die nicht in einem Krankenhaus untergebracht werden können, sterben. Krankenhäuser verlieren etwas von ihrer Wirksamkeit, wenn sie nicht die volle Belegschaft haben. Klicken Sie das Krankenhaus rechts an, um zu erfahren, wie viele Menschen dort beschäftigt sind.\n\nKlicken Sie @hier&, wenn Sie mehr über die über die Geschichte der Krankenhäuser im römischen Imperium erfahren möchten."
+ uri : {
+  "Gesundheitsberater" : "health_advisor"
+  "hier" : "hospital_history"
+ }
+}
