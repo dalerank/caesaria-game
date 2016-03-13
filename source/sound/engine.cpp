@@ -399,7 +399,7 @@ void Engine::_updateSamplesVolume()
 }
 
 void Helper::initTalksArchive(const vfs::Path& filename)
-{ 
+{
   static Path saveFilename;
 
   FileSystem::instance().unmountArchive( saveFilename );
@@ -495,34 +495,6 @@ void  Engine::Impl::resetIfalias(std::string& sampleName)
   Aliases::iterator it = aliases.find( Hash( sampleName ) );
   if( it != aliases.end() )
     sampleName = it->second;
-}
-
-void Muter::activate(int value)
-{
-  Engine& ae = Engine::instance();
-  _states[ ambient ] = ae.volume( ambient );
-  _states[ theme ] = ae.volume( theme );
-
-  ae.setVolume( audio::ambient, value );
-  ae.setVolume( audio::theme, value );
-}
-
-Muter::~Muter()
-{
-  Engine& ae = Engine::instance();
-  for( auto& it : _states )
-    ae.setVolume( it.first, it.second );
-}
-
-SampleDeleter::~SampleDeleter()
-{
-  if( !_sample.empty() )
-    Engine::instance().stop( _sample );
-}
-
-void SampleDeleter::assign(const std::string& sampleName)
-{
-  _sample = sampleName;
 }
 
 }//end namespace audio

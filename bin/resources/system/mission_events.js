@@ -1,17 +1,17 @@
 function OnMissionLose()
 {
    var window = g_ui.addWindow(0, 0, 400, 220);
-	 window.title = "##mission_failed##";
+     window.title = "##mission_failed##";
    //window.titleFont = "FONT_6";
 
    var btnRestart = window.addButton(20, 120, 360, 24);
-	 btnRestart.text = "##restart_mission##";
+     btnRestart.text = "##restart_mission##";
    btnRestart.tooltip = _t("##restart_mission_tip##");
-	 btnRestart.callback = function() { g_session.setMode(g_config.level.res_restart) }
-   
-	 var btnMenu = window.addButton>(20, 150, 360, 24);
-	 btnMenu.text = "##exit_to_main_menu##";
-	 btnMenu.callback = function() { g_session.setMode(g_config.level.res_menu) }
+     btnRestart.callback = function() { g_session.setMode(g_config.level.res_restart) }
+
+     var btnMenu = window.addButton>(20, 150, 360, 24);
+     btnMenu.text = "##exit_to_main_menu##";
+     btnMenu.callback = function() { g_session.setMode(g_config.level.res_menu) }
 
    window.moveToCenter();
    window.setModal();
@@ -20,10 +20,10 @@ function OnMissionLose()
 function OnMissionWin()
 {
   var minfo = g_session.winConditions();
-	var newTitle = minfo.title;
-	var winText  = minfo.winText;
-	var winSpeech = minfo.winSound;
-	var mayContinue = minfo.winContinue;
+  var newTitle = minfo.title;
+  var winText  = minfo.winText;
+  var winSpeech = minfo.winSound;
+  var mayContinue = minfo.winContinue;
 
   engine.log( "JS:OnMissionWin" );
 

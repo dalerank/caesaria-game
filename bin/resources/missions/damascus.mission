@@ -4,16 +4,16 @@
   funds : 18000
   city.name : "Damascus"
   player.rank : 2
-  date : "50.01.01"  
+  date : "50.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : "desert"
   preview.text : "##damascus_preview_mission##"
   preview.title : "##damascus_preview_title##"
   preview.image : ""
-  
+
   win : {
-		population : 6000
+    population : 6000
     name : "n2_damascus"
     culture : 55
     prosperity : 55
@@ -25,13 +25,13 @@
     maxHouseLevel : "big_villa"
     caption : "##damascus_title##"
     overview :  [ "##damascus_overview##" ]
-	  sound.overview : "damascus_speech"
+    startSound : "damascus_speech"
     winContinue : false
     winSound      : "damascus_win_speech"
     winText : "##damascus_win_text##"
   }
 
-	empire : {
+  empire : {
     enabled : true
     maxBarbariansGroups : 0
 
@@ -45,25 +45,25 @@
         nation : "roman"
         available : true
       }
-     
+
       Hierosolyma : {
         sells : { wheat : 40, olive : 25, furniture : 25 }
         buys : { wine : 15 }
         land : true
         sea : true
         nation : "roman"
-				available : true
+        available : true
       }
     }
   }
 
-	events :
+  events :
   {
     clay_price_rising#trading_options : {
       date : "62.08.01"
       goods : {
         clay : { relative : true, buy : 15, sell : 15 }
-	    }
+      }
 
       exec : {
         message#messagebox : {
@@ -75,11 +75,11 @@
       }
     }
 
-		pottery_price_rising#trading_options : {
+    pottery_price_rising#trading_options : {
       date : "62.09.01"
       goods : {
         pottery : { relative : true, buy : 40, sell : 40 }
-	    }
+      }
 
       exec : {
         message#messagebox : {
@@ -91,7 +91,7 @@
       }
     }
 
-	  wheat_price_rising#trading_options : {
+    wheat_price_rising#trading_options : {
       date : "68.04.01"
       goods : {
         pottery : { realtive: true, buy : 8, sell : 8 }
@@ -161,7 +161,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_6#city_request : {
+    emperor_request_6#city_request : {
       date : "73.02.01"
       reqtype : "good_request"
       month : 12
@@ -169,8 +169,8 @@
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 24 }
     }
-		
-		emperor_request_7#city_request : {
+
+    emperor_request_7#city_request : {
       date : "78.02.01"
       reqtype : "good_request"
       month : 12
@@ -179,7 +179,7 @@
       fail : { favour : -10, appendMonth : 60 }
     }
 
-		emperor_request_8#city_request : {
+    emperor_request_8#city_request : {
       date : "83.02.01"
       reqtype : "good_request"
       month : 12
@@ -188,7 +188,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_9#city_request : {
+    emperor_request_9#city_request : {
       date : "88.02.01"
       reqtype : "good_request"
       month : 12
@@ -197,7 +197,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_10#city_request : {
+    emperor_request_10#city_request : {
       date : "93.02.01"
       reqtype : "good_request"
       month : 12
@@ -206,7 +206,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_11#city_request : {
+    emperor_request_11#city_request : {
       date : "98.02.01"
       reqtype : "good_request"
       month : 12
@@ -215,7 +215,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_12#city_request : {
+    emperor_request_12#city_request : {
       date : "103.02.01"
       reqtype : "good_request"
       month : 12
@@ -224,7 +224,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_11#city_request : {
+    emperor_request_11#city_request : {
       date : "108.02.01"
       reqtype : "good_request"
       month : 12
@@ -233,7 +233,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		barbarian_invasion_1#enemy_attack : {
+    barbarian_invasion_1#enemy_attack : {
       date : "54.5.01"
       type : "enemy_attack"
       target : "random"
@@ -260,7 +260,7 @@
       }
     }
 
-		barbarian_invasion_2#enemy_attack : {
+    barbarian_invasion_2#enemy_attack : {
       date : "55.5.01"
       type : "enemy_attack"
       target : "random"
@@ -287,7 +287,7 @@
       }
     }
 
-		barbarian_invasion_3#enemy_attack : {
+    barbarian_invasion_3#enemy_attack : {
       date : "57.5.01"
       type : "enemy_attack"
       target : "food"
@@ -314,7 +314,7 @@
       }
     }
 
-		barbarian_invasion_4#enemy_attack : {
+    barbarian_invasion_4#enemy_attack : {
       date : "59.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -341,7 +341,7 @@
       }
     }
 
-		barbarian_invasion_5#enemy_attack : {
+    barbarian_invasion_5#enemy_attack : {
       date : "61.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -368,7 +368,7 @@
       }
     }
 
-		barbarian_invasion_6#enemy_attack : {
+    barbarian_invasion_6#enemy_attack : {
       date : "64.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -395,7 +395,7 @@
       }
     }
 
-		barbarian_invasion_7#enemy_attack : {
+    barbarian_invasion_7#enemy_attack : {
       date : "67.5.01"
       type : "enemy_attack"
       target : "random"
@@ -422,7 +422,7 @@
       }
     }
 
-		barbarian_invasion_8#enemy_attack : {
+    barbarian_invasion_8#enemy_attack : {
       date : "70.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -449,7 +449,7 @@
       }
     }
 
-		barbarian_invasion_9#enemy_attack : {
+    barbarian_invasion_9#enemy_attack : {
       date : "71.5.01"
       type : "enemy_attack"
       target : "random"
@@ -476,7 +476,7 @@
       }
     }
 
-		barbarian_invasion_10#enemy_attack : {
+    barbarian_invasion_10#enemy_attack : {
       date : "75.5.01"
       type : "enemy_attack"
       target : "senate"
@@ -503,7 +503,7 @@
       }
     }
 
-		barbarian_invasion_11#enemy_attack : {
+    barbarian_invasion_11#enemy_attack : {
       date : "80.5.01"
       type : "enemy_attack"
       target : "random"
@@ -530,7 +530,7 @@
       }
     }
 
-		barbarian_invasion_12#enemy_attack : {
+    barbarian_invasion_12#enemy_attack : {
       date : "85.5.01"
       type : "enemy_attack"
       target : "food"
@@ -557,7 +557,7 @@
       }
     }
 
-		barbarian_invasion_13#enemy_attack : {
+    barbarian_invasion_13#enemy_attack : {
       date : "90.5.01"
       type : "enemy_attack"
       target : "random"
@@ -584,7 +584,7 @@
       }
     }
 
-		barbarian_invasion_14#enemy_attack : {
+    barbarian_invasion_14#enemy_attack : {
       date : "95.5.01"
       type : "enemy_attack"
       target : "random"
@@ -611,7 +611,7 @@
       }
     }
 
-		barbarian_invasion_15#enemy_attack : {
+    barbarian_invasion_15#enemy_attack : {
       date : "100.01.01"
       type : "enemy_attack"
       target : "random"
@@ -638,7 +638,7 @@
       }
     }
 
-		barbarian_invasion_15#enemy_attack : {
+    barbarian_invasion_15#enemy_attack : {
       date : "105.01.01"
       type : "enemy_attack"
       target : "random"
@@ -665,7 +665,7 @@
       }
     }
 
-		barbarian_invasion_15#enemy_attack : {
+    barbarian_invasion_15#enemy_attack : {
       date : "110.01.01"
       type : "enemy_attack"
       target : "random"
@@ -694,7 +694,7 @@
 
 
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -709,9 +709,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       plaza : true
       garden : true
@@ -729,23 +729,23 @@
       small_mercury_temple : true
       market : true
       roadBlock : true
-			fort_legionaries : true
+      fort_legionaries : true
       fort_javelin : true
       fort_horse : true
       military_academy : true
       barracks : true
 
-			iron_mine : true
+      iron_mine : true
       wine_workshop : true
       oil_workshop : true
       lumber_mill : true
       pottery_workshop : true
-			weapons_workshop : true
+      weapons_workshop : true
       furniture_workshop : true
       granery : true
       warehouse : true
 
-			vinard : true
+      vinard : true
       fig_farm : true
       meat_farm : true
       fruit_farm : true

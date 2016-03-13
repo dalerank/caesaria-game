@@ -13,3 +13,4 @@
 #include "events/script_event.hpp"
 #include "events/dispatcher.hpp"
 #include "events/movecamera.hpp"
+#include "events/script_event.hpp"

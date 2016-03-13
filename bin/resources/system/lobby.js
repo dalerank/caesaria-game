@@ -365,7 +365,7 @@ function OnLobbyStart()
   btnTranslationPage.callback = function() { g_session.openUrl( "https://docs.google.com/spreadsheets/d/1vpV9B6GLUX5G5z3ftucBFl7pXr-I0QvHPI9vW6K4xlY" ); }
   btnTranslationPage.tooltip = "Help with translation!";
 
-  g_session.playAudio( "main_menu", 50, "theme" );
+  g_session.playAudio( "main_menu", 50, g_config.audio.theme );
 
   lobby.ui.mainmenu.showpage();
   lobby.ui.showChanges(false);
@@ -373,7 +373,7 @@ function OnLobbyStart()
 
 lobby.ui.showGameCredits = function()
 {
-  g_session.playAudio( "combat_long", 50, "theme" );
+  g_session.playAudio( "combat_long", 50, g_config.audio.theme );
 
   var fade = g_ui.addFade(0xA0);
   fade.addCloseCode(0x1B); //escape
@@ -400,6 +400,6 @@ lobby.ui.showGameCredits = function()
   btnExit.text = "##close##";
   btnExit.callback = function() {
                                   fade.deleteLater();
-                                  g_session.playAudio( "main_menu", 50, "theme" );
+                                  g_session.playAudio( "main_menu", 50, g_config.audio.theme );
                                 }
 }

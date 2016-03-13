@@ -155,7 +155,7 @@ public:
   virtual void setItemAlignment(int index, Alignment horizontal, Alignment vertical);
 
   //! Sets whether to draw the background
-  virtual void setDrawBackground(bool draw);
+  virtual void setBackgroundVisible(bool draw);
 
   //! adds an list item with an icon
   //! \param text Text of list entry
@@ -178,6 +178,9 @@ public:
 
   //!
   virtual Font font() const;
+
+  //!
+  virtual void setMargin(int type, int value);
 
   //!
   virtual int selected();

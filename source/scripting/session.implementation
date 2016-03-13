@@ -1,6 +1,6 @@
 DEFINE_OBJECT_FUNCTION_1(Session,continuePlay,int)
 DEFINE_OBJECT_FUNCTION_1(Session,setResolution,Size)
-DEFINE_OBJECT_FUNCTION_3(Session,playAudio,std::string,int,std::string)
+DEFINE_OBJECT_FUNCTION_3(Session,playAudio,std::string,int,int)
 DEFINE_OBJECT_GETTER_0(Session,int,lastChangesNum)
 DEFINE_OBJECT_GETTER_0(Session,int,videoModesCount)
 DEFINE_OBJECT_GETTER_0(Session,VariantMap,winConditions)

@@ -26,7 +26,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
-  ${STEAM_API_DIR}/public/opensteam
   include
 )
 

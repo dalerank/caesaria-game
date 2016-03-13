@@ -984,8 +984,21 @@ int ListBox::addLine(const std::string& text)
 
 void ListBox::fitText(const std::string& text)
 {
-  StringArray items = _d->font.breakText( text, width() - _d->scrollBar->width() );
-  addLines( items );
+  if (text.substr(0, 5) == "@img=")
+  {
+    Picture pic(text.substr(5));
+    ListBoxItem& item = addItem(pic);
+    item.setTextAlignment( align::center, align::upperLeft );
+    int lineCount = pic.height() / itemsHeight();
+    StringArray lines;
+    lines.resize(lineCount);
+    addLines(lines);
+  }
+  else
+  {
+    StringArray items = _d->font.breakText( text, width() - _d->scrollBar->width() );
+    addLines(items);
+  }
 }
 
 void ListBox::addLines(const StringArray& strings)
@@ -1005,14 +1018,28 @@ void ListBox::addLines(const StringArray& strings)
   }
 }
 
+void ListBox::setMargin(int type, int value)
+{
+  switch(type)
+  {
+  case margin::left: _d->margin.setLeft(value);       break;
+  case margin::top: _d->margin.setTop(value);         break;
+  case margin::right: _d->margin.setRight(value);     break;
+  case margin::bottom: _d->margin.setBottom(value);   break;
+  default: break;
+  }
+
+  _d->needItemsRepackTextures = true;
+}
+
 Font ListBox::font() const{  return _d->font;}
-void ListBox::setDrawBackground(bool draw) { setFlag( drawBackground, draw );} //! Sets whether to draw the background
+void ListBox::setBackgroundVisible(bool draw) { setFlag( drawBackground, draw );} //! Sets whether to draw the background
 int ListBox::selected() {    return _d->index.selected; }
 Signal1<const ListBoxItem&>& ListBox::onItemSelectedAgain(){  return _d->signal.onItemSelectedAgain;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->signal.onItemSelected;}
 Signal2<Widget*, int>& ListBox::onIndexSelectedEx() {  return _d->signal.onIndexSelectedEx; }
 Signal2<Widget*, int>& ListBox::onIndexSelectedAgainEx() {  return _d->signal.onIndexSelectedAgainEx; }
-void ListBox::setItemsFont( Font font ){ _d->font = font; }
+void ListBox::setItemsFont(Font font) { _d->font = font; }
 void ListBox::setItemsTextOffset(Point p) { _d->itemTextOffset = p; }
 
 void ListBox::setItemTooltip(unsigned int index, const std::string& text)
@@ -1028,11 +1055,13 @@ void ListBox::setupUI(const VariantMap& ui)
   Widget::setupUI(ui);
 
   int itemheight = ui.get("itemheight");
-  if( itemheight != 0 ) setItemsHeight(itemheight);
+  if (itemheight != 0)
+    setItemsHeight(itemheight);
 
-  setDrawBackground(ui.get("border.visible", true));
+  setBackgroundVisible(ui.get("border.visible", true));
   std::string fontname = ui.get( "itemfont" ).toString();
-  if( !fontname.empty() ) setItemsFont( Font::create( fontname ) );
+  if (!fontname.empty())
+    setItemsFont( Font::create( fontname ) );
 
   fontname = ui.get( "items.font" ).toString();
   if( !fontname.empty() ) setItemsFont( Font::create( fontname ) );

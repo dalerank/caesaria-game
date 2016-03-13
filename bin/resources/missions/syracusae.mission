@@ -24,13 +24,13 @@
     title : ""##quaestor##""
     maxHouseLevel : "big_villa"
     caption : "##syracusae_4_title##"
-	sound.overview : "syracusae_speech"
+    startSound : "syracusae_speech"
     overview :  [ "##syracusae_4_overview##" ]
     winText : "##win_syracusae_text##"
     winContinue : false
     winSound      : "syracusae_win_speech"
   }
-	
+
   empire : {
     enabled : true
 
@@ -46,7 +46,7 @@
         sells : { meat : 15, timber : 25 }
         buys : { olive: 15, oil: 15 }
       }
-      
+
       Capua : {
         nation : "roman"
 
@@ -59,7 +59,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -69,8 +69,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -78,8 +78,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -87,8 +87,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -97,7 +97,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -111,7 +111,7 @@
         }
       }
     }
-       
+
     distant_battle_1#distant_battle : {
       date : "-270.08.01"
       location : [ 1090, 650 ]
@@ -128,7 +128,7 @@
         }
       }
     }
-    
+
     distant_battle_2#distant_battle : {
       date : "-269.08.01"
       location : [ 990, 740 ]
@@ -145,7 +145,7 @@
         }
       }
     }
-    
+
     distant_battle_3#distant_battle : {
       date : "-268.07.01"
       location : [ 880, 765 ]
@@ -162,14 +162,14 @@
         }
       }
     }
-    
+
     storm_seas_1#messagebox : {
       date : "-265.11.01"
       title : "##stormy_seas_title##"
       text : "##stormy_seas_text##"
       send2scribe : true
-    }        
-    
+    }
+
     stop_sea_trading_1#trading_options : {
       date : "-265.11.01"
       cities : {
@@ -222,7 +222,7 @@
         }
       }
     }
-    
+
     emperor_request1#city_request : {
       date : "-267.02.01"
       reqtype : "good_request"
@@ -231,8 +231,8 @@
       good : { oil : 5 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
-    }    
-    
+    }
+
     oil_price_rising#trading_options :
     {
       date : "-267.04.01"
@@ -251,7 +251,7 @@
           send2scribe : true
         }
       }
-    }    
+    }
 
     greek_invasion#enemy_attack : {
       date : "-267.09.01"
@@ -279,8 +279,8 @@
           send2scribe : true
         }
       }
-    }    
-    
+    }
+
     capua_increase_weapons_trading#trading_options : {
       date: "-265.07.01"
       cities : {
@@ -297,8 +297,8 @@
           send2scribe : true
         }
       }
-    }    
-    
+    }
+
     stop_sea_trading_2#trading_options : {
       date : "-264.01.01"
       cities : {
@@ -314,7 +314,7 @@
           send2scribe : true
         }
       }
-    }    
+    }
 
     greek_invasion_2#enemy_attack : {
       date : "-264.02.01"
@@ -336,15 +336,15 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }       
+      send2scribe : true
+    }
+    }
+    }
 
-	greek_invasion_3#enemy_attack : {
+  greek_invasion_3#enemy_attack : {
       date : "-261.04.01"
       type : "enemy_attack"
       target : "best_building"
@@ -364,13 +364,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }  
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_4#enemy_attack : {
       date : "-258.06.01"
@@ -392,15 +392,15 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }            
+      send2scribe : true
+    }
+    }
+    }
 
-	greek_invasion_5#enemy_attack : {
+  greek_invasion_5#enemy_attack : {
       date : "-255.08.01"
       type : "enemy_attack"
       target : "best_building"
@@ -420,13 +420,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }    
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_6#enemy_attack : {
       date : "-252.06.01"
@@ -448,13 +448,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }  
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_7#enemy_attack : {
       date : "-249.06.01"
@@ -476,13 +476,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }     
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_8#enemy_attack : {
       date : "-245.06.01"
@@ -504,13 +504,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }    
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_9#enemy_attack : {
       date : "-240.06.01"
@@ -532,13 +532,13 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }  
+      send2scribe : true
+    }
+    }
+    }
 
     greek_invasion_10#enemy_attack : {
       date : "-235.06.01"
@@ -560,14 +560,14 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
       video : "spy_barbarian"
-		  send2scribe : true
-		}
-	  }
-    }       
-    
+      send2scribe : true
+    }
+    }
+    }
+
     tarentum_increase_oil_trading#trading_options : {
       date: "-265.06.01"
       cities : {
@@ -586,7 +586,7 @@
       }
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -601,9 +601,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       plaza : true
       clay_pit : true
@@ -631,8 +631,8 @@
       wheat_farm : true
       senate : true
       gatehouse : true
-      wall : true 
-      tower : true 
+      wall : true
+      tower : true
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true

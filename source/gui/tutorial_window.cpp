@@ -25,6 +25,7 @@
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "texturedbutton.hpp"
+#include "helper.hpp"
 #include "widget_helper.hpp"
 #include "label.hpp"
 
@@ -65,9 +66,8 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
 
   if( !speech.empty() )
   {
-    _muter.activate( 5 );
-    _speechDel.assign( speech );
-    events::dispatch<PlaySound>(speech, 100, audio::speech);
+    add<SoundMuter>(5);
+    add<SoundEmitter>(speech, 100, audio::speech);
   }
 
   const std::string imgSeparator = "@img=";

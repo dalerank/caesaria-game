@@ -122,7 +122,7 @@ public:
    : Window( parent, Rect( Point(), size), title )
   {
     setTextAlignment( align::center, align::center );
-    setFont( FONT_3 );
+    Widget::setFont( FONT_3 );
     setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
     add<ExitButton>( Point( width() - 37, 12 ) );
 

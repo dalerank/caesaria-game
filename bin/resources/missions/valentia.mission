@@ -4,14 +4,14 @@
   funds : 24000
   city.name : "Valentia"
   player.rank : 4
-  date : "-70.01.01"  
+  date : "-70.01.01"
   adviserEnabled : true
   fishPlaceEnabled : true
   climate : 0
   preview.title : "##valentia_preview_title##"
   preview.text : "##valentia_preview_mission##"
   preview.image : ""
-	
+
   win :
   {
     population : 10000
@@ -27,11 +27,11 @@
     winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##valentia_title##"
-	sound.overview : "valentia_speech"
+    startSound : "valentia_speech"
     winSound     : "valentia_win_speech"
     overview :  [ "##valentia_overview##" ]
   }
-	
+
   empire : {
     enabled : true
 
@@ -70,7 +70,7 @@
 
     }
   }
-  		
+
   events :
   {
     price_change_1#trading_options : {
@@ -493,7 +493,7 @@
    fp1 : [ 5, 136 ]
    fp2 : [ 16, 140 ]
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -508,9 +508,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       plaza : true
       engineering_post : true
       clay_pit : true

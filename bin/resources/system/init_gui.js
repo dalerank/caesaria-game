@@ -94,7 +94,7 @@ Object.defineProperty( SpinBox.prototype, "callback", { set: function(func) { th
 //*************************** Listbox class ***************************************//
 function Listbox(parent) { return new ListBox(parent); }
 Object.defineProperty( ListBox.prototype, "style", { set: function(sname) { this.setBackgroundStyle(sname); }} );
-Object.defineProperty( ListBox.prototype, "background", { set: function(enabled) { this.setDrawBackground(enabled); }} );
+Object.defineProperty( ListBox.prototype, "background", { set: function(enabled) { this.setBackgroundVisible(enabled); }} );
 Object.defineProperty( ListBox.prototype, "selectedIndex", { set: function(index) { this.setSelected(index); }} );
 Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(obj) { this.setSelectedWithData(obj.name,obj.data); }} );
 Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount(); }} );
@@ -114,11 +114,17 @@ Object.defineProperty( ListBox.prototype, "w", { get: function() { return this.w
 Object.defineProperty( ListBox.prototype, "h", { get: function() { return this.height(); }} );
 
 Object.defineProperty( ListBox.prototype, "itemColor", { set: function (obj) {
-    if(obj.simple) this.setItemDefaultColor("simple", setItemDefaultColor);
-    if(obj.hovered) this.setItemDefaultColor("hovered", setItemDefaultColor);
+    if(obj.simple) this.setItemDefaultColor("simple", obj.simple);
+    if(obj.hovered) this.setItemDefaultColor("hovered", obj.hovered);
   }} );
 
 ListBox.prototype.setData = function(index,name,data) { this.setItemData(index,name,data); };
+ListBox.prototype.margin = function(m) {
+  if(m.left) this.setMargin(0,m.left);
+  if(m.top) this.setMargin(1,m.top);
+  if(m.right) this.setMargin(2,m.right);
+  if(m.bottom) this.setMargin(3,m.bottom);
+}
 //*************************** Listbox class end ***************************************//
 
 //*************************** Dialogbox class ***************************************//
@@ -183,13 +189,18 @@ Object.defineProperty( Image.prototype, "picture", {set: function (name) { this.
 function FileSelector(parent) { this.widget = new FileListBox(parent); }
 
 Object.defineProperty( FileListBox.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
-Object.defineProperty( FileListBox.prototype, "background", {set: function (enabled) { this.setDrawBackground(enabled); }} )
+Object.defineProperty( FileListBox.prototype, "background", {set: function (enabled) { this.setBackgroundVisible(enabled); }} )
 Object.defineProperty( FileListBox.prototype, "selectedIndex", {set:function (index) { this.setSelected(index); }} )
 Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h); }} )
 Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
 Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "count", {set: function () { return this.itemsCount(); }} )
 Object.defineProperty( FileListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} )
+
+Object.defineProperty( FileListBox.prototype, "itemColor", { set: function (obj) {
+    if(obj.simple) this.setItemDefaultColor("simple", obj.simple);
+    if(obj.hovered) this.setItemDefaultColor("hovered", obj.hovered);
+  }} );
 //*************************** FileSelector class end ***************************************//
 
 //*************************** SaveGameDialog class begin ***************************************//
@@ -234,7 +245,7 @@ ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
 //*************************** ContextMenuItem class end ***************************************//
 
 //*************************** Groupbox class begin ***************************************//
-function Groupbox() { return new GroupBox() }
+function Groupbox(parent) { return new GroupBox(parent) }
 
 Object.defineProperty( GroupBox.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 
@@ -251,8 +262,18 @@ Object.defineProperty( Window.prototype, "geometry", { set: function (rect) { th
 Object.defineProperty( Window.prototype, "mayMove", { set: function(may) { this.setWindowFlag("fdraggable",may); }} );
 Object.defineProperty( Window.prototype, "onCloseCallback", { set: function (func) { this.onCloseEx(func); }} );
 Object.defineProperty( Window.prototype, "model", { set: function (path) { this.setupUI(path); }} );
+Object.defineProperty( Window.prototype, "internalName", { set: function (name) { this.setInternalName(name); }} );
+Object.defineProperty( Window.prototype, "titleFont", { set: function (fname) { this.setFont(fname); }} );
 Object.defineProperty( Window.prototype, "w", { get: function () { return this.width(); }} );
 Object.defineProperty( Window.prototype, "h", { get: function() { return this.height(); }} );
+
+Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
+  if (en)
+  {
+    var locker = new GameAutoPauseWidget(this);
+    locker.activate();
+  }
+}})
 
 Window.prototype.closeAfterKey = function(obj) {
       if(obj.escape)
@@ -317,16 +338,29 @@ Window.prototype.addTexturedButton = function(rx,ry,rw,rh) {
   }
 
 Window.prototype.addButton = function(rx,ry,rw,rh) {
-    var button = new Button(this);
-    button.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return button;
+    var button = new Button(this)
+    button.geometry = { x:rx, y:ry, w:rw, h:rh }
+    return button
   }
 
 Window.prototype.addExitButton = function(rx,ry) {
-    var btn = new ExitButton(this);
+    var btn = new ExitButton(this)
     btn.position = { x:rx, y:ry }
     return btn;
   }
+
+Window.prototype.addSoundMuter = function(volume) {
+    var muter = new SoundMuter(this);
+    muter.setVolume(volume)
+    return muter
+  }
+
+Window.prototype.addSoundEmitter = function(sample, volume, type) {
+    var emitter = new SoundEmitter(this)
+    emitter.assign(sample, volume, type)
+    return emitter
+}
+
 //*************************** Window class begin ***************************************//
 
 function Ui() {

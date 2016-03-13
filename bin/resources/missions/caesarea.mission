@@ -4,14 +4,14 @@
   funds : 8000
   city.name : "Caesarea"
   player.rank : 2
-  date : "-10.01.01"  
+  date : "-10.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 1
   preview.text : "##caesarea_preview_mission##"
   preview.title : "##caesarea_preview_title##"
   preview.image : ""
-	
+
   win : {
     name : "n2_caesarea"
     population : 7000
@@ -24,7 +24,7 @@
     title : "##сaesar##"
     maxHouseLevel : "big_villa"
     caption : "##caesarea_title##"
-	  sound.overview : "caesarea_speech"
+    startSound : "caesarea_speech"
     overview :  [ "##caesarea_overview##" ]
     winContinue : false
     winSound      : "caesarea_win_speech"
@@ -45,7 +45,7 @@
         nation : "roman"
         available : true
       }
-     
+
       "Carthago Nova" : {
         sells : { wine : 40 }
         buys : { vegetable : 15, furniture : 15 }
@@ -61,18 +61,18 @@
         land : true
         sea : true
         nation : "roman"
-				available : true
+        available : true
       }
     }
   }
-  		
+
   events :
   {
     wine_price_rising#trading_options : {
       date : "-3.08.01"
       goods : {
         wine : { relative : true, buy : 35, sell : 35 }
-	    }
+      }
 
       exec : {
         message#messagebox : {
@@ -84,11 +84,11 @@
       }
     }
 
-		pottery_price_rising#trading_options : {
+    pottery_price_rising#trading_options : {
       date : "-1.08.01"
       goods : {
         pottery : { relative : true, buy : 40, sell : 40 }
-	    }
+      }
 
       exec : {
         message#messagebox : {
@@ -104,7 +104,7 @@
       date : "3.08.01"
       goods : {
         weapon : { relative : true, buy : -55, sell : -55 }
-	    }
+      }
 
       exec : {
         message#messagebox : {
@@ -186,7 +186,7 @@
       fail : { favour : -20, appendMonth : 24 }
     }
 
-		emperor_request_6#city_request : {
+    emperor_request_6#city_request : {
       date : "18.02.01"
       reqtype : "good_request"
       month : 12
@@ -194,8 +194,8 @@
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 24 }
     }
-		
-		emperor_request_7#city_request : {
+
+    emperor_request_7#city_request : {
       date : "23.02.01"
       reqtype : "good_request"
       month : 12
@@ -204,7 +204,7 @@
       fail : { favour : -20, appendMonth : 60 }
     }
 
-		emperor_request_8#city_request : {
+    emperor_request_8#city_request : {
       date : "28.02.01"
       reqtype : "good_request"
       month : 12
@@ -213,7 +213,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_9#city_request : {
+    emperor_request_9#city_request : {
       date : "33.02.01"
       reqtype : "good_request"
       month : 12
@@ -222,7 +222,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_10#city_request : {
+    emperor_request_10#city_request : {
       date : "38.02.01"
       reqtype : "good_request"
       month : 12
@@ -231,7 +231,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		emperor_request_11#city_request : {
+    emperor_request_11#city_request : {
       date : "43.02.01"
       reqtype : "good_request"
       month : 12
@@ -240,7 +240,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-		barbarian_invasion_1#enemy_attack : {
+    barbarian_invasion_1#enemy_attack : {
       delay : { year : 3, month : -1 }
       type : "enemy_attack"
       target : "best_building"
@@ -267,7 +267,7 @@
       }
     }
 
-		barbarian_invasion_2#enemy_attack : {
+    barbarian_invasion_2#enemy_attack : {
       date : "-6.5.01"
       type : "enemy_attack"
       target : "food"
@@ -294,7 +294,7 @@
       }
     }
 
-		barbarian_invasion_3#enemy_attack : {
+    barbarian_invasion_3#enemy_attack : {
       date : "-2.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -321,7 +321,7 @@
       }
     }
 
-		barbarian_invasion_4#enemy_attack : {
+    barbarian_invasion_4#enemy_attack : {
       date : "-1.5.01"
       type : "enemy_attack"
       target : "food"
@@ -348,7 +348,7 @@
       }
     }
 
-		barbarian_invasion_5#enemy_attack : {
+    barbarian_invasion_5#enemy_attack : {
       date : "2.5.01"
       type : "enemy_attack"
       target : "best_building"
@@ -375,7 +375,7 @@
       }
     }
 
-		barbarian_invasion_6#enemy_attack : {
+    barbarian_invasion_6#enemy_attack : {
       date : "3.5.01"
       type : "enemy_attack"
       target : "food"
@@ -402,7 +402,7 @@
       }
     }
 
-		barbarian_invasion_7#enemy_attack : {
+    barbarian_invasion_7#enemy_attack : {
       date : "6.5.01"
       type : "enemy_attack"
       target : "food"
@@ -429,7 +429,7 @@
       }
     }
 
-		barbarian_invasion_8#enemy_attack : {
+    barbarian_invasion_8#enemy_attack : {
       date : "9.5.01"
       type : "enemy_attack"
       target : "food"
@@ -456,7 +456,7 @@
       }
     }
 
-		barbarian_invasion_9#enemy_attack : {
+    barbarian_invasion_9#enemy_attack : {
       date : "11.5.01"
       type : "enemy_attack"
       target : "food"
@@ -483,7 +483,7 @@
       }
     }
 
-		barbarian_invasion_10#enemy_attack : {
+    barbarian_invasion_10#enemy_attack : {
       date : "15.5.01"
       type : "enemy_attack"
       target : "food"
@@ -510,7 +510,7 @@
       }
     }
 
-		barbarian_invasion_11#enemy_attack : {
+    barbarian_invasion_11#enemy_attack : {
       date : "20.5.01"
       type : "enemy_attack"
       target : "food"
@@ -537,7 +537,7 @@
       }
     }
 
-		barbarian_invasion_12#enemy_attack : {
+    barbarian_invasion_12#enemy_attack : {
       date : "25.5.01"
       type : "enemy_attack"
       target : "food"
@@ -564,7 +564,7 @@
       }
     }
 
-		barbarian_invasion_13#enemy_attack : {
+    barbarian_invasion_13#enemy_attack : {
       date : "30.5.01"
       type : "enemy_attack"
       target : "random"
@@ -591,7 +591,7 @@
       }
     }
 
-		barbarian_invasion_14#enemy_attack : {
+    barbarian_invasion_14#enemy_attack : {
       date : "40.5.01"
       type : "enemy_attack"
       target : "random"
@@ -618,7 +618,7 @@
       }
     }
 
-		barbarian_invasion_15#enemy_attack : {
+    barbarian_invasion_15#enemy_attack : {
       date : "50.01.01"
       type : "enemy_attack"
       target : "random"
@@ -645,7 +645,7 @@
       }
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -660,9 +660,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       plaza : true
       forum : false
@@ -683,16 +683,16 @@
       market : true
       roadBlock : true
 
-			fort_legionaries : true
+      fort_legionaries : true
       fort_javelin : true
       fort_horse : true
       military_academy : true
       barracks : true
 
-			iron_mine : true
+      iron_mine : true
       oil_workshop : true
       lumber_mill : true
-			weapons_workshop : true
+      weapons_workshop : true
       furniture_workshop : true
       granery : true
       warehouse : true

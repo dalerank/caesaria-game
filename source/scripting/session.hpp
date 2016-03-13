@@ -43,7 +43,7 @@ public:
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
-  bool getBuildflag(const std::string& type);  
+  bool getBuildflag(const std::string& type);
   void setBuildflag(const std::string& type, bool value);
   int getCityflag(std::string flag) const;
   void setCityflag(const std::string& flag, int value);
@@ -56,7 +56,7 @@ public:
   StringArray getFiles(const std::string& dir, const std::string& ext);
   StringArray getFolders(const std::string& dir, bool full);
   int videoModesCount() const;
-  void playAudio(const std::string& filename, int volume, const std::string& mode);
+  void playAudio(const std::string& filename, int volume, int mode);
   Size getVideoMode(int index) const;
   void setResolution(const Size& size);
   void showDlcViewer(const std::string& path);

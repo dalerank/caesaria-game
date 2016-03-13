@@ -10,7 +10,7 @@
   city.name : "Brundisium"
   date : "-350.01.01"
   adviserEnabled : true
-	
+
   win :
   {
     population : 0
@@ -23,13 +23,13 @@
     title : "##clerk##"
     finish : "300.01.01"
     winContinue : false
-    short : "##win_or_die##"
+    shortDesc : "##win_or_die##"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002" ]
   }
-	
+
   empire :
   {
     enabled : true
@@ -38,7 +38,7 @@
       all : "enabled"
     }
   }
-  		
+
   events :
   {
     tutorial#random_collapse :
@@ -47,7 +47,7 @@
       strong : 25
     }
   }
-	
+
   buildoptions :
   {
     farm : "enabled"
@@ -62,6 +62,6 @@
     govt : "enabled"
     engineering : "enabled"
     security : "enabled"
-    check_desirability : false                  
+    check_desirability : false
   }
 }

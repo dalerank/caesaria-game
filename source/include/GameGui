@@ -31,7 +31,6 @@
 #include "gui/empiremap_window.hpp"
 #include "gui/advisors_window.hpp"
 #include "gui/senate_popup_info.hpp"
-#include "gui/mission_target_window.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/androidactions.hpp"
 #include "gui/scribesmessages.hpp"

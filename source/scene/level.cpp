@@ -541,7 +541,7 @@ void Level::Impl::checkWinMission()
 
   if (success)
   {
-    events::dispatch<ScriptFunc>("OnMissionWin");    
+    events::dispatch<ScriptFunc>("OnMissionWin");
     steamapi::missionWin(conditions.name());
   }
 }
@@ -734,14 +734,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTargetsWindow()
 {
-  unsigned int id = Hash( TEXT(MissionTargetsWindow) );
-  Widget* wdg = game->gui()->findWidget( id );
-  if( !wdg )
-  {
-    auto& wnd = game->gui()->add<dialog::MissionTargets>( game->city() );
-    wnd.show();
-    wnd.setID( id );
-  }
+  events::dispatch<ScriptFunc>("OnShowMissionTargetsWindow");
 }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }

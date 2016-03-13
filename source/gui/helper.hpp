@@ -15,36 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
-#define __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_WIDGET_HELPER_H_INCLUDED__
+#define __CAESARIA_WIDGET_HELPER_H_INCLUDED__
 
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
-#include "window.hpp"
+#include "widget.hpp"
 
 namespace gui
 {
 
-namespace dialog
-{
-
-class MissionTargets : public Window
+class SoundMuter : public Widget
 {
 public:
-  MissionTargets( Widget* parent, PlayerCityPtr city, int id=-1, const Rect& rectangle=Rect() );
-  virtual ~MissionTargets();
+  SoundMuter(Widget* parent,int value=-1);
+  ~SoundMuter();
 
-  virtual void draw( gfx::Engine& painter );
-  virtual void show();
-  void setCity( PlayerCityPtr city );
-
+  void setVolume(int value);
 private:
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  std::map<int,int> _states;
 };
 
-}//end namespace dialog
+class SoundEmitter : public Widget
+{
+public:
+  SoundEmitter(Widget* parent, const std::string& sound="", int volume=0, int type=0);
+  ~SoundEmitter();
+  void assign(const std::string& sampleName, int volume, int type);
 
-}//end namespace gui
-#endif //__CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
+private:
+  std::string _sample;
+};
+
+}//end namesapce gui
+#endif //__CAESARIA_WIDGET_HELPER_H_INCLUDED__

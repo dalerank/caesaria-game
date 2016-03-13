@@ -4,14 +4,14 @@
   funds : 6000
   city.name : "Carthago"
   player.rank : 5
-  date : "-170.01.01"  
+  date : "-170.01.01"
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true
   preview.text : "##carthago_preview_mission##"
   preview.title : "##carthago_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 6000
@@ -27,16 +27,16 @@
     winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##carthago_preview_title##"
-	  sound.overview : "carthago_speech"
+    startSound : "carthago_speech"
     winSound      : "carthago_win_speech"
     overview :  [ "##carthago_overview##" ]
   }
-	
+
   empire : {
     enabled : true
 
     cities :
-    {    
+    {
       Thamugadi : {
         land : true
         sea : true
@@ -68,7 +68,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -78,8 +78,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -87,8 +87,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -96,8 +96,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -106,7 +106,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -217,7 +217,7 @@
         }
       }
     }
-       
+
     emperor_request_1#city_request : {
       date : "-167.06.01"
       reqtype : "good_request"
@@ -738,7 +738,7 @@
           video : "spy_barbarian"
         }
       }
-    }    
+    }
   }
 
   fishpoints : {
@@ -751,7 +751,7 @@
    fp7 : [ 71, 105 ]
    fp8 : [ 37, 104 ]
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -766,8 +766,8 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
+
+    buildings :
     {
       prefecture : true
       wall : true

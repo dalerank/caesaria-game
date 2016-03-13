@@ -4,13 +4,13 @@
   funds : 8000
   city.name : "Capua"
   player.rank : 2
-  date : "-350.01.01"  
+  date : "-350.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
   climate : 0
   preview.text : "##capua_preview_mission##"
   preview.image : ""
-	
+
   win :
   {
     name : "n2_capua"
@@ -22,12 +22,12 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##architect##"
-    win.text : "##capua_win_text##"
+    winText : "##capua_win_text##"
     winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
-	  sound.overview : "capua_speech"
-    sound.win      : "capua_win_speech"
+    startSound : "capua_speech"
+    winSound      : "capua_win_speech"
     overview :  [ "##capua_overview##",
                   "@img=picture5_00006",
                   "##capua_overview2##",
@@ -35,7 +35,7 @@
                   "##capua_overview3##",
                   "@img=picture6_00002" ]
   }
-	
+
   empire : {
     enabled : true
     maxBarbariansGroups : 0
@@ -106,7 +106,7 @@
       }
     }
   }
-  		
+
   events :
   {
     oil_price_rising#trading_options : {
@@ -204,7 +204,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -219,9 +219,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       plaza : true
       forum : true

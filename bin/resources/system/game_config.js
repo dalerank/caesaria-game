@@ -3,6 +3,11 @@ var g_config = {
         res_menu:0,
         res_restart:2,
     },
+    audio : {
+      theme : 2,
+      speech : 4
+    },
+
     languages : [
                   { lang : "English",     ext : "en", },
                   { lang : "Русский",     ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },

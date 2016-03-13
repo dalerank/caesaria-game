@@ -20,6 +20,7 @@
 #include <GameApp>
 #include <GameObjects>
 #include <GameScene>
+#include <GameLogger>
 #include <GameGfx>
 #include <GameGood>
 #include <GameGui>
@@ -85,12 +86,14 @@ StringArray Session::getFolders(const std::string& dir, bool full)
   return fdir.entries().items().folders(false);
 }
 
-void Session::playAudio(const std::string& filename, int volume, const std::string& mode)
+void Session::playAudio(const std::string& filename, int volume, int mode)
 {
-  audio::SoundType type = audio::unknown;
-  if( mode == "theme" )
-    type = audio::theme;
-  audio::Engine::instance().play( filename, volume, type );
+  if (!audio::isAvailableMode(mode))
+  {
+    Logger::warning("WARNING! audio mode {} not available", mode);
+    return;
+  }
+  audio::Engine::instance().play( filename, volume, (audio::SoundType)mode );
 }
 
 int Session::videoModesCount() const { return _game->engine()->modes().size(); }
@@ -238,7 +241,7 @@ int Session::getAdvflag(const std::string & flag) const
   {
     value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
   }
-  
+
   return value;
 }
 
