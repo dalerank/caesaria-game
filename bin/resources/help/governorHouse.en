@@ -1,0 +1,8 @@
+{  
+ title : "##governorHouse##"
+ sound : "fanfare"
+ text  : "You should have a home of your own in your city. Regardless of whether you build a governor's house, villa or palace, your home will become a center for the city's important residents, as well as for social climbers. A governor's residence is one of the most desirable buildings in the city, and the grander it is, the more desirable people find it.\n To read about the most notorious Emperor's palace in Rome, click @here&."
+ uri : {
+  "here" : ""
+	}
+}

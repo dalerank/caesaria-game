@@ -1,0 +1,14 @@
+{  
+ title : "##reservoir##"
+ sound : "fanfare"
+ text  : "Reservoirs bilden die Grundlage für das @Wasserversorgungssystem& Ihrer Stadt. Sie müssen in der Nähe eines Flusses oder einer Küste gebaut werden oder über @Aquädukte& mit einem optimal versorgtem Reservoir verbunden werden. Sobald Sie den Mauszeiger über wasserführendes Gelände bewegen, erscheint der Mauszeiger als grüne Abbildung eines gefüllten Reservoirs.\nReservoirs bieten in einem großen Umkreis Zugrang zu Rohrleitungen. Sowohl @Brunnen& als auch @Badehäuser& brauchen Anschluss an diese Rohrleitungen, um funktionieren zu können. Wenn Sie ein neues Reservoir bauen und es über Wasserversorgung und @Arbeitskräfte& verfügt, können Sie sich mit Hilfe der @Spezialkarte Wasser& das Netzwerk der Rohrleitungen ansehen. Reservoirs gehören zu den wenigen Gebäuden, die keine Anbindung an Straßen und den Arbeitsmarkt benötigen. Allerdings sind Reservoirs auch sehr unerwünschte Nachbarn.\n\nKlicken Sie @hier&, wenn Sie mehr über die Geschichte der Reservoirs im römischen Imperium erfahren möchten."
+ uri : {
+  "Wasserversorgungssystem" : "Wasserversorgung??"
+  "Aquädukte" : "aqueduct"
+  "Brunnen" : "fountain_history"
+  "Badehäuser" : "bathhouse"
+  "Arbeitskräfte" : "labor_advisor"
+  "Spezialkarte Wasser" : "Spezialkarteauswahl??"
+  "hier" : "reservoir_history"
+ }
+}

@@ -1,0 +1,12 @@
+{  
+ title : "##barracks##"
+ sound : "fanfare"
+ text  : "Kasernen rekrutieren Soldaten und bilden sie für Ihre @Forts& aus. Sie benötigen Straßen- und Arbeitsmarktanbindung und verringern die Attraktivität der umliegenden Areale. Kasernen müssen immer 16 Wagenladungen @Waffen& vorrätig haben, um eine neue Legion (schwere Infanterie) vollständig ausrüsten zu können. Die Legionen der Hilfstruppen besitzen dagegen eigene Waffen und müssen diese nicht von einer Kaserne bekommen. Die Soldaten marschieren, sobald sie trainiert und ausgerüstet sind, zu dem Fort, das zu ihrer Heimat werden soll, oder zu einer @Militärakademie&, falls eine existiert.\nDie Kasernen stellen auch die Wachen für die @Türme&. Die Turmwachen brauchen die Waffen der Kaserne nicht. Ihre Ausbildung hat in einer Kasserne immer höchste Priorität.\n\nUm die Rolle der Kaserne bei der Verteidung Ihrer Stadt besser zu verstehen, lesen Sie bitte weiter unter @Frieden und Krieg&."
+ uri : {
+  "Forts" : "fort"
+  "Waffen" : "weapon (waffenschmiede)??"
+  "Militärakademie" : "military_academy (Militärakademie)??"
+  "Türme" : "tower (Mauer, Turm und Wachstube)??"
+  "Frieden und Krieg" : "peace_and_war (Frieden und Krieg)??"
+ }
+}

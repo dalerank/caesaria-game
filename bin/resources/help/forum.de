@@ -1,0 +1,10 @@
+{  
+ title : "##forum##"
+ sound : "fanfare"
+ text  : "Foren versorgen die äußeren Bezirke Ihrer Stadt mit Regierungsgebäuden. Ihre Hauptaufgabe liegt in der Beschäftigung von Steuereintreibern. Mit Hilfe der @Spezialkarte Handel& können Sie Häuser auffinden, die nicht von der Steuerzahlung erfasst werden, und Sie können ein Forum bauen, das einen Steuereintreiber entsendet, der die Lücke schließen soll.\nFragen Sie den @Finanzberater& nach dem Prozentsatz der für die Steuerzahlung erfassten Bürger. Wenn diese Zahl weit unter 100 Prozent liegt, sollten Sie prüfen, ob Ihr Senat und die Foren funktionieren, und anhand der Spezialkarte feststellen, welche Häuser nicht die fälligen Steuern zahlen.\n\nDie gesammelten Steuergelder lagern in Schatzkammern unter den Foren, bis sie am Jahresende entnommen werden. Das macht Foren zu einem bevorzugten Ziel fpr kriminelle Aktivitäten, und Sie sollten sie gut bewachen.\nForen sind angenehme Nachbarn und benötigen Arbeiter und Straßenanbindung.\nFolgen Sie diesen Querverweisen, wenn Sie mehr über die Rolle des @Geldes& erfahren möchten, oder lesen Sie eine kurze @Geschichte& der Foren im römischen Imperium."
+ uri : {
+  "Spezialkarte Handel" : "Spezialkarteauswahl??"
+  "Geldes" : "Geld??"
+  "Geschichte" : "forum_history"
+ }
+}

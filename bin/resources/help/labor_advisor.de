@@ -1,0 +1,8 @@
+{  
+ title : "##labor_advisor##"
+ sound : "fanfare"
+ text  : "Klicken Sie @hier&, um eine allgemeine Beschreibung zum Thema Beschäftigung zu erhalten. Die wichtigsten Funktionen dieser Tafel sind:\n\nArbeitsprioritäten vorgeben. Ohne Ihre Anweisungen ordnet der Arbeitsberater die Arbeitskräfte zu, wobei seine und Ihre Prioritäten nicht unbedingt übereinstimmen müssen. Wenn Sie die offenen Stellen in einer bestimmten Reihenfolge besetzten wollen, müssen Sie hier Prioritäten festlegen.\n\Löhne vorgeben. Die Bürger vergleichen ihr Einkommen mit dem römischen Durchschnitt, der anfangs bei 30 Denarii liegt, sich jedoch im Laufe der Zeit auch ändern kann. Eine Senkung des Lohnniveaus kann zwar Geld sparen, gleichzeitig aber auch die Einwanderung beschränken und durch die Verschlechterung der Stimmung in der Stadt zu Kriminalität führen. Eine Erhöhung des Lohnniveaus kann die Stimmung Ihrer Bürger dagegen erheblich verbessern.\n\nDer Arbeitsberater nennt Ihnen außerdem die GEsamtzahl der arbeitenden Bürger und der Arbeitslosen sowie den Kostenaufwand für Löhne im gesamten Jahr. Ein Zwölftel dieser Summe entspricht dem Steueraufkommen jedes Monats."
+ uri : {
+  "hier" : "Arbeit und Arbeitslosigkeit??"
+ }
+}

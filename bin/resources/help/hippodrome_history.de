@@ -1,0 +1,8 @@
+{  
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text  : "Hippodrome - benannt nach den griechische Wörtern für 'Pferd' und 'Rennstrecke' - waren große, oval gebaute @Amphitheater&, die speziell für Pferde- und Wagenrennen konzipiert waren. Das größte Hippodrom war der Cirus Maximus (lateinisch für 'Größter Kreis'), 600 Meter lang und 200 Meter breit, mit einer Kapazität von 250.000 Zuschauern. Hippodrome wurden an Berghängen gebaut, wobei das abgetragene Erdreich auf der anderen Seite aufgeschüttet wurde, um das Oval zu schließen. Drei Seiten der Arena waren mit Sitzreihen bestückt, während die vierte als Eingang offengelassen wurde. Auch wenn die Sotzgelegenheiten und andere Einrichtungen längst nicht mehr existieren, ziehen noch heute die römischen Jogger gerne um den Circus Maximus ihre Runden.\nDer Circus Maximus wurde im zweiten Jahrhundert v. Chr. in einem muldenförmigen Tal erbaut, das ursprünglich von den Etruskern für Pferderennen benutzt worden war. Julius Caesar veranstaltete dort ein Kriegsspiel mit 1600 Soldaten und 40 Elefanten."
+ uri : {
+  "Amphitheater" : "amphitheater"
+	}
+}
