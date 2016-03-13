@@ -206,6 +206,7 @@ Object.defineProperty( FileListBox.prototype, "itemColor", { set: function (obj)
 //*************************** SaveGameDialog class begin ***************************************//
 Object.defineProperty( SaveGame.prototype, "directory", {set: function (path) { this.setDirectory(path); }} )
 Object.defineProperty( SaveGame.prototype, "filter", {set: function (ext) { this.setFilter(ext); }} )
+Object.defineProperty( SaveGame.prototype, "callback", {set: function (func) { this.onFileSelectedEx(func); }} )
 //*************************** SaveGameDialog class end ***************************************//
 
 //*************************** FileDialog class begin ***************************************//
@@ -398,7 +399,7 @@ Ui.prototype = {
   addSaveGameDialog: function(dir, ext) {
     var dialog = new SaveGame(0);
     dialog.directory = dir;
-    dialog.extension = ext;
+    dialog.filter = ext;
     return dialog;
   },
 

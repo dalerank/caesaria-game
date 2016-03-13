@@ -28,11 +28,11 @@ Session.prototype.getOptPath = function(p) {
     return path;
 }
 
-Object.defineProperty( Session.prototype, "resolution", { set: function(mode) { this.setResolution(mode.w,mode.h); },
-                                                          get: function() { return this.getResolution(); }} );
+Object.defineProperty( Session.prototype, "resolution", { set: function(mode) { this.setResolution(mode.w,mode.h) },
+                                                          get: function() { return this.getResolution() }} )
 
-Object.defineProperty( Session.prototype, "credits", { get: function()  { return this.getCredits(); }} );
-Object.defineProperty( Session.prototype, "workdir", { get: function () { return getPath(engine.getOption("workDir")); }});
+Object.defineProperty( Session.prototype, "credits", { get: function()  { return this.getCredits() }} )
+Object.defineProperty( Session.prototype, "workdir", { get: function () { return getPath(engine.getOption("workDir")) }})
 
 Object.defineProperty( Session.prototype, "logfile", { get: function () {
       var path = this.workdir;

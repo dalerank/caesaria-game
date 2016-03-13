@@ -44,6 +44,7 @@ public:
 
 signals public:
   Signal1<std::string>& onFileSelected();
+  Signal2<Widget*,std::string>& onFileSelectedEx();
 
 private:
   void _resolveListboxChange(const ListBoxItem &item);

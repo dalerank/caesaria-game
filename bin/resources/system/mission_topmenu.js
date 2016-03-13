@@ -32,7 +32,7 @@ sim.ui.topmenu.file.init = function() {
 
     m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
     m.addItemWithCallback("##mainmenu_loadgame##",   function() { lobby.ui.loadgame.loadsave()})
-    m.addItemWithCallback("##gmenu_file_save##",     OnShowSaveDialog)
+    m.addItemWithCallback("##gmenu_file_save##",     function() { game.ui.dialogs.savegame()})
     m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
     m.addItemWithCallback("##gmenu_exit_game##",     OnRequestExitGame)
 }

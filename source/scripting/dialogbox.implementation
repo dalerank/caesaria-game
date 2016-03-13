@@ -13,4 +13,7 @@ DEFINE_WIDGET_CALLBACK_0(Dialogbox,onYesEx)
 DEFINE_WIDGET_CALLBACK_0(Dialogbox,onNoEx)
 DEFINE_WIDGET_CONSTRUCTOR(Dialogbox)
 
+DEFINE_WIDGET_CALLBACK_1(SaveGame,onFileSelectedEx,std::string)
+DEFINE_OBJECT_FUNCTION_1(SaveGame,setDirectory,std::string)
+DEFINE_OBJECT_FUNCTION_1(SaveGame,setFilter,std::string)
 DEFINE_WIDGET_CONSTRUCTOR(SaveGame)

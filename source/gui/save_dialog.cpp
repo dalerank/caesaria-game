@@ -60,6 +60,7 @@ public:
 
 signals public:
   Signal1<std::string> onFileSelectedSignal;
+  Signal2<Widget*,std::string> onFileSelectedSignalEx;
 };
 
 void SaveGame::Impl::findFiles()
@@ -156,6 +157,7 @@ void SaveGame::_resolveDblListboxChange( const ListBoxItem& item )
 void SaveGame::_save()
 {
   emit _d->onFileSelectedSignal(_d->realFilename.toString());
+  emit _d->onFileSelectedSignalEx( this, _d->realFilename.toString());
   deleteLater();
 }
 
@@ -168,6 +170,7 @@ void SaveGame::draw(gfx::Engine& painter )
 }
 
 Signal1<std::string>& SaveGame::onFileSelected() {  return _d->onFileSelectedSignal; }
+Signal2<Widget*, std::string>&SaveGame::onFileSelectedEx() { return _d->onFileSelectedSignalEx; }
 
 }//end namespace dialog
 

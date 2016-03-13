@@ -26,6 +26,7 @@ DEFINE_OBJECT_FUNCTION_2(Session,setOption,std::string,Variant)
 DEFINE_OBJECT_FUNCTION_1(Session,setMode,int)
 DEFINE_OBJECT_FUNCTION_0(Session,clearUi)
 DEFINE_OBJECT_FUNCTION_1(Session,openUrl,std::string)
+DEFINE_OBJECT_FUNCTION_1(Session,save,std::string)
 
 DEFINE_OBJECT_DESTRUCTOR(MissionInfo)
 DEFINE_OBJECT_FUNCTION_1(MissionInfo,load,std::string)

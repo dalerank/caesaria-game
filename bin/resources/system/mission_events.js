@@ -88,7 +88,7 @@ function OnMissionWin()
 function OnMissionStart()
 {
   var showAware = engine.getOption("showStartAware");
-  if( showAware )
+  if (showAware)
   {
     var dialog = g_ui.addInformationDialog( "##pls_note##", "##aware_black_objects##" );
     dialog.neverValue = true;
@@ -100,14 +100,17 @@ function OnMissionStart()
   sim.ui.topmenu.initialize();
 }
 
-function OnShowSaveDialog()
+function OnShowSaveDialog() { game.ui.dialogs.savegame(); }
+
+game.ui.dialogs.savegame = function()
 {
   var savedir = g_session.getOptPath("savedir");
   var ext = engine.getOption("saveExt");
 
-  if( !savedir.exist() )
+  engine.log("Find save in " + savedir.str + " with ext " + ext)
+  if (!savedir.exist())
   {
-    g_ui.addInformationDialog( "##warning##", "##save_directory_not_exist##");
+    g_ui.addInformationDialog("##warning##", "##save_directory_not_exist##");
     return;
   }
 

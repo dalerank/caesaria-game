@@ -41,6 +41,7 @@ sim.ui.topmenu.file = {}
 sim.ui.topmenu.debug = {}
 sim.ui.topmenu.advisors = {}
 sim.ui.topmenu.options = {}
+sim.ui.dialogs = {}
 
 /********************** namespace lobby **********************************/
 var lobby = {}

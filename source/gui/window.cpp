@@ -455,10 +455,10 @@ void Window::setupUI(const VariantMap &ui)
 
   WindowBackgroundHelper helper;
   std::string modeStr = ui.get( "bgtype" ).toString();
-  if( !modeStr.empty() )
+  if (!modeStr.empty())
   {
-    Window::BackgroundType mode = helper.findType( modeStr );
-    setBackground( mode );
+    Window::BackgroundType mode = helper.findType(modeStr);
+    setBackground(mode);
   }
 }
 
@@ -473,11 +473,11 @@ void Window::setTextAlignment(const std::string& horizontal, const std::string& 
   setTextAlignment( helper.findType(horizontal), helper.findType(vertical) );
 }
 
-void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
+void Window::setTextAlignment(Alignment horizontal, Alignment vertical)
 {
-  Widget::setTextAlignment( horizontal, vertical );
-  if( _d->title )
-    _d->title->setTextAlignment( horizontal, vertical );
+  Widget::setTextAlignment(horizontal, vertical);
+  if (_d->title)
+    _d->title->setTextAlignment(horizontal, vertical);
 }
 
 SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
