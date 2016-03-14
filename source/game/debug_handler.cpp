@@ -69,8 +69,8 @@
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
-#include "sound/themeplayer.hpp"
 #include "city/build_options.hpp"
+#include "core/timer.hpp"
 #include "steam.hpp"
 #include "objects/house_spec.hpp"
 
@@ -191,7 +191,6 @@ enum {
   fill_random_claypit,
   empire_toggle_capua,
   empire_toggle_londinium,
-  next_theme,
   reset_steam_prefs
 };
 
@@ -289,7 +288,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
-  ADD_DEBUG_EVENT( other, next_theme )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -479,16 +477,6 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case empire_toggle_capua: toggleEmpireCityEnable( "Capua" ); break;
   case empire_toggle_londinium: toggleEmpireCityEnable( "Londinium" ); break;
-
-  case next_theme:
-  {
-    auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
-    if( player.isValid() )
-    {
-      player->next();
-    }
-  }
-  break;
 
   case fill_random_claypit:
   {

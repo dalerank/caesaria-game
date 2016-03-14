@@ -109,12 +109,15 @@ public:
   Folders folders;
   SoundCache cachedSounds;
   StringArray extensions;
-  std::string currentTheme;
   threading::SafeThreadPtr thread;
 
   std::recursive_mutex mutex;
   SamplesInfo needLoad;
   bool running;
+
+  std::string currentTheme;
+  Signal0<> onThemeStoppedSignal;
+  unsigned int lastTimeThemeUpdate;
 
 public:
   void nextLoad();
@@ -258,10 +261,10 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   }
   else
   {
-    if( sPath.exist() )
+    if (sPath.exist())
       return sPath;
 
-    for( auto& folder : folders )
+    for (auto& folder : folders)
     {
       rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
@@ -270,6 +273,11 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   }
 
   return Path();
+}
+
+Signal0<>& Engine::onThemeStopped()
+{
+  return _d->onThemeStoppedSignal;
 }
 
 unsigned int Engine::Impl::loadSound(const std::string& sampleName)
@@ -281,7 +289,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
   if( samples.size() < maxSamplesNumber )
   {
-    unsigned int sampleHash = Hash( sampleCanonical );
+    unsigned int sampleHash = Hash(sampleCanonical);
     Samples::iterator i = samples.find( sampleHash );
 
     if( i != samples.end() )
@@ -360,7 +368,7 @@ bool Engine::isPlaying(const std::string& sampleName) const
 
 void Engine::stop(const std::string& sampleName) const
 {
-  _d->stop( sampleName );
+  _d->stop(sampleName);
 }
 
 void Engine::stop(int channel)
@@ -378,9 +386,17 @@ void Engine::stop(int channel)
   }
 }
 
-void Engine::run( bool& continues )
+void Engine::run(bool& continues)
 {
   _d->nextLoad();
+
+  if (DateTime::elapsedTime() - _d->lastTimeThemeUpdate > 1000)
+  {
+    _d->lastTimeThemeUpdate = DateTime::elapsedTime();
+    if (!isPlaying(_d->currentTheme))
+      emit _d->onThemeStoppedSignal();
+  }
+
   continues = _d->running;
 }
 
@@ -421,9 +437,9 @@ void Engine::Impl::nextLoad()
   clearFinishedChannels();
   resetIfalias( info.name );
 
-  if( info.type == theme )
+  if (info.type == theme)
   {
-    stop( currentTheme );
+    stop(currentTheme);
     currentTheme = info.name;
   }
 

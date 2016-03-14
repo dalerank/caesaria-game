@@ -46,15 +46,12 @@ public:
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
-  bool getBuildflag(const std::string& type);
-  void setBuildflag(const std::string& type, bool value);
-  int getCityflag(std::string flag) const;
-  void setCityflag(const std::string& flag, int value);
   int getAdvflag(const std::string& flag) const;
   void setAdvflag(const std::string& flag, int value);
   void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
+  void addWarningMessage(const std::string& message);
   Player* getPlayer() const;
   PlayerCity* getCity() const;
   bool isC3mode() const;

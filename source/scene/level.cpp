@@ -40,7 +40,6 @@
 #include "layers/layer.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
-#include "sound/themeplayer.hpp"
 #include "steam.hpp"
 
 using namespace gui;
@@ -212,12 +211,9 @@ void Level::Impl::installHandlers( Base* scene )
 void Level::Impl::initSound()
 {
   auto sound = game->city()->statistic().services.find<city::AmbientSound>();
-  auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
 
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
-
-  CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
 }
 
 void Level::Impl::initTabletUI( Level* scene )

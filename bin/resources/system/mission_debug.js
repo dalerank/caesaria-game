@@ -72,8 +72,8 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/other", "send_player_army", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/other", "screenshot", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/other", "enable_constructor_mode", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/other", "next_theme", function() {engine.log("test")} )*/
+  topmenu.addItemWithCallback("Debug/other", "enable_constructor_mode", function() {engine.log("test")} )*/
+  topmenu.addItemWithCallback("Debug/other", "Next theme", function() { game.sound.player.themeFinished() } )
 
   topmenu.addItemWithCallback("Debug/buildings", "toggle_shipyard_enable", function() {toggleBuildOptions("shipyard")} )
   topmenu.addItemWithCallback("Debug/buildings", "toggle_reservoir_enable", function() {toggleBuildOptions("reservoir")} )
@@ -150,8 +150,8 @@ sim.ui.topmenu.debug.init = function()
 
 function toggleBuildOptions(name)
 {
-  var value = g_session.getBuildflag(name);
-  g_session.setBuildflag(name,!value);
+  var value = g_session.city.getBuildOption(name);
+  g_session.city.setBuildOption(name,!value);
 
   engine.log( "Change build flag " + name + " to " + (!value ? "true" : "false"))
 }

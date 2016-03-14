@@ -44,6 +44,7 @@ var g_config = {
 var game = {}
 game.ui = {}
 game.ui.dialogs = {}
+game.sound = {}
 
 /********************** namespace level **********************************/
 var sim = {}

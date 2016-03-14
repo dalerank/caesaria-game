@@ -2,12 +2,12 @@ var ctsettings = {
     getop : function(obj) {
       engine.log("get" + obj.group + " " + obj.flag);
       switch(obj.group) {
-            case "city": return g_session.getCityflag(obj.flag);
+            case "city": return g_session.city.getOption(obj.flag);
             case "game": return engine.getOption(obj.flag);
             case "game": return g_session.getGameflag(obj.flag);
-            case "build": return g_session.getBuildflag(obj.flag);
+            case "build": return g_session.city.getBuildOption(obj.flag);
             case "gui": return this.getguiv(obj.flag);
-            case "risks": return g_session.getCityflag(obj.flag);
+            case "risks": return g_session.city.getOption(obj.flag);
             }
       return 0;
     },
@@ -15,10 +15,10 @@ var ctsettings = {
     setop : function(obj,value) {
         engine.log("set " + obj.group + " " + obj.flag);
         switch(obj.group) {
-                case "city":  g_session.setCityflag(obj.flag, value); break;
+                case "city":  g_session.city.setOption(obj.flag, value); break;
                 case "game":  engine.setOption(obj.flag, value); break;
                 case "game":  engine.setGameflag(obj.flag, value); break;
-                case "build": g_session.setBuildflag(obj.flag, value); break;
+                case "build": g_session.city.setBuildOption(obj.flag, value); break;
                 case "gui":   this.setguiv(obj.flag); break;
                 case "risks": g_session.setCityflag(obj.flag,value); break;
             }
@@ -57,7 +57,7 @@ var ctsettings = {
         var value = {}
         if(obj.group==="risks")
         {
-            value =  g_session.getCityflag(obj.flag)
+            value =  g_session.city.getOption(obj.flag)
             value += 10;
             if(value>100)
                value=0;
@@ -80,7 +80,7 @@ var ctsettings = {
     text : function(obj) {
         var value = {};
         if (obj.group === "risks") {
-            value = g_session.getCityflag(obj.flag);
+            value = g_session.city.getOption(obj.flag);
             var lb = _t("##"+obj.base+"##");
             return _format("{0} {1} %", lb, value);
         }

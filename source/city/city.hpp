@@ -38,7 +38,7 @@ namespace development { class Options; }
 
 class PlayerCity : public world::City
 {
-public:  
+public:
   typedef enum { roadEntry=0, roadExit, boatEntry, boatExit } TileType;
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoadsOnNextFrame,
                  warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
@@ -82,11 +82,11 @@ public:
   virtual DateTime lastAttack() const;
 
   PlayerPtr mayor() const;
-  
+
   /** Set/get current camera position last frame */
   void setCameraPos(const TilePos pos);
   const TilePos& cameraPos() const;
-     
+
   econ::Treasury& treasury();
 
   virtual int strength() const;
@@ -103,10 +103,10 @@ public:
   virtual void load( const VariantMap& stream );
 
   /** Add static object to city */
-  void addOverlay( OverlayPtr overlay);
+  void addOverlay(OverlayPtr overlay);
 
   /** Get static object from current position */
-  OverlayPtr getOverlay( const TilePos& pos ) const;
+  OverlayPtr getOverlay(const TilePos& pos) const;
 
   /** Get all static objects in city */
   const OverlayList& overlays() const;
@@ -115,19 +115,22 @@ public:
   city::Scribes& scribes();
 
   const city::development::Options& buildOptions() const;
-  void setBuildOptions( const city::development::Options& options );
+  void setBuildOptions(const city::development::Options& options);
+
+  bool getBuildOption(const std::string& name,bool) const;
+  void setBuildOption(const std::string& name, int value);
 
   /** Return current information about city */
   virtual const city::States& states() const;
 
   const city::VictoryConditions& victoryConditions() const;
-  void setVictoryConditions( const city::VictoryConditions& targets );
+  void setVictoryConditions(const city::VictoryConditions& targets);
 
   city::trade::Options& tradeOptions();
 
   virtual void delayTrade(unsigned int month);
-  virtual void addObject( world::ObjectPtr object );
-  virtual void empirePricesChanged( good::Product gtype, const world::PriceInfo& prices );
+  virtual void addObject(world::ObjectPtr object);
+  virtual void empirePricesChanged(good::Product gtype, const world::PriceInfo& prices);
   virtual std::string about(Object::AboutType type);
 
   /** What city sells */
@@ -141,10 +144,12 @@ public:
   virtual unsigned int tradeType() const;
 
   /** Set dynamic property for city */
-  void setOption( OptionType opt, int value );
+  void setOption(OptionType opt, int value);
+  void setOption(const std::string& name, int value);
 
   /** Return dynamic property by name */
-  int getOption( OptionType opt ) const;
+  int getOption(OptionType opt) const;
+  int getOption(const std::string& optname,bool) const;
 
   void clean();
 
@@ -152,7 +157,7 @@ public:
   void resize(unsigned int size );
 
   const city::Statistic& statistic() const;
-   
+
 signals public:
   Signal1<int>& onPopulationChanged();
   Signal1<int>& onFundsChanged();

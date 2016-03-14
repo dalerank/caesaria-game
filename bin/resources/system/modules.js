@@ -2,12 +2,13 @@ engine.log("CaesarIA: load modules started")
 
 var modules = [
                   "common",
+                  "vector",
                   "game_config",
                   "init_session",
                   "init_gui",
                   "init_city",
                   "init_game",
-                  "vector",
+                  "init_sound",
                   "init_colors",
                   "video_settings",
                   "audio_settings",

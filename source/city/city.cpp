@@ -449,6 +449,18 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
   emit _d->signal.onBuildingOptionsChanged();
 }
 
+bool PlayerCity::getBuildOption(const std::string& name, bool) const
+{
+  object::Type vtype = object::findType(name);
+  return _d->buildOptions.isBuildingAvailable(vtype);
+}
+
+void PlayerCity::setBuildOption(const std::string& name, int value)
+{
+  object::Type vtype = object::findType(name);
+  _d->buildOptions.setBuildingAvailable(vtype, value);
+}
+
 const city::States &PlayerCity::states() const              { return _d->states; }
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
@@ -498,6 +510,12 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
   }
 }
 
+void PlayerCity::setOption(const std::string& name, int value)
+{
+  OptionType type = city::findOption(name);
+  setOption(type, value);
+}
+
 int PlayerCity::prosperity() const
 {
   return statistic().services.value<city::ProsperityRating>();
@@ -505,8 +523,14 @@ int PlayerCity::prosperity() const
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
 {
-  city::Options::const_iterator it = _d->options.find( opt );
+  auto it = _d->options.find( opt );
   return (it != _d->options.end() ? it->second : 0 );
+}
+
+int PlayerCity::getOption(const std::string& optname,bool) const
+{
+  OptionType type = city::findOption(optname);
+  return getOption(type);
 }
 
 void PlayerCity::clean()
@@ -599,7 +623,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       std::string title = _("##barbarian_attack_title##");
       std::string text = _("##barbarian_attack_text##");
       std::string video = "spy_army";
-      events::dispatch<ShowInfobox>( title, text, ShowInfobox::send2scribe, video );
+      events::dispatch<ShowInfobox>(title, text, true, video);
     }
   }
   else if( object.is<world::Messenger>() )

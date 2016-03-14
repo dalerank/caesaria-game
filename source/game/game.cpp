@@ -132,6 +132,7 @@ public:
   void loadWalkersMetadata(bool& isOk, std::string& result);
   void loadReligionConfig(bool& isOk, std::string& result);
   void fadeSplash(bool& isOk, std::string& result);
+  void themeFinished();
 
   Impl(): nextScreen(SCREEN_NONE),
       currentScreen(nullptr), engine(nullptr),
@@ -187,6 +188,11 @@ void Game::Impl::fadeSplash(bool& isOk, std::string& result)
       splash->exitScene( scene::SplashScreen::showDevText );
 
   splash.reset( 0 );
+}
+
+void Game::Impl::themeFinished()
+{
+  events::dispatch<events::ScriptFunc>("OnThemePlayFinished");
 }
 
 void Game::Impl::initMovie(bool& isOk, std::string& result)
@@ -267,6 +273,8 @@ void Game::Impl::initSound(bool& isOk, std::string& result)
 
   Logger::warning( "Game: load talks archive" );
   audio::Helper::initTalksArchive( SETTINGS_STR( talksArchive ) );
+
+  ae.onThemeStopped().connect(this, &Impl::themeFinished);
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -276,7 +284,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   std::string errorStr;
   std::string c3res = SETTINGS_STR( c3gfx );
   if( !c3res.empty() )
-  {    
+  {
     vfs::Directory gfxDir( c3res );
     vfs::Path c3path = gfxDir/"c3.sg2";
 
@@ -650,7 +658,7 @@ bool Game::exec()
       d.currentScreen = 0;
     }
     return true;
-  }    
+  }
 
   Logger::warning( "game: exec switch to screen {}", d.nextScreen );
   addon::Manager& am = addon::Manager::instance();

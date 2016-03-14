@@ -25,6 +25,7 @@
 #include <GameGood>
 #include <GameGui>
 #include <GameCore>
+#include <GameEvents>
 #include "sound/engine.hpp"
 #include "core/font.hpp"
 #include "walker/name_generator.hpp"
@@ -49,6 +50,11 @@ void Session::continuePlay(int years)
 int Session::lastChangesNum() const
 {
   return game::Settings::findLastChanges();
+}
+
+void Session::addWarningMessage(const std::string& message)
+{
+  events::dispatch<events::WarningMessage>( message, events::WarningMessage::neitral );
 }
 
 Player* Session::getPlayer() const
@@ -206,33 +212,6 @@ void Session::createIssue(const std::string& type, int value)
 {
   econ::Issue::Type vtype = econ::findType(type);
   _game->city()->treasury().resolveIssue( {vtype, value} );
-}
-
-bool Session::getBuildflag(const std::string& type)
-{
-  object::Type vtype = object::findType(type);
-  return _game->city()->buildOptions().isBuildingAvailable(vtype);
-}
-
-void Session::setBuildflag(const std::string& type, bool value)
-{
-  city::development::Options options;
-  object::Type vtype = object::findType(type);
-  options = _game->city()->buildOptions();
-  options.setBuildingAvailable( vtype, options.isBuildingAvailable( vtype ) );
-  _game->city()->setBuildOptions( options );
-}
-
-int Session::getCityflag(std::string flag) const
-{
-  PlayerCity::OptionType type = city::findOption(flag);
-  return _game->city()->getOption(type);
-}
-
-void Session::setCityflag(const std::string& flag, int value)
-{
-  PlayerCity::OptionType type = city::findOption(flag);
-  _game->city()->setOption(type, value);
 }
 
 int Session::getAdvflag(const std::string & flag) const

@@ -25,6 +25,7 @@
 #include "core/variant.hpp"
 #include "constants.hpp"
 #include "config.hpp"
+#include "core/signals.hpp"
 #include "core/singleton.hpp"
 
 namespace audio
@@ -38,7 +39,7 @@ public:
   void loadAlias(const vfs::Path& filename );
   void addFolder( vfs::Directory dir );
 
-  Volume volume( SoundType type ) const;
+  Volume volume(SoundType type) const;
 
   int maxVolumeValue() const;
 
@@ -47,7 +48,7 @@ public:
   void init();
   void exit();
 
-  void play( std::string sampleName, int volume, SoundType type, bool force=false);
+  void play(std::string sampleName, int volume, SoundType type, bool force=false);
   void play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
   bool isPlaying(const std::string& sampleName ) const;
@@ -56,6 +57,9 @@ public:
   void stop( int channel );
 
   void run( bool& );
+public signals:
+  Signal0<>& onThemeStopped();
+
 private:
   Engine();
   void _updateSamplesVolume();
