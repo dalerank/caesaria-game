@@ -1,6 +1,23 @@
 /**************************************** Path class begin **************************************************************/
 Object.defineProperty( Path.prototype, "str", { get: function () { return this.toString(); }} )
+Path.prototype.slice = function(str) {
+  var p = new Path()
+  p.set(this.str)
+  p.add(str)
+  return p
+}
+
 /*************************************** Path class end ******************************************************************/
+
+/**************************************** Emperor class begin **************************************************************/
+
+/**************************************** Emperor class end **************************************************************/
+
+/**************************************** Player class begin **************************************************************/
+Player.prototype.removeMoney = function(value) {
+  this.appendMoney(-value)
+}
+/**************************************** Player class end **************************************************************/
 
 /**************************************** MissionInfo class begin **************************************************************/
 Object.defineProperty( MissionInfo.prototype, "title", { get: function() { return this.get("preview.title"); }} )
@@ -30,8 +47,12 @@ Session.prototype.getOptPath = function(p) {
 
 Object.defineProperty( Session.prototype, "resolution", { set: function(mode) { this.setResolution(mode.w,mode.h) },
                                                           get: function() { return this.getResolution() }} )
-
+Object.defineProperty( Session.prototype, "date", { get: function()  { return this.getGameDate() }} )
 Object.defineProperty( Session.prototype, "credits", { get: function()  { return this.getCredits() }} )
+Object.defineProperty( Session.prototype, "player", { get: function()  { return this.getPlayer() }} )
+Object.defineProperty( Session.prototype, "city", { get: function()  { return this.getCity() }} )
+Object.defineProperty( Session.prototype, "emperor", { get: function()  { return this.getEmperor() }} )
+Object.defineProperty( Session.prototype, "c3mode", { get: function()  { return this.isC3mode() }} )
 Object.defineProperty( Session.prototype, "workdir", { get: function () { return getPath(engine.getOption("workDir")) }})
 
 Object.defineProperty( Session.prototype, "logfile", { get: function () {
@@ -43,6 +64,5 @@ Object.defineProperty( Session.prototype, "logfile", { get: function () {
 Object.defineProperty( Session.prototype, "missionsdir", { get: function () { return getPath(":/missions/"); }});
 Object.defineProperty( Session.prototype, "savedir", { get: function () { return getPath(engine.getOption("savedir")); }});
 Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return getPath(engine.getOption("screenshotDir")); }});
-Object.defineProperty( Session.prototype, "city", { get: function() { return this.getCity(); }} )
 
 var g_session = new Session();

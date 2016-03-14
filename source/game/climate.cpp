@@ -15,10 +15,9 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
-#define _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
-
 #include "climate.hpp"
+#include <GameScript>
+#include <GameCore>
 
 namespace game
 {
@@ -26,10 +25,22 @@ namespace game
 namespace climate
 {
 
-void initialize( Type climate );
+Type fromString(const std::string& value)
+{
+  if (value == TEXT(desert)) return desert;
+  if (value == TEXT(central)) return central;
+  if (value == TEXT(northen)) return northen;
+
+  return central;
+}
+
+void initialize(Type type)
+{
+  VariantList vl; vl << (int)type;
+  script::Core::execFunction("OnChangeClimate", vl);
+}
 
 }//end namespace climate
 
 }//end namespace game
 
-#endif //_CAESARIA_CLIMATEMANAGER_INCLUDE_H_

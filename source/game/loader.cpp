@@ -35,7 +35,7 @@
 #include "city/city.hpp"
 #include "core/logger.hpp"
 #include "objects/waymark.hpp"
-#include "climatemanager.hpp"
+#include "climate.hpp"
 
 #include <vector>
 

@@ -1,6 +1,8 @@
 var g_wasChangesShow = false;
 lobby.ui.buttons = [];
 
+function OnLobbyStart() { lobby.start()}
+
 lobby.ui.showChanges = function(force)
 {
   engine.log( "JS:lobby.ui.showChanges" );
@@ -261,7 +263,7 @@ lobby.ui.loadgame.showpage = function()
 
     lobby.ui.clear();
 
-    lobby.ui.addButton("##mainmenu_playmission##", OnShowMissionSelectDialog );
+    lobby.ui.addButton("##mainmenu_playmission##", function() { lobby.ui.loadgame.loadmission() })
     lobby.ui.addButton("##mainmenu_loadgame##",    function() { lobby.ui.loadgame.loadsave() })
     lobby.ui.addButton("##mainmenu_loadmap##",     function() { lobby.ui.loadgame.loadmap() })
     lobby.ui.addButton("##cancel##",               function() { lobby.ui.mainmenu.showpage()})
@@ -274,9 +276,9 @@ lobby.ui.options.showpage = function()
     lobby.ui.clear();
 
     lobby.ui.addButton( "##mainmenu_language##", function() { lobby.ui.options.showLanguageSettings()} )
-    lobby.ui.addButton( "##mainmenu_video##",    function() { sim.ui.topmenu.options.showVideoOptions()} )
+    lobby.ui.addButton( "##mainmenu_video##",    function() { game.ui.dialogs.showVideoOptions()} )
     lobby.ui.addButton( "##mainmenu_sound##",    function() { game.ui.dialogs.showAudioOptions() })
-    lobby.ui.addButton( "##mainmenu_package##",  OnShowPackageOptions );
+    lobby.ui.addButton( "##mainmenu_package##",  function() { lobby.ui.options.showPackageOptions()} )
     lobby.ui.addButton( "##mainmenu_plname##",   function() { lobby.ui.changePlayerName(true)} )
     lobby.ui.addButton( "##mainmenu_showlog##",  function() { lobby.ui.showLogs() } )
     lobby.ui.addButton( "##mainmenu_changes##",  function() { lobby.ui.showChanges(true)} )
@@ -327,7 +329,7 @@ lobby.ui.mainmenu.showpage = function()
   lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
 }
 
-function OnLobbyStart()
+lobby.start = function()
 {
   engine.log( "JS:OnLobbyStart" );
   lobby.ui.clear();

@@ -1,4 +1,11 @@
-function OnMissionLose()
+function OnMissionLose() { sim.ui.missionLose() }
+function OnMissionWin() { sim.ui.missionWin() }
+function OnMissionStart() { sim.start() }
+function OnRequestExitGame() { game.ui.dialogs.requestExit() }
+function OnShowSaveDialog() { game.ui.dialogs.savegame(); }
+function OnShowEmpirePrices() { sim.ui.advisors.showEmpirePrices() }
+
+sim.ui.missionLose = function()
 {
    var window = g_ui.addWindow(0, 0, 400, 220);
      window.title = "##mission_failed##";
@@ -17,7 +24,7 @@ function OnMissionLose()
    window.setModal();
 }
 
-function OnMissionWin()
+sim.ui.missionWin = function()
 {
   var minfo = g_session.winConditions();
   var newTitle = minfo.title;
@@ -85,7 +92,7 @@ function OnMissionWin()
     g_ui.addInformationDialog( "", winText );
 }
 
-function OnMissionStart()
+sim.start = function()
 {
   var showAware = engine.getOption("showStartAware");
   if (showAware)
@@ -99,8 +106,6 @@ function OnMissionStart()
 
   sim.ui.topmenu.initialize();
 }
-
-function OnShowSaveDialog() { game.ui.dialogs.savegame(); }
 
 game.ui.dialogs.savegame = function()
 {
@@ -120,13 +125,13 @@ game.ui.dialogs.savegame = function()
           }
 }
 
-function OnRequestExitGame()
+game.ui.dialogs.requestExit = function()
 {
   var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
   dialog.onYesCallback = function() { g_session.setMode(5); }
 }
 
-function OnShowEmpirePrices()
+sim.ui.advisors.showEmpirePrices = function()
 {
   engine.log( "JS:OnShowEmpirePrices" );
 

@@ -24,6 +24,7 @@
 #include <GameGfx>
 #include <GameEvents>
 #include <GameVfs>
+#include <GameCity>
 #include <GameLogger>
 #include <GameApp>
 

@@ -136,6 +136,7 @@ public:
   bool checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  bool isC3mode() const;
   void changeSystemLang( const std::string& newLang );
   void resetIfNeed(char* argv[], int argc);
 private:

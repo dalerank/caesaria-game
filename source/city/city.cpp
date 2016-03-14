@@ -596,7 +596,10 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      events::dispatch<ShowInfobox>( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
+      std::string title = _("##barbarian_attack_title##");
+      std::string text = _("##barbarian_attack_text##");
+      std::string video = "spy_army";
+      events::dispatch<ShowInfobox>( title, text, ShowInfobox::send2scribe, video );
     }
   }
   else if( object.is<world::Messenger>() )

@@ -331,8 +331,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 
 void Settings::checkC3present()
 {
-  std::string c3path = _d->options[ c3gfx ].toString();
-  bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
+  bool useOldGraphics = isC3mode();
 
   std::map<std::string,std::string> items = {
                                               {houseModel,        "house"},
@@ -373,6 +372,12 @@ void Settings::checkC3present()
 
   for( auto& item : items )
     _d->options[ item.first ] = item.second + ext;
+}
+
+bool Settings::isC3mode() const
+{
+  bool haveC3path = !_d->options[c3gfx].toString().empty();
+  return (haveC3path || KILLSWITCH(oldgfx));
 }
 
 void Settings::changeSystemLang(const std::string& newLang)

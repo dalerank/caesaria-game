@@ -1,7 +1,7 @@
 var haveChanges = false;
 var fullscreen = false;
 
-sim.ui.topmenu.options.showVideoOptions = function()
+game.ui.dialogs.showVideoOptions = function()
 {
   engine.log( "JS:OnShowVideoSettings" );
 
@@ -32,7 +32,7 @@ sim.ui.topmenu.options.showVideoOptions = function()
                         haveChanges = true;
                     };
 
-  for( var i=0; i < g_session.videoModesCount(); i++ )
+  for (var i=0; i < g_session.videoModesCount(); i++)
   {
     var mode = g_session.getVideoMode(i);
     lbxModes.addLine( mode.w+"x"+mode.h );

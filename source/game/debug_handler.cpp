@@ -106,7 +106,6 @@ enum {
   add_chastener_soldiers,
   add_wolves,
   send_mars_wrath,
-  add_player_money,
   send_chastener,
   test_request,
   send_player_army,
@@ -245,8 +244,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
   ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
-
-  ADD_DEBUG_EVENT( money, add_player_money )
 
   ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_fish_to_warehouse )
@@ -593,8 +590,6 @@ void DebugHandler::Impl::handleEvent(int event)
       house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
   }
   break;
-
-  case add_player_money:    game->player()->appendMoney( 1000 );  break;
 
   case add_favor:
   case remove_favor:

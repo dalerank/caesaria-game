@@ -21,9 +21,12 @@
 #include "core/namedtype.hpp"
 #include "core/size.hpp"
 #include "gui/predefinitions.hpp"
+#include "world/predefinitions.hpp"
 #include <string>
 
 class Game;
+class Player;
+class PlayerCity;
 class VariantList;
 class VariantMap;
 class Variant;
@@ -52,6 +55,11 @@ public:
   void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
   int lastChangesNum() const;
+  Player* getPlayer() const;
+  PlayerCity* getCity() const;
+  bool isC3mode() const;
+  world::Emperor* getEmperor() const;
+  DateTime getGameDate() const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);
   StringArray getFolders(const std::string& dir, bool full);

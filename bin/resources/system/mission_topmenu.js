@@ -19,7 +19,7 @@ sim.ui.topmenu.help.init = function() {
 sim.ui.topmenu.options.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_options##"));
 
-    m.addItemWithCallback("##screen_settings##", function () { sim.ui.topmenu.options.showVideoOptions() } )
+    m.addItemWithCallback("##screen_settings##", function () { game.ui.dialogs.showVideoOptions() } )
     m.addItemWithCallback("##sound_settings##", function () { game.ui.dialogs.showAudioOptions() } )
     m.addItemWithCallback("##speed_settings##",  function() { sim.ui.topmenu.options.showSpeedOptions() } )
     m.addItemWithCallback("##city_settings##", function () { sim.ui.topmenu.options.showCitySettings() } )

@@ -1,9 +1,9 @@
 function OnShowMissionTargetsWindow()
 {
-    game.ui.dialogs.showMissionTargets()
+    sim.ui.dialogs.showMissionTargets()
 }
 
-game.ui.dialogs.showMissionTargets = function()
+sim.ui.dialogs.showMissionTargets = function()
 {
     var wint = g_session.winConditions();
 

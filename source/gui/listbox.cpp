@@ -723,10 +723,8 @@ void ListBox::draw( gfx::Engine& painter )
   clipRect._lefttop += Point( 3, 3 );
   clipRect._bottomright -= Point( 3, 3 );
 
-  for( unsigned int i = 0; i < _d->items.size();  i++ )
+  for (auto& refItem :  _d->items)
   {
-    ListBoxItem& refItem = _d->items[ i ];
-
     int mnY = frameRect.bottom() - _d->scrollBar->value();
     int mxY = frameRect.top() - _d->scrollBar->value();
 
@@ -799,22 +797,22 @@ void ListBox::_updateBackground(int scrollbarWidth)
 void ListBox::setAutoScrollEnabled(bool scroll) {	setFlag( autoscroll, scroll );}
 bool ListBox::isAutoScrollEnabled() const{	return isFlag( autoscroll );}
 
+void ListBox::setScrollbarVisible(bool visible)
+{
+  if (_d->scrollBar)
+    _d->scrollBar->setVisible(visible);
+}
+
 void ListBox::setItemText(unsigned int index, const std::string& text)
 {
-  if (index >= _d->items.size())
-    return;
-
-  _d->items[index].setText(text);
+  item(index).setText(text);
   _d->needItemsRepackTextures = true;
   _recalculateItemHeight(_d->font, height());
 }
 
 void ListBox::setItemData(unsigned int index, const std::string& name, Variant tag)
 {
-  if (index >= _d->items.size())
-    return;
-
-  _d->items[index].setData( name, tag );
+  item(index).setData( name, tag );
 }
 
 Variant ListBox::getItemData(unsigned int index, const std::string& name)
@@ -842,7 +840,7 @@ int ListBox::insertItem(unsigned int index, std::string text)
 void ListBox::swapItems(unsigned int index1, unsigned int index2)
 {
   if ( index1 >= _d->items.size() || index2 >= _d->items.size() )
-  return;
+    return;
 
   ListBoxItem dummmy = _d->items[index1];
   _d->items[index1] = _d->items[index2];
@@ -877,22 +875,26 @@ void ListBox::resetItemOverrideColor(unsigned int index)
   }
 }
 
+void ListBox::setItemEnabled(unsigned int index, bool enabled)
+{
+  item(index).setEnabled(enabled);
+}
 
 void ListBox::resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType)
 {
   if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
     return;
 
-    _d->items[index].overrideColors[colorType].Use = false;
+  _d->items[index].overrideColors[colorType].Use = false;
 }
 
 
 bool ListBox::hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
 {
-    if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
+  if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
     return false;
 
-    return _d->items[index].overrideColors[colorType].Use;
+  return _d->items[index].overrideColors[colorType].Use;
 }
 
 NColor ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
@@ -1003,7 +1005,7 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addLines(const StringArray& strings)
 {
-  for( auto& line : strings )
+  for (auto& line : strings)
   {
     if( line.find( "\tc" ) != std::string::npos )
     {
@@ -1044,10 +1046,7 @@ void ListBox::setItemsTextOffset(Point p) { _d->itemTextOffset = p; }
 
 void ListBox::setItemTooltip(unsigned int index, const std::string& text)
 {
-  if (index >= _d->items.size())
-    return;
-
-  _d->items[index].setTooltip(text);
+  item(index).setTooltip(text);
 }
 
 void ListBox::setupUI(const VariantMap& ui)
@@ -1073,8 +1072,8 @@ void ListBox::setupUI(const VariantMap& ui)
   _d->margin.rleft() = ui.get( "margin.left", _d->margin.left() );
   _d->margin.rtop() = ui.get( "margin.top", _d->margin.top() );
 
-  bool scrollBarVisible = ui.get( "scrollbar.visible", true );
-  _d->scrollBar->setVisible( scrollBarVisible );
+  bool scrollBarVisible = ui.get("scrollbar.visible", true);
+  _d->scrollBar->setVisible(scrollBarVisible);
 
   VariantList items = ui.get( "items" ).toList();
   for( auto& item : items )

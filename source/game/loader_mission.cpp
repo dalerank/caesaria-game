@@ -43,7 +43,6 @@
 #include "city/terrain_generator.hpp"
 #include "events/fishplace.hpp"
 #include "city/config.hpp"
-#include "climatemanager.hpp"
 #include "freeplay_finalizer.hpp"
 
 using namespace religion;

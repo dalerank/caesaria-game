@@ -5,4 +5,5 @@
 #include "game/difficulty.hpp"
 #include "game/player.hpp"
 #include "game/game.hpp"
+#include "game/resourceloader.hpp"
 #include "game/mission_info.hpp"

@@ -18,44 +18,27 @@
 #include "advisor_emperor_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
-#include "pushbutton.hpp"
 #include "objects/construction.hpp"
-#include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "groupbox.hpp"
-#include "listbox.hpp"
-#include "listboxitem.hpp"
 #include "core/logger.hpp"
-#include "city/city.hpp"
-#include "city/request.hpp"
 #include "core/foreach.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
-#include "gameautopause.hpp"
-#include "city/statistic.hpp"
-#include "city/victoryconditions.hpp"
-#include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
-#include "dialogbox.hpp"
-#include "events/fundissue.hpp"
 #include "change_salary_window.hpp"
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
-#include "city_donation_window.hpp"
-#include "emperorgiftwindow.hpp"
-#include "gui/environment.hpp"
-#include "gui/dialogbox.hpp"
 #include "world/relations.hpp"
-#include "texturedbutton.hpp"
-#include "dictionary.hpp"
 #include "game/datetimehelper.hpp"
-#include "advisor_request_button.hpp"
-#include "gui/widget_helper.hpp"
 #include "game/gift.hpp"
+
+#include <GameGui>
+#include <GameCity>
+#include <GameEvents>
 
 using namespace gfx;
 using namespace events;
@@ -108,11 +91,7 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
-  auto& dialog = ui()->add<dialog::EmperorGift>( _mayor()->money(),
-                                                 _emperor().lastGift( _city->name() ).date() );
-  dialog.show();
-
-  CONNECT_LOCAL( &dialog, onSendGift(), Emperor::_sendGift );
+  events::dispatch<events::ScriptFunc>("OnShowEmperorGiftWindow");
 }
 
 class GiftDetails : public Window
@@ -303,22 +282,6 @@ void Emperor::_sendMoney( int money )
 {
   _mayor()->appendMoney( -money );
   events::dispatch<Payment>( econ::Issue::donation, money );
-
-  _updatePrimaryFunds();
-}
-
-void Emperor::_sendGift(int money)
-{
-  if( money > _mayor()->money() )
-  {
-    dialog::Information( ui(),
-                         _("##nomoney_for_gift_title##"),
-                         _("##nomoney_for_gift_text##") );
-    return;
-  }
-
-  _mayor()->appendMoney( -money );
-  _city->empire()->emperor().sendGift( Gift( _city->name(), "gift", money, game::Date::current() ) );
 
   _updatePrimaryFunds();
 }

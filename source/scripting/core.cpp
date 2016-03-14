@@ -17,6 +17,7 @@
 
 #include "core.hpp"
 #include "picoc/mujs.h"
+
 #include <GameApp>
 #include <GameObjects>
 #include <GameVfs>
@@ -26,12 +27,14 @@
 #include <GameCore>
 #include <GameGfx>
 #include <GameCity>
+#include <GameWorld>
 
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
 
 using namespace gui;
 using namespace gui::dialog;
+using namespace world;
 using namespace vfs;
 
 namespace script
@@ -138,6 +141,9 @@ void pushud(js_State* J, const std::string& name, void* v)
 }
 
 void push(js_State* J, ContextMenuItem* w) { pushud(J,TEXT(ContextMenuItem),w); }
+void push(js_State* J, PlayerCity* p) { pushud(J, TEXT(PlayerCity), p); }
+void push(js_State* J, Player* p) { pushud(J, TEXT(Player), p); }
+void push(js_State* J, world::Emperor* p) { pushud(J, TEXT(Emperor), p); }
 
 void push(js_State *J, const StringArray& items)
 {
@@ -157,6 +163,17 @@ void push(js_State *J, const VariantMap& items)
     push(J, item.second);
     js_setproperty(J, -2, item.first.c_str());
   }
+}
+
+inline DateTime to(js_State *J, int n, DateTime) 
+{ 
+  if (js_isuserdata(J, 1, "userdata"))
+  {
+    DateTime* dt = (DateTime*)js_touserdata(J, 1, "userdata");
+    return *dt;
+  }
+
+  return DateTime();
 }
 
 inline StringArray to(js_State *J, int n, StringArray)
@@ -180,9 +197,10 @@ inline StringArray to(js_State *J, int n, StringArray)
   return ret;
 }
 
+inline bool to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
-inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n), js_tonumber(J, n+1) );}
+inline PointF to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
 inline Rect to(js_State *J, int n, Rect)
 {
@@ -202,6 +220,27 @@ void engineLog(js_State *J)
   const char *text = js_tostring(J, 1);
   Logger::warning( text );
   js_pushundefined(J);
+}
+
+void engineLoadArchive(js_State* J)
+{
+  Path archivePath = js_tostring(J, 1);
+  bool ignoreCase = js_toboolean(J, 2)>0;
+
+  Directory dir = archivePath.directory();
+  Path arcPath = dir.find(archivePath.baseName(), ignoreCase ? Path::ignoreCase : Path::nativeCase);
+
+  ArchivePtr archive = FileSystem::instance().mountArchive(arcPath);
+  if (archive.isNull())
+  {
+    Logger::warning("WARNING !!! JS:LoadArchive can't load file " + archivePath.toString());
+    return;
+  }
+
+  ResourceLoader rc;
+  NFile atlasInfo = archive->createAndOpenFile("info");
+  if (atlasInfo.isOpen()) { rc.loadAtlases(atlasInfo, false); }
+  else { rc.loadFiles(archive); }
 }
 
 void engineReloadFile(vfs::Path path)
@@ -345,6 +384,21 @@ void constructor_Session(js_State *J)
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", internal::session, nullptr);
+}
+
+void constructor_PlayerCity(js_State *J)
+{
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", (internal::game)->city().object(), nullptr);
+}
+
+
+void constructor_Player(js_State *J)
+{
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", (internal::game)->player().object(), nullptr);
 }
 
 template<typename T>
@@ -631,6 +685,7 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
   REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engineLoadArchive, "loadArchive", 2);
 REGISTER_GLOBAL_OBJECT(engine)
 
 #include "widget.interface"

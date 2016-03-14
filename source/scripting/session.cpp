@@ -51,6 +51,31 @@ int Session::lastChangesNum() const
   return game::Settings::findLastChanges();
 }
 
+Player* Session::getPlayer() const
+{
+  return _game->player().object();
+}
+
+PlayerCity* Session::getCity() const
+{
+  return _game->city().object();
+}
+
+bool Session::isC3mode() const
+{
+  return game::Settings::instance().isC3mode();
+}
+
+world::Emperor * Session::getEmperor() const
+{
+  return &_game->empire()->emperor();
+}
+
+DateTime Session::getGameDate() const
+{
+  return _game->date();
+}
+
 StringArray Session::getCredits() const
 {
   StringArray strs;

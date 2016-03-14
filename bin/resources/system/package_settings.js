@@ -1,4 +1,4 @@
-function OnShowPackageOptions()
+lobby.ui.options.showPackageOptions = function()
 {
   var wnd = g_ui.addWindow(0, 0, 450, 300);
   wnd.mayMove = false;

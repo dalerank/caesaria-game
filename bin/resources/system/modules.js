@@ -8,6 +8,7 @@ var modules = [
                   "init_city",
                   "init_game",
                   "vector",
+                  "init_colors",
                   "video_settings",
                   "audio_settings",
                   "city_settings",
@@ -18,6 +19,8 @@ var modules = [
                   "mission_targets",
                   "mission_debug",
                   "package_settings",
+                  "climate_manager",
+                  "emperor_gift",
                   "lobby"
               ]
 

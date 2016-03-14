@@ -99,11 +99,17 @@ public:
   //! set whether the listbox should scroll to newly selected items
   virtual void setAutoScrollEnabled(bool scroll);
 
+  //!
+  void setScrollbarVisible(bool visible);
+
   //! returns true if automatic scrolling is enabled, false if not.
   virtual bool isAutoScrollEnabled() const;
 
   //! clear all item colors at index
   virtual void resetItemOverrideColor(unsigned int index);
+
+  //!
+  void setItemEnabled(unsigned int index, bool enabled);
 
   //! clear item color at index for given colortype
   virtual void resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType);

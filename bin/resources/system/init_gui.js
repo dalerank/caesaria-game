@@ -100,6 +100,7 @@ Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(ob
 Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount(); }} );
 Object.defineProperty( ListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} );
 Object.defineProperty( ListBox.prototype, "onDblclickCallback", { set: function(func) { this.onIndexSelectedAgainEx(func); }} )
+Object.defineProperty( ListBox.prototype, "scrollbarVisible", { set: function(v) {this.setScrollbarVisible(v)}} )
 
 Object.defineProperty( ListBox.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( ListBox.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );

@@ -1,4 +1,4 @@
-function OnShowMissionSelectDialog()
+lobby.ui.loadgame.loadmission = function()
 {
     var wnd = g_ui.addWindow(0, 0, 1024, 768);
     var missionInfo = null;
