@@ -17,10 +17,10 @@ var ctsettings = {
         switch(obj.group) {
                 case "city":  g_session.city.setOption(obj.flag, value); break;
                 case "game":  engine.setOption(obj.flag, value); break;
-                case "game":  engine.setGameflag(obj.flag, value); break;
+                case "game":  g_session.setGameflag(obj.flag, value); break;
                 case "build": g_session.city.setBuildOption(obj.flag, value); break;
                 case "gui":   this.setguiv(obj.flag); break;
-                case "risks": g_session.setCityflag(obj.flag,value); break;
+                case "risks": g_session.city.setOption(obj.flag,value); break;
             }
     },
 

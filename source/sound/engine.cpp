@@ -117,7 +117,8 @@ public:
 
   std::string currentTheme;
   Signal0<> onThemeStoppedSignal;
-  unsigned int lastTimeThemeUpdate;
+  unsigned int lastTimeThemeUpdate, 
+               themeStopCheckInterval;
 
 public:
   void nextLoad();
@@ -132,7 +133,7 @@ public:
 
 void Engine::setVolume(audio::SoundType type, Volume value)
 {
-  _d->volumes[ type ] = value;
+  _d->volumes[type] = value;
   _updateSamplesVolume();
 }
 
@@ -159,7 +160,7 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ speech ] = maxVolumeValue() / 2;
   _d->volumes[ effects ] = maxVolumeValue() / 2;
   _d->volumes[ infobox ] = maxVolumeValue() / 2;
-
+  _d->themeStopCheckInterval = 10000;
   _d->extensions << ".ogg" << ".wav";
   _d->running = true;
   addFolder( Directory() );
@@ -390,9 +391,10 @@ void Engine::run(bool& continues)
 {
   _d->nextLoad();
 
-  if (DateTime::elapsedTime() - _d->lastTimeThemeUpdate > 1000)
+  if (DateTime::elapsedTime() - _d->lastTimeThemeUpdate > _d->themeStopCheckInterval)
   {
     _d->lastTimeThemeUpdate = DateTime::elapsedTime();
+    _d->themeStopCheckInterval = math::clamp<int>(_d->themeStopCheckInterval * 2, 1000, 10000);
     if (!isPlaying(_d->currentTheme))
       emit _d->onThemeStoppedSignal();
   }
@@ -440,6 +442,7 @@ void Engine::Impl::nextLoad()
   if (info.type == theme)
   {
     stop(currentTheme);
+    themeStopCheckInterval = 1000;
     currentTheme = info.name;
   }
 
@@ -509,7 +512,7 @@ void Engine::Impl::clearFinishedChannels()
 void  Engine::Impl::resetIfalias(std::string& sampleName)
 {
   Aliases::iterator it = aliases.find( Hash( sampleName ) );
-  if( it != aliases.end() )
+  if (it != aliases.end())
     sampleName = it->second;
 }
 

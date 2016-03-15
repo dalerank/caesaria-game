@@ -52,6 +52,7 @@ Object.defineProperty( Session.prototype, "player", { get: function()  { return 
 Object.defineProperty( Session.prototype, "city", { get: function()  { return this.getCity() }} )
 Object.defineProperty( Session.prototype, "emperor", { get: function()  { return this.getEmperor() }} )
 Object.defineProperty( Session.prototype, "c3mode", { get: function()  { return this.isC3mode() }} )
+Object.defineProperty( Session.prototype, "empire", { get: function()  { return this.getEmpire() }} )
 Object.defineProperty( Session.prototype, "workdir", { get: function () { return getPath(engine.getOption("workDir")) }})
 
 Object.defineProperty( Session.prototype, "logfile", { get: function () {

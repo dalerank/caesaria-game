@@ -1147,7 +1147,7 @@ double House::state(Param param) const
 void House::_update( bool needChangeTexture )
 {
   Picture pic = HouseSpecHelper::instance().getPicture( _d->houseLevel, size().width() );
-  if( needChangeTexture )
+  if (needChangeTexture)
   {
     if( !pic.isValid() )
     {
@@ -1181,7 +1181,7 @@ void House::_updateGround()
   if (_city().isValid() && !_cityOpt(PlayerCity::c3gameplay))
   {
     _d->ground.clear();
-    _d->ground << Picture( "housgn1g", size().width() );
+    _d->ground << Picture( "housng1g", size().width() );
   }
 }
 

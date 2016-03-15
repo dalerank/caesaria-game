@@ -7,6 +7,7 @@ DEFINE_WIDGET_CONSTRUCTOR(ContextMenu)
 
 DEFINE_OBJECT_GETTER_0(ContextMenuItem,bool,visible)
 DEFINE_OBJECT_FUNCTION_1(ContextMenuItem,setVisible,bool)
+DEFINE_OBJECT_FUNCTION_1(ContextMenuItem,moveToIndex,int)
 DEFINE_OBJECT_GETTER_0(ContextMenuItem,unsigned int,width)
 DEFINE_OBJECT_GETTER_1(ContextMenuItem,ContextMenuItem*,addSubmenuItem,const std::string&,"unknown")
 DEFINE_OBJECT_FUNCTION_1(ContextMenuItem,setAutoChecking,bool)

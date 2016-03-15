@@ -120,11 +120,11 @@ public:
 
   virtual void setAllowFocus( bool enabled );
 
-  void beforeDraw( gfx::Engine& painter );
-
-  float getOpacity( unsigned int index=0 ) const;
+  virtual void beforeDraw( gfx::Engine& painter );
 
   int hovered() const;
+
+  void moveItem(ContextMenuItem* item, int index);
 
 signals public:
   virtual Signal1<int>& onItemAction();

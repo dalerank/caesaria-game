@@ -343,7 +343,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
 
   Picture corner( ResourceGroup::empirepnls, 3 );
   pics.append( corner, Point( 0, 0 ) );    //left top
-  pics.append( corner, Point( 0, -p->height() + corner.height() ) ); //top right
+  pics.append( corner, Point( 0, corner.height()-p->height()) ); //top right
   pics.append( corner, Point( p->width() - corner.width(), 0 ) ); //left bottom
   pics.append( corner, Point( p->width() - corner.width(), -p->height() + corner.height() ) ); //bottom right
   pics.append( corner, Point( 0, -p->height() + bottonMargin ) ); //left middle

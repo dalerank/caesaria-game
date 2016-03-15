@@ -38,10 +38,11 @@ public:
   Emperor();
   virtual ~Emperor();
 
-  void updateRelation( const std::string& cityname, int value );
-  void updateRelation( const std::string& cityname, const RelationAbility& ability );
+  void updateRelation(const std::string& cityname, int value);
+  void updateRelation(const std::string& cityname, const RelationAbility& ability);
 
-  void sendGift( const Gift& money );
+  void sendGift(const Gift& gift);
+  void sendGift(const std::string& who, const std::string& type, int value);
   const Gift& lastGift( const std::string& cityname ) const;
   const Relation& relation( const std::string& cityname ) const;
 

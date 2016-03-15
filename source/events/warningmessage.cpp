@@ -19,6 +19,7 @@
 #include "gui/message_stack_widget.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "core/logger.hpp"
 #include "gui/environment.hpp"
 #include "core/gettext.hpp"
 
@@ -45,7 +46,13 @@ bool WarningMessage::_mayExec(Game& game, unsigned int time) const
 
 void WarningMessage::_exec(Game& game, unsigned int)
 {
-  if( !game.city()->getOption( PlayerCity::warningsEnabled ) )
+  if (game.city().isNull())
+  {
+    Logger::warning(_text);
+    return;
+  }
+
+  if (!game.city()->getOption( PlayerCity::warningsEnabled ))
     return;
 
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(

@@ -480,16 +480,4 @@ void Window::setTextAlignment(Alignment horizontal, Alignment vertical)
     _d->title->setTextAlignment(horizontal, vertical);
 }
 
-SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
-  : Window( parent, rect, title, -1 )
-{
-  if( !ui.empty() )
-    setupUI(ui);
-
-  add<ExitButton>(Point(width() - 34, height() - 34));
-
-  moveToCenter();
-  WidgetClosers::insertTo(this, KEY_RBUTTON);
-}
-
 }//end namespace gui

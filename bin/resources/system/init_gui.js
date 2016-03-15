@@ -375,6 +375,15 @@ Ui.prototype = {
     return window;
   },
 
+  addSimpleWindow : function(rx,ry,rw,rh) {
+    var window = new Window(0);
+    window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
+    window.addExitButton(window.w-34, window.h-34);
+    window.moveToCenter();
+    window.closeAfterKey({escape:true,rmb:true});
+    return window;
+  },
+
   addInformationDialog: function(title, text) {
     var dialog = new Dialogbox(0);
     dialog.title = _t(title);

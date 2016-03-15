@@ -99,6 +99,8 @@ public:
 
   void setSubmenuIconVisible(bool visible);
 
+  void moveToIndex(int index);
+
   virtual void setVisible(bool visible);
 
 signals public:

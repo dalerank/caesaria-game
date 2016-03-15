@@ -72,7 +72,6 @@ lobby.ui.options.showPackageOptions = function()
             if (!g_session.screenshotdir.exist())
                 g_session.createDir(g_session.screenshotdir.str);
 
-            engine.setOption("pckOptionsChanged",true);
             wnd.deleteLater();
     }
 

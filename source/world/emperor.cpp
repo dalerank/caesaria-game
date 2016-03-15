@@ -88,6 +88,12 @@ void Emperor::sendGift(const Gift& gift)
   relation.update( gift );
 }
 
+void Emperor::sendGift(const std::string & who, const std::string & type, int value)
+{
+  Gift gift(who, type, value, game::Date::current());
+  sendGift(gift);
+}
+
 const Gift& Emperor::lastGift(const std::string& cityname) const
 {
   auto it = _dfunc()->relations.find( cityname );

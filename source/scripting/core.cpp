@@ -69,6 +69,18 @@ Variant to(js_State *J, int n, Variant)
   return Variant();
 }
 
+void tryPCall(js_State *J, int params)
+{
+  int error = js_pcall(internal::J, 0);
+  if (error)
+  {
+    std::string str = js_tostring(internal::J, -1);
+    Logger::warning(str);
+  }
+  js_pop(internal::J, -1);
+
+}
+
 void push(js_State* J,const Size& size)
 {
   js_newobject(J);
@@ -140,10 +152,13 @@ void pushud(js_State* J, const std::string& name, void* v)
   js_newuserdata(J, "userdata", v, nullptr);
 }
 
-void push(js_State* J, ContextMenuItem* w) { pushud(J,TEXT(ContextMenuItem),w); }
-void push(js_State* J, PlayerCity* p) { pushud(J, TEXT(PlayerCity), p); }
-void push(js_State* J, Player* p) { pushud(J, TEXT(Player), p); }
-void push(js_State* J, world::Emperor* p) { pushud(J, TEXT(Emperor), p); }
+#define PUSH_USERDATA(type) void push(js_State* J, type* p) { pushud(J, #type, p); }
+
+PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(PlayerCity)
+PUSH_USERDATA(Player)
+PUSH_USERDATA(Emperor)
+PUSH_USERDATA(Empire)
 
 void push(js_State *J, const StringArray& items)
 {
@@ -343,13 +358,7 @@ void Core::loadModule(const std::string& path)
   }
 
   js_getglobal(internal::J,"");
-  error = js_pcall(internal::J,0);
-  if (error)
-  {
-    std::string str = js_tostring(internal::J,-1);
-    Logger::warning( str );
-  }
-  js_pop(internal::J,-1);
+  internal::tryPCall(internal::J, 0);
 }
 
 void Core::execFunction(const std::string& funcname)
@@ -367,38 +376,8 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
     if (error)
       Logger::warning("WARNING !!! Undefined value for js.pcall " + funcname);
   }
-  int error = js_pcall(internal::J,params.size());
 
-  if (error)
-  {
-    Logger::warning("WARNING !!! Some errors in js.pcall " + funcname);
-    std::string str = js_tostring(internal::J,-1);
-    Logger::warning(str);
-  }
-  else
-    js_pop(internal::J,1);
-}
-
-void constructor_Session(js_State *J)
-{
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", internal::session, nullptr);
-}
-
-void constructor_PlayerCity(js_State *J)
-{
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", (internal::game)->city().object(), nullptr);
-}
-
-
-void constructor_Player(js_State *J)
-{
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", (internal::game)->player().object(), nullptr);
+  internal::tryPCall(internal::J,params.size());
 }
 
 template<typename T>
@@ -433,7 +412,7 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
       std::string index = widget->getProperty(callback);
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
-      js_pcall(internal::J,0);
+      internal::tryPCall(internal::J,0);
       js_pop(internal::J,1);
     }
     else
@@ -454,7 +433,7 @@ void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callb
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
       internal::push(internal::J, value);
-      js_pcall(internal::J,1);
+      internal::tryPCall(internal::J,1);
       js_pop(internal::J,1);
     }
     else
@@ -602,6 +581,12 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
+#define DEFINE_VANILLA_CONSTRUCTOR(type,func) void constructor_##type(js_State *J) { \
+                                                  js_currentfunction(J); \
+                                                  js_getproperty(J, -1, "prototype"); \
+                                                  js_newuserdata(J, "userdata", func, nullptr); \
+                                              }
+
 #define DEFINE_OBJECT_GETTER_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State* J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
@@ -669,6 +654,11 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "path.implementation"
 #include "spinbox.implementation"
 #include "filelistbox.implementation"
+
+DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
+DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
+DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
+DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
 void Core::registerFunctions( Game& game )
 {

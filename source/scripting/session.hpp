@@ -46,6 +46,7 @@ public:
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
+  void createDir(const std::string& dir);
   int getAdvflag(const std::string& flag) const;
   void setAdvflag(const std::string& flag, int value);
   void loadLocalization(const std::string& name);
@@ -56,6 +57,7 @@ public:
   PlayerCity* getCity() const;
   bool isC3mode() const;
   world::Emperor* getEmperor() const;
+  world::Empire* getEmpire() const;
   DateTime getGameDate() const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);

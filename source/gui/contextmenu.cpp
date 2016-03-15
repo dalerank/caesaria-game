@@ -612,6 +612,23 @@ bool ContextMenu::_hasOpenSubMenu() const
   return false;
 }
 
+void ContextMenu::moveItem(ContextMenuItem* item, int index)
+{
+  if (index < 0 || index >= _d->items.size())
+    return;
+
+  for (int i = 0; i < _d->items.size(); ++i)
+  {
+    if (_d->items[i] == item)
+    {
+      _d->items.erase(_d->items.begin() + i);
+      _d->items.insert(_d->items.begin() + index, item);
+      return;
+    }
+  }
+
+  updateItems();
+}
 
 void ContextMenu::_closeAllSubMenus()
 {

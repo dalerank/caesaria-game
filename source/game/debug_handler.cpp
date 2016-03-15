@@ -129,7 +129,6 @@ enum {
   send_neptune_wrath,
   send_mars_spirit,
   show_fest,
-  add_favor,
   add_wheat_to_granary,
   add_fish_to_granary,
   add_meat_to_granary,
@@ -151,7 +150,6 @@ enum {
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
   add_oil_to_warehouse,
-  remove_favor,
   property_browser,
   make_generation,
   all_wheatfarms_ready,
@@ -310,8 +308,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
   ADD_DEBUG_EVENT( in_city, show_fest )
-  ADD_DEBUG_EVENT( in_city, add_favor )
-  ADD_DEBUG_EVENT( in_city, remove_favor )
   ADD_DEBUG_EVENT( in_city, make_generation )
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
@@ -333,11 +329,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( steam, reset_steam_prefs )
 #undef ADD_DEBUG_EVENT
-
-#ifdef DEBUG
-  _d->configUpdater.setFilename( ":/construction.model" );
-  CONNECT( &_d->configUpdater, onChange, _d.data(), Impl::reloadConfigs );
-#endif
 }
 
 void DebugHandler::setVisible(bool visible)
@@ -576,14 +567,6 @@ void DebugHandler::Impl::handleEvent(int event)
     HouseList houses = game->city()->overlays().select<House>();
     for( auto house : houses )
       house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
-  }
-  break;
-
-  case add_favor:
-  case remove_favor:
-  {
-    std::string cityName = game->city()->name();
-    game->empire()->emperor().updateRelation( cityName, event == add_favor ? +10 : -10 );
   }
   break;
 

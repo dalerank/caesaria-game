@@ -77,6 +77,11 @@ world::Emperor * Session::getEmperor() const
   return &_game->empire()->emperor();
 }
 
+world::Empire * Session::getEmpire() const
+{
+  return _game->empire().object();
+}
+
 DateTime Session::getGameDate() const
 {
   return _game->date();
@@ -212,6 +217,11 @@ void Session::createIssue(const std::string& type, int value)
 {
   econ::Issue::Type vtype = econ::findType(type);
   _game->city()->treasury().resolveIssue( {vtype, value} );
+}
+
+void Session::createDir(const std::string & dir)
+{
+  vfs::Directory::createByPath(dir);
 }
 
 int Session::getAdvflag(const std::string & flag) const

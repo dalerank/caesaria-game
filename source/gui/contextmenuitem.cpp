@@ -174,6 +174,13 @@ void ContextMenuItem::setVisible(bool visible)
     menu->updateItems();
 }
 
+void ContextMenuItem::moveToIndex(int index)
+{
+  ContextMenu* menu = safety_cast<ContextMenu*>(parent());
+  if (menu)
+    menu->moveItem(this, index);
+}
+
 bool ContextMenuItem::isAutoChecking() { return _dfunc()->is.autoChecking; }
 bool ContextMenuItem::isSeparator() const {  return _dfunc()->is.separator; }
 void ContextMenuItem::setCommandId( int cmdId ){	_dfunc()->commandId = cmdId;}

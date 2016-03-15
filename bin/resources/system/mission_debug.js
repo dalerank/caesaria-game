@@ -1,6 +1,13 @@
+sim.ui.topmenu.debug.reset = function()
+{
+  sim.ui.topmenu.debugmenu.clear()
+  sim.ui.topmenu.init()
+}
+
 sim.ui.topmenu.debug.init = function()
 {
   var topmenu = sim.ui.topmenu.widget;
+  var d = sim.ui.topmenu.debug;
   sim.ui.topmenu.debugmenu = topmenu.findItem("Debug");
 
   /*topmenu.addItemWithCallback("Debug/enemies", "add_enemy_archers", function() {engine.log("test")} )
@@ -72,13 +79,13 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/other", "send_player_army", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/other", "screenshot", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/other", "enable_constructor_mode", function() {engine.log("test")} )*/
-  topmenu.addItemWithCallback("Debug/other", "Next theme", function() { game.sound.player.themeFinished() } )
+  topmenu.addItemWithCallback("Debug/other", "enable_constructor_mode", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/other", "next_theme", function() {engine.log("test")} )*/
 
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_shipyard_enable", function() {toggleBuildOptions("shipyard")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_reservoir_enable", function() {toggleBuildOptions("reservoir")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_wineshop_enable", function() {toggleBuildOptions("wine_workshop")} )
-  topmenu.addItemWithCallback("Debug/buildings", "toggle_vinard_enable", function() {toggleBuildOptions("vinard")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_shipyard_enable", function() { d.toggleBuildOptions("shipyard")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_reservoir_enable", function() { d.toggleBuildOptions("reservoir")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_wineshop_enable", function() { d.toggleBuildOptions("wine_workshop")} )
+  topmenu.addItemWithCallback("Debug/buildings", "toggle_vinard_enable", function() { d.toggleBuildOptions("vinard")} )
 
   /*topmenu.addItemWithCallback("Debug/disaster", "random_fire", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "random_collapse", function() {engine.log("test")} )
@@ -100,15 +107,18 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/empire", "empire_toggle_capua", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/empire", "empire_toggle_londinium", function() {engine.log("test")} )*/
 
-  topmenu.addItemWithCallback("Debug/city", "Toggle gods", function() {toggleCityFlag("godEnabled")})
+  topmenu.addItemWithCallback("Debug/city", "Toggle gods", function() { d.toggleCityFlag("godEnabled")} )
+  topmenu.addItemWithCallback("Debug/city", "Toggle adviser", function() { d.toggleCityFlag("adviserEnabled")} )
   /*topmenu.addItemWithCallback("Debug/city", "add_soldiers_in_fort", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "add_city_border", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "crash_favor", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "add_scribe_messages", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/city", "show_fest", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/city", "add_favor", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/city", "remove_favor", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/city", "make_generation", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/city", "show_fest", function() {engine.log("test")} )*/
+  topmenu.addItemWithCallback("Debug/city", "add_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), 10)} )
+  topmenu.addItemWithCallback("Debug/city", "remove_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), -10)} )
+
+  topmenu.addItemWithCallback("Debug/windows", "emperor gift", function() {game.ui.dialogs.gift2emperor.show()} )
+ /*topmenu.addItemWithCallback("Debug/city", "make_generation", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "decrease_sentiment", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "increase_sentiment", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "forest_grow", function() {engine.log("test")} )
@@ -131,35 +141,44 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/options", "toggle_experimental_options", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/options", "reload_buildings_config", function() {engine.log("test")} )*/
 
-  topmenu.addItemWithCallback("Debug/draw", "toggle_grid_visibility", function() { toggleDrawFlag("drawGrid");} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_overlay_base", function() {toggleDrawFlag("shadowOverlay")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_path", function() {toggleDrawFlag("showPath")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_roads", function() {toggleDrawFlag("showRoads")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_buildings", function() {toggleDrawFlag("showBuildings")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_trees", function() {toggleDrawFlag("showTrees")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_object_area", function() {toggleDrawFlag("showObjectArea")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_walkable_tiles", function() {toggleDrawFlag("showWalkableTiles")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_locked_tiles", function() {toggleDrawFlag("showLockedTiles")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_flat_tiles", function() {toggleDrawFlag("showFlatTiles")} )
-  topmenu.addItemWithCallback("Debug/draw", "toggle_show_rocks", function() {toggleDrawFlag("showRocks")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_grid_visibility", function() { d.toggleDrawFlag("drawGrid");} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_overlay_base", function() { d.toggleDrawFlag("shadowOverlay")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_path", function() { d.toggleDrawFlag("showPath")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_roads", function() { d.toggleDrawFlag("showRoads")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_buildings", function() { d.toggleDrawFlag("showBuildings")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_trees", function() { d.toggleDrawFlag("showTrees")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_object_area", function() { d.toggleDrawFlag("showObjectArea")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_walkable_tiles", function() { d.toggleDrawFlag("showWalkableTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_locked_tiles", function() { d.toggleDrawFlag("showLockedTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_flat_tiles", function() { d.toggleDrawFlag("showFlatTiles")} )
+  topmenu.addItemWithCallback("Debug/draw", "toggle_show_rocks", function() { d.toggleDrawFlag("showRocks")} )
 
   //topmenu.addItemWithCallback("Debug/empiremap", "toggle_show_empireMapTiles", function() {engine.log("test")} )
 
   //topmenu.addItemWithCallback("Debug/steam", "reset_steam_prefs", function() {engine.log("test")} )
 }
 
-function toggleBuildOptions(name)
-{
+sim.ui.topmenu.debug.toggleBuildOptions = function(name) {
   var value = g_session.city.getBuildOption(name);
   g_session.city.setBuildOption(name,!value);
 
   engine.log( "Change build flag " + name + " to " + (!value ? "true" : "false"))
 }
 
-function toggleDrawflag(name)
-{
+sim.ui.topmenu.debug.toggleCityFlag = function(name) {
+  var value = g_session.city.getOption(name)
+  g_session.city.setOption(name, !value)
+
+  engine.log( "Change city flag " + name + " to " + (!value ? "true" : "false"))
+}
+
+sim.ui.topmenu.debug.toggleDrawflag = function(name) {
   var value = g_session.getAdvflag(name);
   g_session.setAdvflag(name, !value);
 
   engine.log( "Change draw flag " + name + " to " + (!value ? "true" : "false"))
 }
+
+//was call on reload script
+if (sim.ui.topmenu.debugmenu)
+  sim.ui.topmenu.debug.reset()
