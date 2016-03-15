@@ -58,6 +58,7 @@ public:
   bool isC3mode() const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
+  void setRank(int i, const std::string& name, const std::string& pretty, int salary);
   DateTime getGameDate() const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);

@@ -28,7 +28,6 @@
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "game/player.hpp"
-#include "change_salary_window.hpp"
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
@@ -66,19 +65,7 @@ public:
 
 void Emperor::_showChangeSalaryWindow()
 {
-  if( game::Date::current() > _city->victoryConditions().finishDate() )
-  {
-    dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
-    return;
-  }
-
-  auto& salaryWindow = ui()->add<dialog::ChangeSalary>( _mayor()->salary() );
-
-  salaryWindow.add<HelpButton>( Point( 12, height() - 39), "emperor_advisor" );
-  salaryWindow.setRanks( world::EmpireHelper::ranks() );
-  salaryWindow.show();
-
-  CONNECT_LOCAL( &salaryWindow, onChangeSalary(), Emperor::_changeSalary )
+  events::dispatch<events::ScriptFunc>("ShowPlayerSalarySettings");
 }
 
 void Emperor::_showSend2CityWindow()
@@ -284,19 +271,6 @@ void Emperor::_sendMoney( int money )
   events::dispatch<Payment>( econ::Issue::donation, money );
 
   _updatePrimaryFunds();
-}
-
-void Emperor::_changeSalary( int money )
-{
-  _mayor()->setSalary( money );
-
-  float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( _city ) );
-  if( salKoeff > 1.f )
-  {
-    dialog::Information( ui(),
-                         _("##changesalary_warning##"),
-                         _("##changesalary_greater_salary##") );
-  }
 }
 
 std::string Emperor::_getEmperorFavourStr()

@@ -574,29 +574,17 @@ float EmpireHelper::governorSalaryKoeff(CityPtr city)
   return result;
 }
 
-GovernorRanks EmpireHelper::ranks()
+GovernorRanks& EmpireHelper::ranks()
 {
-  std::map<unsigned int, GovernorRank> sortRanks;
-
-  VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
-  for( auto& item : vm )
-  {
-    GovernorRank rank;
-    rank.load( item.first, item.second.toMap() );
-    sortRanks[ rank.level ] = rank;
-  }
-
-  GovernorRanks ret;
-  for( auto& rank : sortRanks )
-    ret.push_back( rank.second );
-
-  return ret;
+  static std::vector<GovernorRank> instRanks;
+  return instRanks;
 }
 
-GovernorRank EmpireHelper::getRank(GovernorRank::Level level)
+const GovernorRank& EmpireHelper::getRank(GovernorRank::Level level)
 {
-  GovernorRanks ranks = world::EmpireHelper::ranks();
-  return ranks[ math::clamp<int>( level, 0, ranks.size() ) ];
+  const GovernorRanks& ranks = EmpireHelper::ranks();
+  int l = math::clamp<int>(level, GovernorRank::citizen, ranks.size());
+  return ranks[l];
 }
 
 void Empire::Impl::checkLoans()

@@ -93,14 +93,17 @@ Object.defineProperty( SpinBox.prototype, "callback", { set: function(func) { th
 
 //*************************** Listbox class ***************************************//
 function Listbox(parent) { return new ListBox(parent); }
-Object.defineProperty( ListBox.prototype, "style", { set: function(sname) { this.setBackgroundStyle(sname); }} );
-Object.defineProperty( ListBox.prototype, "background", { set: function(enabled) { this.setBackgroundVisible(enabled); }} );
-Object.defineProperty( ListBox.prototype, "selectedIndex", { set: function(index) { this.setSelected(index); }} );
-Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(obj) { this.setSelectedWithData(obj.name,obj.data); }} );
-Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount(); }} );
-Object.defineProperty( ListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} );
-Object.defineProperty( ListBox.prototype, "onDblclickCallback", { set: function(func) { this.onIndexSelectedAgainEx(func); }} )
+Object.defineProperty( ListBox.prototype, "style", { set: function(sname) { this.setBackgroundStyle(sname) }} )
+Object.defineProperty( ListBox.prototype, "background", { set: function(enabled) { this.setBackgroundVisible(enabled) }} )
+Object.defineProperty( ListBox.prototype, "selectedIndex", { set: function(index) { this.setSelected(index) }} )
+Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(obj) { this.setSelectedWithData(obj.name,obj.data) }} )
+Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount() }} )
+Object.defineProperty( ListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func) }} )
+Object.defineProperty( ListBox.prototype, "onDblclickCallback", { set: function(func) { this.onIndexSelectedAgainEx(func) }} )
 Object.defineProperty( ListBox.prototype, "scrollbarVisible", { set: function(v) {this.setScrollbarVisible(v)}} )
+Object.defineProperty( ListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h) }} )
+Object.defineProperty( ListBox.prototype, "itemFont", {set: function (fname) { this.setFont(h) }} )
+Object.defineProperty( ListBox.prototype, "itemTextAlignment", {set: function (obj) { this.setTextAlignment(obj.h,obj.v) }} )
 
 Object.defineProperty( ListBox.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( ListBox.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );

@@ -3,7 +3,7 @@ sim.ui.topmenu.help.init = function() {
     m.moveToIndex(2)
 
     m.addItemWithCallback("##gmenu_about##", function() {
-                var wnd = g_ui.addSimpleWindow(0,0,500,300);
+                var wnd = g_ui.addSimpleWindow(0, 0, 500, 300);
                 wnd.model = ":/gui/about.gui";
                 wnd.setModal();
         })

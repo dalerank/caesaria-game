@@ -10,6 +10,8 @@ var modules = [
                   "init_game",
                   "init_sound",
                   "init_colors",
+                  "init_ranks",
+                  "init_languages",
                   "video_settings",
                   "audio_settings",
                   "city_settings",
@@ -20,6 +22,7 @@ var modules = [
                   "mission_targets",
                   "mission_debug",
                   "package_settings",
+                  "salary_settings",
                   "climate_manager",
                   "emperor_gift",
                   "lobby"

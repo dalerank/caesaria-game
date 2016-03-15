@@ -610,6 +610,25 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   js_pushundefined(J); \
                                 }
 
+#define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
+  js_pushundefined(J); \
+}
+
+#define DEFINE_OBJECT_FUNCTION_4(name,funcname,paramType1,paramType2,paramType3,paramType4) void name##_##funcname(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+                                  paramType4 paramValue4 = internal::to( J, 4, paramType4() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4); \
+                                  js_pushundefined(J); \
+                                }
+
 #define DEFINE_OBJECT_FUNCTION_5(name,funcname,paramType1,paramType2,paramType3,paramType4,paramType5) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
@@ -620,15 +639,6 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4, paramValue5 ); \
                                   js_pushundefined(J); \
                                 }
-
-#define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
-  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
-  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
-  js_pushundefined(J); \
-}
 
 #define SCRIPT_OBJECT_BEGIN(name) script_object_begin(#name);
 

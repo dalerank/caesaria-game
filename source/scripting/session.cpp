@@ -82,6 +82,18 @@ world::Empire * Session::getEmpire() const
   return _game->empire().object();
 }
 
+void Session::setRank(int i, const std::string & name, const std::string & pretty, int salary)
+{
+  world::GovernorRanks& ranks = world::EmpireHelper::ranks();
+  if (ranks.size() <= i)
+    ranks.resize(i + 1);
+
+  ranks[i].title = name;
+  ranks[i].pretty = pretty;
+  ranks[i].salary = salary;
+  ranks[i].level = (world::GovernorRank::Level)i;
+}
+
 DateTime Session::getGameDate() const
 {
   return _game->date();

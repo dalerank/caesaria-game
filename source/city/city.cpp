@@ -458,7 +458,7 @@ bool PlayerCity::getBuildOption(const std::string& name, bool) const
 void PlayerCity::setBuildOption(const std::string& name, int value)
 {
   object::Type vtype = object::findType(name);
-  _d->buildOptions.setBuildingAvailable(vtype, value);
+  _d->buildOptions.setBuildingAvailable(vtype, value>0);
 }
 
 const city::States &PlayerCity::states() const              { return _d->states; }

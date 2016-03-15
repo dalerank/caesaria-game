@@ -67,7 +67,6 @@ __REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
-__REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(render)
@@ -158,7 +157,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
   _d->options[ emblemsModel        ] = std::string( "/emblems.model" );
   _d->options[ remakeModel         ] = std::string( "/remake.model" );
-  _d->options[ ranksModel          ] = std::string( "/ranks.model" );
   _d->options[ pic_offsets         ] = std::string( "/offsets.model" );
   _d->options[ picsArchive         ] = std::string( "/gfx/pics.zip" );
   _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
