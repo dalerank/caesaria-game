@@ -33,15 +33,9 @@ public:
   TopMenu(Widget* parent, const int height, bool useIcon);
 
   // draw on screen
-  void draw(gfx::Engine& engine);
-  void setFunds(int value);
-  void setPopulation(int value);
-
-  virtual void setProperty(const std::string& name, const Variant& value);
+  virtual void draw(gfx::Engine& engine);
 
 signals public:
-  Signal1<bool>& onToggleConstructorMode();
-  Signal1<Advisor>& onRequestAdvisor();
   Signal1<int>& onShowExtentInfo();
 
 private:

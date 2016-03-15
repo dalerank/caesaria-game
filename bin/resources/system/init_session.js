@@ -8,6 +8,15 @@ Path.prototype.slice = function(str) {
 }
 /*************************************** Path class end ******************************************************************/
 
+/**************************************** DateTime class begin **************************************************************/
+DateTime.prototype.format = function(metric) {
+  if (metric === g_config.metric.roman)
+    return g_session.formatDate(this, true);
+
+  return g_session.formatDate(this, false);
+}
+/**************************************** DateTime class end **************************************************************/
+
 /**************************************** Emperor class begin **************************************************************/
 
 /**************************************** Emperor class end **************************************************************/
@@ -19,11 +28,11 @@ Player.prototype.removeMoney = function(value) {
 /**************************************** Player class end **************************************************************/
 
 /**************************************** MissionInfo class begin **************************************************************/
-Object.defineProperty( MissionInfo.prototype, "title", { get: function() { return this.get("preview.title"); }} )
-Object.defineProperty( MissionInfo.prototype, "localization", { get: function () { return this.get("localization.name"); }} )
-Object.defineProperty( MissionInfo.prototype, "image", { get: function() { return this.get("preview.image"); }} )
-Object.defineProperty( MissionInfo.prototype, "desc", { get: function  () { return this.get("preview.text"); }} )
-Object.defineProperty( MissionInfo.prototype, "map", { get: function() { return this.get("map"); }} )
+Object.defineProperty( MissionInfo.prototype, "title", { get: function() { return this.get("preview.title") }} )
+Object.defineProperty( MissionInfo.prototype, "localization", { get: function () { return this.get("localization.name") }} )
+Object.defineProperty( MissionInfo.prototype, "image", { get: function() { return this.get("preview.image") }} )
+Object.defineProperty( MissionInfo.prototype, "desc", { get: function  () { return this.get("preview.text") }} )
+Object.defineProperty( MissionInfo.prototype, "map", { get: function() { return this.get("map") }} )
 /*************************************** MissionInfo class end ******************************************************************/
 
 Session.prototype.getMissionInfo = function(path) {
@@ -46,6 +55,8 @@ Session.prototype.getOptPath = function(p) {
 
 Object.defineProperty( Session.prototype, "resolution", { set: function(mode) { this.setResolution(mode.w,mode.h) },
                                                           get: function() { return this.getResolution() }} )
+Object.defineProperty( Session.prototype, "metric", { get: function() { return this.getAdvflag("metric") },
+                                                      set: function(value) { this.setAdvflag("metric",value)}} )
 Object.defineProperty( Session.prototype, "date", { get: function()  { return this.getGameDate() }} )
 Object.defineProperty( Session.prototype, "credits", { get: function()  { return this.getCredits() }} )
 Object.defineProperty( Session.prototype, "player", { get: function()  { return this.getPlayer() }} )

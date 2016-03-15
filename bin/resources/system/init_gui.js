@@ -23,8 +23,10 @@ Object.defineProperty( Label.prototype, "style", { set: function(s) { this.setBa
 Object.defineProperty( Label.prototype, "textAlign", { set: function(align) { this.setTextAlignment(align.h,align.v) }} )
 Object.defineProperty( Label.prototype, "textOffset", { set: function(p) { this.setTextOffset(p.x,p.y) }} )
 Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)) }} )
+Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )
 Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str) }} )
+Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 
 Object.defineProperty( Label.prototype, "w", { get: function() { return this.width() }} )
@@ -241,7 +243,15 @@ Object.defineProperty(ContextMenu.prototype, "w", { get: function () { return th
 
 //*************************** ContextMenuItem class begin ***************************************//
 Object.defineProperty( ContextMenuItem.prototype, "callback", {set: function (func) { this.onClickedA(func); }} )
+Object.defineProperty( ContextMenuItem.prototype, "toggleCallback", {set: function (func) { this.onCheckedEx(func); }} )
 Object.defineProperty( ContextMenuItem.prototype, "autoChecking", {set: function(en) { this.setAutoChecking(en)}} )
+
+ContextMenuItem.prototype.addItemWithCheckingCallback = function(caption,func) {
+    var item = this.addSubmenuItem(_t(caption));
+    item.toggleCallback = func;
+    return item;
+}
+
 ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
     var item = this.addSubmenuItem(_t(caption));
     item.callback = func;

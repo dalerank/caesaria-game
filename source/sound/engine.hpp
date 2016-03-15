@@ -51,12 +51,12 @@ public:
   void play(std::string sampleName, int volume, SoundType type, bool force=false);
   void play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
-  bool isPlaying(const std::string& sampleName ) const;
+  bool isPlaying(const std::string& sampleName) const;
 
-  void stop(const std::string& sampleName ) const;
-  void stop( int channel );
+  void stop(const std::string& sampleName) const;
+  void stop(int channel);
 
-  void run( bool& );
+  void run(bool&);
 public signals:
   Signal0<>& onThemeStopped();
 

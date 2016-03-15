@@ -34,6 +34,7 @@
 
 using namespace gui;
 using namespace gui::dialog;
+using namespace city;
 using namespace world;
 using namespace vfs;
 
@@ -91,8 +92,8 @@ void push(js_State* J,const Size& size)
 }
 
 void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
-void push(js_State* J,const Path& p) { js_pushstring(J,p.toCString()); }
-void push(js_State* J,const std::string& p) { js_pushstring(J,p.c_str()); }
+void push(js_State* J, const Path& p) { js_pushstring(J,p.toCString()); }
+void push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
 int push(js_State* J,const Variant& param)
 {
@@ -152,20 +153,12 @@ void pushud(js_State* J, const std::string& name, void* v)
   js_newuserdata(J, "userdata", v, nullptr);
 }
 
-#define PUSH_USERDATA(type) void push(js_State* J, type* p) { pushud(J, #type, p); }
-
-PUSH_USERDATA(ContextMenuItem)
-PUSH_USERDATA(PlayerCity)
-PUSH_USERDATA(Player)
-PUSH_USERDATA(Emperor)
-PUSH_USERDATA(Empire)
-
 void push(js_State *J, const StringArray& items)
 {
   js_newarray(J);
-  for (uint32_t i=0; i<items.size(); i++)
+  for (uint32_t i = 0; i<items.size(); i++)
   {
-    js_pushstring(J,items[i].c_str());
+    js_pushstring(J, items[i].c_str());
     js_setindex(J, -2, i);
   }
 }
@@ -179,6 +172,22 @@ void push(js_State *J, const VariantMap& items)
     js_setproperty(J, -2, item.first.c_str());
   }
 }
+
+void push(js_State* J, const DateTime& t) 
+{ 
+  auto pd = new DateTime(t); 
+  pushud(J, TEXT(DateTime), pd); 
+}
+
+#define PUSH_SAVEDDATA(type) void push(js_State* J, const type& p) { push(J, p.save()); }
+#define PUSH_USERDATA(type) void push(js_State* J, type* p) { pushud(J, #type, p); }
+
+PUSH_SAVEDDATA(States)
+PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(PlayerCity)
+PUSH_USERDATA(Player)
+PUSH_USERDATA(Emperor)
+PUSH_USERDATA(Empire)
 
 inline DateTime to(js_State *J, int n, DateTime) 
 { 

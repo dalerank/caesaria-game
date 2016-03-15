@@ -113,7 +113,7 @@ public:
 
 public:
   void showEmpireMapWindow();
-  void showAdvisorsWindow(const advisor::Type advType );
+  void showAdvisorsWindow(const advisor::Type advType);
   void showAdvisorsWindow();
   void showMissionTargetsWindow();
   void showTradeAdvisorWindow();
@@ -129,8 +129,7 @@ public:
   void makeFastSave();
   void showMessagesWindow();
   void layerChanged( int layer );
-  void makeFullScreenshot();
-  void changeZoom( int delta );
+  //void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
   void initRender();
   void initMainUI();
@@ -172,8 +171,6 @@ void Level::Impl::initMainUI()
   rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
 
   topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
-  topMenu->setPopulation( game->city()->states().population );
-  topMenu->setFunds( game->city()->treasury().money() );
 
   bool fitToHeidht = OSystem::isAndroid();
   menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
@@ -213,7 +210,7 @@ void Level::Impl::initSound()
   auto sound = game->city()->statistic().services.find<city::AmbientSound>();
 
   if( sound.isValid() )
-    sound->setCamera( renderer.camera() );
+    sound->setCamera(renderer.camera());
 }
 
 void Level::Impl::initTabletUI( Level* scene )
@@ -228,9 +225,6 @@ void Level::Impl::initTabletUI( Level* scene )
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
-  CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
-
-  CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
 }
 
 void Level::initialize()
@@ -248,8 +242,6 @@ void Level::initialize()
   //connect elements
 
   city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
-  CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
-  CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
   CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction )
@@ -345,52 +337,6 @@ void Level::Impl::layerChanged(int layer)
   undoStack.finished();
 }
 
-void Level::Impl::makeFullScreenshot()
-{
-  Tilemap& tmap = game->city()->tilemap();
-  int mapSize = tmap.size();
-  Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
-  Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = lastRightTile.pos().toScreenCoordinates();
-  Point lastBottomPos = lastBottomTile.pos().toScreenCoordinates();
-  Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
-
-  TilesArray ret;
-  for( int y=0; y < mapSize; y++ )
-  {
-    for( int t=0; t <= y; t++ )
-    {
-      ret.push_back( &tmap.at( t, mapSize - 1 - ( y - t ) ) );
-    }
-  }
-
-  for( int x=1; x < mapSize; x++ )
-  {
-    for( int t=0; t < mapSize-x; t++ )
-    {
-      ret.push_back( &tmap.at( x + t, t ) );
-    }
-  }
-
-  Picture fullPic = Picture( fullPicSize, 0, true );
-  /*Point doffset( 0, fullPicSize.height() / 2 );
-  for( auto tile : ret )
-  {
-    if( tile->master() )
-      tile = tile->master();
-
-    const Picture& tpic = tile->overlay().isValid()
-                            ? tile->overlay()->picture()
-                            : tile->picture();
-
-    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
-  }*/
-
-  std::string filename = getScreenshotName();
-  PictureConverter::save( fullPic, filename, "PNG" );
-}
-
 void Level::Impl::handleDirectionChange(Direction direction)
 {
   events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
@@ -455,7 +401,11 @@ void Level::animate( unsigned int time )
   }
 }
 
-void Level::afterFrame() {}
+void Level::afterFrame() 
+{
+  if (game::Date::isDayChanged())
+    events::dispatch<events::ScriptFunc>("OnUpdateTopMenuCityStats");
+}
 
 void Level::handleEvent( NEvent& event )
 {
@@ -559,6 +509,14 @@ void Level::setOption(const std::string& name, Variant value)
     bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
     _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
     stop();
+  }
+  else if (name == "constructorMode")
+  {
+    setConstructorMode(value.toBool());
+  }
+  else if (name == "advisor")
+  {
+    _d->showAdvisorsWindow(value.toEnum<Advisor>());
   }
 }
 
@@ -701,10 +659,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_SNAPSHOT:
-      if( !event.keyboard.shift )
         _d->makeScreenShot();
-      else
-        _d->makeFullScreenshot();
       handled = true;
     break;
 

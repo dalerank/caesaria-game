@@ -226,15 +226,16 @@ void Engine::init()
   Logger::warning( "Game: sound initialization ok" );
   _d->useSound = sound_ok;
 
-  _d->thread = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &Engine::run ) );
+  _d->thread = threading::SafeThread::create(threading::SafeThread::WorkFunction(this, &Engine::run));
   _d->thread->setDelay( 100 );
-  //_d->thread->join();
 }
 
 void Engine::exit()
 {
-  _d->running = false;
-  _d->thread->join();
+  _d->running = false;  
+  _d->thread->stop();
+  //?
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   Mix_CloseAudio();
 }
 

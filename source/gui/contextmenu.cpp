@@ -612,9 +612,9 @@ bool ContextMenu::_hasOpenSubMenu() const
   return false;
 }
 
-void ContextMenu::moveItem(ContextMenuItem* item, int index)
+void ContextMenu::moveItem(ContextMenuItem* item, unsigned int index)
 {
-  if (index < 0 || index >= _d->items.size())
+  if (index >= _d->items.size())
     return;
 
   for (int i = 0; i < _d->items.size(); ++i)

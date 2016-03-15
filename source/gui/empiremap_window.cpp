@@ -775,7 +775,7 @@ void EmpireMapWindow::_changePosition()
     Size tlpSize( elm.textWidth() + 20, elm.textHeight() + 2 );
     if( tlpSize.width() > width() * 0.75 )
     {
-      tlpSize.setWidth( width() * 0.5 );
+      tlpSize.setWidth( width() / 2 );
       tlpSize.setHeight( elm.textHeight() * 2 + 10 );
       elm.setWordwrap( true );
     }

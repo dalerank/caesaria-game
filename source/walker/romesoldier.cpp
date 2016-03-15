@@ -200,8 +200,8 @@ std::string RomeSoldier::thoughts(Thought th) const
     else
     {
       RomeSoldierList ourSoldiers = _city()->statistic().walkers.find<RomeSoldier>( walker::any, 10, pos() );
-      int enemyStrength = 0;
-      int ourStrength = 0;
+      float enemyStrength = 0;
+      float ourStrength = 0;
 
       for( auto enemy : enemies) { enemyStrength += enemy->strike(); }
       for( auto sldr : ourSoldiers ) { ourStrength += sldr->strike(); }

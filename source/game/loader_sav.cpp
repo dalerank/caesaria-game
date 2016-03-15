@@ -74,7 +74,7 @@ void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->tilemap().size();
 
-  const unsigned int savePos = f.tellg();
+  const std::streampos savePos = f.tellg();
 
   // init road entry/exit point
   uint16_t i = 0;

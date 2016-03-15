@@ -1,4 +1,4 @@
-g_config.languages : [
+g_config.languages = [
               { lang : "English",     ext : "en", },
               { lang : "Русский",     ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
               { lang : "Українська",  ext : "ua", },

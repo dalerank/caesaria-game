@@ -26,6 +26,7 @@
 #include <GameGui>
 #include <GameCore>
 #include <GameEvents>
+#include "game/datetimehelper.hpp"
 #include "sound/engine.hpp"
 #include "core/font.hpp"
 #include "walker/name_generator.hpp"
@@ -97,6 +98,17 @@ void Session::setRank(int i, const std::string & name, const std::string & prett
 DateTime Session::getGameDate() const
 {
   return _game->date();
+}
+
+std::string Session::formatDate(DateTime date, bool roman) const
+{
+  std::string text;
+  if (roman)
+    text = utils::date2str(RomanDate(date), true);
+  else
+    text = utils::date2str(date, true);
+
+  return text;
 }
 
 StringArray Session::getCredits() const

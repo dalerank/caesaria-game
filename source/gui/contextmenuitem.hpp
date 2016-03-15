@@ -105,6 +105,7 @@ public:
 
 signals public:
   Signal1<bool>& onChecked();
+  Signal2<Widget*,bool>& onCheckedEx();
   Signal1<int>& onAction();
 
 protected:

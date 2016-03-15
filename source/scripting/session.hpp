@@ -60,6 +60,7 @@ public:
   world::Empire* getEmpire() const;
   void setRank(int i, const std::string& name, const std::string& pretty, int salary);
   DateTime getGameDate() const;
+  std::string formatDate(DateTime date, bool roman) const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);
   StringArray getFolders(const std::string& dir, bool full);

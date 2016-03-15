@@ -32,12 +32,12 @@ class Label : public Widget
 public:
   typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone,
                  bgWhiteFrame, bgBlackFrame,
-                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundMode;
+                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundStyle;
   //! constructor
   Label(Widget* parent);
 
   Label(Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
-        BackgroundMode background = bgNone, int id=-1);
+        BackgroundStyle background = bgNone, int id=-1);
 
   Label(Widget* parent, const Rect& rectangle, const std::string& text, Font font);
 
@@ -53,7 +53,7 @@ public:
   virtual Font font() const;
 
   //! Sets whether to draw the background
-  void setBackgroundStyle(BackgroundMode style);
+  void setBackgroundStyle(BackgroundStyle style);
 
   //!
   void setBackgroundStyle(const std::string& style);
@@ -61,7 +61,7 @@ public:
   virtual void beforeDraw( gfx::Engine& painter );
 
   //! Return background draw
-  virtual BackgroundMode backgroundMode() const;
+  virtual BackgroundStyle backgroundStyle() const;
 
   //!
   virtual bool onEvent(const NEvent &event);
@@ -117,24 +117,26 @@ public:
 
   void setPrefixText(const std::string& prefix);
 
-  virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
+  virtual void setBackgroundPicture(const gfx::Picture& picture, Point offset=Point());
+  
+  virtual void setBackgroundPicture(const std::string& rcname);
 
-  virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
+  virtual void setIcon(const gfx::Picture& icon, Point offset=Point());
 
   //!
-  virtual void setIcon( const std::string& rc, int index );
+  virtual void setIcon(const std::string& rc, int index);
 
   virtual void setIconOffset( const Point& offset );
 
-  virtual void setFont( const Font& font );
+  virtual void setFont(const Font& font);
 
   //!
   virtual void setFont( const std::string& fontname );
 
   //!
-  virtual void setFont( FontType type, NColor color=0 );
+  virtual void setFont(FontType type, NColor color=0);
 
-  virtual void setAlpha( unsigned int value );
+  virtual void setAlpha(unsigned int value);
 
   virtual void setColor(NColor color);
 

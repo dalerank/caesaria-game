@@ -33,11 +33,11 @@ namespace gui
 
 REGISTER_CLASS_IN_WIDGETFACTORY(Label)
 
-class LabelBackgroundHelper : public EnumsHelper<Label::BackgroundMode>
+class LabelBackgroundHelper : public EnumsHelper<Label::BackgroundStyle>
 {
 public:
   LabelBackgroundHelper()
-    : EnumsHelper<Label::BackgroundMode>(Label::bgNone)
+    : EnumsHelper<Label::BackgroundStyle>(Label::bgNone)
   {
     append( Label::bgWhite, "white" );
     append( Label::bgBlack, "black" );
@@ -57,7 +57,7 @@ public:
   Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
   Font font;
   bool OverrideBGColorEnabled;
-  Label::BackgroundMode backgroundMode;
+  Label::BackgroundStyle backgroundMode;
   bool RestrainTextInside;
   int lineIntervalOffset;
 
@@ -134,7 +134,7 @@ Label::Label(gui::Widget* parent, const Rect& rectangle, const std::string& text
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
-             BackgroundMode background, int id)
+             BackgroundStyle background, int id)
 : Widget( parent, id, rectangle),
   _d( new Impl )
 {
@@ -309,7 +309,7 @@ Font Label::font() const
 }
 
 //! Sets whether to draw the background
-void Label::setBackgroundStyle(BackgroundMode style )
+void Label::setBackgroundStyle(BackgroundStyle style )
 {
   _d->backgroundMode = style;
   _d->is.needUpdate = true;
@@ -318,7 +318,7 @@ void Label::setBackgroundStyle(BackgroundMode style )
 void Label::setBackgroundStyle(const string& style)
 {
   LabelBackgroundHelper helper;
-  Label::BackgroundMode mode = helper.findType(style);
+  Label::BackgroundStyle mode = helper.findType(style);
   if (mode != bgNone)
     setBackgroundStyle( mode );
 }
@@ -641,7 +641,7 @@ void Label::beforeDraw(gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
-Label::BackgroundMode Label::backgroundMode() const {  return _d->backgroundMode; }
+Label::BackgroundStyle Label::backgroundStyle() const {  return _d->backgroundMode; }
 
 bool Label::onEvent(const NEvent& event)
 {
@@ -719,6 +719,12 @@ void Label::setBackgroundPicture(const Picture& picture, Point offset )
   _d->background.picture = picture;
   _d->background.offset = offset;
   _d->is.needUpdate = true;
+}
+
+void Label::setBackgroundPicture(const std::string & rcname)
+{
+  Picture pic(rcname);
+  setBackgroundPicture(pic);
 }
 
 void Label::setIcon(const Picture& icon, Point offset )

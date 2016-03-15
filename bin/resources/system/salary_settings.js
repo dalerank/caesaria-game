@@ -2,6 +2,8 @@ function ShowPlayerSalarySettings() {
   game.ui.dialogs.playerSalarySettings.show()
 }
 
+game.ui.dialogs.playerSalarySettings = {}
+
 game.ui.dialogs.playerSalarySettings.show = function()
 {
   var wint = g_session.winConditions();

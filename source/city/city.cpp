@@ -81,7 +81,6 @@ public:
   void calculatePopulation();
 
  struct {
-  Signal1<int> onPopulationChanged;
   Signal1<std::string> onWarningMessage;
   Signal2<TilePos,std::string> onDisasterEvent;
   Signal0<> onBuildingOptionsChanged;
@@ -195,7 +194,6 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 void PlayerCity::Impl::calculatePopulation()
 {
   states.population = statistic->population.current();
-  emit signal.onPopulationChanged( states.population );
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
@@ -461,7 +459,6 @@ void PlayerCity::setBuildOption(const std::string& name, int value)
   _d->buildOptions.setBuildingAvailable(vtype, value>0);
 }
 
-const city::States &PlayerCity::states() const              { return _d->states; }
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
 Signal0<>& PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
@@ -476,11 +473,15 @@ const good::Store& PlayerCity::sells() const                { return _d->tradeOp
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const                     { return _d->tilemap.climate(); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::trSea | world::EmpireMap::trLand; }
-Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
-Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
+
+const city::States &PlayerCity::states() const 
+{ 
+  _d->states.money = _d->funds.money();
+  return _d->states; 
+}
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 {
@@ -564,7 +565,6 @@ int PlayerCity::culture() const { return statistic().services.value<city::Cultur
 int PlayerCity::peace() const { return statistic().services.value<city::Peace>(); }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
-int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {

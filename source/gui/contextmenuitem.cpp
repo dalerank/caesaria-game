@@ -44,6 +44,7 @@ ContextMenuItem::ContextMenuItem(Widget* parent, const std::string& text )
 }
 
 Signal1<bool>& ContextMenuItem::onChecked() {  return _dfunc()->onCheckedSignal; }
+Signal2<Widget*, bool>& ContextMenuItem::onCheckedEx() { return _dfunc()->onCheckedExSignal; }
 Signal1<int>& ContextMenuItem::onAction() { return _dfunc()->onActionSignal; }
 
 void ContextMenuItem::_updateTexture(Engine& painter)
@@ -122,24 +123,25 @@ void ContextMenuItem::setSubmenu( ContextMenu* menu )
   d.submenu.widget = menu;
   menu->setVisible(false);
 
-  if( d.submenu.widget )
+  if (d.submenu.widget)
   {
-    menu->setAllowFocus( false );
-    if( menu->isFocused() )
+    menu->setAllowFocus(false);
+    if (menu->isFocused())
       parent()->setFocus();
   }
 
-  if( ContextMenu* parentCntx = safety_cast< ContextMenu* >( parent() ) )
+  if (ContextMenu* parentCntx = safety_cast<ContextMenu*>(parent()))
     parentCntx->updateItems();
 }
 
 void ContextMenuItem::toggleCheck()
 {
   __D_REF(d,ContextMenuItem)
-  if( d.is.autoChecking )
+  if (d.is.autoChecking)
   {
     d.is.checked = !d.is.checked;
-    emit d.onCheckedSignal( d.is.checked );
+    emit d.onCheckedSignal(d.is.checked);
+    emit d.onCheckedExSignal(this, d.is.checked);
   }
 }
 

@@ -124,7 +124,7 @@ public:
 
   int hovered() const;
 
-  void moveItem(ContextMenuItem* item, int index);
+  void moveItem(ContextMenuItem* item, unsigned int index);
 
 signals public:
   virtual Signal1<int>& onItemAction();

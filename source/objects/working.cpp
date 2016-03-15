@@ -47,7 +47,7 @@ public:
   WalkerList walkerList;
   std::string errorStr;
   bool clearAnimationOnStop;
-  float laborAccessKoeff;
+  unsigned int laborAccessKoeff;
 
 public signals:
   Signal1<bool> onActiveChangeSignal;

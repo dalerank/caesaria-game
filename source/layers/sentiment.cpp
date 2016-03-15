@@ -105,7 +105,7 @@ void Sentiment::onEvent( const NEvent& event)
         auto house = tile->overlay<House>();
         if( house.isValid() )
         {
-          int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
+          int happiness = math::clamp<int>( (int)house->state(pr::happiness) / maxSentimentLevel, 0, maxSentimentLevel-1 );
           text = sentimentLevelName[ happiness ];
         }
       }

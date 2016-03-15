@@ -691,6 +691,7 @@ bool Game::exec()
     break;
 
     case SCREEN_QUIT:
+      audio::Engine::instance().exit();
       Logger::warning( "game: prepare for quit" );
     break;
 
@@ -727,7 +728,6 @@ void Game::clear()
 
 void Game::destroy()
 {
-  //audio::Engine::instance().exit();
 }
 
 void Game::setNextScreen(ScreenType screen) { _dfunc()->nextScreen = screen;}

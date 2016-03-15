@@ -15,29 +15,22 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_STATES_H_INCLUDED__
-#define __CAESARIA_CITY_STATES_H_INCLUDED__
-
-#include "world/nation.hpp"
-#include "core/time.hpp"
-
-class VariantMap;
+#include "states.hpp"
+#include "core/variant_map.hpp"
 
 namespace city
 {
 
-struct States
+VariantMap States::save() const
 {
-  unsigned int age = 0;
-  world::Nation nation = world::nation::unknown;
-  unsigned int population = 0;
-  int favor = 0;
-  int money = 0;
-  DateTime birth;
+  VariantMap ret;
 
-  VariantMap save() const;
-};
+  VARIANT_SAVE_ANY(ret,age)
+  VARIANT_SAVE_ENUM(ret,nation);
+  VARIANT_SAVE_ANY(ret,population)
+  VARIANT_SAVE_ANY(ret,birth)
+
+  return ret;
+}
 
 }//end namespace city
-
-#endif //__CAESARIA_CITY_STATES_H_INCLUDED__

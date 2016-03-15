@@ -123,8 +123,8 @@ void SafeThread::Impl::onTask()
 {
   try
   {
-    if( !function.empty() )
-      function( running );
+    if (!function.empty())
+      function(running);
   }
   catch( std::runtime_error& ex )
   {

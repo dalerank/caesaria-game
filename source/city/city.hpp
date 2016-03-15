@@ -94,7 +94,6 @@ public:
   int culture() const;
   int peace() const;
   int sentiment() const;
-  int favour() const;
 
   /** Return city's objects map */
   gfx::Tilemap& tilemap();
@@ -159,8 +158,6 @@ public:
   const city::Statistic& statistic() const;
 
 signals public:
-  Signal1<int>& onPopulationChanged();
-  Signal1<int>& onFundsChanged();
   Signal1<std::string>& onWarningMessage();
   Signal2<TilePos,std::string>& onDisasterEvent();
   Signal0<>& onChangeBuildingOptions();
