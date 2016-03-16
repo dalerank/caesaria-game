@@ -58,6 +58,8 @@ public:
   bool isC3mode() const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
+  void clearHotkeys();
+  void setHotkey(const std::string& name, const std::string& config);
   void setRank(int i, const std::string& name, const std::string& pretty, int salary);
   DateTime getGameDate() const;
   std::string formatDate(DateTime date, bool roman) const;

@@ -70,10 +70,10 @@ Object.defineProperty( Session.prototype, "logfile", { get: function () {
       var path = this.workdir;
       path.add(engine.getOption("logfile"));
       return path;
-}});
+}})
 
-Object.defineProperty( Session.prototype, "missionsdir", { get: function () { return getPath(":/missions/"); }});
-Object.defineProperty( Session.prototype, "savedir", { get: function () { return getPath(engine.getOption("savedir")); }});
-Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return getPath(engine.getOption("screenshotDir")); }});
+Object.defineProperty( Session.prototype, "missionsdir", { get: function () { return getPath(":/missions/") }})
+Object.defineProperty( Session.prototype, "savedir", { get: function () { return getOptPath("savedir") }})
+Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return getOptPath("screenshotDir") }})
 
 var g_session = new Session();

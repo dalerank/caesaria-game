@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   options.checkCmdOptions(argv, argc);
   options.checkC3present();
 
-  if (game::Settings::get("verbose").isNull())
+  if (!KILLSWITCH(verbose))
   {
     Logger::addFilter(LogWriter::info);
     Logger::addFilter(LogWriter::debug);

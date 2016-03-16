@@ -1,5 +1,5 @@
-//****************************** widget class *************************************//
-Object.defineProperty(Widget.prototype, "text", { set: function (str) { this.setText(_t(str)); } })
+/* ***************************** widget class ********************************** */
+Object.defineProperty(Widget.prototype, 'text', { get : function () {}, set: function (str) { this.setText(_t(str)) }})
 Object.defineProperty(Widget.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); } })
 Object.defineProperty(Widget.prototype, "position", { set: function (point) { this.setPosition(point.x, point.y); } })
 Object.defineProperty(Widget.prototype, "font", { set: function (fname) { this.setFont(fname); } })
@@ -14,14 +14,14 @@ Object.defineProperty( Widget.prototype, "h", { get: function() { return this.he
 //************************** widget class end ************************************//
 
 //****************************** Label class *************************************//
-Object.defineProperty( Label.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ) }} )
+Object.defineProperty( Label.prototype, 'text', { set: function(str) { this.setText( engine.translate(str) ) }} )
 Object.defineProperty( Label.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h) }} )
 Object.defineProperty( Label.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y) }} )
 Object.defineProperty( Label.prototype, "font", { set: function(fname) { this.setFont(fname) }} )
 Object.defineProperty( Label.prototype, "enabled", { set: function(e) { this.setEnabled(e) }} )
 Object.defineProperty( Label.prototype, "style", { set: function(s) { this.setBackgroundStyle(s) }} )
 Object.defineProperty( Label.prototype, "textAlign", { set: function(align) { this.setTextAlignment(align.h,align.v) }} )
-Object.defineProperty( Label.prototype, "textOffset", { set: function(p) { this.setTextOffset(p.x,p.y) }} )
+Object.defineProperty( Label.prototype, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p.x, p.y) }})
 Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)) }} )
 Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )

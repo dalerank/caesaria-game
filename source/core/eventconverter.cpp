@@ -329,6 +329,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
+    ret.keyboard.alt = (sdlEvent.key.keysym.mod & KMOD_ALT) != 0;
     ret.keyboard.symbol = sdlEvent.key.keysym.sym;
   }
   break;

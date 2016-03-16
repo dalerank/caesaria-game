@@ -32,6 +32,7 @@
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
+#include "game/hotkey_manager.hpp"
 #include "game/infoboxmanager.hpp"
 
 namespace script
@@ -83,10 +84,20 @@ world::Empire * Session::getEmpire() const
   return _game->empire().object();
 }
 
+void Session::clearHotkeys()
+{
+  game::HotkeyManager::instance().clear();
+}
+
+void Session::setHotkey(const std::string & name, const std::string& config)
+{
+  game::HotkeyManager::instance().add(name, config);
+}
+
 void Session::setRank(int i, const std::string & name, const std::string & pretty, int salary)
 {
   world::GovernorRanks& ranks = world::EmpireHelper::ranks();
-  if (ranks.size() <= i)
+  if ((int)ranks.size() <= i)
     ranks.resize(i + 1);
 
   ranks[i].title = name;

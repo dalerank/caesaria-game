@@ -126,7 +126,6 @@ public:
   void makeScreenShot();
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
-  void makeFastSave();
   void showMessagesWindow();
   void layerChanged( int layer );
   //void changeZoom( int delta );
@@ -139,7 +138,6 @@ public:
   void connectTopMenu2scene(Level* scene);
 
   std::string getScreenshotName();
-  vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -311,8 +309,6 @@ void Level::Impl::saveCameraPos(Point p)
   }
 }
 
-void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
-
 void Level::Impl::showMessagesWindow()
 {
   unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
@@ -352,19 +348,6 @@ std::string Level::Impl::getScreenshotName()
   return (screenDir/filename).toString();
 }
 
-vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
-{
-  std::string typesave = type.empty() ? SETTINGS_STR( fastsavePostfix ) : type;
-  vfs::Path filename = game->city()->name()
-                       + typesave
-                       + postfix
-                       + SETTINGS_STR( saveExt );
-
-  vfs::Directory saveDir = SETTINGS_STR( savedir );
-
-  return saveDir/filename;
-}
-
 void Level::Impl::showEmpireMapWindow()
 {
   events::dispatch<ShowEmpireMap>( true );
@@ -390,14 +373,9 @@ void Level::animate( unsigned int time )
 
   if( game::Date::isMonthChanged() )
   {
-    int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
-    if( (int)game::Date::current().month() % autosaveInterval == 0 )
-    {
-      static int rotate = 0;
-      rotate = (rotate + 1) % 3;
-      vfs::Path filename = _d->createFastSaveName( "autosave", utils::i2str( rotate ) );
-      _d->game->save( filename.toString() );
-    }
+    int autosaveInterval = SETTINGS_VALUE(autosaveInterval);
+    if ((int)game::Date::current().month() % autosaveInterval == 0)
+      events::dispatch<events::ScriptFunc>("OnSimulationCreateAutosave");
   }
 }
 
@@ -558,17 +536,20 @@ bool Level::_tryExecHotkey(NEvent &event)
   bool handled = false;
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
+    handled = game::HotkeyManager::instance().execute(event.keyboard.key, event.keyboard.control, event.keyboard.shift, event.keyboard.alt);
+    if (handled)
+      return true;
+
     if( !event.keyboard.shift )
     {
-      handled = true;
-      game::HotkeyManager::instance().execute( event.keyboard.key );
-      switch( event.keyboard.key )
+      handled = true;      
+      switch (event.keyboard.key)
       {
       case KEY_SPACE:
       {
         int newLayer = _d->renderer.layerType() == citylayer::simple
                           ? _d->lastLayerId : citylayer::simple;
-        _d->renderer.setLayer( newLayer );
+        _d->renderer.setLayer(newLayer);
       }
       break;
 
@@ -576,8 +557,8 @@ bool Level::_tryExecHotkey(NEvent &event)
       {
         TilePos center = _d->renderer.camera()->center();
         TileRect trect( center-config::tilemap.unitLocation(), center+config::tilemap.unitLocation());
-        TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
-        PlayerCity::TileType rcenter = trect.contain( currect )
+        TilePos currect = _d->game->city()->getBorderInfo(PlayerCity::roadEntry).epos();
+        PlayerCity::TileType rcenter = trect.contain(currect)
                                           ? PlayerCity::roadExit
                                           : PlayerCity::roadEntry;
         _d->renderer.camera()->setCenter( _d->game->city()->getBorderInfo( rcenter ).epos(), false );
@@ -589,11 +570,11 @@ bool Level::_tryExecHotkey(NEvent &event)
       break;
       }
 
-      if( handled )
+      if (handled)
         return handled;
     }
 
-    switch( event.keyboard.key )
+    switch(event.keyboard.key)
     {
     case KEY_MINUS:
     case KEY_PLUS:
@@ -621,16 +602,6 @@ bool Level::_tryExecHotkey(NEvent &event)
       events::dispatch<Step>(event.keyboard.key == KEY_COMMA ? Step::once : Step::day);
       handled = true;
     }
-    break;
-
-    case KEY_F5:
-      _d->makeFastSave();
-      handled = true;
-    break;
-
-    case KEY_F9:
-      setOption("nextFile", _d->createFastSaveName().toString() );
-      handled = true;
     break;
 
     case KEY_F1: case KEY_F2:
@@ -666,10 +637,10 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
-      for( auto it : children )
+      for (auto it : children)
       {
-        bool handled = it->onEvent( event );
-        if( handled )
+        bool handled = it->onEvent(event);
+        if (handled)
             break;
       }
     }
@@ -683,11 +654,7 @@ bool Level::_tryExecHotkey(NEvent &event)
   return handled;
 }
 
-void Level::Impl::showMissionTargetsWindow()
-{
-  events::dispatch<ScriptFunc>("OnShowMissionTargetsWindow");
-}
-
-void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
+void Level::Impl::showMissionTargetsWindow() { events::dispatch<ScriptFunc>("OnShowMissionTargetsWindow");}
+void Level::Impl::showAdvisorsWindow(const advisor::Type advType) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
 
 }//end namespace scene

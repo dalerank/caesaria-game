@@ -139,7 +139,7 @@ SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
   for( auto obj : list )
   {
     int state = obj->state( name );
-    if( lowValue < state );
+    if( lowValue < state )
     {
       lowValue = state;
       ret = obj;

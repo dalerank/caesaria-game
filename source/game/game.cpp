@@ -133,6 +133,7 @@ public:
   void loadReligionConfig(bool& isOk, std::string& result);
   void fadeSplash(bool& isOk, std::string& result);
   void themeFinished();
+  void resolveHotkey(std::string actionName);
 
   Impl(): nextScreen(SCREEN_NONE),
       currentScreen(nullptr), engine(nullptr),
@@ -193,6 +194,12 @@ void Game::Impl::fadeSplash(bool& isOk, std::string& result)
 void Game::Impl::themeFinished()
 {
   events::dispatch<events::ScriptFunc>("OnThemePlayFinished");
+}
+
+void Game::Impl::resolveHotkey(std::string actionName)
+{
+  VariantList vl; vl << Variant(actionName);
+  events::dispatch<events::ScriptFunc>("OnExecHotkey", vl);
 }
 
 void Game::Impl::initMovie(bool& isOk, std::string& result)
@@ -436,9 +443,7 @@ void Game::Impl::initScripting(bool& isOk, std::string& result)
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
-  hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
-
-  CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
+  CONNECT( &hkMgr, onExec(), this, Impl::resolveHotkey );
 }
 
 PlayerPtr Game::player() const { return _dfunc()->player; }

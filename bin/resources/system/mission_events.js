@@ -100,11 +100,12 @@ sim.start = function()
     var dialog = g_ui.addInformationDialog( "##pls_note##", "##aware_black_objects##" );
     dialog.neverValue = true;
     dialog.onNeverCallback = function(value) {
-                engine.setOption( "showStartAware", value );
+                engine.setOption("showStartAware", value)
             }
   }
 
-  sim.ui.topmenu.initialize();
+  sim.ui.topmenu.initialize()
+  sim.hotkeys.init()
 }
 
 game.ui.dialogs.savegame = function()

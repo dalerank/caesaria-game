@@ -25,6 +25,8 @@ var modules = [
                   "salary_settings",
                   "climate_manager",
                   "emperor_gift",
+                  "mission_common",
+                  "hotkeys",
                   "lobby"
               ]
 

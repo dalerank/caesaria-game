@@ -47,8 +47,6 @@ __REG_PROPERTY(worldModel)
 __REG_PROPERTY(minMonthWithFood)
 __REG_PROPERTY(langModel)
 __REG_PROPERTY(worklessCitizenAway)
-__REG_PROPERTY(fastsavePostfix)
-__REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
 __REG_PROPERTY(c3music)
@@ -80,7 +78,6 @@ __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
 __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
-__REG_PROPERTY(hotkeysModel)
 __REG_PROPERTY(cartsModel)
 __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
@@ -115,6 +112,7 @@ __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
 __REG_PROPERTY(showStartAware)
+__REG_PROPERTY(verbose)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -150,8 +148,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
   _d->options[ climateModel        ] = std::string( "/climate.model" );
   _d->options[ language            ] = std::string( "" );
-  _d->options[ fastsavePostfix     ] = std::string( "_fastsave");
-  _d->options[ saveExt             ] = std::string( ".oc3save");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
@@ -166,7 +162,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
   _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
-  _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
   _d->options[ cartsModel          ] = std::string( "/carts.model" );
   _d->options[ logoArchive         ] = std::string( "/gfx/pics_wait.zip" );
   _d->options[ titleResource       ] = std::string( "titlerm" );
@@ -180,6 +175,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
+  _d->options[ verbose             ] = false;
   _d->options[ rightMenu           ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
