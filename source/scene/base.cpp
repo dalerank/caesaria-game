@@ -46,6 +46,11 @@ void Base::setOption(const std::string& name, Variant value)
 
 }
 
+Variant Base::getOption(const std::string& name)
+{
+  return Variant();
+}
+
 void Base::drawFrame(gfx::Engine& engine)
 {
    engine.frame().start();

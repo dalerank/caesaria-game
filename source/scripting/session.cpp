@@ -227,15 +227,24 @@ void Session::loadNextMission()
 void Session::setMode(int mode)
 {
   scene::Base* scene = _game->scene();
-  if(scene)
+  if (scene)
     scene->setMode(mode);
 }
 
 void Session::setOption(const std::string& name, Variant v)
 {
   scene::Base* scene = _game->scene();
-  if(scene)
+  if (scene)
     scene->setOption(name,v);
+}
+
+Variant Session::getOption(std::string name)
+{
+  scene::Base* scene = _game->scene();
+  if (scene)
+    return scene->getOption(name);
+
+  return Variant();
 }
 
 void Session::clearUi()

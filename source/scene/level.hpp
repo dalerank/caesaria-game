@@ -55,6 +55,7 @@ public:
   void switch2layer( int layer );
 
   virtual void setOption(const std::string &name, Variant value);
+  virtual Variant getOption(const std::string &name);
   virtual void setMode(int mode);
 
 private slots:

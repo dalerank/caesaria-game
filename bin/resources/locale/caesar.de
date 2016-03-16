@@ -1737,7 +1737,7 @@
 "##save_game_here##":"Aktuelles Spiel unter diesem Dateinamen speichern",
 "##current_play_runs_for_another##":"Aktuelle Aufführung läuft noch",
 "##amphitheater_haveno_shows##":"Momentan keine Aufführungen",
-"##special_orders##":"Sonderbestellungen",
+"##special_orders##":"Besondere Befehle",
 "##demand##":"Forderung",
 "##middle_palace##":"Mittlerer Palast",
 "##middle_insula##":"Mittlere Insula",
@@ -2233,4 +2233,5 @@
 "##roads_and_bridges##":"Straßen und Brücken",
 "##docks##":"Docks",
 "##common_problems##":"Allgemeine Probleme",
+"##industry##":"Gewerbe",
 }

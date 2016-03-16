@@ -2309,4 +2309,6 @@
 ",
 "##market_too_far_from_granary##":"Этот рынок слишком далеко от амбара",
 "##market_too_far_from_warehouse##":"Этот рынок слишком далеко от склада",
+"##common_problems##":"Общие проблемы",
+"##industry##":"Промышленость",
 }

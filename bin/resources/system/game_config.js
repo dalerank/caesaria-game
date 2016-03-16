@@ -44,6 +44,33 @@ var g_config = {
     unknown: 13
   },
 
+  layer : {
+    simple : 0,
+    water : 1,
+    fire : 2,
+    damage : 3,
+    desirability : 4,
+    entertainments : 5,
+    entertainment : 6,
+    theater : 7,
+    amphitheater : 8,
+    colloseum : 9,
+    hippodrome : 10,
+    health : 11,
+    healthAll : 12,
+    doctor : 13,
+    hospital : 14,
+    barber : 15,
+    baths : 16,
+    food : 17,
+    religion : 18,
+    risks : 19, crime : 20, aborigen : 21, troubles : 22,
+    educations : 23, education : 24, school : 25, library : 26, academy : 28,
+    commerce : 29, tax : 30, market : 31, sentiment : 32, unemployed : 33, comturnover : 34,
+    build : 35, destroyd : 36, constructor : 37,
+    products : 38
+  },
+
   saves : {
     ext : ".oc3save",
     fast : "_fastsave",

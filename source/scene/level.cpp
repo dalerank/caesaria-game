@@ -253,7 +253,7 @@ void Level::initialize()
   CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
   CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
   CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
-  CONNECT( _d->extMenu, onRotateRight(),           _d->mmap,         Minimap::update )
+  CONNECT( _d->extMenu, onRotateRight(),          _d->mmap,         Minimap::update )
   CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
   CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
   CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
@@ -291,7 +291,7 @@ void Level::initialize()
   }
 }
 
-std::string Level::nextFilename() const{  return _d->mapToLoad;}
+std::string Level::nextFilename() const { return _d->mapToLoad; }
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
@@ -496,6 +496,24 @@ void Level::setOption(const std::string& name, Variant value)
   {
     _d->showAdvisorsWindow(value.toEnum<Advisor>());
   }
+  else if (name == "layer")
+  {
+    _d->renderer.setLayer(value.toInt());
+  }
+}
+
+Variant Level::getOption(const std::string& name)
+{
+  if (name == "layer")
+  {
+    return _d->renderer.layerType();
+  }
+  else if (name == "lastLayer")
+  {
+    return _d->lastLayerId;
+  }
+
+  return Variant();
 }
 
 void Level::setMode(int mode)
@@ -542,17 +560,9 @@ bool Level::_tryExecHotkey(NEvent &event)
 
     if( !event.keyboard.shift )
     {
-      handled = true;      
+      handled = true;
       switch (event.keyboard.key)
       {
-      case KEY_SPACE:
-      {
-        int newLayer = _d->renderer.layerType() == citylayer::simple
-                          ? _d->lastLayerId : citylayer::simple;
-        _d->renderer.setLayer(newLayer);
-      }
-      break;
-
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();

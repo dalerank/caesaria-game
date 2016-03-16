@@ -37,8 +37,17 @@ sim.hotkeys.actions = [
   { name : "gamespeed.increase3", sequence : "=", action : function() { sim.timescale.increase(10) }},
 
   { name : "gamespeed.decrease", sequence : "minus", action : function() { sim.timescale.decrease(10) }},
-  { name : "gamespeed.decrease2", sequence : "subtract", action : function() { sim.timescale.decrease(10) }}
+  { name : "gamespeed.decrease2", sequence : "subtract", action : function() { sim.timescale.decrease(10) }},
+  { name : "layer.toggle", sequence : "space", action : function() { sim.hotkeys.toggleLayer() }}
 ]
+
+sim.hotkeys.toggleLayer = function() {
+  var lastLayer = g_session.getOption("lastLayer");
+  var layer = g_config.layer.simple;
+  if (layer == g_config.layer.simple)
+     layer = lastLayer
+  g_session.setOption("layer",layer);
+}
 
 sim.hotkeys.init = function()
 {

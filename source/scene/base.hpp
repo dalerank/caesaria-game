@@ -52,6 +52,7 @@ public:
   virtual void draw() = 0;
   virtual void setMode(int mode);
   virtual void setOption(const std::string& name,Variant value);
+  virtual Variant getOption(const std::string& name);
 
   // this method is executed after every frame. default: do nothing
   virtual void afterFrame() {}

@@ -43,6 +43,7 @@ public:
   void loadNextMission();
   void setMode(int mode);
   void setOption(const std::string& name,Variant v);
+  Variant getOption(std::string name);
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);

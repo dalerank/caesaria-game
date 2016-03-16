@@ -40,9 +40,9 @@ public:
     _HK(KEY_LCONTROL, "lctrl") _HK(KEY_RCONTROL, "rctrl")
     _HK(KEY_SHIFT,"shift") _HK(KEY_CONTROL, "ctrl")
     _HK(KEY_F10,"F10") _HK(KEY_F11,"F11") _HK(KEY_F12,"F12")
-    _HK(KEY_PLUS,"plus") _HK(KEY_MINUS,"minus") 
+    _HK(KEY_PLUS,"plus") _HK(KEY_MINUS,"minus")
     _HK(KEY_SUBTRACT,"sutract") _HK(KEY_ADD,"sum")
-    _HK(KEY_TILDA,"tilda")
+    _HK(KEY_TILDA,"tilda") _HK(KEY_SPACE,"space")
     _HK(KEY_KEY_0,"0")
     _HK(KEY_KEY_1,"1") _HK(KEY_KEY_2,"2") _HK(KEY_KEY_3,"3")
     _HK(KEY_KEY_4,"4") _HK(KEY_KEY_5, "5") _HK(KEY_KEY_6, "6")
@@ -98,7 +98,7 @@ void HotkeyManager::add(const std::string & name, const std::string& config)
 {
   std::string rconfig = utils::trim(config);
   StringArray items = utils::split(config, "+");
-  
+
   KeyCode code = _d->hkMapper.findType(items.valueOrEmpty(0));
   if (!items.empty())
     items.erase(items.begin());
