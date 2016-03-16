@@ -477,10 +477,11 @@ void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = 
 const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
 
-const city::States &PlayerCity::states() const 
-{ 
+const city::States &PlayerCity::states() const
+{
   _d->states.money = _d->funds.money();
-  return _d->states; 
+  _d->states.favor = empire()->emperor().relation(name()).value();
+  return _d->states;
 }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)

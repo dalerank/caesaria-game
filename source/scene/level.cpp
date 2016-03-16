@@ -401,7 +401,7 @@ void Level::animate( unsigned int time )
   }
 }
 
-void Level::afterFrame() 
+void Level::afterFrame()
 {
   if (game::Date::isDayChanged())
     events::dispatch<events::ScriptFunc>("OnUpdateTopMenuCityStats");
@@ -480,7 +480,7 @@ void Level::Impl::checkWinMission()
 
   int culture = city->culture();
   int prosperity = city->prosperity();
-  int favour = city->favour();
+  int favour = city->states().favor;
   int peace = city->peace();
   int population = city->states().population;
   bool success = conditions.isSuccess(culture, prosperity, favour, peace, population);

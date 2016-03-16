@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/position_array.hpp"
+#include "city/states.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -248,7 +249,7 @@ int Senate::status(Senate::Status status) const
     case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
     case peace:      return _city()->peace();
-    case favour:     return _city()->favour();
+    case favour:     return _city()->states().favor;
     }
   }
 

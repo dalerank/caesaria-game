@@ -43,24 +43,24 @@ public:
 
   void sendGift(const Gift& gift);
   void sendGift(const std::string& who, const std::string& type, int value);
-  const Gift& lastGift( const std::string& cityname ) const;
-  const Relation& relation( const std::string& cityname ) const;
+  const Gift& lastGift(const std::string& cityname) const;
+  const Relation& relation(const std::string& cityname) const;
 
-  void timeStep( unsigned int time );
+  void timeStep(unsigned int time);
 
   void remSoldiers(const std::string& cityname, int value);
-  void addSoldiers( const std::string& name, int value );
+  void addSoldiers(const std::string& name, int value);
   std::string name() const;
-  void setName( const std::string& name );
+  void setName(const std::string& name);
 
-  void citySentTax( const std::string& cityname, unsigned int money );
-  void resetRelations( const StringArray& cities );
+  void citySentTax(const std::string& cityname, unsigned int money);
+  void resetRelations(const StringArray& cities);
   void checkCities();
 
   VariantMap save() const;
-  void load( const VariantMap& stream );
+  void load(const VariantMap& stream);
 
-  void init( Empire& empire );
+  void init(Empire& empire);
 private:
   __DECLARE_IMPL(Emperor)
 };

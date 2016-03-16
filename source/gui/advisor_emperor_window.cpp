@@ -229,7 +229,7 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
   INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc )
 
   if( lbEmperorFavour )
-    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->favour() ) );
+    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->states().favor ) );
 
   if( lbEmperorFavourDesc )
     lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
@@ -275,7 +275,7 @@ void Emperor::_sendMoney( int money )
 
 std::string Emperor::_getEmperorFavourStr()
 {
-  return utils::format( 0xff, "##emperor_favour_%02d##", _city->favour() * favourLimiter / maxFavourValue  );
+  return utils::format( 0xff, "##emperor_favour_%02d##", _city->states().favor * favourLimiter / maxFavourValue  );
 }
 
 void Emperor::_resolveRequest(RequestPtr request)

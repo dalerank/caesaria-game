@@ -72,7 +72,7 @@ Variant to(js_State *J, int n, Variant)
 
 void tryPCall(js_State *J, int params)
 {
-  int error = js_pcall(internal::J, 0);
+  int error = js_pcall(internal::J, params);
   if (error)
   {
     std::string str = js_tostring(internal::J, -1);
@@ -173,10 +173,10 @@ void push(js_State *J, const VariantMap& items)
   }
 }
 
-void push(js_State* J, const DateTime& t) 
-{ 
-  auto pd = new DateTime(t); 
-  pushud(J, TEXT(DateTime), pd); 
+void push(js_State* J, const DateTime& t)
+{
+  auto pd = new DateTime(t);
+  pushud(J, TEXT(DateTime), pd);
 }
 
 #define PUSH_SAVEDDATA(type) void push(js_State* J, const type& p) { push(J, p.save()); }
@@ -189,8 +189,8 @@ PUSH_USERDATA(Player)
 PUSH_USERDATA(Emperor)
 PUSH_USERDATA(Empire)
 
-inline DateTime to(js_State *J, int n, DateTime) 
-{ 
+inline DateTime to(js_State *J, int n, DateTime)
+{
   if (js_isuserdata(J, 1, "userdata"))
   {
     DateTime* dt = (DateTime*)js_touserdata(J, 1, "userdata");

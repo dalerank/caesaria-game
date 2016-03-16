@@ -26,6 +26,7 @@
 #include <mutex>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <thread>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
@@ -117,7 +118,7 @@ public:
 
   std::string currentTheme;
   Signal0<> onThemeStoppedSignal;
-  unsigned int lastTimeThemeUpdate, 
+  unsigned int lastTimeThemeUpdate,
                themeStopCheckInterval;
 
 public:
@@ -232,11 +233,11 @@ void Engine::init()
 
 void Engine::exit()
 {
-  _d->running = false;  
+  _d->running = false;
   _d->thread->stop();
   //?
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  Mix_CloseAudio();
+  //Mix_CloseAudio();
 }
 
 Path Engine::Impl::findFullPath( const std::string& sampleName )

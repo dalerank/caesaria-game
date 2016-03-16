@@ -29,6 +29,8 @@ VariantMap States::save() const
   VARIANT_SAVE_ENUM(ret,nation);
   VARIANT_SAVE_ANY(ret,population)
   VARIANT_SAVE_ANY(ret,birth)
+  VARIANT_SAVE_ANY(ret,favor)
+  VARIANT_SAVE_ANY(ret,money)
 
   return ret;
 }

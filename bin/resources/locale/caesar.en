@@ -2272,4 +2272,8 @@
 "##temple_and_oracle##":"Temple and oracle",
 "##medical_clinic##":"Medical clinic",
 "##health_advisor##":"Health advisor",
+"##peace_and_war##":"Peace and war",
+"##roads_and_bridges##":"Roads and Bridges",
+"##docks##":"Docks",
+"##common_problems##":"Common problems",
 }
