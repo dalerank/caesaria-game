@@ -84,7 +84,7 @@ InBriefing::~InBriefing()
   case Briefing::loadMission:
   {
     bool loadOk = _game->load( _briefing->getMapName() );
-    Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + _briefing->getMapName() );
+    Logger::debug( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + _briefing->getMapName() );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }
@@ -116,7 +116,7 @@ InMainMenu::~InMainMenu()
     bool loadOk = _game->load( startMission );
     _game->player()->setName( startMenu->playerName() );
 
-    Logger::warning( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
+    Logger::debug( (loadOk ? "Career: start mission " : "Career: cant load mission") + startMission );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }
@@ -130,7 +130,7 @@ InMainMenu::~InMainMenu()
   case Lobby::loadMission:
   {
     bool loadOk = _game->load( startMenu->mapName() );
-    Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
+    Logger::debug( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }
@@ -140,7 +140,7 @@ InMainMenu::~InMainMenu()
   case Lobby::loadConstructor:
   {
     bool loadOk = _game->load( startMenu->mapName() );
-    Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
+    Logger::debug( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
 
     game::freeplay::Finalizer finalizer( _game->city() );
     finalizer.addPopulationMilestones( );

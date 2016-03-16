@@ -218,7 +218,7 @@ void SmkViewer::Impl::nextFrame()
     emit onFinishSignal();
   }
 
-  Logger::warning( " -> Frame {}...", smkf.frame.current );
+  Logger::info( " -> Frame {}...", smkf.frame.current );
 
   smk_next( smkf.source );
 }

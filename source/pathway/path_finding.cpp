@@ -120,7 +120,7 @@ void Propagator::propagate(const unsigned int maxDistance)
       // while there are active paths
       if ((nbLoops++)>10000)
       {
-        Logger::warning( "WARNING!!!: Infinite loop detected during propagation");
+        Logger::warning( "!!! Infinite loop detected during propagation");
         _d->completedBranches.clear();
         return;
       }

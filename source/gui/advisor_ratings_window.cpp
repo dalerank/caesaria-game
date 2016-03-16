@@ -205,7 +205,7 @@ void Ratings::Impl::checkPeaceRating()
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
-    Logger::warning( "!!! WARNING: checkPeaceRating failed some is null" );
+    Logger::warning( "!!! checkPeaceRating failed some is null" );
     return;
   }
 

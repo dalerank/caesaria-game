@@ -106,7 +106,7 @@ void GoodCaravan::load(const VariantMap& stream)
 
   _d->options = stream;
   _d->base = empire()->findCity( stream.get( "base" ).toString() );
-  Logger::warningIf( _d->base.isNull(), "!!! WARNING: GoodCaravan::load base not exists" );
+  Logger::warningIf( _d->base.isNull(), "!!! GoodCaravan::load base not exists" );
 
   VARIANT_LOAD_CLASS_D( _d, store, stream )
   VARIANT_LOAD_STR_D( _d, destination, stream )

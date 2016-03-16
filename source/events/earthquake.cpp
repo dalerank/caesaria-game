@@ -74,7 +74,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
   if( game::Date::isDayChanged() && time != _d->lastTimeUpdate )
   {
     _d->lastTimeUpdate = time;
-    Logger::warning( "Execute earthquake event" );
+    Logger::info( "Execute earthquake event" );
 
     Tilemap& tmap = game.city()->tilemap();
     Tile* currentTile = &tmap.at( _d->current );

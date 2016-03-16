@@ -150,7 +150,7 @@ void Session::playAudio(const std::string& filename, int volume, int mode)
 {
   if (!audio::isAvailableMode(mode))
   {
-    Logger::warning("WARNING! audio mode {} not available", mode);
+    Logger::warning("Audio mode {} not available", mode);
     return;
   }
   audio::Engine::instance().play( filename, volume, (audio::SoundType)mode );

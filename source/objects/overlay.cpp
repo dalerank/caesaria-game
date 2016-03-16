@@ -93,7 +93,7 @@ Tilemap& Overlay::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  Logger::warning( "!!! City is null at Overlay::_map()" );
   return config::tilemap.invalid();
 }
 
@@ -101,7 +101,7 @@ int Overlay::_cityOpt(int name)
 {
   if(_d->city.isNull())
   {
-    Logger::warning("WARNING !!! Try to get city option when city not initialized");
+    Logger::warning("!!! Try to get city option when city not initialized");
     crashhandler::printstack(false);
     return 0;
   }
@@ -250,7 +250,7 @@ Picture& Overlay::_fgPicture(unsigned int index)
 {
   if (index >= _d->fgPictures.size())
   {
-    Logger::warning( "Overlay::_fgPicture try get picture over array you need set size for fgpicture before" );
+    LOG_OVERLAY.warn( "_fgPicture try get picture over array you need set size for fgpicture before" );
     crashhandler::printstack(false);
     if (index>9)
       return invalidSavePicture;

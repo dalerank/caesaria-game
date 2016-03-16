@@ -131,7 +131,7 @@ void Prefect::_back2Prefecture()
 
   if( prefecture.isNull() )
   {
-    Logger::warning( "!!! WARNING: Prefect lost base " );
+    Logger::warning( "!!!Prefect lost base " );
     deleteLater();
     return;
   }

@@ -110,7 +110,7 @@ bool Mission::load( const std::string& filename, Game& game )
       game::Loader mapLoader;
       if( !vfs::Path( mapToLoad ).exist() )
       {
-        Logger::warning( "WARNING !!! Cant find map {} for mission {}", mapToLoad, filename );
+        Logger::error( "Cant find map {} for mission {}", mapToLoad, filename );
         return false;
       }
       mapLoader.load( mapToLoad, game );
@@ -127,7 +127,7 @@ bool Mission::load( const std::string& filename, Game& game )
     city->mayor()->setRank( vm.get( "player.rank", 0 ).toEnum<world::GovernorRank::Level>() );
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
-    Logger::warning( "GameLoaderMission: load city options ");
+    Logger::debug( "GameLoaderMission: load city options ");
     city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
     city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
@@ -153,7 +153,7 @@ bool Mission::load( const std::string& filename, Game& game )
     }
 
     game.empire()->setCitiesAvailable( false );
-    Logger::warning( "GameLoaderMission: load empire state" );
+    Logger::debug( "GameLoaderMission: load empire state" );
     game.empire()->load( vm.get( "empire" ).toMap() );
 
     city::VictoryConditions winConditions;

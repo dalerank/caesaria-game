@@ -77,14 +77,14 @@ void HotkeyManager::load(vfs::Path file)
     KeyCode hotkey = _d->hkMapper.findType( it.first );
     if( hotkey == KEY_KEY_CODES_COUNT )
     {
-      Logger::warning( "WARNING!!! HotkeyManager: cant find equale for " + it.first );
+      Logger::warning( "HotkeyManager: cant find equale for " + it.first );
       continue;
     }
 
     HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
     if( presentIt != _d->scripts.end() )
     {
-      Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it.first );
+      Logger::warning( "HotkeyManager: duplicate hotkey for " + it.first );
       continue;
     }
 

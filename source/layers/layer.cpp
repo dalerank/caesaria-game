@@ -767,7 +767,7 @@ Tilemap& Layer::_map() const
   if( _d.city.isValid() )
     return _d.city->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  Logger::warning( "!!! City is null at Walker::_map()" );
   return config::tilemap.invalid();
 }
 

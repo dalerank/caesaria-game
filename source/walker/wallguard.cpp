@@ -68,7 +68,7 @@ bool WallGuard::die()
     break;
 
     default:
-      Logger::warning( "WARNING !!! Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+      Logger::warning( "!!! Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
     }
   }
 

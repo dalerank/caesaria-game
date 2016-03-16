@@ -126,7 +126,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
+      Logger::debug( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;

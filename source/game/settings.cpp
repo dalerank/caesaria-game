@@ -308,7 +308,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     {
       std::string name = std::string( argv[i] ).substr( 1 );
       std::string nextName = (i+1 >= argc ? "" : std::string( argv[i+1] ));
-      if( nextName[0] == '-' || (i+1 == argc)  )
+      if (nextName[0] == '-' || (i+1 == argc))
       {
         bool value = true;
         if( name[0] == '!' )
@@ -316,11 +316,11 @@ void Settings::checkCmdOptions(char* argv[], int argc)
           name = name.substr( 1 );
           value = false;
         }
-        _d->options[ name ] = Variant( value );
+        _d->options[name] = Variant(value);
       }
       else
       {
-        _d->options[ name ] = Variant( nextName );
+        _d->options[name] = Variant(nextName);
         i++;
       }
     }

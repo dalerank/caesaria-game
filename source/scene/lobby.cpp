@@ -113,7 +113,7 @@ void Lobby::setMode(int mode)
     _isStopped = true;
     _d->result = loadMission;
     if (!vfs::Path(_d->fileMap).exist())
-      Logger::warning("WARNING !!! File to load is empty in Lobby::setMode");
+      Logger::warning("!!! File to load is empty in Lobby::setMode");
   break;
 
   case loadMap:
@@ -185,7 +185,7 @@ void Lobby::setOption(const std::string& name, Variant value)
 void Lobby::initialize()
 {
   events::Dispatcher::instance().reset();
-  Logger::warning( "ScreenMenu: initialize start");
+  Logger::debug( "ScreenMenu: initialize start");
   std::string resName = SETTINGS_STR( titleResource );
   _d->bgPicture.load( resName, 1);
 

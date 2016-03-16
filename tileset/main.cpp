@@ -245,7 +245,7 @@ public:
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
 			{
-        Logger::warning("Error: Could not find directory '{0}'", path.toString());
+        Logger::fatal("Error: Could not find directory '{0}'", path.toString());
 				return;
 			}
 

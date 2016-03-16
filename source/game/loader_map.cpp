@@ -147,7 +147,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "C3MapLoader: location of city is {}", (int)(location) );
+  Logger::debug( "C3MapLoader: location of city is {}", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -158,7 +158,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   uint32_t size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "C3MapLoader: map size is {}", map_size );
+  Logger::debug( "C3MapLoader: map size is {}", map_size );
 
   if (map_size != size_2)
   {
@@ -279,7 +279,7 @@ void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 
   ioCity->setOption( PlayerCity::climateType, i);
 
-  Logger::warning( "C3MapLoader: climate type is {0}", i );
+  Logger::debug( "C3MapLoader: climate type is {0}", i );
 }
 
 void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

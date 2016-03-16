@@ -50,11 +50,11 @@ public:
 
 bool OC3::load(const std::string& filename, Game& game)
 {
-  Logger::warning( "GameLoaderOc3: start loading from " + filename );
+  Logger::debug( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = config::load( filename );
   if( vm.empty() )
   {
-    Logger::warning( "!!! WARNING: GameLoaderOc3 empty file " + filename );
+    Logger::error( "!!! WARNING: GameLoaderOc3 empty file " + filename );
     return false;
   }
   
@@ -83,7 +83,7 @@ bool OC3::load(const std::string& filename, Game& game)
     return true;
   }
 
-  Logger::warning( "!!! WARNING: GameLoaderOc3 unsupported version {0}", fileVersion );
+  Logger::debug( "GameLoaderOc3 unsupported version {0}", fileVersion );
   return false;
 }
 

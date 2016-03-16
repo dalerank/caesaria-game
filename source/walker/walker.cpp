@@ -394,7 +394,7 @@ Tilemap& Walker::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "WARNING !!! City is null at Walker::_map()" );
+  Logger::warning( "!!! City is null at Walker::_map()" );
   return config::tilemap.invalid();
 }
 
@@ -454,7 +454,7 @@ std::string Walker::thoughts(Thought about) const
     return _d->thinks;
   }
 
-  Logger::warning( "WARNING : no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
+  Logger::warning( " no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
   return "";
 }
 
@@ -540,14 +540,14 @@ void Walker::load( const VariantMap& stream)
 
   if( !_d->map.path.isValid() )
   {
-    Logger::warning( "WARNING!!! Walker: wrong way for {0}:{1} at [{2},{3}]",
+    Logger::warning( " Walker: wrong way for {0}:{1} at [{2},{3}]",
                      WalkerHelper::getTypename( _d->type ), _d->name,
                      _d->map.tile->i(), _d->map.tile->j() );
   }
   
   if( _d->speed.multiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for {0}", _d->uid );
+    Logger::warning( " Walker: Wrong speed multiplier for {0}", _d->uid );
     _d->speed.multiplier = 1;
   }
 

@@ -55,7 +55,7 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
     if( !absArchivePath.exist() )
       absArchivePath = dir/absArchivePath;
 
-    Logger::warning( "ResourceLoader: try mount archive " + absArchivePath );
+    Logger::debug( "ResourceLoader: try mount archive " + absArchivePath );
 
     Directory absDir = absArchivePath.directory();
     absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );       
@@ -73,7 +73,7 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
     }
     else
     {
-      Logger::warning( "ResourceLoader: cannot load archive " + absArchivePath );
+      Logger::error( "ResourceLoader: cannot load archive " + absArchivePath );
     }
   }
 }

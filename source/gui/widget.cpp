@@ -702,7 +702,7 @@ void Widget::setupUI( const VariantMap& options )
 
 void Widget::setupUI(const vfs::Path& filename)
 {
-  Logger::warning( "Widget: load gui model from " + filename.toString() );
+  Logger::debug( "Widget: load gui model from " + filename.toString() );
   setupUI( config::load( filename ) );
 }
 

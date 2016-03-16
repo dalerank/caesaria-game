@@ -61,7 +61,7 @@ void ClayPit::flood()
 {
   deleteLater();
 
-  Logger::warning( "WARNING!!! ClaiPit was flooded at [{},{}]", pos().i(), pos().j() );
+  Logger::debug( "!!! ClaiPit was flooded at [{},{}]", pos().i(), pos().j() );
 
   OverlayPtr flooded( new FloodedClayPit() );
   flooded->drop();

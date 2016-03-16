@@ -199,7 +199,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
   if( !f.is_open() )
   {
-    Logger::warning( "GameLoaderC3Sav: can't open file " );
+    Logger::error( "GameLoaderC3Sav: can't open file " );
     return false;
   }
   
@@ -213,7 +213,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {}", tmp );
+    Logger::debug( "GameLoaderC3Sav: length of compressed ids is {}", tmp );
     PKWareInputStream *pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < mapArea; i++)
     {
@@ -223,7 +223,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     delete pk;
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {}", tmp );
+    Logger::debug( "GameLoaderC3Sav: length of compressed egdes is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < mapArea; i++)
     {
@@ -235,7 +235,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f); // skip building ids
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {}", tmp );
+    Logger::debug( "GameLoaderC3Sav: length of compressed terraindata is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < mapArea; i++)
     {
@@ -259,7 +259,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {}", tmp );
+    Logger::debug( "GameLoaderC3Sav: length of compressed walkers data is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);    
     for (int j = 0; j < 1000; j++)
     {
@@ -345,7 +345,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
           if( ovType == object::unknown )
           {
-            Logger::warning( "!!! GameLoaderC3Sav: Unknown building {} at [{},{}]", imgId, i, j );
+            Logger::error( "GameLoaderC3Sav: Unknown building {} at [{},{}]", imgId, i, j );
           }
           else
           {

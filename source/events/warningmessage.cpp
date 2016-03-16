@@ -48,7 +48,7 @@ void WarningMessage::_exec(Game& game, unsigned int)
 {
   if (game.city().isNull())
   {
-    Logger::warning(_text);
+    Logger::info(_text);
     return;
   }
 

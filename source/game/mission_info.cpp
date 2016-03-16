@@ -32,7 +32,7 @@ bool MissionInfo::load(const std::string& path)
 
   if (!p.exist() || _info.empty())
   {
-    Logger::warning("WARNING !!! Cant load mission info from " + p.toString());
+    Logger::error("Cant load mission info from " + p.toString());
     return false;
   }
 

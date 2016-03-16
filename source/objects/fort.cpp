@@ -447,7 +447,7 @@ TilePos Fort::patrolLocation() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
+    Logger::warning( "!!! Fort::patrolLocation(): not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
     crashhandler::printstack(false);
   }

@@ -84,7 +84,7 @@ void Recruter::hireWorkers( const int workers )
   }
   else
   {
-    Logger::warning( "!!! WARNING: Recruter base[{0},{1}] is null. Stop working.", baseLocation().i(), baseLocation().j() );
+    Logger::warning( "!!! Recruter base[{0},{1}] is null. Stop working.", baseLocation().i(), baseLocation().j() );
     return2Base();
   }
 }
@@ -116,7 +116,7 @@ void Recruter::_centerTile()
 
   if( refBase.isNull() )
   {
-    Logger::warning( "!!! WARNING: Recruter haveno base" );
+    Logger::warning( "!!! Recruter haveno base" );
     return;
   }
 
@@ -164,7 +164,7 @@ void Recruter::_noWay()
   Pathway newway;
   if( d.failedCounter > 5 )
   {
-    Logger::warning( "!!! WARNING: Failed find way for recruter " + name() );
+    Logger::warning( "!!! Failed find way for recruter " + name() );
     die();
   }
 
@@ -194,7 +194,7 @@ void Recruter::send2City(BuildingPtr base, int orders)
   }
   else
   {
-    Logger::warning( "!!!WARNING: Recruter try hire workers for non working buildng. Delete rectuter.");
+    Logger::warning( "!!! Recruter try hire workers for non working buildng. Delete rectuter.");
     deleteLater();
   }
 }

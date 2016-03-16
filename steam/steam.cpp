@@ -358,7 +358,7 @@ bool checkSteamRunning()
 
   // Once you get a public Steam AppID assigned for this game, you need to replace k_uAppIdInvalid with it and
   // removed steam_appid.txt from the game depot.
-  Logger::warning( "Check running Steam" );
+  Logger::debug( "Check running Steam" );
   bool needRestart = SteamAPI_RestartAppIfNecessary( GAME_STEAM_APPID );
   return !needRestart;
 }
@@ -372,10 +372,10 @@ bool connect()
   // This will also load the in-game steam overlay dll into your process.  That dll is normally
   // injected by steam when it launches games, but by calling this you cause it to always load,
   // even when not launched via steam.
-  Logger::warning( "Init Steam api" );
+  Logger::debug( "Init Steam api" );
   if ( !SteamAPI_Init() )
   {
-    Logger::warning( "SteamAPI_Init() failed" );
+    Logger::error( "SteamAPI_Init() failed" );
     OSystem::error( "Fatal Error", "Steam must be running to play this game (SteamAPI_Init() failed).\n" );
     return false;
   }
@@ -400,20 +400,20 @@ bool connect()
   // Ensure that the user has logged into Steam. This will always return true if the game is launched
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
-  Logger::warning( "CurrentGameLanguage: {0}", SteamApps()->GetCurrentGameLanguage() );
+  Logger::debug( "CurrentGameLanguage: {0}", SteamApps()->GetCurrentGameLanguage() );
   gameRunInOfflineMode = !SteamUser()->BLoggedOn();
 
   bool mayStart = SteamApps()->BIsSubscribedApp( GAME_STEAM_APPID );
   if( !mayStart )
   {
-    Logger::warning( "Cant play in this account" );
+    Logger::error( "Cant play in this account" );
     OSystem::error( "Warning", "Cant play in this account" );
     return false;
   }
 
   if( gameRunInOfflineMode )
   {
-    Logger::warning( "Game work in offline mode" );
+    Logger::error( "Game work in offline mode" );
     OSystem::error( "Warning", "Game work in offline mode" );
   }  
 
@@ -423,7 +423,7 @@ bool connect()
 void close()
 {  
   SteamAPI_Shutdown();
-  Logger::warning( "Game: try close steam" );
+  Logger::debug( "Game: try close steam" );
 }
 
 void update()
@@ -452,7 +452,7 @@ void init()
 #else
   if( xclient.user->BLoggedOn() )
   {
-    Logger::warning( "Try receive steamID:" );
+    Logger::debug( "Try receive steamID:" );
     glbUserStats.steamId = xclient.user->GetSteamID();
   }
   else
@@ -460,7 +460,7 @@ void init()
     Logger::warning( "SteamUser is null" );
   }
 
-  Logger::warning("Reqesting Current Stats:" );
+  Logger::debug("Reqesting Current Stats:" );
   xclient.stats->RequestCurrentStats();
 #endif
 
@@ -637,11 +637,11 @@ void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
   {
     if ( 0 == pCallback->m_nMaxProgress )
     {
-      Logger::warning( "Achievement '{}' unlocked!", pCallback->m_rgchAchievementName );
+      Logger::debug( "Achievement '{}' unlocked!", pCallback->m_rgchAchievementName );
     }
     else
     {
-      Logger::warning( "Achievement '{}' progress callback, ({},{}})\n",
+      Logger::debug( "Achievement '{}' progress callback, ({},{}})\n",
                        pCallback->m_rgchAchievementName,
                        pCallback->m_nCurProgress,
                        pCallback->m_nMaxProgress );

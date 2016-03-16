@@ -158,7 +158,7 @@ void PictureBank::addAtlas( const std::string& filename )
   VariantMap options = config::load( filename );
   if( !options.empty() )
   {
-    Logger::warning( "PictureBank: load atlas " + filename );
+    Logger::debug( "PictureBank: load atlas " + filename );
 
     AtlasPreview atlas;
     atlas.filename = filename;
@@ -182,7 +182,6 @@ void PictureBank::loadAtlas(const std::string& filename)
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = Hash( name );
-  //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
   if( it == _d->resources.end() )

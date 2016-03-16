@@ -443,7 +443,7 @@ void Level::handleEvent( NEvent& event )
 void Level::Impl::makeScreenShot()
 {
   std::string filename = getScreenshotName();
-  Logger::warning( "Level: create screenshot " + filename );
+  Logger::debug( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
   events::dispatch<WarningMessage>( "Screenshot save to " + filename, WarningMessage::neitral );

@@ -66,7 +66,7 @@ Variant to(js_State *J, int n, Variant)
   if(js_isstring(J,n))
     return Variant(std::string(js_tostring(J,n)));
 
-  Logger::warning("WARNING !!! Cant convert jValue to Variant");
+  Logger::warning("!!! Cant convert jValue to Variant");
   return Variant();
 }
 
@@ -204,7 +204,7 @@ inline StringArray to(js_State *J, int n, StringArray)
 {
   if (!js_isarray(J, 1))
   {
-    Logger::warning("WARNING !!! Object is not an string array");
+    Logger::warning("!!! Object is not an string array");
     return StringArray();
   }
 
@@ -257,7 +257,7 @@ void engineLoadArchive(js_State* J)
   ArchivePtr archive = FileSystem::instance().mountArchive(arcPath);
   if (archive.isNull())
   {
-    Logger::warning("WARNING !!! JS:LoadArchive can't load file " + archivePath.toString());
+    Logger::warning("!!! JS:LoadArchive can't load file " + archivePath.toString());
     return;
   }
 
@@ -300,7 +300,7 @@ void engineGetOption(js_State *J)
   Variant value = game::Settings::get(name);
   int error = internal::push(J, value);
   if (error)
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption when find " + name );
+    Logger::warning( "!!! Undefined value for js.pcall engineGetOption when find " + name );
 }
 
 void engineSetOption(js_State *J)
@@ -313,7 +313,7 @@ void engineSetOption(js_State *J)
   else if (js_isstring(J,2))
     game::Settings::set(name, std::string(js_tostring(J,2)));
   else
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption when set " + name );
+    Logger::warning( "!!! Undefined value for js.pcall engineSetOption when set " + name );
 
   game::Settings::save();
 }
@@ -321,7 +321,7 @@ void engineSetOption(js_State *J)
 void reg_object_callback(const std::string& name, const std::string& funcname, js_CFunction f, int params)
 {
   js_newcfunction(internal::J, f, funcname.c_str(), params);
-  Logger::warning( "script-if://" + name + "_set_" + funcname + "->" + funcname);
+  Logger::debug( "script-if://" + name + "_set_" + funcname + "->" + funcname);
   js_defproperty(internal::J, -2, funcname.c_str(), JS_DONTENUM);
 }
 
@@ -355,7 +355,7 @@ void Core::loadModule(const std::string& path)
   vfs::Path rpath(path);
   if (!rpath.exist())
   {
-    Logger::warning("WARNING !!! Cant find script at {}", rpath.toString());
+    Logger::warning("!!! Cant find script at {}", rpath.toString());
     return;
   }
 
@@ -383,7 +383,7 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   {
     int error = internal::push(internal::J,param);
     if (error)
-      Logger::warning("WARNING !!! Undefined value for js.pcall " + funcname);
+      Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
 
   internal::tryPCall(internal::J,params.size());
@@ -412,7 +412,7 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
     auto* ptrCheck = safety_cast<Widget*>(widget);
     if(!ptrCheck)
     {
-      Logger::warning( "WARNING !!! Callback " + className + ":" + callback + " called not for widget");
+      Logger::warning( "!!! Callback " + className + ":" + callback + " called not for widget");
       return;
     }
 
@@ -543,7 +543,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
     widget = internal::game->gui()->rootWidget()->findChild(name, true);
 
     if (widget == nullptr)
-      Logger::warning("WARNING !!! Cant found widget with name " + name);
+      Logger::warning("!!! Cant found widget with name " + name);
   }
   else
   {

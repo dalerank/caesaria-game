@@ -56,7 +56,7 @@ void RandomPlague::_exec( Game& game, unsigned int time)
   int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
-    Logger::warning( "Execute random plague event" );
+    Logger::info( "Execute random plague event" );
     _d->isDeleted = true;
 
     HouseList houses = game.city()->statistic().houses.habitable();

@@ -69,7 +69,7 @@ void ContaminatedWater::_exec( Game& game, unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    Logger::warning( "Execute contaminated water service" );
+    Logger::info( "Execute contaminated water service" );
     _d->isDeleted = _d->endDate < game::Date::current();
 
     _decreaseHousesHealth( object::well, game.city(), -_d->value );

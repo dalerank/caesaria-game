@@ -96,8 +96,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "({}, {})", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "({}, {})", tlOffset.i(), tlOffset.j() );
+  Logger::debug( "({}, {})", tlPos.i(),    tlPos.j()    );
+  Logger::debug( "({}, {})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
@@ -208,7 +208,7 @@ bool Loader::load(vfs::Path filename, Game& game)
     return loadok;
   }
 
-  Logger::warning( "WARNING !!! GameLoader not found loader for " + filename.toString() );
+  Logger::warning( "GameLoader not found loader for " + filename.toString() );
 
   return false; // failed to load
 }

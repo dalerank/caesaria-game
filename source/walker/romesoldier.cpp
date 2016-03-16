@@ -183,7 +183,7 @@ void RomeSoldier::load(const VariantMap& stream)
   }
   else
   {
-    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{},{}]", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "!!! RomeSoldier cant find base for himself at [{},{}]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }

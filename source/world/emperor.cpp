@@ -147,7 +147,7 @@ CityList Emperor::Impl::findTroubleCities() {
     Relation &relation = item.second;
 
     if (!city.isValid()) {
-      Logger::warning("!!! WARNING: city not availaible " + item.first);
+      Logger::warning("!!! city not availaible " + item.first);
       continue;
     }
 

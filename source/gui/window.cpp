@@ -243,7 +243,7 @@ Widget* Window::_titleWidget() const { return _d->title; }
 Window::~Window()
 {
   emit _d->signal.onCloseEx(this);
-  Logger::warning( "Window ID={} was removed", ID() );
+  Logger::info( "Window ID={} was removed", ID() );
 }
 
 //! called if an event happened.
@@ -436,7 +436,7 @@ void Window::setWindowFlag(const std::string& flagname, bool enabled)
   else if( flagname == TEXT(ftitleVisible) ) setWindowFlag(ftitleVisible,enabled);
   else
   {
-    Logger::warning( "WARNING !!! Cant find flag with name " + flagname );
+    Logger::warning( "!!! Cant find flag with name " + flagname );
   }
 }
 

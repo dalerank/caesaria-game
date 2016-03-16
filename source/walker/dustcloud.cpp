@@ -111,7 +111,7 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
 
   if( !_d->mapway.mayMove() )
   {
-    Logger::warning( "WARNING!!! DustCloud: start equale destination" );
+    Logger::warning( "!!! DustCloud: start equale destination" );
     _d->mapway.destination = _d->mapway.source + TilePos( 1, 1 );
   }
 

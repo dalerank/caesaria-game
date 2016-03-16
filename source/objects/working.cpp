@@ -242,17 +242,17 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
 {
   if( walker.isNull() )
   {
-    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    Logger::warning( "!!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
     return;
   }
 
-   if( walker->isDeleted() )
-   {
-      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
-     return;
-   }
+  if( walker->isDeleted() )
+  {
+     Logger::warning( "!!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+    return;
+  }
 
-   _d->walkerList.push_back( walker );
+  _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()

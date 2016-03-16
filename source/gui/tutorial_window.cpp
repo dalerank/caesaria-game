@@ -51,7 +51,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     return;
 
   VariantMap vm = config::load( tutorial );
-  Logger::warningIf( vm.empty(), "!!! WARNING: Cannot load tutorial description from " + tutorial.toString() );
+  Logger::warningIf( vm.empty(), "!!! Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
   std::string title = vm.get( "title" );

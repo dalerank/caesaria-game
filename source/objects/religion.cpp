@@ -138,7 +138,7 @@ DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
 unsigned int Temple::currentVisitors() const
 {
-  Logger::warning( "!!! WARNING: Basic temple shouldn't return parishionerNumber" );
+  Logger::warning( "!!! Basic temple shouldn't return parishionerNumber" );
   return 0;
 }
 
