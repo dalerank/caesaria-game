@@ -1,7 +1,7 @@
 {  
  title : "##well##"
  sound : "fanfare"
- text  : "Das frühe Rom bezog das gesamte Trinkwasser aus @Ziehbrunnen&. Der Tiber war bereits ein schutziges Gewässer, lange bevor die Cloaca Maxima, Roms größter Abwasserkanal, ihn verschmutzte. Roms Wassereinzugsgebiet verfügte über viel Grundwasser, das auf natürliche Wege gefiltert wurde, während es durch den Boden sickerte. Das Wasser wurde über @Ziehbrunnen& der Bevölkerung zugänglich gemacht und reichte auch völlig aus, bis die Bevölkerungszahl der Stadt zu stark wuchs. @Ziehbrunnen& sorgten während der gesamten römischen Geschichte für Trinkwasser aus den Bergen, waren jedoch meist nur in den außenliegenden, ärmeren Gegenden weitab von den zahlreichen, mit kostenlosem Wasser versorgten @Brunnen& zu finden."
+ text  : "Das frühe Rom bezog das gesamte Trinkwasser aus @Ziehbrunnen&. Der Tiber war bereits ein schmutziges Gewässer, lange bevor die Cloaca Maxima, Roms größter Abwasserkanal, ihn verschmutzte. Roms Wassereinzugsgebiet verfügte über viel Grundwasser, das auf natürliche Wege gefiltert wurde, während es durch den Boden sickerte. Das Wasser wurde über @Ziehbrunnen& der Bevölkerung zugänglich gemacht und reichte auch völlig aus, bis die Bevölkerungszahl der Stadt zu stark wuchs. @Ziehbrunnen& sorgten während der gesamten römischen Geschichte für Trinkwasser aus den Bergen, waren jedoch meist nur in den außenliegenden, ärmeren Gegenden weitab von den zahlreichen, mit kostenlosem Wasser versorgten @Brunnen& zu finden."
  uri : {
   "Ziehbrunnen" : "well"
   "Brunnen" : "fountain"
