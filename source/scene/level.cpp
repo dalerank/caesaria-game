@@ -576,18 +576,6 @@ bool Level::_tryExecHotkey(NEvent &event)
 
     switch(event.keyboard.key)
     {
-    case KEY_MINUS:
-    case KEY_PLUS:
-    case KEY_SUBTRACT:
-    case KEY_EQUALS:
-    case KEY_ADD:
-    {
-      events::dispatch<ChangeSpeed>( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
-                                                            ? -10 : +10 );
-      handled = true;
-    }
-    break;
-
     case KEY_KEY_P:
     {
       _d->simulationPaused =  !_d->simulationPaused;

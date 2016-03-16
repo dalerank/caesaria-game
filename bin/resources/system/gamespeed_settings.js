@@ -4,7 +4,7 @@ sim.ui.topmenu.options.showSpeedOptions = function()
     w.title = "##game_speed_options##";
 
     var wasChanged = false;
-    var saveGameSpeed = g_session.getAdvflag("gameSpeed")
+    var saveGameSpeed = sim.timescale.value
     var saveScroolSpeed = g_session.getAdvflag("scrollSpeed")
     var saveAutosaveInterval = engine.getOption("autosaveInterval")
 
@@ -16,8 +16,8 @@ sim.ui.topmenu.options.showSpeedOptions = function()
     spnGameSpeed.font = "FONT_2";
     spnGameSpeed.textAlign = { h:"center", v:"center" };
     spnGameSpeed.callback = function(value) {
-        wasChanged = true;
-        g_session.setAdvflag("gameSpeed", value)
+        wasChanged = true
+        sim.timescale.value = value
     }
 
     var spnScrollSpeed = w.addSpinbox(28, 60, w.w-28*2, 24);
@@ -44,7 +44,6 @@ sim.ui.topmenu.options.showSpeedOptions = function()
         engine.setOption("autosaveInterval", value)
     }
 
-
     var btnOk = wnd.addButton(w.w*0.25, w.h-60, w.w*0.5,  22);
     btnOk.style = "smallGrayBorderLine";
     btnOk.text = "##ok##";
@@ -56,7 +55,7 @@ sim.ui.topmenu.options.showSpeedOptions = function()
     btnCancel.callback = function() {
         if (wasChanged)
         {
-            g_session.setAdvflag("gameSpeed",saveGameSpeed);
+            sim.timescale.value = saveGameSpeed;
             g_session.setAdvflag("scrollSpeed",saveScroolSpeed);
             engine.setOption("autosaveInterval",saveAutosaveInterval);
         }

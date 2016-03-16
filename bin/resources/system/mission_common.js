@@ -1,4 +1,3 @@
-
 sim.fastsave.filename = function()
 {
   var filename = g_session.savedir;

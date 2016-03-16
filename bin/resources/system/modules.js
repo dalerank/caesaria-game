@@ -21,6 +21,7 @@ var modules = [
                   "mission_select",
                   "mission_targets",
                   "mission_debug",
+                  "mission_timescale",
                   "package_settings",
                   "salary_settings",
                   "climate_manager",

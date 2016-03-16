@@ -19,8 +19,8 @@ sim.hotkeys.actions = [
   { name : "advisor.education", sequence : "8", action : function() { g_session.setOption("advisor",g_config.advisor.education)}},
   { name : "advisor.entertainment", sequence : "9", action : function() { g_session.setOption("advisor",g_config.advisor.entertainment)}},
   { name : "advisor.religion", sequence : "0", action : function() { g_session.setOption("advisor",g_config.advisor.religion)}},
-  { name : "advisor.finance", sequence : "=", action : function() { g_session.setOption("advisor",g_config.advisor.finance)}},
-  { name : "advisor.main", sequence : "backspace", action : function() { g_session.setOption("advisor",g_config.advisor.main)}},
+  //{ name : "advisor.finance", sequence : "tilda", action : function() { g_session.setOption("advisor",g_config.advisor.finance)}},
+  { name : "advisor.main", sequence : "tilda", action : function() { g_session.setOption("advisor",g_config.advisor.main)}},
 
   { name : "layer.heath", sequence : "h", action : function() { g_session.setOption("layer",g_config.layer.health)}}, //health
   { name : "layer.fire", sequence : "f", action : function() { g_session.setOption("layer",g_config.layer.fire)}}, //fire
@@ -29,8 +29,15 @@ sim.hotkeys.actions = [
   { name : "layer.troubles", sequence : "t", action : function() { g_session.setOption("layer",g_config.layer.troubles)}}, //troubles
   { name : "layer.water", sequence : "w", action : function() { g_session.setOption("layer",g_config.layer.water)}}, //water
   { name : "layer.desirability", sequence : "g", action : function() { g_session.setOption("layer",g_config.layer.desirability)}}, //desirability
-  { name : "fastsave.create", sequence : "F5", action() { sim.fastsave.create() }},
-  { name : "fastsave.load", sequence : "F9", action() { sim.fastsave.load() }}
+  { name : "fastsave.create", sequence : "F5", action : function() { sim.fastsave.create() }},
+  { name : "fastsave.load", sequence : "F9", action : function() { sim.fastsave.load() }},
+
+  { name : "gamespeed.increase", sequence : "plus", action : function() { sim.timescale.increase(10) }},
+  { name : "gamespeed.increase2", sequence : "sum", action : function() { sim.timescale.increase(10) }},
+  { name : "gamespeed.increase3", sequence : "=", action : function() { sim.timescale.increase(10) }},
+
+  { name : "gamespeed.decrease", sequence : "minus", action : function() { sim.timescale.decrease(10) }},
+  { name : "gamespeed.decrease2", sequence : "subtract", action : function() { sim.timescale.decrease(10) }}
 ]
 
 sim.hotkeys.init = function()

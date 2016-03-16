@@ -73,6 +73,7 @@ sim.ui.dialogs = {}
 sim.hotkeys = {}
 sim.fastsave = {}
 sim.autosave = {}
+sim.timescale = {}
 
 /********************** namespace lobby **********************************/
 var lobby = {}
