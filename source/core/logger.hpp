@@ -28,8 +28,8 @@
 class LogWriter : public ReferenceCounted
 {
 public:
-  typedef enum Severity {
-    debug,
+  enum Severity {
+    debug=0,
     info,
     warn,
     error,
