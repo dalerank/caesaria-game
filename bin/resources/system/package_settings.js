@@ -44,8 +44,8 @@ lobby.ui.options.showPackageOptions = function()
     var edCaesar3Video = wnd.addEditbox(ww*0.3,127,ww*0.7-15,24);
     edCaesar3Video.font = "FONT_1";
     edCaesar3Video.textOffset = {x:3,y:0};
-    edCaesar3Video.text = engine.getOption("c3video");
-    edCaesar3Video.onTextChangeCallback = function(text) { engine.setOption("c3video", text); }
+    edCaesar3Video.text = g_session.c3video
+    edCaesar3Video.onTextChangeCallback = function(text) { g_session.c3video = text }
 
     var lbScreenshots = wnd.addLabel(15,154,ww*0.3,24);
     lbScreenshots.font = "FONT_1";
@@ -54,8 +54,8 @@ lobby.ui.options.showPackageOptions = function()
     var edScreenshots = wnd.addEditbox(ww*0.3,154,ww*0.7-15,24);
     edScreenshots.font = "FONT_1";
     edScreenshots.textOffset = {x:3,y:0};
-    edScreenshots.text = engine.getOption("screenshotDir");
-    edScreenshots.onTextChangeCallback = function(text) { engine.setOption("screenshotDir", text); }
+    edScreenshots.text = g_session.screenshotdir;
+    edScreenshots.onTextChangeCallback = function(text) { g_session.screenshotdir = text; }
 
     var  lbApply = wnd.addLabel(180, wh-35, ww-80, 20);
     lbApply.text = "##plname_continue##";

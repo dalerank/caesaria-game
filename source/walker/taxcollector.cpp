@@ -97,7 +97,7 @@ TaxCollector::TaxCollector(PlayerCityPtr city)
 {
   _d->money = 0;
   _d->return2base = false;
-  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes ) : false;
+  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes )>0 : false;
   _setType( walker::taxCollector );
 }
 

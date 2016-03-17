@@ -119,6 +119,7 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/windows", "emperor gift", function() {game.ui.dialogs.gift2emperor.show()} )
   topmenu.addItemWithCallback("Debug/windows", "change salary", function() {game.ui.dialogs.playerSalarySettings.show()} )
+  topmenu.addItemWithCallback("Debug/windows", "film widget", function() {sim.ui.filmwidget.show("pure","test","title")} )
  /*topmenu.addItemWithCallback("Debug/city", "make_generation", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "decrease_sentiment", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "increase_sentiment", function() {engine.log("test")} )

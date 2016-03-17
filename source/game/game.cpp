@@ -56,7 +56,6 @@
 #include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
-#include "video_config.hpp"
 #include "config.hpp"
 #include "world/emperor.hpp"
 #include "core/metric.hpp"
@@ -112,7 +111,6 @@ public:
   void initAddons(bool& isOk, std::string& result);
   void initScripting(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
-  void initMovie(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
   void initCelebrations(bool& isOk, std::string& result);
   void initUI(bool& isOk, std::string& result);
@@ -200,19 +198,6 @@ void Game::Impl::resolveHotkey(std::string actionName)
 {
   VariantList vl; vl << Variant(actionName);
   events::dispatch<events::ScriptFunc>("OnExecHotkey", vl);
-}
-
-void Game::Impl::initMovie(bool& isOk, std::string& result)
-{
-  movie::Config& config = movie::Config::instance();
-
-  config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
-  std::string c3videoFile = SETTINGS_STR( c3video );
-
-  if( !c3videoFile.empty() )
-  {
-    config.addFolder( c3videoFile );
-  }
 }
 
 void Game::Impl::initMetrics(bool& isOk, std::string& result)
@@ -605,7 +590,6 @@ void Game::initialize()
     ADD_STEP( &d, Impl::initArchiveLoaders ),
     ADD_STEP( &d, Impl::initLocale ),
     ADD_STEP( &d, Impl::initVideo ),
-    ADD_STEP( &d, Impl::initMovie ),
     ADD_STEP( &d, Impl::initFontCollection ),
     ADD_STEP( &d, Impl::initUI ),
     ADD_STEP( &d, Impl::initSound ),

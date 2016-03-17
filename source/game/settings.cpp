@@ -34,7 +34,6 @@ __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
 __REG_PROPERTY(houseModel )
 __REG_PROPERTY(citiesModel)
-__REG_PROPERTY(climateModel)
 __REG_PROPERTY(constructionModel)
 __REG_PROPERTY(ctNamesModel)
 __REG_PROPERTY(settingsPath)
@@ -90,7 +89,6 @@ __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
-__REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
@@ -146,7 +144,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ langModel           ] = std::string( "/language.model" );
   _d->options[ archivesModel       ] = std::string( "/archives.model" );
   _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
-  _d->options[ climateModel        ] = std::string( "/climate.model" );
   _d->options[ language            ] = std::string( "" );
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
@@ -169,7 +166,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ layersOptsModel     ] = std::string( "layers_opts.model" );
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
-  _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
   _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
@@ -331,7 +327,6 @@ void Settings::checkC3present()
                                               {houseModel,        "house"},
                                               {constructionModel, "construction"},
                                               {citiesModel,       "cities"},
-                                              {climateModel,      "climate"},
                                               {walkerModel,       "walker"},
                                               {animationsModel,   "animations"},
                                               {empireObjectsModel,"empire_objects"},
@@ -340,7 +335,6 @@ void Settings::checkC3present()
                                               {worldModel,        "worldmap"},
                                               {buildMenuModel,    "build_menu"},
                                               {soundAlias,        "sounds"},
-                                              {videoAlias,        "videos"},
                                               {pic_offsets,       "offsets"},
                                             };
 

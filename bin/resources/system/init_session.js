@@ -66,6 +66,9 @@ Object.defineProperty( Session.prototype, "c3mode", { get: function()  { return 
 Object.defineProperty( Session.prototype, "empire", { get: function()  { return this.getEmpire() }} )
 Object.defineProperty( Session.prototype, "workdir", { get: function () { return this.getOptPath("workDir") }})
 
+Object.defineProperty( Session.prototype, "c3video", { get: function()  { return this.getOption("c3video") },
+                                                       set: function(path) { this.setOption("c3video",path)}} )
+
 Object.defineProperty( Session.prototype, "logfile", { get: function () {
       var path = this.workdir;
       path.add(engine.getOption("logfile"));
@@ -74,6 +77,8 @@ Object.defineProperty( Session.prototype, "logfile", { get: function () {
 
 Object.defineProperty( Session.prototype, "missionsdir", { get: function () { return this.getPath(":/missions/") }})
 Object.defineProperty( Session.prototype, "savedir", { get: function () { return this.getOptPath("savedir") }})
-Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return this.getOptPath("screenshotDir") }})
+
+Object.defineProperty( Session.prototype, "screenshotdir", { get: function () { return this.getOptPath("screenshotDir") },
+                                                             set: function (path) { this.setOption("screenshotDir", path )}} )
 
 var g_session = new Session();

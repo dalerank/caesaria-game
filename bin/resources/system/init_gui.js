@@ -26,6 +26,7 @@ Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.
 Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )
 Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str) }} )
+Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 
@@ -368,6 +369,12 @@ Window.prototype.addButton = function(rx,ry,rw,rh) {
   var button = new Button(this)
   button.geometry = { x:rx, y:ry, w:rw, h:rh }
   return button
+}
+
+Window.prototype.addHelpButton = function(rx,ry) {
+  var btn = new HelpButton(this)
+  btn.position = { x:rx, y:ry }
+  return btn
 }
 
 Window.prototype.addExitButton = function(rx,ry) {
