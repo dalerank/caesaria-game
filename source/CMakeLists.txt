@@ -229,7 +229,7 @@ if(UNIX AND NOT APPLE)
   if(NOT CMAKE_BUILD_TYPE_RELEASE)
     message("CaesarIA-game: building in debug mode")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value -g")
-    add_definitions( -DDEBUG )
+    add_definitions(-DDEBUG)
   else()
     #release options strip bin
     message("CaesarIA-game: building in release mode")
