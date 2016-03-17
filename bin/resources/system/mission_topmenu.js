@@ -17,11 +17,7 @@ sim.ui.topmenu.help.init = function() {
                 wnd.setModal();
         })
 
-    m.addItemWithCallback(_t("##gmenu_shortkeys##"), function() {
-                var wnd = g_ui.addSimplWindow(0, 0, 500, 300);
-                wnd.model = ":/gui/shortkeys.gui";
-                wnd.setModal();
-        })
+    m.addItemWithCallback(_t("##gmenu_shortkeys##"), function() { sim.ui.topmenu.help.showHotkeys() } )
 }
 
 sim.ui.topmenu.options.init = function() {
@@ -84,6 +80,52 @@ sim.ui.topmenu.labels.init = function() {
   lbFunds.tooltip = "##funds_tooltip##"
 
   sim.ui.topmenu.labels.funds = lbFunds
+}
+
+sim.ui.topmenu.help.showHotkeys = function() {
+  var wnd = g_ui.addSimpleWindow(0, 0, 500, 300);
+  var lbx = wnd.addKeyValueListbox(11,11,wnd.w-23,wnd.h-45)
+  lbx.itemHeight = 16;
+
+  var items = [
+    "[Num +/-][increase/decrease game speed]",
+    "[F5/F9][fast save/load game]",
+    "[F10][make screenshot]",
+    "[Ctrl+F10][fullmap screenshot]",
+    "[Esc][close active window,layer or break current action]",
+    "[F1/F2/F3/F4][goto position]",
+    "[Ctrl+F1/F2/F3/F4][set position]",
+    "[←↑↓→][move map]",
+    "[Shift on building mode][build road by rectangle]",
+    "[1][visit labor advisor]",
+    "[2][visit military advisor]",
+    "[3][visit empire advisor]",
+    "[4][visit ratings advisor]",
+    "[5][visit trade advisor]",
+    "[6][visit population advisor]",
+    "[7][visit health advisor]",
+    "[8][visit education advisor]",
+    "[9][visit entertainment advisor]",
+    "[0][visit religion advisor]",
+    "[~][visit main advisor]",
+    "[key p][toggle game pause]",
+    "[key f][show fire layer]",
+    "[key d][show damage layer]",
+    "[key c][show crime layer]",
+    "[key t][show troubles layer]",
+    "[key w][show water layer]",
+    "[key g][show desirabilirty layer]",
+    "[key h][show health layer]",
+    "[key e][move camer to city enter/exit]",
+    "[spacebar][show last active layer]",
+    "[, (Period)][make one step (if game paused)]",
+    "[. (Comma)][make 25 steps (day) (if game paused)]"
+  ]
+
+  for (var i in items)
+    lbx.addLine(items[i])
+
+  wnd.setModal();
 }
 
 sim.ui.topmenu.file.init = function() {

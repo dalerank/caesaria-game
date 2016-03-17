@@ -74,7 +74,7 @@ var g_config = {
   saves : {
     ext : ".oc3save",
     fast : "_fastsave",
-    auto : "autosave",
+    auto : "_autosave",
   }
 }
 

@@ -38,7 +38,10 @@ sim.hotkeys.actions = [
 
   { name : "gamespeed.decrease", sequence : "minus", action : function() { sim.timescale.decrease(10) }},
   { name : "gamespeed.decrease2", sequence : "subtract", action : function() { sim.timescale.decrease(10) }},
-  { name : "layer.toggle", sequence : "space", action : function() { sim.hotkeys.toggleLayer() }}
+  { name : "layer.toggle", sequence : "space", action : function() { sim.hotkeys.toggleLayer() }},
+
+  { name : "pause.playTick", sequence : "comma", action : function() { sim.timescale.tick() }},
+  { name : "pause.playDay", sequence : "period", action : function() { sim.timescale.tickDay() }}
 ]
 
 sim.hotkeys.toggleLayer = function() {

@@ -93,6 +93,12 @@ Object.defineProperty( SpinBox.prototype, "value", { set: function(text) { this.
 Object.defineProperty( SpinBox.prototype, "callback", { set: function(func) { this.onChangeA(func); }} );
 //*************************** Spinbox class end***************************************//
 
+//*************************** KeyValueListbox class ***************************************//
+function KeyValueListbox(parent) { return new KeyValueListBox(parent); }
+Object.defineProperty( KeyValueListBox.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
+Object.defineProperty( KeyValueListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h) }} )
+//*************************** KeyValueListbox class end***************************************//
+
 //*************************** Listbox class ***************************************//
 function Listbox(parent) { return new ListBox(parent); }
 Object.defineProperty( ListBox.prototype, "style", { set: function(sname) { this.setBackgroundStyle(sname) }} )
@@ -291,89 +297,95 @@ Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
 }})
 
 Window.prototype.closeAfterKey = function(obj) {
-      if(obj.escape)
-        this.addCloseCode(0x1B);
-      if(obj.rmb)
-        this.addCloseCode(0x4);
-  }
+  if(obj.escape)
+    this.addCloseCode(0x1B);
+  if(obj.rmb)
+    this.addCloseCode(0x4);
+}
 
 Window.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(this);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(this);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
 
 Window.prototype.addGroupbox = function(rx,ry,rw,rh) {
-    var gbox = new Groupbox(this);
-    gbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return gbox;
-  }
+  var gbox = new Groupbox(this);
+  gbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return gbox;
+}
 
 Window.prototype.addSpinbox = function(rx,ry,rw,rh) {
-    var spinbox = new Spinbox(this);
-    spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return spinbox;
-  }
+  var spinbox = new Spinbox(this);
+  spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return spinbox;
+}
 
 Window.prototype.addFileSelector = function(rx,ry,rw,rh) {
-    var selector = new FileSelector(this);
-    selector.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return selector;
-  }
+  var selector = new FileSelector(this);
+  selector.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return selector;
+}
 
 Window.prototype.addDictionaryText = function(rx,ry,rw,rh) {
-    var dtext = new DictionaryText(this);
-    dtext.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return dtext;
-  }
+  var dtext = new DictionaryText(this);
+  dtext.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return dtext;
+}
 
 Window.prototype.addListbox = function(rx,ry,rw,rh) {
-    var listbox = new Listbox(this);
-    listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return listbox;
-  }
+  var listbox = new Listbox(this);
+  listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return listbox;
+}
+
+Window.prototype.addKeyValueListbox = function(rx,ry,rw,rh) {
+  var kvlistbox = new KeyValueListbox(this);
+  kvlistbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return kvlistbox;
+}
 
 Window.prototype.addEditbox = function(rx,ry,rw,rh) {
-    var edit = new Editbox(this);
-    edit.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return edit;
-  }
+  var edit = new Editbox(this);
+  edit.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return edit;
+}
 
 Window.prototype.addImage = function(rx,ry,picname) {
-    var image = new Image(this);
-    image.picture = picname;
-    image.position = {x:rx,y:ry};
-    return image;
-  }
+  var image = new Image(this);
+  image.picture = picname;
+  image.position = {x:rx,y:ry};
+  return image;
+}
 
 Window.prototype.addTexturedButton = function(rx,ry,rw,rh) {
-    var button = new TexturedButton(this);
-    button.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return button;
-  }
+  var button = new TexturedButton(this);
+  button.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return button;
+}
 
 Window.prototype.addButton = function(rx,ry,rw,rh) {
-    var button = new Button(this)
-    button.geometry = { x:rx, y:ry, w:rw, h:rh }
-    return button
-  }
+  var button = new Button(this)
+  button.geometry = { x:rx, y:ry, w:rw, h:rh }
+  return button
+}
 
 Window.prototype.addExitButton = function(rx,ry) {
-    var btn = new ExitButton(this)
-    btn.position = { x:rx, y:ry }
-    return btn;
-  }
+  var btn = new ExitButton(this)
+  btn.position = { x:rx, y:ry }
+  return btn;
+}
 
 Window.prototype.addSoundMuter = function(volume) {
-    var muter = new SoundMuter(this);
-    muter.setVolume(volume)
-    return muter
-  }
+  var muter = new SoundMuter(this);
+  muter.setVolume(volume)
+  return muter
+}
 
 Window.prototype.addSoundEmitter = function(sample, volume, type) {
-    var emitter = new SoundEmitter(this)
-    emitter.assign(sample, volume, type)
-    return emitter
+  var emitter = new SoundEmitter(this)
+  emitter.assign(sample, volume, type)
+  return emitter
 }
 
 //*************************** Window class begin ***************************************//

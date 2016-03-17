@@ -20,3 +20,8 @@ DEFINE_OBJECT_GETTER_2(ListBox,getItemData,int,std::string)
 DEFINE_WIDGET_CALLBACK_1(ListBox,onIndexSelectedEx,int)
 DEFINE_WIDGET_CALLBACK_1(ListBox,onIndexSelectedAgainEx,int)
 DEFINE_WIDGET_CONSTRUCTOR(ListBox)
+
+DEFINE_OBJECT_GETTER_1(KeyValueListBox,int,addLine,const std::string&,"unknown")
+DEFINE_OBJECT_FUNCTION_1(KeyValueListBox,setItemsHeight,int)
+DEFINE_OBJECT_FUNCTION_1(KeyValueListBox,setGeometry,Rect)
+DEFINE_WIDGET_CONSTRUCTOR(KeyValueListBox)

@@ -70,16 +70,23 @@ Variant to(js_State *J, int n, Variant)
   return Variant();
 }
 
-void tryPCall(js_State *J, int params)
+bool tryPCall(js_State *J, int params)
 {
-  int error = js_pcall(internal::J, params);
-  if (error)
+  try
   {
-    std::string str = js_tostring(internal::J, -1);
-    Logger::warning(str);
+    int error = js_pcall(internal::J, params);
+    if (error)
+    {
+      std::string str = js_tostring(internal::J, -1);
+      Logger::warning(str);
+    }
+    js_pop(internal::J, -1);
+    return false;
   }
-  js_pop(internal::J, -1);
-
+  catch (...)
+  {
+    return true;
+  }
 }
 
 void push(js_State* J,const Size& size)
@@ -116,6 +123,13 @@ int push(js_State* J,const Variant& param)
   case Variant::Uchar:
   case Variant::Short:
     js_pushnumber(J, param.toDouble());
+    return 0;
+  break;
+
+  case Variant::Date:
+  case Variant::Time:
+  case Variant::NDateTime:
+    js_pushnumber(J, param.toDateTime().hashdate());
     return 0;
   break;
 
@@ -386,7 +400,9 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
       Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
 
-  internal::tryPCall(internal::J,params.size());
+  bool error = internal::tryPCall(internal::J,params.size());
+  if (error)
+    Logger::fatal("Fatal error on call function " + funcname);
 }
 
 template<typename T>
@@ -421,14 +437,17 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
       std::string index = widget->getProperty(callback);
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
-      internal::tryPCall(internal::J,0);
+      int error = internal::tryPCall(internal::J,0);
+      if (error)
+        Logger::warning("Fatal error on callback " + className + ":" + callback);
       js_pop(internal::J,1);
     }
     else
       Logger::warning(className + "_handle_" + callback + " widget is null");
   }
   catch(...)
-  {}
+  {
+  }
 }
 
 template<typename T,typename P1>

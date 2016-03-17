@@ -1,6 +1,7 @@
 engine.log("CaesarIA: load modules started")
 
 var modules = [
+                  "namespaces",
                   "common",
                   "vector",
                   "game_config",
