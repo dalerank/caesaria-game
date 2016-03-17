@@ -22,4 +22,11 @@ SimulationTimescale.prototype.decrease = function(delta) {
   this.value = this.value - delta
 }
 
+SimulationTimescale.prototype.step = function(count) {
+  g_session.setAdfvflag("gametimeTick", count)
+}
+
+SimulationTimescale.prototype.tickDay = function() { this.step(25) }
+SimulationTimescale.prototype.tick = function() { this.step(1) }
+
 sim.timescale = new SimulationTimescale()

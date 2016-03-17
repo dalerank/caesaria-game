@@ -332,6 +332,10 @@ void Session::setAdvflag(const std::string & flag, int value)
   {
     _game->setTimeMultiplier(value);
   }
+  else if (flag == "gameSpeedTick")
+  {
+    _game->step(value);
+  }
   else
   {
     citylayer::DrawOptions::takeFlag(flag, value);

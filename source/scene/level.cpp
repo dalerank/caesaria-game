@@ -594,14 +594,6 @@ bool Level::_tryExecHotkey(NEvent &event)
     }
     break;
 
-    case KEY_COMMA:
-    case KEY_PERIOD:
-    {
-      events::dispatch<Step>(event.keyboard.key == KEY_COMMA ? Step::once : Step::day);
-      handled = true;
-    }
-    break;
-
     case KEY_F1: case KEY_F2:
     case KEY_F3: case KEY_F4:
     {
