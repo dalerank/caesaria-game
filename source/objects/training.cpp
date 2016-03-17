@@ -70,6 +70,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size::square(3))
 {
   _fgPictures().resize(1);
+  _ground.append("ground",4);
 }
 
 void GladiatorSchool::deliverTrainee()
@@ -77,6 +78,17 @@ void GladiatorSchool::deliverTrainee()
    // std::cout << "Deliver trainee!" << std::endl;
   auto trainee = Walker::create<TraineeWalker>( _city(), walker::gladiator );
   trainee->send2City( this );
+}
+
+const Pictures& GladiatorSchool::pictures(Renderer::Pass pass) const
+{
+  switch( pass )
+  {
+  case Renderer::overlayGround: return _ground;
+  default: break;
+  }
+
+  return Building::pictures( pass );
 }
 
 void GladiatorSchool::timeStep(const unsigned long time)
