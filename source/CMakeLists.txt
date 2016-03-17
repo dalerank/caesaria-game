@@ -180,7 +180,7 @@ if(WIN32)
    target_link_libraries(${PROJECT_NAME} "imagehlp")
 
   #include steam libraries
-  set(GAME_BINARY_FILENAME "caesaria.exe")
+  set(GAME_BINARY_FILENAME "caesaria")
   if(USE_STEAM)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
