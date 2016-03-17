@@ -134,9 +134,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   if(game.isPaused())
-  {
-    events::dispatch<Step>(Step::once);
-  }
+    game.step(1);
 }
 
 } //end namespace events
