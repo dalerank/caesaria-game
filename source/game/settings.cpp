@@ -109,6 +109,7 @@ __REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
+__REG_PROPERTY(fontsDirectory)
 __REG_PROPERTY(showStartAware)
 __REG_PROPERTY(verbose)
 #undef __REG_PROPERTY
@@ -145,6 +146,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ archivesModel       ] = std::string( "/archives.model" );
   _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
   _d->options[ language            ] = std::string( "" );
+  _d->options[ fontsDirectory      ] = std::string( "/fonts");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
@@ -196,8 +198,8 @@ Settings::Settings() : _d( new Impl )
   _d->options[ musicVolume         ] = 25;
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
-  _d->options[ worldModel          ] = std::string( "/worldmap.model" );
-  _d->options[ citiesIdModel       ] = std::string( "/cities_id.model" );
+  _d->options[ worldModel          ] = std::string( "worldmap.model" );
+  _d->options[ citiesIdModel       ] = std::string( "cities_id.model" );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
@@ -339,21 +341,21 @@ void Settings::checkC3present()
                                             };
 
   std::string ext;
-  if( useOldGraphics )
+  if (useOldGraphics)
   {
     ext = ".c3";
-    _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "title" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "c3title" ) );
+    _d->options[ forbidenTile        ] = Variant(std::string( "org_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "title" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "c3title" ) );
     _d->options[ logoImageIndex      ] = 2;
     _d->options[ cellw ] = 30;
   }
   else
   {
     ext = ".model";
-    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "logo" ) );
+    _d->options[ forbidenTile        ] = Variant(std::string( "oc3_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "titlerm" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "logo" ) );
     _d->options[ logoImageIndex      ] = 1;
     _d->options[ cellw ] = 60;
   }

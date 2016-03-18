@@ -1,0 +1,33 @@
+{
+  revision : 4200
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 15, 40, "100%-15", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_1"
+
+    items : [
+      "1. Added textures for gladiator school"
+      "2. More gui logic and action moved to javascript: "
+      "   2.1 Hotkeys, topmenu actions, player salary settings window"
+      "       save/load dialogs, emperor gift window and game speed  "
+      "       settings "
+      "   2.2 Sound theme player now work in javascript"
+      "3. Script engine now show more information about warnings"
+      "4. More action in debug menu now work in javascript"
+      "   moved to scripts, you can find script in game/resources/script"
+      "5. Win/lose dialogs logic was moved to scripts"
+      "6. Lars Gusowsky added translations for german language"
+      "7. Start menu scene fully work in javascripts, except "
+      "   steam hadler"
+      "8. City settings window logic now fully moved to scripts"
+    ]
+  }
+}

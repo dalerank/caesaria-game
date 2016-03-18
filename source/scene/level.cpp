@@ -353,7 +353,7 @@ void Level::Impl::showEmpireMapWindow()
   events::dispatch<ShowEmpireMap>( true );
 }
 
-void Level::draw()
+void Level::draw(Engine& engine)
 {
   _d->renderer.render();
 

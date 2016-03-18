@@ -55,8 +55,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->font = Font();
   _d->itemsIconWidth = 0;
   _d->scrollBar = 0;
-  _d->color.text = 0xff000000;
-  _d->color.textHighlight = 0xffe0e0e0;
+  _d->color.text = ColorList::black;
+  _d->color.textHighlight = NColor(0xffe0e0e0);
   _d->time.select = 0;
   _d->index.selected = -1;
   _d->time.lastKey = 0;
@@ -92,8 +92,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
   updateAbsolutePosition();
 
-  setTextAlignment(align::upperLeft, align::center);
-  _recalculateItemHeight(Font::create(FONT_2), height());
+  setTextAlignment( align::upperLeft, align::center );
+  _recalculateItemHeight( Font::create( "FONT_2" ), height() );
 }
 
 ListBox::ListBox(Widget* parent, const RectF& rectangle, int id, bool clip, bool drawBack, bool mos)
@@ -604,12 +604,12 @@ Font ListBox::_getCurrentItemFont( const ListBoxItem& item, bool selected )
 
 NColor ListBox::_getCurrentItemColor( const ListBoxItem& item, bool selected )
 {
-  NColor ret = 0;
+  NColor ret = ColorList::clear;
   ListBoxItem::ColorType tmpState = selected ? ListBoxItem::hovered : ListBoxItem::simple;
 
-  if( item.overrideColors[ tmpState ].Use )
+  if (item.overrideColors[ tmpState ].Use)
     ret = item.overrideColors[ tmpState ].color;
-  else if( ret == 0 )
+  else if (ret == ColorList::clear)
     ret = itemDefaultColor( tmpState );
 
   return ret;
@@ -847,7 +847,7 @@ void ListBox::swapItems(unsigned int index1, unsigned int index2)
   _d->items[index2] = dummmy;
 }
 
-void ListBox::setItemOverrideColor(unsigned int index, const int color, ListBoxItem::ColorType colorType )
+void ListBox::setItemOverrideColor(unsigned int index, NColor color, ListBoxItem::ColorType colorType )
 {
   if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
         return;
@@ -900,7 +900,7 @@ bool ListBox::hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType co
 NColor ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
 {
   if ( (unsigned int)index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
-    return 0;
+    return ColorList::clear;
 
   return _d->items[index].overrideColors[colorType].color;
 }
@@ -914,11 +914,11 @@ NColor ListBox::itemDefaultColor( ListBoxItem::ColorType colorType) const
     case ListBoxItem::hovered:
       return _d->color.textHighlight;
     case ListBoxItem::iconSimple:
-      return 0xffffffff;
+      return ColorList::white;
     case ListBoxItem::iconHovered:
-      return 0xff0f0f0f;
+      return NColor(0xff0f0f0f);
     default:
-      return 0;
+      return ColorList::clear;
   }
 }
 
@@ -953,7 +953,7 @@ void ListBox::setItemAlignment(int index, Alignment horizontal, Alignment vertic
   _d->needItemsRepackTextures = true;
 }
 
-ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int color )
+ListBoxItem& ListBox::addItem( const std::string& text, Font font, NColor color )
 {
   ListBoxItem i;
   i.setText( text );
@@ -1039,9 +1039,11 @@ void ListBox::setBackgroundVisible(bool draw) { setFlag( drawBackground, draw );
 int ListBox::selected() {    return _d->index.selected; }
 Signal1<const ListBoxItem&>& ListBox::onItemSelectedAgain(){  return _d->signal.onItemSelectedAgain;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->signal.onItemSelected;}
+
 Signal2<Widget*, int>& ListBox::onIndexSelectedEx() {  return _d->signal.onIndexSelectedEx; }
 Signal2<Widget*, int>& ListBox::onIndexSelectedAgainEx() {  return _d->signal.onIndexSelectedAgainEx; }
 void ListBox::setItemsFont(Font font) { _d->font = font; }
+void ListBox::setItemsFont(const std::string& fname) { _d->font = Font::create(fname); }
 void ListBox::setItemsTextOffset(Point p) { _d->itemTextOffset = p; }
 
 void ListBox::setItemTooltip(unsigned int index, const std::string& text)

@@ -109,7 +109,7 @@ public:
   std::vector<CitizenScreenshot*> screenshots;
   TilePos baseBuildingPos;
   TilePos destinationPos;
-  WalkerPtr object;  
+  WalkerPtr object;
 
 public:
   void updateCurrentAction( const std::string& action, TilePos pos );
@@ -200,10 +200,10 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
   Widget::setupUI( model );
 
   _d->lbName = &add<Label>( Rect( 90, 108, width() - 30, 108 + 20) );
-  _d->lbName->setFont( FONT_2 );
+  _d->lbName->setFont( "FONT_2" );
 
   _d->lbType = &add<Label>( Rect( 90, 128, width() - 30, 128 + 20) );
-  _d->lbType->setFont( FONT_1 );
+  _d->lbType->setFont( "FONT_1" );
 
   _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
                               "##citizen_thoughts_will_be_placed_here##" );

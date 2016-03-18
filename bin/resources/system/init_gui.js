@@ -35,7 +35,7 @@ Object.defineProperty( Label.prototype, "h", { get: function() { return this.hei
 /************************************* label class end ******************************/
 
 //*************************** button class ***************************************/
-function Button(parent) { return new PushButton(parent); }
+function Button (parent) { return new PushButton(parent); }
 Object.defineProperty( PushButton.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ); }} );
 Object.defineProperty( PushButton.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( PushButton.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
@@ -195,7 +195,16 @@ Object.defineProperty( PositionAnimator.prototype, "removeParent", { set:functio
 Object.defineProperty( Image.prototype, "position", {set: function (point) { this.setPosition(point.x,point.y); }} )
 Object.defineProperty( Image.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.setTooltipText(_t(text)); }} )
-Object.defineProperty( Image.prototype, "picture", {set: function (name) { this.setPicture(name); }} )
+Object.defineProperty( Image.prototype, "picture", {
+  set: function (value) {
+    if ( typeof(value) == "string")
+      this.setPictire_str(value)
+    else if (value instanceof Picture)
+      this.setPicture_pic(value)
+    else if (value.rc)
+      this.setPictures_rcIndex(value.rc,value.index)
+  }
+} )
 //*************************** Image class end ***************************************//
 
 //*************************** FileSelector class begin ***************************************//
@@ -245,6 +254,7 @@ ContextMenu.prototype.addItemWithCallback = function(path,caption,func) {
     item.callback = func;
     return item;
 }
+
 Object.defineProperty(ContextMenu.prototype, "w", { get: function () { return this.width(); } })
 //*************************** ContextMenu class end ***************************************//
 
@@ -352,9 +362,9 @@ Window.prototype.addEditbox = function(rx,ry,rw,rh) {
   return edit;
 }
 
-Window.prototype.addImage = function(rx,ry,picname) {
+Window.prototype.addImage = function(rx,ry,pic) {
   var image = new Image(this);
-  image.picture = picname;
+  image.picture = pic;
   image.position = {x:rx,y:ry};
   return image;
 }
@@ -454,6 +464,6 @@ Ui.prototype = {
   },
 
   elog : function(a) { engine.log(a); }
-};
+}
 
-var g_ui = new Ui();
+var g_ui = new Ui()

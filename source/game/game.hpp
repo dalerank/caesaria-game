@@ -79,7 +79,7 @@ public:
   void setNextScreen( scene::ScreenType screen);
 
 private:  
-  __DECLARE_IMPL(Game)
+  __DECLARE_IMPL(Game)  
 };
 
 

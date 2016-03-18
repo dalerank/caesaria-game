@@ -321,7 +321,7 @@ void Population::Impl::updateStates()
 CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool horizontal, int stepCount)
   : Label( parent, rectangle )
 {
-  setFont( FONT_1 );
+  setFont( "FONT_1" );
   _stepCount = stepCount;
   _horizontal = horizontal;
 }
@@ -339,7 +339,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
   if( !_textPicture().isValid() )
     return;
 
-  _textPicture().fill( 0, Rect() );
+  _textPicture().fill( ColorList::clear, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
   {
     std::string text = utils::i2str( k * _maxValue / _stepCount );
@@ -464,14 +464,14 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 }
 
 void CityChart::draw(Engine &painter)
-{  
+{
   if( !_textPicture().isValid() || _maxValue == 0 )
     return;
 
   Picture& pic = _textPicture();
   Picture rpic( gui::rc.panel, _picIndex );
 
-  pic.fill( 0, Rect() );
+  pic.fill( ColorList::clear, Rect() );
   int index=0;
   unsigned int maxHeight = std::min( rpic.height(), pic.height() );
   for( auto& value : _values )

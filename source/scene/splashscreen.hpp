@@ -36,11 +36,12 @@ public:
 
   void initialize();
 
-  virtual void draw();
-  void setImage(const std::string& image, int index);
+  virtual void draw(gfx::Engine& engine);
+  void setBackground(const std::string& image, int index);
   void exitScene(bool devText);
   void setText( std::string text );
   void setPrefix( std::string prefix );
+  virtual void setOption(const std::string& name, Variant value);
 
 protected:
   virtual int result() const;

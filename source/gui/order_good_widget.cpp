@@ -49,7 +49,7 @@ public:
 
     _icon.load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
-    setFont( FONT_2_WHITE );
+    setFont( "FONT_2_WHITE" );
     _updateText();
   }
 
@@ -95,13 +95,13 @@ OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, 
 {
   _info = good::Info( good );
   _goodIcon = _info.picture();
-  setFont( FONT_1_WHITE );
+  setFont( "FONT_1_WHITE" );
 
   _btnChangeRule = &add<PushButton>( Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
   _btnVolume = &add<VolumeButton>( Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
                                    _storage.capacity( good ), _storage.capacity() );
 
-  _btnChangeRule->setFont( FONT_1_WHITE );
+  _btnChangeRule->setFont( "FONT_1_WHITE" );
   updateBtnText();
 
   CONNECT_LOCAL( _btnChangeRule, onClicked(), OrderGoodWidget::changeRule );
@@ -141,13 +141,13 @@ void OrderGoodWidget::updateBtnText()
   }
 
   const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-  _btnChangeRule->setFont( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE );
+  _btnChangeRule->setFont( rule == good::Orders::reject ? "FONT_1_RED" : "FONT_1_WHITE" );
   _btnChangeRule->setText( _(ruleName[ rule ]) );
 }
 
 void OrderGoodWidget::changeRule()
 {
-  good::Orders::Order rule = _storage.getOrder( _info.type() );  
+  good::Orders::Order rule = _storage.getOrder( _info.type() );
   _storage.setOrder( _info.type(), good::Orders::Order( (rule+1) % (good::Orders::none)) );
   updateBtnText();
 }

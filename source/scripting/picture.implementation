@@ -1,0 +1,5 @@
+DEFINE_OBJECT_DESTRUCTOR(Picture)
+DEFINE_OBJECT_GETTER_0(Picture,const std::string&,name)
+DEFINE_OBJECT_FUNCTION_2(Picture,load,std::string,int)
+DEFINE_OBJECT_FUNCTION_2(Picture,withFallback,std::string,int)
+DEFINE_OBJECT_CONSTRUCTOR(Picture)

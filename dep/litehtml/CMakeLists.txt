@@ -8,6 +8,12 @@ if(NOT MSVC)
   set(CMAKE_C_FLAGS_RELEASE "-std=c99 -O3")
 endif()
 
+if(CMAKE_BUILD_TYPE_RELEASE)
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_RELEASE})
+else()
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_DEBUG})
+endif()
+
 set(SOURCE_LITEHTML src/background.cpp
                     src/box.cpp
                     src/context.cpp
@@ -62,7 +68,7 @@ set(SOURCE_GUMBO    src/gumbo/attribute.c
 add_library(litehtml STATIC ${SOURCE_LITEHTML} ${SOURCE_GUMBO})
 
 if(WIN32)
-     target_include_directories(litehtml PUBLIC src/gumbo)
+  target_include_directories(litehtml PUBLIC src/gumbo)
 endif()
 
 

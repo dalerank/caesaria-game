@@ -95,7 +95,7 @@ public:
            RestrainTextInside(true),
            lineIntervalOffset( 0 )
   {
-    font = Font::create( FONT_2 );
+    font = Font::create( "FONT_2" );
     opaque = 0xff;
   }
 
@@ -233,13 +233,13 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   switch( _d->backgroundMode )
   {
   case bgSimpleWhite:
-    _d->text.picture.fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( ColorList::white, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
     Decorator::draw( _d->text.picture, r, Decorator::lineBlackBorder );
   break;
 
   case bgSimpleBlack:
-    _d->text.picture.fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( ColorList::black, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
     Decorator::draw( _d->text.picture, r, Decorator::lineWhiteBorder );
   break;
@@ -681,7 +681,7 @@ void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColo
 {
   Picture& texture = _textPicture();
   Font rfont = dfont.isValid() ? dfont : font();
-  if( color != 0 )
+  if( color != ColorList::clear )
     rfont.setColor( color );
 
   rfont.draw( texture, text, point.x(), point.y(), true );
@@ -752,14 +752,9 @@ void Label::setFont( const Font& font )
   _d->is.needUpdate = true;
 }
 
-void Label::setFont(const string& fontname)
+void Label::setFont(const string& fontname, NColor color)
 {
-  Widget::setFont( fontname );
-}
-
-void Label::setFont(FontType type, NColor color)
-{
-  Widget::setFont(type, color);
+  Widget::setFont(fontname, color);
 }
 
 void Label::setAlpha(unsigned int value)

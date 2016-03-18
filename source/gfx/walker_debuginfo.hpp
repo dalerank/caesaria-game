@@ -32,7 +32,7 @@ class Engine;
 class WalkerDebugInfo
 {
 public:
-  static void showPath(WalkerPtr walker, const RenderInfo& rinfo, NColor color=0);
+  static void showPath(WalkerPtr walker, const RenderInfo& rinfo, NColor color=NColor());
 };
 
 }//end namespace gfx

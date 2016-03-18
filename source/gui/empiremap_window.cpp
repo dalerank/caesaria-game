@@ -295,7 +295,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     }
 #endif
 
-    MaskState mask( painter, route->isMyCity( city.current ) ? hlColor : 0 );
+    MaskState mask( painter, route->isMyCity( city.current ) ? hlColor : ColorList::clear );
 
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
@@ -700,7 +700,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
       }
     }
     break;
-    
+
     default:
     break;
     }

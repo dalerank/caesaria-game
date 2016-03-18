@@ -27,6 +27,7 @@
 #include <GameCity>
 #include <GameLogger>
 #include <GameApp>
+#include "font/font_context.h"
 
 #include "sound/engine.hpp"
 #include "steam.hpp"
@@ -156,7 +157,7 @@ Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
 
 Lobby::~Lobby() {}
 
-void Lobby::draw()
+void Lobby::draw(Engine& engine)
 {
   _d->ui().beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
@@ -185,17 +186,17 @@ void Lobby::setOption(const std::string& name, Variant value)
 void Lobby::initialize()
 {
   events::Dispatcher::instance().reset();
-  Logger::debug( "ScreenMenu: initialize start");
-  std::string resName = SETTINGS_STR( titleResource );
-  _d->bgPicture.load( resName, 1);
+  Logger::debug("ScreenMenu: initialize start");
+  std::string resName = SETTINGS_STR(titleResource);
+  _d->bgPicture.load(resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->ui().vsize() - _d->bgPicture.size())/2;
-  _d->bgOffset = Point( tmpSize.width(), tmpSize.height() );
+  _d->bgOffset = Point(tmpSize.width(), tmpSize.height());
 
   _d->ui().clear();
 
-  events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
+  events::dispatch<events::ScriptFunc>("OnLobbyStart");
 
   if( OSystem::isAndroid() )
   {
@@ -238,7 +239,7 @@ void Lobby::initialize()
     _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( FONT_3, ColorList::white );
+    _d->lbSteamName->setFont( "FONT_3", ColorList::white );
   }
 }
 

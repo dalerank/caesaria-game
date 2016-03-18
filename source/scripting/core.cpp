@@ -36,6 +36,7 @@ using namespace gui;
 using namespace gui::dialog;
 using namespace city;
 using namespace world;
+using namespace gfx;
 using namespace vfs;
 
 namespace script
@@ -212,6 +213,17 @@ inline DateTime to(js_State *J, int n, DateTime)
   }
 
   return DateTime();
+}
+
+inline Picture to(js_State *J, int n, Picture)
+{
+  if (js_isuserdata(J, 1, "userdata"))
+  {
+    Picture* pic = (Picture*)js_touserdata(J, 1, "userdata");
+    return *pic;
+  }
+
+  return Picture();
 }
 
 inline StringArray to(js_State *J, int n, StringArray)
@@ -391,6 +403,9 @@ void Core::execFunction(const std::string& funcname)
 
 void Core::execFunction(const std::string& funcname, const VariantList& params)
 {
+  if (internal::J == nullptr)
+    return;
+
   js_getglobal(internal::J, funcname.c_str());
   js_pushnull(internal::J);
   for (const auto& param : params)
@@ -630,7 +645,22 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   js_pushundefined(J); \
                                 }
 
+#define DEFINE_OBJECT_OVERRIDE_FUNCTION_1(name,funcname,ov,paramType) void name##_##funcname##_##ov(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType paramValue = internal::to(J, 1, paramType()); \
+                                  if( parent ) parent->funcname( paramValue ); \
+                                  js_pushundefined(J); \
+                                }
+
 #define DEFINE_OBJECT_FUNCTION_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2 ); \
+                                  js_pushundefined(J); \
+                                }
+
+#define DEFINE_OBJECT_OVERRIDE_FUNCTION_2(name,funcname,ov,paramType1,paramType2) void name##_##funcname##_##ov(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
                                   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
@@ -692,14 +722,18 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "path.implementation"
 #include "spinbox.implementation"
 #include "filelistbox.implementation"
+#include "picture.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
 DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
 DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
-void Core::registerFunctions( Game& game )
+void Core::registerFunctions(Game& game)
 {
+  internal::J = js_newstate(NULL, NULL, JS_STRICT);
+  js_atpanic(internal::J, enginePanic);
+
   internal::game = &game;
   internal::session = new Session(&game);
 #define DEF_GLOBAL_OBJECT(name) js_newobject(internal::J);
@@ -732,6 +766,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "path.interface"
 #include "spinbox.interface"
 #include "filelistbox.interface"
+#include "picture.interface"
 
   Core::loadModule(":/system/modules.js");
   internal::observers = new vfs::FileChangeObserver();
@@ -746,8 +781,6 @@ void Core::unref(const std::string& ref)
 
 Core::Core()
 {
-  internal::J = js_newstate(NULL, NULL, JS_STRICT);
-  js_atpanic(internal::J, enginePanic);
 }
 
 } //end namespace script

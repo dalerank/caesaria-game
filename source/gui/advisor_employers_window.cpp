@@ -158,7 +158,7 @@ protected:
   {
     PushButton::_updateTexture();
 
-    Font font = Font::create( FONT_1_WHITE );
+    Font font = Font::create( "FONT_1_WHITE" );
 
     canvasDraw( _title, Point( ofBranchName, 2), font );
     canvasDraw( utils::i2str( _needWorkers ), Point( ofNeedWorkers, 2), font );

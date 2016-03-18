@@ -38,6 +38,7 @@
 #include "core/exception.hpp"
 #include "loader.hpp"
 #include "gamedate.hpp"
+#include "font/font_collection.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
 #include "pathway/astarpathfinding.hpp"
@@ -84,6 +85,20 @@ public:
   }
 };
 
+class ScriptInitilizer
+{
+public:
+  ScriptInitilizer(Game& g) : game(g) {}
+
+  Game& game;
+
+  void init(bool& isOk, std::string& result)
+  {
+    script::Core::instance();
+    script::Core::registerFunctions(game);
+  }
+};
+
 class Game::Impl
 {
 public:
@@ -108,8 +123,6 @@ public:
   void initSound(bool& isOk, std::string& result);
   void initPictures(bool& isOk, std::string& result);
   void initGameConfigs(bool& isOk, std::string& result);
-  void initAddons(bool& isOk, std::string& result);
-  void initScripting(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
   void initCelebrations(bool& isOk, std::string& result);
@@ -337,9 +350,9 @@ void Game::Impl::showSplashScreen(bool& isOk, std::string& result)
   {
     splash.createInstance();
     splash->initialize();
-    splash->setImage( SETTINGS_STR( logoImageRc ),
-                      SETTINGS_VALUE( logoImageIndex ) );
-    splash->update( *engine );
+    splash->setBackground(SETTINGS_STR(logoImageRc),
+                          SETTINGS_VALUE(logoImageIndex));
+    splash->update(*engine);
   }
 }
 
@@ -394,10 +407,11 @@ void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 
 void Game::Impl::initFontCollection( bool& isOk, std::string& result )
 {
-  vfs::Path resourcePath = game::Settings::rcpath();
-  Logger::debug( "Game: load fonts" );
+  Logger::warning( "Game: load fonts" );
+
+  vfs::Path resourcePath = SETTINGS_RC_PATH( fontsDirectory );
   std::string fontname = SETTINGS_STR( font );
-  FontCollection::instance().initialize( resourcePath.toString(), fontname );
+  FontCollection::instance().initialize( resourcePath, fontname );
 }
 
 void Game::Impl::initPictures(bool& isOk , std::string& result)
@@ -412,17 +426,6 @@ void Game::Impl::initPictures(bool& isOk , std::string& result)
 void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
 {
   city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
-}
-
-void Game::Impl::initAddons(bool& isOk, std::string& result)
-{
-  addon::Manager& am = addon::Manager::instance();
-  am.load(std::string(":/addons"));
-}
-
-void Game::Impl::initScripting(bool& isOk, std::string& result)
-{
-  script::Core::instance();
 }
 
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
@@ -491,7 +494,7 @@ bool Game::load(std::string filename)
 
   screen.initialize();
   bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
+  screen.setBackground( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_dfunc()->engine );
 
   vfs::Path fPath( filename );
@@ -558,7 +561,7 @@ bool Game::load(std::string filename)
 
   Logger::debug( "Game: load finished" );
 
-  screen.exitScene( scene::SplashScreen::hideDevText );
+  screen.exitScene(scene::SplashScreen::hideDevText);
   return true;
 }
 
@@ -579,14 +582,14 @@ struct InitializeStep
 
 void Game::initialize()
 {
-  __D_REF(d,Game)
+  __D_REF(d, Game)
+  ScriptInitilizer scriptInitializer(*this);
   #define ADD_STEP(obj,functor) { #functor, makeDelegate(obj,&functor) }
   std::vector<InitializeStep> steps = {
     ADD_STEP( &d, Impl::initTilemapSettings ),
     ADD_STEP( &d, Impl::initVfsSettings ),
     ADD_STEP( &d, Impl::initMetrics ),
     ADD_STEP( &d, Impl::initGameConfigs ),
-    ADD_STEP( &d, Impl::initAddons ),
     ADD_STEP( &d, Impl::initArchiveLoaders ),
     ADD_STEP( &d, Impl::initLocale ),
     ADD_STEP( &d, Impl::initVideo ),
@@ -596,6 +599,7 @@ void Game::initialize()
     ADD_STEP( &d, Impl::initHotkeys ),
     ADD_STEP( &d, Impl::createSaveDir ),
     ADD_STEP( &d, Impl::loadResources ),
+    ADD_STEP( &scriptInitializer, ScriptInitilizer::init),
     ADD_STEP( &d, Impl::showSplashScreen ),
     ADD_STEP( &d, Impl::initCelebrations ),
     ADD_STEP( &d, Impl::loadPicInfo ),
@@ -605,35 +609,31 @@ void Game::initialize()
     ADD_STEP( &d, Impl::loadObjectsMetadata ),
     ADD_STEP( &d, Impl::loadWalkersMetadata ),
     ADD_STEP( &d, Impl::loadReligionConfig ),
-    ADD_STEP( &d, Impl::fadeSplash ),
-    ADD_STEP( &d, Impl::initScripting )
-  };
-
+    ADD_STEP( &d, Impl::fadeSplash )    
+  };  
   #undef ADD_STEP
 
-  for( auto&& step : steps )
+  for (auto& step : steps)
   {
     bool isOk = true;
     std::string stepText;
 
     try
     {
-      step.function( isOk, stepText );
-      d.updateSplashText( stepText );
-      if( !isOk )
+      step.function(isOk, stepText);
+      d.updateSplashText(stepText);
+      if (!isOk)
       {
         Logger::error( "Game: initialize faild on step {}", step.name );
         OSystem::error( "Game: initialize faild on step", step.name );
-        exit( -1 ); //kill application
+        exit(-1); //kill application
       }
     }
     catch(...) { exit(-1); }
-  }
-
-  script::Core::registerFunctions( *this );
+  }  
 
   d.nextScreen = SCREEN_MENU;
-  d.engine->setFlag( gfx::Engine::showMetrics, 1 );
+  d.engine->setFlag(gfx::Engine::showMetrics, 1);
 }
 
 bool Game::exec()

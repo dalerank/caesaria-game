@@ -25,40 +25,29 @@
 #include "core/scopedptr.hpp"
 #include "core/stringarray.hpp"
 #include "core/color.hpp"
-#include "vfs/path.hpp"
+#include "vfs/predefenitions.hpp"
 
 namespace gfx
 {
  class Picture;
 }
 
-enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
-                FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, 
-                FONT_3, FONT_4,
-                FONT_5,
-                FONT_6,
-                FONT_7,
-                FONT_8,
-                FONT_9 };
 class Font
 {
   friend class FontCollection;
 
 public:
-  static const bool alphaDraw=true;
-  static const bool solidDraw=false;
-  static const bool updateTx=true;
-  static const bool ignoreTx=false;
+  enum { alphaDraw=1, solidDraw=0, updateTx=1, ignoreTx=0 };
+  static const char* defname;
 
   Font();
-  static Font create( const std::string& family, const int size );
-  static Font create( FontType type );
-  static Font create( FontType type, NColor color );
-  static Font create( const std::string& type );  
+  static Font create(const std::string& family, int size, bool italic=false, bool bold=false, const NColor& color=ColorList::black);
+  static Font create(const std::string& alias);
 
   ~Font();
 
   Font( const Font& other );
+  Font& fallback(int size, bool italic, bool bold, const NColor& color);
 
   Font& operator=(const Font& other);
 
@@ -66,14 +55,17 @@ public:
   void setColor(NColor color );
 
   Font withColor( NColor color );
+  Font withBoldItalic(bool bold, bool italic);
+  Font withBold();
+  Font withItalic();
 
   bool isValid() const;
 
   bool operator!=(const Font& other) const;
 
-  Size getTextSize( const std::string& text ) const;
-  Rect getTextRect( const std::string& text, const Rect& baseRect,
-                    align::Type horizontalAlign, align::Type verticalAlign );
+  Size getTextSize(const std::string& text) const;
+  Rect getTextRect(const std::string& text, const Rect& baseRect,
+                   align::Type horizontalAlign, align::Type verticalAlign);
 
   void draw(gfx::Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
   void draw(gfx::Picture& dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
@@ -83,27 +75,10 @@ public:
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;
   unsigned int kerningHeight() const;
-  StringArray breakText( const std::string& text, int pixelLength );
+  StringArray breakText(const std::string& text, int pixelLength);
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-class FontCollection
-{
-public:
-  static FontCollection& instance();
-
-  void initialize(const std::string& resourcePath, const std::string& family );
-
-  Font& _getFont(const int key);  // get a saved font
-  Font& _getFont(const std::string& name );  // get a saved font
-
-  void setFont(const int key, const std::string& name, Font font);  // save a font
-  void addFont(const int key, const std::string& name, vfs::Path filename, const int size, const NColor& color);
-
-private:
-  FontCollection();
+  void _setHdc(void* ptr);
+  void _setStyle(int style);
 
   class Impl;
   ScopedPtr< Impl > _d;

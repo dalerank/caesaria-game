@@ -109,6 +109,7 @@ public:
   __GS_PROPERTY(showLastChanges)
   __GS_PROPERTY(lastChangesNumber)
   __GS_PROPERTY(citiesIdModel)
+  __GS_PROPERTY(fontsDirectory)
   __GS_PROPERTY(showStartAware)
   __GS_PROPERTY(verbose)
 #undef __GS_PROPERTY

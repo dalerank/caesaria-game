@@ -114,7 +114,7 @@ void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
   // pictures of goods
   Label& lb = add<Label>( Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
   lb.setIcon( info.picture() );
-  lb.setFont( FONT_2 );
+  lb.setFont( "FONT_2" );
   lb.setText( outText );
   lb.setTextOffset( Point( 30, 0 ) );
 }

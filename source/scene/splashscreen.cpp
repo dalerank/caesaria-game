@@ -16,16 +16,19 @@
 // Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerank@gmail.com
 
-#include "logo.hpp"
+#include "splashscreen.hpp"
 
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color_list.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/osystem.hpp"
 #include "core/gettext.hpp"
+#include "scripting/core.hpp"
+#include "core/variant.hpp"
+#include "core/utils.hpp"
 
 using namespace gfx;
 
@@ -40,6 +43,7 @@ public:
   Picture fadetx;
   std::string lastText;
   std::string text, prefix;
+  StringArray devText;
 
 public:
   void fade(Engine &engine, Picture &pic, bool out, int offset);
@@ -57,20 +61,17 @@ void SplashScreen::initialize()
   _d->fadetx = Picture( engine.screenSize(), 0, true );
   _d->fadetx.fill( NColor(0xff, 0, 0, 0), Rect() );
 
-  setImage( "logo", 1 );
+  script::Core::execFunction("OnStartSplashScreen");  
 }
 
-void SplashScreen::draw()
+void SplashScreen::draw(Engine& engine)
 {
-  Engine& engine = Engine::instance();
-
   if( _d->text != _d->lastText )
   {
-    Font textFont = Font::create(FONT_2_WHITE);
-
+    Font textFont = Font::create("FONT_2_WHITE");
     Rect textRect = textFont.getTextRect( _d->text, Rect( Point(), _d->textPic.size() ), align::center, align::center );
 
-    _d->textPic.fill( 0xff000000 );
+    _d->textPic.fill( ColorList::black );
 
     textFont.draw( _d->textPic, _d->text, textRect.left(), textRect.top(), false, true );
 
@@ -81,11 +82,12 @@ void SplashScreen::draw()
   engine.draw( _d->textPic, 0, 0 );
 }
 
-void SplashScreen::setImage(const std::string &image, int index)
+void SplashScreen::setBackground(const std::string &image, int index)
 {
   Engine& engine = Engine::instance();
-  _d->background.load( image, index )
-                .withFallback( "logo", 1 );
+  _d->background.load(image)
+                .withFallback(image, index)
+                .withFallback("logo", 1);
 
   // center the background on the screen
   Size s = (engine.screenSize() - _d->background.size()) / 2;
@@ -117,35 +119,30 @@ void SplashScreen::exitScene(bool devText)
 #ifdef DEBUG
   devText = false;
 #endif
+  script::Core::execFunction("OnExitSplashScreen");
 
   Engine& engine = Engine::instance();
 
   int offset = 3;
 
-  Font textFont = Font::create( FONT_3 ) ;
+  Font textFont = Font::create("FONT_3") ;
 
   if( OSystem::isAndroid() )
   {
     offset = 12;
-    textFont = Font::create( FONT_4 );
+    textFont = Font::create("FONT_4");
   }
 
   _d->fade( engine, _d->background, true, offset );
   _d->textPic = Picture( engine.screenSize(), 0, true );
-  _d->textPic.fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic.size() ) );
+  _d->textPic.fill( ColorList::black, Rect( Point( 0, 0 ), _d->textPic.size() ) );
 
   if (devText)
   {
-    StringArray text;
-    text << "This is a development version of CaesarIA!"
-         << "therefore this game still has a lot of bugs and some features are not complete!"
-         << "This version is not tested, as well, be aware of that"
-         << "You can support the development of this game at"
-         << " www.caesaria.net"
-         << "If you encounter bugs or crashes please send us a report";
+    script::Core::execFunction("OnDevtextSplashScreen");
 
     int offset = 0;
-    for( const auto& line : text )
+    for( const auto& line : _d->devText )
     {
       Rect textRect = textFont.getTextRect( line, Rect( Point(), _d->textPic.size() ), align::center, align::center );
       bool defaultColor = ( (line)[0] != ' ');
@@ -164,6 +161,22 @@ void SplashScreen::setText(std::string text)
 {
   _d->text = _d->prefix + " " + _( text );
   update( Engine::instance() );
+}
+
+void SplashScreen::setOption(const std::string & name, Variant value)
+{
+  if (name == "background")
+  {
+    setBackground(value.toString(), 1);
+  }
+  else if (name == "tooltip")
+  {
+    setText(value.toString());
+  }
+  else if (name == "dev-text")
+  {
+    _d->devText = utils::split( value.toString(), "\n");
+  }
 }
 
 void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }

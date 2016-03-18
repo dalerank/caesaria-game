@@ -54,6 +54,18 @@ protected:
   void _initialize(scene::Base* screen, scene::ScreenType screenType);
 };
 
+class InSplash : public State
+{
+public:
+  InSplash(Game *game, gfx::Engine* engine, const std::string &file);
+
+  virtual ~InSplash();
+
+private:
+  scene::SplashScreen* _briefing;
+};
+
+
 class InBriefing : public State
 {
 public:

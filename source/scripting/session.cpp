@@ -28,7 +28,9 @@
 #include <GameEvents>
 #include "game/datetimehelper.hpp"
 #include "sound/engine.hpp"
-#include "core/font.hpp"
+#include "core/osystem.hpp"
+#include "font/font.hpp"
+#include "font/font_collection.hpp"
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>

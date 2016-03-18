@@ -1,6 +1,25 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+
 #include "console.hpp"
 #include "console_commands.hpp"
 #include "environment.hpp"
+#include <GameCore>
+#include <GameVfs>
 #include <GameCore>
 #include <GameLogger>
 #include <GameGfx>
@@ -41,14 +60,12 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
         consoleHistoryIndex_(0),
         toggle_visible_(NONE), _d(new Impl)
 {
-  calculateConsoleRect(ui()->rootWidget()->size());										//calculate the console rectangle  
-
-  registerDefaultCommands_();
+  calculateConsoleRect(ui()->rootWidget()->size());										//calculate the console rectangle
 
   hide();
   cursorPos_ = 1;
 
-  setFont( Font::create(FONT_0).withColor(ColorList::white) );
+  setFont( Font::create("default",12).withColor(ColorList::white) );
   _opacity = 0;
   _logger = SmartPtr<ConsoleLogger>(new ConsoleLogger());
   _logger->drop();
@@ -57,6 +74,9 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
 
   Logger::registerWriter(TEXT(ConsoleLogger), _logger.object() );
   Widget::setVisible(false);
+
+  resizeMessages();
+  registerDefaultCommands_();
 
   appendMessage( "Console initialized" );								//append a message
   _updateCommandRect();
@@ -114,8 +134,8 @@ void Console::resizeMessages()											//! resize the message count
   unsigned int lineHeight = 0;
   int fontHeight = 0;
   unsigned int maxLines;
-  calculateLimits(maxLines, lineHeight, fontHeight);
-  console_messages_.resize(maxLines);
+  bool isOk = calculateLimits(maxLines, lineHeight, fontHeight);
+  console_messages_.resize(isOk ? maxLines : 10);
 }
 
 void Console::toggleVisible()											//! toggle the visibility of the console
@@ -168,7 +188,7 @@ void Console::draw( gfx::Engine& painter )
         else toggle_visible_ = NONE;
         _d->dirty = true;
       }
-    }   
+    }
 
     Rect textRect, shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
@@ -294,7 +314,7 @@ void Console::inputChar_( unsigned int key_char, bool shift_down )
     std::string astr = buf;
 
     currentCommand_ = currentCommand_.substr( 0, cursorPos_-1 ) + astr + currentCommand_.substr( cursorPos_-1, 0xff );
-    cursorPos_++;    
+    cursorPos_++;
   }
 
   _updateCommandRect();

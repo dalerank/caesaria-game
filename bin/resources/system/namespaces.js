@@ -31,3 +31,6 @@ lobby.ui.loadgame = {}
 lobby.ui.mainmenu = {}
 lobby.ui.options = {}
 lobby.hotkeys = {}
+
+/********************** namespace splash **********************************/
+var splash = {}

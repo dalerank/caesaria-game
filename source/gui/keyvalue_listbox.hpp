@@ -35,8 +35,8 @@ public:
   void setShowTime( bool show );
   void setShowExtension( bool show );
 
-  virtual ListBoxItem& addItem(const std::string& keyValue, Font font, const int color);
-  virtual ListBoxItem& addItem(const std::string& key, const std::string& value, Font font, const int color);
+  virtual ListBoxItem& addItem(const std::string& keyValue, Font font, NColor color);
+  virtual ListBoxItem& addItem(const std::string& key, const std::string& value, Font font, NColor color);
 
 protected:
   virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
