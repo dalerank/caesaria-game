@@ -1,0 +1,11 @@
+{  
+ title : "##engineering_post##"
+ sound : "fanfare"
+ text  : "Ein Ingenieursposten schickt einen @Ingenieur& auf Rundgänge, um die Gebäude auf seinem Weg zu reparieren und zu warten. Die meisten Gebäude, die nicht auf der Route eines Ingenieurs liegen, werden früher oder später einstürzen. Es gibt jedoch auch Gebäude - Reservoirs, Aquädukte, Brunnen, Ziehbrunnen, Gärten, Statuen, Forts und Mauern - die nicht die Aufmerksamkeit der Ingenieure bedürfen.\nIngenieurposten beeinträchtigen die Attraktivität der Umgebung nicht.\nIhr @Arbeitsberater& sollte der Ingenieurstätigkeit normalerweise einen hohen Stellenwert einräumen. Verwenden Sie die @Spezialkarte Risiken&, um Gebäude zu finden, bei denen Einsturzgefahr besteht, und um den Ingenieur auf seinen Rundgängen zu verfolgen. Klicken Sie einen Ingenieursposten rechts an, um dessen Status zu prüfen. Funktionierende Ingenieursposten erkennen Sie an der kleinen blauen Fahne.\n\nHier können Sie mehr über die @historische& Rolle der Ingenieure erfahren."
+ uri : {
+  "Ingenieur" : "Arbeiter??"
+  "Arbeitsberater" : "labor_advisor"
+  "Spezialkarte Risiken" : "Spezialkartenauswahl??"
+  "historische" : "engineering_histroy"
+ }
+}
