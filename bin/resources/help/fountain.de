@@ -1,0 +1,10 @@
+{  
+ title : "##fountain##"
+ sound : "fanfare"
+ text  : "@Aquädukte& leiten das Wasser von entfernten Quellen zu @Reservoiren&, die es über keramische, hölzerne oder bleierne Rohre auf öffentliche @Brunnen& verteilten. Sie boten dem Großteil der römischen Bevölkerung kostenloses Wasser und waren oftmals kunstvoll gestaltete Monumente realer und mythologischer Persönlichkeiten und Ereignisse. Die Errichtung eines Brunnens zu Ehren einer Persönlichkeit war eine weitverbreitete Form des Tributes, so dass Rom schließlich über 1200 Brunnen besaß, von denen die meisten wahren Kunstwerke waren."
+ uri : {
+  "Reservoir" : "reservoir"
+  "Wasserversorgung" : "Wasserversorgung??"
+  "hier" : "fountain_history"
+ }
+}

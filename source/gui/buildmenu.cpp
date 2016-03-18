@@ -23,6 +23,7 @@
 #include <GameCore>
 #include <GameLogger>
 #include <GameObjects>
+#include <GameCity>
 #include <GameGui>
 
 #include "gfx/decorator.hpp"

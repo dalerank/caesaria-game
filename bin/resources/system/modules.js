@@ -1,8 +1,38 @@
-engine.log("CaesarIA: load modules started");
+engine.log("CaesarIA: load modules started")
 
-engine.loadModule(":/system/init_session.js");
-engine.loadModule(":/system/init_gui.js");
-engine.loadModule(":/system/lobby.js");
-engine.loadModule(":/system/vector.js");
-engine.loadModule(":/system/video_settings.js");
-engine.loadModule(":/system/mission_events.js"); 
+var modules = [
+                  "namespaces",
+                  "common",
+                  "vector",
+                  "game_config",
+                  "init_session",
+                  "init_gui",
+                  "init_city",
+                  "init_game",
+                  "init_sound",
+                  "init_colors",
+                  "init_ranks",
+                  "init_movie",
+                  "init_languages",
+                  "video_settings",
+                  "audio_settings",
+                  "city_settings",
+                  "gamespeed_settings",
+                  "mission_topmenu",
+                  "mission_events",
+                  "mission_select",
+                  "mission_targets",
+                  "mission_debug",
+                  "mission_timescale",
+                  "mission_dialogs",
+                  "package_settings",
+                  "salary_settings",
+                  "climate_manager",
+                  "emperor_gift",
+                  "mission_common",
+                  "hotkeys",
+                  "lobby"
+              ]
+
+for (var i in modules)
+    engine.loadModule(":/system/"+modules[i]+".js")

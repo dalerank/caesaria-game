@@ -359,7 +359,7 @@ CityChart::DrawMode CityChart::fit(CityChart::DrawMode mode)
   return (DrawMode)mode;
 }
 
-static int __calcMaxLegentYValue( int value ) { return (value * 1.5 / 100 ) * 100; }
+static int __calcMaxLegentYValue( int value ) { return (int)((value * 1.5f / 100 ) * 100); }
 
 void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 {

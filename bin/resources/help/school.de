@@ -1,0 +1,13 @@
+{  
+ title : "##school##"
+ sound : "fanfare"
+ text  : "Die jüngsten Römer werden bis zum Alter von 13 Jahren in Schulen unterrichtet. Der Bedarf an Grundschulen besteht überall, und die Häuser werden sich nicht besonders erweitern, wenn kein Zugang zu dieser einfachsten Form der @Bildung& besteht. Benutzen Sie die @Spezialkarte Bildung&, um sich den Einzugsbereich einer bestimmten Schule anzusehen und die Schüler auf ihrem Schulweg zu beobachten. Fragen Sie Ihren @Bildungsberater& nach dem Bedarf an Schulen in der Stadt. Klicken Sie eine Schule rechts an, um ihren Status zu prüfen. Die Menschen leben wegen des Lärms, den kleine Kinder machen, nicht gerne in der Nähe von Schulen.\nIn den Anfangszeiten der Stadt reicht der Bau von genügend Schulen für die Versorgung einzelner Häuser aus, um den stadtweiten Bedarf an Schulen zu decken. Jede Schule kann jedoch nur eine begrenzte Anzahl Kinder aufnehmen, bis die Klassen überfüllt sind. Während die Einwohnerdichte Ihrer Stadt zunimmt, bleibt die Anzahl der Klassen in einer Schule konstant. Daher brauchen die Häuser mehr Schulen, auch wenn sie bereits Zugang haben, da die Klassen sonst bald überfüllt sind. Schulen beeinflussen ihre @Kulturwertung&. Halten Sie die Klassengröße möglichst klein, um die Kultur in Ihrer Stadt zu verbessern. Vergleichen Sie die Zahl die Kinder, die unterrichtet werden müssen, mit der Zahl der Kinder, die Ihre Schulen aufnehmen können, um zu sehen wie viele Kinder in jeder einzelnen Schule in der Stadt Platz finden. Klicken Sie @hier(1)&, um mehr über das Bildungskonzept in CaesarIA zu erfahren.\n\nEinen kurzen Abriss über die Schulen im römischen Imperium erhalten Sie @hier(2)&."
+ uri : {
+  "Bildung" : "education"
+  "Spezialkarte Bildung": "Spezialkarte??"
+  "Bildungsberater" : "education_advisor"
+  "Kulturwertung" : "ratings"
+  "hier(1)" : "education"
+  "hier(2)" : "school_history"
+ }
+}

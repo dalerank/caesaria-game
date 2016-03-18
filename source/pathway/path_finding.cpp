@@ -35,7 +35,7 @@ class Propagator::Impl
 public:
   std::set<PathwayPtr> activeBranches;
 
-  typedef std::map<Tile*, PathwayPtr> RouteMap;  
+  typedef std::map<Tile*, PathwayPtr> RouteMap;
 
   RouteMap completedBranches;
   Propagator::ObsoleteOverlays obsoleteOvs;
@@ -58,7 +58,7 @@ Propagator::Propagator(PlayerCityPtr city) : _d( new Impl )
 void Propagator::setAllLands(const bool value) {   _d->allLands = value;}
 void Propagator::setAllDirections(const bool value){  _d->allDirections = value;}
 void Propagator::setObsoleteOverlay( object::Type type){ _d->obsoleteOvs.insert( type ); }
-void Propagator::init(TilePos origin){  init( _d->tilemap->at( origin ) );}
+void Propagator::init(const TilePos& origin){  init( _d->tilemap->at( origin ) );}
 
 void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
 {
@@ -120,7 +120,7 @@ void Propagator::propagate(const unsigned int maxDistance)
       // while there are active paths
       if ((nbLoops++)>10000)
       {
-        Logger::warning( "WARNING!!!: Infinite loop detected during propagation");
+        Logger::warning( "!!! Infinite loop detected during propagation");
         _d->completedBranches.clear();
         return;
       }

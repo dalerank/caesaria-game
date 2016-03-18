@@ -47,7 +47,7 @@ bool IronMine::build(const city::AreaInfo& info)
 {
   bool isOk = Factory::build( info );
 
-  bool mayCollapse = info.city->getOption( PlayerCity::claypitMayCollapse ) != 0;
+  bool mayCollapse = _cityOpt(PlayerCity::claypitMayCollapse) != 0;
   if( !mayCollapse )
     _setUnworkingInterval( 0 );
 

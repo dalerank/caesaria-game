@@ -78,8 +78,8 @@ public:
   Extensions extensions;
 };
 
-Construction::Construction(const object::Type type, const Size& size)
-  : Overlay( type, size ), _d( new Impl )
+Construction::Construction(object::Type type, const Size& size)
+  : Overlay(type, size), _d( new Impl )
 {
   setState( pr::fire, 0 );
   setState( pr::damage, 0 );
@@ -174,8 +174,8 @@ void Construction::computeRoadside()
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
     TilesArray tiles = _map().rect( pos() + TilePos( -dst, -dst ),
-                                     pos() + TilePos( s+dst-1, s+dst-1 ),
-                                     !Tilemap::CheckCorners );
+                                    pos() + TilePos( s+dst-1, s+dst-1 ),
+                                    !Tilemap::CheckCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
@@ -195,7 +195,7 @@ void Construction::burn()
 
     events::dispatch<Disaster>( tile(), Disaster::fire );
 
-    Logger::warning( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+    Logger::debug( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
 }
 
@@ -208,7 +208,7 @@ void Construction::collapse()
 
   events::dispatch<Disaster>( tile(), Disaster::collapse );
 
-  Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+  Logger::debug( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return Overlay::picture(); }

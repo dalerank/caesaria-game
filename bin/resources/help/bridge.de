@@ -1,0 +1,9 @@
+{  
+ title : "##bridges##"
+ sound : "fanfare"
+ text  : "Bauen Sie erst dann Brücken, wenn Sie das andere Flussufer definitiv besiedeln möchten. Wählen Sie dann entweder eine 'niedrige Brücke' oder eine 'Schiffsbrücke' aus den Gebäudeoptionen aus, und bewegen Sie den Mauszeiger am Ufer entlang. Wenn Sie auf einen Bereich treffen, an dem der Fluss überbrückt werden kann, ändert sich der Mauszeiger von einem roten Viereck in eine grüne, schemenhafte Darstellung einer Brücke. So finden Sie die einzigen Stellen, an denen Brücken errichtet werden können.\nBauen Sie die richtige Art der Brücke an der richtigen Stelle. Schiffe können unter einer niedrigen Brücke nicht durchsegeln, daher sollten Sie eine solche Brücke auf keinen Fall zwischen Ihren Docks und dem Schifffahrtskanal Ihres Flusses bauen. Handelsschiffe treffen von stromaufwärts ein und verlassen Ihr Gebiet dort auch wieder. Dies ist normalerweise die Richtung aus der Treibgut auf der Karte erscheint (und von dorther kommen meist auch die Immigranten).\nDenken Sie bei der Planung von Brücken des Weiteren daran, dass auch Docks nicht überall gebaut werden dürfen. Unter dem Stichpunkt @Docks& erhalten Sie Tipps für deren Errichtung. Bauen Sie erst dann niedrige Brücken, wenn Sie genau wissen, an welchen Stellen Ihre Docks später stehen werden. Niedrige Brücken sind preiswerter und können an mehr Stellen als Schiffsbrücken gebaut werden.\nDie Kosten für die Errichtung einer Brücke werden für jedes Segment einzeln angezeigt. Je Länger die Brücke ist, desto teurer wird sie.\n\nKlicken Sie @hier&, wenn Sie mehr über die Geschichte der Brücken im römischen Imperium erfahren möchten."
+ uri : {
+  "Docks" : "dock"
+  "hier" : "road_history"
+ }
+}

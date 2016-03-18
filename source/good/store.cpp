@@ -234,7 +234,7 @@ void Store::load( const VariantMap& stream )
   __D_REF(d,Store)
   if( stream.empty() )
   {
-    Logger::warning( "!!! WARNING: cant load store config from empty stream" );
+    Logger::warning( "!!! cant load store config from empty stream" );
     return;
   }
 

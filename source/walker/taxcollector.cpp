@@ -97,7 +97,7 @@ TaxCollector::TaxCollector(PlayerCityPtr city)
 {
   _d->money = 0;
   _d->return2base = false;
-  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes ) : false;
+  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes )>0 : false;
   _setType( walker::taxCollector );
 }
 
@@ -117,9 +117,9 @@ void TaxCollector::_reachedPathway()
       base()->applyService( this );
     }
 
-    Logger::warning( "TaxCollector: path history" );
+    Logger::debug( "TaxCollector: path history" );
     for( const auto& step : _d->history )
-      Logger::warning( "       [{},{}]:{}", step.first.i(), step.first.j(), step.second );
+      Logger::debug( "       [{},{}]:{}", step.first.i(), step.first.j(), step.second );
 
     deleteLater();
     return;

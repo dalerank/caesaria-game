@@ -224,7 +224,7 @@ public:
 
     // don't use getLength here to avoid precision loss with s32 vectors
     float tmp = _y / sqrt((float)(_x*_x + _y*_y));
-    tmp = atanf( sqrt(1 - tmp*tmp) / tmp) * math::RADTODEG64;
+    tmp = atanf( sqrt(1.f - tmp*tmp) / tmp) * math::RADTODEG64;
 
     if (_x>0 && _y>0)
       return tmp + 270;

@@ -1,0 +1,11 @@
+{  
+ title : "##religion_advisor##"
+ sound : "fanfare"
+ text  : "Dieser Berater führt über die Orakel und die Anzahl der kleinen und großen @Tempel& Buch, die Ihre Stadt Ceres, Neptun, Merkur, Mars und Venus geweiht hat. Hier können Sie auch ablesen, was die Götter von Ihrer Stadt halten. Beschwichtigen Sie erzürnte Götter, indem Sie ihnen weitere Tempel bauen oder ein @Fest& abhalten.\n\nLesen Sie hierzu auch @Wertungen& und @Religion&, um den Sinn dieser Tafel besser verstehen zu können."
+ uri : {
+  "Tempel" : "temple_oracle"
+  "Fest" : "entertainment_advisor"
+  "Wertungen" : "ratings"
+  "Religion" : "religion"
+ }
+}

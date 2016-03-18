@@ -123,7 +123,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
   file.seek(sgHeagerSize);
 
   unsigned int saveTime =  DebugTimer::ticks();
-  Logger::warning( "Read header, num bitmaps = {}, num images = {}, time = {}",
+  Logger::debug( "Read header, num bitmaps = {}, num images = {}, time = {}",
                    header.num_bitmap_records, header.num_image_records, saveTime);
 
   // Read bitmaps
@@ -140,7 +140,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
     std::string bmp_name_full = sbr.filename;
     std::string bmp_name = bmp_name_full.substr(0, bmp_name_full.length() - 4);
 
-    Logger::warning( "Start reading info for section: " + bmp_name );
+    Logger::debug( "Start reading info for section: " + bmp_name );
     if( bmp_name == "system" )
       continue;
 
@@ -165,8 +165,6 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
         //std::string p555_2 = p555 + "555/" + sbr.filename;
         //p555_1[p555_1.length()-3] = p555_1[p555_1.length()-2] = p555_1[p555_1.length()-1] = '5';
         //p555_2[p555_2.length()-3] = p555_2[p555_2.length()-2] = p555_2[p555_2.length()-1] = '5';
-
-        //Logger::warning( "File %s maybe in external 555 file: %s", name.c_str(), p555.toString().c_str() );
       }
       else
       {
@@ -186,10 +184,10 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
       addItem( name, sir.offset, sir.length, false);
     } // image loop
   } // bitmap loop
-  Logger::warning( "Time before sort {}", DebugTimer::ticks() - saveTime );
+  Logger::debug( "Time before sort {}", DebugTimer::ticks() - saveTime );
   sort();
 
-  Logger::warning( "Time to load {}", DebugTimer::ticks() - saveTime );
+  Logger::debug( "Time to load {}", DebugTimer::ticks() - saveTime );
 }
 
 Sg2ArchiveReader::~Sg2ArchiveReader() {}

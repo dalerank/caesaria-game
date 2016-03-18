@@ -9,25 +9,31 @@
 namespace gui
 {
 
-class Console : public Widget , public CommandDispatcher, public MessageSink
+class ConsoleLogger;
+
+class Console : public Widget, public CommandDispatcher, public MessageSink
 {
 public:
     Console(Widget* parent, int id, const Rect& rectangle);
     virtual ~Console();
 
-    void setVisible( bool vis );
+    virtual void setVisible(bool vis);
     void toggleVisible();
 
-    void draw( gfx::Engine& painter );
+    virtual void draw( gfx::Engine& painter );
 
-    void appendMessage( const std::string& message );
+    virtual void setFont(const Font& font);
+    virtual Font font() const;
+
+    void appendMessage(const std::string& message);
     void clearMessages();
 
     int initKey() const;
 
-    void keyPress( const NEvent& event );
+    void keyPress(const NEvent& event);
 
 private:
+    void _updateCommandRect();
     void handleCommandString( const std::string& wstr);
     void addToHistory( const std::string& line);
     void calculateConsoleRect(const Size& screenSize);
@@ -45,10 +51,10 @@ private:
     StringArray console_messages_;
     StringArray console_history_;
     unsigned int consoleHistoryIndex_;
-    Font _font;
 
     typedef enum { NONE=0, UPLIGTH, DOWNLIGTH } TOGGLE_TYPE;
     TOGGLE_TYPE toggle_visible_;
+    SmartPtr<ConsoleLogger> _logger;
 
     std::string currentCommand_;
     int _opacity;
@@ -56,6 +62,9 @@ private:
 
     void SaveCommands_();
     void LoadSaveCommands_();
+
+    class Impl;
+    ScopedPtr<Impl> _d;
 };
 
 }

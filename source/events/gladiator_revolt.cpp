@@ -30,7 +30,6 @@
 #include "showinfobox.hpp"
 #include "game/funds.hpp"
 #include "objects/training.hpp"
-#include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
@@ -100,7 +99,7 @@ void GladiatorRevolt::_exec(Game& game, unsigned int)
         rioter->send2City( location );
         rioter->wait( math::random( k * 30 ) );
         rioter->setAttackPriority( EnemySoldier::attackAll );
-        rioter->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
+        rioter->setSpeedMultiplier( 0.7f + math::random( 60 ) / 100.f  );
       }
     }
   }

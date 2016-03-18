@@ -196,7 +196,7 @@ void Health::_updateAdvice()
   HealthCarePtr hc = _city->statistic().services.find<HealthCare>();
   if( !hc.isValid() )
   {
-    Logger::warning( "WARNING !!! HealthCare service not exist" );
+    Logger::warning( "!!! HealthCare service not exist" );
     return;
   }
 
@@ -269,7 +269,7 @@ void Health::_initUI()
   INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
   if( !lbBlackframe )
   {
-    Logger::warning( "WARNING !!! Can't initialize Health adwisor window" );
+    Logger::warning( "!!! Can't initialize Health adwisor window" );
     return;
   }
 

@@ -4,14 +4,14 @@
   funds : 120000
   city.name : "Lutetia"
   date : "-70.01.01"
-  player.rank : 4  
+  player.rank : 4
   climate : 0
   adviserEnabled : true
   fishPlaceEnabled : false
   preview.text : "##lutetia_preview_mission##"
   preview.title : "##lutetia_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 10000
@@ -23,18 +23,20 @@
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##consul##"
-    win.text : "##lutetia_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lutetia_title##"
+    startSound : "lutetia_speech"
     overview :  [ "##lutetia_overview##" ]
+    winText : "##lutetia_win_text##"
+    winContinue : false
+    winSound      : "lutetia_win_speech"
   }
-	
+
   empire : {
     enabled : true
 
     cities :
-    {    
+    {
       Mediolanum : {
         nation : "roman"
 
@@ -58,7 +60,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -68,8 +70,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -77,8 +79,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -86,8 +88,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -96,7 +98,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -173,7 +175,7 @@
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
-       
+
     emperor_request_1#city_request : {
       date : "-65.09.01"
       reqtype : "good_request"
@@ -700,13 +702,13 @@
           video : "spy_barbarian"
         }
       }
-    }    
+    }
   }
 
   fishpoints : {
    fp1 : [ 32, 126 ]
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -721,8 +723,8 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
+
+    buildings :
     {
       prefecture : true
       engineering_post : true
@@ -759,8 +761,8 @@
       library : true
       senate : true
       gatehouse : true
-      wall : true 
-      tower : true 
+      wall : true
+      tower : true
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true

@@ -1,0 +1,8 @@
+{  
+ title : "##clay_pit##"
+ sound : "fanfare"
+ text  : "Ton ist ein komplexes Mineral mit vielen Einsatzmöglichkeiten, die heutzutage von der Fertigung von Keramik über Tiernahrungszusätze und dem Unterbau von Müllhalden bis zu hin zu Katzenstreu reichen. Ton gibt es in Hunderten von Sorten, die anhand der elementaren Bestandteile, des organischen Anteils und der Konsistenz charakterisiert werden können. Alle Tonsorten bestehen hauptsächlich aus Kaolin, das entsteht, wenn Granit durch glühend heißen Dampf in tiefen Erdspalten zerfällt. Man findet ihn normalerweise in dicken Sedimentablagerungen neben Flüssen.\nRom wurde auf den Überschwemmungsgebieten des Tiber erbaut, deshalb war Ton immer in großer Menge vorhanden. Leicht abzubauen, formbar und dauerhaft, war Ton unentbehrlich. Zum Abbau wurde das Mineral im Altertum einfach nur mit Schaufeln an den entsprechenden Stellen abgetragen, die durch fließendes Wasser oder Erosion freigelegt worden waren. Tiefere Grabungen ergaben reineren Ton mit geringerem organischen Anteil. Ton war die Grundlage für die gesamte @Geschirrproduktion&, einschließlich der allgegenwärtigen Amphoren. Unter der marmornen Fassade wurde Rom allein durch den reichlichen Einsatz von Ton bei so simplen Dingen wie Rohrleitungen und Bedachungen zusammengehalten. Die Terrakotta-Dachziegel, die wir heute noch mit den Häusern des Mittelmeerraums in Verbindung bringen, sind sämtlich aus Ton hergestellt."
+ uri : {
+  "Geschirrproduktion" : "Töpferwaren(Geschirr_historie)??"
+ }
+}

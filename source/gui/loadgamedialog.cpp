@@ -25,12 +25,20 @@
 #include "core/gettext.hpp"
 #include "vfs/fileinfo.hpp"
 #include "core/logger.hpp"
+#include "widget_factory.hpp"
 
 namespace gui
 {
 
 namespace dialog
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(LoadGame)
+
+LoadGame::LoadGame(Widget* parent)
+  : LoadGame(parent,vfs::Directory())
+{
+}
 
 LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   : LoadFile( parent, Rect(), dir, ".oc3save", -1 )
@@ -39,7 +47,7 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   Widget::setupUI( ":/gui/loadgame.gui" );
 
   CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSort, onClicked(), LoadGame::_changeSort )
+  LINK_WIDGET_LOCAL_ACTION(PushButton*, btnSort, onClicked(), LoadGame::_changeSort)
 
   _changeSort();
 }

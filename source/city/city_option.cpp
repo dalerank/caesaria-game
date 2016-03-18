@@ -39,7 +39,6 @@ public:
     _O(godEnabled)
     _O(fishPlaceEnabled)
     _O(updateRoadsOnNextFrame)
-    _O(forceBuild)
     _O(warningsEnabled)
     _O(updateTiles)
     _O(zoomEnabled)

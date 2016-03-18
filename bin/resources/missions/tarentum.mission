@@ -4,13 +4,13 @@
   funds : 8000
   city.name : "Tarentum"
   date : "-350.01.01"
-  player.rank : 2  
+  player.rank : 2
   adviserEnabled : true
   fishPlaceEnabled : false
   preview.text : "##tarentum_preview_mission##"
   preview.title : "##tarentum_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 2500
@@ -22,15 +22,17 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##architect##"
-    win.text : "##tarentum_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarentum_3_title##"
+    startSound : "tarentum_speech"
     overview :  [ "##tarentum_3_overview##",
                   "@img=picture5_00013",
                   "##tarentum_3_overview_2##"]
+    winText : "##tarentum_win_text##"
+    winContinue : false
+    winSound      : "tarentum_win_speech"
   }
-	
+
   empire :
   {
     enabled : true
@@ -104,7 +106,7 @@
 
     }
   }
-  		
+
   events :
   {
     "health_upper#health_updater" : {
@@ -264,7 +266,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-    
+
     "barbarian_invasion0#enemy_attack" : {
       date : "-349.07.01"
       type : "enemy_attack"
@@ -282,7 +284,7 @@
           location : "random"
         }
       }
-		
+
       exec : {
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
@@ -339,13 +341,13 @@
 
       exec : {
       barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
       video : "spy_barbarian"
-		}
-	  }
     }
- 
+    }
+    }
+
     "barbarian_invasion3#enemy_attack" : {
       date : "-335.07.01"
       type : "enemy_attack"
@@ -442,7 +444,7 @@
       }
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -457,9 +459,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       roadBlock : true
       plaza : true

@@ -122,29 +122,16 @@ Walker::Walker(PlayerCityPtr city)
   : _d( new Impl )
 {
   _d->reset( city );
-
-#ifdef DEBUG
-  WalkerDebugQueue::instance().add( this );
-#endif
 }
 
 Walker::Walker(PlayerCityPtr city, walker::Type type)
-  : _d( new Impl )
+  : Walker(city)
 {
-  _d->reset( city );
   _d->type = type;
-
-#ifdef DEBUG
-  WalkerDebugQueue::instance().add( this );
-#endif
 }
 
 Walker::~Walker()
-{
-#ifdef DEBUG
-  WalkerDebugQueue::instance().rem( this );
-#endif
-}
+{}
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -407,7 +394,7 @@ Tilemap& Walker::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "WARNING !!! City is null at Walker::_map()" );
+  Logger::warning( "!!! City is null at Walker::_map()" );
   return config::tilemap.invalid();
 }
 
@@ -467,7 +454,7 @@ std::string Walker::thoughts(Thought about) const
     return _d->thinks;
   }
 
-  Logger::warning( "WARNING : no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
+  Logger::warning( " no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
   return "";
 }
 
@@ -553,14 +540,14 @@ void Walker::load( const VariantMap& stream)
 
   if( !_d->map.path.isValid() )
   {
-    Logger::warning( "WARNING!!! Walker: wrong way for {0}:{1} at [{2},{3}]",
+    Logger::warning( " Walker: wrong way for {0}:{1} at [{2},{3}]",
                      WalkerHelper::getTypename( _d->type ), _d->name,
                      _d->map.tile->i(), _d->map.tile->j() );
   }
   
   if( _d->speed.multiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for {0}", _d->uid );
+    Logger::warning( " Walker: Wrong speed multiplier for {0}", _d->uid );
     _d->speed.multiplier = 1;
   }
 
@@ -656,25 +643,6 @@ void Walker::mapTurned()
 
   _updateMappos();
 }
-
-#ifdef DEBUG
-void WalkerDebugQueue::print()
-{
-  WalkerDebugQueue& inst = (WalkerDebugQueue&)instance();
-  if( !inst._pointers.empty() )
-  {
-    Logger::warning( "PRINT WALKER DEBUG QUEUE" );
-    foreach( it, inst._pointers )
-    {
-      Walker* wlk = (Walker*)*it;
-      Logger::warning( "{0} - {1} [{2},{3}] ref:{4}", wlk->name(),
-                       wlk->info().typeName(),
-                       wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
-    }
-  }
-}
-#endif
-
 
 void Walker::Impl::reset(PlayerCityPtr pcity )
 {

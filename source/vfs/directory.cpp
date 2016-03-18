@@ -123,7 +123,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
 {
   if( fileName.toString().empty() )
   {
-    Logger::warning( "!!! WARNING: Directory: cannot try find zero lenght name" );
+    Logger::warning( "!!! Directory: cannot try find zero lenght name" );
     return "";
   }
 
@@ -261,7 +261,7 @@ Directory Directory::userDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::warning( "Cannot find home user directory" );
+    Logger::error( "Cannot find home user directory" );
   }
 #elif defined(GAME_PLATFORM_LINUX)
   struct passwd* pwd = getpwuid(getuid());
@@ -279,7 +279,7 @@ Directory Directory::userDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::warning( "Cannot find home user directory" );    
+    Logger::error( "Cannot find home user directory" );    
   }
 #elif defined(GAME_PLATFORM_HAIKU)
    mHomePath = getenv("HOME");

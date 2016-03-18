@@ -57,7 +57,7 @@ InGame::InGame( Game* game, gfx::Engine* engine,
 
   _initialize( d.level, SCREEN_GAME);
 
-  Logger::warning( "game: prepare for game loop" );
+  Logger::debug( "game: prepare for game loop" );
 }
 
 bool InGame::update(gfx::Engine* engine)
@@ -121,11 +121,11 @@ InGame::~InGame()
 
   case Level::res_restart:
   {
-    Logger::warning( "ScreenGame: restart game " + *d.filename.restart );
+    Logger::debug( "ScreenGame: restart game " + *d.filename.restart );
     bool loadOk = _game->load( *d.filename.restart );
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
 
-    Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " ) + *d.filename.restart );
+    Logger::debug( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " ) + *d.filename.restart );
 
     if( loadOk )
     {

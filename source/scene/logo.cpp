@@ -47,10 +47,7 @@ public:
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
 
-SplashScreen::~SplashScreen()
-{
-
-}
+SplashScreen::~SplashScreen() {}
 
 void SplashScreen::initialize()
 {
@@ -69,7 +66,7 @@ void SplashScreen::draw()
 
   if( _d->text != _d->lastText )
   {
-    Font textFont = Font::create( FONT_2_WHITE ) ;
+    Font textFont = Font::create(FONT_2_WHITE);
 
     Rect textRect = textFont.getTextRect( _d->text, Rect( Point(), _d->textPic.size() ), align::center, align::center );
 
@@ -115,10 +112,10 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
   }
 }
 
-void SplashScreen::exitScene(bool showDevText)
+void SplashScreen::exitScene(bool devText)
 {
 #ifdef DEBUG
-  showDevText = false;
+  devText = false;
 #endif
 
   Engine& engine = Engine::instance();
@@ -137,7 +134,7 @@ void SplashScreen::exitScene(bool showDevText)
   _d->textPic = Picture( engine.screenSize(), 0, true );
   _d->textPic.fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic.size() ) );
 
-  if( showDevText )
+  if (devText)
   {
     StringArray text;
     text << "This is a development version of CaesarIA!"

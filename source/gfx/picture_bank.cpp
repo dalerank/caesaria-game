@@ -158,7 +158,7 @@ void PictureBank::addAtlas( const std::string& filename )
   VariantMap options = config::load( filename );
   if( !options.empty() )
   {
-    Logger::warning( "PictureBank: load atlas " + filename );
+    Logger::debug( "PictureBank: load atlas " + filename );
 
     AtlasPreview atlas;
     atlas.filename = filename;
@@ -182,7 +182,6 @@ void PictureBank::loadAtlas(const std::string& filename)
 Picture& PictureBank::getPicture(const std::string &name)
 {
   const unsigned int hash = Hash( name );
-  //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
   if( it == _d->resources.end() )
@@ -273,34 +272,34 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 
 void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
 {
-  if( !filePath.exist() )
+  if (!filePath.exist())
   {
     Logger::warning( "PictureBank: cant find atlas " + filePath );
     return;
   }
 
-  VariantMap info = config::load( filePath );
+  VariantMap info = config::load(filePath);
 
-  vfs::Path texturePath = info.get( "texture" ).toString();
+  vfs::Path texturePath = info.get("texture").toString();
 
-  vfs::NFile file = vfs::NFile::open( texturePath );
+  vfs::NFile file = vfs::NFile::open(texturePath);
 
   Picture mainTexture;
-  if( file.isOpen() )
+  if (file.isOpen())
   {
-    mainTexture = PictureLoader::instance().load( file );
+    mainTexture = PictureLoader::instance().load(file);
   }
   else
   {
-    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath );
+    Logger::warning("PictureBank: load atlas failed for texture" + texturePath);
     mainTexture = Picture::getInvalid();
   }
 
   //SizeF mainRectSize = mainTexture.size().toSizeF();
-  if( !info.empty() )
+  if (!info.empty())
   {
     VariantMap items = info.get( framesSection ).toMap();
-    for( auto& i : items )
+    for (const auto& i : items)
     {
       VariantList rInfo = i.second.toList();
       Picture pic = mainTexture;

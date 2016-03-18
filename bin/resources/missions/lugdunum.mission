@@ -4,14 +4,14 @@
   funds : 8000
   city.name : "Lugdunum"
   player.rank : 5
-  date : "-170.01.01"  
+  date : "-170.01.01"
   climate : 1
   adviserEnabled : true
   fishPlaceEnabled : false
   preview.text : "##lugdunum_preview_mission##"
   preview.title : "##lugdunum_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 7000
@@ -23,18 +23,20 @@
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
     title : "##aedile##"
-    win.text : "##lugdunum_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##lugdunum_preview_title##"
+    startSound : "lugdunum_speech"
     overview :  [ "##lugdunum_overview##" ]
+    winContinue : false
+    winSound      : "lugdunum_win_speech"
+    winText : "##lugdunum_win_text##"
   }
-	
+
   empire : {
     enabled : true
 
     cities :
-    {    
+    {
       Massilia : {
         nation : "roman"
 
@@ -58,7 +60,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -68,8 +70,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -77,8 +79,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -86,8 +88,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -96,7 +98,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -157,7 +159,7 @@
         }
       }
     }
-       
+
     cursed_water#contaminated_water : {
       date : "-169.01.01"
       type : "contaminated_water"
@@ -797,7 +799,7 @@
       }
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -812,8 +814,8 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
+
+    buildings :
     {
       prefecture : true
       engineering_post : true
@@ -849,8 +851,8 @@
       missionaryPost : true
       senate : true
       gatehouse : true
-      wall : true 
-      tower : true 
+      wall : true
+      tower : true
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true

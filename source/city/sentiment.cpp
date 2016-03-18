@@ -143,10 +143,10 @@ void Sentiment::timeStep(const unsigned int time )
     HouseList houses = _city()->statistic().houses.habitable();
 
     _d->value.finish = 0;
-    for( auto house : houses )
+    for (auto house : houses)
     {
       house->setState( pr::happinessBuff, _d->buffValue );
-      _d->value.finish += house->state( pr::happiness );
+      _d->value.finish += house->state(pr::happiness);
    }
 
     if( houses.size() > 0 )

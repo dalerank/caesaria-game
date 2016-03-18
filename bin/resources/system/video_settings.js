@@ -1,63 +1,59 @@
 var haveChanges = false;
 var fullscreen = false;
 
-function OnShowIndex(index) {
-	engine.log(index);
-}
-
-function OnShowVideoSettings()
+game.ui.dialogs.showVideoOptions = function()
 {
   engine.log( "JS:OnShowVideoSettings" );
 
-  var g_ui = new Ui();
-  var g_session = new Session();
-
   haveChanges = false;
-  fullscreen = engine.getOption( "fullscreen" );
+  fullscreen = engine.getOption("fullscreen");
 
   var wnd = g_ui.addWindow(0,0,320,290);
   wnd.title = "##screen_settings##";
-	wnd.closeAfterKey( {escape:true,rmb:true} );
+  wnd.closeAfterKey( {escape:true,rmb:true} );
 
-  var btnSwitchMode = wnd.addButton( 25, 45, wnd.width-50, 20 );
-  btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
+  var btnSwitchMode = wnd.addButton( 25, 45, wnd.w-50, 20 );
+  btnSwitchMode.text = fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
   btnSwitchMode.style = "smallGrayBorderLine";
   btnSwitchMode.callback = function() {
                                         fullscreen = !fullscreen;
                                         engine.setOption( "fullscreen", fullscreen );
                                         haveChanges = true;
                                         btnSwitchMode.text =  fullscreen ? "##fullscreen_on##" : "##fullscreen_off##";
-				      };
-     
-  var lbxModes = wnd.addListbox( 25, 68, wnd.width-50, 160 );
+                      };
+
+  var lbxModes = wnd.addListbox( 25, 68, wnd.w-50, 160 );
   lbxModes.setTextAlignment( "center", "center" );
   lbxModes.background = true;
   lbxModes.onSelectedCallback = function(index) {
-						var size = lbxModes.getItemData(index, "mode");
-						g_session.setResolution( size.w, size.h );
-					};
-					
-  for( var i=0; i < g_session.videoModesCount; i++ )
+                        var mode = g_session.getVideoMode(index);
+                        engine.log("w: " + mode.w + " h:" + mode.h );
+                        g_session.resolution = mode;
+                        haveChanges = true;
+                    };
+
+  for (var i=0; i < g_session.videoModesCount(); i++)
   {
     var mode = g_session.getVideoMode(i);
-    var index = lbxModes.addLine( mode.w+"x"+mode.h );
-    lbxModes.setData( index, "mode", (mode.w << 16) + mode.h );
+    lbxModes.addLine( mode.w+"x"+mode.h );
   }
 
-  var resolution = g_session.resolution;
-	lbxModes.selectedWithData = { name:"mode", data:(resolution.w << 16) + resolution.h };
+  var r = g_session.resolution;
+  var index = lbxModes.findItem( r.w+"x"+r.h );
+  lbxModes.selectedIndex = index;
 
-  var btnOk = wnd.addButton( 25, 237, wnd.width-50, 20 );
+  var btnOk = wnd.addButton( 25, 237, wnd.w-50, 20 );
   btnOk.style = "smallGrayBorderLine";
   btnOk.text = "##ok##";
   btnOk.callback = function() {
-				if( haveChanges )
-  				  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
-	        		wnd.deleteLater();		
-			};
+                if( haveChanges )
+                  g_ui.addInformationDialog( "##pls_note##", "##need_restart_for_apply_changes##" );
+
+                wnd.deleteLater();
+            };
   btnOk.setFocus();
 
   wnd.moveToCenter();
   wnd.mayMove = false;
-  wnd.setModal();  
+  wnd.setModal();
 }

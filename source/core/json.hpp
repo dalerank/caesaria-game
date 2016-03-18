@@ -121,8 +121,8 @@ public:
     *
     * \return Variant The parsed variant array
     */
-   static Variant parseArray(const std::string &json, int &index,
-                                                              bool &success);
+   static VariantList parseArray(const std::string &json, int &index,
+                                 bool &success);
 
    /**
     * Parses a string starting from index
@@ -133,7 +133,7 @@ public:
     *
     * \return QVariant The parsed string
     */
-   static Variant parseString(const std::string &json, int &index, bool &success);
+   static void parseString(const std::string &json, int &index, bool &success, std::string& str);
    
    static Variant parseObjectName(const std::string &json, int &index, bool &success, char limiters=':' );
 

@@ -32,9 +32,9 @@ public:
   //! called if an event happened.
   virtual bool onEvent(const NEvent& event);
 
-  virtual ContextMenuItem* addItem( const std::string& text, int commandId,
-                                    bool enabled, bool hasSubMenu,
-                                    bool checked, bool autoChecking );
+  virtual ContextMenuItem* addItem(const std::string& text, int commandId,
+                                   bool enabled, bool hasSubMenu,
+                                   bool checked, bool autoChecking );
 
 protected:
   //! Updates the absolute position.

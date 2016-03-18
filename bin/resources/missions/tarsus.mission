@@ -3,7 +3,7 @@
   map : ":/maps/Tarsus.sav"
   funds : 6000
   city.name : "Tarsus"
-  date : "-120.01.01"  
+  date : "-120.01.01"
   player.rank : 6
   climate : 2
   adviserEnabled : true
@@ -11,7 +11,7 @@
   preview.text : "##tarsus_preview_mission##"
   preview.title : "##tarsus_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 6000
@@ -23,18 +23,20 @@
     finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
     title : "##praetor##"
-    win.text : "##tarsus_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##tarsus_preview_title##"
+    startSound : "tarsus_speech"
     overview :  [ "##tarsus_overview##" ]
+    winContinue : false
+    winText : "##tarsus_win_text##"
+    winSound     : "tarsus_win_speech"
   }
-	
+
   empire : {
     enabled : true
 
     cities :
-    {    
+    {
       Miletus : {
         nation : "roman"
 
@@ -80,7 +82,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -90,8 +92,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -99,8 +101,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -108,8 +110,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -118,7 +120,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -279,7 +281,7 @@
         }
       }
     }
-       
+
     emperor_request_1#city_request : {
       date : "-117.05.01"
       reqtype : "good_request"
@@ -624,7 +626,7 @@
    fp7 : [ 48, 66 ]
    fp8 : [ 43, 65 ]
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -639,8 +641,8 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
+
+    buildings :
     {
       prefecture : true
       wall : true

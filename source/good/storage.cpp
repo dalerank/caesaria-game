@@ -202,7 +202,7 @@ void Storage::load( const VariantMap& stream )
 {
   if( stream.empty() )
   {
-    Logger::warning( "!!! WARNING: Storage::load from empty stream" );
+    Logger::warning( "!!! Storage::load from empty stream" );
     return;
   }
 

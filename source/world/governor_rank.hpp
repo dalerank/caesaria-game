@@ -32,12 +32,10 @@ struct GovernorRank
                  architect, questor, procurate,
                  aedil, preator, consul, proconsul,
                  caesar } Level;
-  std::string rankName;
+  std::string title;
   std::string pretty;
   unsigned int salary = 0;
   Level level = citizen;
-
-  void load( const std::string& name, const VariantMap& vm );
 };
 
 typedef std::vector<GovernorRank> GovernorRanks;

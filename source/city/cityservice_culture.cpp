@@ -100,7 +100,7 @@ struct SubRating
 
     objects.for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
 
-    float coverage = visitors / population;
+    float coverage = visitors / (float)population;
 
     return coverage;
   }

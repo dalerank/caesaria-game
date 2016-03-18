@@ -272,7 +272,7 @@ void Constructor::_updatePreviewTiles( bool force )
     {
       if( !tile )
       {
-        Logger::warning( "WARNING !!!: ConstructorArea: tile is null" );
+        Logger::warning( "!!! ConstructorArea: tile is null" );
         continue;
       }
       Size size;

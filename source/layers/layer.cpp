@@ -767,7 +767,7 @@ Tilemap& Layer::_map() const
   if( _d.city.isValid() )
     return _d.city->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  Logger::warning( "!!! City is null at Walker::_map()" );
   return config::tilemap.invalid();
 }
 
@@ -817,6 +817,18 @@ bool DrawOptions::getFlag(DrawOptions::Flag flag)
 void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
 {
   instance().setFlag( flag, value );
+}
+
+bool DrawOptions::getFlag(const std::string& name)
+{
+  auto flag = findFlag(name);
+  return getFlag(flag);
+}
+
+void DrawOptions::takeFlag(const std::string& name, int value)
+{
+  auto flag = findFlag(name);
+  takeFlag(flag,value);
 }
 
 DrawOptions::Flag DrawOptions::findFlag(const std::string& name)

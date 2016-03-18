@@ -20,21 +20,25 @@
 #include <GameApp>
 #include <GameObjects>
 #include <GameScene>
+#include <GameLogger>
 #include <GameGfx>
 #include <GameGood>
+#include <GameGui>
 #include <GameCore>
+#include <GameEvents>
+#include "game/datetimehelper.hpp"
 #include "sound/engine.hpp"
-#include "core/osystem.hpp"
 #include "core/font.hpp"
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
-
-class Game;
-class VariantList;
+#include "game/hotkey_manager.hpp"
+#include "game/infoboxmanager.hpp"
 
 namespace script
 {
+
+static int infoboxLocked = 0;
 
 void Session::continuePlay(int years)
 {
@@ -45,12 +49,80 @@ void Session::continuePlay(int years)
   _game->city()->setVictoryConditions( vc );
 }
 
-int Session::lastChangesNum()
+int Session::lastChangesNum() const
 {
   return game::Settings::findLastChanges();
 }
 
-StringArray Session::getCredits()
+void Session::addWarningMessage(const std::string& message)
+{
+  events::dispatch<events::WarningMessage>( message, events::WarningMessage::neitral );
+}
+
+Player* Session::getPlayer() const
+{
+  return _game->player().object();
+}
+
+PlayerCity* Session::getCity() const
+{
+  return _game->city().object();
+}
+
+bool Session::isC3mode() const
+{
+  return game::Settings::instance().isC3mode();
+}
+
+world::Emperor * Session::getEmperor() const
+{
+  return &_game->empire()->emperor();
+}
+
+world::Empire * Session::getEmpire() const
+{
+  return _game->empire().object();
+}
+
+void Session::clearHotkeys()
+{
+  game::HotkeyManager::instance().clear();
+}
+
+void Session::setHotkey(const std::string & name, const std::string& config)
+{
+  game::HotkeyManager::instance().add(name, config);
+}
+
+void Session::setRank(int i, const std::string & name, const std::string & pretty, int salary)
+{
+  world::GovernorRanks& ranks = world::EmpireHelper::ranks();
+  if ((int)ranks.size() <= i)
+    ranks.resize(i + 1);
+
+  ranks[i].title = name;
+  ranks[i].pretty = pretty;
+  ranks[i].salary = salary;
+  ranks[i].level = (world::GovernorRank::Level)i;
+}
+
+DateTime Session::getGameDate() const
+{
+  return _game->date();
+}
+
+std::string Session::formatDate(DateTime date, bool roman) const
+{
+  std::string text;
+  if (roman)
+    text = utils::date2str(RomanDate(date), true);
+  else
+    text = utils::date2str(date, true);
+
+  return text;
+}
+
+StringArray Session::getCredits() const
 {
   StringArray strs;
 #define _X(a) strs << a;
@@ -60,22 +132,54 @@ StringArray Session::getCredits()
   return strs;
 }
 
-void Session::playAudio(const std::string& filename, int volume, const std::string& mode)
+StringArray Session::getFiles(const std::string& dir, const std::string& ext)
 {
-  audio::SoundType type = audio::unknown;
-  if( mode == "theme" )
-    type = audio::theme;
-  audio::Engine::instance().play( filename, volume, type );
+  auto names = vfs::Directory(dir).entries()
+                                  .filter(vfs::Entries::file | vfs::Entries::extFilter, ext)
+                                  .items()
+                                  .fullnames();
+
+  std::sort(names.begin(), names.end());
+  return names;
 }
 
-int Session::videoModesCount() { return _game->engine()->modes().size(); }
-Size Session::getVideoMode(int index) { return _game->engine()->modes().at(index); }
-Size Session::getResolution() { return _game->engine()->screenSize(); }
+VariantMap Session::winConditions() const
+{
+  return _game->city()->victoryConditions().save();
+}
+
+StringArray Session::getFolders(const std::string& dir, bool full)
+{
+  vfs::Directory fdir(dir);
+  if (!fdir.exist())
+    return StringArray();
+
+  return fdir.entries().items().folders(false);
+}
+
+void Session::playAudio(const std::string& filename, int volume, int mode)
+{
+  if (!audio::isAvailableMode(mode))
+  {
+    Logger::warning("Audio mode {} not available", mode);
+    return;
+  }
+  audio::Engine::instance().play( filename, volume, (audio::SoundType)mode );
+}
+
+int Session::videoModesCount() const { return _game->engine()->modes().size(); }
+Size Session::getVideoMode(int index) const { return _game->engine()->modes().at(index); }
+Size Session::getResolution() const { return _game->engine()->screenSize(); }
 
 void Session::setResolution(const Size& size)
 {
   SETTINGS_SET_VALUE(resolution, size);
   game::Settings::save();
+}
+
+void Session::showDlcViewer(const std::string& path)
+{
+  _game->gui()->add<gui::DlcFolderViewer>( path );
 }
 
 void Session::setFont(const std::string& fontname)
@@ -93,12 +197,12 @@ void Session::setLanguage(const std::string& lang, const std::string& audio)
   audio::Helper::initTalksArchive( audio );
 }
 
-StringArray Session::tradableGoods()
+StringArray Session::tradableGoods() const
 {
   return good::tradable().names();
 }
 
-VariantMap Session::getGoodInfo(const std::string& goodName)
+VariantMap Session::getGoodInfo(std::string goodName) const
 {
   VariantMap ret;
   good::Info info(good::toType(goodName));
@@ -115,30 +219,132 @@ void Session::loadNextMission()
 {
   city::VictoryConditions vc;
   vc = _game->city()->victoryConditions();
-  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
-  if( level )
-    level->loadStage( vc.nextMission() );
+  auto scene = _game->scene();
+  if (scene)
+    scene->setOption("nextFile", vc.nextMission());
 }
 
-void Session::quitGame()
+void Session::setMode(int mode)
 {
-  scene::Level* level = safety_cast<scene::Level*>(_game->scene());
-  if( level )
-    level->quit();
+  scene::Base* scene = _game->scene();
+  if (scene)
+    scene->setMode(mode);
 }
 
-void Session::reloadScene()
+void Session::setOption(const std::string& name, Variant v)
 {
-  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
-  if( lobby )
-    lobby->reload();
+  scene::Base* scene = _game->scene();
+  if (scene)
+    scene->setOption(name,v);
 }
 
-void Session::startCareer()
+Variant Session::getOption(std::string name)
 {
-  scene::Lobby* lobby = safety_cast<scene::Lobby*>(_game->scene());
-  if( lobby )
-    lobby->newGame();
+  scene::Base* scene = _game->scene();
+  if (scene)
+    return scene->getOption(name);
+
+  return Variant();
+}
+
+void Session::clearUi()
+{
+  _game->gui()->clear();
+}
+
+void Session::save(const std::string& path)
+{
+  _game->save(path);
+}
+
+void Session::createIssue(const std::string& type, int value)
+{
+  econ::Issue::Type vtype = econ::findType(type);
+  _game->city()->treasury().resolveIssue( {vtype, value} );
+}
+
+void Session::createDir(const std::string & dir)
+{
+  vfs::Directory::createByPath(dir);
+}
+
+int Session::getAdvflag(const std::string & flag) const
+{
+  int value = 0;
+  if (flag == "batching")
+  {
+    value = gfx::Engine::instance().getFlag(gfx::Engine::batching) > 0;
+  }
+  else if (flag == "lockwindow")
+  {
+    value = infoboxLocked;
+  }
+  else if (flag == "tooltips")
+  {
+    value = _game->gui()->hasFlag(gui::Ui::showTooltips);
+  }
+  else if (flag == "metric")
+  {
+    value = metric::Measure::mode();
+  }
+  else if (flag == "scrollSpeed")
+  {
+    value = SETTINGS_VALUE(scrollSpeed);
+  }
+  else if (flag == "gameSpeed")
+  {
+    value = _game->timeMultiplier();
+  }
+  else
+  {
+    value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
+  }
+
+  return value;
+}
+
+void Session::setAdvflag(const std::string & flag, int value)
+{
+  if (flag == "batching")
+  {
+    gfx::Engine::instance().setFlag(gfx::Engine::batching, value);
+  }
+  else if (flag == "lockwindow")
+  {
+    infoboxLocked = value;
+    gui::infobox::Manager::instance().setBoxLock(value > 0);
+  }
+  else if (flag == "tooltips")
+  {
+    _game->gui()->setFlag(gui::Ui::showTooltips, value);
+  }
+  else if (flag == "metric")
+  {
+    metric::Measure::setMode((metric::Measure::Mode)value);
+    SETTINGS_SET_VALUE(metricSystem, value);
+  }
+  else if (flag == "scrollSpeed")
+  {
+    SETTINGS_SET_VALUE(scrollSpeed, value);
+    _game->scene()->camera()->setScrollSpeed(value);
+  }
+  else if (flag == "gameSpeed")
+  {
+    _game->setTimeMultiplier(value);
+  }
+  else if (flag == "gameSpeedTick")
+  {
+    _game->step(value);
+  }
+  else
+  {
+    citylayer::DrawOptions::takeFlag(flag, value);
+  }
+}
+
+void Session::loadLocalization(const std::string& name)
+{
+  Locale::addTranslation(name);
 }
 
 void Session::openUrl(const std::string& url)

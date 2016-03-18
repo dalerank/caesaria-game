@@ -52,7 +52,7 @@ public:
   virtual void updateProgress( float value );
 
   virtual bool isActive() const;
-  virtual void setActive( bool active );
+  virtual void setActive(bool active);
 
   virtual bool mayWork() const;
   virtual bool haveMaterial() const;
@@ -72,8 +72,6 @@ public:
 
   std::string cartStateDesc() const;
   virtual void initialize(const object::Info& mdata);
-
-  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   virtual bool _mayDeliverGood() const;

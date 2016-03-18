@@ -1,3 +1,11 @@
+SCRIPT_OBJECT_BEGIN(HelpButton)
+  SCRIPT_OBJECT_FUNCTION(HelpButton,deleteLater,0)
+  SCRIPT_OBJECT_CALLBACK(HelpButton,onClickedEx,1)
+  SCRIPT_OBJECT_FUNCTION(HelpButton,setGeometry,1)
+  SCRIPT_OBJECT_FUNCTION(HelpButton,setPosition,1)
+  SCRIPT_OBJECT_CONSTRUCTOR(HelpButton)
+SCRIPT_OBJECT_END(HelpButton)
+
 SCRIPT_OBJECT_BEGIN(ExitButton)
   SCRIPT_OBJECT_FUNCTION(ExitButton,deleteLater,0)
   SCRIPT_OBJECT_CALLBACK(ExitButton,onClickedEx,1)

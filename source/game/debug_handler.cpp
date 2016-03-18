@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
- 
+
 #include "debug_handler.hpp"
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
@@ -69,8 +69,8 @@
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
-#include "sound/themeplayer.hpp"
 #include "city/build_options.hpp"
+#include "core/timer.hpp"
 #include "steam.hpp"
 #include "objects/house_spec.hpp"
 
@@ -106,29 +106,15 @@ enum {
   add_chastener_soldiers,
   add_wolves,
   send_mars_wrath,
-  win_mission,
-  fail_mission,
-  add_1000_dn,
-  add_player_money,
   send_chastener,
   test_request,
   send_player_army,
   screenshot,
   send_venus_wrath,
-  all_sound_off,
-  toggle_grid_visibility,
-  toggle_overlay_base,
-  toggle_show_path,
-  toggle_show_roads,
-  toggle_show_object_area,
-  toggle_show_walkable_tiles,
-  toggle_show_locked_tiles,
   add_soldiers_in_fort,
-  toggle_show_flat_tiles,
   send_barbarian_to_player,
   comply_rome_request,
   change_emperor,
-  add_city_border,
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
@@ -142,9 +128,7 @@ enum {
   send_venus_smallcurse,
   send_neptune_wrath,
   send_mars_spirit,
-  run_script,
   show_fest,
-  add_favor,
   add_wheat_to_granary,
   add_fish_to_granary,
   add_meat_to_granary,
@@ -166,7 +150,6 @@ enum {
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
   add_oil_to_warehouse,
-  remove_favor,
   property_browser,
   make_generation,
   all_wheatfarms_ready,
@@ -189,10 +172,7 @@ enum {
   decrease_sentiment,
   increase_sentiment,
   reload_buildings_config,
-  toggle_show_buildings,
-  toggle_show_trees,
   toggle_show_empireMapTiles,
-  toggle_show_rocks,
   toggle_lock_empiremap,
   forest_fire,
   forest_grow,
@@ -206,14 +186,9 @@ enum {
   show_attacks,
   reset_fire_risk,
   reset_collapse_risk,
-  toggle_shipyard_enable,
-  toggle_reservoir_enable,
-  toggle_wineshop_enable,
-  toggle_vinard_enable,
   fill_random_claypit,
   empire_toggle_capua,
   empire_toggle_londinium,
-  next_theme,
   reset_steam_prefs
 };
 
@@ -230,7 +205,6 @@ public:
   void addGoods2Gr( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
-  void toggleBuildOptions(object::Type type);
   void toggleEmpireCityEnable(const std::string &name);
   void fillFactoryStock(object::Type type);
   gui::ContextMenu* debugMenu;
@@ -238,11 +212,6 @@ public:
 #ifdef DEBUG
   FileChangeObserver configUpdater;
 #endif
-
-  struct {
-    Signal2<scene::Level*, bool> failedMission;
-    Signal2<scene::Level*, bool> winMission;
-  } signal;
 };
 
 void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
@@ -250,7 +219,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   _d->game = game;
 
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
-  _d->debugMenu = tmp->addSubMenu();
+  _d->debugMenu = tmp->addSubmenu();
 
 #define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( #section, #ev, ev ); \
                                        item->onAction().connect( _d.data(), &Impl::handleEvent ); }
@@ -272,9 +241,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
   ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
-
-  ADD_DEBUG_EVENT( money, add_1000_dn )
-  ADD_DEBUG_EVENT( money, add_player_money )
 
   ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_fish_to_warehouse )
@@ -320,12 +286,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
-  ADD_DEBUG_EVENT( other, next_theme )
-
-  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_wineshop_enable )
-  ADD_DEBUG_EVENT( buildings, toggle_vinard_enable )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -334,8 +294,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
-  ADD_DEBUG_EVENT( level, win_mission )
-  ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
   ADD_DEBUG_EVENT( level, show_requests )
@@ -347,12 +305,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( empire, empire_toggle_londinium )
 
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
-  ADD_DEBUG_EVENT( in_city, add_city_border )
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
   ADD_DEBUG_EVENT( in_city, show_fest )
-  ADD_DEBUG_EVENT( in_city, add_favor )
-  ADD_DEBUG_EVENT( in_city, remove_favor )
   ADD_DEBUG_EVENT( in_city, make_generation )
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
@@ -366,33 +321,14 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
 
-  ADD_DEBUG_EVENT( options, run_script )
-  ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
   ADD_DEBUG_EVENT( options, reload_buildings_config )
-
-  ADD_DEBUG_EVENT( draw, toggle_grid_visibility )
-  ADD_DEBUG_EVENT( draw, toggle_overlay_base )
-  ADD_DEBUG_EVENT( draw, toggle_show_path )
-  ADD_DEBUG_EVENT( draw, toggle_show_roads )
-  ADD_DEBUG_EVENT( draw, toggle_show_buildings )
-  ADD_DEBUG_EVENT( draw, toggle_show_trees )
-  ADD_DEBUG_EVENT( draw, toggle_show_object_area )
-  ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
-  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 
   ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
 
   ADD_DEBUG_EVENT( steam, reset_steam_prefs )
 #undef ADD_DEBUG_EVENT
-
-#ifdef DEBUG
-  _d->configUpdater.setFilename( ":/construction.model" );
-  CONNECT( &_d->configUpdater, onChange, _d.data(), Impl::reloadConfigs );
-#endif
 }
 
 void DebugHandler::setVisible(bool visible)
@@ -417,14 +353,6 @@ void DebugHandler::Impl::toggleEmpireCityEnable( const std::string& name )
     text = fmt::format( "Empire city {} is not exit", name );
   }
   events::dispatch<WarningMessage>( text, WarningMessage::negative );
-}
-
-void DebugHandler::Impl::toggleBuildOptions( object::Type type )
-{
-  city::development::Options options;
-  options = game->city()->buildOptions();
-  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
-  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -473,9 +401,6 @@ void DebugHandler::Impl::runScript(std::string filename)
   events::Dispatcher::instance().load( filename );
 }
 
-Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
-Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.winMission; }
-
 DebugHandler::DebugHandler() : _d(new Impl)
 {
   _d->debugMenu = 0;
@@ -493,12 +418,12 @@ void DebugHandler::Impl::fillFactoryStock( object::Type type )
 void DebugHandler::Impl::setFactoryReady( object::Type type )
 {
   auto factories = game->city()->statistic().objects.find<Factory>( type );
-  for( auto factory : factories )
+  for (auto factory : factories)
   {
-    if( factory->numberWorkers() > 0 )
+    if (factory->numberWorkers() > 0)
     {
-      float progress = factory->progress();
-      factory->updateProgress( 101.f - progress );
+      int progress = factory->progress();
+      factory->updateProgress(101 - progress);
     }
   }
 }
@@ -507,7 +432,7 @@ void DebugHandler::Impl::updateSentiment(int delta)
 {
   auto houses = game->city()->statistic().houses.find();
   for( auto house : houses )
-    house->updateState( pr::happiness, delta );
+    house->updateState(pr::happiness, delta);
 }
 
 void DebugHandler::Impl::handleEvent(int event)
@@ -520,10 +445,6 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_neptune_wrath:
     religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
-  break;
-
-  case add_1000_dn:
-    game->city()->treasury().resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   break;
 
   case add_wolves:
@@ -545,23 +466,8 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
-  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
-  case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
-  case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
-
   case empire_toggle_capua: toggleEmpireCityEnable( "Capua" ); break;
   case empire_toggle_londinium: toggleEmpireCityEnable( "Londinium" ); break;
-
-  case next_theme:
-  {
-    auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
-    if( player.isValid() )
-    {
-      player->next();
-    }
-  }
-  break;
 
   case fill_random_claypit:
   {
@@ -664,16 +570,6 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case add_player_money:    game->player()->appendMoney( 1000 );  break;
-
-  case add_favor:
-  case remove_favor:
-  {
-    std::string cityName = game->city()->name();
-    game->empire()->emperor().updateRelation( cityName, event == add_favor ? +10 : -10 );
-  }
-  break;
-
   case show_fest:
   {
     city::FestivalPtr festivals = game->city()->statistic().services.find<city::Festival>();
@@ -719,7 +615,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
   case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
   case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
-  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;    
+  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;
 
   case all_furnitureworksop_fillstock: fillFactoryStock( object::furniture_workshop ); break;
   case all_creamery_fillstock: fillFactoryStock( object::oil_workshop ); break;
@@ -731,7 +627,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto ovs = game->city()->overlays().select<Tree>().random( 10 );
 
     for( auto tree : ovs )
-	tree->grow();
+      tree->grow();
   }
   break;
 
@@ -740,18 +636,6 @@ void DebugHandler::Impl::handleEvent(int event)
     HouseList houses = game->city()->statistic().houses.find();
     for( auto house : houses )
       house->__debugMakeGeneration();
-  }
-  break;
-
-  case win_mission:
-  case fail_mission:
-  {
-    scene::Level* l = safety_cast<scene::Level*>( game->scene() );
-    if( l )
-    {
-      Signal2<scene::Level*,bool>& foremit = (event == win_mission ? signal.winMission : signal.failedMission);
-      emit foremit( l, true);
-    }
   }
   break;
 
@@ -780,11 +664,9 @@ void DebugHandler::Impl::handleEvent(int event)
     auto walkers = game->city()->walkers().select<EnemySoldier>();
 
     for( auto wlk : walkers )
-	wlk->die();
+      wlk->die();
   }
   break;
-
-  case add_city_border:   {    game->city()->tilemap().clearSvkBorder();  }  break;
 
   case toggle_experimental_options:
   {
@@ -894,39 +776,10 @@ void DebugHandler::Impl::handleEvent(int event)
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doBlessing, game->city() );
   break;
 
-  case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambient, 0 );
-    audio::Engine::instance().setVolume( audio::theme, 0 );
-    audio::Engine::instance().setVolume( audio::game, 0 );
-  break;
-
-  case run_script:
-  {
-    auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
-                                                       vfs::Path( ":/scripts/" ), ".model",
-                                                       -1 );
-    CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
-    dialog.setTitle( "Select file" );
-    dialog.setText( "open" );
-  }
-  break;
-
-  case toggle_grid_visibility: DrawOptions::instance().toggle( DrawOptions::drawGrid );  break;
-  case toggle_overlay_base: DrawOptions::instance().toggle( DrawOptions::shadowOverlay );  break;
-  case toggle_show_path: DrawOptions::instance().toggle( DrawOptions::showPath );  break;
-  case toggle_show_roads: DrawOptions::instance().toggle( DrawOptions::showRoads );  break;
-  case toggle_show_object_area: DrawOptions::instance().toggle( DrawOptions::showObjectArea );  break;
-  case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
-  case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
-  case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
-  case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
-  case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
-  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
-
   case add_soldiers_in_fort:
   {
     FortList ovs = game->city()->overlays().select<Fort>();
-    
+
     for( auto fort : ovs )
     {
       int howMuchAdd = 16 - fort->walkers().size();

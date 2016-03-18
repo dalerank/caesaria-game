@@ -32,6 +32,16 @@ set(GAME_CONFIG_DIR "${WORK_DIR}/resources" )
 set(PK_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources" )
 set(STEAM_API_DIR "${CMAKE_CURRENT_SOURCE_DIR}/steam" )
 
+set(CMAKE_COMPILER_IS_CLANG 0)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  set(CMAKE_COMPILER_IS_CLANG 1)
+endif()
+
+set(CMAKE_BUILD_TYPE_RELEASE 0)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(CMAKE_BUILD_TYPE_RELEASE 1)
+endif()
+
 if(USE_STEAM)
   add_definitions(-DGAME_USE_STEAM)
 endif(USE_STEAM)
@@ -179,9 +189,6 @@ add_subdirectory(source source)
 
 message("\nBuilding CaesarIA-updater")
 add_subdirectory(updater updater)
-
-message("\nBuilding AveC3-addon")
-add_subdirectory(addon/ave_c3 addon/ave_c3)
 
 message("\nBuilding tileset")
 add_subdirectory(tileset tileset)

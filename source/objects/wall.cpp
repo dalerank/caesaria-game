@@ -78,7 +78,7 @@ void Wall::destroy()
 
 void Wall::burn()
 {
-  Logger::warning( "WARNING: Wall cant be burn. Ignore." );
+  Logger::debug( "Wall cant be burn. Ignore." );
 }
 
 void Wall::initTerrain(Tile &terrain)

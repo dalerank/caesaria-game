@@ -48,13 +48,13 @@ void Habitants::update( House& h, const CitizenGroup& group )
 
   if( deltaWorkersNumber < 0 )
   {
-    Logger::warning( "Habitants::update fired {0} workers", deltaWorkersNumber );
+    Logger::debug( "Habitants::update fired {0} workers", deltaWorkersNumber );
     events::dispatch<FireWorkers>( h.pos(), abs( deltaWorkersNumber ) );
   }
   else
   {
     if( workers.current + deltaWorkersNumber > workers.max )
-      Logger::warning( "WARNING!!! Habitants::update currentWorkers({0}}) > maxWorkers({1}})", workers.current + deltaWorkersNumber, workers.max );
+      Logger::warning( "!!! Habitants::update currentWorkers({0}}) > maxWorkers({1}})", workers.current + deltaWorkersNumber, workers.max );
 
     workers.current = math::clamp<int>( workers.current + deltaWorkersNumber, 0, workers.max );
   }
@@ -122,5 +122,5 @@ int RecruterService::max() const { return _habitants.workers.max; }
 
 void RecruterService::setMax(int)
 {
-  Logger::warning( "!!!Warning: RecruterService::setMax blocked. Max value drive by Habitants class." );
+  Logger::warning( "!!!RecruterService::setMax blocked. Max value drive by Habitants class." );
 }

@@ -45,7 +45,7 @@ public signals:
 HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   : Window( p,  Rect( 0, 0, 416, 144 ), "" ), _d( new Impl )
 {
-  Logger::warning( "HirePriorityWnd: show" );
+  Logger::debug( "HirePriorityWnd: show" );
 
   _d->type = type;
   _d->priority = priority;

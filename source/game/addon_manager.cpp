@@ -138,7 +138,7 @@ void Manager::load(vfs::Path path, bool ls)
   AddonPtr addon( new Addon() );
   addon->drop();
 
-  Logger::warning( "Try load addon " + path.toString() );
+  Logger::info( "Try load addon " + path.toString() );
   bool isOpen = addon->open( path );
 
   if( isOpen )
@@ -147,7 +147,6 @@ void Manager::load(vfs::Path path, bool ls)
   }
 
    Logger::warning( "Addon " + path.toString() + ( isOpen ? "load succefully" : "not loaded") );
-
 }
 
 void Manager::initAddons4level( addon::Type type )

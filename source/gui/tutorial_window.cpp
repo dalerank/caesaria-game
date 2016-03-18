@@ -25,6 +25,7 @@
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "texturedbutton.hpp"
+#include "helper.hpp"
 #include "widget_helper.hpp"
 #include "label.hpp"
 
@@ -50,7 +51,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     return;
 
   VariantMap vm = config::load( tutorial );
-  Logger::warningIf( vm.empty(), "!!! WARNING: Cannot load tutorial description from " + tutorial.toString() );
+  Logger::warningIf( vm.empty(), "!!! Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
   std::string title = vm.get( "title" );
@@ -65,23 +66,22 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
 
   if( !speech.empty() )
   {
-    _muter.activate( 5 );
-    _speechDel.assign( speech );
-    events::dispatch<PlaySound>( speech, 100, audio::speech );
+    add<SoundMuter>(5);
+    add<SoundEmitter>(speech, 100, audio::speech);
   }
 
   const std::string imgSeparator = "@img=";
-  for( const auto& text : items )
+  for (const auto& text : items)
   {
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbxHelp->addItem( pic );
-      item.setTextAlignment( align::center, align::upperLeft );
-      int lineCount = pic.height() / lbxHelp->itemHeight();
+      item.setTextAlignment(align::center, align::upperLeft);
+      int lineCount = pic.height() / lbxHelp->itemsHeight();
       StringArray lines;
-      lines.resize( lineCount );
-      lbxHelp->addItems( lines );
+      lines.resize(lineCount);
+      lbxHelp->addLines(lines);
     }
     else
     {

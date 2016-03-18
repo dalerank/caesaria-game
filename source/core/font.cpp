@@ -207,7 +207,7 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
 
     if( !dstpic.surface() )
     {
-      Logger::warning("Font::draw dstpic surface is null");
+      Logger::error("Font::draw dstpic surface is null");
       return;
     }
 
@@ -305,7 +305,7 @@ Font& FontCollection::_getFont(const int key)
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
   {
-    Logger::warning( "Error, font is not initialized, key={0}", key );
+    Logger::error( "font is not initialized, key={0}", key );
     return _d->collection[ FONT_2 ];
   }
 
@@ -319,7 +319,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   if( ret.second == false )
   {
     // no insert font (already exists)
-    Logger::warning( "WARNING!!! font already exists, key={0}", key );
+    Logger::warning( "font already exists, key={0}", key );
     return;
   }
 

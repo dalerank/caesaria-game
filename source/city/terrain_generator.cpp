@@ -47,13 +47,13 @@ MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float sm
   hmult_ = hmult;
   smoothness_ = smoothness;
   terrainSquare = terrSquare;
-  grass_threshold_ = 2.25;
-  water_threshold_ = 0.55;
-  sand_threshold_ = 0.70;
-  deep_water_threshold_ = 0.0001;
-  hills_threshold_ = 3.75;
-  trees_treshold = 4.0;
-  shmountains_threshold = 4.90;
+  grass_threshold_ = 2.25f;
+  water_threshold_ = 0.55f;
+  sand_threshold_ = 0.70f;
+  deep_water_threshold_ = 0.0001f;
+  hills_threshold_ = 3.75f;
+  trees_treshold = 4.0f;
+  shmountains_threshold = 4.90f;
   overall_treshold = 0;
   random_ = Random();
 }
@@ -76,7 +76,7 @@ std::pair<int, int> MidpointDisplacement::VectorIndexToCoordinates(int i)
 
 std::vector<int> MidpointDisplacement::map()
 {
-  int power = pow(2, (float)n_);
+  int power = pow(2.f, (float)n_);
   int width = wmult_ * power + 1;
   int height = hmult_ * power + 1;
 
@@ -701,16 +701,16 @@ TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
 TilesArray getTmapEllipse(int ox, int oy, int width, int height, double angle, Tilemap& tmap)
 {
   TilesArray tiles;
-  double c = cos( angle * math::DEGTORAD );
-  double s = sin( angle * math::DEGTORAD );
+  double c = cos(angle * math::DEGTORAD);
+  double s = sin(angle * math::DEGTORAD);
   for(int y=-height; y<=height; y++)
   {
       for(int x=-width; x<=width; x++)
       {
           if(x*x*height*height+y*y*width*width <= height*height*width*width)
           {
-            int xt = c*x + s*y;
-            int yt = -s*x + c*y;
+            int xt = (int)(c*x + s*y);
+            int yt = (int)(-s*x + c*y);
             addTileIfValid( tiles, ox+xt, oy+yt, tmap );
           }
       }
@@ -783,7 +783,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
   oCity->resize( mapSize );
 
-  Logger::warning( "W:{0} H:{1}", diamond_square.width(), diamond_square.height() );
+  Logger::info( "W:{0} H:{1}", diamond_square.width(), diamond_square.height() );
 
   for( unsigned int index = 0; index < map.size(); index++)
   {

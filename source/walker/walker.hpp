@@ -184,12 +184,4 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-#ifdef DEBUG
-class WalkerDebugQueue : public DebugQueue<Walker>
-{
-public:
-  static void print();
-};
-#endif
-
 #endif //_CAESARIA_WALKER_H_INCLUDE_

@@ -34,13 +34,14 @@ public:
   virtual ~SpinBox();
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
-  virtual void setValue( int value );
-  virtual void setupUI( const VariantMap& ui );
+  virtual void draw(gfx::Engine& painter);
+  virtual void setValue(int value);
+  virtual void setPostfix(const std::string& str);
+  virtual void setupUI(const VariantMap& ui);
     
 signals public:
   virtual Signal1<int>& onChange();
-  virtual Signal2<SpinBox*,int>& onChangeA();
+  virtual Signal2<Widget*,int>& onChangeA();
 
 private:
   void _updateTexture(gfx::Engine& painter);

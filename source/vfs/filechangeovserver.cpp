@@ -46,7 +46,7 @@ int watchDirectory(const char* lpDir)
 
    if (dwChangeHandles[0] == INVALID_HANDLE_VALUE)
    {
-     Logger::warning("ERROR: FindFirstChangeNotification function failed er={}", GetLastError() );
+     Logger::error("FindFirstChangeNotification function failed er={}", GetLastError() );
      return 0;
    }
 
@@ -59,7 +59,7 @@ int watchDirectory(const char* lpDir)
 
    if (dwChangeHandles[1] == INVALID_HANDLE_VALUE)
    {
-     Logger::warning("ERROR: FindFirstChangeNotification function failed er={}", GetLastError());
+     Logger::error("FindFirstChangeNotification function failed er={}", GetLastError());
      return 0;
    }
 
@@ -68,7 +68,7 @@ int watchDirectory(const char* lpDir)
 
    if ((dwChangeHandles[0] == NULL) || (dwChangeHandles[1] == NULL))
    {
-     Logger::warning("ERROR: Unexpected NULL from FindFirstChangeNotification er={}", GetLastError());
+     Logger::error("Unexpected NULL from FindFirstChangeNotification er={}", GetLastError());
      return 0;
    }
 
@@ -79,7 +79,7 @@ int watchDirectory(const char* lpDir)
    {
    // Wait for notification.
 
-      Logger::warning("Waiting for notification...");
+      Logger::debug("Waiting for notification...");
 
       dwWaitStatus = WaitForMultipleObjects(2, dwChangeHandles, FALSE, INFINITE);
 
@@ -92,7 +92,7 @@ int watchDirectory(const char* lpDir)
 
              if ( FindNextChangeNotification(dwChangeHandles[0]) == FALSE )
              {
-               Logger::warning("ERROR: FindNextChangeNotification function failed er={}", GetLastError());
+               Logger::error("FindNextChangeNotification function failed er={}", GetLastError());
                return 0;
              }
              return 2;
@@ -105,7 +105,7 @@ int watchDirectory(const char* lpDir)
 
              if (FindNextChangeNotification(dwChangeHandles[1]) == FALSE )
              {
-               Logger::warning("ERROR: FindNextChangeNotification function failed er={}", GetLastError());
+               Logger::error("FindNextChangeNotification function failed er={}", GetLastError());
                return 0;
              }
              return 3;
@@ -122,7 +122,7 @@ int watchDirectory(const char* lpDir)
             break;
 
          default:
-            Logger::warning("ERROR: Unhandled dwWaitStatus.");
+            Logger::error("Unhandled dwWaitStatus.");
             return 0;
             break;
       }
@@ -266,15 +266,15 @@ void FileChangeObserver::Impl::checkSnapshot()
   vfs::Entries::Items items = dir.entries().items();
   for( const auto& item : items )
   {
-    auto it = files.find( item.fullpath.toString() );
+    auto it = files.find(item.fullpath.toString());
     if( it != files.end() )
     {
       unsigned int newTime = item.fullpath.info().modified().hashtime();
-      unsigned int oldTime = files[ item.fullpath.toString() ];
+      unsigned int oldTime = files[item.fullpath.toString()];
       if( newTime != oldTime )
       {
-        files[ item.fullpath.toString() ] = newTime;
-        emit onFileChangeSignalA( item.fullpath );
+        files[item.fullpath.toString()] = newTime;
+        emit onFileChangeSignalA(item.fullpath);
       }
     }
   }
