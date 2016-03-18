@@ -332,7 +332,8 @@ lobby.ui.mainmenu.showpage = function()
 lobby.start = function()
 {
   engine.log( "JS:OnLobbyStart" );
-  lobby.ui.clear();
+
+  lobby.ui.buttons = []
 
   var screen = g_session.resolution;
 
