@@ -25,7 +25,7 @@ lobby.ui.showChanges = function(force)
   {
     g_wasChangesShow = true;
 
-    var wnd = g_ui.addWindow(0,0,400,500);
+    var wnd = g_ui.addWindow(0,0,500,500);
     wnd.model = ":/changes/" + lastChangesNumber + ".changes";
 
     var btn = wnd.addButton( 13, wnd.h-36, 300, 24 );
