@@ -1,0 +1,12 @@
+{  
+ title : "##docks##"
+ sound : "fanfare"
+ text  : "Wenn sich Ihre Stadt am @Seehandel& beteiligt, muss mindestens ein Dock für ankommende Handelsschiffe vorhanden sein. Docks müssen auf einer Seite mit dem Ufer verbunden sein. Sie können nur an relativ geraden Küsten errichtet werden. Auf passenden Bauplätzen erscheint Ihr Mauszeiger als schemenhafte grüne Darstellung des Docks. Achten Sie darauf, dass Sie es an Ihrer Schifffahrtsstraße errichten (das Gewässer mit Treibgut). Weitere Hinweise für die Errichtung von Docks finden Sie unter dem Hilfeeintrag @Brücken&.\nDocks benötigen wie die meisten Gebäude Arbeiter und Straßenanbindung. Wenn das Dock voll einsatzfähig ist, können Sie dort drei Dockarbeiter sehen. Falls Sie nur einen oder zwei Dockarbeiter sehen, ist das Dock zwar funktionsfähig, jedoch unterbesetzt und verfügt nur über einen Karren zum Be- und Entladen der Güter.\nDocks haben selbst keine Lagerräume und müssen daher die Handelswaren aus einem nahegelegenen @Lagerhaus& beschaffen. Falls Sie den Bau eines Docks planen, sollten Sie daher auch über die Einrichtung von in der Nähe gelegenen @Straßen& und Lagerhäusern nachdenken.\Wie die meisten kommerziellen Gebäude beeinträchtigen Docks die Attraktivität der Umgebung. Wenn ein Handelsschiff anlegt, bringen Dockarbeiter sämtliche Importwaren mit Karren vom Schiff zum nächstgelegenen funktionierenden Lagerhaus mit freiem Platz. Dieselben Karren nehmen dann eventuell bereitstehende Exportartikel im nahen Lagerhaus auf. Schiffe bleiben solange am Dock vertäut, bis ihre Lagerräumer gefüllt oder keine weiteren Handelswaren mehr vorhanden sind. Ihre Stadtkasse zahlt für die Importgüter und nimmt die Exportgewinne ein, sobald die Dinge vom oder auf das Schiff geladen worden sind.\n\nKlicken Sie @hier&, wenn Sie mehr über die Schifffahrt und Hafenanlagen im römischen Imperium erfahren möchten."
+ uri : {
+  "Seehandel" : "trade"
+  "Brücken" : "bridge"
+  "Lagerhaus" : "warehouse"
+  "Straßen" : "road"
+  "hier" : "dock_history"
+ }
+}

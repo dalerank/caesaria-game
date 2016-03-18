@@ -1,4 +1,4 @@
-{  
+{
   lbx#KeyValueListBox : {
     geometry : [ 11, 11, "pw-11", "ph-36" ]
     itemheight : 16
@@ -11,7 +11,7 @@
       "[Esc][close active window,layer or break current action]",
       "[F1/F2/F3/F4][goto position]",
       "[Ctrl+F1/F2/F3/F4][set position]",
-      "[Arrows][move map]",
+      "[←↑↓→][move map]",
       "[Shift on building mode][build road by rectangle]",
       "[1][visit labor advisor]",
       "[2][visit military advisor]",

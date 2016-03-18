@@ -153,16 +153,15 @@ void Market::load( const VariantMap& stream)
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
-  if( isOk && !isLoadingMode )
+  if (isOk && !info.onload)
   {
     Locations locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
     bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
 
-    if( !accessGranary )
+    if (!accessGranary)
         _setError( "##market_too_far_from_granary##" );
-    else if( !accessWarehouse )
+    else if (!accessWarehouse)
         _setError( "##market_too_far_from_warehouse##" );
   }
 

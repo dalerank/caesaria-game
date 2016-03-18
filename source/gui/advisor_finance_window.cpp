@@ -210,13 +210,13 @@ public:
    : Window( parent, Rect( Point(), size), title )
   {
     setTextAlignment( align::center, align::center );
-    setFont( FONT_3 );
+    Widget::setFont( FONT_3 );
     setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( Font::create( FONT_1 ) );
+    listbox.setItemsHeight( 16 );
 
     const econ::DateIssues& history = city->treasury().getIssueHistory().issues();
     DateTime lasttime;

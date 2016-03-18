@@ -28,10 +28,10 @@ static const VariantMap invalidConfig;
 class Helper::Impl
 {
 public:
-	typedef std::map<Type, VariantMap> Configs;
-	Configs configs;
+  typedef std::map<Type, VariantMap> Configs;
+  Configs configs;
 };
-	
+
 Helper& Helper::instance()
 {
   static Helper inst;
@@ -51,7 +51,7 @@ const VariantMap& Helper::getConfig(Type t)
   return it != configs.end() ? it->second : invalidConfig;
 }
 
-Helper::Helper() 
+Helper::Helper()
   : EnumsHelper<Type>( count ), _d( new Impl )
 {
 #define LAYER(a) append( citylayer::a, TEXT(a) );
@@ -108,3 +108,4 @@ Helper::Helper()
 }
 
 }//end namespace citylayer
+

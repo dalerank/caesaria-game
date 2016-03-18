@@ -142,7 +142,7 @@ DictionaryText::DictionaryText( Widget* parent ) : Widget( parent, -1, Rect( 0, 
 
 DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const string& text, bool border, int id)
 : Widget( parent, id, rectangle),
-	_d( new Impl )
+  _d( new Impl )
 {
   _d->flags.border = border;
   _d->flags.invalidate = true;
@@ -293,17 +293,17 @@ void DictionaryText::draw(gfx::Engine& painter )
 //! Get the font which is used right now for drawing
 Font DictionaryText::font() const
 {
-	/*if( index == activeFont )
-	{
-		Font overrideFont = getFont( getActiveState().getHash() );
-		Label* lb = const_cast< Label* >( this );
-		if( !overrideFont.available() )
-			overrideFont = Font( lb->getStyle().getState( lb->getActiveState() ).getFont() );
+  /*if( index == activeFont )
+  {
+    Font overrideFont = getFont( getActiveState().getHash() );
+    Label* lb = const_cast< Label* >( this );
+    if( !overrideFont.available() )
+      overrideFont = Font( lb->getStyle().getState( lb->getActiveState() ).getFont() );
 
-		return overrideFont.available() ? overrideFont : Font( getStyle().getName() );
-	}
+    return overrideFont.available() ? overrideFont : Font( getStyle().getName() );
+  }
 
-	return Widget::getFont( index );*/
+  return Widget::getFont( index );*/
 
   return _d->font.current;
 }
@@ -329,53 +329,53 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
   string word;
   string whitespace;
   string rText = rtext;
-	int size = rText.size();
-	int length = 0;
+  int size = rText.size();
+  int length = 0;
   int tabWidth = font.current.getTextSize( "A" ).width();
-	int elWidth = wdgSize.width() - DEFAULT_SCROLLBAR_SIZE;
+  int elWidth = wdgSize.width() - DEFAULT_SCROLLBAR_SIZE;
 
-	char c;
+  char c;
 
-	// We have to deal with right-to-left and left-to-right differently
-	// However, most parts of the following code is the same, it's just
-	// some order and boundaries which change.
+  // We have to deal with right-to-left and left-to-right differently
+  // However, most parts of the following code is the same, it's just
+  // some order and boundaries which change.
   richText.font = font.current;
-	// regular (left-to-right)
-	for (int i=0; i<size; ++i)
-	{
-		c = rText[i];
-		bool lineBreak = false;
+  // regular (left-to-right)
+  for (int i=0; i<size; ++i)
+  {
+    c = rText[i];
+    bool lineBreak = false;
 
-		if( c == '\r' ) // Mac or Windows breaks
-		{
-			lineBreak = true;
-			if (rText[i+1] == '\n') // Windows breaks
-			{
-				rText.erase(i+1);
-				--size;
-			}
-			c = '\0';
-		}
-		else if (c == '\n') // Unix breaks
-		{
-			lineBreak = true;
-			c = '\0';
-		}
-		else if( c == '\t' )
-		{
-			richText.offset += tabWidth;
-			continue;
-		}
+    if( c == '\r' ) // Mac or Windows breaks
+    {
+      lineBreak = true;
+      if (rText[i+1] == '\n') // Windows breaks
+      {
+        rText.erase(i+1);
+        --size;
+      }
+      c = '\0';
+    }
+    else if (c == '\n') // Unix breaks
+    {
+      lineBreak = true;
+      c = '\0';
+    }
+    else if( c == '\t' )
+    {
+      richText.offset += tabWidth;
+      continue;
+    }
 
-		if( c == '@' )
-		{
-			richText.text += whitespace;
-			dline.push_back( richText );
-			const int linewidth = richText.width();
-			richText = TextToken();
-			richText.offset = linewidth;
+    if( c == '@' )
+    {
+      richText.text += whitespace;
+      dline.push_back( richText );
+      const int linewidth = richText.width();
+      richText = TextToken();
+      richText.offset = linewidth;
       richText.font = font.current;
-			richText.uri = true;
+      richText.uri = true;
       NColor color = ColorList::blue;
 
       if(rText[i+1] == '#')
@@ -390,170 +390,170 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
       }
 
       richText.font.setColor( color );
-			richText.text = "";
-			whitespace = "";
-		}
+      richText.text = "";
+      whitespace = "";
+    }
 
-		if( c == '&' )
-		{				
+    if( c == '&' )
+    {
       const int whitelgth = font.current.getTextSize( whitespace ).width();
       const int wordlgth = font.current.getTextSize( word ).width();
 
-			if(length && (length + wordlgth + whitelgth > elWidth) )
-			{
-				// break to next line
-				std::string alias;
-				if( !richText.text.empty() )
-				{
-					richText.alias = richText.text + whitespace + word;
-					alias = richText.alias;
-					dline.push_back( richText );
-				}
+      if(length && (length + wordlgth + whitelgth > elWidth) )
+      {
+        // break to next line
+        std::string alias;
+        if( !richText.text.empty() )
+        {
+          richText.alias = richText.text + whitespace + word;
+          alias = richText.alias;
+          dline.push_back( richText );
+        }
 
-				brokenText.push_back( dline );
-				dline.clear();
+        brokenText.push_back( dline );
+        dline.clear();
 
-				richText.text = word;
-				richText.offset = 0;
-				dline.push_back( richText );
+        richText.text = word;
+        richText.offset = 0;
+        dline.push_back( richText );
 
-				length = wordlgth;
-				line = word;
+        length = wordlgth;
+        line = word;
 
-				richText = TextToken();
+        richText = TextToken();
         richText.font = font.current;
-				richText.offset = length;
-				richText.alias = alias;
-				word = "";
-			}
-			else
-			{
-				line += whitespace;
-				line += word;
-				richText.text += whitespace;
-				richText.text += word;
-				dline.push_back( richText );
-				const int linewidth = richText.width();
-				richText = TextToken();
-				richText.offset = linewidth;
+        richText.offset = length;
+        richText.alias = alias;
+        word = "";
+      }
+      else
+      {
+        line += whitespace;
+        line += word;
+        richText.text += whitespace;
+        richText.text += word;
+        dline.push_back( richText );
+        const int linewidth = richText.width();
+        richText = TextToken();
+        richText.offset = linewidth;
         richText.font = font.current;
-				richText.text = "";
+        richText.text = "";
 
-				length += whitelgth + wordlgth;
-				word = "";
-			}
-		}
+        length += whitelgth + wordlgth;
+        word = "";
+      }
+    }
 
-		bool specSymbol = (c == '@' || c == '&');
-		bool isWhitespace = (c == ' ' || c == 0);
-		if ( !isWhitespace && !specSymbol )
-		{
-			// part of a word
-			word += c;
-		}
+    bool specSymbol = (c == '@' || c == '&');
+    bool isWhitespace = (c == ' ' || c == 0);
+    if ( !isWhitespace && !specSymbol )
+    {
+      // part of a word
+      word += c;
+    }
 
-		if ( isWhitespace || i == (size-1))
-		{
-			if (word.size())
-			{
-				// here comes the next whitespace, look if
-				// we must break the last word to the next line.
+    if ( isWhitespace || i == (size-1))
+    {
+      if (word.size())
+      {
+        // here comes the next whitespace, look if
+        // we must break the last word to the next line.
         const int whitelgth = font.current.getTextSize( whitespace ).width();
         const int wordlgth = font.current.getTextSize( word ).width();
 
-				if (wordlgth > elWidth)
-				{
-					// This word is too long to fit in the available space, look for
-					// the Unicode Soft HYphen (SHY / 00AD) character for a place to
-					// break the word at
-					/*int where = word.find_first_of( char(0xAD) );
-					if (where != -1)
-					{
-						string first  = word.substr(0, where);
-						string second = word.substr(where, word.size() - where);
-						brokenText.push_back(line + first + "-");
-						const int secondLength = font.getTextSize( second ).width();
+        if (wordlgth > elWidth)
+        {
+          // This word is too long to fit in the available space, look for
+          // the Unicode Soft HYphen (SHY / 00AD) character for a place to
+          // break the word at
+          /*int where = word.find_first_of( char(0xAD) );
+          if (where != -1)
+          {
+            string first  = word.substr(0, where);
+            string second = word.substr(where, word.size() - where);
+            brokenText.push_back(line + first + "-");
+            const int secondLength = font.getTextSize( second ).width();
 
-						length = secondLength;
-						line = second;
-					}
-					else*/
-					{
-						// No soft hyphen found, so there's nothing more we can do
-						// break to next line
-						if (length)
-						{
-							dline.push_back( richText );
-							brokenText.push_back( dline );
-							dline.clear();
-						}
+            length = secondLength;
+            line = second;
+          }
+          else*/
+          {
+            // No soft hyphen found, so there's nothing more we can do
+            // break to next line
+            if (length)
+            {
+              dline.push_back( richText );
+              brokenText.push_back( dline );
+              dline.clear();
+            }
 
-						length = wordlgth;
-						line = word;
-					}
-				}
-				else if (length && (length + wordlgth + whitelgth > elWidth))
-				{
-					// break to next line
-					dline.push_back( richText );
-					brokenText.push_back( dline );
-					dline.clear();
+            length = wordlgth;
+            line = word;
+          }
+        }
+        else if (length && (length + wordlgth + whitelgth > elWidth))
+        {
+          // break to next line
+          dline.push_back( richText );
+          brokenText.push_back( dline );
+          dline.clear();
 
-					length = wordlgth;
-					line = word;
-					richText.text = word;
-					richText.offset = 0;
-				}
-				else
-				{
-					// add word to line
-					line += whitespace;
-					line += word;
-					richText.text += whitespace;
-					richText.text += word;
+          length = wordlgth;
+          line = word;
+          richText.text = word;
+          richText.offset = 0;
+        }
+        else
+        {
+          // add word to line
+          line += whitespace;
+          line += word;
+          richText.text += whitespace;
+          richText.text += word;
 
-					length += whitelgth + wordlgth;
-				}
+          length += whitelgth + wordlgth;
+        }
 
-				word = "";
-				whitespace = "";
-			}
+        word = "";
+        whitespace = "";
+      }
 
-			if ( isWhitespace )
-			{
-				whitespace += c;
-			}
+      if ( isWhitespace )
+      {
+        whitespace += c;
+      }
 
-			// compute line break
-			if( lineBreak )
-			{
-				line += whitespace;
-				line += word;
-				richText.text += whitespace;
-				richText.text += word;
+      // compute line break
+      if( lineBreak )
+      {
+        line += whitespace;
+        line += word;
+        richText.text += whitespace;
+        richText.text += word;
 
-				dline.push_back( richText );
-				brokenText.push_back( dline );
-				dline.clear();
+        dline.push_back( richText );
+        brokenText.push_back( dline );
+        dline.clear();
 
-				richText = TextToken();
+        richText = TextToken();
         richText.font = font.current;
-				line = "";
-				word = "";
-				whitespace = "";
-				length = 0;
-			}
-		}
-	}
+        line = "";
+        word = "";
+        whitespace = "";
+        length = 0;
+      }
+    }
+  }
 
-	line += whitespace;
-	line += word;
+  line += whitespace;
+  line += word;
 
-	richText.text += whitespace;
-	richText.text += word;
+  richText.text += whitespace;
+  richText.text += word;
 
-	dline.push_back( richText );
-	brokenText.push_back( dline );
+  dline.push_back( richText );
+  brokenText.push_back( dline );
 
   int lineHeight = font.current.getTextSize("A").height() + text.lineOffset;
   int maxValue = std::max<int>( brokenText.size() * lineHeight - wdgSize.height(), 0);
@@ -673,6 +673,8 @@ void DictionaryText::setFont( const Font& font )
   _d->font.current = font;
   _d->flags.invalidate = true;
 }
+
+void DictionaryText::setFont(const string& fname) { Widget::setFont(fname); }
 
 void DictionaryText::setFont(FontType type, NColor color)
 {

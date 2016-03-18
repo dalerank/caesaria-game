@@ -1,0 +1,8 @@
+{  
+ title : "##warehouse##"
+ sound : "fanfare"
+ text  : "Lagerhäuser haben sich seit der Antike kaum verändert. Jede Kultur, die intensiv Handel betreibt, benötigt große und preiswerte Gebäude, in denen Waren für eine bestimmte Zeit aufbewahrt werden können. Ein Lagerhaus sollte trocken, sicher und frei von Ungeziefer sein, obwohl diese Eigenschaften relativ zur Art der Ware zu sehen sind - Marmor kann den Elementen besser widerstehen als Nahrungsmittel. Die römischen Lagerhäuser lagen gewöhnlich in der Nähe von Wasserwegen oder Hauptstraßen.\n@Häfen& besaßen einen kommerziellen Bereich, der 'Emporion' genannt wurde und in dem die Waren gehandelt werden konnten. Die Emporia enthielten rudimentäre Lagerhauseinrichtungen, die von möglichst billiger Machart waren und in denen unverkaufte Ware für kurze Zeit untergebracht wurde. Die städtischen Lagerhäuser waren dauerhafter gebaut und somit in der Lage, waren unterschiedlichster Art auch für unbestimmte Zeit aufzubewahren zu können. Sie waren aus Stein gebaut und besaßen manchmal sogar Kolonnaden. Die Fenster waren gerade so hoch und schmal, dass zwar ausreichend Helligkeit einfallen konnte, die Sicherheit aber nicht beeinträchtigt wurde. Die einzige Tür hatte einen schweren Riegel. Außerdem beschäftigten die Lagerhäuser oft auch Wachleute."
+ uri : {
+  "Häfen" : "dock"
+ }
+}

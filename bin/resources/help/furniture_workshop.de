@@ -1,0 +1,14 @@
+{  
+ title : "##furniture_workshop##"
+ sound : "fanfare"
+ text  : "Schreiner verarbeiten hier das Holz Ihrer @Sägewerke& zu Möbeln. Ein Sägewerk kann zwei Schreinereien mit Holz versorgen, Wie die meisten Gewerbebetriebe sind auch Möbelschreinereien in Wohngebieten unerwünschte Nachbarn. Produktionsstätten benötigen Zugang zu einem nahmen Arbeitsmarkt und Straßenanbindung zu einem @Lagerhaus& und zu dem Sägewerk, das sie versorgt. @Arbeiter& bringen die fertigen Möbel in das nächste Lagerhaus mit freiem Platz.\nSie können Möbel auch exportieren, falls dafür eine passende @Handelsroute& offen ist, und @Markthändlerinnen& bringen einige Stücke davon zu ihren Märkten, wenn in den Wohngebieten eine entsprechende Nachfrage besteht. Manchmal kann es in Ihren Provinzen unmöglich sein, eigene Sägewerke anzulegen, doch Sie können Holz auch importieren. Der Import von Holz und seine Verarbeitung zu Möbelstücken in Ihren eigenen Betrieben kann erheblich billiger sein als der Import fertiger Möbel.\nMöbel gehören zu den Waren, die Ihre eigenen Bürger brauchen, um für ihre @Wohnungen& die höchste Ausbaustufe zu erreichen. Möbelschreinereien zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Produktionsstätte rechts an, um sich ihren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat.\n\nWenn Sie mehr zum Thema Möbelstücke im römischen Imperium erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "Sägewerke" : "Sägewerke??"
+  "Lagerhaus" : "warehouse"
+  "Arbeiter" : "Arbeiter??"
+  "Handelsroute" : "trade"
+  "Markthändlerinnen" : "Markt??"
+  "Wohnungen" : "house (Wohnungen??)"
+  "hier" : "furniture_history"
+ }
+}

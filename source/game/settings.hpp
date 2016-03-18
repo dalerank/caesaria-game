@@ -48,8 +48,6 @@ public:
   __GS_PROPERTY(worldModel)
   __GS_PROPERTY(worklessCitizenAway)
   __GS_PROPERTY(langModel)
-  __GS_PROPERTY(fastsavePostfix)
-  __GS_PROPERTY(saveExt)
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
@@ -68,7 +66,6 @@ public:
   __GS_PROPERTY(screenFitted)
   __GS_PROPERTY(needAcceptBuild)
   __GS_PROPERTY(sg2model)
-  __GS_PROPERTY(ranksModel)
   __GS_PROPERTY(autosaveInterval)
   __GS_PROPERTY(talksArchive)
   __GS_PROPERTY(render)
@@ -80,7 +77,6 @@ public:
   __GS_PROPERTY(freeplay_opts)
   __GS_PROPERTY(cellw)
   __GS_PROPERTY(simpleAnimationModel)
-  __GS_PROPERTY(hotkeysModel)
   __GS_PROPERTY(cartsModel)
   __GS_PROPERTY(logoArchive)
   __GS_PROPERTY(titleResource)
@@ -116,6 +112,7 @@ public:
   __GS_PROPERTY(lastChangesNumber)
   __GS_PROPERTY(citiesIdModel)
   __GS_PROPERTY(showStartAware)
+  __GS_PROPERTY(verbose)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -133,9 +130,10 @@ public:
   static void save();
 
   void setwdir( const std::string& wdir );
-  void checkwdir( char* argv[], int argc );
+  bool checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  bool isC3mode() const;
   void changeSystemLang( const std::string& newLang );
   void resetIfNeed(char* argv[], int argc);
 private:

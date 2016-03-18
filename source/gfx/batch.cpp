@@ -46,7 +46,6 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 {
   if( pics.empty() )
   {
-    //Logger::warning( "!!! WARNING: Cant create batch from pictures, because those are empty" );
     return true;
   }
 
@@ -57,7 +56,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 
   if( dstrects.size() != pics.size() )
   {
-    Logger::warning( "!!! WARNING: Cant create batch from pictures because length not equale dstrects" );
+    Logger::warning( "Cant create batch from pictures because length not equale dstrects" );
     return false;
   }
 
@@ -74,7 +73,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 
     if( pic.texture() != tx )
     {
-      Logger::warning( "!!! WARNING: Cant create batch from pictures {0} to {1}", pics.at( 0 ).name(), pic.name() );
+      Logger::warning( "!!! Cant create batch from pictures {0} to {1}", pics.at( 0 ).name(), pic.name() );
       srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       haveErrors = true;
       continue;

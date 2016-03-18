@@ -195,7 +195,7 @@ void Construction::burn()
 
     events::dispatch<Disaster>( tile(), Disaster::fire );
 
-    Logger::warning( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+    Logger::debug( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
 }
 
@@ -208,7 +208,7 @@ void Construction::collapse()
 
   events::dispatch<Disaster>( tile(), Disaster::collapse );
 
-  Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+  Logger::debug( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return Overlay::picture(); }

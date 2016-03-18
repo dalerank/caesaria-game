@@ -3,6 +3,22 @@ project(CaesarIA-game)
 # Find revision ID and hash of the sourcetree
 include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(X64_BUILD 1)
+endif()
+
+#select compiler
+if (CMAKE_COMPILER_IS_CLANG)
+  # using Clang
+  add_definitions("-DGAME_COMPILER_NAME=\"clang\"")
+elseif (CMAKE_COMPILER_IS_GNUCXX)
+  # using GCC
+  add_definitions("-DGAME_COMPILER_NAME=\"gcc\"")
+elseif (MSVC)
+  # using Visual Studio C++
+  add_definitions("-DGAME_COMPILER_NAME=\"msvc\"")
+endif()
+
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
@@ -10,7 +26,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
-  ${STEAM_API_DIR}/public/opensteam
   include
 )
 
@@ -35,7 +50,6 @@ file(GLOB SCRIPT_SYSTEM_LIST "${GAME_CONFIG_DIR}/system/*.*")
 file(GLOB TUTORIAL_MODELS_LIST "${GAME_CONFIG_DIR}/tutorial/*.tutorial")
 file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
-file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
 file(GLOB THREAD_LIST "${CMAKE_CURRENT_SOURCE_DIR}/thread/*.*")
 file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
@@ -43,27 +57,13 @@ file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB CHANGES_LIST "${GAME_CONFIG_DIR}/changes/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
-if(MSVC)
-  if(CMAKE_CXX_FLAGS MATCHES "/EHsc ")
-    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc before end of string replaced...")
-    message(STATUS "")
-  endif()
-
-  if(CMAKE_CXX_FLAGS MATCHES "/EHsc$")
-    string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    message(STATUS "CMAKE_CXX_FLAGS matches /EHsc at end of string replaced...")
-    message(STATUS "")
-  endif()
-endif()
-
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
                ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
-               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
+               ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST}
                ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} ${CHANGES_LIST}
                ${SCRIPT_SYSTEM_LIST} ${JSE_SOURCES_LIST} ${PK_RESOURCES_LIST})
 
@@ -101,22 +101,103 @@ add_definitions( -DGAME_USE_FRAMEBUFFER )
 add_definitions( -DGAME_USE_SHADERS )
 endif(BUILD_GL_FRAMEBUFFER)
 
+######################## osx clang settings ##################################
+
+if(APPLE)
+  #include steam libraries
+  if(USE_STEAM)
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
+
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
+    )
+  endif()
+
+  # Enforce C++11
+  set(USE_CPP11 ON)
+
+  # Check for C++11 suport
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+
+  set(GAME_BINARY_FILENAME "caesaria.macos")
+  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+  FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+  target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY} )
+
+endif(APPLE)
+
+######################## Win32 settings #################################
+
 if(WIN32)
-  target_link_libraries(${PROJECT_NAME} "opengl32")
-  target_link_libraries(${PROJECT_NAME} "winmm")
-  target_link_libraries(${PROJECT_NAME} "imagehlp")
-  set(EXECUTABLE_FILENAME "caesaria")
+  if(MSVC)
+    ########################## set visual studio virtual folders ###############
+    source_group("events" FILES ${EVENTS_SOURCES_LIST})
+    source_group("core" FILES ${CORE_SOURCES_LIST})
+    source_group("pathway" FILES ${PATHWAY_SOURCES_LIST})
+    source_group("gui" FILES ${GUI_SOURCES_LIST})
+    source_group("game" FILES ${GAME_SOURCES_LIST})
+    source_group("city" FILES ${CITY_SOURCES_LIST})
+    source_group("good" FILES ${GOOD_SOURCES_LIST})
+    source_group("vfs" FILES ${VFS_SOURCES_LIST})
+    source_group("gfx" FILES ${GFX_SOURCES_LIST})
+    source_group("sound" FILES ${SOUND_SOURCES_LIST})
+    source_group("objects" FILES ${OBJECTS_SOURCES_LIST})
+    source_group("walkers" FILES ${WALKER_SOURCES_LIST})
+    source_group("world" FILES ${WORLD_SOURCES_LIST})
+    source_group("models" FILES ${GUI_MODELS_LIST} ${GAME_MODELS_LIST})
+    source_group("jse" FILES ${JSE_SOURCES_LIST})
+    source_group("scripts" FILES ${SCRIPT_SYSTEM_LIST})
+    source_group("tutorial" FILES ${TUTORIAL_MODELS_LIST})
+    source_group("mission" FILES ${MISSIONS_LIST})
+    source_group("help" FILES ${HELP_LIST})
+    source_group("scenes" FILES ${SCENES_LIST})
+    source_group("thread" FILES ${THREAD_LIST})
+    source_group("layers" FILES ${LAYERS_LIST})
+    source_group("religion" FILES ${RELIGION_LIST})
+    source_group("changes" FILES ${CHANGES_LIST})
+    source_group("steam" FILES ${STEAM_SOURCES_LIST})
+    #############################################################################
+
+    #set app run params
+    set_target_properties (${PROJECT_NAME} PROPERTIES COMMAND_LINE_ARGUMENTS "-R ${CMAKE_CURRENT_SOURCE_DIR}")
+
+    #avoid compiler warning
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+
+    set(COMPILER_SUPPORTS_CXX11 1)
+  elseif(CMAKE_COMPILER_IS_GNUCXX)
+    ####################### Win32 mingw settings ##################################
+    #not show console window
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows -static-libstdc++ -static-libgcc")
+  endif()
+
+   target_link_libraries(${PROJECT_NAME} "opengl32")
+   target_link_libraries(${PROJECT_NAME} "winmm")
+   target_link_libraries(${PROJECT_NAME} "imagehlp")
+
+  #include steam libraries
+  set(GAME_BINARY_FILENAME "caesaria")
+  if(USE_STEAM)
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
+    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
+
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
+    )
+  endif()
 endif(WIN32)
 
-if(UNIX)
-  set(EXECUTABLE_FILENAME "caesaria.linux")
-  if(NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} "GL")
-    target_link_libraries(${PROJECT_NAME} "dl")
-  endif()
-endif(UNIX)
+####################### linux gcc settings ######################################
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
+  #################### get locales ###############################
   message("Get locales from server")
   execute_process(COMMAND ${DEP_SOURCE_DIR}/localeconv/loadtable.py)
   set(RPATH ${GAME_CONFIG_DIR}/locale/caesar.)
@@ -138,127 +219,35 @@ if(UNIX)
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/16.csv ${RPATH}pr)
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/17.csv ${RPATH}sb)
   execute_process(COMMAND mv ${CMAKE_BINARY_DIR}/18.csv ${RPATH}bg)
-endif(UNIX)
+  #################################################################
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(X64_BUILD 1)
-endif()
+  set(GAME_BINARY_FILENAME "caesaria.linux")
+  target_link_libraries(${PROJECT_NAME} "GL")
+  target_link_libraries(${PROJECT_NAME} "dl")
 
-if(USE_STEAM)
-  if(WIN32)
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/helper/steam_helper.lib")
-  elseif(APPLE)
-    target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib")
-  elseif(UNIX)
-    if(X64_BUILD)
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux64/libsteam_api.so")
-    else()
-      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux32/libsteam_api.so")
-    endif()
-  endif()
-endif(USE_STEAM)
-
-if(APPLE)
-  set(EXECUTABLE_FILENAME "caesaria.macos")
-  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
-  FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
-  target_link_libraries(${PROJECT_NAME} ${OpenGL_LIBRARY} )
-endif(APPLE)
-
-if(HAIKU)
-  set(EXECUTABLE_FILENAME "caesaria.haiku")
-endif(HAIKU)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
-
-if(CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
-  message("CaesarIA-game: building in release mode")
-  if(NOT APPLE)
+  # set compiler options
+  if(NOT CMAKE_BUILD_TYPE_RELEASE)
+    message("CaesarIA-game: building in debug mode")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value -g")
+    add_definitions( -DDEBUG )
+  else()
+    #release options strip bin
+    message("CaesarIA-game: building in release mode")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
   endif()
 
-  if(WIN32)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
-  endif()
-else()
-  message("CaesarIA-game: building in debug mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
-  add_definitions( -DDEBUG )
-endif()
+  # Enforce C++11
+  set(USE_CPP11 ON)
 
-if (CMAKE_COMPILER_IS_CLANG)
-  # using Clang
-  add_definitions("-DGAME_COMPILER_NAME=\"clang\"")
-elseif (CMAKE_COMPILER_IS_GNUCXX)
-  # using GCC
-  add_definitions("-DGAME_COMPILER_NAME=\"gcc\"")
-elseif (MSVC)
-  # using Visual Studio C++
-  add_definitions("-DGAME_COMPILER_NAME=\"msvc\"")
-endif()
+  # Check for C++11 suport
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 
-message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
-
-# set compiler options
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-  if(HAIKU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-  else(HAIKU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
-  endif(HAIKU)
-endif()
-
-# Enforce C++11
-set(USE_CPP11 ON)
-
-# Check for C++11 suport
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-
-if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
-endif()
-
-if(WIN32 AND NOT MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
-endif()
-
-# prepare working directory
-set(GAME_BINARY_FILENAME ${EXECUTABLE_FILENAME})
-if(WIN32)
-  set(GAME_BINARY_FILENAME ${GAME_BINARY_FILENAME}.exe)
-endif(WIN32)
-
-if(NOT MSVC)
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${WORK_DIR}/${GAME_BINARY_FILENAME}"
-)
-else()
-  set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
-endif()
-
-if(USE_STEAM)
-  if(WIN32)
-    ADD_CUSTOM_COMMAND(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/win/steam_api.dll" "${WORK_DIR}/steam_api.dll"
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/helper/steam_helper.dll" "${WORK_DIR}/steam_helper.dll"
-    )
-  elseif(APPLE)
-    ADD_CUSTOM_COMMAND(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        #COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsdkencryptedappticket.dylib" "${WORK_DIR}/libsdkencryptedappticket.dylib"
-        COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/osx32/libsteam_api.dylib" "${WORK_DIR}/libsteam_api.dylib"
-    )
-  elseif(UNIX)
+  #include steam libraries
+  if(USE_STEAM)
     if(X64_BUILD)
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux64/libsteam_api.so")
+
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
@@ -266,6 +255,8 @@ if(USE_STEAM)
           COMMAND ${CMAKE_COMMAND} -E copy "${STEAM_API_DIR}/bin/linux64/libsteam_api.so" "${WORK_DIR}/libsteam_api.so"
       )
     else()
+      target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/linux32/libsteam_api.so")
+
       ADD_CUSTOM_COMMAND(
           TARGET ${PROJECT_NAME}
           POST_BUILD
@@ -274,4 +265,17 @@ if(USE_STEAM)
      )
     endif()
   endif()
+endif(UNIX AND NOT APPLE)
+
+if(COMPILER_SUPPORTS_CXX11)
+  if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  endif()
+else()
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${GAME_BINARY_FILENAME})
+message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
+set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
+

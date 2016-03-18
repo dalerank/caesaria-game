@@ -1,0 +1,8 @@
+{  
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text  : "In dem Maße, indem Roms Bevölkerungszahl stieg, stieg auch der Durst. Im fünften Jahrhundert v. Chr. reichten @Ziehbrunnen& nicht mehr aus, um die Nachfrage nach sauberem Wasser zu befriedigen. Der Tiber, immer schon ein schmutziges Gewässer, war durch die Abwasser Roms stark verunreinigt. Die Lösung, mit der die Römer dieses Problem entschärften - ein um 343 v. Chr. errichteter Aquädukt -war eins von Roms ersten monumentalen, öffentlichen Bauwerken.\nDie Herleitung des Wassers aus den Bergen war durch das benötigte nur geringe Gefälle eine beträchtliche technische Herausforderung. Das Gefälle eines Aquädukts betrug pro Kilometer Länge nur etwa einen Meter. Dieses Gefälle musste konstant eingehalten und die Wasserquelle sorgfältig ausgewählt werden, um sicherzustellen, dass das Wasser auch noch lange nach der Fertigstellung der teuren Aquädukte reichlich floss. Darüber hinaus musste das Aquädukt einigermaßen wasserdicht und resistent gegen Erosionen den ständigen Wasserfluss gebaut und die Verdunstung minimiert werden. Obgleich man sich Aquädukte allgemein als graziöse Bauwerke mit hohen Bögen vorstellt, waren sie zumeist unterirdisch gebaut.\nRom benötigte schließlich zehn Aquädukte, jedes ein noch größeres technisches Meisterwerk als sein Vorgänger, wobei die Stadt immer weiter ins umliegende Land vordringen musste, um ergiebige Wasserquellen zu erschließen. Zu einem gewissen Zeitpunkt verliefen die Aquädukte zusammengenommen über eine Entfernung von 403 Kilometern und beförderten über 560.000 Liter Wasser täglich. Einige dieser Bauwerke sind noch heute im Dienst."
+ uri : {
+  "Ziehbrunnen" : "well_history"
+ }
+}

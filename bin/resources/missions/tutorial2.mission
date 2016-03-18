@@ -4,14 +4,14 @@
   funds : 8000
   city.name : "Brundisium"
   player.rank : 1
-  date : "-350.01.01"  
+  date : "-350.01.01"
   climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
   preview.text : "##tutorial2_preview_mission##"
   preview.title : "##tutorial2_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 650
@@ -23,11 +23,11 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission3.briefing"
     title : "##engineer##"
-    may_continue : false
-    short : "##tt2_short##"
-    win.text : "##tt2_win_text##"
-    sound.overview : "tutorial2_speech"
-    sound.win      : "tutorial2_win_speech"
+    winContinue : false
+    shortDesc : "##tt2_short##"
+    winText : "##tt2_win_text##"
+    startSound : "tutorial2_speech"
+    winSound     : "tutorial2_win_speech"
     caption : "##tt2_caption##"
     overview :  [ "##tutorial_priority##",
                   "@img=picture3_00004",
@@ -38,12 +38,12 @@
                   "##tutorial_markets_text##",
                   "@img=picture2_00008" ]
   }
-	
+
   empire : {
     enabled : false
     maxBarbariansGroups : 0
   }
-  		
+
   events :
   {
     "health_upper#health_updater" : {
@@ -120,7 +120,7 @@
 
 
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -135,9 +135,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : false
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       well : true
       missionaryPost : false
       engineering_post : true

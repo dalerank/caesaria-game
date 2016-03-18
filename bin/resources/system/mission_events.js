@@ -1,24 +1,56 @@
-function OnMissionWin(newTitle,winText,speech,mayContinue)
-{ 
+function OnMissionLose() { sim.ui.missionLose() }
+function OnMissionWin() { sim.ui.missionWin() }
+function OnMissionStart() { sim.start() }
+function OnRequestExitGame() { game.ui.dialogs.requestExit() }
+function OnShowSaveDialog() { game.ui.dialogs.savegame(); }
+function OnShowEmpirePrices() { sim.ui.advisors.showEmpirePrices() }
+
+sim.ui.missionLose = function()
+{
+   var window = g_ui.addWindow(0, 0, 400, 220);
+     window.title = "##mission_failed##";
+   //window.titleFont = "FONT_6";
+
+   var btnRestart = window.addButton(20, 120, 360, 24);
+     btnRestart.text = "##restart_mission##";
+   btnRestart.tooltip = _t("##restart_mission_tip##");
+     btnRestart.callback = function() { g_session.setMode(g_config.level.res_restart) }
+
+     var btnMenu = window.addButton>(20, 150, 360, 24);
+     btnMenu.text = "##exit_to_main_menu##";
+     btnMenu.callback = function() { g_session.setMode(g_config.level.res_menu) }
+
+   window.moveToCenter();
+   window.setModal();
+}
+
+sim.ui.missionWin = function()
+{
+  var minfo = g_session.winConditions();
+  var newTitle = minfo.title;
+  var winText  = minfo.winText;
+  var winSpeech = minfo.winSound;
+  var mayContinue = minfo.winContinue;
+
   engine.log( "JS:OnMissionWin" );
 
   var wnd = g_ui.addWindow(0,0,540,240);
   wnd.title = "##mission_win##";
   wnd.font = "FONT_5";
 
-  var lbCaesarAssign = wnd.addLabel( 10, 40, wnd.width-20, 25 );
+  var lbCaesarAssign = wnd.addLabel(10, 40, wnd.w-20, 25);
   lbCaesarAssign.text = "##caesar_assign_new_title##";
   lbCaesarAssign.font = "FONT_2";
   lbCaesarAssign.textAlign = { h:"center", v:"center" };
-	
-  var lbNewTitle = wnd.addLabel( 10, 70, wnd.width-20, 30 );
+
+  var lbNewTitle = wnd.addLabel( 10, 70, wnd.w-20, 30 );
   lbNewTitle.text = newTitle;
   lbNewTitle.font = "FONT_5";
   lbNewTitle.textAlign = { h:"center", v:"center" };
-	
+
   if( mayContinue )
   {
-      var btn2years = wnd.addButton( 35, 140, wnd.width-70, 20 );
+      var btn2years = wnd.addButton( 35, 140, wnd.w-70, 20 );
       btn2years.text = "##continue_2_years##";
       btn2years.font = "FONT_2";
       btn2years.style = "whiteBorderUp";
@@ -28,7 +60,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
                 wnd.deleteLater();
             };
 
-      var btn5years = wnd.addButton( 35, 165, wnd.width-70, 20 );
+      var btn5years = wnd.addButton( 35, 165, wnd.w-70, 20 );
       btn5years.text = "##continue_5_years##";
       btn5years.font = "FONT_2";
       btn5years.style = "whiteBorderUp";
@@ -39,7 +71,7 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
             }
   }
 
-  var btnAccept = wnd.addButton( 35, 115, wnd.width-70, 20 );
+  var btnAccept = wnd.addButton( 35, 115, wnd.w-70, 20 );
   btnAccept.text = "##accept_promotion##";
   btnAccept.font = "FONT_2";
   btnAccept.style = "whiteBorderUp";
@@ -55,34 +87,52 @@ function OnMissionWin(newTitle,winText,speech,mayContinue)
   wnd.moveToCenter();
   wnd.setModal();
   wnd.mayMove = false;
-	
+
   if (winText.length > 0)
     g_ui.addInformationDialog( "", winText );
 }
 
-function OnMissionStart()
+sim.start = function()
 {
   var showAware = engine.getOption("showStartAware");
-  if( showAware )
+  if (showAware)
   {
     var dialog = g_ui.addInformationDialog( "##pls_note##", "##aware_black_objects##" );
     dialog.neverValue = true;
     dialog.onNeverCallback = function(value) {
-				engine.setOption( "showStartAware", value );
-			} 
+                engine.setOption("showStartAware", value)
+            }
   }
+
+  sim.ui.topmenu.initialize()
+  sim.hotkeys.init()
 }
 
-function OnRequestExitGame()
+game.ui.dialogs.savegame = function()
+{
+  var savedir = g_session.getOptPath("savedir");
+  var ext = engine.getOption("saveExt");
+
+  engine.log("Find save in " + savedir.str + " with ext " + ext)
+  if (!savedir.exist())
+  {
+    g_ui.addInformationDialog("##warning##", "##save_directory_not_exist##");
+    return;
+  }
+
+  var dialog = g_ui.addSaveGameDialog(savedir, ext);
+  dialog.callback = function(path) {
+              g_session.save(path);
+          }
+}
+
+game.ui.dialogs.requestExit = function()
 {
   var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
-  dialog.onYesCallback = function() {
-                var g_session = new Session();
-                g_session.quitGame();
-            }
+  dialog.onYesCallback = function() { g_session.setMode(5); }
 }
 
-function OnShowEmpirePrices()
+sim.ui.advisors.showEmpirePrices = function()
 {
   engine.log( "JS:OnShowEmpirePrices" );
 
@@ -96,7 +146,7 @@ function OnShowEmpirePrices()
   var lbSellPrice = wnd.addLabel(10, 108, 140, 128);
   lbSellPrice.text = "##sell_price##";
 
-  var lbHint = wnd.addLabel(140, wnd.height-30, wnd.width-10, wnd.height-10 );
+  var lbHint = wnd.addLabel(140, wnd.h-30, wnd.w-10, wnd.h-10 );
   lbHint.text = "##click_rmb_for_exit##";
 
   wnd.closeAfterKey({escape:true,rmb:true});
@@ -113,7 +163,7 @@ function OnShowEmpirePrices()
 
     var relPos = pos.clone();
     relPos.add({x:0,y:34});
-    
+
     var lb = wnd.addLabel(relPos.x, relPos.y, size.w, size.h);
     lb.text = goodInfo.importPrice;
     lb.font = "FONT_1";

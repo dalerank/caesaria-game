@@ -32,21 +32,16 @@ public:
   int prosperity;
   int favour;
   int peace;
-  bool may_continue;
+  bool winContinue;
   bool success;
   int reignYears;
   std::string name;
   StringArray overview;
   DateTime finishDate;
 
-  struct {
-    std::string overview;
-    std::string win;
-  } sound;
-
-  struct {
-    std::string text;
-  } win;
+  std::string startSound;
+  std::string winSound;
+  std::string winText;
 
   std::string shortDesc,
               caption,
@@ -62,7 +57,7 @@ VictoryConditions::VictoryConditions() : _d( new Impl )
   _d->culture = 0;
   _d->prosperity = 0;
   _d->favour = 0;
-  _d->may_continue = false;
+  _d->winContinue = false;
   _d->peace = 0;
   _d->reignYears = 0;
   _d->finishDate = DateTime( 500, 1, 1 );
@@ -88,7 +83,7 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
 }
 
 bool VictoryConditions::isSuccess() const {  return _d->success; }
-bool VictoryConditions::mayContinue() const { return _d->may_continue; }
+bool VictoryConditions::mayContinue() const { return _d->winContinue; }
 
 void VictoryConditions::load( const VariantMap& stream )
 {
@@ -105,9 +100,9 @@ void VictoryConditions::load( const VariantMap& stream )
   VARIANT_LOAD_STR_D( _d, name,           stream )
   VARIANT_LOAD_TIME_D(_d, finishDate,     stream )
   VARIANT_LOAD_ANY_D( _d, reignYears,     stream )
-  VARIANT_LOAD_ANY_D( _d, may_continue,   stream )
-  VARIANT_LOAD_STR_D( _d, sound.overview, stream )
-  VARIANT_LOAD_STR_D( _d, sound.win,      stream )
+  VARIANT_LOAD_ANY_D( _d, winContinue,    stream )
+  VARIANT_LOAD_STR_D( _d, startSound,     stream )
+  VARIANT_LOAD_STR_D( _d, winSound,       stream )
 
   if( _d->finishDate.year() < -9000 )
   {
@@ -115,8 +110,8 @@ void VictoryConditions::load( const VariantMap& stream )
   }
 
   _d->overview = stream.get( "overview" ).toStringArray();
-  _d->shortDesc = stream.get( "short" ).toString();
-  VARIANT_LOAD_STR_D( _d, win.text, stream )
+  VARIANT_LOAD_STR_D( _d, shortDesc, stream )
+  VARIANT_LOAD_STR_D( _d, winText, stream )
   VARIANT_LOAD_STR_D( _d, caption,  stream )
   VARIANT_LOAD_STR_D( _d, next,     stream )
   VARIANT_LOAD_STR_D( _d, title,    stream )
@@ -135,13 +130,13 @@ VariantMap VictoryConditions::save() const
   VARIANT_SAVE_STR_D( ret, _d, overview )
   VARIANT_SAVE_ANY_D( ret, _d, finishDate )
   VARIANT_SAVE_ANY_D( ret, _d, reignYears )
-  ret[ "short"      ] = Variant( _d->shortDesc );
-  VARIANT_SAVE_STR_D( ret, _d, win.text );
+  VARIANT_SAVE_STR_D( ret, _d, shortDesc )
+  VARIANT_SAVE_STR_D( ret, _d, winText );
   VARIANT_SAVE_STR_D( ret, _d, caption )
   VARIANT_SAVE_STR_D( ret, _d, name )
-  VARIANT_SAVE_ANY_D( ret, _d, sound.overview )
-  VARIANT_SAVE_ANY_D( ret, _d, sound.win )
-  VARIANT_SAVE_STR_D( ret, _d, may_continue )
+  VARIANT_SAVE_STR_D( ret, _d, startSound )
+  VARIANT_SAVE_ANY_D( ret, _d, winSound )
+  VARIANT_SAVE_STR_D( ret, _d, winContinue )
   VARIANT_SAVE_STR_D( ret, _d, next )
   VARIANT_SAVE_STR_D( ret, _d, title )
   return ret;
@@ -162,10 +157,12 @@ VictoryConditions& VictoryConditions::operator=(const VictoryConditions& a)
   _d->next = a._d->next;
   _d->title = a._d->title;
   _d->finishDate = a._d->finishDate;
-  _d->win.text = a._d->win.text;
   _d->reignYears = a._d->reignYears;
-  _d->sound = a._d->sound;
+  _d->startSound = a._d->startSound;
   _d->name = a._d->name;
+  _d->winContinue = a._d->winContinue;
+  _d->winText = a._d->winText;
+  _d->winSound = a._d->winSound;
 
   return *this;
 }
@@ -180,9 +177,9 @@ std::string VictoryConditions::shortDesc() const {  return _d->shortDesc;}
 std::string VictoryConditions::missionTitle() const { return _d->caption; }
 std::string VictoryConditions::nextMission() const { return _d->next; }
 std::string VictoryConditions::newTitle() const { return _d->title; }
-std::string VictoryConditions::winText() const{ return _d->win.text; }
-std::string VictoryConditions::beginSpeech() const { return _d->sound.overview; }
-std::string VictoryConditions::winSpeech() const{ return _d->sound.win; }
+std::string VictoryConditions::winText() const{ return _d->winText; }
+std::string VictoryConditions::startSound() const { return _d->startSound; }
+std::string VictoryConditions::winSound() const{ return _d->winSound; }
 int VictoryConditions::needPopulation() const{  return _d->population;}
 int VictoryConditions::maxHouseLevel() const { return _d->maxHouseLevel; }
 const StringArray& VictoryConditions::overview() const{  return _d->overview;}

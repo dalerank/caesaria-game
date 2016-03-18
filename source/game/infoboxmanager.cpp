@@ -102,7 +102,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl={}", tile.param( Tile::pDesirability ) );
+    Logger::debug( "Tile debug info: dsrbl={}", tile.param( Tile::pDesirability ) );
   }
 
   type = object::typeOrDefault( overlay );
@@ -134,10 +134,8 @@ void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
   std::string name = object::toString( type );
   bool alreadyHaveConstructor = _d->name2typeMap.find( name ) != _d->name2typeMap.end();
 
-  if( name == "unknown" )
-  {
-    Logger::warning( "InfoboxManager: added default infobox constructor" );
-  }
+  if (name == "unknown")
+    Logger::debug( "InfoboxManager: added default infobox constructor" );
 
   if( !alreadyHaveConstructor )
   {
@@ -146,7 +144,7 @@ void Manager::addInfobox( const object::Type& type, InfoboxCreator* ctor )
   }
   else
   {
-    Logger::warning( "InfoboxManager: already have constructor for type " + name );
+    Logger::debug("InfoboxManager: already have constructor for type " + name);
   }
 }
 

@@ -32,19 +32,19 @@ class Player : public Serializable, public ReferenceCounted
 public:
   static PlayerPtr create();
 
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
-  void setName( const std::string& name );
+  void setName(const std::string& name);
   std::string name() const;
 
-  void setRank( world::GovernorRank::Level rank );
+  void setRank(world::GovernorRank::Level rank);
   world::GovernorRank::Level rank() const;
 
   int salary() const;
-  void setSalary( const int value );
+  void setSalary(const int value);
 
-  void appendMoney( int money );
+  void appendMoney(int money);
   int money() const;
 
   NColor color() const;

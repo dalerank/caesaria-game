@@ -21,76 +21,101 @@
 #include "core/enumerator.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
+#include "core/utils.hpp"
 
 namespace game
 {
 
-class HotkeyMapper : public EnumsHelper<KeyCode>
+class CodeMapper : public EnumsHelper<KeyCode>
 {
 public:
-  HotkeyMapper() : EnumsHelper<KeyCode>( KEY_KEY_CODES_COUNT )
+  CodeMapper() : EnumsHelper<KeyCode>( KEY_KEY_CODES_COUNT )
   {
-#define _HK(a) append(a, TEXT(a) );
-    _HK(KEY_F1) _HK(KEY_F2) _HK(KEY_F3)
-    _HK(KEY_F4) _HK(KEY_F5) _HK(KEY_F6)
-    _HK(KEY_F7) _HK(KEY_F8) _HK(KEY_F9)
-    _HK(KEY_F10) _HK(KEY_F11) _HK(KEY_F12)
-    _HK(KEY_PLUS) _HK(KEY_MINUS) _HK(KEY_KEY_0)
-    _HK(KEY_KEY_1) _HK(KEY_KEY_2) _HK(KEY_KEY_3)
-    _HK(KEY_KEY_4) _HK(KEY_KEY_5) _HK(KEY_KEY_6)
-    _HK(KEY_KEY_7) _HK(KEY_KEY_8) _HK(KEY_KEY_9)
-    _HK(KEY_KEY_A) _HK(KEY_KEY_H) _HK(KEY_KEY_F)
-    _HK(KEY_KEY_D) _HK(KEY_KEY_C) _HK(KEY_KEY_T)
-    _HK(KEY_KEY_W) _HK(KEY_KEY_G) _HK(KEY_EQUALS)
-    _HK(KEY_BACK)
+#define _HK(a,t) append(a,t);
+    _HK(KEY_F1,"F1") _HK(KEY_F2,"F2") _HK(KEY_F3,"F3")
+    _HK(KEY_F4,"F4") _HK(KEY_F5,"F5") _HK(KEY_F6,"F6")
+    _HK(KEY_F7,"F7") _HK(KEY_F8,"F8") _HK(KEY_F9,"F9")
+    _HK(KEY_LALT,"lalt") _HK(KEY_RALT, "ralt")
+    _HK(KEY_LSHIFT,"lshift") _HK(KEY_RSHIFT,"rshift")
+    _HK(KEY_LCONTROL, "lctrl") _HK(KEY_RCONTROL, "rctrl")
+    _HK(KEY_SHIFT,"shift") _HK(KEY_CONTROL, "ctrl")
+    _HK(KEY_F10,"F10") _HK(KEY_F11,"F11") _HK(KEY_F12,"F12")
+    _HK(KEY_PLUS,"plus") _HK(KEY_MINUS,"minus")
+    _HK(KEY_SUBTRACT,"sutract") _HK(KEY_ADD,"sum")
+    _HK(KEY_TILDA,"tilda") _HK(KEY_SPACE,"space")
+    _HK(KEY_KEY_0,"0")
+    _HK(KEY_KEY_1,"1") _HK(KEY_KEY_2,"2") _HK(KEY_KEY_3,"3")
+    _HK(KEY_KEY_4,"4") _HK(KEY_KEY_5, "5") _HK(KEY_KEY_6, "6")
+    _HK(KEY_KEY_7, "7") _HK(KEY_KEY_8, "8") _HK(KEY_KEY_9, "9")
+    _HK(KEY_KEY_A, "a") _HK(KEY_KEY_H, "h") _HK(KEY_KEY_F, "f")
+    _HK(KEY_KEY_D, "d") _HK(KEY_KEY_C, "c") _HK(KEY_KEY_T, "t")
+    _HK(KEY_KEY_W, "w") _HK(KEY_KEY_G, "g") _HK(KEY_EQUALS, "=")
+    _HK(KEY_BACK, "backspace")
 #undef _HK
   }
 };
 
-typedef std::map<KeyCode, VariantMap> HotkeyScripts;
+struct HotkeyAction
+{
+  KeyCode code;
+  bool shift;
+  bool ctrl;
+  bool alt;
+};
+
+typedef std::map<std::string, HotkeyAction> HotkeyActions;
 class HotkeyManager::Impl
 {
 public:
-  HotkeyMapper hkMapper;
-  HotkeyScripts scripts;
+  CodeMapper hkMapper;
+  HotkeyActions actions;
 
 public signals:
-  Signal1<const VariantMap&> onHotkeySignal;
+  Signal1<std::string> onExecSignal;
 };
 
-void HotkeyManager::execute( int keyCode )
+bool HotkeyManager::execute(int keyCode, bool ctrl, bool shift, bool alt)
 {
-  HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
-  if( it != _d->scripts.end() )
+  for (const auto& item : _d->actions)
   {
-    emit _d->onHotkeySignal( it->second );
+    const HotkeyAction& a = item.second;
+    if (a.code == keyCode && a.ctrl == ctrl
+      && a.shift == shift && a.alt == alt)
+    {
+      emit _d->onExecSignal(item.first);
+      return true;
+    }
+  }
+  return false;
+}
+
+void HotkeyManager::clear()
+{
+  _d->actions.clear();
+}
+
+void HotkeyManager::add(const std::string & name, const std::string& config)
+{
+  std::string rconfig = utils::trim(config);
+  StringArray items = utils::split(config, "+");
+
+  KeyCode code = _d->hkMapper.findType(items.valueOrEmpty(0));
+  if (!items.empty())
+    items.erase(items.begin());
+
+  if (code != KEY_KEY_CODES_COUNT)
+  {
+    HotkeyAction action;
+    action.code = code;
+    action.alt = items.contains("alt");
+    action.ctrl = items.contains("ctrl");
+    action.shift = items.contains("shift");
+
+    _d->actions[name] = action;
   }
 }
 
-Signal1<const VariantMap&>& HotkeyManager::onHotkey() { return _d->onHotkeySignal; }
-
-void HotkeyManager::load(vfs::Path file)
-{
-  VariantMap stream = config::load( file );
-  for( auto& it : stream )
-  {
-    KeyCode hotkey = _d->hkMapper.findType( it.first );
-    if( hotkey == KEY_KEY_CODES_COUNT )
-    {
-      Logger::warning( "WARNING!!! HotkeyManager: cant find equale for " + it.first );
-      continue;
-    }
-
-    HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
-    if( presentIt != _d->scripts.end() )
-    {
-      Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it.first );
-      continue;
-    }
-
-    _d->scripts[ hotkey ] = it.second.toMap();
-  }
-}
+Signal1<std::string>& HotkeyManager::onExec() { return _d->onExecSignal; }
 
 HotkeyManager::HotkeyManager() : _d(new Impl) {}
 HotkeyManager::~HotkeyManager(){}

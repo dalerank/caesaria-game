@@ -247,7 +247,7 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   default: break;
   }
 
-  Logger::warning( "!!!Warning: Unknown interval name {0}", name );
+  Logger::warning( "!!! Unknown interval name {0}", name );
   return 0;
 }
 
@@ -686,7 +686,7 @@ HouseSpecHelper& HouseSpecHelper::instance()
 
 HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
-  Logger::warning( "HouseLevelSpec INIT" );
+  Logger::debug( "HouseLevelSpec INIT" );
 }
 
 HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)

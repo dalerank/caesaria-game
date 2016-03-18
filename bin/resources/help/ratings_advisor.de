@@ -1,0 +1,8 @@
+{  
+ title : "##rating_advisor##"
+ sound : "fanfare"
+ text  : "Ihr Wertungsberater zeigt Ihnen Ihre aktuellen Wertungen für Kultur, Wohlstand, Frieden und Gunst, außerdem die Anforderungen, die Sie für die ersehnte Beförderung zu einer neuen Aufgabe erfüllen müssen. Wenn Sie ein Senatsgebäude errichten, steigen oder sinken die dort angebrachten Fahnen entsprechend Ihrer Wertungen und geben somit einen ersten Überblick darüber, wie es Ihnen gerate geht, ohne dass Sie diese Tafel extra aufrufen müssen. Durch Anklicken dieser Wertungen erhalten Sie einen kurzen Hinweis darauf, wie sie verbessert werden könnten. Lesen Sie hierzu auf die Hinweise zum Thema @Wertungen&, die detaillierten Informationen über deren Bedeutung bereithalten."
+ uri : {
+  "Wertungen" : "ratings"
+ }
+}

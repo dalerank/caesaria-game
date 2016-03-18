@@ -512,7 +512,7 @@
         {
           type : "atlas"
           folder : "/resources/entertainment"
-          files : [ "entertainment_*" ]
+          files : [ "*" ]
         }
 
         farms :

@@ -186,7 +186,6 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
 
   if( overlay != NULL )
   {
-    //Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.originalImgId() );
     if( oTile.overlay().isValid() )
       return;
 

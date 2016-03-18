@@ -1,0 +1,12 @@
+{  
+ title : "##amphitheater##"
+ sound : "fanfare"
+ text  : "Amphitheater sind größer als @Theater& und können sowohl Schauspieler als auch Gladiatorenkämpfe aufführen. Damit ein Amphitheater voll ausgenutzt werden kann, sollten Sie sowohl eine @Künstlerkolonie& als auch eine Gladiatorenschule bauen, die die nötigen Darsteller zur Verfügung stellen. Denken Sie daran, dass sämtliche Unterhaltungseinrichtungen sowohl normale Arbeitskräfte als auch Darsteller einer bestimmten Art benötigen.\n Amphitheater dehnen ihren Einfluss aus, indem die Darsteller und Gladiatoren durch die umgebende Nachbarschaft streifen. Je mehr Unterhaltungseinrichtungen ihre Darsteller durch ein bestimmtes Wohngebiet schicken, desto weiter kann es sich entwickeln. Einigermaßen hübsche Viertel benötigen typischerweise sowohl ein @Theater& als auch ein Amphitheater in Ihrer Nähe. Amphitheater steigern die Attraktivität der umliegenden Wohngebiete. Fragen Sie @Unterhaltungsberater& nach der Versorgung mit Amphitheatern in der Stadt. Wenn Sie die Darsteller eines bestimmten Amphitheaters auf ihren Wegen verfolgen möchten, wählen Sie die Spezialkarte @Unterhaltung&. Klicken Sie ein Amphitheater rechts an, um sich seinen Status anzusehen und um festzustellen, was dort momentan aufgeführt wird. Wenn eine oder beide seiner Vorstellungen nur kurze Zeit angezeigt werden, haben die Darsteller wahrscheinlich zu weite Wege bis hierher zurückzulegen. Die Zeit, die auf der Strecke verbraucht wird, fehlt nachher bei den Aufführungen.\n\nKlicken sie @hier&, um etwas über die römische Geschichte der Amphitheater im römischen Imperium zu erfahren."
+ uri : {
+  "Theater" : "theater"
+  "Künstlerkolonie" : "actorColony"
+  "Unterhaltungsberater" : "entertainment_advisor"
+  "Unterhaltung" : "Spezialkartenauswahl??"
+  "hier" : "amphitheater_history"
+ }
+}

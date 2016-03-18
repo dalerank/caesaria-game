@@ -60,7 +60,7 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   GET_DWIDGET_FROM_UI( _d, lbReceiver )
   GET_DWIDGET_FROM_UI( _d, lbMessage )
 
-  _d->videoFile = movie::Config::instance().realPath( movieName ); //"/smk/Emmigrate.smk"
+  _d->videoFile = movie::Config::instance().realPath( movieName ); 
   if( _d->videoFile.exist() )
   {
     _d->smkViewer = &add<SmkViewer>( Rect( 12, 12, width() - 12, 12 + 292 ) );

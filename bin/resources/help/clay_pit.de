@@ -1,0 +1,12 @@
+{  
+ title : "##clay_pit##"
+ sound : "fanfare"
+ text  : "Eröffnen Sie eine Tongrube, um Ton für den Export abzubauen oder um selbst Geschirr herstellen zu können. Tongruben müssen stets neben einem Gewässer gebaut werden.\nWie die meisten Gewerbebetriebe gehören in Wohngebieten auch Tongruben zu den unerwünschten Nachbarn. Tongruben benötigen Zugang zum lokalen Arbeitsmarkt und Straßenanbindung zu ihren Kunden. Wenn ein Karren mit Ton gefüllt ist, bringt ein @Arbeiter& die Ladung zur nächsten Töpferei, falls dort noch Platz ist, wenn alle Produktionsstätten vollständig versorgt sind oder nicht funktionieren, gelangt der Ton in das nächste @Lagerhaus& mit freiem Platz, von wo aus Sie ihn exportieren können. wenn Sie über die entsprechende @Handelsroute& verfügen. Tongruben zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Grube rechts an, um sich deren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat.\nGeschirr gehört zu den Waren, die Ihre eigenen Bürger für die Erweiterung ihrer Häuser brauchen.\n\nKlicken Sie @hier&, wenn Sie mehr zum Thema Tongewinnung im römischen Imperium erfahren möchten."
+ uri : {
+  "Geschirr" : "pottery (Töpferei??)"
+  "Arbeiter" : "cart_pusher (arbeiter??)"
+  "Lagerhaus" : "warehouse"
+  "Handelsroute" : "trade"
+  "hier" : "clay_pit_history"
+ }
+}

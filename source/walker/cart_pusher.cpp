@@ -143,7 +143,7 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "WARNING !!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
+  Logger::warning( "!!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
   deleteLater();
 }
 
@@ -445,7 +445,7 @@ void CartPusher::load( const VariantMap& stream )
   }
   else
   {
-    Logger::warning( "WARNING: cartPusher producer building is NULL uid={}", uniqueId() );
+    Logger::warning( "cartPusher producer building is NULL uid={}", uniqueId() );
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );

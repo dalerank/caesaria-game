@@ -59,7 +59,7 @@ public:
   ScribesListBox( Widget* p, const Rect& rect ) : ListBox( p, rect )
   {
     setFlag( selectOnMove, true );
-    setItemHeight( Font::create( FONT_1 ).getTextSize( "A" ).width() + 4 );
+    setItemsHeight( Font::create( FONT_1 ).getTextSize( "A" ).width() + 4 );
   }
 
   virtual ListBoxItem& addItem( const std::string& text, Font font, const int color=0 )

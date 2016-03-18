@@ -29,14 +29,8 @@ namespace climate
 
 typedef enum { central=0, northen, desert, count } Type;
 
-inline Type fromString( const std::string& value )
-{
-  if( value == TEXT(desert) ) return desert;
-  if( value == TEXT(central) ) return central;
-  if( value == TEXT(northen) ) return northen;
-
-  return central;
-}
+Type fromString(const std::string& value);
+void initialize(Type type);
 
 }//end namespace climate
 

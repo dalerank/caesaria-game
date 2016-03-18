@@ -169,7 +169,7 @@ void Ui::draw()
 {
   if (!_d->preRenderFunctionCalled)
   {
-    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
+    Logger::warning( "!!! Call beforeDraw() function needed" );
     return;
   }
 
@@ -244,9 +244,9 @@ Widget* Ui::findWidget(int id)
 
 Widget* Ui::findWidget(const Point &p)
 {
-  for( auto widget : children() )
+  for (auto widget : children())
   {
-    if( widget->visible() && widget->isPointInside( p ) )
+    if (widget->visible() && widget->isPointInside(p))
       return widget;
   }
 

@@ -33,11 +33,11 @@ namespace gui
 
 REGISTER_CLASS_IN_WIDGETFACTORY(Label)
 
-class LabelBackgroundHelper : public EnumsHelper<Label::BackgroundMode>
+class LabelBackgroundHelper : public EnumsHelper<Label::BackgroundStyle>
 {
 public:
   LabelBackgroundHelper()
-    : EnumsHelper<Label::BackgroundMode>(Label::bgNone)
+    : EnumsHelper<Label::BackgroundStyle>(Label::bgNone)
   {
     append( Label::bgWhite, "white" );
     append( Label::bgBlack, "black" );
@@ -57,7 +57,7 @@ public:
   Font lastBreakFont; // stored because: if skin changes, line break must be recalculated.
   Font font;
   bool OverrideBGColorEnabled;
-  Label::BackgroundMode backgroundMode;
+  Label::BackgroundStyle backgroundMode;
   bool RestrainTextInside;
   int lineIntervalOffset;
 
@@ -134,9 +134,9 @@ Label::Label(gui::Widget* parent, const Rect& rectangle, const std::string& text
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
-						 BackgroundMode background, int id)
+             BackgroundStyle background, int id)
 : Widget( parent, id, rectangle),
-	_d( new Impl )
+  _d( new Impl )
 {
   _d->is.borderVisible = border;
   _d->backgroundMode = background;
@@ -175,7 +175,7 @@ void Label::_updateTexture(gfx::Engine& painter)
   }
 
   if( _d->font.isValid() )
-  {    
+  {
     Rect frameRect( _d->text.margin.left(), _d->text.margin.top(),
                     width()-_d->text.margin.right(), height()-_d->text.margin.bottom() );
 
@@ -212,7 +212,7 @@ void Label::_updateTexture(gfx::Engine& painter)
           textRect += _d->text.offset;
           _d->font.draw( _d->text.picture, btext, textRect.lefttop(), useAlpha4Text, false );
           r += Point( 0, height + _d->lineIntervalOffset );
-        }        
+        }
       }
     }
   }
@@ -293,26 +293,34 @@ void Label::draw(gfx::Engine& painter )
 //! Get the font which is used right now for drawing
 Font Label::font() const
 {
-	/*if( index == activeFont )
-	{
-		Font overrideFont = getFont( getActiveState().getHash() );
-		Label* lb = const_cast< Label* >( this );
-		if( !overrideFont.available() )
-			overrideFont = Font( lb->getStyle().getState( lb->getActiveState() ).getFont() );
+  /*if( index == activeFont )
+  {
+    Font overrideFont = getFont( getActiveState().getHash() );
+    Label* lb = const_cast< Label* >( this );
+    if( !overrideFont.available() )
+      overrideFont = Font( lb->getStyle().getState( lb->getActiveState() ).getFont() );
 
-		return overrideFont.available() ? overrideFont : Font( getStyle().getName() );
-	}
+    return overrideFont.available() ? overrideFont : Font( getStyle().getName() );
+  }
 
-	return Widget::getFont( index );*/
+  return Widget::getFont( index );*/
 
   return _d->font;
 }
 
 //! Sets whether to draw the background
-void Label::setBackgroundMode( BackgroundMode mode )
+void Label::setBackgroundStyle(BackgroundStyle style )
 {
-  _d->backgroundMode = mode;
+  _d->backgroundMode = style;
   _d->is.needUpdate = true;
+}
+
+void Label::setBackgroundStyle(const string& style)
+{
+  LabelBackgroundHelper helper;
+  Label::BackgroundStyle mode = helper.findType(style);
+  if (mode != bgNone)
+    setBackgroundStyle( mode );
 }
 
 //! Sets whether to draw the border
@@ -360,8 +368,8 @@ void Label::Impl::breakText( const std::string& ntext, Size wdgSize )
   string word;
   string whitespace;
   string rText = text.prefix + ntext;
-	int size = rText.size();
-	int length = 0;
+  int size = rText.size();
+  int length = 0;
 
   struct {
     int space;
@@ -371,197 +379,197 @@ void Label::Impl::breakText( const std::string& ntext, Size wdgSize )
 
   const int widgetWidth = wdgSize.width() - (text.margin.left() + text.margin.right());
 
-	char c;
+  char c;
 
-	// We have to deal with right-to-left and left-to-right differently
-	// However, most parts of the following code is the same, it's just
-	// some order and boundaries which change.
+  // We have to deal with right-to-left and left-to-right differently
+  // However, most parts of the following code is the same, it's just
+  // some order and boundaries which change.
   if (!text.rightToLeft)
-	{
-		// regular (left-to-right)
-		for (int i=0; i<size; ++i)
-		{
-			c = rText[i];
-			bool lineBreak = false;
+  {
+    // regular (left-to-right)
+    for (int i=0; i<size; ++i)
+    {
+      c = rText[i];
+      bool lineBreak = false;
 
-			if( c == '\r' ) // Mac or Windows breaks
-			{
-				lineBreak = true;
-				if (rText[i+1] == '\n') // Windows breaks
-				{
-					rText.erase(i+1);
-					--size;
-				}
-				c = '\0';
-			}
-			else if (c == '\n') // Unix breaks
-			{
-				lineBreak = true;
-				c = '\0';
-			}
+      if( c == '\r' ) // Mac or Windows breaks
+      {
+        lineBreak = true;
+        if (rText[i+1] == '\n') // Windows breaks
+        {
+          rText.erase(i+1);
+          --size;
+        }
+        c = '\0';
+      }
+      else if (c == '\n') // Unix breaks
+      {
+        lineBreak = true;
+        c = '\0';
+      }
 
-			bool isWhitespace = (c == ' ' || c == 0);
-			if ( !isWhitespace )
-			{
-				// part of a word
-				word += c;
-			}
+      bool isWhitespace = (c == ' ' || c == 0);
+      if ( !isWhitespace )
+      {
+        // part of a word
+        word += c;
+      }
 
-			if ( isWhitespace || i == (size-1))
-			{
+      if ( isWhitespace || i == (size-1))
+      {
         if (word.size()>0)
-				{
-					// here comes the next whitespace, look if
-					// we must break the last word to the next line.
+        {
+          // here comes the next whitespace, look if
+          // we must break the last word to the next line.
           textChunck.space = font.getTextSize( whitespace ).width();
           textChunck.word = font.getTextSize( word ).width();
 
           if( textChunck.word > widgetWidth )
-					{
-						// This word is too long to fit in the available space, look for
-						// the Unicode Soft HYphen (SHY / 00AD) character for a place to
-						// break the word at
-						int where = word.find_first_of( char(0xAD) );
-						if (where != -1)
-						{
-							string first  = word.substr(0, where);
-							string second = word.substr(where, word.size() - where);
-							brokenText.push_back(line + first + "-");
-							const int secondLength = font.getTextSize( second ).width();
+          {
+            // This word is too long to fit in the available space, look for
+            // the Unicode Soft HYphen (SHY / 00AD) character for a place to
+            // break the word at
+            int where = word.find_first_of( char(0xAD) );
+            if (where != -1)
+            {
+              string first  = word.substr(0, where);
+              string second = word.substr(where, word.size() - where);
+              brokenText.push_back(line + first + "-");
+              const int secondLength = font.getTextSize( second ).width();
 
-							length = secondLength;
-							line = second;
-						}
-						else
-						{
-							// No soft hyphen found, so there's nothing more we can do
-							// break to next line
-							if (length)
-								brokenText.push_back(line);
+              length = secondLength;
+              line = second;
+            }
+            else
+            {
+              // No soft hyphen found, so there's nothing more we can do
+              // break to next line
+              if (length)
+                brokenText.push_back(line);
               length = textChunck.word;
-							line = word;
-						}
-					}
+              line = word;
+            }
+          }
           else if (length && (length + textChunck.length() > widgetWidth))
-					{
-						// break to next line
-						brokenText.push_back(line);
+          {
+            // break to next line
+            brokenText.push_back(line);
             length = textChunck.word;
-						line = word;
-					}
-					else
-					{
-						// add word to line
-						line += whitespace;
-						line += word;
+            line = word;
+          }
+          else
+          {
+            // add word to line
+            line += whitespace;
+            line += word;
             length += textChunck.length();
-					}
+          }
 
-					word = "";
-					whitespace = "";
-				}
+          word = "";
+          whitespace = "";
+        }
 
-				if ( isWhitespace )
-				{
-					whitespace += c;
-				}
+        if ( isWhitespace )
+        {
+          whitespace += c;
+        }
 
-				// compute line break
-				if (lineBreak)
-				{
-					line += whitespace;
-					line += word;
-					brokenText.push_back(line);
-					line = "";
-					word = "";
-					whitespace = "";
-					length = 0;
-				}
-			}
-		}
+        // compute line break
+        if (lineBreak)
+        {
+          line += whitespace;
+          line += word;
+          brokenText.push_back(line);
+          line = "";
+          word = "";
+          whitespace = "";
+          length = 0;
+        }
+      }
+    }
 
-		line += whitespace;
-		line += word;
-		brokenText.push_back(line);
-	}
-	else
-	{
-		// right-to-left
-		for (int i=size; i>=0; --i)
-		{
-			c = rText[i];
-			bool lineBreak = false;
+    line += whitespace;
+    line += word;
+    brokenText.push_back(line);
+  }
+  else
+  {
+    // right-to-left
+    for (int i=size; i>=0; --i)
+    {
+      c = rText[i];
+      bool lineBreak = false;
 
       if (c == '\r') // Mac or Windows breaks
-			{
-				lineBreak = true;
+      {
+        lineBreak = true;
         if ((i>0) && rText[i-1] == '\n') // Windows breaks
-				{
-					rText.erase(i-1);
-					--size;
-				}
-				c = '\0';
-			}
+        {
+          rText.erase(i-1);
+          --size;
+        }
+        c = '\0';
+      }
       else if (c == '\n') // Unix breaks
-			{
-				lineBreak = true;
-				c = '\0';
-			}
+      {
+        lineBreak = true;
+        c = '\0';
+      }
 
       if (c==' ' || c==0 || i==0)
-			{
-				if (word.size())
-				{
-					// here comes the next whitespace, look if
-					// we must break the last word to the next line.
+      {
+        if (word.size())
+        {
+          // here comes the next whitespace, look if
+          // we must break the last word to the next line.
           textChunck.space = font.getTextSize( whitespace ).width();
           textChunck.word = font.getTextSize( word ).width();
 
           if (length && (length + textChunck.length() > widgetWidth))
-					{
-						// break to next line
-						brokenText.push_back(line);
+          {
+            // break to next line
+            brokenText.push_back(line);
             length = textChunck.word;
-						line = word;
-					}
-					else
-					{
-						// add word to line
-						line = whitespace + line;
-						line = word + line;
+            line = word;
+          }
+          else
+          {
+            // add word to line
+            line = whitespace + line;
+            line = word + line;
             length += textChunck.length();
-					}
+          }
 
-					word = "";
-					whitespace = "";
-				}
+          word = "";
+          whitespace = "";
+        }
 
-				if (c != 0)
-					whitespace = string(&c, 1) + whitespace;
+        if (c != 0)
+          whitespace = string(&c, 1) + whitespace;
 
-				// compute line break
-				if (lineBreak)
-				{
-					line = whitespace + line;
-					line = word + line;
-					brokenText.push_back(line);
-					line = "";
-					word = "";
-					whitespace = "";
-					length = 0;
-				}
-			}
-			else
-			{
-				// yippee this is a word..
-				word = string(&c, 1) + word;
-			}
-		}
+        // compute line break
+        if (lineBreak)
+        {
+          line = whitespace + line;
+          line = word + line;
+          brokenText.push_back(line);
+          line = "";
+          word = "";
+          whitespace = "";
+          length = 0;
+        }
+      }
+      else
+      {
+        // yippee this is a word..
+        word = string(&c, 1) + word;
+      }
+    }
 
-		line = whitespace + line;
-		line = word + line;
-		brokenText.push_back(line);
-	}
+    line = whitespace + line;
+    line = word + line;
+    brokenText.push_back(line);
+  }
 }
 
 
@@ -633,7 +641,7 @@ void Label::beforeDraw(gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
-Label::BackgroundMode Label::backgroundMode() const {  return _d->backgroundMode; }
+Label::BackgroundStyle Label::backgroundStyle() const {  return _d->backgroundMode; }
 
 bool Label::onEvent(const NEvent& event)
 {
@@ -713,6 +721,12 @@ void Label::setBackgroundPicture(const Picture& picture, Point offset )
   _d->is.needUpdate = true;
 }
 
+void Label::setBackgroundPicture(const std::string & rcname)
+{
+  Picture pic(rcname);
+  setBackgroundPicture(pic);
+}
+
 void Label::setIcon(const Picture& icon, Point offset )
 {
   _d->icon.picture = icon;
@@ -788,43 +802,41 @@ void Label::setLineIntervalOffset( const int offset )
 
 void Label::setupUI(const VariantMap& ui)
 {
-  Widget::setupUI( ui );
+  Widget::setupUI(ui);
 
-  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
-  setBackgroundPicture( Picture( ui.get( "image" ).toString() ) );
-  setWordwrap( (bool)ui.get( "multiline", false ) );
+  setFont(Font::create( ui.get( "font", std::string("FONT_2")).toString()));
+  setBackgroundPicture( Picture(ui.get("image").toString()));
+  setWordwrap((bool)ui.get("multiline", false));
 
-  Variant vTextOffset = ui.get( "text.offset" );
-  if( vTextOffset.isValid() ){ setTextOffset( vTextOffset.toPoint() ); }
+  Variant vTextOffset = ui.get("text.offset");
+  if (vTextOffset.isValid()) { setTextOffset(vTextOffset.toPoint()); }
 
-  Variant vIcon = ui.get( "icon" );
-  if( vIcon.isValid() )
+  Variant vIcon = ui.get("icon");
+  if (vIcon.isValid())
   {
-    Point iconOffset = ui.get( "icon.offset" ).toPoint();
-    setIcon( Picture( vIcon.toString() ), iconOffset );
+    Point iconOffset = ui.get("icon.offset").toPoint();
+    setIcon( Picture(vIcon.toString()), iconOffset);
   }
 
-  Variant marginLefttop = ui.get( "margin.lefttop" );
-  if( marginLefttop.isValid() )
+  Variant marginLefttop = ui.get("margin.lefttop");
+  if (marginLefttop.isValid())
   {
     Point value = marginLefttop.toPoint();
-    _d->text.margin.setLeft( value.x() );
-    _d->text.margin.setTop( value.y() );
+    _d->text.margin.setLeft(value.x());
+    _d->text.margin.setTop(value.y());
   }
 
-  Variant margin = ui.get( "margin" );
-  if( margin.isValid() )
+  Variant margin = ui.get("margin");
+  if (margin.isValid())
   {
     _d->text.margin = margin.toRect();
   }
 
-  LabelBackgroundHelper helper;
-  Label::BackgroundMode mode = helper.findType( ui.get( "bgtype" ).toString() );
-  if( mode != bgNone )
-    setBackgroundMode( mode );
+  setBackgroundStyle(ui.get("bgtype").toString());
 }
 
-void Label::setTextOffset(Point offset) {  _d->text.offset = offset;}
+void Label::setTextOffset(Point offset) { _d->text.offset = offset; _d->is.needUpdate = true;}
+void Label::setTextOffset(int x, int y) { _d->text.offset = Point(x,y); _d->is.needUpdate = true; }
 Picture& Label::_textPicture() { return _d->text.picture; }
 Batch& Label::_background() { return _d->background.batch; }
 Pictures& Label::_backgroundNb() { return _d->background.fallback; }

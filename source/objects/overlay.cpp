@@ -25,6 +25,7 @@
 #include "core/variant_list.hpp"
 #include "objects_factory.hpp"
 #include "core/logger.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace gfx;
 
@@ -32,12 +33,12 @@ namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
 static SimpleLogger LOG_OVERLAY(TEXT(Overlay));
+static Picture invalidSavePicture;
 }
-
 
 class Overlay::Impl
 {
-public:  
+public:
   Pictures fgPictures;
   object::Type overlayType;
   object::Group overlayClass;
@@ -92,8 +93,20 @@ Tilemap& Overlay::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  Logger::warning( "!!! City is null at Overlay::_map()" );
   return config::tilemap.invalid();
+}
+
+int Overlay::_cityOpt(int name)
+{
+  if(_d->city.isNull())
+  {
+    Logger::warning("!!! Try to get city option when city not initialized");
+    crashhandler::printstack(false);
+    return 0;
+  }
+
+  return _d->city->getOption((PlayerCity::OptionType)name);
 }
 
 void Overlay::setPicture(Picture picture)
@@ -210,16 +223,15 @@ void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
-void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
+void Overlay::afterLoad() {}
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
-Animation& Overlay::_animation(){  return _d->animation;}
+Animation& Overlay::_animation() { return _d->animation;}
 Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
-gfx::Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
-Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
-const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
+Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
+const Picture& Overlay::_fgPicture( unsigned int index ) const { return _d->fgPictures[index]; }
 Picture& Overlay::_picture(){  return _d->picture; }
 object::Group Overlay::group() const{  return _d->overlayClass;}
 void Overlay::setPicture(const std::string& resource, const int index){ _picture().load( resource, index ); }
@@ -233,6 +245,19 @@ bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const { return _d->overlayType;}
+
+Picture& Overlay::_fgPicture(unsigned int index)
+{
+  if (index >= _d->fgPictures.size())
+  {
+    LOG_OVERLAY.warn( "_fgPicture try get picture over array you need set size for fgpicture before" );
+    crashhandler::printstack(false);
+    if (index>9)
+      return invalidSavePicture;
+    _d->fgPictures.resize(index + 1);
+  }
+  return _d->fgPictures[index];
+}
 
 const TilePos& Overlay::pos() const
 {

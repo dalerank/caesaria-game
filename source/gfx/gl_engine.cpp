@@ -213,14 +213,14 @@ void FrameBuffer::_createFramebuffer( unsigned int& id )
   int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
   {
-    Logger::warning( "FrameBuffer:: init framebuffer so good ");
+    Logger::debug( "FrameBuffer:: init framebuffer so good ");
   }
   else
   {
      if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
      {
        _isOk = false;
-       Logger::warning("FrameBuffer:: init framebuffer failed");
+       Logger::debug("FrameBuffer:: init framebuffer failed");
      }
   }
 }
@@ -407,7 +407,7 @@ void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
   glGetProgramiv(_program, GL_LINK_STATUS, &linked);
   if( linked )
   {
-    Logger::warning( "GlEngine: sucessful link shader program " + fragmentShader.toString() );
+    Logger::debug( "GlEngine: sucessful link shader program " + fragmentShader.toString() );
   }
 #endif
 }
@@ -505,7 +505,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
+      Logger::fatal( "!!! Unable to create SDL-window: {0}", SDL_GetError() );
       THROW("Failed to create window");
     }
   }
@@ -527,7 +527,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
+  Logger::debug( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -577,7 +577,7 @@ void GlEngine::init()
 
   _d->context = SDL_GL_CreateContext(_d->window);
 
-  Logger::warning("SDLGraficEngine: init successfull");
+  Logger::debug("SDLGraficEngine: init successfull");
 #endif
 
 #ifdef GAME_USE_FRAMEBUFFER
@@ -612,11 +612,11 @@ void GlEngine::init()
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
-  Logger::warning( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
-  Logger::warning( "Vendor     : {}", glGetString(GL_VENDOR));
-  Logger::warning( "Renderer   : {}", glGetString(GL_RENDERER));
-  Logger::warning( "Version    : {}", glGetString(GL_VERSION));
-  Logger::warning( "Extensions : {}", glGetString(GL_EXTENSIONS));
+  Logger::debug( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
+  Logger::debug( "Vendor     : {}", glGetString(GL_VENDOR));
+  Logger::debug( "Renderer   : {}", glGetString(GL_RENDERER));
+  Logger::debug( "Version    : {}", glGetString(GL_VERSION));
+  Logger::debug( "Extensions : {}", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -633,7 +633,7 @@ void GlEngine::init()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  Logger::warning( "GrafixEngine: set caption");
+  Logger::debug( "GrafixEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
                                                GAME_VERSION_MAJOR, GAME_VERSION_MINOR, GAME_VERSION_REVSN,
                                                GAME_PLATFORM_NAME, GAME_COMPILER_NAME );

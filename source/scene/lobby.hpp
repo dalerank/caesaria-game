@@ -45,10 +45,11 @@ public:
     unlknowState=0xff
   } Result;
 
-  Lobby( Game& game, gfx::Engine& engine );
+  Lobby(Game& game, gfx::Engine& engine);
   virtual ~Lobby();
 
   virtual void handleEvent( NEvent& event);
+  virtual void setOption(const std::string &name, Variant value);
 
   virtual void draw();
   virtual void initialize();
@@ -58,13 +59,11 @@ public:
   std::string playerName() const;
 
   int result() const;
-  void reload();
-  void newGame();
-  bool isStopped() const;
+  void setMode(int mode);
 
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace scene

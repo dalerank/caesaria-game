@@ -322,32 +322,32 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
   {
     for( unsigned int x=0; x < p->width(); x += backgr.width() )
     {
-      pics.append( backgr, Point( x, -y ) );
+      pics.append( backgr, Point( x, -1*y ) );
     }
   }
 
   Picture lrBorderPic( ResourceGroup::empirepnls, 1 );
   for( unsigned int y = 0; y < p->height(); y += lrBorderPic.height() )
   {
-    pics.append( lrBorderPic, Point( 0, -y ) );
-    pics.append( lrBorderPic, Point( p->width() - lrBorderPic.width(), -y ) );
+    pics.append( lrBorderPic, Point( 0, -1*y ) );
+    pics.append( lrBorderPic, Point( p->width() - lrBorderPic.width(), -1*y ) );
   }
 
   Picture tdBorderPic( ResourceGroup::empirepnls, 2 );
   for( unsigned int x = 0; x < p->width(); x += tdBorderPic.width() )
   {
-    pics.append( tdBorderPic, Point( x, 0 ) );
-    pics.append( tdBorderPic, Point( x, -p->height() + tdBorderPic.height() ) );
-    pics.append( tdBorderPic, Point( x, -p->height() + bottonMargin ) );
+    pics.append(tdBorderPic, Point( x, 0 ) );
+    pics.append(tdBorderPic, Point( x, tdBorderPic.height() - p->height()) );
+    pics.append(tdBorderPic, Point( x, bottonMargin - p->height()) );
   }
 
   Picture corner( ResourceGroup::empirepnls, 3 );
   pics.append( corner, Point( 0, 0 ) );    //left top
-  pics.append( corner, Point( 0, -p->height() + corner.height() ) ); //top right
+  pics.append( corner, Point( 0, corner.height()-p->height()) ); //top right
   pics.append( corner, Point( p->width() - corner.width(), 0 ) ); //left bottom
   pics.append( corner, Point( p->width() - corner.width(), -p->height() + corner.height() ) ); //bottom right
   pics.append( corner, Point( 0, -p->height() + bottonMargin ) ); //left middle
-  pics.append( corner, Point( p->width() - corner.width(), -p->height() + bottonMargin ) ); //right middle
+  pics.append( corner, Point( p->width() - corner.width(), bottonMargin - p->height()) ); //right middle
 
   Picture leftEagle( ResourceGroup::empirepnls, 7 );
   Picture rightEagle( ResourceGroup::empirepnls, 8 );
@@ -359,7 +359,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
                                     -p->height() + (bottonMargin - eagleOffset.height() + rightEagle.height() + 10) ) );
 
   pics.append( centerPicture, Point( (p->width() - centerPicture.width()) / 2,
-                                      -p->height() + (bottonMargin + centerPicture.height() - 20)) );
+                                      (bottonMargin + centerPicture.height() - 20)-p->height()) );
 
   if( centerPicture.texture() == corner.texture() )
   {
@@ -775,7 +775,7 @@ void EmpireMapWindow::_changePosition()
     Size tlpSize( elm.textWidth() + 20, elm.textHeight() + 2 );
     if( tlpSize.width() > width() * 0.75 )
     {
-      tlpSize.setWidth( width() * 0.5 );
+      tlpSize.setWidth( width() / 2 );
       tlpSize.setHeight( elm.textHeight() * 2 + 10 );
       elm.setWordwrap( true );
     }

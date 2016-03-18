@@ -1,0 +1,11 @@
+{  
+ title : "##advchief_education##"
+ sound : "fanfare"
+ text  : "Dieser Berater fasst zusammen, wie viele funktionierende Schulen, Akademien und Bibliotheken in Ihrer Stadt vorhanden sind. Die Anzahl der Menschen, die diese Einrichtungen nutzen, und die allgemeine Versorgung der Stadt ist ebenfalls dort festgehalten. Wenn Sie ein Defizit in einem oder mehreren Bereichen entdecken, benutzen Sie die @Spezialkarte Bildung&, um die Viertel zu finden, die von neuen Einrichtungen am meisten profitieren würden.\nBeachten Sie die Anzahl der Kinder im Schul- und Akademiealter in Ihrer Stadt. Vergleichen Sie sie mit der Anzahl der Kinder in der Spalte 'Bietet Erziehung für', um festzustellen, wie gut Ihre Stadt für die Bildung der jungen Leute sorgt. Die Größe der Klassen beeinflusst die @Kulturwertung& Ihrer Stadt. Wenn es 300 Kinder im Schulalter gibt und Ihre Stadt nur zwei Schulen hat, die jeweils 75 Kinder unterrichten können, kommen zwei Kinder auf einen freien Schulplatz, was zu großen Klassen und einer Beeinträchtigung der Kulturwertung führt. Wenn es für dieselben 300 Kinder vier Schulen gibt, ist die Größe der Klasse genau richtig und die Kultur profitiert davon.\n\nLesen Sie hierzu @Bildung& und @Wertungen&, um die Funktionsweise dieser Tafel besser verstehen zu können."
+ uri : {
+  "Spezialkarte Bildung" : "Spezialkartenauswahl??"
+  "Kulturwertung" : "ratings"
+  "Bildung" : "education"
+  "Wertungen" : "ratings"
+ }
+}

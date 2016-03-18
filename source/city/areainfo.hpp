@@ -30,6 +30,7 @@ class AreaInfo
 public:
   PlayerCityPtr city;
   TilePos pos;
+  bool onload = false;
 
   const gfx::TilesArray& tiles() const;
   const gfx::Tile& tile() const;

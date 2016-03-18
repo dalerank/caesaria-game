@@ -43,14 +43,14 @@ static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass
 class GranaryStore : public good::Storage
 {
 public:
-  enum { maxCapacity = 2400, startCapacity = maxCapacity/4 };
+  enum { maxCapacity = 2400 };
 
   GranaryStore()
   {
     for (auto gtype : good::foods())
     {
       setOrder(gtype, good::Orders::accept);
-      setCapacity(gtype, startCapacity);
+      setCapacity(gtype, maxCapacity);
     }
 
     setOrder(good::fish, good::Orders::none);
@@ -234,12 +234,6 @@ std::string Granary::troubleDesc() const
 
 const Pictures& Granary::pictures(Renderer::Pass pass) const
 {
-  switch( pass )
-  {
-  //case Renderer::overWalker: return _d->granarySprite;
-  default: break;
-  }
-
   return Building::pictures( pass );
 }
 

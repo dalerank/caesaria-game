@@ -55,19 +55,5 @@ private:
   unsigned int _count;
 };
 
-class ChangeSpeed : public GameEvent
-{
-public:
-  static GameEventPtr create( int value );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec( Game& game, unsigned int ) const;
-
-private:
-  ChangeSpeed();
-  int _value;
-};
-
 } //end namespace events
 #endif //_CAESARIA_CHANGE_SPEED_EVENT_H_INCLUDE_

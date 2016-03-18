@@ -30,11 +30,12 @@ class HotkeyManager : public StaticSingleton<HotkeyManager>
 {
   SET_STATICSINGLETON_FRIEND_FOR(HotkeyManager)
 public:
-  void load( vfs::Path file );
-  void execute( int keyCode );
+  bool execute(int keyCode, bool ctrl, bool shift, bool alt);
+  void clear();
+  void add(const std::string& name, const std::string& config);
 
 public signals:
-  Signal1<const VariantMap&>& onHotkey();
+  Signal1<std::string>& onExec();
 
 private:
   HotkeyManager();

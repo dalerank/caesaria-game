@@ -46,9 +46,9 @@ public:
            bool drawBack=false, bool mos=false);
 
   //! constructor
-  ListBox( Widget* parent,
-           const RectF& rectangle, int id=-1, bool clip=true,
-           bool drawBack=false, bool mos=false);
+  ListBox(Widget* parent,
+          const RectF& rectangle, int id=-1, bool clip=true,
+          bool drawBack=false, bool mos=false);
 
   //! destructor
   virtual ~ListBox();
@@ -59,6 +59,7 @@ public:
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
   virtual ListBoxItem& item(unsigned int id);
 
+  //!
   virtual ListBoxItem& selectedItem();
 
   //! clears the list
@@ -67,9 +68,13 @@ public:
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
 
+  //!
   virtual int  findItem(const std::string& text) const;
 
+  //!
   virtual void setSelectedTag(const Variant& tag);
+
+  //!
   virtual void setSelectedWithData(const std::string& name, const Variant& data);
 
   //! sets the selected item. Set this to -1 if no item should be selected
@@ -79,7 +84,7 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   //! removes an item from the list
   virtual void removeItem(unsigned int id);
@@ -88,17 +93,23 @@ public:
   virtual int itemAt(Point pos) const;
 
   //! set all item colors of specified type at given index to color
-  virtual void setItemOverrideColor( unsigned int index, const int color, 
+  virtual void setItemOverrideColor( unsigned int index, const int color,
                                      ListBoxItem::ColorType colorType=ListBoxItem::all );
 
   //! set whether the listbox should scroll to newly selected items
   virtual void setAutoScrollEnabled(bool scroll);
+
+  //!
+  void setScrollbarVisible(bool visible);
 
   //! returns true if automatic scrolling is enabled, false if not.
   virtual bool isAutoScrollEnabled() const;
 
   //! clear all item colors at index
   virtual void resetItemOverrideColor(unsigned int index);
+
+  //!
+  void setItemEnabled(unsigned int index, bool enabled);
 
   //! clear item color at index for given colortype
   virtual void resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType);
@@ -113,14 +124,24 @@ public:
   virtual NColor itemDefaultColor( ListBoxItem::ColorType colorType) const;
 
   //! set default color which will used for the given colorType
-  virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, NColor color );
+  virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, const NColor& color );
 
-  virtual void setItemFont( Font font );
+  //! set default color which will used for the given colorType
+  virtual void setItemDefaultColor(const std::string& typeName, const std::string& colorName );
+
+  //!
+  virtual void setItemsFont(Font font);
+
+  //!
+  virtual void setItemTooltip(unsigned int index, const std::string& text);
 
   //! set the item at the given index
-  virtual void setItem( unsigned int index, std::string text);
+  virtual void setItemText(unsigned int index,const std::string& text);
+
+  //!
   virtual void setItemData(unsigned int index, const std::string& name, Variant tag);
 
+  //!
   virtual Variant getItemData(unsigned int index, const std::string& name);
 
   //! Insert the item at the given index
@@ -131,44 +152,63 @@ public:
   virtual void swapItems(unsigned int index1, unsigned int index2);
 
   //! set global itemHeight
-  virtual void setItemHeight( int height );
+  virtual void setItemsHeight(int height);
 
-  virtual int itemHeight() const;
+  //!
+  virtual int itemsHeight() const;
 
-  virtual void setItemAlignment( int index, Alignment horizontal, Alignment vertical );
+  //!
+  virtual void setItemAlignment(int index, Alignment horizontal, Alignment vertical);
 
   //! Sets whether to draw the background
-  virtual void setDrawBackground(bool draw);
+  virtual void setBackgroundVisible(bool draw);
 
   //! adds an list item with an icon
   //! \param text Text of list entry
   //! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
   //! \return
   //! returns the id of the new created item
-  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
-  virtual ListBoxItem& addItem( gfx::Picture pic );
+  virtual ListBoxItem& addItem(const std::string& text, Font font=Font(), const int color=0);
 
+  //!
+  virtual ListBoxItem& addItem(gfx::Picture pic);
+
+  //!
   virtual int addLine(const std::string& text);
 
-  virtual void fitText( const std::string& text );
+  //!
+  virtual void fitText(const std::string& text);
 
-  virtual void addItems( const StringArray& strings );
+  //!
+  virtual void addLines(const StringArray& strings);
 
+  //!
   virtual Font font() const;
 
+  //!
+  virtual void setMargin(int type, int value);
+
+  //!
   virtual int selected();
 
-  virtual void beforeDraw( gfx::Engine& painter );
+  //!
+  virtual void beforeDraw(gfx::Engine& painter);
+
+  //!
   virtual void refresh();
 
-  virtual void setItemTextOffset(Point p);
+  //!
+  virtual void setItemsTextOffset(Point p);
 
+  //!
   virtual void setupUI(const VariantMap &ui);
 
 signals public:
   Signal1<const ListBoxItem&>& onItemSelectedAgain();
-  Signal2<Widget*,int>& onIndexSelectedEx();
   Signal1<const ListBoxItem&>& onItemSelected();
+
+  Signal2<Widget*,int>& onIndexSelectedEx();
+  Signal2<Widget*,int>& onIndexSelectedAgainEx();
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar

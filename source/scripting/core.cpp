@@ -17,6 +17,7 @@
 
 #include "core.hpp"
 #include "picoc/mujs.h"
+
 #include <GameApp>
 #include <GameObjects>
 #include <GameVfs>
@@ -24,12 +25,17 @@
 #include <GameLogger>
 #include <GameScene>
 #include <GameCore>
+#include <GameGfx>
 #include <GameCity>
+#include <GameWorld>
 
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
 
 using namespace gui;
+using namespace gui::dialog;
+using namespace city;
+using namespace world;
 using namespace vfs;
 
 namespace script
@@ -45,7 +51,36 @@ js_State *J = nullptr;
 
 inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
-inline void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+
+Variant to(js_State *J, int n, Variant)
+{
+  if(js_isboolean(J,n))
+    return Variant(js_toboolean(J,n));
+
+  if(js_isnull(J,n))
+    return Variant();
+
+  if(js_isnumber(J,n))
+    return Variant(js_tonumber(J,n));
+
+  if(js_isstring(J,n))
+    return Variant(std::string(js_tostring(J,n)));
+
+  Logger::warning("!!! Cant convert jValue to Variant");
+  return Variant();
+}
+
+void tryPCall(js_State *J, int params)
+{
+  int error = js_pcall(internal::J, params);
+  if (error)
+  {
+    std::string str = js_tostring(internal::J, -1);
+    Logger::warning(str);
+  }
+  js_pop(internal::J, -1);
+
+}
 
 void push(js_State* J,const Size& size)
 {
@@ -55,6 +90,10 @@ void push(js_State* J,const Size& size)
   js_pushnumber(J, size.height());
   js_setproperty(J, -2, "h");
 }
+
+void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+void push(js_State* J, const Path& p) { js_pushstring(J,p.toCString()); }
+void push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
 int push(js_State* J,const Variant& param)
 {
@@ -80,6 +119,19 @@ int push(js_State* J,const Variant& param)
     return 0;
   break;
 
+  case Variant::NStringArray:
+  {
+    auto items = param.toStringArray();
+    js_newarray(J);
+    for (uint32_t i = 0; i < items.size(); i++)
+    {
+      js_pushstring(J, items[i].c_str());
+      js_setindex(J, -2, i);
+    }
+    return 0;
+  }
+  break;
+
   case Variant::Char:
   case Variant::String:
     js_pushstring(J, param.toString().c_str());
@@ -93,12 +145,20 @@ int push(js_State* J,const Variant& param)
   return 1;
 }
 
+void pushud(js_State* J, const std::string& name, void* v)
+{
+  js_newobject(J);
+  js_getglobal(J, name.c_str());
+  js_getproperty( J, -1, "prototype");
+  js_newuserdata(J, "userdata", v, nullptr);
+}
+
 void push(js_State *J, const StringArray& items)
 {
   js_newarray(J);
-  for (uint32_t i=0; i<items.size(); i++)
+  for (uint32_t i = 0; i<items.size(); i++)
   {
-    push(J, items[i]);
+    js_pushstring(J, items[i].c_str());
     js_setindex(J, -2, i);
   }
 }
@@ -113,9 +173,58 @@ void push(js_State *J, const VariantMap& items)
   }
 }
 
+void push(js_State* J, const DateTime& t)
+{
+  auto pd = new DateTime(t);
+  pushud(J, TEXT(DateTime), pd);
+}
+
+#define PUSH_SAVEDDATA(type) void push(js_State* J, const type& p) { push(J, p.save()); }
+#define PUSH_USERDATA(type) void push(js_State* J, type* p) { pushud(J, #type, p); }
+
+PUSH_SAVEDDATA(States)
+PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(PlayerCity)
+PUSH_USERDATA(Player)
+PUSH_USERDATA(Emperor)
+PUSH_USERDATA(Empire)
+
+inline DateTime to(js_State *J, int n, DateTime)
+{
+  if (js_isuserdata(J, 1, "userdata"))
+  {
+    DateTime* dt = (DateTime*)js_touserdata(J, 1, "userdata");
+    return *dt;
+  }
+
+  return DateTime();
+}
+
+inline StringArray to(js_State *J, int n, StringArray)
+{
+  if (!js_isarray(J, 1))
+  {
+    Logger::warning("!!! Object is not an string array");
+    return StringArray();
+  }
+
+  int length = js_getlength(J, n);
+  StringArray ret;
+  for (int i = 0; i < length; ++i)
+  {
+    js_getindex(J, n, i);
+    std::string tmp = js_tostring(J, -1);
+    js_pop(J, 1);
+    ret.push_back(tmp);
+  }
+
+  return ret;
+}
+
+inline bool to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
-inline PointF to(js_State *J, int n, PointF) { return PointF( js_tonumber(J, n), js_tonumber(J, n+1) );}
+inline PointF to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
 inline Rect to(js_State *J, int n, Rect)
 {
@@ -125,6 +234,11 @@ inline Rect to(js_State *J, int n, Rect)
 
 } //end namespace internal
 
+void enginePanic(js_State *J)
+{
+  Logger::warning("JSE !!! Uncaught exception: %s\n", js_tostring(J, -1));
+}
+
 void engineLog(js_State *J)
 {
   const char *text = js_tostring(J, 1);
@@ -132,12 +246,31 @@ void engineLog(js_State *J)
   js_pushundefined(J);
 }
 
+void engineLoadArchive(js_State* J)
+{
+  Path archivePath = js_tostring(J, 1);
+  bool ignoreCase = js_toboolean(J, 2)>0;
+
+  Directory dir = archivePath.directory();
+  Path arcPath = dir.find(archivePath.baseName(), ignoreCase ? Path::ignoreCase : Path::nativeCase);
+
+  ArchivePtr archive = FileSystem::instance().mountArchive(arcPath);
+  if (archive.isNull())
+  {
+    Logger::warning("!!! JS:LoadArchive can't load file " + archivePath.toString());
+    return;
+  }
+
+  ResourceLoader rc;
+  NFile atlasInfo = archive->createAndOpenFile("info");
+  if (atlasInfo.isOpen()) { rc.loadAtlases(atlasInfo, false); }
+  else { rc.loadFiles(archive); }
+}
+
 void engineReloadFile(vfs::Path path)
 {
-  if( internal::files.count( path.toString() ) )
-  {
-    Core::loadModule( path.toString() );
-  }
+  if (internal::files.count( path.toString()))
+    Core::loadModule(path.toString());
 }
 
 void engineSetVolume(js_State *J)
@@ -167,7 +300,7 @@ void engineGetOption(js_State *J)
   Variant value = game::Settings::get(name);
   int error = internal::push(J, value);
   if (error)
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineGetOption" );
+    Logger::warning( "!!! Undefined value for js.pcall engineGetOption when find " + name );
 }
 
 void engineSetOption(js_State *J)
@@ -180,7 +313,7 @@ void engineSetOption(js_State *J)
   else if (js_isstring(J,2))
     game::Settings::set(name, std::string(js_tostring(J,2)));
   else
-    Logger::warning( "WARNING !!! Undefined value for js.pcall engineSetOption" );
+    Logger::warning( "!!! Undefined value for js.pcall engineSetOption when set " + name );
 
   game::Settings::save();
 }
@@ -188,7 +321,7 @@ void engineSetOption(js_State *J)
 void reg_object_callback(const std::string& name, const std::string& funcname, js_CFunction f, int params)
 {
   js_newcfunction(internal::J, f, funcname.c_str(), params);
-  Logger::warning( "script://" + name + "_set_" + funcname + "->" + funcname);
+  Logger::debug( "script-if://" + name + "_set_" + funcname + "->" + funcname);
   js_defproperty(internal::J, -2, funcname.c_str(), JS_DONTENUM);
 }
 
@@ -207,9 +340,8 @@ void script_object_begin(const std::string& name)
 
 void reg_object_constructor(const std::string& name, js_CFunction f)
 {
-  std::string _name = "_"+name;
-  js_newcconstructor(internal::J, f, f, _name.c_str(), 1);
-  js_defglobal(internal::J, _name.c_str(), JS_DONTENUM);
+  js_newcconstructor(internal::J, f, f, name.c_str(), 1);
+  js_defglobal(internal::J, name.c_str(), JS_DONTENUM);
 }
 
 Core& Core::instance()
@@ -223,7 +355,7 @@ void Core::loadModule(const std::string& path)
   vfs::Path rpath(path);
   if (!rpath.exist())
   {
-    Logger::warning("WARNING !!! Cant find script at {}", rpath.toString());
+    Logger::warning("!!! Cant find script at {}", rpath.toString());
     return;
   }
 
@@ -235,13 +367,7 @@ void Core::loadModule(const std::string& path)
   }
 
   js_getglobal(internal::J,"");
-  error = js_pcall(internal::J,0);
-  if (error)
-  {
-    std::string str = js_tostring(internal::J,-1);
-    Logger::warning( str );
-  }
-  js_pop(internal::J,-1);
+  internal::tryPCall(internal::J, 0);
 }
 
 void Core::execFunction(const std::string& funcname)
@@ -257,25 +383,10 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   {
     int error = internal::push(internal::J,param);
     if (error)
-      Logger::warning("WARNING !!! Undefined value for js.pcall " + funcname);
+      Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
-  int error = js_pcall(internal::J,params.size());
 
-  if (error)
-  {
-    Logger::warning("WARNING !!! Some errors in js.pcall " + funcname);
-    std::string str = js_tostring(internal::J,-1);
-    Logger::warning(str);
-  }
-  else
-    js_pop(internal::J,1);
-}
-
-void constructor_Session(js_State *J)
-{
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", internal::session, nullptr);
+  internal::tryPCall(internal::J,params.size());
 }
 
 template<typename T>
@@ -298,12 +409,19 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
 {
   try
   {
+    auto* ptrCheck = safety_cast<Widget*>(widget);
+    if(!ptrCheck)
+    {
+      Logger::warning( "!!! Callback " + className + ":" + callback + " called not for widget");
+      return;
+    }
+
     if (widget)
     {
       std::string index = widget->getProperty(callback);
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
-      js_pcall(internal::J,0);
+      internal::tryPCall(internal::J,0);
       js_pop(internal::J,1);
     }
     else
@@ -324,7 +442,7 @@ void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callb
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
       internal::push(internal::J, value);
-      js_pcall(internal::J,1);
+      internal::tryPCall(internal::J,1);
       js_pop(internal::J,1);
     }
     else
@@ -357,23 +475,35 @@ void widget_set_callback_0(js_State *J,Signal1<Widget*>& (T::*f)(),
 template<typename T>
 void object_call_func_0(js_State *J, void (T::*f)())
 {
-  T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
-    (parent->*f)();
-  js_pushundefined(J);
+  try
+  {
+    T* parent = (T*)js_touserdata(J, 0, "userdata");
+    if (parent)
+      (parent->*f)();
+    js_pushundefined(J);
+  }
+  catch(...)
+  {}
 }
 
 template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
-  T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
+  try
   {
-    Rtype value = (parent->*f)();
-    internal::push(J,value);
+    T* parent = (T*)js_touserdata(J, 0, "userdata");
+    if (parent)
+    {
+      Rtype value = (parent->*f)();
+      internal::push(J,value);
+    }
+    else
+      js_pushundefined(J);
   }
-  else
-    js_pushundefined(J);
+  catch(...)
+  {
+    //something bad happens
+  }
 }
 
 template<typename T,typename Rtype, typename P1Type>
@@ -396,7 +526,7 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    auto paramValue1 = internal::to(J, 1, def );
+    auto paramValue1 = internal::to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     internal::push(J,value);
   }
@@ -406,14 +536,26 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
 
 void reg_widget_constructor(js_State *J, const std::string& name)
 {
-  Widget* parent = nullptr;
-  if (js_isuserdata( J, 1, "userdata" ))
-    parent = (Widget*)js_touserdata(J, 1, "userdata");
+  Widget* widget = nullptr;
+  if (js_isstring(J,1))
+  {
+    std::string name = js_tostring(J, 1);
+    widget = internal::game->gui()->rootWidget()->findChild(name, true);
 
-  if (parent == 0)
-    parent = internal::game->gui()->rootWidget();
+    if (widget == nullptr)
+      Logger::warning("!!! Cant found widget with name " + name);
+  }
+  else
+  {
+    Widget* parent = nullptr;
+    if (js_isuserdata( J, 1, "userdata" ))
+      parent = (Widget*)js_touserdata(J, 1, "userdata");
+    if (parent == nullptr)
+      parent = internal::game->gui()->rootWidget();
 
-  auto* widget = internal::game->gui()->createWidget( name, parent );
+    widget = internal::game->gui()->createWidget(name, parent);
+  }
+
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", widget, nullptr);
@@ -448,6 +590,12 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
+#define DEFINE_VANILLA_CONSTRUCTOR(type,func) void constructor_##type(js_State *J) { \
+                                                  js_currentfunction(J); \
+                                                  js_getproperty(J, -1, "prototype"); \
+                                                  js_newuserdata(J, "userdata", func, nullptr); \
+                                              }
+
 #define DEFINE_OBJECT_GETTER_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State* J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
@@ -458,7 +606,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType paramValue = internal::to( J, 1, paramType() ); \
+                                  paramType paramValue = internal::to(J, 1, paramType()); \
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
@@ -468,6 +616,25 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
                                   paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
                                   if( parent ) parent->funcname( paramValue1, paramValue2 ); \
+                                  js_pushundefined(J); \
+                                }
+
+#define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
+  js_pushundefined(J); \
+}
+
+#define DEFINE_OBJECT_FUNCTION_4(name,funcname,paramType1,paramType2,paramType3,paramType4) void name##_##funcname(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+                                  paramType4 paramValue4 = internal::to( J, 4, paramType4() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4); \
                                   js_pushundefined(J); \
                                 }
 
@@ -482,15 +649,6 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   js_pushundefined(J); \
                                 }
 
-#define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
-  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
-  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
-  js_pushundefined(J); \
-}
-
 #define SCRIPT_OBJECT_BEGIN(name) script_object_begin(#name);
 
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) { auto p = &name##_set_##funcname; reg_object_callback(#name,#funcname,p,params); }
@@ -499,6 +657,8 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_END(name)
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 
+#include "widget.implementation"
+#include "menu.implementation"
 #include "window.implementation"
 #include "button.implementation"
 #include "session.implementation"
@@ -512,6 +672,12 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "animators.implementation"
 #include "path.implementation"
 #include "spinbox.implementation"
+#include "filelistbox.implementation"
+
+DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
+DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
+DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
+DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
 void Core::registerFunctions( Game& game )
 {
@@ -528,8 +694,11 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engineGetOption,"getOption",1);
   REGISTER_FUNCTION(engineSetOption,"setOption",1);
   REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engineLoadArchive, "loadArchive", 2);
 REGISTER_GLOBAL_OBJECT(engine)
 
+#include "widget.interface"
+#include "menu.interface"
 #include "window.interface"
 #include "button.interface"
 #include "session.interface"
@@ -543,6 +712,7 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "animators.interface"
 #include "path.interface"
 #include "spinbox.interface"
+#include "filelistbox.interface"
 
   Core::loadModule(":/system/modules.js");
   internal::observers = new vfs::FileChangeObserver();
@@ -558,6 +728,7 @@ void Core::unref(const std::string& ref)
 Core::Core()
 {
   internal::J = js_newstate(NULL, NULL, JS_STRICT);
+  js_atpanic(internal::J, enginePanic);
 }
 
 } //end namespace script

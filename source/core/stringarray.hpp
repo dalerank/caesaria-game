@@ -63,9 +63,9 @@ public:
     return (index < size()) ? at( index ) : defaultStr;
   }
 
-  bool remove( const std::string& str )
+  bool remove(const std::string& str)
   {
-    foreach( it, *this )
+    foreach (it, *this)
     {
       if( *it == str )
       {

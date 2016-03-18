@@ -111,27 +111,4 @@ Step::Step(unsigned int count):_count(count)
 {
 }
 
-GameEventPtr ChangeSpeed::create(int value)
-{
-  ChangeSpeed* ev = new ChangeSpeed();
-  ev->_value = value;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool ChangeSpeed::_mayExec(Game& game, unsigned int) const{  return true;}
-
-ChangeSpeed::ChangeSpeed()
-{
-  _value = 0;
-}
-
-void ChangeSpeed::_exec(Game& game, unsigned int)
-{
-  game.changeTimeMultiplier( _value );  
-
-  events::dispatch<WarningMessage>( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%", 1 );
-}
-
 } //end namespace events

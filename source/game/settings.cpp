@@ -47,8 +47,6 @@ __REG_PROPERTY(worldModel)
 __REG_PROPERTY(minMonthWithFood)
 __REG_PROPERTY(langModel)
 __REG_PROPERTY(worklessCitizenAway)
-__REG_PROPERTY(fastsavePostfix)
-__REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
 __REG_PROPERTY(c3music)
@@ -67,7 +65,6 @@ __REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
-__REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(render)
@@ -81,7 +78,6 @@ __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
 __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
-__REG_PROPERTY(hotkeysModel)
 __REG_PROPERTY(cartsModel)
 __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
@@ -116,6 +112,7 @@ __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
 __REG_PROPERTY(showStartAware)
+__REG_PROPERTY(verbose)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -151,14 +148,11 @@ Settings::Settings() : _d( new Impl )
   _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
   _d->options[ climateModel        ] = std::string( "/climate.model" );
   _d->options[ language            ] = std::string( "" );
-  _d->options[ fastsavePostfix     ] = std::string( "_fastsave");
-  _d->options[ saveExt             ] = std::string( ".oc3save");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
   _d->options[ emblemsModel        ] = std::string( "/emblems.model" );
   _d->options[ remakeModel         ] = std::string( "/remake.model" );
-  _d->options[ ranksModel          ] = std::string( "/ranks.model" );
   _d->options[ pic_offsets         ] = std::string( "/offsets.model" );
   _d->options[ picsArchive         ] = std::string( "/gfx/pics.zip" );
   _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
@@ -168,7 +162,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
   _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
-  _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
   _d->options[ cartsModel          ] = std::string( "/carts.model" );
   _d->options[ logoArchive         ] = std::string( "/gfx/pics_wait.zip" );
   _d->options[ titleResource       ] = std::string( "titlerm" );
@@ -182,6 +175,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
+  _d->options[ verbose             ] = false;
   _d->options[ rightMenu           ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
@@ -239,7 +233,7 @@ void Settings::set( const std::string& option, const Variant& value )
   instance()._d->options[ option ] = value;
 }
 
-Variant Settings::get( const std::string& option )
+Variant Settings::get(const std::string& option)
 {
   VariantMap::iterator it = instance()._d->options.find( option );
   return  instance()._d->options.end() == it
@@ -247,7 +241,7 @@ Variant Settings::get( const std::string& option )
               : it->second;
 }
 
-void Settings::setwdir( const std::string& wdirstr )
+void Settings::setwdir(const std::string& wdirstr)
 {
   vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
@@ -266,7 +260,7 @@ void Settings::setwdir( const std::string& wdirstr )
   {
     saveDir = wdir/defaultSaveDir;
   }
-  _d->options[ savedir ] = Variant( saveDir.toString() );
+  _d->options[ savedir ] = Variant(saveDir.toString());
 }
 
 void Settings::resetIfNeed(char* argv[], int argc)
@@ -281,7 +275,7 @@ void Settings::resetIfNeed(char* argv[], int argc)
   }
 }
 
-void Settings::checkwdir(char* argv[], int argc)
+bool Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
   {
@@ -289,9 +283,11 @@ void Settings::checkwdir(char* argv[], int argc)
     {
       const char* opts = argv[i+1];
       setwdir( std::string( opts, strlen( opts ) ) );
-      return;
+      return true;
     }
   }
+
+  return false;
 }
 
 void Settings::checkCmdOptions(char* argv[], int argc)
@@ -308,7 +304,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     {
       std::string name = std::string( argv[i] ).substr( 1 );
       std::string nextName = (i+1 >= argc ? "" : std::string( argv[i+1] ));
-      if( nextName[0] == '-' || (i+1 == argc)  )
+      if (nextName[0] == '-' || (i+1 == argc))
       {
         bool value = true;
         if( name[0] == '!' )
@@ -316,11 +312,11 @@ void Settings::checkCmdOptions(char* argv[], int argc)
           name = name.substr( 1 );
           value = false;
         }
-        _d->options[ name ] = Variant( value );
+        _d->options[name] = Variant(value);
       }
       else
       {
-        _d->options[ name ] = Variant( nextName );
+        _d->options[name] = Variant(nextName);
         i++;
       }
     }
@@ -329,8 +325,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 
 void Settings::checkC3present()
 {
-  std::string c3path = _d->options[ c3gfx ].toString();
-  bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
+  bool useOldGraphics = isC3mode();
 
   std::map<std::string,std::string> items = {
                                               {houseModel,        "house"},
@@ -371,6 +366,12 @@ void Settings::checkC3present()
 
   for( auto& item : items )
     _d->options[ item.first ] = item.second + ext;
+}
+
+bool Settings::isC3mode() const
+{
+  bool haveC3path = !_d->options[c3gfx].toString().empty();
+  return (haveC3path || KILLSWITCH(oldgfx));
 }
 
 void Settings::changeSystemLang(const std::string& newLang)

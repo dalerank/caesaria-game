@@ -76,10 +76,10 @@ public:
 class Window::Impl
 {
 public:
-	std::vector< PushButton* > buttons;
-	Rect headerRect, captionRect;
+  std::vector< PushButton* > buttons;
+  Rect headerRect, captionRect;
 
-	Label* title;
+  Label* title;
 
   struct
   {
@@ -111,7 +111,7 @@ public:
     Signal1<Widget*> onCloseEx;
   } signal;
 
-	FlagHolder<Window::FlagName> flags;
+  FlagHolder<Window::FlagName> flags;
 };
 
 //! constructor
@@ -122,8 +122,8 @@ Window::Window(Widget* parent)
 }
 
 Window::Window( Widget* parent, const Rect& rectangle, const std::string& title, int id, BackgroundType type )
-	: Widget( parent, id, rectangle ),
-	  _d( new Impl )
+  : Widget( parent, id, rectangle ),
+    _d( new Impl )
 {
   setWindowFlag( fdraggable, true );
   setWindowFlag( fbackgroundVisible, true );
@@ -150,7 +150,7 @@ Signal1<Widget*>& Window::onCloseEx() { return _d->signal.onCloseEx; }
 
 void Window::setText(const std::string& text )
 {
-	Widget::setText( text );
+  Widget::setText( text );
   if( _d->title )
     _d->title->setText( text );
 }
@@ -194,13 +194,13 @@ void Window::_init()
   _createSystemButton( buttonMin,   "Min",     false );
   _createSystemButton( buttonMax,   "Restore", false );
 
-	if( !_d->title )
-	{
-    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+  if( !_d->title )
+  {
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+25 ), text(), false );
     _d->title->setTextAlignment( align::center, align::center );
     _d->title->setFont( FONT_4 );
-		_d->title->setSubElement( true );
-	}
+    _d->title->setSubElement( true );
+  }
 
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
@@ -243,26 +243,26 @@ Widget* Window::_titleWidget() const { return _d->title; }
 Window::~Window()
 {
   emit _d->signal.onCloseEx(this);
-  Logger::warning( "Window ID={} was removed", ID() );
+  Logger::info( "Window ID={} was removed", ID() );
 }
 
 //! called if an event happened.
 bool Window::onEvent(const NEvent& event)
 {
-	if( enabled() )
-	{
-		switch(event.EventType)
-		{
-		case sEventGui:
-			if (event.gui.type == guiElementFocusLost)
-			{
+  if( enabled() )
+  {
+    switch(event.EventType)
+    {
+    case sEventGui:
+      if (event.gui.type == guiElementFocusLost)
+      {
         _d->drag.active = false;
-			}
-			else if (event.gui.type == guiElementFocused)
-			{
-					if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
-						bringToFront();
-			}
+      }
+      else if (event.gui.type == guiElementFocused)
+      {
+          if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
+            bringToFront();
+      }
       else if (event.gui.type == guiButtonClicked)
       {
         if (event.gui.caller == _d->buttons[ buttonClose ] )
@@ -274,15 +274,15 @@ bool Window::onEvent(const NEvent& event)
             return true;
         }
       }
-		break;
+    break;
 
-		case sEventMouse:
-			switch(event.mouse.type)
-			{
+    case sEventMouse:
+      switch(event.mouse.type)
+      {
       case NEvent::Mouse::btnLeftPressed:
         _d->drag.startPosition = event.mouse.pos();
         _d->drag.active = _d->flags.isFlag( fdraggable );
-				bringToFront();
+        bringToFront();
 
       return true;
 
@@ -298,38 +298,38 @@ bool Window::onEvent(const NEvent& event)
       break;
 
       case NEvent::Mouse::moved:
-				if ( !event.mouse.isLeftPressed() )
+        if ( !event.mouse.isLeftPressed() )
           _d->drag.active = false;
 
         if (_d->drag.active)
-				{
-					// gui window should not be dragged outside its parent
-					const Rect& parentRect = parent()->absoluteRect();
-					if( (event.mouse.x < parentRect.left() +1 ||
-						event.mouse.y < parentRect.top() +1 ||
-						event.mouse.x > parentRect.right() -1 ||
-						event.mouse.y > parentRect.bottom() -1))
-						return true;
+        {
+          // gui window should not be dragged outside its parent
+          const Rect& parentRect = parent()->absoluteRect();
+          if( (event.mouse.x < parentRect.left() +1 ||
+            event.mouse.y < parentRect.top() +1 ||
+            event.mouse.x > parentRect.right() -1 ||
+            event.mouse.y > parentRect.bottom() -1))
+            return true;
 
           move( event.mouse.pos() - _d->drag.startPosition );
           _d->drag.startPosition = event.mouse.pos();
 
           return true;
-				}
+        }
       break;
 
       default:
       break;
-			}
-		break;
+      }
+    break;
 
-		case sEventKeyboard:			
-		break;
+    case sEventKeyboard:
+    break;
 
-		default:
-			break;
-		}
-	}
+    default:
+      break;
+    }
+  }
 
   return Widget::onEvent(event);
 }
@@ -343,24 +343,24 @@ void Window::beforeDraw( Engine& painter )
     _updateBackground();
   }
 
-	Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
 //! draws the element and its children
 void Window::draw( Engine& painter )
 {
-	if( visible() )
-	{
-		if( _d->flags.isFlag( fbackgroundVisible ) )
-		{
+  if( visible() )
+  {
+    if( _d->flags.isFlag( fbackgroundVisible ) )
+    {
       DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
       pipe.draw( _d->background.image )
           .fallback( _d->background.batch.body )
           .fallback( _d->background.batch.fallback );
-		}
-	}
+    }
+  }
 
-	Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 //! Returns pointer to the maximize button
@@ -369,7 +369,7 @@ PushButton* Window::button(ButtonName btn) const
   if( btn < buttonClose || btn > buttonMax )
     return 0;
 
-	return _d->buttons[ btn ];
+  return _d->buttons[ btn ];
 }
 
 //! Set if the window background will be drawn
@@ -381,8 +381,8 @@ bool Window::backgroundVisible() const {	return _d->flags.isFlag( fbackgroundVis
 //! Set if the window titlebar will be drawn
 void Window::setTitleVisible(bool draw)
 {
-	_d->flags.setFlag( ftitleVisible, draw );
-	_d->title->setVisible( draw );
+  _d->flags.setFlag( ftitleVisible, draw );
+  _d->title->setVisible( draw );
 }
 
 //! Get if the window titlebar will be drawn
@@ -407,6 +407,21 @@ void Window::setModal()
   mdScr->addChild( this );
 }
 
+void Window::setFont(const Font& font)
+{
+  if (_d->title)
+  {
+    int h = font.getTextSize("A").height();
+    _d->title->setHeight(h);
+    _d->title->setFont(font);
+  }
+}
+
+void Window::setFont(const std::string& fname)
+{
+  Widget::setFont(fname);
+}
+
 Picture Window::background() const {return _d->background.image; }
 
 void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
@@ -421,7 +436,7 @@ void Window::setWindowFlag(const std::string& flagname, bool enabled)
   else if( flagname == TEXT(ftitleVisible) ) setWindowFlag(ftitleVisible,enabled);
   else
   {
-    Logger::warning( "WARNING !!! Cant find flag with name " + flagname );
+    Logger::warning( "!!! Cant find flag with name " + flagname );
   }
 }
 
@@ -429,7 +444,7 @@ void Window::setupUI(const VariantMap &ui)
 {
   Widget::setupUI( ui );
 
-  StringArray buttons = ui.get( "buttons" ).toStringArray();  
+  StringArray buttons = ui.get( "buttons" ).toStringArray();
   if( buttons.empty() || buttons.front() == "off" )
   {
     for( auto& button : _d->buttons )
@@ -440,35 +455,29 @@ void Window::setupUI(const VariantMap &ui)
 
   WindowBackgroundHelper helper;
   std::string modeStr = ui.get( "bgtype" ).toString();
-  if( !modeStr.empty() )
+  if (!modeStr.empty())
   {
-    Window::BackgroundType mode = helper.findType( modeStr );
-    setBackground( mode );
+    Window::BackgroundType mode = helper.findType(modeStr);
+    setBackground(mode);
   }
 }
 
 void Window::setupUI(const vfs::Path& path)
 {
-  Widget::setupUI( path );
+  Widget::setupUI(path);
 }
 
-void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
+void Window::setTextAlignment(const std::string& horizontal, const std::string& vertical)
 {
-	Widget::setTextAlignment( horizontal, vertical );
-  if( _d->title )
-    _d->title->setTextAlignment( horizontal, vertical );
+  align::Helper helper;
+  setTextAlignment( helper.findType(horizontal), helper.findType(vertical) );
 }
 
-SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
-  : Window( parent, rect, title, -1 )
+void Window::setTextAlignment(Alignment horizontal, Alignment vertical)
 {
-  if( !ui.empty() )
-    setupUI(ui);
-
-  add<ExitButton>(Point(width() - 34, height() - 34));
-
-  moveToCenter();
-  WidgetClosers::insertTo(this, KEY_RBUTTON);
+  Widget::setTextAlignment(horizontal, vertical);
+  if (_d->title)
+    _d->title->setTextAlignment(horizontal, vertical);
 }
 
 }//end namespace gui

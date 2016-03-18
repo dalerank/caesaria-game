@@ -39,7 +39,7 @@ public:
     Picture image;
   } background;
 
-	bool scaleImage;
+  bool scaleImage;
   GroupBox::Style style;
 
   bool needUpdateTexture;
@@ -52,13 +52,13 @@ GroupBox::GroupBox(Widget *parent)
 }
 
 GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
-: Widget( parent, id, rectangle ), _d( new Impl )
+  : Widget( parent, id, rectangle ), _d(new Impl)
 {
-	#ifdef _DEBUG
+  #ifdef _DEBUG
      setDebugName("GroupBox");
-	#endif
+  #endif
 
-  _d->scaleImage = true;	
+  _d->scaleImage = true;
   _d->needUpdateTexture = true;
   _d->style = style;
 }

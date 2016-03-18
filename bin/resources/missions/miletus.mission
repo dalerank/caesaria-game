@@ -3,7 +3,7 @@
   map : ":/maps/Miletus.sav"
   funds : 8000
   city.name : "Miletus"
-  date : "-220.01.01"  
+  date : "-220.01.01"
   player.rank : 4
   climate : 2
   adviserEnabled : true
@@ -11,7 +11,7 @@
   preview.text : "##miletus_preview_mission##"
   preview.title : "##miletus_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 5000
@@ -23,17 +23,18 @@
     favour : 40
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
-    win.text : "##miletus_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##miletus_preview_title##"
-	sound.overview : "miletus_speech"
-    sound.win      : "miletus_win_speech"
+    startSound : "miletus_speech"
     overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
                   "##miletus_5_overview_2##" ]
+
+    winSound      : "miletus_win_speech"
+    winText : "##miletus_win_text##"
+    winContinue : false
   }
-	
+
   empire : {
     enabled : true
 
@@ -61,7 +62,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -71,8 +72,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -80,8 +81,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -89,8 +90,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -99,7 +100,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -122,7 +123,7 @@
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
-       
+
     cursed_water#contaminated_water : {
       date : "-219.01.01"
       type : "contaminated_water"
@@ -156,12 +157,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion2#enemy_attack : {
@@ -183,12 +184,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion3#enemy_attack : {
@@ -210,12 +211,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion4#enemy_attack : {
@@ -237,12 +238,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion5#enemy_attack : {
@@ -264,12 +265,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion6#enemy_attack : {
@@ -291,14 +292,14 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
-    
+
     barbarian_invasion7#enemy_attack : {
       date : "-193.06.01"
       type : "enemy_attack"
@@ -318,12 +319,12 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
 
     barbarian_invasion8#enemy_attack : {
@@ -345,14 +346,14 @@
       }
 
       exec : {
-		  barbarian_attack#messagebox : {
-    	  	title : "##barbarian_attack_title##"
-	      	text : "##barbarian_attack_text##"
+      barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
           video : "spy_barbarian"
         }
-	  	}
+      }
     }
-   
+
     emperor_request1#city_request : {
       date : "-217.09.01"
       reqtype : "good_request"
@@ -496,7 +497,7 @@
           send2scribe : true
         }
       }
-    }    
+    }
 
     price_rising2#trading_options : {
       date : "-210.04.01"
@@ -573,7 +574,7 @@
    fp7 : [ 50, 30 ]
    fp8 : [ 62, 31 ]
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -588,9 +589,9 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
-    { 
+
+    buildings :
+    {
       engineering_post : true
       plaza : true
       clay_pit : true
@@ -620,8 +621,8 @@
       library : true
       senate : true
       gatehouse : true
-      wall : true 
-      tower : true 
+      wall : true
+      tower : true
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true

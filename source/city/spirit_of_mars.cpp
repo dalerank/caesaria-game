@@ -48,7 +48,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "SpiritOfMars: execute service" );
+    Logger::info( "SpiritOfMars: execute service" );
 
     auto enemies = _city()->statistic().walkers.find<EnemySoldier>();
 

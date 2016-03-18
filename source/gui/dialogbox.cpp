@@ -19,6 +19,7 @@
 #include <GameGfx>
 #include <GameEvents>
 #include <GameLogger>
+#include <GameCity>
 #include <GameGui>
 
 using namespace gfx;

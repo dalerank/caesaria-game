@@ -83,7 +83,7 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
 
   if( !sw || !sh )
   {
-    Logger::warning( "!!! WARNING: Cant draw border for sw={0}, sh={1}", sw, sh );
+    Logger::warning( "!!! Cant draw border for sw={0}, sh={1}", sw, sh );
     return;
   }
 
@@ -225,7 +225,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   break;
 
   default:
-    Logger::warning( "!!!Warning: Unsupport draw instuctions" );
+    Logger::warning( "!!! Unsupport draw instuctions" );
   break;
   }
 
@@ -285,7 +285,7 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   const int sh = size.height();
   if( !sw || !sh )
   {
-    Logger::warning( "Decorator::drawBorder() can't finf texture {} {}", gui::rc.panel, tp );
+    Logger::debug( "Decorator::drawBorder() can't finf texture {} {}", gui::rc.panel, tp );
     return;
   }
 

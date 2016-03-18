@@ -1,0 +1,9 @@
+{  
+ title : "##fort##"
+ sound : "fanfare"
+ text  : "In alten Zeiten bedeutete Kriegsführung die Ausführung ständig neuer Kampagnen, das galt insbesondere in den frühen expansionistischen Jahren des Kaiserreichs. Die römischen Armeen operierten tief im Feindesland, lebten auf Kosten des Landes und der Gastfreundschaft der verbündeten Stämme und den Hinterlassenschaften besiegter Feinde. Ihre Feldlager bestanden aus Zelten und blieben selten für mehrere Tage an der gleichen Stelle. Nachdem ein Gebiet befriedet war, bauten die Legionen einen Tagesmarsch davon entfernt Forts aus Holz und Erde und patrouillierten zwischen ihnen hin und her. Sobald sich die Bedrohung durch feindliche Aktivitäten gelegt hatte, kehrte die Armee nach Hause zurück.\nIn weit entfernten Landesstrichen, wie beispielsweise Germanien und Britannien, gaben die Stämme nie über lange Zeit Ruhe. Hier errichteten die Römer große Forts, in denen Teile der Legion auf unbestimmte Zeit untergebracht wurden und die als Basislager für Feldzüge dienten. Ständige Forts wurden erst ab dem dritten und vierten Jahrhundert gebaut, als die imperiale Expansion eingestellt wurde und sich die kaiserliche Aufmerksamkeit mehr auf die Aufrechterhaltung der Grenzen richtete. Diese späten Forts wurden aus den an Ort und Stelle gefundenen Steinen gebaut und besaßen Türme für Bogenschützen und kleine Katapulte.\nEin typisches permanentes Fort beherbergte ein zentrales Hauptquartier und komfortable Wohnungen für höhere Offiziere. Die Unteroffiziere hatten ihre eigenen Unterkünfte. Einfache Soldaten waren in Kasernenblocks untergebracht, die jeweils einer aus 80 Männern bestehenden Zenturie Platz boten. Robuste @Silos& lagerten die Nahrungsmittel der Legion, und in den meisten Forts gab es Geschäfte und @Feldlazarette&."
+ uri : {
+  "Silos" : "granary_history"
+  "Feldlazarette" : "hospital_history"
+ }
+}

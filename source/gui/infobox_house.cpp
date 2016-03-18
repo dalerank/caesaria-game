@@ -101,7 +101,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( _house.isNull() )
   {
-    Logger::warning( "!!! WARNING: Cant find house at [{0},{1}]", tile.pos().i(), tile.pos().j() );
+    Logger::warning( "!!! Cant find house at [{0},{1}]", tile.pos().i(), tile.pos().j() );
     deleteLater();
     return;
   }

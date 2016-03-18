@@ -13,7 +13,7 @@
   preview.text : "##tutorial_preview_mission##"
   preview.title : "##tutorial_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 150
@@ -24,14 +24,14 @@
     favour : 0
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
-    may_continue : false
-    short : "##build_some_houses##"
+    winContinue : false
+    shortDesc : "##build_some_houses##"
     finishDate : "-300.01.01"
     maxHouseLevel : "hut"
     caption : "##new_village##"
-    win.text : "##tutorial_win_text##"
-    sound.overview : "tutorial_speech"
-    sound.win      : "tutorial_win_speech"
+    winText : "##tutorial_win_text##"
+    startSound : "tutorial_speech"
+    winSound     : "tutorial_win_speech"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002",
                   "##tutorial_text_roads##",
@@ -39,12 +39,12 @@
                   "##tutorial_text_roads2##",
                   "@img=picture3_00003"]
   }
-	
+
   empire : {
     enabled : false
     maxBarbariansGroups : 0
   }
-  		
+
   events :
   {
     tutorial#random_fire : {
@@ -105,7 +105,7 @@
       value : 80
     }
   }
-	
+
   buildoptions :
   {
     farm : "disable_all"
@@ -120,10 +120,10 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : false
-                   
-    buildings : 
-    { 
-      well : true     
+
+    buildings :
+    {
+      well : true
     }
   }
 }

@@ -66,7 +66,7 @@ void Economy::payWages(PlayerCityPtr city)
         int soldierType = fort->workerType();
 
         int yearSalary = city->treasury().workerSalary( soldierType );
-        int monthSalary = yearSalary / (10.f * DateTime::monthsInYear);
+        int monthSalary = (int)(yearSalary / (10.f * DateTime::monthsInYear));
         wages += monthSalary * fort->soldiers_n();
       }
     }

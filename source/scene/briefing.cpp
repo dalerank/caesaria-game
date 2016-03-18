@@ -121,7 +121,7 @@ void Briefing::initialize()
 {
   _d->game->gui()->clear();;
 
-  Logger::warning( "Briefing: initialize start");
+  Logger::debug( "Briefing: initialize start");
 
   VariantMap vm = config::load( _d->filename );
 

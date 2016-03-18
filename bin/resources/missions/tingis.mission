@@ -3,7 +3,7 @@
   map : ":/maps/Tingis.sav"
   funds : 6000
   city.name : "Tingis"
-  date : "-120.01.01"  
+  date : "-120.01.01"
   player.rank : 6
   climate : 2
   adviserEnabled : true
@@ -11,7 +11,7 @@
   preview.text : "##tingis_preview_mission##"
   preview.title : "##tingis_preview_title##"
   preview.image : ""
-	
+
   win :
   {
     population : 6000
@@ -23,20 +23,20 @@
     finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
     title : "##praetor##"
-    win.text : "##tingis_win_text##"
-    may_continue : false
+    winText : "##tingis_win_text##"
+    winContinue : false
     maxHouseLevel : "big_villa"
     caption : "##tingis_title##"
-	sound.overview : "tingis_speech"
-    sound.win      : "tingis_win_speech"
+    startSound : "tingis_speech"
+    winSound      : "tingis_win_speech"
     overview :  [ "##tingis_overview##" ]
   }
-	
+
   empire : {
     enabled : true
 
     cities :
-    {    
+    {
       "Carthago Nova" : {
         nation : "carthaginian"
 
@@ -60,7 +60,7 @@
       }
     }
   }
-  		
+
   events :
   {
     population_milestone_500#messagebox : {
@@ -70,8 +70,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }    
-    
+    }
+
     population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
@@ -79,8 +79,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-        
+    }
+
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
@@ -88,8 +88,8 @@
       video : "population1"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
-    }   
-    
+    }
+
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
@@ -98,7 +98,7 @@
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }
-    
+
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
@@ -121,7 +121,7 @@
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money_again##", "##city_still_in_debt_text##" ]
     }
-    
+
     carthago_change_trading_1#trading_options : {
       date: "-115.06.01"
       cities : {
@@ -175,7 +175,7 @@
         }
       }
     }
-       
+
     emperor_request_1#city_request : {
       date : "-118.05.01"
       reqtype : "good_request"
@@ -740,8 +740,8 @@
     engineering : "disable_all"
     security : "disable_all"
     check_desirability : true
-                   
-    buildings : 
+
+    buildings :
     {
       prefecture : true
       wall : true

@@ -85,8 +85,8 @@ void RomeSoldier::timeStep(const unsigned long time)
 
   if( game::Date::isMonthChanged() )
   {
-    unsigned int dst2base = pos().distanceFrom( _d->basePos );
-    if( dst2base > maxDistanceFromBase )
+    float dst2base = pos().distanceFrom( _d->basePos );
+    if (dst2base > (float)maxDistanceFromBase)
     {
       updateMorale( dst2base * -10 / maxDistanceFromBase );
       if( morale() == 0 )
@@ -183,7 +183,7 @@ void RomeSoldier::load(const VariantMap& stream)
   }
   else
   {
-    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{},{}]", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "!!! RomeSoldier cant find base for himself at [{},{}]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }
@@ -200,8 +200,8 @@ std::string RomeSoldier::thoughts(Thought th) const
     else
     {
       RomeSoldierList ourSoldiers = _city()->statistic().walkers.find<RomeSoldier>( walker::any, 10, pos() );
-      int enemyStrength = 0;
-      int ourStrength = 0;
+      float enemyStrength = 0;
+      float ourStrength = 0;
 
       for( auto enemy : enemies) { enemyStrength += enemy->strike(); }
       for( auto sldr : ourSoldiers ) { ourStrength += sldr->strike(); }

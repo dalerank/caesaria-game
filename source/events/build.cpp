@@ -78,7 +78,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
     if( !buildOk )
     {
-      Logger::warning( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
+      Logger::info( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
       return;
     }
 
@@ -134,9 +134,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   if(game.isPaused())
-  {
-    events::dispatch<Step>(Step::once);
-  }
+    game.step(1);
 }
 
 } //end namespace events

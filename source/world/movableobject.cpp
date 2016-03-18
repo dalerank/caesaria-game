@@ -79,7 +79,7 @@ void MovableObject::timeStep(const unsigned int time)
     else
     {
       _noWay();
-      Logger::warning( "Army: way are empty" );
+      Logger::warning( "World.MovableObject: way are empty" );
     }
   }
 }

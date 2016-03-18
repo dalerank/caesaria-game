@@ -205,7 +205,7 @@ void Ratings::Impl::checkPeaceRating()
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
-    Logger::warning( "!!! WARNING: checkPeaceRating failed some is null" );
+    Logger::warning( "!!! checkPeaceRating failed some is null" );
     return;
   }
 
@@ -340,9 +340,10 @@ Ratings::Ratings(Widget* parent, PlayerCityPtr city )
   INIT_WIDGET_FROM_UI( RatingButton*, btnFavour )
   if( btnFavour )
   {
-    btnFavour->setValue( _d->city->favour() );
+    int favor = _d->city->states().favor;
+    btnFavour->setValue(favor);
     btnFavour->setTarget( targets.needFavour() );
-    add<RatingColumn>( btnFavour->relativeRect().center(), _d->city->favour() );
+    add<RatingColumn>(btnFavour->relativeRect().center(), favor);
   }
   CONNECT( btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
