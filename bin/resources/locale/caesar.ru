@@ -50,12 +50,11 @@
 "##mainmenu_showlog##":"Показать логи",
 "##mainmenu_changes##":"Показать изменения",
 "##city_constr_mode##":"Редактирование карты",
-"##city_metric##":"Единицы изм.",
 "##city_roadblock_on##":"Шлагбаум: включены",
-"##quantity##":"Игровые",
+"##city_metric_quantity##":"Игровые",
 "##history_gift##":"Подарки",
-"##kilogram##":"Современные",
-"##modius##":"Римские",
+"##city_metric_kilogram##":"Современные",
+"##city_metric_modius##":"Римские",
 "##city_buildoverdraw_on##":"Строительство: поверх тайлов",
 "##city_buildoverdraw_off##":"Строительство: как обычно",
 "##city_barbarian_on##":"Нет варваров",
@@ -169,10 +168,8 @@
 "##city_mapmoving_mmb##":"Перемещение : средняя кнопка",
 "##city_tooltips_on##":"Подсказки : ВКЛ",
 "##city_tooltips_off##":"Подсказки : ВЫКЛ",
-"##city_batching_on##":"Ускор. отрисовки : ВКЛ
-",
-"##city_batching_off##":"Ускор. отрисовки : ВЫКЛ
-",
+"##city_batching_on##":"Ускорение отрисовки : ВКЛ",
+"##city_batching_off##":"Ускорение отрисовки : ВЫКЛ",
 "##city_ccuseai_on##":"Римские города : AI
 ",
 "##city_ccuseai_off##":"Римские города : Скрипты

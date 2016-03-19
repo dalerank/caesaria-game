@@ -29,7 +29,7 @@ namespace scene
 class SplashScreen: public Base
 {
 public:
-  enum { hideDevText=0, showDevText=1 };
+  enum { hideDevText=0, showDevText=1, exit=5 };
 
   SplashScreen();
   virtual ~SplashScreen();

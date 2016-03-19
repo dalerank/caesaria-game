@@ -46,7 +46,7 @@ namespace internal
 {
 Game* game = nullptr;
 std::set<std::string> files;
-vfs::FileChangeObserver* observers = nullptr;
+vfs::FileChangeObserver DirectoryChangeObserver;
 Session* session = nullptr;
 js_State *J = nullptr;
 
@@ -88,6 +88,7 @@ bool tryPCall(js_State *J, int params)
   {
     return true;
   }
+  js_pop(internal::J, -1);
 }
 
 void push(js_State* J,const Size& size)
@@ -359,9 +360,16 @@ void reg_object_function(const std::string& name, const std::string& funcname, j
 
 void script_object_begin(const std::string& name)
 {
+  Logger::debug( "cript-if://object.begin={} stack={}", name, js_gettop(internal::J) );
   js_getglobal(internal::J, "Object");
   js_getproperty(internal::J, -1, "prototype");
   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
+}
+
+void script_object_end(const std::string& name )
+{
+  js_pop(internal::J,1);
+  Logger::debug( "script-if://object.end={} stack={} ", name, js_gettop(internal::J) );
 }
 
 void reg_object_constructor(const std::string& name, js_CFunction f)
@@ -406,6 +414,7 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   if (internal::J == nullptr)
     return;
 
+  int savetop = js_gettop(internal::J);
   js_getglobal(internal::J, funcname.c_str());
   js_pushnull(internal::J);
   for (const auto& param : params)
@@ -418,6 +427,11 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   bool error = internal::tryPCall(internal::J,params.size());
   if (error)
     Logger::fatal("Fatal error on call function " + funcname);
+  js_pop(internal::J,2);
+  if( savetop - js_gettop(internal::J) != 0 )
+  {
+    Logger::warning( "STACK grow for {} in {}", js_gettop(internal::J), funcname );
+  }
 }
 
 template<typename T>
@@ -455,7 +469,7 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
       int error = internal::tryPCall(internal::J,0);
       if (error)
         Logger::warning("Fatal error on callback " + className + ":" + callback);
-      js_pop(internal::J,1);
+      js_pop(internal::J,2); //pop func+param from stack
     }
     else
       Logger::warning(className + "_handle_" + callback + " widget is null");
@@ -477,7 +491,7 @@ void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callb
       js_pushnull(internal::J);
       internal::push(internal::J, value);
       internal::tryPCall(internal::J,1);
-      js_pop(internal::J,1);
+      js_pop(internal::J,2);
     }
     else
       Logger::warning(className + "_handle_" + callback + " widget is null");
@@ -703,7 +717,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_CALLBACK(name,funcname,params) { auto p = &name##_set_##funcname; reg_object_callback(#name,#funcname,p,params); }
 #define SCRIPT_OBJECT_FUNCTION(name,funcname,params) { auto p = &name##_##funcname; reg_object_function(#name,#funcname,p,params); }
 #define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
-#define SCRIPT_OBJECT_END(name)
+#define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 
 #include "widget.implementation"
@@ -740,16 +754,7 @@ void Core::registerFunctions(Game& game)
 #define REGISTER_FUNCTION(func,name,params) js_newcfunction(internal::J, func, name, params); js_setproperty(internal::J, -2, name);
 #define REGISTER_GLOBAL_OBJECT(name) js_setglobal(internal::J, #name);
 
-DEF_GLOBAL_OBJECT(engine)
-  REGISTER_FUNCTION(engineLog,"log",1);
-  REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
-  REGISTER_FUNCTION(engineTranslate,"translate",1);
-  REGISTER_FUNCTION(engineGetOption,"getOption",1);
-  REGISTER_FUNCTION(engineSetOption,"setOption",1);
-  REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
-  REGISTER_FUNCTION(engineLoadArchive, "loadArchive", 2);
-REGISTER_GLOBAL_OBJECT(engine)
-
+#include "engine.interface"
 #include "widget.interface"
 #include "menu.interface"
 #include "window.interface"
@@ -769,9 +774,10 @@ REGISTER_GLOBAL_OBJECT(engine)
 #include "picture.interface"
 
   Core::loadModule(":/system/modules.js");
-  internal::observers = new vfs::FileChangeObserver();
-  internal::observers->watch( ":/system" );
-  internal::observers->onFileChange().connect( &engineReloadFile );
+  js_pop(internal::J,2); //restore stack after call js-function
+  Logger::warning( "STACK state {}", js_gettop(internal::J));
+  internal::DirectoryChangeObserver.watch( ":/system" );
+  internal::DirectoryChangeObserver.onFileChange().connect( &engineReloadFile );
 }
 
 void Core::unref(const std::string& ref)

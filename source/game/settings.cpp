@@ -105,7 +105,6 @@ __REG_PROPERTY(logfile)
 __REG_PROPERTY(rightMenu)
 __REG_PROPERTY(showEmpireMapTiles)
 __REG_PROPERTY(logoImageRc)
-__REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
@@ -205,7 +204,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
   _d->options[ logoImageRc         ] = "logo";
-  _d->options[ logoImageIndex      ] = 1;
   _d->options[ showTabletMenu      ] = false;
   _d->options[ debugMenu           ] = false;
   _d->options[ showLastChanges     ] = true;
@@ -347,7 +345,6 @@ void Settings::checkC3present()
     _d->options[ forbidenTile        ] = Variant(std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant(std::string( "title" ) );
     _d->options[ logoImageRc         ] = Variant(std::string( "c3title" ) );
-    _d->options[ logoImageIndex      ] = 2;
     _d->options[ cellw ] = 30;
   }
   else
@@ -356,7 +353,6 @@ void Settings::checkC3present()
     _d->options[ forbidenTile        ] = Variant(std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant(std::string( "titlerm" ) );
     _d->options[ logoImageRc         ] = Variant(std::string( "logo" ) );
-    _d->options[ logoImageIndex      ] = 1;
     _d->options[ cellw ] = 60;
   }
 

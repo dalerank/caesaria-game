@@ -44,6 +44,7 @@ public:
   std::string lastText;
   std::string text, prefix;
   StringArray devText;
+  bool showDevText;
 
 public:
   void fade(Engine &engine, Picture &pic, bool out, int offset);
@@ -60,8 +61,6 @@ void SplashScreen::initialize()
   _d->textPic = Picture( Size( 800, 30 ), 0, true );
   _d->fadetx = Picture( engine.screenSize(), 0, true );
   _d->fadetx.fill( NColor(0xff, 0, 0, 0), Rect() );
-
-  script::Core::execFunction("OnStartSplashScreen");  
 }
 
 void SplashScreen::draw(Engine& engine)
@@ -172,6 +171,10 @@ void SplashScreen::setOption(const std::string & name, Variant value)
   else if (name == "tooltip")
   {
     setText(value.toString());
+  }
+  else if (name == "show-dev-text")
+  {
+    _d->showDevText = value.toBool();
   }
   else if (name == "dev-text")
   {

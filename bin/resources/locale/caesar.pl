@@ -165,7 +165,6 @@
 "##education_awesome##":"Miasto ma wszystkie edukacyjne udogodnienia, które są w idealnym stanie.",
 "##no_people_in_city##":"Brak ludzi w mieście!",
 "##advchief_employers_ok##":"Miasto nie ma problemów z zatrudnieniem",
-"##no_industries_in_city##":"Brak produkcji w mieście",
 "##advchief_health_awesome##":"Wskaźnik zdrowia w mieście jest doskonały.",
 "##to_empire_road##":"Do Imperium",
 "##to_rome_road##":"Do Rzymu",

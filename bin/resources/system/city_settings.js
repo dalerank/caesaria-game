@@ -5,9 +5,7 @@ var ctsettings = {
       case 'city':
         return g_session.city.getOption(obj.flag);
       case 'game':
-        return engine.getOption(obj.flag);
-      case 'game':
-        return g_session.getGameflag(obj.flag);
+        return g_session.getAdvflag(obj.flag);
       case 'build':
         return g_session.city.getBuildOption(obj.flag);
       case 'gui':
@@ -25,10 +23,7 @@ var ctsettings = {
         g_session.city.setOption(obj.flag, value);
         break;
       case "game":
-        engine.setOption(obj.flag, value);
-        break;
-      case "game":
-        g_session.setGameflag(obj.flag, value);
+        g_session.setAdvflag(obj.flag, value);
         break;
       case "build":
         g_session.city.setBuildOption(obj.flag, value);
@@ -141,7 +136,7 @@ sim.ui.topmenu.options.showCitySettings = function() {
     base: "city_tooltips",
     states: ["off", "on"],
     group: "game",
-    flag: "tooltipEnabled"
+    flag: "tooltips"
   }, {
     base: "city_buildoverdraw",
     states: ["off", "on"],
@@ -177,12 +172,12 @@ sim.ui.topmenu.options.showCitySettings = function() {
     states: ["off", "on"],
     group: "city",
     flag: "cutForest2timber"
-  }, {
+  },/* {
     base: "rightMenu",
     states: ["off", "on"],
     group: "game",
     flag: "rightMenu"
-  }, {
+  },*/ {
     base: "city_mapmoving",
     states: ["lmb", "mmb"],
     group: "draw",
@@ -192,7 +187,7 @@ sim.ui.topmenu.options.showCitySettings = function() {
     states: ["off", "on"],
     group: "city",
     flag: "legionAttack"
-  }, {
+  },/* {
     base: "city_androidbar",
     states: ["off", "on"],
     group: "game",
@@ -202,7 +197,7 @@ sim.ui.topmenu.options.showCitySettings = function() {
     states: ["off", "on"],
     group: "game",
     flag: "ccUseAI"
-  }, {
+  },*/ {
     base: "city_highlight_bld",
     states: ["off", "on"],
     group: "city",
