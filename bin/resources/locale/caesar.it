@@ -6,12 +6,11 @@
 ",
 "##city_roadblock_off##":"Blocchi stradali: OFF
 ",
-"##city_metric##":"Distanze città",
 "##city_roadblock_on##":"Blocchi stradali: OFF
 ",
-"##quantity##":"gioco",
-"##kilogram##":"moderno",
-"##modius##":"romano",
+"##city_metric_quantity##":"gioco",
+"##city_metric_kilogram##":"moderno",
+"##city_metric_modius##":"romano",
 "##city_buildoverdraw_on##":"Tool di costruzione: su griglia",
 "##city_buildoverdraw_off##":"Tool di costruzione: senza griglia",
 "##city_barbarian_on##":"Barbari: ON

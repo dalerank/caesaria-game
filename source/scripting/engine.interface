@@ -1,0 +1,9 @@
+DEF_GLOBAL_OBJECT(engine)
+  REGISTER_FUNCTION(engineLog,"log",1);
+  REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
+  REGISTER_FUNCTION(engineTranslate,"translate",1);
+  REGISTER_FUNCTION(engineGetOption,"getOption",1);
+  REGISTER_FUNCTION(engineSetOption,"setOption",1);
+  REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engineLoadArchive, "loadArchive", 2);
+REGISTER_GLOBAL_OBJECT(engine)

@@ -27,7 +27,6 @@ game.ui.dialogs.showVideoOptions = function()
   lbxModes.background = true;
   lbxModes.onSelectedCallback = function(index) {
                         var mode = g_session.getVideoMode(index);
-                        engine.log("w: " + mode.w + " h:" + mode.h );
                         g_session.resolution = mode;
                         haveChanges = true;
                     };
