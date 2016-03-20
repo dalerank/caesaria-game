@@ -5,7 +5,7 @@
  uri : {
   "'Amphitheater'" : "amphitheater_history"
   "Kolosseum" : "colosseum_history"
-  "Geschäfte" : "shop (Märkte historie)??"
+  "Geschäfte" : "market_history"
   "Tempel" : "temple_oracle_history"
   "Statuen" : "statuary (histrorie)??"
   }
