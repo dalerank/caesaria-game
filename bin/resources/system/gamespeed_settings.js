@@ -44,12 +44,12 @@ sim.ui.topmenu.options.showSpeedOptions = function()
         engine.setOption("autosaveInterval", value)
     }
 
-    var btnOk = wnd.addButton(w.w*0.25, w.h-60, w.w*0.5,  22);
+    var btnOk = w.addButton(w.w*0.25, w.h-60, w.w*0.5,  22);
     btnOk.style = "smallGrayBorderLine";
     btnOk.text = "##ok##";
     btnOk.callback = function() { w.deleteLater();	};
 
-    var btnCancel = wnd.addButton(w.w*0.25, w.h-35, w.w*0.5,  22);
+    var btnCancel = w.addButton(w.w*0.25, w.h-35, w.w*0.5,  22);
     btnCancel.style = "smallGrayBorderLine";
     btnCancel.text = "##cancel##";
     btnCancel.callback = function() {
