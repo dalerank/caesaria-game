@@ -1,0 +1,12 @@
+{  
+ title : "##lumber_mill##"
+ sound : "fanfare"
+ text  : "Errichten Sie ein Sägewerk, um Holz für den Export zu schlagen oder um selbst @Möbel& herstellen zu können. Sägewerke müssen immer in der Nähe von Wäldern angelegt werden.\nWie die meisten Gewerbebetriebe ist auch ein Sägewerk in Wohngebieten ein unerwünschter Nachbar. Sägewerke benötigen Straßenanbindung zum lokalen Arbeitsmarkt. Wenn ein Karren mit Holz gefüllt ist, bringt ein @Arbeiter& die Ladung zur nächsten Schreinerei, die noch Platz hat. Wenn alle Produktionsstätten vollständig versorgt sind oder nicht funktionieren, gelangt das Holz in das nächste @Lagerhaus& mit freiem Platz, von wo aus Sie es exportieren können, wenn Sie über die entsprechende @Handelsroute& verfügen. Sägewerke zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie ein Sägewerk rechts an, um sich seinen Status anzusehen, insbesondere dann, wenn es seinen Betrieb eingestellt hat.\nMöbel gehören zu den Waren, die Ihre eigenen Bürger für die Erweiterung ihrer Häuser brauchen.\n\nKlicken Sie @hier&, wenn Sie mehr über die Holzgewinnung im römischen Imperium erfahren möchten."
+ uri : {
+  "Möbel" : "furniture_workshop"
+  "Arbeiter" : "Arbeiter??"
+  "Lagerhaus" : "warehouse"
+  "Handelsroute" : "trade"
+  "hier" : "lumber_mill_history"
+ }
+}
