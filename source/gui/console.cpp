@@ -65,7 +65,7 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
   hide();
   cursorPos_ = 1;
 
-  setFont( Font::create("default",12).withColor(ColorList::white) );
+  setFont( Font::create("default",12).withColor(ColorList::yellow) );
   _opacity = 0;
   _logger = SmartPtr<ConsoleLogger>(new ConsoleLogger());
   _logger->drop();
@@ -153,8 +153,12 @@ void Console::setVisible( bool vis )											//! toggle the visibility of the 
 
 void Console::appendMessage( const std::string& message )
 {
-  _d->curIndex = (_d->curIndex + 1) % console_messages_.size();
-  console_messages_[_d->curIndex] = message;
+  auto messages = utils::split(message, "\n");
+  for (const auto& i : messages)
+  {
+    _d->curIndex = (_d->curIndex + 1) % console_messages_.size();
+    console_messages_[_d->curIndex] = i;
+  }
   _d->dirty = true;
 }
 
@@ -210,21 +214,12 @@ void Console::draw( gfx::Engine& painter )
                      textRect.right(),
                      textRect.bottom() + lineHeight);
 
-      for (unsigned int index = _d->curIndex; index < console_messages_.size(); index++)
+      for (unsigned int index = 0; index < console_messages_.size(); index++)
       {
-        const std::string& line = console_messages_[index];
+        unsigned int rindex = (_d->curIndex + index) % console_messages_.size();
+        const std::string& line = console_messages_[rindex];
         font().draw(_d->bg, line, lineRect.lefttop(), false, false);
         lineRect += Point(0, lineHeight);						//update line rectangle
-      }
-
-      if (_d->curIndex != 0)
-      {
-        for (unsigned int index = 0; index < _d->curIndex; index++)
-        {
-          const std::string& line = console_messages_[index];
-          font().draw(_d->bg, line, lineRect.lefttop(), false, false);
-          lineRect += Point(0, lineHeight);						//update line rectangle
-        }
       }
 
       std::string shellText = "$>" + currentCommand_;
@@ -233,7 +228,7 @@ void Console::draw( gfx::Engine& painter )
 
       _d->dirty = false;
       _d->bg.update();
-      _d->bg.setAlpha(_opacity/2);
+      _d->bg.setAlpha(_opacity/3*2);
     }
 
     painter.draw( _d->bg, absoluteRect().lefttop() );

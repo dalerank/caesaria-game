@@ -198,7 +198,7 @@ Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.
 Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
     if ( typeof(value) == "string")
-      this.setPictire_str(value)
+      this.setPicture_str(value)
     else if (value instanceof Picture)
       this.setPicture_pic(value)
     else if (value.rc)
@@ -208,16 +208,17 @@ Object.defineProperty( Image.prototype, "picture", {
 //*************************** Image class end ***************************************//
 
 //*************************** FileSelector class begin ***************************************//
-function FileSelector(parent) { this.widget = new FileListBox(parent); }
+function FileSelector(parent) { return new FileListBox(parent); }
 
 Object.defineProperty( FileListBox.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( FileListBox.prototype, "background", {set: function (enabled) { this.setBackgroundVisible(enabled); }} )
 Object.defineProperty( FileListBox.prototype, "selectedIndex", {set:function (index) { this.setSelected(index); }} )
 Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h); }} )
-Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
+Object.defineProperty( FileListBox.prototype, "font", {set: function (fname) { this.setItemsFont(fname); }} )
 Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "count", {set: function () { return this.itemsCount(); }} )
 Object.defineProperty( FileListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} )
+Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
 
 Object.defineProperty( FileListBox.prototype, "itemColor", { set: function (obj) {
     if(obj.simple) this.setItemDefaultColor("simple", obj.simple);

@@ -10,21 +10,21 @@ lobby.ui.loadgame.loadmission = function()
     var selector = wnd.addFileSelector(210, 350, 300, 260);
     selector.background = false;
     selector.itemHeight = 16;
-    selector.font = "FONT_1_WHITE";
-    selector.itemColor = { simple:"0xffffffff", hovered:"0xff000000" };
+    selector.font = "FONT_1";
+    selector.itemColor = { hovered:"0xff000000" };
 
     var files = g_session.getFiles(g_session.missionsdir.str, ".mission");
     selector.items = files;
 
     var imgPreview = wnd.addImage(280, 175, 170, 150);
     //mode : "center"
-
     var lbDescription = wnd.addDictionaryText(525, 165, 280, 400);
     lbDescription.font = "FONT_1";
 
     var btnLoad = wnd.addButton(520, 573, 290, 25);
     btnLoad.font = "FONT_2";
     btnLoad.enabled = false;
+
     btnLoad.style = "whiteBorderUp";
     btnLoad.textAlign = { v:"center", h:"center" };
     btnLoad.text = "##start_this_map##";

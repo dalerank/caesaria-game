@@ -1,0 +1,21 @@
+{
+  revision : 4240
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 15, 40, "100%-15", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_1"
+
+    items : [
+      "1. batch system changes"
+
+    ]
+  }
+}

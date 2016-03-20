@@ -20,7 +20,6 @@ var modules = [
                   "gamespeed_settings",
                   "mission_topmenu",
                   "mission_events",
-                  "mission_select",
                   "mission_targets",
                   "mission_debug",
                   "mission_timescale",
@@ -32,7 +31,8 @@ var modules = [
                   "emperor_gift",
                   "mission_common",
                   "hotkeys",
-                  "lobby"
+                  "lobby",
+                  "lobby_select_mission"
               ]
 
 for (var i in modules)
