@@ -38,52 +38,60 @@ Batch& Batch::operator=(const Batch& other)
 
 void Batch::destroy()
 {
-  Engine::instance().unloadBatch( *this );
+  Engine::instance().unloadBatch(*this);
   _batch = 0;
+}
+
+void Batch::move(const Point& newpos)
+{
+  if (_batch)
+  {
+    Engine::instance().updateBatch(*this, newpos);
+  }
 }
 
 bool Batch::load(const Pictures &pics, const Rects& dstrects)
 {
-  if( pics.empty() )
+  if (pics.empty())
   {
     return true;
   }
 
-  if( Engine::instance().getFlag( Engine::batching ) == 0 )
+  if (Engine::instance().getFlag(Engine::batching) == 0)
   {
     return false;
   }
 
-  if( dstrects.size() != pics.size() )
+  if (dstrects.size() != pics.size())
   {
     Logger::warning( "Cant create batch from pictures because length not equale dstrects" );
     return false;
   }
 
-  SDL_Texture* tx = pics.at( 0 ).texture();
+  SDL_Texture* tx = pics.at(0).texture();
   Rects srcrects;
   bool haveErrors = false;
-  for( auto& pic : pics )
+  for (auto& pic : pics)
   {
-    if( pic.texture() == 0 || pic.width() == 0 || pic.height() == 0 )
+    if (pic.texture() == 0 || pic.width() == 0 || pic.height() == 0)
     {
-      srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
+      srcrects.push_back(Rect(Point(0, 0), pic.size()));
       continue;
     }
 
-    if( pic.texture() != tx )
+    if (pic.texture() != tx)
     {
-      Logger::warning( "!!! Cant create batch from pictures {0} to {1}", pics.at( 0 ).name(), pic.name() );
+      Logger::warning("!!! Cant create batch from pictures {0} to {1}", pics.at(0).name(), pic.name());
       srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       haveErrors = true;
       continue;
     }
 
-    srcrects.push_back( pic.originRect() );
+    srcrects.push_back(pic.originRect());
   }
 
-  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
-  if( _batch == 0 )
+  *this = Engine::instance().loadBatch(pics.at(0), srcrects, dstrects);
+  if (_batch == 0)
     haveErrors = true;
 
   return !haveErrors;
@@ -92,16 +100,16 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 bool Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
-  for( auto& pic : pics )
-    rects.push_back( Rect( pos + pic.offset(), pic.size() ) );
+  for (auto& pic : pics)
+    rects.push_back(Rect( pos + pic.offset(), pic.size()));
 
-  bool isOk = load( pics, rects );
+  bool isOk = load(pics, rects);
   return isOk;
 }
 
 void Batch::load(const Picture& pic, const Rects& srcrects, const Rects& dstrects)
 {
-  *this = Engine::instance().loadBatch( pic, srcrects, dstrects );
+  *this = Engine::instance().loadBatch(pic, srcrects, dstrects);
 }
 
 Batch::Batch()
@@ -116,8 +124,8 @@ Batch::Batch(SDL_Batch *batch)
 
 void drawBatchWithFallback(Engine& engine, const Batch& batch, const Pictures& pictures, const Point& pos, Rect* clip)
 {
-   if( batch.valid() ) engine.draw( batch, clip );
-   else                engine.draw( pictures, pos, clip );
+   if (batch.valid()) engine.draw(batch, clip);
+   else               engine.draw(pictures, pos, clip);
 }
 
 }//end namespace gfx

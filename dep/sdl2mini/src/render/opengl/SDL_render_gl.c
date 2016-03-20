@@ -33,8 +33,8 @@
 #include <OpenGL/OpenGL.h>
 #endif
 
-/* To prevent unnecessary window recreation, 
- * these should match the defaults selected in SDL_GL_ResetAttributes 
+/* To prevent unnecessary window recreation,
+ * these should match the defaults selected in SDL_GL_ResetAttributes
  */
 
 #define RENDERER_CONTEXT_MAJOR 2
@@ -77,9 +77,11 @@ static int GL_RenderDrawLines(SDL_Renderer * renderer,
                               const SDL_FPoint * points, int count);
 static int GL_RenderFillRects(SDL_Renderer * renderer,
                               const SDL_FRect * rects, int count);
+static int GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch);
 static int GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
                                  const SDL_Rect * srcrect, const SDL_Rect* dstrect, unsigned int size);
-static int GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch);
+static int GL_GetBatchDstRects(SDL_Renderer * renderer, SDL_Batch * batch, SDL_Rect* dstrect, unsigned int size);
+static int GL_SetBatchDstRects(SDL_Renderer * renderer, SDL_Batch * batch, const SDL_Rect* dstrect, unsigned int size);
 static int GL_DestroyBatch(SDL_Renderer * renderer, SDL_Batch * batch);
 static int GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_FRect * dstrect);
@@ -403,7 +405,7 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile_mask);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-    
+
     window_flags = SDL_GetWindowFlags(window);
     if (!(window_flags & SDL_WINDOW_OPENGL) ||
         profile_mask == SDL_GL_CONTEXT_PROFILE_ES || major != RENDERER_CONTEXT_MAJOR || minor != RENDERER_CONTEXT_MINOR) {
@@ -447,6 +449,8 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->RenderFillRects = GL_RenderFillRects;
     renderer->RenderCopy = GL_RenderCopy;
     renderer->RenderCopyEx = GL_RenderCopyEx;
+    renderer->GetBatchDstRects = GL_GetBatchDstRects;
+    renderer->SetBatchDstRects = GL_SetBatchDstRects;
     //renderer->SetTextureAlphaMod =
     //renderer->SetTextureBlendMode = GL_SetBlendMode;
     renderer->RenderBatch = GL_RenderBatch;
@@ -1545,6 +1549,70 @@ GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
   data->glDisable(texturedata->type);
 
   return GL_CheckError("", renderer);
+}
+
+static int GL_GetBatchDstRects(SDL_Renderer * renderer, SDL_Batch * batch, SDL_Rect* dstrects, unsigned int size)
+{
+  SDL_Rect* frect;
+  int iTx = 0;
+  if (!batch)
+    return -1;
+
+  if (size != batch->size)
+    return -2;
+
+  GLfloat* vertices = batch->vertices;
+  for(; iTx < size; iTx++)
+  {
+    frect = &dstrects[iTx];
+
+    frect->x = vertices[iTx * 12 + 0] / renderer->scale.x;
+    frect->y = vertices[iTx * 12 + 1] / renderer->scale.y;
+
+    float maxx = vertices[ iTx * 12 + 3 ];
+    float maxy = vertices[ iTx * 12 + 7 ];
+
+    frect->w = (maxx - frect->x) / renderer->scale.x;
+    frect->h = (maxy - frect->y) / renderer->scale.y;
+  }
+
+  return 0;
+}
+
+static int GL_SetBatchDstRects(SDL_Renderer * renderer, SDL_Batch * batch, const SDL_Rect* dstrect, unsigned int size)
+{
+  int iTx = 0;
+  if (!batch)
+    return -1;
+
+  if (size != batch->size)
+    return -2;
+
+  GLfloat minx, miny, maxx, maxy;
+  SDL_Rect frect;
+  GLfloat* vertices = (GLfloat*)batch->vertices;
+
+  for (; iTx < size; iTx++)
+  {
+    frect = dstrect[iTx];
+
+    frect.x = frect.x * renderer->scale.x;
+    frect.y = frect.y * renderer->scale.y;
+    frect.w = frect.w * renderer->scale.x;
+    frect.h = frect.h * renderer->scale.y;
+
+    minx = frect.x;
+    miny = frect.y;
+    maxx = frect.x + frect.w;
+    maxy = frect.y + frect.h;
+
+    vertices[iTx * 12 + 0] = minx; vertices[iTx * 12 + 1] = miny;
+    vertices[iTx * 12 + 3] = maxx; vertices[iTx * 12 + 4] = miny;
+    vertices[iTx * 12 + 6] = maxx; vertices[iTx * 12 + 7] = maxy;
+    vertices[iTx * 12 + 9] = minx; vertices[iTx * 12 +10] = maxy;
+  }
+
+  return 0;
 }
 
 static int

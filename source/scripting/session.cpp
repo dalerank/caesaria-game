@@ -297,6 +297,10 @@ int Session::getAdvflag(const std::string & flag) const
   {
     value = _game->timeMultiplier();
   }
+  else if (flag == "empireLock")
+  {
+    value = _game->empire()->isAvailable();
+  }
   else
   {
     value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
@@ -337,6 +341,10 @@ void Session::setAdvflag(const std::string & flag, int value)
   else if (flag == "gameSpeedTick")
   {
     _game->step(value);
+  }
+  else if (flag == "empireLock")
+  {
+    _game->empire()->setAvailable(value > 0);
   }
   else
   {

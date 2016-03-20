@@ -36,7 +36,7 @@ g_config.movie.getPath = function(alias) {
   for (var i in folders)
   {
     folder.set(folders[i])
-    var result = folder.findWithName(alias)
+    var result = folder.find(alias,false,false)
     if (result.str.length>0)
       return result;
   }

@@ -638,6 +638,19 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
+#define DEFINE_OBJECT_GETTER_3(name,rtype,funcname,p1type,p2type,p3type) void name##_##funcname(js_State* J) { \
+                                                  name* object = (name*)js_touserdata(J, 0, "userdata"); \
+                                                  if (object) { \
+                                                      auto paramValue1 = internal::to(J, 1, p1type()); \
+                                                      auto paramValue2 = internal::to(J, 2, p2type()); \
+                                                      auto paramValue3 = internal::to(J, 3, p3type()); \
+                                                      rtype value = object->funcname(paramValue1,paramValue2,paramValue3); \
+                                                      internal::push(J,value); \
+                                                  } else { \
+                                                    js_pushundefined(J); \
+                                                  } \
+                                                }
+
 #define DEFINE_VANILLA_CONSTRUCTOR(type,func) void constructor_##type(js_State *J) { \
                                                   js_currentfunction(J); \
                                                   js_getproperty(J, -1, "prototype"); \

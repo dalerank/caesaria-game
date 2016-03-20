@@ -31,7 +31,7 @@ namespace gui
 
 typedef enum { selectOnMove=0, selectOnMDown,
                drawBackground, autoscroll, moveOverSelect,
-               hightlightNotinfocused, count } Flag;
+               hightlightNotinfocused, itemSelectable, count } Flag;
 
 class ScrollBar;
 
@@ -135,6 +135,9 @@ public:
   virtual void setItemsFont( const std::string& fontname );
   //!
   virtual void setItemTooltip(unsigned int index, const std::string& text);
+
+  //!
+  void setItemsSelectable(bool en);
 
   //! set the item at the given index
   virtual void setItemText(unsigned int index,const std::string& text);

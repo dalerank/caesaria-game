@@ -705,15 +705,9 @@ Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects
   return Batch();
 }
 
-void GlEngine::unloadBatch(const Batch &batch)
-{
-
-}
-
-void GlEngine::setVirtualSize( const Size& rect )
-{
-
-}
+void GlEngine::updateBatch(Batch& batch, const Point& newpos) {}
+void GlEngine::unloadBatch(const Batch &batch) {}
+void GlEngine::setVirtualSize( const Size& rect ) {}
 
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {

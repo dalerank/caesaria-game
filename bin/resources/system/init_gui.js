@@ -383,7 +383,7 @@ Window.prototype.addButton = function(rx,ry,rw,rh) {
 
 Window.prototype.addHelpButton = function(rx,ry) {
   var btn = new HelpButton(this)
-  btn.position = { x:rx, y:ry }
+  btn.setPosition(rx, ry)
   return btn
 }
 

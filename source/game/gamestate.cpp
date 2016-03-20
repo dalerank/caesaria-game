@@ -306,8 +306,8 @@ void InSplash::loadPicInfo(bool& isOk, std::string& result)
 
 void InSplash::initCelebrations(bool& isOk, std::string& result)
 {
-  vfs::Path value = SETTINGS_RC_PATH( celebratesConfig );
-  game::Celebrates::instance().load( value );
+  vfs::Path value = SETTINGS_RC_PATH(celebratesConfig);
+  game::Celebrates::instance().load(value);
 }
 
 void InSplash::mountArchives(ResourceLoader &loader)
@@ -315,28 +315,28 @@ void InSplash::mountArchives(ResourceLoader &loader)
   Logger::debug( "Game: mount archives begin" );
 
   std::string errorStr;
-  std::string c3res = SETTINGS_STR( c3gfx );
-  if( !c3res.empty() )
+  std::string c3res = SETTINGS_STR(c3gfx);
+  if (!c3res.empty())
   {
     vfs::Directory gfxDir( c3res );
     vfs::Path c3path = gfxDir/"c3.sg2";
 
-    if( !c3path.exist( vfs::Path::ignoreCase ) )
+    if (!c3path.exist(vfs::Path::ignoreCase))
     {
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
                  "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
-      SETTINGS_SET_VALUE( c3gfx, std::string( "" ) );
+      SETTINGS_SET_VALUE(c3gfx, std::string( "" ) );
       game::Settings::save();
     }
 
-    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
+    loader.loadFromModel(SETTINGS_RC_PATH(sg2model), gfxDir);
     _game->engine()->setFlag( Engine::batching, false );
   }
   else
   {
-    vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
-    if( !testPics.exist() )
+    vfs::Path testPics = SETTINGS_RC_PATH(picsArchive);
+    if (!testPics.exist())
     {
       SETTINGS_SET_VALUE( resourcePath, Variant("") );
       game::Settings::save();
@@ -345,14 +345,14 @@ void InSplash::mountArchives(ResourceLoader &loader)
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
 
-    loader.loadFromModel( SETTINGS_RC_PATH( remakeModel ) );
+    loader.loadFromModel(SETTINGS_RC_PATH(remakeModel));
   }
 
-  if( !errorStr.empty() )
+  if (!errorStr.empty())
   {
-    OSystem::error( "Resources error", errorStr );
-    Logger::debug( "CRITICAL: not found original resources in " + c3res );
-    exit( -1 ); //kill application
+    OSystem::error("Resources error", errorStr);
+    Logger::debug("CRITICAL: not found original resources in " + c3res);
+    exit(-1); //kill application
   }
 
   loader.loadFromModel( SETTINGS_RC_PATH( archivesModel ) );
@@ -367,11 +367,11 @@ void InSplash::loadResources(bool& isOk, std::string& result)
 {
   Logger::debug( "Game: initialize resource loader" );
   ResourceLoader rcLoader;
-  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
-  rcLoader.onStartLoading().connect( this, &InSplash::updateSplashText );
+  rcLoader.loadFiles(SETTINGS_RC_PATH(logoArchive));
+  //rcLoader.onStartLoading().connect( this, &InSplash::updateSplashText );
 
   Logger::debug( "Game: initialize resources" );
-  mountArchives( rcLoader );  // init some quick pictures for screenWait
+  mountArchives(rcLoader);  // init some quick pictures for screenWait
 }
 
 }//end namespace gamestate

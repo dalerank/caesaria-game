@@ -1,10 +1,10 @@
-sim.ui.dialogs.filmwidget = {}
+game.ui.dialogs.filmwidget = {}
 
 function OnShowFilmWidget(fname, text, title) {
-  sim.ui.dialogs.filmwidget.show(fname, text, title)
+  game.ui.dialogs.filmwidget.show(fname, text, title)
 }
 
-sim.ui.dialogs.filmwidget.show = function(filename, text, title) {
+game.ui.dialogs.filmwidget.show = function(filename, text, title) {
   var w = g_ui.addSimpleWindow(0, 0, 415, 450)
   w.title = "##title##"
   var helpButton = w.addHelpButton(16, w.h-42)
@@ -13,7 +13,7 @@ sim.ui.dialogs.filmwidget.show = function(filename, text, title) {
   var gbox = w.addGroupbox(12, w.h-100, w.w-24, 85)
   var lbTime = gbox.addLabel(0, 0, 150, 20)
   lbTime.font = "FONT_1"
-  lbTime.text = _format( "{} {} {}", date.nameMonth,
+  lbTime.text = _format( "{0} {1} {2}", date.nameMonth,
                                      date.year(),
                                      date.age ) //.year() < 0 ? "BC" : "AD"
 

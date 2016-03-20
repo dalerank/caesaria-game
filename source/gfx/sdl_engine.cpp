@@ -397,6 +397,29 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   SDL_SetSurfaceBlendMode( ioPicture.surface(), SDL_BLENDMODE_BLEND );
 }
 
+void SdlEngine::updateBatch(Batch& batch, const Point& newpos)
+{
+  if(!batch.native())
+    return;
+
+  int size = batch.native()->size;
+  if(size==0)
+    return;
+
+  std::vector<SDL_Rect> rects(size);
+  SDL_GetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+
+  int deltax = rects.front().x - newpos.x();
+  int deltay = rects.front().y - newpos.y();
+  for (auto& i : rects)
+  {
+    i.x -= deltax;
+    i.y -= deltay;
+  }
+
+  SDL_SetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+}
+
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
   try
@@ -404,10 +427,7 @@ void SdlEngine::unloadPicture( Picture& ioPicture )
     if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
     if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
   }
-  catch(...)
-  {
-
-  }
+  catch(...)  {}
 
   ioPicture = Picture();
 }
@@ -748,7 +768,7 @@ Engine::Modes SdlEngine::modes() const
 #define ADD_RESOLUTION(w,h) uniqueModes.insert( (w<<16) + h);
   ADD_RESOLUTION(1920,1080)
   ADD_RESOLUTION(1600,900)
-  ADD_RESOLUTION(1440,800)  
+  ADD_RESOLUTION(1440,800)
   ADD_RESOLUTION(1280,1024)
   ADD_RESOLUTION(1280,800)
   ADD_RESOLUTION(1024,768)

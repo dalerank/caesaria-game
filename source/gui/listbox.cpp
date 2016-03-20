@@ -71,6 +71,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   setFlag(moveOverSelect, moveOverSel);
   setFlag(autoscroll, true);
   setFlag(hightlightNotinfocused, true);
+  setFlag(itemSelectable, true);
   setFlag(drawBackground, drawBack);
 
   const int s = DEFAULT_SCROLLBAR_SIZE;
@@ -219,7 +220,10 @@ void ListBox::clear()
 //! sets the selected item. Set this to -1 if no item should be selected
 void ListBox::setSelected(int id)
 {
-  _d->index.selected = ((unsigned int)id>=_d->items.size() ? -1 : id);
+  id = isFlag( itemSelectable )
+        ? ((unsigned int)id>=_d->items.size() ? -1 : id)
+        : -1;
+  _d->index.selected = id;
 
   _d->time.select = DateTime::elapsedTime();
   _d->needItemsRepackTextures = true;
@@ -1045,6 +1049,7 @@ Signal2<Widget*, int>& ListBox::onIndexSelectedAgainEx() {  return _d->signal.on
 void ListBox::setItemsFont(Font font) { _d->font = font; }
 void ListBox::setItemsFont(const std::string& fname) { _d->font = Font::create(fname); }
 void ListBox::setItemsTextOffset(Point p) { _d->itemTextOffset = p; }
+void ListBox::setItemsSelectable(bool en) {  setFlag( itemSelectable, en ); }
 
 void ListBox::setItemTooltip(unsigned int index, const std::string& text)
 {

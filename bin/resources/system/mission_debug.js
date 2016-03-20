@@ -103,9 +103,9 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/level", "show_attacks", function() {engine.log("test")} )
 
   topmenu.addItemWithCallback("Debug/empire", "send_merchants", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/empire", "toggle_lock_empiremap", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/empire", "empire_toggle_capua", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/empire", "empire_toggle_londinium", function() {engine.log("test")} )*/
+  topmenu.addItemWithCallback("Debug/empire", "lock empiremap", function() {d.toggleDrawflag("empireLock")} )
 
   topmenu.addItemWithCallback("Debug/city", "Toggle gods", function() { d.toggleCityFlag("godEnabled")} )
   topmenu.addItemWithCallback("Debug/city", "Toggle adviser", function() { d.toggleCityFlag("adviserEnabled")} )
@@ -119,7 +119,7 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/windows", "emperor gift", function() {game.ui.dialogs.gift2emperor.show()} )
   topmenu.addItemWithCallback("Debug/windows", "change salary", function() {game.ui.dialogs.playerSalarySettings.show()} )
-  topmenu.addItemWithCallback("Debug/windows", "film widget", function() {sim.ui.filmwidget.show("pure","test","title")} )
+  topmenu.addItemWithCallback("Debug/windows", "film widget", function() {game.ui.dialogs.filmwidget.show("pure","test","title")} )
  /*topmenu.addItemWithCallback("Debug/city", "make_generation", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "decrease_sentiment", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "increase_sentiment", function() {engine.log("test")} )
