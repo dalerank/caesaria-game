@@ -197,12 +197,24 @@ Object.defineProperty( Image.prototype, "geometry", {set: function (rect) { this
 Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.setTooltipText(_t(text)); }} )
 Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
-    if ( typeof(value) == "string")
+    if ( typeof value == "string")
+    {
+      engine.log("Image set picture called with " + value)
       this.setPicture_str(value)
+    }
     else if (value instanceof Picture)
+    {
+      engine.log("from picture" + value.name())
       this.setPicture_pic(value)
-    else if (value.rc)
+    }
+    else if (value.rc && value.index)
+    {
+      engine.log("Image set picture called with rc " + value.rc + " index " + value.index)
       this.setPictures_rcIndex(value.rc,value.index)
+    }
+    else {
+      engine.log("Image set picture no case found")
+    }
   }
 } )
 //*************************** Image class end ***************************************//
@@ -363,10 +375,22 @@ Window.prototype.addEditbox = function(rx,ry,rw,rh) {
   return edit;
 }
 
-Window.prototype.addImage = function(rx,ry,pic) {
+Window.prototype.addImage = function() {
   var image = new Image(this);
-  image.picture = pic;
-  image.position = {x:rx,y:ry};
+  if (arguments.length==3)
+  {
+    image.position = {x:arguments[0],y:arguments[1]};
+    image.picture = arguments[3];
+  }
+  else if(arguments.length==5)
+  {
+    var rx = arguments[0]
+    var ry = arguments[1]
+    var rw = arguments[2]
+    var rh = arguments[3]
+    image.geometry = {x:rx, y:ry, w:rw, h: rh}
+    image.picture = arguments[4]
+  }
   return image;
 }
 

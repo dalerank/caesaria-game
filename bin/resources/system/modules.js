@@ -13,6 +13,8 @@ var modules = [
                   "init_colors",
                   "init_ranks",
                   "init_movie",
+                  "init_render",
+                  "init_picture",
                   "init_languages",
                   "video_settings",
                   "audio_settings",

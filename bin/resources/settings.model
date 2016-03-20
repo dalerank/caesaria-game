@@ -34,7 +34,7 @@
  "houseModel" : "house.model",
  "langModel" : "/language.model",
  "language" : "en",
- "lastChangesNumber" : "4240.000000",
+ "lastChangesNumber" : "4200.000000",
  "layersOptsModel" : "layers_opts.model",
  "localePath" : "/home/dalerank/projects/caesaria/bin/resources/locale",
  "lockInfobox" : true,

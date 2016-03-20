@@ -101,7 +101,6 @@ void push(js_State* J,const Size& size)
 }
 
 void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
-void push(js_State* J, const Path& p) { js_pushstring(J,p.toCString()); }
 void push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
 int push(js_State* J,const Variant& param)
@@ -193,6 +192,12 @@ void push(js_State* J, const DateTime& t)
 {
   auto pd = new DateTime(t);
   pushud(J, TEXT(DateTime), pd);
+}
+
+void push(js_State* J, const Path& p)
+{
+  auto pd = new Path(p);
+  pushud(J, TEXT(Path), pd);
 }
 
 #define PUSH_SAVEDDATA(type) void push(js_State* J, const type& p) { push(J, p.save()); }
@@ -360,7 +365,7 @@ void reg_object_function(const std::string& name, const std::string& funcname, j
 
 void script_object_begin(const std::string& name)
 {
-  Logger::debug( "cript-if://object.begin={} stack={}", name, js_gettop(internal::J) );
+  Logger::debug( "script-if://object.begin={} stack={}", name, js_gettop(internal::J) );
   js_getglobal(internal::J, "Object");
   js_getproperty(internal::J, -1, "prototype");
   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
