@@ -10,11 +10,16 @@ function type(obj){
 
 game.ui.dialogs.filmwidget.show = function(filename, text, title) {
   var w = g_ui.addSimpleWindow(0, 0, 415, 450)
-  w.title = "##title##"
   w.mayMove = false
   w.setModal()
-  
-  var helpButton = w.addHelpButton(11, w.h-34)
+  w.pauseGame = true
+
+  var lbTitle = w.addLabel( 40, w.h - 40, w.w - 80, 25)
+  lbTitle.font = "FONT_1"
+  lbTitle.text = title
+  lbTitle.textAlign = { h:"center", v:"center" }
+
+  var helpButton = w.addHelpButton(14, w.h-36)
 
   var date = g_session.date
   var gbox = w.addGroupbox(14, w.h-130, w.w-28, 90)
@@ -31,7 +36,7 @@ game.ui.dialogs.filmwidget.show = function(filename, text, title) {
   lbMessage.font = "FONT_1"
   lbMessage.multiline = true
   lbMessage.text = text
-  lbMessage.margin = { left:4, right:4 }
+  lbMessage.padding = { left:4, top:0, right:4, bottom:0 }
 
   var path = g_config.movie.getPath(filename)
   if (path && path.exist()) {

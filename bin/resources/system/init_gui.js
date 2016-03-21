@@ -14,7 +14,7 @@ Object.defineProperty( Widget.prototype, "h", { get: function() { return this.he
 //************************** widget class end ************************************//
 
 //****************************** Label class *************************************//
-Object.defineProperty( Label.prototype, 'text', { set: function(str) { this.setText( engine.translate(str) ) }} )
+Object.defineProperty( Label.prototype, 'text', { set: function(str) { this.setText( _t(str) ) }} )
 Object.defineProperty( Label.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h) }} )
 Object.defineProperty( Label.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y) }} )
 Object.defineProperty( Label.prototype, "font", { set: function(fname) { this.setFont(fname) }} )
@@ -29,6 +29,7 @@ Object.defineProperty( Label.prototype, "name", { set: function (str) { this.set
 Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
+Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.reight,rect.bottom) }})
 
 Object.defineProperty( Label.prototype, "w", { get: function() { return this.width() }} )
 Object.defineProperty( Label.prototype, "h", { get: function() { return this.height() }} )
@@ -36,7 +37,7 @@ Object.defineProperty( Label.prototype, "h", { get: function() { return this.hei
 
 //*************************** button class ***************************************/
 function Button (parent) { return new PushButton(parent); }
-Object.defineProperty( PushButton.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ); }} );
+Object.defineProperty( PushButton.prototype, "text", { set: function(str) { this.setText( _t(str) ); }} );
 Object.defineProperty( PushButton.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( PushButton.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
 Object.defineProperty( PushButton.prototype, "font", { set: function(fname) { this.setFont(fname); }} );
@@ -197,19 +198,13 @@ Object.defineProperty( Image.prototype, "geometry", {set: function (rect) { this
 Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.setTooltipText(_t(text)); }} )
 Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
-    if ( typeof value == "string")
-    {
-      engine.log("Image set picture called with " + value)
+    if ( typeof value == "string") {
       this.setPicture_str(value)
     }
-    else if (value instanceof Picture)
-    {
-      engine.log("from picture" + value.name())
+    else if (value instanceof Picture) {
       this.setPicture_pic(value)
     }
-    else if (value.rc && value.index)
-    {
-      engine.log("Image set picture called with rc " + value.rc + " index " + value.index)
+    else if (value.rc && value.index) {
       this.setPictures_rcIndex(value.rc,value.index)
     }
     else {
@@ -445,7 +440,7 @@ Ui.prototype = {
   addSimpleWindow : function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
-    window.addExitButton(window.w-34, window.h-34);
+    window.addExitButton(window.w-36, window.h-36);
     window.moveToCenter();
     window.closeAfterKey({escape:true,rmb:true});
     return window;

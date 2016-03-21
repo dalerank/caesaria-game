@@ -47,7 +47,7 @@ public:
   //! draws the element and its children
   virtual void draw(gfx::Engine& painter);
 
-  void setPadding(const Rect& margin);
+  void setPadding(const Rect& padding);
 
   //! Get the font which is used right now for drawing
   virtual Font font() const;
