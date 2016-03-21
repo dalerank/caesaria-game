@@ -35,6 +35,8 @@
  "langModel" : "/language.model",
  "language" : "en",
  "lastChangesNumber" : "4200.000000",
+ "lastGame" : "/home/dalerank/.caesaria/saves/Brundisium_autosave0.oc3save",
+ "lastTranslation" : "tutorial",
  "layersOptsModel" : "layers_opts.model",
  "localePath" : "/home/dalerank/projects/caesaria/bin/resources/locale",
  "lockInfobox" : true,
