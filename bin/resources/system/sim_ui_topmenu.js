@@ -25,8 +25,8 @@ sim.ui.topmenu.options.init = function() {
     m.moveToIndex(1)
     m.addItemWithCallback("##screen_settings##", function () { game.ui.dialogs.showVideoOptions() } )
     m.addItemWithCallback("##sound_settings##", function () { game.ui.dialogs.showAudioOptions() } )
-    m.addItemWithCallback("##speed_settings##",  function() { sim.ui.topmenu.options.showSpeedOptions() } )
-    m.addItemWithCallback("##city_settings##", function () { sim.ui.topmenu.options.showCitySettings() } )
+    m.addItemWithCallback("##speed_settings##",  function() { sim.ui.dialogs.options.showSpeedOptions() } )
+    m.addItemWithCallback("##city_settings##", function () { sim.ui.dialogs.options.showCitySettings() } )
     m.addItemWithCheckingCallback("##city_constr_mode##", function(checked) { g_session.setOption("constructorMode",checked)} )
 }
 

@@ -29,7 +29,7 @@ Object.defineProperty( Label.prototype, "name", { set: function (str) { this.set
 Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
-Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.reight,rect.bottom) }})
+Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.right,rect.bottom) }})
 
 Object.defineProperty( Label.prototype, "w", { get: function() { return this.width() }} )
 Object.defineProperty( Label.prototype, "h", { get: function() { return this.height() }} )
