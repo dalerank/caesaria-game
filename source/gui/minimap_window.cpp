@@ -403,7 +403,7 @@ void Minimap::Impl::initStaticMmap()
   Tilemap& tmap = city->tilemap();
   int mapSize = tmap.size();
 
-  bg.image.fill( 0xff000000, Rect() );
+  bg.image.fill( ColorList::black, Rect() );
   bg.image.update();
 
   size.setWidth( getBitmapCoordinates( mapSize-1, mapSize-1, mapSize ).x() );
@@ -420,7 +420,7 @@ void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
   int mapSize = tmap.size();
 
   if( clear )
-    canvas.fill( 0xff000000, Rect() );
+    canvas.fill( ColorList::black, Rect() );
 
   int c1, c2;
   int mmapWidth = canvas.width();

@@ -173,7 +173,6 @@ enum {
   increase_sentiment,
   reload_buildings_config,
   toggle_show_empireMapTiles,
-  toggle_lock_empiremap,
   forest_fire,
   forest_grow,
   increase_max_level,
@@ -300,7 +299,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
-  ADD_DEBUG_EVENT( empire, toggle_lock_empiremap )
   ADD_DEBUG_EVENT( empire, empire_toggle_capua )
   ADD_DEBUG_EVENT( empire, empire_toggle_londinium )
 
@@ -679,13 +677,6 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = KILLSWITCH( showEmpireMapTiles );
     SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
-  }
-  break;
-
-  case toggle_lock_empiremap:
-  {
-    bool enabled = game->empire()->isAvailable();
-    game->empire()->setAvailable( !enabled );
   }
   break;
 

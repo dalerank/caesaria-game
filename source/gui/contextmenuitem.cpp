@@ -165,7 +165,7 @@ ContextMenuItem::~ContextMenuItem()
 void ContextMenuItem::setHovered( bool hover )
 {
   _dfunc()->is.hovered = hover;
-  setFont( hover ? FONT_2_RED : FONT_2 );
+  setFont( hover ? "FONT_2_RED" : "FONT_2" );
 }
 
 void ContextMenuItem::setVisible(bool visible)

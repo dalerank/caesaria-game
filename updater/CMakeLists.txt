@@ -35,8 +35,9 @@ set( UPD_DEP_SOURCES_LIST
 
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")
 
-include_directories( ${BASE_SOURCE_DIR} )
-include_directories( ${DEP_DIR} )
+include_directories( ${BASE_SOURCE_DIR}
+                     ${DEP_DIR}
+                     ${BASE_SOURCE_DIR}/include )
 
 add_executable(${PROJECT_NAME}
                ${UPD_SRC_LIST} ${UPD_INC_LIST}

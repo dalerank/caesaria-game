@@ -110,7 +110,7 @@ public:
     flags.border = false;
     flags.overrideColor = false;
     flags.invalidate = false;
-    font.current = Font::create( FONT_2 );
+    font.current = Font::create( "FONT_2" );
     text.lineOffset= 0;
     text.margin = Rect( 0, 0, 0, 0);
     lmbPressed = false;
@@ -171,7 +171,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
 
   if( _d->text.tx.isValid() )
   {
-    _d->text.tx.fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
+    _d->text.tx.fill( NColor(0x00ffffff), Rect( 0, 0, 0, 0) );
   }
 
   // draw button background
@@ -674,11 +674,9 @@ void DictionaryText::setFont( const Font& font )
   _d->flags.invalidate = true;
 }
 
-void DictionaryText::setFont(const string& fname) { Widget::setFont(fname); }
-
-void DictionaryText::setFont(FontType type, NColor color)
+void DictionaryText::setFont(const std::string& fontname, NColor color)
 {
-  Widget::setFont( type, color );
+  Widget::setFont( fontname, color );
 }
 
 void DictionaryText::setAlpha(unsigned int value)

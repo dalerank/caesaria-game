@@ -54,7 +54,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
 {
   // create the title
   auto& lbTitle = add<Label>( Rect( 50, 10, width()-50, 10 + 30 ), "", true );
-  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setFont( "FONT_5" );
   lbTitle.setTextAlignment( align::center, align::center );
   _d->lbTitle = &lbTitle;
 

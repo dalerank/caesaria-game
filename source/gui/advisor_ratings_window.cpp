@@ -25,7 +25,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "city/victoryconditions.hpp"

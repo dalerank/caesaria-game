@@ -36,7 +36,7 @@
     #include <pwd.h>
   #elif defined(GAME_PLATFORM_MACOSX)
     #include <libproc.h>
-    #include <pwd.h>    
+    #include <pwd.h>
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
@@ -48,7 +48,7 @@ namespace vfs
 {
 
 Directory::~Directory() {}
-  
+
 bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
@@ -135,7 +135,27 @@ Path Directory::find(const Path& fileName, SensType sens) const
     return files.item( index ).fullpath;
   }
 
-  return "";
+  return Path();
+}
+
+Path Directory::find(const std::string& name, bool checkCase, bool checkExt) const
+{
+  if( name.empty() )
+  {
+    Logger::warning( "!!! Directory: cannot try find zero lenght name" );
+    return "";
+  }
+
+  Entries files = entries();
+  for ( const auto& entry : files)
+  {
+    auto fname = entry.name.removeExtension();
+    fname = utils::localeLower(fname);
+    if(name == fname)
+      return entry.fullpath;
+  }
+
+  return Path();
 }
 
 Entries Directory::entries() const
@@ -144,7 +164,7 @@ Entries Directory::entries() const
   Directory saveDir( fs.workingDirectory() );
   Directory changeDd = *this;
   fs.changeWorkingDirectoryTo( changeDd );
-    
+
   Entries fList( changeDd.toString(), Path::nativeCase, false );
   fList = fs.getFileList();
 
@@ -279,13 +299,13 @@ Directory Directory::userDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::error( "Cannot find home user directory" );    
+    Logger::error( "Cannot find home user directory" );
   }
 #elif defined(GAME_PLATFORM_HAIKU)
    mHomePath = getenv("HOME");
    if( mHomePath.empty() )
    {
-   	 mHomePath = "/boot/home";
+     mHomePath = "/boot/home";
    }
 #elif defined(GAME_PLATFORM_WIN)
   TCHAR path[MAX_PATH];

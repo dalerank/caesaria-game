@@ -47,7 +47,7 @@ public:
   //! draws the element and its children
   virtual void draw(gfx::Engine& painter);
 
-  void setPadding(const Rect& margin);
+  void setPadding(const Rect& padding);
 
   //! Get the font which is used right now for drawing
   virtual Font font() const;
@@ -70,10 +70,10 @@ public:
   bool isBorderVisible() const;
 
   //!
-  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
+  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=NColor());
 
   //!
-  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=0,
+  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=NColor(),
                           Alignment halign=align::automatic, Alignment valign=align::automatic );
 
   //!
@@ -118,7 +118,7 @@ public:
   void setPrefixText(const std::string& prefix);
 
   virtual void setBackgroundPicture(const gfx::Picture& picture, Point offset=Point());
-  
+
   virtual void setBackgroundPicture(const std::string& rcname);
 
   virtual void setIcon(const gfx::Picture& icon, Point offset=Point());
@@ -128,13 +128,10 @@ public:
 
   virtual void setIconOffset( const Point& offset );
 
-  virtual void setFont(const Font& font);
 
   //!
-  virtual void setFont( const std::string& fontname );
-
-  //!
-  virtual void setFont(FontType type, NColor color=0);
+  virtual void setFont( const Font& font );
+  virtual void setFont( const std::string& fontname, NColor color=NColor());
 
   virtual void setAlpha(unsigned int value);
 
@@ -152,10 +149,9 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
 
-  virtual void setTextOffset(Point offset);
-
   virtual void setTextOffset(int x, int y);
 
+  virtual void setTextOffset(Point offset);
 signals public:
   virtual Signal0<>& onClicked();
   virtual Signal1<Widget*>& onClickedA();

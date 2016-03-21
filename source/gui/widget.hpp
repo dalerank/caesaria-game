@@ -24,7 +24,7 @@
 #include "core/list.hpp"
 #include "core/rectangle.hpp"
 #include "core/alignment.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
 #include "core/event.hpp"
@@ -40,7 +40,7 @@ class Ui;
 
 class Widget : public virtual ReferenceCounted
 {
-public:       
+public:
   class Widgets : public List<Widget*>
   {
   public:
@@ -95,33 +95,32 @@ public:
   virtual bool isFocused() const;
 
   virtual void setFocus();
-	virtual void removeFocus();
+  virtual void removeFocus();
 
-	virtual void beforeDraw( gfx::Engine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
-	virtual Rect clientRect() const;
+  virtual Rect clientRect() const;
 
-	//! Sets another skin independent font.
-	/** If this is set to zero, the button uses the font of the skin.
-	\param font: New font to set. */
+  //! Sets another skin independent font.
+  /** If this is set to zero, the button uses the font of the skin.
+  \param font: New font to set. */
   virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& font );
-  virtual void setFont( FontType type, NColor color=0 );
+  virtual void setFont(const std::string& name, NColor color=NColor() );
 
   virtual Font font() const;
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
-  
+
   virtual Ui* ui() const;
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
-	*					   ALIGN_LOWEERRIGHT for right justified, or ALIGN_CENTER for centered text.
-	*	\param vertical: ALIGN_UPPERLEFT to align with top edge,
-	*					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
-	*/
+  *					   ALIGN_LOWEERRIGHT for right justified, or ALIGN_CENTER for centered text.
+  *	\param vertical: ALIGN_UPPERLEFT to align with top edge,
+  *					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default).
+  */
   virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
 
   virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
@@ -210,7 +209,7 @@ public:
   virtual void move( const Point& offset );
 
   //!
-  virtual void canvasDraw( const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0 );
+  virtual void canvasDraw( const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=NColor() );
 
   //!
   virtual void canvasDraw( const gfx::Picture& picture, const Point& point );
@@ -348,7 +347,7 @@ public:
   void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
   void setGeometry(float left, float top, float rigth, float bottom);
 
-  //! 
+  //!
   void setLeft( int newLeft );
 
   //!
@@ -422,8 +421,8 @@ public:
     *  \param first: element with the highest/lowest known tab order depending on search direction
     *  \param closest: the closest match, depending on tab order and direction
     *  \param includeInvisible: includes invisible elements in the search (default=false)
-    *  \return true if successfully found an element, false to continue searching/fail 
-	 */
+    *  \return true if successfully found an element, false to continue searching/fail
+   */
   bool next( int startOrder, bool reverse, bool group,
              Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
@@ -433,7 +432,7 @@ public:
 
   void addProperty(const std::string& name, const Variant &value);
   void setProperty(const std::string& name, const Variant &value);
-  const Variant& getProperty( const std::string& name ) const;  
+  const Variant& getProperty( const std::string& name ) const;
   const VariantMap& properties() const;
 
 protected:

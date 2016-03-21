@@ -456,8 +456,7 @@ void ContextMenu::beforeDraw(gfx::Engine& painter)
   if (!visible())
     return;
 
-  Font font = Font::create(FONT_2_WHITE);
-
+  Font font = Font::create( "FONT_2_WHITE" );
   if (font != _d->lastFont)
   {
     _d->lastFont = font;
@@ -617,7 +616,7 @@ void ContextMenu::moveItem(ContextMenuItem* item, unsigned int index)
   if (index >= _d->items.size())
     return;
 
-  for (int i = 0; i < _d->items.size(); ++i)
+  for (unsigned int i = 0; i < _d->items.size(); ++i)
   {
     if (_d->items[i] == item)
     {
@@ -635,9 +634,7 @@ void ContextMenu::_closeAllSubMenus()
   for(unsigned int i=0; i<_d->items.size(); ++i)
   {
     if( _d->items[i]->submenu() && _d->items[i]->visible())
-    {
       setItemVisible( i, false );
-    }
   }
 
   //HighLighted = -1;

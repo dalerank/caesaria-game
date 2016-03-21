@@ -43,6 +43,7 @@ public:
     _HK(KEY_PLUS,"plus") _HK(KEY_MINUS,"minus")
     _HK(KEY_SUBTRACT,"sutract") _HK(KEY_ADD,"sum")
     _HK(KEY_TILDA,"tilda") _HK(KEY_SPACE,"space")
+    _HK(KEY_COMMA, "comma") _HK(KEY_PERIOD, "period")
     _HK(KEY_KEY_0,"0")
     _HK(KEY_KEY_1,"1") _HK(KEY_KEY_2,"2") _HK(KEY_KEY_3,"3")
     _HK(KEY_KEY_4,"4") _HK(KEY_KEY_5, "5") _HK(KEY_KEY_6, "6")

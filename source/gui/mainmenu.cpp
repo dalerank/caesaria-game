@@ -143,10 +143,11 @@ void MainMenu::_recalculateSize()
 {
   Rect parentRect = parent()->clientRect(); // client rect of parent
 
-  Font font = Font::create(FONT_2_WHITE);
+  Font font = Font::create( "FONT_2_WHITE" );
 
-  int hg = std::max<int>(DEFAULT_MENU_HEIGHT, height());
-  setGeometry(Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ));
+  int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
+  setGeometry( Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ) );
+
   Rect rect;
 
   rect._lefttop = parentRect.lefttop();

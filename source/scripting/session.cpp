@@ -28,7 +28,9 @@
 #include <GameEvents>
 #include "game/datetimehelper.hpp"
 #include "sound/engine.hpp"
-#include "core/font.hpp"
+#include "core/osystem.hpp"
+#include "font/font.hpp"
+#include "font/font_collection.hpp"
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
@@ -295,6 +297,10 @@ int Session::getAdvflag(const std::string & flag) const
   {
     value = _game->timeMultiplier();
   }
+  else if (flag == "empireLock")
+  {
+    value = _game->empire()->isAvailable();
+  }
   else
   {
     value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
@@ -331,6 +337,14 @@ void Session::setAdvflag(const std::string & flag, int value)
   else if (flag == "gameSpeed")
   {
     _game->setTimeMultiplier(value);
+  }
+  else if (flag == "gameSpeedTick")
+  {
+    _game->step(value);
+  }
+  else if (flag == "empireLock")
+  {
+    _game->empire()->setAvailable(value > 0);
   }
   else
   {

@@ -136,4 +136,11 @@ void GroupBox::setupUI(const VariantMap &ui)
   _d->needUpdateTexture = true;
 }
 
+void GroupBox::_finalizeResize()
+{
+  Widget::_finalizeResize();
+
+  _d->background.body.move(absoluteRect().lefttop());
+}
+
 }//end namespace gui

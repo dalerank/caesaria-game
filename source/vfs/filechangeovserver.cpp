@@ -233,7 +233,7 @@ void FileChangeObserver::watch(const std::string& dir)
 
 void FileChangeObserver::watch(Directory dir)
 {
-  _d->dir = dir;
+  _d->dir = dir.absolutePath();
   _d->createSnapshot();
 
   _d->thread = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &FileChangeObserver::run ) );

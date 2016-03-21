@@ -27,18 +27,15 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "IMG_savepng.h"
-#include "core/exception.hpp"
-#include "core/requirements.hpp"
-#include "core/position.hpp"
-#include "pictureconverter.hpp"
-#include "core/time.hpp"
 #include "core/logger.hpp"
-#include "core/utils.hpp"
-#include "core/font.hpp"
-#include "core/eventconverter.hpp"
-#include "core/timer.hpp"
+#include "core/signals.hpp"
+#include "core/time.hpp"
 #include "core/debug_timer.hpp"
+#include "core/exception.hpp"
+#include "core/eventconverter.hpp"
+#include "IMG_savepng.h"
+#include "pictureconverter.hpp"
+#include "font/font.hpp"
 #include "sdl_batcher.hpp"
 
 #ifdef GAME_PLATFORM_MACOSX
@@ -211,7 +208,7 @@ void SdlEngine::_drawFrameMetrics()
     if( DebugTimer::ticks() - timeCount > 500 )
     {
       std::string debugTextStr = fmt::format( "fps:{} dc:{}", fps(), _d->drawCall );
-      _d->metrics.lbText.fill( 0, Rect() );
+      _d->metrics.lbText.fill( ColorList::clear, Rect() );
       _d->debugFont.draw( _d->metrics.lbText, debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
@@ -288,7 +285,7 @@ void SdlEngine::init()
     THROW("Failed to create window");
   }
 
-  Logger::warning("SDLGraficEngine: init successfull");  
+  Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
   SDL_Renderer *renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
@@ -313,7 +310,7 @@ void SdlEngine::init()
     Logger::debug( "SDLGraficEngine: availabe render {}", info.name );
   }
 
-  SDL_GetRendererInfo( renderer, &info );  
+  SDL_GetRendererInfo( renderer, &info );
   int gl_version;
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
@@ -400,6 +397,29 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   SDL_SetSurfaceBlendMode( ioPicture.surface(), SDL_BLENDMODE_BLEND );
 }
 
+void SdlEngine::updateBatch(Batch& batch, const Point& newpos)
+{
+  if(!batch.native())
+    return;
+
+  int size = batch.native()->size;
+  if(size==0)
+    return;
+
+  std::vector<SDL_Rect> rects(size);
+  SDL_GetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+
+  int deltax = rects.front().x - newpos.x();
+  int deltay = rects.front().y - newpos.y();
+  for (auto& i : rects)
+  {
+    i.x -= deltax;
+    i.y -= deltay;
+  }
+
+  SDL_SetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+}
+
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
   try
@@ -407,16 +427,13 @@ void SdlEngine::unloadPicture( Picture& ioPicture )
     if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
     if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
   }
-  catch(...)
-  {
-
-  }
+  catch(...)  {}
 
   ioPicture = Picture();
 }
 
 void SdlEngine::Impl::renderStart()
-{ 
+{
   SDL_GetMouseState( &mousepos.rx(), &mousepos.ry() );
   SDL_RenderClear(renderer);  // black background for a complete redraw
   batcher.reset();
@@ -445,7 +462,7 @@ void SdlEngine::Impl::renderFinish()
 Size SdlEngine::viewportSize() const { return _srcSize * _d->screenScale; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
-{    
+{
   if( !picture.isValid() )
       return;
 
@@ -669,7 +686,7 @@ void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
 }
 
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
-{  
+{
   Impl::MaskInfo& mask = _d->mask;
 
   if( !mask.equals( rmask, gmask, bmask, amask ) )
@@ -751,7 +768,7 @@ Engine::Modes SdlEngine::modes() const
 #define ADD_RESOLUTION(w,h) uniqueModes.insert( (w<<16) + h);
   ADD_RESOLUTION(1920,1080)
   ADD_RESOLUTION(1600,900)
-  ADD_RESOLUTION(1440,800)  
+  ADD_RESOLUTION(1440,800)
   ADD_RESOLUTION(1280,1024)
   ADD_RESOLUTION(1280,800)
   ADD_RESOLUTION(1024,768)
@@ -795,7 +812,7 @@ void SdlEngine::setFlag( int flag, int value )
 
   switch( flag )
   {
-  case showMetrics: _d->debugFont = Font::create( FONT_2 ); break;
+  case showMetrics: _d->debugFont = Font::create( "FONT_2" ); break;
   case batching:  _d->batcher.setActive( value );  break;
   default: break;
   }

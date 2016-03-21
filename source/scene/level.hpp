@@ -42,8 +42,8 @@ public:
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
-  virtual void draw();
-  virtual void animate( unsigned int time );
+  virtual void draw(gfx::Engine& engine);
+  virtual void animate(unsigned int time);
   virtual void afterFrame();
   virtual int result() const;
   virtual bool installEventHandler(EventHandlerPtr);

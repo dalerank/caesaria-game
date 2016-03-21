@@ -26,7 +26,7 @@
 #include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
 #include "gfx/render_info.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/signals.hpp"
 #include "core/event.hpp"
 #include "walker/constants.hpp"

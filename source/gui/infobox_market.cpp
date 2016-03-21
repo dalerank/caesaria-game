@@ -57,7 +57,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   Label& lbAbout = add<Label>( Rect( 15, 30, width() - 15, 50) );
   lbAbout.setWordwrap( true );
-  lbAbout.setFont( FONT_1 );
+  lbAbout.setFont( "FONT_1" );
   lbAbout.setTextAlignment( align::upperLeft, align::upperLeft );
 
   setTitle( _( market->info().prettyName() ) );
@@ -117,7 +117,7 @@ public:
   {
     setText( utils::i2str( metric::Measure::convQty( qty ) ) );
     setIcon( good::Info( goodType ).picture() );
-    setFont( FONT_2 );
+    setFont( "FONT_2" );
     setTextAlignment( align::upperLeft, align::center );
     setTextOffset( { 30, 0 } );
 

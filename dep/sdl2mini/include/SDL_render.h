@@ -830,6 +830,32 @@ extern DECLSPEC int SDLCALL SDL_RenderBatch(SDL_Renderer * renderer,
                                             SDL_Batch * batch);
 
 /**
+ *  \brief Update batch destination rects
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param batch    The batch struct.
+ *  \param rects    Array of rect
+ *  \param size     size of rects array
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_SetBatchDstRects(SDL_Renderer * renderer,
+                                                 SDL_Batch * batch, SDL_Rect* rects, unsigned int size);
+
+/**
+ *  \brief Get batch destination rects array
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param batch    The batch struct.
+ *  \param rects    Array of rect
+ *  \param size     size of rects array
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_GetBatchDstRects(SDL_Renderer * renderer,
+                                                 SDL_Batch * batch, SDL_Rect* rects, unsigned int size);
+
+/**
  *  \brief Copy a portion of the source texture to the current rendering target, rotating it by angle around the given center
  *
  *  \param renderer The renderer which should copy parts of a texture.

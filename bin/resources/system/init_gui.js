@@ -14,7 +14,7 @@ Object.defineProperty( Widget.prototype, "h", { get: function() { return this.he
 //************************** widget class end ************************************//
 
 //****************************** Label class *************************************//
-Object.defineProperty( Label.prototype, 'text', { set: function(str) { this.setText( engine.translate(str) ) }} )
+Object.defineProperty( Label.prototype, 'text', { set: function(str) { this.setText( _t(str) ) }} )
 Object.defineProperty( Label.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h) }} )
 Object.defineProperty( Label.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y) }} )
 Object.defineProperty( Label.prototype, "font", { set: function(fname) { this.setFont(fname) }} )
@@ -26,16 +26,18 @@ Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.
 Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )
 Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str) }} )
+Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
+Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.right,rect.bottom) }})
 
 Object.defineProperty( Label.prototype, "w", { get: function() { return this.width() }} )
 Object.defineProperty( Label.prototype, "h", { get: function() { return this.height() }} )
 /************************************* label class end ******************************/
 
 //*************************** button class ***************************************/
-function Button(parent) { return new PushButton(parent); }
-Object.defineProperty( PushButton.prototype, "text", { set: function(str) { this.setText( engine.translate(str) ); }} );
+function Button (parent) { return new PushButton(parent); }
+Object.defineProperty( PushButton.prototype, "text", { set: function(str) { this.setText( _t(str) ); }} );
 Object.defineProperty( PushButton.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( PushButton.prototype, "position", { set: function(point) { this.setPosition(point.x,point.y); }} );
 Object.defineProperty( PushButton.prototype, "font", { set: function(fname) { this.setFont(fname); }} );
@@ -92,6 +94,12 @@ Object.defineProperty( SpinBox.prototype, "postfix", { set: function(text) { thi
 Object.defineProperty( SpinBox.prototype, "value", { set: function(text) { this.setValue(text); }} );
 Object.defineProperty( SpinBox.prototype, "callback", { set: function(func) { this.onChangeA(func); }} );
 //*************************** Spinbox class end***************************************//
+
+//*************************** KeyValueListbox class ***************************************//
+function KeyValueListbox(parent) { return new KeyValueListBox(parent); }
+Object.defineProperty( KeyValueListBox.prototype, "geometry", { set: function(rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
+Object.defineProperty( KeyValueListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h) }} )
+//*************************** KeyValueListbox class end***************************************//
 
 //*************************** Listbox class ***************************************//
 function Listbox(parent) { return new ListBox(parent); }
@@ -188,20 +196,36 @@ Object.defineProperty( PositionAnimator.prototype, "removeParent", { set:functio
 Object.defineProperty( Image.prototype, "position", {set: function (point) { this.setPosition(point.x,point.y); }} )
 Object.defineProperty( Image.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.setTooltipText(_t(text)); }} )
-Object.defineProperty( Image.prototype, "picture", {set: function (name) { this.setPicture(name); }} )
+Object.defineProperty( Image.prototype, "picture", {
+  set: function (value) {
+    if ( typeof value == "string") {
+      this.setPicture_str(value)
+    }
+    else if (value instanceof Picture) {
+      this.setPicture_pic(value)
+    }
+    else if (value.rc && value.index) {
+      this.setPictures_rcIndex(value.rc,value.index)
+    }
+    else {
+      engine.log("Image set picture no case found")
+    }
+  }
+} )
 //*************************** Image class end ***************************************//
 
 //*************************** FileSelector class begin ***************************************//
-function FileSelector(parent) { this.widget = new FileListBox(parent); }
+function FileSelector(parent) { return new FileListBox(parent); }
 
 Object.defineProperty( FileListBox.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( FileListBox.prototype, "background", {set: function (enabled) { this.setBackgroundVisible(enabled); }} )
 Object.defineProperty( FileListBox.prototype, "selectedIndex", {set:function (index) { this.setSelected(index); }} )
 Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h); }} )
-Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
+Object.defineProperty( FileListBox.prototype, "font", {set: function (fname) { this.setItemsFont(fname); }} )
 Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "count", {set: function () { return this.itemsCount(); }} )
 Object.defineProperty( FileListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} )
+Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
 
 Object.defineProperty( FileListBox.prototype, "itemColor", { set: function (obj) {
     if(obj.simple) this.setItemDefaultColor("simple", obj.simple);
@@ -238,6 +262,7 @@ ContextMenu.prototype.addItemWithCallback = function(path,caption,func) {
     item.callback = func;
     return item;
 }
+
 Object.defineProperty(ContextMenu.prototype, "w", { get: function () { return this.width(); } })
 //*************************** ContextMenu class end ***************************************//
 
@@ -291,89 +316,113 @@ Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
 }})
 
 Window.prototype.closeAfterKey = function(obj) {
-      if(obj.escape)
-        this.addCloseCode(0x1B);
-      if(obj.rmb)
-        this.addCloseCode(0x4);
-  }
+  if(obj.escape)
+    this.addCloseCode(0x1B);
+  if(obj.rmb)
+    this.addCloseCode(0x4);
+}
 
 Window.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(this);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(this);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
 
 Window.prototype.addGroupbox = function(rx,ry,rw,rh) {
-    var gbox = new Groupbox(this);
-    gbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return gbox;
-  }
+  var gbox = new Groupbox(this);
+  gbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return gbox;
+}
 
 Window.prototype.addSpinbox = function(rx,ry,rw,rh) {
-    var spinbox = new Spinbox(this);
-    spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return spinbox;
-  }
+  var spinbox = new Spinbox(this);
+  spinbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return spinbox;
+}
 
 Window.prototype.addFileSelector = function(rx,ry,rw,rh) {
-    var selector = new FileSelector(this);
-    selector.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return selector;
-  }
+  var selector = new FileSelector(this);
+  selector.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return selector;
+}
 
 Window.prototype.addDictionaryText = function(rx,ry,rw,rh) {
-    var dtext = new DictionaryText(this);
-    dtext.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return dtext;
-  }
+  var dtext = new DictionaryText(this);
+  dtext.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return dtext;
+}
 
 Window.prototype.addListbox = function(rx,ry,rw,rh) {
-    var listbox = new Listbox(this);
-    listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return listbox;
-  }
+  var listbox = new Listbox(this);
+  listbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return listbox;
+}
+
+Window.prototype.addKeyValueListbox = function(rx,ry,rw,rh) {
+  var kvlistbox = new KeyValueListbox(this);
+  kvlistbox.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return kvlistbox;
+}
 
 Window.prototype.addEditbox = function(rx,ry,rw,rh) {
-    var edit = new Editbox(this);
-    edit.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return edit;
-  }
+  var edit = new Editbox(this);
+  edit.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return edit;
+}
 
-Window.prototype.addImage = function(rx,ry,picname) {
-    var image = new Image(this);
-    image.picture = picname;
-    image.position = {x:rx,y:ry};
-    return image;
+Window.prototype.addImage = function() {
+  var image = new Image(this);
+  if (arguments.length==3)
+  {
+    image.position = {x:arguments[0],y:arguments[1]};
+    image.picture = arguments[3];
   }
+  else if(arguments.length==5)
+  {
+    var rx = arguments[0]
+    var ry = arguments[1]
+    var rw = arguments[2]
+    var rh = arguments[3]
+    image.geometry = {x:rx, y:ry, w:rw, h: rh}
+    image.picture = arguments[4]
+  }
+  return image;
+}
 
 Window.prototype.addTexturedButton = function(rx,ry,rw,rh) {
-    var button = new TexturedButton(this);
-    button.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return button;
-  }
+  var button = new TexturedButton(this);
+  button.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return button;
+}
 
 Window.prototype.addButton = function(rx,ry,rw,rh) {
-    var button = new Button(this)
-    button.geometry = { x:rx, y:ry, w:rw, h:rh }
-    return button
-  }
+  var button = new Button(this)
+  button.geometry = { x:rx, y:ry, w:rw, h:rh }
+  return button
+}
+
+Window.prototype.addHelpButton = function(rx,ry) {
+  var btn = new HelpButton(this)
+  btn.setPosition(rx, ry)
+  return btn
+}
 
 Window.prototype.addExitButton = function(rx,ry) {
-    var btn = new ExitButton(this)
-    btn.position = { x:rx, y:ry }
-    return btn;
-  }
+  var btn = new ExitButton(this)
+  btn.position = { x:rx, y:ry }
+  return btn;
+}
 
 Window.prototype.addSoundMuter = function(volume) {
-    var muter = new SoundMuter(this);
-    muter.setVolume(volume)
-    return muter
-  }
+  var muter = new SoundMuter(this);
+  muter.setVolume(volume)
+  return muter
+}
 
 Window.prototype.addSoundEmitter = function(sample, volume, type) {
-    var emitter = new SoundEmitter(this)
-    emitter.assign(sample, volume, type)
-    return emitter
+  var emitter = new SoundEmitter(this)
+  emitter.assign(sample, volume, type)
+  return emitter
 }
 
 //*************************** Window class begin ***************************************//
@@ -391,7 +440,7 @@ Ui.prototype = {
   addSimpleWindow : function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
-    window.addExitButton(window.w-34, window.h-34);
+    window.addExitButton(window.w-36, window.h-36);
     window.moveToCenter();
     window.closeAfterKey({escape:true,rmb:true});
     return window;
@@ -435,6 +484,6 @@ Ui.prototype = {
   },
 
   elog : function(a) { engine.log(a); }
-};
+}
 
-var g_ui = new Ui();
+var g_ui = new Ui()

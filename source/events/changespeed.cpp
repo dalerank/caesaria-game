@@ -88,27 +88,4 @@ void Pause::_exec(Game& game, unsigned int)
   }
 }
 
-
-GameEventPtr Step::create(unsigned int count)
-{
-  Step* e = new Step(count);
-  GameEventPtr ret( e );
-  ret->drop();
-  return ret;
-}
-
-void Step::_exec(Game &game, unsigned int)
-{
-  game.step(_count);
-}
-
-bool Step::_mayExec(Game &game, unsigned int) const
-{
-  return game.isPaused();
-}
-
-Step::Step(unsigned int count):_count(count)
-{
-}
-
 } //end namespace events

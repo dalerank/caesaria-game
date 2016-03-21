@@ -153,7 +153,7 @@ Widget::Widgets& Widget::_children() { return _dfunc()->children;}
 
 void Widget::setPosition( const Point& position )
 {
-	const Rect rectangle( position, size() );
+  const Rect rectangle( position, size() );
   setGeometry( rectangle );
 }
 
@@ -387,12 +387,12 @@ bool Widget::enabled() const
 
 bool Widget::bringToFront()
 {
-	if( parent() )
-	{
-		return parent()->bringChildToFront( this );
-	}
+  if( parent() )
+  {
+    return parent()->bringChildToFront( this );
+  }
 
-	return false;
+  return false;
 }
 
 bool Widget::bringChildToFront( Widget* element )
@@ -433,12 +433,12 @@ bool Widget::sendChildToBack( Widget* child )
 
 bool Widget::sendToBack()
 {
-	if( parent() )
-	{
-		return parent()->sendChildToBack( this );
-	}
+  if( parent() )
+  {
+    return parent()->sendChildToBack( this );
+  }
 
-	return false;
+  return false;
 }
 
 Widget* Widget::findChild(int id, bool searchChildren) const
@@ -479,7 +479,7 @@ Widget* Widget::findChild(const std::string& internalName, bool searchChildren) 
   return e;
 }
 
-bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/ ) const
+bool Widget::next(int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/) const
 {
     // we'll stop searching if we find this number
     int wanted = startOrder + ( reverse ? -1 : 1 );
@@ -668,7 +668,7 @@ void Widget::setupUI( const VariantMap& options )
     else
     {
       widgetType = newWidgetOptions.get( "type" ).toString();
-    }       
+    }
 
     if( !widgetType.empty() )
     {
@@ -933,7 +933,6 @@ bool Widget::isHovered() const{  return ui()->isHovered( this );}
 bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFont(const Font& font) {}
-void Widget::setFont(const std::string& font) { setFont( Font::create( font ) ); }
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }
@@ -970,12 +969,12 @@ Alignment Widget::verticalTextAlign() const{  return _dfunc()->textAlign.vertica
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
 Font Widget::font() const { return Font(); }
 
-void Widget::setFont(FontType type, NColor color)
+void Widget::setFont(const std::string& name, NColor color)
 {
-  Font font = Font::create(type);
-  if (color.color != 0)
-    font.setColor(color);
-  setFont(font);
+  Font font = Font::create( name );
+  if( color.color != 0 )
+    font.setColor( color );
+  setFont( font );
 }
 
 

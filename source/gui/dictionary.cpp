@@ -55,7 +55,7 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
-  _d->lbText->setFont( FONT_1 );
+  _d->lbText->setFont( "FONT_1" );
 
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
 

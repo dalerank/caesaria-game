@@ -1953,18 +1953,30 @@ SDL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch )
 SDL_Batch *SDL_CreateBatch(SDL_Renderer *renderer, SDL_Texture *texture,
                            const SDL_Rect *srcrect, const SDL_Rect *dstrect, unsigned int size)
 {
-  SDL_Batch* batch = SDL_malloc( sizeof(SDL_Batch) );
+  SDL_Batch* batch = SDL_malloc(sizeof(SDL_Batch));
   renderer->CreateBatch(renderer, batch, texture, srcrect, dstrect, size);
 
   return batch;
 }
 
+int SDL_SetBatchDstRects(SDL_Renderer * renderer,
+                         SDL_Batch * batch, SDL_Rect* rects, unsigned int size)
+{
+  return renderer->SetBatchDstRects(renderer, batch, rects, size);
+}
+
+int SDL_GetBatchDstRects(SDL_Renderer * renderer,
+                         SDL_Batch * batch, SDL_Rect* rects, unsigned int size)
+{
+  return renderer->GetBatchDstRects(renderer, batch, rects, size);
+}
+
 int SDL_DestroyBatch(SDL_Renderer *renderer, SDL_Batch * batch )
 {
-  if( batch )
+  if (batch)
   {
     renderer->DestroyBatch(renderer, batch);
-    SDL_free( batch );
+    SDL_free(batch);
   }
 
   return 0;

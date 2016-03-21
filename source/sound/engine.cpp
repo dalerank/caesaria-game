@@ -234,6 +234,7 @@ void Engine::init()
 void Engine::exit()
 {
   _d->running = false;
+  Mix_ChannelFinished(nullptr);
   _d->thread->stop();
   //?
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));

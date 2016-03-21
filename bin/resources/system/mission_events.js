@@ -108,30 +108,6 @@ sim.start = function()
   sim.hotkeys.init()
 }
 
-game.ui.dialogs.savegame = function()
-{
-  var savedir = g_session.getOptPath("savedir");
-  var ext = engine.getOption("saveExt");
-
-  engine.log("Find save in " + savedir.str + " with ext " + ext)
-  if (!savedir.exist())
-  {
-    g_ui.addInformationDialog("##warning##", "##save_directory_not_exist##");
-    return;
-  }
-
-  var dialog = g_ui.addSaveGameDialog(savedir, ext);
-  dialog.callback = function(path) {
-              g_session.save(path);
-          }
-}
-
-game.ui.dialogs.requestExit = function()
-{
-  var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
-  dialog.onYesCallback = function() { g_session.setMode(5); }
-}
-
 sim.ui.advisors.showEmpirePrices = function()
 {
   engine.log( "JS:OnShowEmpirePrices" );

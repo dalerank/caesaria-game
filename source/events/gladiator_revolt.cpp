@@ -30,7 +30,6 @@
 #include "showinfobox.hpp"
 #include "game/funds.hpp"
 #include "objects/training.hpp"
-#include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"

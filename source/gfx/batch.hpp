@@ -33,13 +33,14 @@ class Batch
 {
 public:
   Batch();
-  Batch( SDL_Batch* batch );
-  Batch( const Batch& other );
+  Batch(SDL_Batch* batch);
+  Batch(const Batch& other);
   Batch& operator=(const Batch& other);
   inline SDL_Batch* native() const { return _batch; }
   inline bool valid() const { return _batch != 0; }
-  inline void init( SDL_Batch* batch ) { _batch = batch; }
+  inline void init(SDL_Batch* batch) { _batch = batch; }
   void destroy();
+  void move(const Point& newpos);
   bool load(const Pictures& pics, const Rects& dstrects);
   bool load(const Pictures& pics, const Point& pos);
   void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects);
@@ -47,8 +48,8 @@ private:
   SDL_Batch* _batch;
 };
 
-void drawBatchWithFallback( Engine& engine, const Batch& batch,
-                            const Pictures& pictures, const Point& pos, Rect* clip );
+void drawBatchWithFallback(Engine& engine, const Batch& batch,
+                           const Pictures& pictures, const Point& pos, Rect* clip);
 
 }//end namespace gfx
 

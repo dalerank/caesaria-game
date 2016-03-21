@@ -144,9 +144,9 @@ void ListBoxItem::draw(const std::string& text, Font f, const Point& p )
 
 void ListBoxItem::clear()
 {
-  if( _d->textPic.isValid() )
+  if (_d->textPic.isValid())
   {
-    _d->textPic.fill( 0x0 );
+    _d->textPic.fill(ColorList::clear);
   }
 }
 

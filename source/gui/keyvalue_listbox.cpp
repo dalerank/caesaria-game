@@ -37,7 +37,7 @@ KeyValueListBox::KeyValueListBox(Widget* parent, const Rect& rectangle, int id)
 {
 }
 
-ListBoxItem& KeyValueListBox::addItem(const std::string& keyValue, Font font, const int color)
+ListBoxItem& KeyValueListBox::addItem(const std::string& keyValue, Font font, NColor color)
 {
   StringArray items = utils::split( keyValue, "][" );
   for( auto& it : items )
@@ -50,7 +50,7 @@ ListBoxItem& KeyValueListBox::addItem(const std::string& keyValue, Font font, co
   return item;
 }
 
-ListBoxItem& KeyValueListBox::addItem(const std::string& key, const std::string& value, Font font, const int color)
+ListBoxItem& KeyValueListBox::addItem(const std::string& key, const std::string& value, Font font, NColor color)
 {
   ListBoxItem& item = ListBox::addItem( " ", font, color );
 
@@ -63,7 +63,7 @@ void KeyValueListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, c
 {
   ListBox::_updateItemText( painter, item, textRect, font, frameRect );
 
-  Font f = Font::create( FONT_1 );
+  Font f = Font::create( "FONT_1" );
 
   std::string str = item.data( "key" ).toString();
   Rect finalRect = f.getTextRect( str, Rect( 0, 0, frameRect.width() / 2, frameRect.height() ), align::center, align::center );

@@ -453,7 +453,7 @@ void init()
   if( xclient.user->BLoggedOn() )
   {
     Logger::debug( "Try receive steamID:" );
-    glbUserStats.steamId = xclient.user->GetSteamID();
+    glbUserStats.steamId = xclient.user->GetSteamID().ConvertToUint64();
   }
   else
   {
