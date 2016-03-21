@@ -32,7 +32,7 @@ class Colors {
 		* Constants for the different terrain and building elements
 		*/
 		const static int
-			background = 0,
+			MAP_BG = 0,      
 			MAP_EMPTY1     = 1,
 			MAP_EMPTY2     = 2,
 			MAP_TREE1      = 3,
@@ -51,6 +51,8 @@ class Colors {
 			MAP_SPRITES    = 16,
 			MAP_SIZE       = 17;
 
+    static const int ITEM_COLORS_SIZE = 8;
+
 		/**
 		* Constants for the different walkers / sprites
 		*/
@@ -60,7 +62,7 @@ class Colors {
 			SPRITE_BARBARIAN = 2,
 			SPRITE_ENEMY     = 3;
 	private:
-		int map[MAP_SIZE][8];
+		int map[MAP_SIZE][ITEM_COLORS_SIZE];
 
 	public:
 		/**
@@ -77,6 +79,8 @@ class Colors {
 		*/
     inline int colour(int type, int number) const {	return map[type][number];}
     inline int colourA(int type, bool second) const {	return type & ( second ? 0xfffbfbfbfb : 0xfff7f7f7 ) ;}
+
+    void setColor(int mode, int index, int color);
 };
 
 }//end namespace minimap

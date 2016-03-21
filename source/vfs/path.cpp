@@ -319,7 +319,7 @@ Path Path::flattenFilename(const Path& root) const
     {
       if (lastWasRealDir)
       {
-        dir = dir.up().up();
+        dir = dir.up().addEndSlash();
         lastWasRealDir=( dir.toString().size()!=0);
       }
       else

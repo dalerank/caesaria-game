@@ -15,3 +15,7 @@ game.sound.player.themeFinished = function()
 
   this.index++
 }
+
+game.sound.player.playeAmbient = function() {
+
+}

@@ -117,7 +117,7 @@ struct SoundEmitter
              < a.tile->pos().distanceSqFrom( cameraPos ));
   }
 
-  std::string sound( unsigned int time ) const
+  std::string sound(unsigned int time) const
   {
     time = DateTime::elapsedTime();
     if( overlay.isValid() )
@@ -180,7 +180,7 @@ AmbientSound::AmbientSound(PlayerCityPtr city)
 {
   _d->camera = 0;
   _d->emmitersArea.reserve( ambientsnd::maxDistance * ambientsnd::maxDistance + 1 );
-  AmbientEmitter::instance().initialize( SETTINGS_RC_PATH(ambientsounds) );
+  AmbientEmitter::instance().initialize(SETTINGS_RC_PATH(ambientsounds));
 }
 
 void AmbientSound::timeStep( const unsigned int time )
@@ -204,16 +204,16 @@ void AmbientSound::timeStep( const unsigned int time )
   _d->emmitersArea = TilesArea( _city()->tilemap(), ambientsnd::maxDistance, _d->cameraPos );
 
   for( auto tile : _d->emmitersArea )
-    _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
+    _d->emitters.insert(SoundEmitter(tile, _d->cameraPos));
 
   //remove so far emitters
-  for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
+  for( auto i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->pos();
     if( abs( distance.i() ) > ambientsnd::maxDistance || abs( distance.j() ) > ambientsnd::maxDistance
         || !(*i).isValid() )
     {
-      i = _d->emitters.erase( i );
+      i = _d->emitters.erase(i);
     }
     else
     {
@@ -230,11 +230,11 @@ void AmbientSound::timeStep( const unsigned int time )
   {
     resourceName = i->sound( time );
 
-    if( resourceName.empty() )
+    if (resourceName.empty())
       continue;
 
     unsigned int hash = Hash(resourceName);
-    bool alsoResolved = _d->processedSounds.count( hash ) > 0;
+    bool alsoResolved = _d->processedSounds.count(hash) > 0;
 
     if( !alsoResolved )
     {

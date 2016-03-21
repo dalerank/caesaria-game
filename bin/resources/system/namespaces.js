@@ -15,8 +15,8 @@ sim.ui.topmenu.file = {}
 sim.ui.topmenu.debug = {}
 sim.ui.topmenu.advisors = {}
 sim.ui.topmenu.options = {}
-sim.ui.advisors = {}
 sim.ui.dialogs = {}
+sim.ui.advisors = {}
 sim.hotkeys = {}
 sim.fastsave = {}
 sim.autosave = {}
@@ -30,6 +30,7 @@ lobby.ui.newgame = {}
 lobby.ui.loadgame = {}
 lobby.ui.mainmenu = {}
 lobby.ui.options = {}
+lobby.ui.dialogs = {}
 lobby.hotkeys = {}
 
 /********************** namespace splash **********************************/

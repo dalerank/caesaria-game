@@ -1,4 +1,4 @@
-sim.ui.dialogs.options.showSpeedOptions = function()
+sim.ui.dialogs.showSpeedOptions = function()
 {
     var w = g_ui.addWindow(0, 0, 350, 225);
     w.title = "##game_speed_options##";

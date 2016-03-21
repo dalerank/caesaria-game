@@ -15,7 +15,7 @@ namespace litehtml
   #define t_strcmp			strcmp
   #define t_strncmp			strncmp
 
-#ifdef MSVC
+#if defined(_MSC_VER) || defined(MSVC)
   #define t_strcasecmp		stricmp
   #define t_strncasecmp		strnicmp
 #else

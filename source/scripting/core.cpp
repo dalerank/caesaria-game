@@ -94,10 +94,15 @@ bool tryPCall(js_State *J, int params)
 void push(js_State* J,const Size& size)
 {
   js_newobject(J);
-  js_pushnumber(J, size.width());
-  js_setproperty(J, -2, "w");
-  js_pushnumber(J, size.height());
-  js_setproperty(J, -2, "h");
+  js_pushnumber(J, size.width());  js_setproperty(J, -2, "w");
+  js_pushnumber(J, size.height()); js_setproperty(J, -2, "h");
+}
+
+void push(js_State* J, const TilePos& pos)
+{
+  js_newobject(J);
+  js_pushnumber(J, pos.i()); js_setproperty(J, -2, "i");
+  js_pushnumber(J, pos.j()); js_setproperty(J, -2, "j");
 }
 
 void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
@@ -301,8 +306,11 @@ void engineLoadArchive(js_State* J)
 
 void engineReloadFile(vfs::Path path)
 {
-  if (internal::files.count( path.toString()))
+  if (internal::files.count(path.toString()))
+  {
+    Logger::warning("JS: script {} reloaded ", path.toString());
     Core::loadModule(path.toString());
+  }
 }
 
 void engineSetVolume(js_State *J)
@@ -315,7 +323,7 @@ void engineSetVolume(js_State *J)
 void engineLoadModule(js_State *J)
 {
   vfs::Path scriptName = js_tostring(J, 1);
-  internal::files.insert(scriptName.toString());
+  internal::files.insert(scriptName.absolutePath().toString());
   Core::loadModule(scriptName.toString());
 }
 
