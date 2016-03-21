@@ -42,6 +42,17 @@ public:
 };
 
 template< class T >
+class FreeInfoboxCreator : public InfoboxCreator
+{
+public:
+  Infobox* create(PlayerCityPtr city, gui::Widget* parent, TilePos pos)
+  {
+    new T(parent, city, city->tilemap().at(pos));
+    return nullptr;
+  }
+};
+
+template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
@@ -105,6 +116,12 @@ private:
 #define REGISTER_OBJECT_INFOBOX(name,a) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, a ); }}; \
+static Registrator_##name rtor_##name; \
+}
+
+#define REGISTER_OBJECT_FREEINFOBOX(name,a) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new FreeInfoboxCreator<a>() ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

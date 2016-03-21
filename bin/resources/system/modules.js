@@ -21,6 +21,7 @@ var modules = [
                   "game_sound_player",
                   "game_ui_dialogs_audio_opts",
                   "game_ui_dialogs_video_options",
+                  "game_ui_infobox_temple",
                   "game_ui_dialog_player_salary_settings",
                   "mission_events",
                   "mission_timescale",
