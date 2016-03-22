@@ -3,7 +3,10 @@ lobby.ui.loadgame.loadmission = function()
     var wnd = g_ui.addWindow(0, 0, 1024, 768);
     var missionInfo = null;
     wnd.title = "##mainmenu_playmission##";
+    wnd.moveToCenter()
+    wnd.mayMove = false
     wnd.closeAfterKey( {escape:true,rmb:true} );
+    wnd.setModal()
 
     wnd.addImage(0,0,"ckit_00001");
 
