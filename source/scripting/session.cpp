@@ -76,6 +76,11 @@ bool Session::isC3mode() const
   return game::Settings::instance().isC3mode();
 }
 
+const gfx::Picture& Session::getSteamImage() const
+{
+  return steamapi::userImage();
+}
+
 world::Emperor * Session::getEmperor() const
 {
   return &_game->empire()->emperor();

@@ -34,6 +34,7 @@ var modules = [
                   "g_config_climate",
                   "mission_common",
                   "lobby",
+                  "lobby_steam",
                   "lobby_ui_options_package_options",
                   "lobby_ui_loadgame_loadmission"
               ]

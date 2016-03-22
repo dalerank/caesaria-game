@@ -41,7 +41,7 @@ public:
     _HK(KEY_SHIFT,"shift") _HK(KEY_CONTROL, "ctrl")
     _HK(KEY_F10,"F10") _HK(KEY_F11,"F11") _HK(KEY_F12,"F12")
     _HK(KEY_PLUS,"plus") _HK(KEY_MINUS,"minus")
-    _HK(KEY_SUBTRACT,"sutract") _HK(KEY_ADD,"sum")
+    _HK(KEY_SUBTRACT,"subtract") _HK(KEY_ADD,"sum")
     _HK(KEY_TILDA,"tilda") _HK(KEY_SPACE,"space")
     _HK(KEY_COMMA, "comma") _HK(KEY_PERIOD, "period")
     _HK(KEY_KEY_0,"0")

@@ -54,7 +54,6 @@ public:
   __GS_PROPERTY(c3video)
   __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
-  __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
@@ -111,6 +110,7 @@ public:
   __GS_PROPERTY(fontsDirectory)
   __GS_PROPERTY(showStartAware)
   __GS_PROPERTY(verbose)
+  __GS_PROPERTY(buildNumber)
 #undef __GS_PROPERTY
 
   static Settings& instance();

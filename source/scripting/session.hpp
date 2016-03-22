@@ -31,6 +31,7 @@ class VariantList;
 class VariantMap;
 class Variant;
 class StringArray;
+namespace gfx { class Picture; }
 
 namespace script
 {
@@ -57,6 +58,7 @@ public:
   Player* getPlayer() const;
   PlayerCity* getCity() const;
   bool isC3mode() const;
+  const gfx::Picture& getSteamImage() const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
   void clearHotkeys();

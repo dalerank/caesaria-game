@@ -49,9 +49,6 @@ public:
   std::string fileMap;
   int result;
 
-  Picture userImage;
-  gui::Label* lbSteamName;
-
 public:
   void fitScreenResolution();
   void resolveSteamStats();
@@ -62,34 +59,12 @@ public:
 void Lobby::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
-  SETTINGS_SET_VALUE( resolution, modes.front() );
-  SETTINGS_SET_VALUE( fullscreen, true );
-  SETTINGS_SET_VALUE( screenFitted, true );
+  SETTINGS_SET_VALUE(resolution, modes.front());
+  SETTINGS_SET_VALUE(fullscreen, true);
+  SETTINGS_SET_VALUE(screenFitted, true);
   game::Settings::save();
 
   dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
-}
-
-void Lobby::Impl::resolveSteamStats()
-{
-  if( steamapi::available() )
-  {
-    int offset = 0;
-    for( int k=0; k < steamapi::achv_count; k++ )
-    {
-      auto achieventId = steamapi::AchievementType(k);
-      if( steamapi::isAchievementReached( achieventId ) )
-      {
-        gfx::Picture pic = steamapi::achievementImage( achieventId );
-        if( pic.isValid() )
-        {
-          auto& img = ui().add<gui::Image>( Point( 10, 100 + offset ), pic );
-          img.setTooltipText( steamapi::achievementCaption( achieventId ) );
-          offset += 65;
-        }
-      }
-    }
-  }
 }
 
 void Lobby::Impl::restart()
@@ -220,26 +195,8 @@ void Lobby::initialize()
   {
     steamapi::init();
 
-    std::string steamName = steamapi::userName();
-
-    std::string lastName = SETTINGS_STR( playerName );
-    if( lastName.empty() )
-      SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
-
-    _d->userImage = steamapi::userImage();
-    if (steamName.empty())
-    {
-      OSystem::error( "Error", "Can't login in Steam" );
-      _isStopped = true;
-      _d->result = closeApplication;
-      return;
-    }
-
-    std::string text = fmt::format( "Build {0}\n{1}", GAME_BUILD_NUMBER, steamName );
-    _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
-    _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
-    _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( "FONT_3", ColorList::white );
+    VariantList vl; vl << Variant(steamapi::userName());
+    events::dispatch<events::ScriptFunc>("OnReceivedSteamUserName");
   }
 }
 
@@ -254,7 +211,7 @@ void Lobby::afterFrame()
   {
     steamapi::update();
     if( steamapi::isStatsReceived() )
-      _d->resolveSteamStats();
+      events::dispatch<events::ScriptFunc>("OnReceivedSteamStats");
   }
 }
 

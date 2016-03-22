@@ -53,7 +53,6 @@ __REG_PROPERTY(c3video)
 __REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
-__REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
@@ -111,6 +110,7 @@ __REG_PROPERTY(citiesIdModel)
 __REG_PROPERTY(fontsDirectory)
 __REG_PROPERTY(showStartAware)
 __REG_PROPERTY(verbose)
+__REG_PROPERTY(buildNumber)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -143,7 +143,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ settingsPath        ] = std::string( "/settings.model" );
   _d->options[ langModel           ] = std::string( "/language.model" );
   _d->options[ archivesModel       ] = std::string( "/archives.model" );
-  _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
   _d->options[ language            ] = std::string( "" );
   _d->options[ fontsDirectory      ] = std::string( "/fonts");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
@@ -189,6 +188,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ c3music             ] = std::string( "" );
   _d->options[ talksArchive        ] = std::string( ":/audio/wavs_citizen_en.zip" );
   _d->options[ autosaveInterval    ] = 3;
+  _d->options[ buildNumber         ] = GAME_BUILD_NUMBER;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
   _d->options[ metricSystem        ] = metric::Measure::native;
