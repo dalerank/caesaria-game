@@ -190,12 +190,13 @@ Object.defineProperty( DictionaryText.prototype, "h", { get: function () { retur
 Object.defineProperty( PositionAnimator.prototype, "destination", { set: function (point) { this.setDestination(point.x,point.y); }} )
 Object.defineProperty( PositionAnimator.prototype, "speed", { set:function (point) { this.setSpeed(point.x,point.y); }} )
 Object.defineProperty( PositionAnimator.prototype, "removeParent", { set:function (value) { this.setFlag("removeParent", value ); }} )
-//*************************** PosisitionAnimator class end ***************************************//
+//*************************** Posisit class end ***************************************//
 
 //*************************** Image class begin ***************************************//
 Object.defineProperty( Image.prototype, "position", {set: function (point) { this.setPosition(point.x,point.y); }} )
 Object.defineProperty( Image.prototype, "geometry", {set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} )
 Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.setTooltipText(_t(text)); }} )
+Object.defineProperty( Image.prototype, "mode", {set: function (value) { this.setMode(value); }} )
 Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
     if ( typeof value == "string") {
@@ -352,8 +353,9 @@ Ui.prototype.addImage = function() {
     var image = new Image(0);
     if (arguments.length==3)
     {
+      image.mode = "image"
       image.position = {x:arguments[0],y:arguments[1]};
-      image.picture = arguments[3];
+      image.picture = arguments[2];
     }
     else if(arguments.length==5)
     {

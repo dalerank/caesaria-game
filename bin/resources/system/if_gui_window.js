@@ -76,8 +76,9 @@ Window.prototype.addImage = function() {
   var image = new Image(this);
   if (arguments.length==3)
   {
+    image.mode = "image"
     image.position = {x:arguments[0],y:arguments[1]};
-    image.picture = arguments[3];
+    image.picture = arguments[2];
   }
   else if(arguments.length==5)
   {

@@ -100,6 +100,14 @@ gfx::Picture Session::getSteamAchievementImage(int i) const
   return gfx::Picture::getInvalid();
 }
 
+std::string Session::getSteamAchievementCaption(int id) const
+{
+  if (steamapi::available())
+    return steamapi::achievementCaption(steamapi::AchievementType(id));
+
+  return std::string();
+}
+
 world::Emperor * Session::getEmperor() const
 {
   return &_game->empire()->emperor();

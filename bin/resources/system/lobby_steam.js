@@ -34,17 +34,17 @@ lobby.steam.receivedUserName = function(name) {
 lobby.steam.receivedState = function() {
   var offset = 0;
 
-  for(var i in g_config.steam.achievents)
+  for(var i in g_config.steam.achievements)
   {
-    var achievent = g_config.steam.achievents[i]
-    if (g_session.isSteamAchievementReached(achievent.id))
+    var achievement = g_config.steam.achievements[i]
+    if (g_session.isSteamAchievementReached(achievement.id))
     {
-      var pic = g_session.getSteamAchievementImage(achievent.id);
+      var pic = g_session.getSteamAchievementImage(achievement.id)
       if (pic.valid)
       {
-        var img = g_ui.addImage(10, 100 + offset, pic);
-        img.setTooltipText(achievent.title);
-        offset += 65;
+        var img = g_ui.addImage(10, 100 + offset, pic)
+        img.tooltip = g_session.getSteamAchievementCaption(achievement.id)
+        offset += 65
       }
     }
   }

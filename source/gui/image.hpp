@@ -40,7 +40,7 @@ public:
   virtual ~Image();
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   virtual void setPicture(const gfx::Picture& picture);
   virtual void setPicture(const std::string& rc, int id);
@@ -48,6 +48,7 @@ public:
 
   virtual void setupUI(const VariantMap& ui);
   void setMode(Mode mode);
+  void setMode(const std::string& mode);
 
   gfx::Picture picture() const;
 

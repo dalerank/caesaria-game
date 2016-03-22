@@ -62,6 +62,7 @@ public:
   bool isSteamAchievementReached(int i);
   gfx::Picture getSteamUserImage() const;
   gfx::Picture getSteamAchievementImage(int i) const;
+  std::string getSteamAchievementCaption(int id) const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
   void clearHotkeys();
