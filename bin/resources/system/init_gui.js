@@ -200,14 +200,11 @@ Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
     if ( typeof value == "string") {
       this.setPicture_str(value)
-    }
-    else if (value instanceof Picture) {
+    }  else if (value instanceof Picture) {
       this.setPicture_pic(value)
-    }
-    else if (value.rc && value.index) {
+    } else if (value.rc && value.index) {
       this.setPictures_rcIndex(value.rc,value.index)
-    }
-    else {
+    } else {
       engine.log("Image set picture no case found")
     }
   }

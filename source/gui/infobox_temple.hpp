@@ -24,11 +24,10 @@ namespace gui
 namespace infobox
 {
 
-class AboutTemple : public AboutConstruction
+class AboutTemple
 {
 public:
   AboutTemple( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual ~AboutTemple();
 };
 
 }
