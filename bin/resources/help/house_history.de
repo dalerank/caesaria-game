@@ -6,8 +6,8 @@
   "Bäder" : "bathhouse_history"
   "Brunnen" : "fountain_history"
   "Statuen" : "statue (Statuen Geschichte)??"
-  "Töpferwaren" : "Töpferwaren (Geschichte)??"
-  "Olivenöl" : "Olivenöl (Geschichte)??"
+  "Töpferwaren" : "pottery_history"
+  "Olivenöl" : "oil_history"
   "Gärten" : "garden_plaza"
  }
 }

@@ -10,7 +10,7 @@
   "Handelsroute" : "trade"
   "Forts" : "fort"
   "Frieden und Krieg" : "peace_and_war"
-  "Verteidigungseinrichtungen" : "Mauer, Turm und Wachstube??"
+  "Verteidigungseinrichtungen" : "wall_tower_gatehouse"
   "hier" : "weapon_history"
  }
 }
