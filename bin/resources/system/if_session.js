@@ -57,8 +57,10 @@ Object.defineProperty( Session.prototype, "c3mode", { get: function()  { return 
 Object.defineProperty( Session.prototype, "empire", { get: function()  { return this.getEmpire() }} )
 Object.defineProperty( Session.prototype, "workdir", { get: function () { return this.getOptPath("workDir") }})
 
-Object.defineProperty( Session.prototype, "c3video", { get: function()  { return this.getOption("c3video") },
-                                                       set: function(path) { this.setOption("c3video",path)}} )
+Object.defineProperty( Session.prototype, "c3video", {
+  get: function()  { return this.getOptPath("c3video").str },
+  set: function(path) { this.setOption("c3video",path)}
+})
 
 Object.defineProperty( Session.prototype, "logfile", { get: function () {
       var path = this.workdir;

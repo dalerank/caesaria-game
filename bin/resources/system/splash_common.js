@@ -8,7 +8,7 @@ function OnStartSplashScreen() {
 }
 
 splash.execute = function() {
-  g_session.setOption("background", "logo")
+  g_session.setOption("background", "fresca")
 }
 
 splash.fillDevText = function()

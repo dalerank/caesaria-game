@@ -16,6 +16,7 @@ var modules = [
                   "g_config_ranks",
                   "g_config_movie",
                   "g_config_steam",
+                  "g_config_minimap",
                   "init_render",
                   "game_ui_dialogs",
                   "game_sound_player",
@@ -36,9 +37,12 @@ var modules = [
                   "mission_common",
                   "lobby",
                   "lobby_steam",
-                  "lobby_ui_options_package_options",
+                  "lobby_ui_dialogs_package_options",
                   "lobby_ui_loadgame_loadmission"
               ]
 
 for (var i in modules)
+{
+    engine.log("Loading module " + modules[i])
     engine.loadModule(":/system/"+modules[i]+".js")
+}

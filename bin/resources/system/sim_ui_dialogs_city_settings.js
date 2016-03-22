@@ -106,7 +106,7 @@ var ctsettings = {
   }
 }
 
-sim.ui.dialogs.options.showCitySettings = function() {
+sim.ui.dialogs.showCitySettings = function() {
   var items = [{
     base: "city_opts_god",
     states: ["off", "on"],
