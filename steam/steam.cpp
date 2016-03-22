@@ -759,7 +759,7 @@ bool isAchievementReached(AchievementType achivId)
     return glbAchievements[ achivId ].reached;
   }
   else
-  {gte
+  {
     Logger::warning( "Unknown achievement ID:{}", achivId );
   }
   return false;

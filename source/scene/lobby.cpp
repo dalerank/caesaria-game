@@ -113,9 +113,9 @@ void Lobby::setMode(int mode)
     _isStopped = true;
   break;
 
-  case closeApplication:
+  case res_close:
     game::Settings::save();
-    _d->result=closeApplication;
+    _d->result=res_close;
     _isStopped=true;
   break;
   }
@@ -126,7 +126,6 @@ Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
   _d->bgPicture = Picture::getInvalid();
   _isStopped = false;
   _d->game = &game;
-  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
@@ -137,17 +136,12 @@ void Lobby::draw(Engine& engine)
   _d->ui().beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->ui().draw();
-
-  if (steamapi::available())
-  {
-    _d->engine->draw( _d->userImage, Point( 20, 20 ) );
-  }
 }
 
 void Lobby::handleEvent(NEvent& event)
 {
   if (event.EventType == sEventQuit)
-    setMode(closeApplication);
+    setMode(res_close);
 
   _d->ui().handleEvent( event );
 }
@@ -196,7 +190,7 @@ void Lobby::initialize()
     steamapi::init();
 
     VariantList vl; vl << Variant(steamapi::userName());
-    events::dispatch<events::ScriptFunc>("OnReceivedSteamUserName");
+    events::dispatch<events::ScriptFunc>("OnReceivedSteamUserName", vl);
   }
 }
 

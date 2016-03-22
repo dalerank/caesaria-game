@@ -45,6 +45,7 @@ public:
   void setMode(int mode);
   void setOption(const std::string& name,Variant v);
   Variant getOption(std::string name);
+  void showSysMessage(std::string title, std::string message);
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
@@ -59,8 +60,8 @@ public:
   PlayerCity* getCity() const;
   bool isC3mode() const;
   bool isSteamAchievementReached(int i);
-  const gfx::Picture& getSteamUserImage() const;
-  const gfx::Picture& getSteamAchievementImage(int i) const;
+  gfx::Picture getSteamUserImage() const;
+  gfx::Picture getSteamAchievementImage(int i) const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
   void clearHotkeys();

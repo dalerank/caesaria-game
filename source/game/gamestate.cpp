@@ -171,7 +171,7 @@ InMainMenu::~InMainMenu()
   }
   break;
 
-  case Lobby::closeApplication:
+  case Lobby::res_close:
   {
     _game->setNextScreen( SCREEN_QUIT );
   }

@@ -5,6 +5,10 @@ g_config.level = {
     res_restart: 2
 }
 
+g_config.lobby = {
+    res_close:5
+}
+
 g_config.audio = {
     theme: 2,
     speech: 4

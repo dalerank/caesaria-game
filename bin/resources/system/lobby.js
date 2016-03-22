@@ -1,8 +1,5 @@
 var g_wasChangesShow = false;
 lobby.ui.buttons = [];
-lobby.status = {
-  closeApplication : 5
-}
 
 function OnLobbyStart() { lobby.start()}
 
@@ -329,7 +326,7 @@ lobby.ui.mainmenu.showpage = function()
   if (dlc.exist())
      lobby.ui.addButton("##mainmenu_mcmxcviii##", function() { lobby.ui.options.showdlc() } )
 
-  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(lobby.status.closeApplication); } );
+  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(g_config.lobby.res_close); } );
 }
 
 lobby.start = function()

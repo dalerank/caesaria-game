@@ -84,7 +84,7 @@ bool Session::isSteamAchievementReached(int i)
   return false;
 }
 
-const gfx::Picture& Session::getSteamUserImage() const
+gfx::Picture Session::getSteamUserImage() const
 {
   if (steamapi::available())
      return steamapi::userImage();
@@ -92,7 +92,7 @@ const gfx::Picture& Session::getSteamUserImage() const
   return gfx::Picture::getInvalid();
 }
 
-const gfx::Picture&Session::getSteamAchievementImage(int i) const
+gfx::Picture Session::getSteamAchievementImage(int i) const
 {
   if (steamapi::available())
     return steamapi::achievementImage(steamapi::AchievementType(i));
@@ -271,6 +271,11 @@ Variant Session::getOption(std::string name)
     return scene->getOption(name);
 
   return Variant();
+}
+
+void Session::showSysMessage(std::string title, std::string message)
+{
+  OSystem::error(title, message);
 }
 
 void Session::clearUi()

@@ -1,32 +1,39 @@
 lobby.steam = {}
 
 function OnReceivedSteamUserName(steamName) {
+  engine.log( "User logged as " + steamName)
   lobby.steam.receivedUserName(steamName)
+}
+
+function OnReceivedSteamStats() {
+  lobby.steam.receivedState()
 }
 
 lobby.steam.receivedUserName = function(name) {
   var lastName = engine.getOption("playerName")
-  if (lastName.length > 0)
-     engine.setOption("playerName",name);
+  if (lastName.length==0)
+     engine.setOption("playerName",name)
 
   if (name.length == 0)
   {
-    g_session.showSysError("Error", "Can't login in Steam");
-    g_session.setMode(lobby.status.closeApplication)
+    g_session.showSysMessage("Error", "Can't login in Steam")
+    g_session.setMode(g_config.lobby.closeApplication)
   }
 
-  var image = g_session.getSteamImage();
-
-  var text = _format( "Build {0}\n{1}", g_session.getOption("buildNumber"), name );
-  var lbSteamName = g_ui.addLabel(100, 10, 300, 70 )
+  var text = _format( "Build {0}\n{1}", engine.getOption("buildNumber"), name )
+  var lbSteamName = g_ui.addLabel(100, 10, 300, 70)
   lbSteamName.text = text
-  lbSteamName.textAlign = { h:"upperLeft", v:"center" )
+  lbSteamName.textAlign = { h:"upperLeft", v:"center" }
   lbSteamName.multiline = true;
   lbSteamName.font = "FONT_3_WHITE";
+
+  var image = g_session.getSteamUserImage();
+  g_ui.addImage(20, 20, image)
 }
 
 lobby.steam.receivedState = function() {
   var offset = 0;
+
   for(var i in g_config.steam.achievents)
   {
     var achievent = g_config.steam.achievents[i]

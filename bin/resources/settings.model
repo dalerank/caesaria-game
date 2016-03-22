@@ -8,6 +8,7 @@
  "batchTextures" : true,
  "borderMoving" : false,
  "buildMenuModel" : "build_menu.model",
+ "buildNumber" : 76,
  "c3gfx" : "",
  "c3music" : "",
  "c3video" : "",
