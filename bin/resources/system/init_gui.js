@@ -199,6 +199,9 @@ Object.defineProperty( Image.prototype, "tooltip", {set: function (text) { this.
 Object.defineProperty( Image.prototype, "mode", {set: function (value) { this.setMode(value); }} )
 Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
+    if (!value)
+      return;
+    
     if ( typeof value == "string") {
       this.setPicture_str(value)
     }  else if (value instanceof Picture) {

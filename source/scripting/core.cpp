@@ -133,6 +133,11 @@ int engine_js_push(js_State* J,const Variant& param)
     return 0;
   break;
 
+  case Variant::NTilePos:
+    engine_js_push(J, param.toTilePos());
+    return 0;
+  break;
+
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
@@ -209,14 +214,17 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 
 #define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
 #define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
+#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
 #define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
 
 PUSH_SAVEDDATA(States)
 PUSH_USERDATA(ContextMenuItem)
-PUSH_USERDATA(PlayerCity)
-PUSH_USERDATA(Player)
+
+PUSH_USERDATA_SMARTPTR(PlayerCity)
+PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Overlay)
+PUSH_USERDATA_SMARTPTR(Empire)
 PUSH_USERDATA(Emperor)
-PUSH_USERDATA(Empire)
 
 PUSH_USERDATA_WITHNEW(Path)
 PUSH_USERDATA_WITHNEW(DateTime)
@@ -268,6 +276,7 @@ inline StringArray engine_js_to(js_State *J, int n, StringArray)
 inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point engine_js_to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
+inline TilePos engine_js_to(js_State *J, int n, TilePos) { return TilePos(js_toint32(J, n), js_toint32(J, n + 1)); }
 inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
@@ -768,6 +777,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "spinbox.implementation"
 #include "filelistbox.implementation"
 #include "picture.implementation"
+#include "city.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
@@ -803,6 +813,7 @@ void Core::registerFunctions(Game& game)
 #include "spinbox.interface"
 #include "filelistbox.interface"
 #include "picture.interface"
+#include "city.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function

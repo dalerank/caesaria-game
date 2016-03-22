@@ -51,7 +51,6 @@ public:
 
 public:
   void fitScreenResolution();
-  void resolveSteamStats();
   void restart();
   gui::Ui& ui();
 };
