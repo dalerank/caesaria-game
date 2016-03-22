@@ -1,0 +1,1 @@
+DEFINE_OBJECT_GETTER_0(Overlay,object::Type,type)

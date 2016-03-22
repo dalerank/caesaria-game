@@ -226,6 +226,11 @@ StringArray Session::tradableGoods() const
   return good::tradable().names();
 }
 
+std::string Session::getOverlayType(int i) const
+{
+  return object::toString(object::Type(i));
+}
+
 VariantMap Session::getGoodInfo(std::string goodName) const
 {
   VariantMap ret;

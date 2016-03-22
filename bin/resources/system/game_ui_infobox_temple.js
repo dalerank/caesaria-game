@@ -66,25 +66,25 @@ game.ui.infobox.aboutTemple = function(location) {
 
   var overlay = g_session.city.getOverlay(location)
   if (overlay.typename == "oracle") {
-    ibox.title = "##oracle##"
-    ibox.lbText.text = "##oracle_info##"
+    ibox.title = _u("oracle")
+    ibox.lbText.text = _u("oracle_info")
   } else {
     var divn = temple.divinity()
     var bigTemple = temple.size().w > 2;
     var shortDesc = divn.shortDescription()
-    var text = _format( "##{}_{}_temple##",
+    var text = _format( "{}_{}_temple",
                         bigTemple ? "big" : "small",
                         divn.internalName())
-    ibox.title = text + " ( " + shortDesc + " ) "
+    ibox.title = _u(text) + " ( " + shortDesc + " ) "
 
     var goodRelation = divn.relation() >= 50;
 
-    var longDescr = _format( "##{}_{}_info##",
+    var longDescr = _format( "{}_{}_info",
                              divn.internalName(),
                             goodRelation ? "goodmood" : "badmood" );
 
     var img = ibox.addImage(192, 140, divn.picture() )
-    img.setTooltipText( _(longDescr) );
+    img.tooltip = _u(longDescr);
   }
 
   ibox.setModal()

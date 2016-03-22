@@ -276,8 +276,21 @@ inline StringArray engine_js_to(js_State *J, int n, StringArray)
 inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline Point engine_js_to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
-inline TilePos engine_js_to(js_State *J, int n, TilePos) { return TilePos(js_toint32(J, n), js_toint32(J, n + 1)); }
 inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
+
+inline TilePos engine_js_to(js_State *J, int n, TilePos) 
+{ 
+  if (js_isobject(J, n))
+  {
+    js_getproperty(J, n, "i");
+    int i = js_tonumber(J, -1);
+    js_getproperty(J, n, "j");
+    int j = js_tonumber(J, -1);
+
+    return TilePos(i, j);
+  }
+  return TilePos();
+}
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
 {
@@ -778,6 +791,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "filelistbox.implementation"
 #include "picture.implementation"
 #include "city.implementation"
+#include "overlay.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
@@ -814,6 +828,7 @@ void Core::registerFunctions(Game& game)
 #include "filelistbox.interface"
 #include "picture.interface"
 #include "city.interface"
+#include "overlay.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function
