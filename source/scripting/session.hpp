@@ -58,7 +58,9 @@ public:
   Player* getPlayer() const;
   PlayerCity* getCity() const;
   bool isC3mode() const;
-  const gfx::Picture& getSteamImage() const;
+  bool isSteamAchievementReached(int i);
+  const gfx::Picture& getSteamUserImage() const;
+  const gfx::Picture& getSteamAchievementImage(int i) const;
   world::Emperor* getEmperor() const;
   world::Empire* getEmpire() const;
   void clearHotkeys();

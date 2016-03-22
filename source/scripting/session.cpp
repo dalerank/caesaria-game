@@ -76,9 +76,28 @@ bool Session::isC3mode() const
   return game::Settings::instance().isC3mode();
 }
 
-const gfx::Picture& Session::getSteamImage() const
+bool Session::isSteamAchievementReached(int i)
 {
-  return steamapi::userImage();
+  if (steamapi::available())
+    return steamapi::isAchievementReached(steamapi::AchievementType(i));
+
+  return false;
+}
+
+const gfx::Picture& Session::getSteamUserImage() const
+{
+  if (steamapi::available())
+     return steamapi::userImage();
+
+  return gfx::Picture::getInvalid();
+}
+
+const gfx::Picture&Session::getSteamAchievementImage(int i) const
+{
+  if (steamapi::available())
+    return steamapi::achievementImage(steamapi::AchievementType(i));
+
+  return gfx::Picture::getInvalid();
 }
 
 world::Emperor * Session::getEmperor() const

@@ -15,6 +15,7 @@ var modules = [
                   "g_config_languages",
                   "g_config_ranks",
                   "g_config_movie",
+                  "g_config_steam",
                   "init_render",
                   "game_ui_dialogs",
                   "game_sound_player",
