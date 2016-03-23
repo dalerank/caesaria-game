@@ -1032,7 +1032,7 @@ const VariantMap& Widget::properties() const
 
 void Widget::installEventHandler(Widget* elementHandler)
 {
-  _dfunc()->eventHandlers.insert( elementHandler );
+  _dfunc()->eventHandlers.insert(elementHandler);
 }
 
 void Widget::setCenter(Point center)

@@ -1,4 +1,6 @@
 DEFINE_OBJECT_GETTER_0(Label,bool,visible)
+DEFINE_OBJECT_GETTER_0(Label,unsigned int,width)
+DEFINE_OBJECT_GETTER_0(Label,unsigned int,height)
 DEFINE_OBJECT_FUNCTION_0(Label,deleteLater)
 DEFINE_OBJECT_FUNCTION_1(Label,setText,std::string)
 DEFINE_OBJECT_FUNCTION_1(Label,setTooltipText,std::string)

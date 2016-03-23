@@ -11,5 +11,6 @@ Overlay.prototype.as = function(type) { return new type(this); }
 //*************************** Temple class begin ***************************************//
 Object.defineProperty( Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
 Object.defineProperty( Temple.prototype, "typename", { get : function() { return g_config.getObjectTypename(this)}})
+Object.defineProperty( Temple.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
 
 //*************************** Temple class end ***************************************//
