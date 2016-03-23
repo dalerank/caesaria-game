@@ -1,9 +1,9 @@
-{  
+{
  title : "##hospital##"
  sound : "fanfare"
  text  : "Wenn ein kranker Römer überhaupt nach medizinischer Hilfe verlangte, wurde er in seinem Haus behandelt. Diese regelmäßigen Hausbesuche wurden jedoch immer unpraktischer, je weiter sich das Imperium ausdehnte. Die Kranken und Verletzten wurden in @Tempeln& untergebracht, was naheliegend scheint, da eine Heilung sowohl den Göttern als auch den @Ärzten& zugeschrieben werden konnte. Die römischen Legionen entwickelten Militärhospitäler in strategischen Zentren, um ihre Verwundeten Hilfe bieten zu können. Diese Institutionen weiteten ihre Funktionen auch auf die Behandlung von Kranken aus. Schließlich entbanden öffentliche Hospitäler und Militär von diesen Aufgaben."
  uri : {
-  "Tempeln" : "temple_oracle_history" 
+  "Tempeln" : "temple_oracle_history"
   "Ärzten" : "doctor_history"
  }
 }

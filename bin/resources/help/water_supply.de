@@ -1,0 +1,12 @@
+{
+ title : "##water_supply_help##"
+ sound : "fanfare"
+ text  : "Wohnungen können sich ohne eine zuverlässige Trinkwasserquelle in der Nähe nicht besonders weit entwickeln. Ziehbrunnen bieten eine beschränkte Versorgung für ein kleines Gebiet, die Menschen nutzen sie jedoch nur ungern. Reservoirs speichern Trinkwasser und besitzen automatisch ein eigenes unterirdisches Rohrnetzwerk. Wasser wird über Aquädukte von einem Reservoir zu einem anderen geleitet und kann an Brunnen entnommen werden. Brunnen sind die bevorzugte Wasserquelle der Bürger. Sämtliche Gebäude, die etwas mit der Wasserversorgung zu tun haben (ausgenommen Aquädukte), beschäftigen Arbeiter, auch wenn sie keine direkte Anbindung an den Arbeitsmarkt benötigen.\nGebäude, die etwas mit der Wasserversorgung zu tun haben, können weder einstürzen noch abbrennen und brauchen auch keine Straßenanbindung. Sie sind jedoch naheliegender Weise Schwachstellen, die Aufständischen, Eindringlingen, Naturkatastrophen oder zornigen Göttern leicht zum Opfer fallen.\n\nWenn Sie mehr über die einzelnen Komponenten des Wassersystems wissen möchten, klicken Sie auf @Reservoirs&, @Aquädukte&, @Brunnen& oder @Ziehbrunnen&. Benutzen Sie auch die @Spezialkarte Wasser&, um die Wasserversorgung zu planen."
+ uri : {
+  "Reservoirs" : "reservoir"
+  "Aquädukte" : "aqueduct"
+  "Brunnen" : "fountain"
+  "Ziehbrunnen" : "well"
+  "Spezialkarte Wasser" : "special_card_selection"
+ }
+}

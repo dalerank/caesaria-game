@@ -1,11 +1,11 @@
-{  
+{
  title : "##market##"
  sound : "fanfare"
  text  : "Märkte sind für die Versorgung der Bevölkerung mit den Gewerbeprodukten Ihrer Stadt lebenswichtig.\nHäuser brauchen Nahrungsmittel, die von den Märkten geliefert werden, wenn sie über den einfachsten Ausbaugrad hinauswachsen wollen. Eine Marktfrau sucht ein Silo auf, um dort Nahrungsmittel einzukaufen, und bringt diese dann zu ihrem Markt zurück. Sie wird dabei oftmals von ein paar Laufburschen begleitet, die ihr helfen, all die Lebensmittel zum Markt transportieren. Sobald ein Markt mit Lebensmitteln ausgestattet ist, macht sich eine andere Marktfrau auf den Weg und liefert die Nahrungsmittel an die Häuser in der nachbarschaft, die danach verlangen. Alle Wohngebäude mit Ausnahme der Zelte benötigen Nahrungsmittel von den Märkten.\nMärkte brauchen Straßenanbindung und Arbeitskräfte, um zu funktionieren. Sie haben einen geringen negativen Effekt auf die unmittelbaren NAchbarn und eine leicht positive Wirkung auf die Häuser, die direkt hinter diesen liegen.\nHäuser mit besserem Ausbaugrad verlangen Waren wie zum Beispiel Geschirr oder Möbel, und auch verschiedene Nahrungsmittelarten.Sobald eine Marktfrau ein Haus passiert, das Lebensmittel benötigt, schickt der Markt einen Arbeiter los, um diese Ware zu beschaffen, vorausgesetzt sie ist im Umkreis des Marktes zu bekommen.\nAb und zu werden Sie Silos für Lagerhäuser, in denen keine Lebensmittel aufbewahrt werden, in der Nähe eines Wohngebietes errichten wollen, damit die Marktfrauen alles, was sie brauchen, schnell zusammentragen können. Sie können auch die 'Besonderen Befehle' für Silos oder Lagerhäuser benutzen, um sicherzustellen, dass die in der Nachbarschaft benötigten Dinge immer in ausreichender Menge auf Lager sind.\nAlle diese Ein- und Verkäufe finden in privatem Ramen statt und wirken sich nicht auf Ihre Stadtkasse aus.\nZum Themenkreis Markt gehören auch @Gewerbe&, @Bevölkerung&, @Bürger& und @Wohnungen&. Tipps zu den besonderen Befehlen für die Neuverteilung von Gütern finden Sie in den Abschnitten @Silos& und @Lagerhäuser&.\n\nWenn Sie mehr zum Thema Märkte im römischen Imperium erfahren möchten, klicken Sie @hier&."
  uri : {
   "Gewerbe" : "industry"
-  "Bevölkerung" : "population Bevälkerung und Stimmung?? "
-  "Bürger" : "Arbeiter??"
+  "Bevölkerung" : "population_and_mood"
+  "Bürger" : "worker"
   "Wohnungen" : "house"
   "Silos" : "granary"
   "Lagerhäuser" : "warehouse"
