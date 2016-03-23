@@ -33,7 +33,7 @@ g_config.metric = {
 }
 
 g_config.rc = {
-    panel : "panelling"
+    panel : "paneling"
 }
 
 g_config.advisor = {

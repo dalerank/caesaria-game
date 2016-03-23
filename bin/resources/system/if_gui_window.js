@@ -17,6 +17,14 @@ Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
   }
 }})
 
+Object.defineProperty( Window.prototype, "position", { set: function(pos) {
+  if (arguments.length==1) {
+    this.setPosition(arguments[0].x, arguments[0].y)
+  } else if(arguments.length==2) {
+    this.setPosition(arguments[0],arguments[1])
+  }
+}})
+
 Window.prototype.closeAfterKey = function(obj) {
   if(obj.escape)
     this.addCloseCode(0x1B);

@@ -24,6 +24,7 @@ Object.defineProperty( Label.prototype, "textAlign", { set: function(align) { th
 Object.defineProperty( Label.prototype, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p.x, p.y) }})
 Object.defineProperty( Label.prototype, "tooltip", { set: function(text) { this.setTooltipText(_t(text)) }} )
 Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
+Object.defineProperty( Label.prototype, 'iconOffset',{ get: function () {}, set: function (p) { this.setIconOffset(p.x, p.y) }})
 Object.defineProperty( Label.prototype, "subElement", { set: function(value) { this.setSubElement(value) }} )
 Object.defineProperty( Label.prototype, "name", { set: function (str) { this.setInternalName(str) }} )
 Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
@@ -201,7 +202,7 @@ Object.defineProperty( Image.prototype, "picture", {
   set: function (value) {
     if (!value)
       return;
-    
+
     if ( typeof value == "string") {
       this.setPicture_str(value)
     }  else if (value instanceof Picture) {
@@ -299,6 +300,7 @@ GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
 
 function Ui() {
 }
+Object.defineProperty( Ui.prototype, "cursor", { get: function () { return g_session.getCursorPos() }} );
 
 Ui.prototype.addWindow = function(rx,ry,rw,rh) {
     var window = new Window(0);

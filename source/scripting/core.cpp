@@ -30,6 +30,7 @@
 #include <GameWorld>
 
 #include "religion/divinities.hpp"
+#include "religion/pantheon.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
 
@@ -101,6 +102,13 @@ void engine_js_push(js_State* J,const Size& size)
   js_pushnumber(J, size.height()); js_setproperty(J, -2, "h");
 }
 
+void engine_js_push(js_State* J, const Point& pos)
+{
+  js_newobject(J);
+  js_pushnumber(J, pos.x()); js_setproperty(J, -2, "x");
+  js_pushnumber(J, pos.y()); js_setproperty(J, -2, "y");
+}
+
 void engine_js_push(js_State* J, const TilePos& pos)
 {
   js_newobject(J);
@@ -109,6 +117,8 @@ void engine_js_push(js_State* J, const TilePos& pos)
 }
 
 void engine_js_push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+void engine_js_push(js_State* J, float value) { js_pushnumber(J, value); }
+void engine_js_push(js_State* J, uint32_t value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
 int engine_js_push(js_State* J,const Variant& param)
@@ -132,6 +142,12 @@ int engine_js_push(js_State* J,const Variant& param)
   case Variant::Uchar:
   case Variant::Short:
     js_pushnumber(J, param.toDouble());
+    return 0;
+  break;
+
+  case Variant::NPoint:
+  case Variant::NPointF:
+    engine_js_push(J, param.toPoint());
     return 0;
   break;
 
@@ -278,8 +294,20 @@ inline StringArray engine_js_to(js_State *J, int n, StringArray)
 
 inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
-inline Point engine_js_to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
 inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
+
+inline Point engine_js_to(js_State *J, int n, Point) 
+{ 
+  if (js_isobject(J, n))
+  {
+    js_getproperty(J, n, "x");
+    int x = js_tonumber(J, -1);
+    js_getproperty(J, n, "y");
+    int y = js_tonumber(J, -1);  
+    return Point(x, y);
+  }
+  return Point(js_toint32(J, n), js_toint32(J, n + 1));
+}
 
 inline TilePos engine_js_to(js_State *J, int n, TilePos)
 {
@@ -292,7 +320,7 @@ inline TilePos engine_js_to(js_State *J, int n, TilePos)
 
     return TilePos(i, j);
   }
-  return TilePos();
+  return TilePos(js_toint32(J, n), js_toint32(J, n + 1));
 }
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
@@ -625,8 +653,26 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
     js_pushundefined(J);
 }
 
+void reg_divinity_constructor(js_State *J)
+{
+  religion::DivinityPtr divn;
+  if (js_isstring(J, 1))
+  {
+    std::string name = js_tostring(J, 1);
+    divn = religion::rome::Pantheon::instance().get(name);
+  }
+  else if (js_isuserdata(J, 1, "userdata"))
+  {
+    //ov = (T*)js_touserdata(J, 1, "userdata");
+  }
+
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", divn.object(), nullptr);
+}
+
 template<class T>
-void reg_overlay_constructor(js_State *J, const std::string& name)
+void reg_overlay_constructor(js_State *J)
 {
   T* ov;
   if (js_isstring(J,1))
@@ -794,7 +840,8 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
 #define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
-#define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
+#define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J); }
+#define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.implementation"
 #include "menu.implementation"

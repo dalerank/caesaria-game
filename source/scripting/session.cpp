@@ -226,6 +226,11 @@ StringArray Session::tradableGoods() const
   return good::tradable().names();
 }
 
+Point Session::getCursorPos() const
+{
+  return _game->gui()->cursorPos();
+}
+
 std::string Session::getOverlayType(int i) const
 {
   return object::toString(object::Type(i));

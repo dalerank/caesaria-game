@@ -11,7 +11,7 @@ function OnReceivedSteamStats() {
 
 lobby.steam.receivedUserName = function(name) {
   var lastName = engine.getOption("playerName")
-  if (lastName.length==0)
+  if (!lastName || lastName.length==0)
      engine.setOption("playerName",name)
 
   if (name.length == 0)
