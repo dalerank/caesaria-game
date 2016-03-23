@@ -1,0 +1,12 @@
+{  
+ title : "##engineer_history##"
+ sound : "fanfare"
+ text  : "The prevalence of Roman ruins throughout the Mediterranean attests to the Romans' skill and enthusiasm for building, especially after the invention of concrete. Surveyors and architects were in great demand and enjoyed high status.\n The army's need for @roads and bridges& attracted many of the most skilled builders to military service. Most soldiers carried construction equipment with them, and legions employed many engineers. When these engineering corps weren't busy serving military needs, the Emperor could divert them to civil projects.\n With wealthy Romans commissioning public buildings, with the inevitable collapses in poorly-built insulae and the regular occurrence of fires, with military roads and defenses needed in newly conquered lands, and with the desire of provincials to emulate their urban fellow citizens, engineers never lacked for work."
+ uri : {
+  "Labor Advisor" : "labor_advisor"
+  "Risks Overlay" : "risk_overlay"
+  "roads and bridges" : "roads_bridges"
+  "historical role of Engineers" : "engineer_history"
+  "here" : "http://wikipedia.ru"
+ }
+}
