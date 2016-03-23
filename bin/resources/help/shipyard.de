@@ -1,0 +1,9 @@
+{  
+ title : "##shipyard##"
+ sound : "fanfare"
+ text  : "Werften bauen die Fischerboote, die in manchen Provinzen die Landschaft ergänzen können. Wenn Sie Möwen über einer Wasserfläche kreisen sehen, gibt es in Ihrer Provinz wirtschaftlich nutzbare Fischgründe, und Sie sollten eine Fischfangflotte aufbauen, wenn Sie davon profitieren möchten.\nSelbstverständlich muss eine Werft an einem Ufer gebaut werden. Sie benötigt Straßenanbindung und Arbeitskräfte, um Fischerbote bauen zu können. Die fertiggestellten Fischerboote segeln automatisch zu einem @Kai&, der sie benötigt. Wie Sie vielleicht schon vermutet haben, sind Gebäude der Schwerindustrie, wie zum Beispiel Werften, unattraktiv für umliegende Wohngebiete.\nHändler, mit denen Sie Handel treiben werden, besitzen ihre eigenen Wasserfahrzeuge. Sie müssen daher keine Handelsschiffe bauen. Werften sind nur für die Fischereiflotten von Bedeutung.\n\nHier können Sie mehr über den Schiffsbau in der römischen @Geschichte& erfahren."
+ uri : {
+  "Kai" : "wharf"
+  "Geschichte" : "shipyard_history"
+ }
+}

@@ -24,14 +24,14 @@
 #include "core/predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/stringarray.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 
 namespace gui
 {
 
 typedef enum { selectOnMove=0, selectOnMDown,
                drawBackground, autoscroll, moveOverSelect,
-               hightlightNotinfocused, count } Flag;
+               hightlightNotinfocused, itemSelectable, count } Flag;
 
 class ScrollBar;
 
@@ -93,8 +93,8 @@ public:
   virtual int itemAt(Point pos) const;
 
   //! set all item colors of specified type at given index to color
-  virtual void setItemOverrideColor( unsigned int index, const int color,
-                                     ListBoxItem::ColorType colorType=ListBoxItem::all );
+  virtual void setItemOverrideColor(unsigned int index, NColor color,
+                                    ListBoxItem::ColorType colorType=ListBoxItem::all );
 
   //! set whether the listbox should scroll to newly selected items
   virtual void setAutoScrollEnabled(bool scroll);
@@ -132,8 +132,12 @@ public:
   //!
   virtual void setItemsFont(Font font);
 
+  virtual void setItemsFont( const std::string& fontname );
   //!
   virtual void setItemTooltip(unsigned int index, const std::string& text);
+
+  //!
+  void setItemsSelectable(bool en);
 
   //! set the item at the given index
   virtual void setItemText(unsigned int index,const std::string& text);
@@ -168,7 +172,7 @@ public:
   //! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
   //! \return
   //! returns the id of the new created item
-  virtual ListBoxItem& addItem(const std::string& text, Font font=Font(), const int color=0);
+  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), NColor color=NColor() );
 
   //!
   virtual ListBoxItem& addItem(gfx::Picture pic);

@@ -28,7 +28,9 @@
 #include <GameEvents>
 #include "game/datetimehelper.hpp"
 #include "sound/engine.hpp"
-#include "core/font.hpp"
+#include "core/osystem.hpp"
+#include "font/font.hpp"
+#include "font/font_collection.hpp"
 #include "walker/name_generator.hpp"
 #include "steam.hpp"
 #include <string>
@@ -59,19 +61,44 @@ void Session::addWarningMessage(const std::string& message)
   events::dispatch<events::WarningMessage>( message, events::WarningMessage::neitral );
 }
 
-Player* Session::getPlayer() const
-{
-  return _game->player().object();
-}
-
-PlayerCity* Session::getCity() const
-{
-  return _game->city().object();
-}
+PlayerPtr Session::getPlayer() const {  return _game->player().object(); }
+PlayerCityPtr Session::getCity() const { return _game->city(); }
 
 bool Session::isC3mode() const
 {
   return game::Settings::instance().isC3mode();
+}
+
+bool Session::isSteamAchievementReached(int i)
+{
+  if (steamapi::available())
+    return steamapi::isAchievementReached(steamapi::AchievementType(i));
+
+  return false;
+}
+
+gfx::Picture Session::getSteamUserImage() const
+{
+  if (steamapi::available())
+     return steamapi::userImage();
+
+  return gfx::Picture::getInvalid();
+}
+
+gfx::Picture Session::getSteamAchievementImage(int i) const
+{
+  if (steamapi::available())
+    return steamapi::achievementImage(steamapi::AchievementType(i));
+
+  return gfx::Picture::getInvalid();
+}
+
+std::string Session::getSteamAchievementCaption(int id) const
+{
+  if (steamapi::available())
+    return steamapi::achievementCaption(steamapi::AchievementType(id));
+
+  return std::string();
 }
 
 world::Emperor * Session::getEmperor() const
@@ -79,10 +106,7 @@ world::Emperor * Session::getEmperor() const
   return &_game->empire()->emperor();
 }
 
-world::Empire * Session::getEmpire() const
-{
-  return _game->empire().object();
-}
+world::EmpirePtr Session::getEmpire() const { return _game->empire(); }
 
 void Session::clearHotkeys()
 {
@@ -202,6 +226,11 @@ StringArray Session::tradableGoods() const
   return good::tradable().names();
 }
 
+std::string Session::getOverlayType(int i) const
+{
+  return object::toString(object::Type(i));
+}
+
 VariantMap Session::getGoodInfo(std::string goodName) const
 {
   VariantMap ret;
@@ -245,6 +274,11 @@ Variant Session::getOption(std::string name)
     return scene->getOption(name);
 
   return Variant();
+}
+
+void Session::showSysMessage(std::string title, std::string message)
+{
+  OSystem::error(title, message);
 }
 
 void Session::clearUi()
@@ -295,6 +329,10 @@ int Session::getAdvflag(const std::string & flag) const
   {
     value = _game->timeMultiplier();
   }
+  else if (flag == "empireLock")
+  {
+    value = _game->empire()->isAvailable();
+  }
   else
   {
     value = citylayer::DrawOptions::getFlag(flag) ? 1 : 0;
@@ -331,6 +369,14 @@ void Session::setAdvflag(const std::string & flag, int value)
   else if (flag == "gameSpeed")
   {
     _game->setTimeMultiplier(value);
+  }
+  else if (flag == "gameSpeedTick")
+  {
+    _game->step(value);
+  }
+  else if (flag == "empireLock")
+  {
+    _game->empire()->setAvailable(value > 0);
   }
   else
   {

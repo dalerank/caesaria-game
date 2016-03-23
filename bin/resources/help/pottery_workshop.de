@@ -1,0 +1,13 @@
+{  
+ title : "##pottery_workshop##"
+ sound : "fanfare"
+ text  : "Töpfer verarbeiten hier den Ton aus Ihren @Tongruben& zu Geschirr.\nProduktionsstätten benötigen Straßenanbindung und Zugang zu Arbeitskräften, jedoch keine Wasserversorgung. Die Arbeiter bringen den Ton entweder aus einem Lagerhaus oder direkt aus einer Tongrube hierher. Manchmal werden Sie Ton auch importieren müssen. Wenn der Betrieb den Ton zu Geschirr weiterverarbeitet hat, liefern es die Angestellten mit Karren beim nächsten @Lagerhaus& mit freiem Speicherplatz ab.\nProduktionsstätten, in denen Bewegungen sichtbar sind, stellen Geschirr her.\nTöpfereien können auf ihrem Gelände zusätzlich etwas Rohmaterial lagern, um die Produktion konstanter auszulasten. Der gelagerte Ton ist auf dem Gelände der Töpferei zu sehen.\nGeschirr kann gegen Bargeld verkauft werden. Ihre eigenen Bürger brauchen Geschirr, damit sie in schöneren Häusern leben können. Bessere Behausungen entwickeln sich schnell zu kleineren Hütten zurück, wenn es längere Zeit kein Geschirr zu kaufen gibt. In großen Städten besteht eine nahezu unersättliche Nachfrage nach Geschirr.\nWenn Sie Geschirr exportieren, sollten Sie Ihren @Handelsberater& anweisen, eine bestimmte Menge in den Lagerhäusern für den Bedarf Ihrer Stadt zurückzuhalten. Die Marktfrauen holen Geschirr aus den Lagerhäusern und bringen es zu den Märkten, wo sie es der Einwohnerschaft zugänglich machen.\nTöpfereien sind unerwünschte Nachbarn für Wohngebiete.\nSie könne mit dem Ertrag einer einzigen Tongrube zwei Töpfereien betreiben.\nLesen Sie im Abschnitt @Markt& nach, wie die Waren aus den Lagerhäusern zu den Menschen gelangen. Wenn Sie Geschirr exportieren oder Ton importieren möchten, lesen Sie dazu bitte weiter unter @Handel&.\n\nWenn Sie mehr zum Thema Töpferwaren im römischen Imperium erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "Tongruben" : "clay_pit"
+  "Lagerhaus" : "warehouse"
+  "Handelsberater" : "trade_advisor"
+  "Markt" : "market"
+  "Handel" : "trade"
+  "hier" : "pottery_history"
+ }
+}

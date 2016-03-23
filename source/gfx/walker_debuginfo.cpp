@@ -33,11 +33,11 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColo
 {
   const Pathway& pathway = walker->pathway();
 
-  const TilesArray& tiles = pathway.allTiles();   
+  const TilesArray& tiles = pathway.allTiles();
 
   NColor pathColor = color;
 
-  if( color == 0)
+  if (color == ColorList::clear)
   {
     if( walker->agressive() > 0 )
     {
@@ -56,10 +56,10 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColo
   {
     int rStart = pathway.length() - pathway.curStep();
     for( int step=rStart-1; step >= 0; step-- )
-    {      
+    {
       pos = tiles[ step ]->mappos() + rinfo.offset + xOffset;
       points.push_back( pos );
-    }    
+    }
   }
   else
   {

@@ -55,8 +55,8 @@ void Base::drawFrame(gfx::Engine& engine)
 {
    engine.frame().start();
 
-   draw();
-   if( engine.getFlag( gfx::Engine::showMetrics ) )
+   draw(engine);
+   if (engine.getFlag(gfx::Engine::showMetrics))
      engine.frame().drawMetrics();
 
    engine.frame().finish();;

@@ -37,7 +37,7 @@ public:
   void handleEvent(NEvent& event)
   {
     if( !_scene )
-      return;   
+      return;
 
     if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::btnLeftPressed )
     {
@@ -62,20 +62,20 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
     : Window( _parent, rectangle, "", -1 ),
       _resizing(false), _selectedElement(0)
 {
-	#ifdef _DEBUG
+  #ifdef _DEBUG
       setDebugName( "PropertyWorkspace");
-	#endif
+  #endif
 
-	// we can't tab out of this window
+  // we can't tab out of this window
   setTabgroup(true);
 
   setWindowFlag( fdraggable, true );
-	// we can ctrl+tab to it
-	setTabstop(true);
-	// the tab order number is auto-assigned
-	setTaborder(-1);
+  // we can ctrl+tab to it
+  setTabstop(true);
+  // the tab order number is auto-assigned
+  setTaborder(-1);
 
-	// set window text
+  // set window text
   setText("");
   button( buttonClose )->setVisible( false );
 
@@ -98,11 +98,11 @@ void PropertyWorkspace::_createElementsTreeView()
 void PropertyWorkspace::_createTabControl()
 {
   /*_attribEditor = new PropertyBrowser( this );
-  _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );  
+  _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );
   _attribEditor->setGeometry( Rect(13, 13, width()-13, height()-13) );
   */
   _editor = new Label( this, Rect(13, 13, width()-13, height()-13), "" );
-  _editor->setFont( Font::create( FONT_1 ) );
+  _editor->setFont( Font::create( "FONT_1" ) );
   _editor->setWordwrap( true );
 }
 
@@ -128,7 +128,7 @@ void PropertyWorkspace::_update()
 //! destructor
 PropertyWorkspace::~PropertyWorkspace()
 {
-	// drop everything
+  // drop everything
   if( _eventHandler )
     _eventHandler->_finished = true;
 }
@@ -143,36 +143,36 @@ void PropertyWorkspace::setCity(PlayerCityPtr city)
 
 TreeViewItem* PropertyWorkspace::_getTreeNode(OverlayPtr element, TreeViewItem* searchnode)
 {
-	TreeViewItem* child = searchnode->getFirstChild();
-	while (child)
-	{
+  TreeViewItem* child = searchnode->getFirstChild();
+  while (child)
+  {
     if (((Overlay*)child->getData()) == element.object() )
-			return child;
+      return child;
 
-		if (child->hasChildren())
-		{
+    if (child->hasChildren())
+    {
       TreeViewItem* foundnode = _getTreeNode(element, child);
-			if (foundnode)
-				return foundnode;
-		}
-		child = child->getNextSibling();
-	}
-	return 0;
+      if (foundnode)
+        return foundnode;
+    }
+    child = child->getNextSibling();
+  }
+  return 0;
 }
 
 void PropertyWorkspace::_addChildrenToTree( Widget* _parentElement, TreeViewItem* treenode)
 {
   std::string name = utils::format( 0xff, "[id=%d,%s]", _parentElement->ID(), _parentElement->internalName().c_str() );
 
-	TreeViewItem* newnode = treenode->addChildBack( name );
-	newnode->setData((void*)_parentElement);
+  TreeViewItem* newnode = treenode->addChildBack( name );
+  newnode->setData((void*)_parentElement);
   const Widget::Widgets& children = _parentElement->children();
 
   for( auto i : children )
-	{
+  {
     if( !i->isSubElement())
       _addChildrenToTree(i, newnode);
-	}
+  }
 }
 
 void PropertyWorkspace::updateTree( Widget* elm )
@@ -184,14 +184,14 @@ void PropertyWorkspace::updateTree( Widget* elm )
 
 void PropertyWorkspace::setSelectedElement(OverlayPtr sel)
 {
-	// save changes
+  // save changes
   //_attribEditor->updateAttribs();
   VariantMap attribs;// = _attribEditor->getAttribs();
 
   //attribs.clear();
-	_selectedElement = sel;
+  _selectedElement = sel;
 
-	// get the new attributes
+  // get the new attributes
   if (_selectedElement.isValid())
     _selectedElement->save(attribs);
 
@@ -205,7 +205,7 @@ void PropertyWorkspace::setSelectedElement(OverlayPtr sel)
 void PropertyWorkspace::draw( gfx::Engine& painter )
 {
   if (!visible())
-		return;
+    return;
 
   /*if( DebugTimer::ticks() - _lastUpdateTime > 10000 )
   {
@@ -214,7 +214,7 @@ void PropertyWorkspace::draw( gfx::Engine& painter )
   Rect rect = absoluteRect();
 
   if( text().length() )
-	{
+  {
     Font font = Font::create( FONT_2 );
     font.Draw( text(), rect, 0xff000000, false, true, &absoluteClippingRectRef() );
   }*/
@@ -250,10 +250,10 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
      }
 
     switch(event.EventType)
-	{    
+  {
   case sEventGui:
     switch(event.gui.type)
-		{
+    {
     case guiTreeviewNodeSelect:
     {
         /*TreeViewItem* eventnode = ((TreeView*)event.gui.caller)->getLastEventNode();
@@ -266,15 +266,15 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
     }
     break;
 
-		default:
-			break;
-		}
+    default:
+      break;
+    }
 
   break;
 
       default:
   break;
-	}
+  }
 
   return Window::onEvent(event);
 }

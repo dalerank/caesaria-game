@@ -278,7 +278,7 @@ lobby.ui.options.showpage = function()
     lobby.ui.addButton( "##mainmenu_language##", function() { lobby.ui.options.showLanguageSettings()} )
     lobby.ui.addButton( "##mainmenu_video##",    function() { game.ui.dialogs.showVideoOptions()} )
     lobby.ui.addButton( "##mainmenu_sound##",    function() { game.ui.dialogs.showAudioOptions() })
-    lobby.ui.addButton( "##mainmenu_package##",  function() { lobby.ui.options.showPackageOptions()} )
+    lobby.ui.addButton( "##mainmenu_package##",  function() { lobby.ui.dialogs.showPackageOptions()} )
     lobby.ui.addButton( "##mainmenu_plname##",   function() { lobby.ui.changePlayerName(true)} )
     lobby.ui.addButton( "##mainmenu_showlog##",  function() { lobby.ui.showLogs() } )
     lobby.ui.addButton( "##mainmenu_changes##",  function() { lobby.ui.showChanges(true)} )
@@ -326,7 +326,7 @@ lobby.ui.mainmenu.showpage = function()
   if (dlc.exist())
      lobby.ui.addButton("##mainmenu_mcmxcviii##", function() { lobby.ui.options.showdlc() } )
 
-  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
+  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(g_config.lobby.res_close); } );
 }
 
 lobby.start = function()
@@ -391,7 +391,6 @@ lobby.ui.showGameCredits = function()
     lb.textAlign = { h:"center", v:"center" };
     lb.font = "FONT_2_WHITE";
     lb.subElement = true;
-
     var animator = new PositionAnimator(lb);
     animator.removeParent = true;
     animator.destination = {x:0, y:-20};

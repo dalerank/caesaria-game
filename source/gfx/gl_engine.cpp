@@ -98,7 +98,7 @@
   #undef GAME_USE_SHADERS
 #endif
 
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "pictureconverter.hpp"
 #include "core/utils.hpp"
 #include "core/time.hpp"
@@ -663,7 +663,7 @@ void GlEngine::setFlag( int flag, int value )
 
   if( flag == showMetrics )
   {
-    _d->debugFont = Font::create( FONT_2 );
+    _d->debugFont = Font::create( "FONT_2" );
   }
 }
 
@@ -705,15 +705,9 @@ Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects
   return Batch();
 }
 
-void GlEngine::unloadBatch(const Batch &batch)
-{
-
-}
-
-void GlEngine::setVirtualSize( const Size& rect )
-{
-
-}
+void GlEngine::updateBatch(Batch& batch, const Point& newpos) {}
+void GlEngine::unloadBatch(const Batch &batch) {}
+void GlEngine::setVirtualSize( const Size& rect ) {}
 
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
@@ -798,7 +792,7 @@ void GlEngine::endRenderFrame()
   if( getFlag( Engine::showMetrics ) )
   {
     std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _d->fpsText.fill( 0, Rect() );
+    _d->fpsText.fill( ColorList::clear, Rect() );
     _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
     draw( _d->fpsText, Point( _srcSize.width() / 2, 2 ) );
   }

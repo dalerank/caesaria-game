@@ -41,7 +41,6 @@ public:
   __GS_PROPERTY(language)
   __GS_PROPERTY(resolution)
   __GS_PROPERTY(fullscreen)
-  __GS_PROPERTY(climateModel)
   __GS_PROPERTY(savedir)
   __GS_PROPERTY(emigrantSalaryKoeff)
   __GS_PROPERTY(minMonthWithFood)
@@ -55,7 +54,6 @@ public:
   __GS_PROPERTY(c3video)
   __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
-  __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
@@ -89,7 +87,6 @@ public:
   __GS_PROPERTY(mmb_moving)
   __GS_PROPERTY(lockInfobox)
   __GS_PROPERTY(soundAlias)
-  __GS_PROPERTY(videoAlias)
   __GS_PROPERTY(playerName)
   __GS_PROPERTY(lastGame)
   __GS_PROPERTY(tooltipEnabled)
@@ -107,12 +104,13 @@ public:
   __GS_PROPERTY(rightMenu)
   __GS_PROPERTY(showEmpireMapTiles)
   __GS_PROPERTY(logoImageRc)
-  __GS_PROPERTY(logoImageIndex)
   __GS_PROPERTY(showLastChanges)
   __GS_PROPERTY(lastChangesNumber)
   __GS_PROPERTY(citiesIdModel)
+  __GS_PROPERTY(fontsDirectory)
   __GS_PROPERTY(showStartAware)
   __GS_PROPERTY(verbose)
+  __GS_PROPERTY(buildNumber)
 #undef __GS_PROPERTY
 
   static Settings& instance();

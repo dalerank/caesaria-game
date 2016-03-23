@@ -105,7 +105,7 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
     else { r._bottomright = blackArea.righttop(); }
 
     _d->lbText->setGeometry( r );
-  }  
+  }
 
   _afterCreate();
   setModal();
@@ -153,7 +153,7 @@ void Infobox::setTitle( const std::string& title )
   {
     Size s = _d->lbTitle->font().getTextSize( title );
     if( s.width() > (int)_d->lbTitle->width() )
-      _d->lbTitle->setFont( FONT_2 );
+      _d->lbTitle->setFont( "FONT_2" );
 
     _d->lbTitle->setText( title );
   }

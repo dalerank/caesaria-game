@@ -32,6 +32,7 @@ include_directories(
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
 file(GLOB CORE_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/core/*.*")
 file(GLOB PATHWAY_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/pathway/*.*")
+file(GLOB FONT_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/font/*.*")
 file(GLOB GUI_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.*")
 file(GLOB GAME_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/game/*.*")
 file(GLOB CITY_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/city/*.*")
@@ -60,7 +61,7 @@ file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GAME_MODELS_LIST} ${GUI_MODELS_LIST} ${EVENTS_SOURCES_LIST}
-               ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST}
+               ${CORE_SOURCES_LIST} ${GUI_SOURCES_LIST} ${WALKER_SOURCES_LIST} ${FONT_SOURCES_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
@@ -79,6 +80,9 @@ target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
+
+include_directories(${LITEHTML_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${LITEHTML_LIBRARY})
 
 include_directories(${AES_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${AES_LIBRARY})
@@ -230,7 +234,7 @@ if(UNIX AND NOT APPLE)
   if(NOT CMAKE_BUILD_TYPE_RELEASE)
     message("CaesarIA-game: building in debug mode")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value -g")
-    add_definitions( -DDEBUG )
+    add_definitions(-DDEBUG)
   else()
     #release options strip bin
     message("CaesarIA-game: building in release mode")

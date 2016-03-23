@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "androidactions.hpp"
-#include "core/event.hpp"
 #include "environment.hpp"
 #include "texturedbutton.hpp"
 #include "scene/level.hpp"
@@ -27,7 +26,8 @@
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
 #include "gui/ingame_menu.hpp"
-#include "core/hash.hpp"
+#include <GameVfs>
+#include <GameCore>
 
 using namespace gfx;
 using namespace events;

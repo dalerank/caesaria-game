@@ -22,11 +22,11 @@
 #include "scribemessage.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
-#include "gui/film_widget.hpp"
 #include "gui/event_messagebox.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "factory.hpp"
+#include "script_event.hpp"
 
 namespace events
 {
@@ -130,10 +130,9 @@ void ShowInfobox::_exec( Game& game, unsigned int )
     }
     else
     {
-      auto& wnd = game.gui()->add<gui::FilmWidget>( _d->video );
-      wnd.setTitle( _( _d->title ) );
-      wnd.setText( _( _d->text ) );
-      wnd.show();
+      VariantList vl;
+      vl << _d->video << _d->text << _d->title;
+      events::dispatch<ScriptFunc>("OnShowFilmWidget", vl);
     }
   }
 

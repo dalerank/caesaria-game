@@ -78,7 +78,7 @@ public:
     Point offset;
     string prefix;
     bool rightToLeft = false;
-    Rect margin;
+    Rect padding;
   } text;
 
   struct {
@@ -95,7 +95,7 @@ public:
            RestrainTextInside(true),
            lineIntervalOffset( 0 )
   {
-    font = Font::create( FONT_2 );
+    font = Font::create( "FONT_2" );
     opaque = 0xff;
   }
 
@@ -176,8 +176,8 @@ void Label::_updateTexture(gfx::Engine& painter)
 
   if( _d->font.isValid() )
   {
-    Rect frameRect( _d->text.margin.left(), _d->text.margin.top(),
-                    width()-_d->text.margin.right(), height()-_d->text.margin.bottom() );
+    Rect frameRect( _d->text.padding.left(), _d->text.padding.top(),
+                    width()-_d->text.padding.right(), height()-_d->text.padding.bottom() );
 
     string rText = _d->text.prefix + text();
 
@@ -233,13 +233,13 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   switch( _d->backgroundMode )
   {
   case bgSimpleWhite:
-    _d->text.picture.fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( ColorList::white, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
     Decorator::draw( _d->text.picture, r, Decorator::lineBlackBorder );
   break;
 
   case bgSimpleBlack:
-    _d->text.picture.fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    _d->text.picture.fill( ColorList::black, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
     Decorator::draw( _d->text.picture, r, Decorator::lineWhiteBorder );
   break;
@@ -377,7 +377,7 @@ void Label::Impl::breakText( const std::string& ntext, Size wdgSize )
     inline int length() { return space+word; }
   } textChunck;
 
-  const int widgetWidth = wdgSize.width() - (text.margin.left() + text.margin.right());
+  const int widgetWidth = wdgSize.width() - (text.padding.left() + text.padding.right());
 
   char c;
 
@@ -627,7 +627,7 @@ int Label::textWidth() const
   }
 }
 
-void Label::setPadding( const Rect& margin ) {  _d->text.margin = margin; }
+void Label::setPadding(const Rect& padding ) {  _d->text.padding = padding; }
 
 void Label::beforeDraw(gfx::Engine& painter )
 {
@@ -681,7 +681,7 @@ void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColo
 {
   Picture& texture = _textPicture();
   Font rfont = dfont.isValid() ? dfont : font();
-  if( color != 0 )
+  if( color != ColorList::clear )
     rfont.setColor( color );
 
   rfont.draw( texture, text, point.x(), point.y(), true );
@@ -752,14 +752,9 @@ void Label::setFont( const Font& font )
   _d->is.needUpdate = true;
 }
 
-void Label::setFont(const string& fontname)
+void Label::setFont(const string& fontname, NColor color)
 {
-  Widget::setFont( fontname );
-}
-
-void Label::setFont(FontType type, NColor color)
-{
-  Widget::setFont(type, color);
+  Widget::setFont(fontname, color);
 }
 
 void Label::setAlpha(unsigned int value)
@@ -822,14 +817,14 @@ void Label::setupUI(const VariantMap& ui)
   if (marginLefttop.isValid())
   {
     Point value = marginLefttop.toPoint();
-    _d->text.margin.setLeft(value.x());
-    _d->text.margin.setTop(value.y());
+    _d->text.padding.setLeft(value.x());
+    _d->text.padding.setTop(value.y());
   }
 
-  Variant margin = ui.get("margin");
-  if (margin.isValid())
+  Variant padding = ui.get("margin");
+  if (padding.isValid())
   {
-    _d->text.margin = margin.toRect();
+    _d->text.padding = padding.toRect();
   }
 
   setBackgroundStyle(ui.get("bgtype").toString());

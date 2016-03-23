@@ -71,7 +71,7 @@ public:
 
   const Items& items() const;
 
-  const EntryInfo& item( unsigned int index ) const;
+  const EntryInfo& item(unsigned int index) const;
 
   //! Gets the name of a file in the list, based on an index.
   const Path& getFileName(unsigned int index) const;

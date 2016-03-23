@@ -87,8 +87,8 @@ LoadFile::LoadFile(Widget* parent, const Rect& rect,
 
   if( _d->lbxFiles )
   {
-    _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
-    _d->lbxFiles->setItemDefaultColor( ListBoxItem::hovered, 0xff000000 );
+    _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, ColorList::white );
+    _d->lbxFiles->setItemDefaultColor( ListBoxItem::hovered, ColorList::black );
     _d->lbxFiles->setFocus();
   }
 

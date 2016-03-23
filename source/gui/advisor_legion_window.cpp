@@ -89,8 +89,8 @@ public:
 
     if( _fort.isValid() )
     {
-      Font fontW = Font::create( FONT_1_WHITE );
-      Font fontB = Font::create( FONT_1 );
+      Font fontW = Font::create( "FONT_1_WHITE" );
+      Font fontB = Font::create( "FONT_1" );
 
       std::string qtyStr = utils::i2str( _fort->soldiers().size() ) +  _("##soldiers##");
       int moraleValue = _fort->legionMorale() / 10;
@@ -99,7 +99,7 @@ public:
       canvasDraw( _( _fort->legionName() ), Point( 70, 4 ),   fontW );
       canvasDraw( qtyStr,                   Point( 70, 22 ),  fontB );
       canvasDraw( _( moraleStr ),           Point( 180, 15 ), fontB );
-    }    
+    }
   }
 
   virtual void draw(Engine &painter)

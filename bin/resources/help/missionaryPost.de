@@ -1,0 +1,8 @@
+{  
+ title : "##missionary_post##"
+ sound : "fanfare"
+ text  : "Wenn eine Aufgabe Sie in eine Provinz führt, die bereits von einem Eingeborenenstamm bewohnt wird, möchten Sie dort vielleicht einen Missionsposten errichten. Er benötigt Straßenanbindung und Arbeiter und sendet - falls er funktionsfähig ist - einen Missionar aus, der Kontakt zu den Eingeborenen aufnimmt. Der Missionar versucht den Eingeborenen beizubringen, dass die Römer in friedlicher Absicht kommen, und sie davon zu überzeugen, nicht gegen sie zu kämpfen. Benutzen Sie die @Spezialkarte Risiken - Eingeborene&, um zu sehen, welches Gebiet sie für sich beanspruchen. Bauen Sie den Missionsposten auf 'ihrem' Gebiet als Zeichen für Ihre friedlichen Absichten. Sobald sie Sie akzeptiert haben, werden sie mit dem Handel beginnen. Danach können Sie unbesorgt weitere Gebäude in deren Land errichten."
+ uri : {
+  "Spezialkarte Risiken - Eingeborene" : "Spezialkartenauswahl??"
+ }
+}

@@ -45,7 +45,7 @@ public:
   virtual void handleEvent(NEvent& event);
 
   // draws the menu/menubar/etc... on the screen
-  virtual void draw();
+  virtual void draw(gfx::Engine& engine);
   virtual void initialize();
 
   std::string getMapName() const;

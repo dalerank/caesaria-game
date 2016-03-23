@@ -38,8 +38,8 @@
 #include "core/exception.hpp"
 #include "loader.hpp"
 #include "gamedate.hpp"
+#include "font/font_collection.hpp"
 #include "saver.hpp"
-#include "resourceloader.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "walker/name_generator.hpp"
 #include "religion/pantheon.hpp"
@@ -56,7 +56,6 @@
 #include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
-#include "video_config.hpp"
 #include "config.hpp"
 #include "world/emperor.hpp"
 #include "core/metric.hpp"
@@ -97,7 +96,6 @@ public:
   world::EmpirePtr empire;
   PlayerCityPtr city;
   PlayerPtr player;
-  ScopedPtr<scene::SplashScreen> splash;
 
   int pauseCounter;
   std::string restartFile;
@@ -109,87 +107,22 @@ public:
   void initSound(bool& isOk, std::string& result);
   void initPictures(bool& isOk, std::string& result);
   void initGameConfigs(bool& isOk, std::string& result);
-  void initAddons(bool& isOk, std::string& result);
-  void initScripting(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
-  void initMovie(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
-  void initCelebrations(bool& isOk, std::string& result);
   void initUI(bool& isOk, std::string& result);
   void initVfsSettings(bool& isOk, std::string& result);
   void initTilemapSettings(bool& isOk, std::string& result);
   void initArchiveLoaders(bool& isOk, std::string& result);
   void initFontCollection(bool& isOk , std::string& result);
-  void mountArchives( ResourceLoader& loader );
   void createSaveDir(bool& isOk , std::string& result);
-  void showSplashScreen(bool& isOk , std::string& result);
-  void loadResources(bool& isOk , std::string& result);
-  void updateSplashText(std::string text);
-  void loadPicInfo(bool& isOk , std::string& result);
-  void initNameGenerator(bool& isOk , std::string& result);
-  void loadHouseSpecs(bool& isOk , std::string& result);
-  void loadObjectsMetadata(bool& isOk, std::string& result);
-  void loadWalkersMetadata(bool& isOk, std::string& result);
-  void loadReligionConfig(bool& isOk, std::string& result);
-  void fadeSplash(bool& isOk, std::string& result);
   void themeFinished();
   void resolveHotkey(std::string actionName);
 
   Impl(): nextScreen(SCREEN_NONE),
       currentScreen(nullptr), engine(nullptr),
-      gui(nullptr), splash(nullptr)
+      gui(nullptr)
   {}
 };
-
-void Game::Impl::loadPicInfo(bool& isOk, std::string& result)
-{
-  Logger::debug( "Game: initialize offsets" );
-  result = "##loading_offsets##";
-  PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
-}
-
-void Game::Impl::initNameGenerator(bool& isOk, std::string& result)
-{
-  result = "##initialize_names##";
-  NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
-  NameGenerator::instance().setLanguage( SETTINGS_STR( language ) );
-}
-
-void Game::Impl::loadHouseSpecs(bool& isOk, std::string& result)
-{
-  result = "##initialize_house_specification##";
-  HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
-}
-
-void Game::Impl::loadObjectsMetadata(bool& isOk, std::string& result)
-{
-  result = "##initialize_constructions##";
-  object::InfoDB::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
-}
-
-void Game::Impl::loadWalkersMetadata(bool& isOk, std::string& result)
-{
-  result = "##initialize_walkers##";
-  WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
-}
-
-void Game::Impl::loadReligionConfig(bool& isOk, std::string& result)
-{
-  result = "##initialize_religion##";
-  vfs::Path filename = SETTINGS_RC_PATH( pantheonModel );
-  VariantMap pantheon = config::load( filename );
-  religion::rome::Pantheon::instance().load( pantheon );
-}
-
-void Game::Impl::fadeSplash(bool& isOk, std::string& result)
-{
-  result = "##ready_to_game##";
-
-  if( game::Settings::get( "no-fade" ).isNull() && splash )
-      splash->exitScene( scene::SplashScreen::showDevText );
-
-  splash.reset( 0 );
-}
 
 void Game::Impl::themeFinished()
 {
@@ -202,29 +135,10 @@ void Game::Impl::resolveHotkey(std::string actionName)
   events::dispatch<events::ScriptFunc>("OnExecHotkey", vl);
 }
 
-void Game::Impl::initMovie(bool& isOk, std::string& result)
-{
-  movie::Config& config = movie::Config::instance();
-
-  config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
-  std::string c3videoFile = SETTINGS_STR( c3video );
-
-  if( !c3videoFile.empty() )
-  {
-    config.addFolder( c3videoFile );
-  }
-}
-
 void Game::Impl::initMetrics(bool& isOk, std::string& result)
 {
   int value = SETTINGS_VALUE( metricSystem );
   metric::Measure::setMode( (metric::Measure::Mode)value );
-}
-
-void Game::Impl::initCelebrations(bool& isOk, std::string& result)
-{
-  vfs::Path value = SETTINGS_RC_PATH( celebratesConfig );
-  game::Celebrates::instance().load( value );
 }
 
 void Game::Impl::initLocale( bool& isOk, std::string& result )
@@ -284,54 +198,6 @@ void Game::Impl::initSound(bool& isOk, std::string& result)
   ae.onThemeStopped().connect(this, &Impl::themeFinished);
 }
 
-void Game::Impl::mountArchives(ResourceLoader &loader)
-{
-  Logger::debug( "Game: mount archives begin" );
-
-  std::string errorStr;
-  std::string c3res = SETTINGS_STR( c3gfx );
-  if( !c3res.empty() )
-  {
-    vfs::Directory gfxDir( c3res );
-    vfs::Path c3path = gfxDir/"c3.sg2";
-
-    if( !c3path.exist( vfs::Path::ignoreCase ) )
-    {
-      errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                 "original game archive c3.sg2 not found in folder " + c3res +
-                 "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
-      SETTINGS_SET_VALUE( c3gfx, std::string( "" ) );
-      game::Settings::save();
-    }
-
-    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
-    engine->setFlag( Engine::batching, false );
-  }
-  else
-  {
-    vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
-    if( !testPics.exist() )
-    {
-      SETTINGS_SET_VALUE( resourcePath, Variant("") );
-      game::Settings::save();
-      errorStr = "Not found graphics package. Use precompiled CaesarIA archive or use\n"
-                 "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
-                 "forexample, \"-c3gfx c:/games/caesar3/\"";
-    }
-
-    loader.loadFromModel( SETTINGS_RC_PATH( remakeModel ) );
-  }
-
-  if( !errorStr.empty() )
-  {
-    OSystem::error( "Resources error", errorStr );
-    Logger::debug( "CRITICAL: not found original resources in " + c3res );
-    exit( -1 ); //kill application
-  }
-
-  loader.loadFromModel( SETTINGS_RC_PATH( archivesModel ) );
-}
-
 void Game::Impl::createSaveDir(bool& isOk , std::string& result)
 {
   Logger::debug( "Game: initialize save directory" );
@@ -344,37 +210,6 @@ void Game::Impl::createSaveDir(bool& isOk , std::string& result)
   }
 
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
-}
-
-void Game::Impl::showSplashScreen(bool& isOk, std::string& result)
-{
-  if( !splash )
-  {
-    splash.createInstance();
-    splash->initialize();
-    splash->setImage( SETTINGS_STR( logoImageRc ),
-                      SETTINGS_VALUE( logoImageIndex ) );
-    splash->update( *engine );
-  }
-}
-
-void Game::Impl::loadResources(bool& isOk, std::string& result)
-{
-  Logger::debug( "Game: initialize resource loader" );
-  ResourceLoader rcLoader;
-  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
-  rcLoader.onStartLoading().connect( this, &Impl::updateSplashText );
-
-  Logger::debug( "Game: initialize resources" );
-  mountArchives( rcLoader );  // init some quick pictures for screenWait
-}
-
-void Game::Impl::updateSplashText(std::string text)
-{
-  if( splash )
-  {
-    splash->setText( text );
-  }
 }
 
 void Game::Impl::initUI(bool& isOk, std::string& result)
@@ -409,35 +244,16 @@ void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 
 void Game::Impl::initFontCollection( bool& isOk, std::string& result )
 {
-  vfs::Path resourcePath = game::Settings::rcpath();
-  Logger::debug( "Game: load fonts" );
+  Logger::warning( "Game: load fonts" );
+
+  vfs::Path resourcePath = SETTINGS_RC_PATH( fontsDirectory );
   std::string fontname = SETTINGS_STR( font );
-  FontCollection::instance().initialize( resourcePath.toString(), fontname );
-}
-
-void Game::Impl::initPictures(bool& isOk , std::string& result)
-{
-  result = "##initialize_animations##";
-
-  AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
-  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
-                                           SETTINGS_RC_PATH( simpleAnimationModel ) );
+  FontCollection::instance().initialize( resourcePath, fontname );
 }
 
 void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
 {
   city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
-}
-
-void Game::Impl::initAddons(bool& isOk, std::string& result)
-{
-  addon::Manager& am = addon::Manager::instance();
-  am.load(std::string(":/addons"));
-}
-
-void Game::Impl::initScripting(bool& isOk, std::string& result)
-{
-  script::Core::instance();
 }
 
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
@@ -506,7 +322,7 @@ bool Game::load(std::string filename)
 
   screen.initialize();
   bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
+  screen.setBackground( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_dfunc()->engine );
 
   vfs::Path fPath( filename );
@@ -573,7 +389,7 @@ bool Game::load(std::string filename)
 
   Logger::debug( "Game: load finished" );
 
-  screen.exitScene( scene::SplashScreen::hideDevText );
+  screen.exitScene(scene::SplashScreen::hideDevText);
   return true;
 }
 
@@ -581,75 +397,50 @@ void Game::Impl::initArchiveLoaders(bool& isOk, std::string& result)
 {
   Logger::debug( "Game: initialize sg2/zip archive loaders" );
   vfs::FileSystem& fs = vfs::FileSystem::instance();
-  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
-  fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
+  fs.addArchiveLoader(new vfs::Sg2ArchiveLoader(&fs));
+  fs.addArchiveLoader(new vfs::ZipArchiveLoader(&fs));
 }
-
-
-struct InitializeStep
-{
-  std::string name;
-  Delegate2<bool&, std::string&> function;
-};
 
 void Game::initialize()
 {
-  __D_REF(d,Game)
+  __D_REF(d, Game)
   #define ADD_STEP(obj,functor) { #functor, makeDelegate(obj,&functor) }
-  std::vector<InitializeStep> steps = {
+  std::vector<gamestate::InitializeStep> steps = {
     ADD_STEP( &d, Impl::initTilemapSettings ),
     ADD_STEP( &d, Impl::initVfsSettings ),
     ADD_STEP( &d, Impl::initMetrics ),
     ADD_STEP( &d, Impl::initGameConfigs ),
-    ADD_STEP( &d, Impl::initAddons ),
     ADD_STEP( &d, Impl::initArchiveLoaders ),
     ADD_STEP( &d, Impl::initLocale ),
     ADD_STEP( &d, Impl::initVideo ),
-    ADD_STEP( &d, Impl::initMovie ),
     ADD_STEP( &d, Impl::initFontCollection ),
     ADD_STEP( &d, Impl::initUI ),
     ADD_STEP( &d, Impl::initSound ),
     ADD_STEP( &d, Impl::initHotkeys ),
     ADD_STEP( &d, Impl::createSaveDir ),
-    ADD_STEP( &d, Impl::loadResources ),
-    ADD_STEP( &d, Impl::showSplashScreen ),
-    ADD_STEP( &d, Impl::initCelebrations ),
-    ADD_STEP( &d, Impl::loadPicInfo ),
-    ADD_STEP( &d, Impl::initPictures ),
-    ADD_STEP( &d, Impl::initNameGenerator ),
-    ADD_STEP( &d, Impl::loadHouseSpecs ),
-    ADD_STEP( &d, Impl::loadObjectsMetadata ),
-    ADD_STEP( &d, Impl::loadWalkersMetadata ),
-    ADD_STEP( &d, Impl::loadReligionConfig ),
-    ADD_STEP( &d, Impl::fadeSplash ),
-    ADD_STEP( &d, Impl::initScripting )
   };
-
   #undef ADD_STEP
 
-  for( auto&& step : steps )
+  for (auto& step : steps)
   {
     bool isOk = true;
     std::string stepText;
 
     try
     {
-      step.function( isOk, stepText );
-      d.updateSplashText( stepText );
-      if( !isOk )
+      step.function(isOk, stepText);
+      if (!isOk)
       {
         Logger::error( "Game: initialize faild on step {}", step.name );
         OSystem::error( "Game: initialize faild on step", step.name );
-        exit( -1 ); //kill application
+        exit(-1); //kill application
       }
     }
     catch(...) { exit(-1); }
   }
 
-  script::Core::registerFunctions( *this );
-
-  d.nextScreen = SCREEN_MENU;
-  d.engine->setFlag( gfx::Engine::showMetrics, 1 );
+  d.nextScreen = SCREEN_LOGO;
+  d.engine->setFlag(gfx::Engine::showMetrics, 1);
 }
 
 bool Game::exec()
@@ -669,6 +460,13 @@ bool Game::exec()
   addon::Manager& am = addon::Manager::instance();
   switch(d.nextScreen)
   {
+    case SCREEN_LOGO:
+    {
+      d.currentScreen = new gamestate::InSplash(this);
+
+    }
+    break;
+
     case SCREEN_MENU:
     {
       d.currentScreen = new gamestate::InMainMenu(this, d.engine);
@@ -691,7 +489,7 @@ bool Game::exec()
     case SCREEN_BRIEFING:
     {
       d.currentScreen = new gamestate::InBriefing(this, d.engine, d.nextFilename );
-      am.initAddons4level( addon::briefing );
+      am.initAddons4level(addon::briefing);
     }
     break;
 

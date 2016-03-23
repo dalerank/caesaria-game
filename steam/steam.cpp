@@ -105,7 +105,7 @@ public:
   CSteamID steamId;
 #endif
 
-  gfx::Picture avatarImage;  
+  gfx::Picture avatarImage;
 
   MissionInfo missions[nx_count];
   StatInfo    stats[ stat_count];
@@ -149,7 +149,7 @@ public:
     _INIT_STAT( stat_num_lose  )
 
     #undef _INIT_STAT
-  }    
+  }
 
   void unlockAchievement( Achievement &achievement );
   void clearAchievement( Achievement &achievement );
@@ -415,13 +415,13 @@ bool connect()
   {
     Logger::error( "Game work in offline mode" );
     OSystem::error( "Warning", "Game work in offline mode" );
-  }  
+  }
 
   return true;
 }
 
 void close()
-{  
+{
   SteamAPI_Shutdown();
   Logger::debug( "Game: try close steam" );
 }
@@ -453,7 +453,7 @@ void init()
   if( xclient.user->BLoggedOn() )
   {
     Logger::debug( "Try receive steamID:" );
-    glbUserStats.steamId = xclient.user->GetSteamID();
+    glbUserStats.steamId = xclient.user->GetSteamID().ConvertToUint64();
   }
   else
   {

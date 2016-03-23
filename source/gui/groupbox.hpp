@@ -59,6 +59,9 @@ public:
   //!
   virtual void setupUI(const VariantMap &ui);
 
+protected:
+  virtual void _finalizeResize();
+
 private:
   class Impl;
   ScopedPtr<Impl> _d;

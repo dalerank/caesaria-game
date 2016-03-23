@@ -83,11 +83,11 @@ public:
     : PushButton( parent, rectangle, "", -1, false, PushButton::noBackground )
   {
     _title = title;
-    _dfont = Font::create( FONT_2_WHITE );
+    _dfont = Font::create( "FONT_2_WHITE" );
 
     setIcon( gui::rc.panel, gui::id.chiefIcon );
     setIconOffset( { 6, 8 } );
-    setFont( FONT_2 );
+    setFont( "FONT_2" );
     setTextAlignment(align::upperLeft, align::center);
 
     setTextOffset( Point( 255, 0) );
@@ -106,7 +106,7 @@ public:
   {
     _reasons = reasons;
     auto r = _reasons.random();
-    setFont( FONT_2, r.color );
+    setFont( "FONT_2", r.color );
     setText( _( r ) );
   }
 
@@ -126,7 +126,7 @@ protected:
 
 class Chief::Impl
 {
-public:  
+public:
   class InformationRows
      : public std::map<Advice::Type,InfomationRow*>
   {
@@ -162,7 +162,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent)
   __D_REF(_d, Chief )
   Base::setupUI( ":/gui/chiefadv.gui" );
 
-  WidgetClosers::insertTo( this );  
+  WidgetClosers::insertTo( this );
 
   _d.city = city;
   _d.initRows( this, width() );
@@ -273,7 +273,7 @@ void Chief::Impl::drawMigrationState()
 }
 
 void Chief::Impl::drawFoodStockState()
-{   
+{
   bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
   ColoredStrings reasons;

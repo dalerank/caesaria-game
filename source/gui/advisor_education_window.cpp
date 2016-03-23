@@ -103,7 +103,7 @@ public:
       _service( service ),
       _info( info )
   {
-    setFont( Font::create( FONT_1_WHITE ) );
+    setFont( Font::create( "FONT_1_WHITE" ) );
     setID( (int)service );
 
     Decorator::draw( _border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
@@ -205,7 +205,7 @@ Education::Education(PlayerCityPtr city, Widget* parent)
 {
   setupUI( ":/gui/educationadv.gui" );
   setHeight( 256 );
-  
+
   __D_IMPL(_d,Education)
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbCityInfo )
@@ -288,8 +288,8 @@ public:
 
     moveToCenter();
     WidgetClosers::insertTo( this, KEY_RBUTTON );
-    setFont( Font::create( FONT_1 ) );
-    setModal();    
+    setFont( "FONT_1" );
+    setModal();
   }
 
   void moveCamera(TilePos pos)

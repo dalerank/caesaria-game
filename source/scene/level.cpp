@@ -353,7 +353,7 @@ void Level::Impl::showEmpireMapWindow()
   events::dispatch<ShowEmpireMap>( true );
 }
 
-void Level::draw()
+void Level::draw(Engine& engine)
 {
   _d->renderer.render();
 
@@ -590,14 +590,6 @@ bool Level::_tryExecHotkey(NEvent &event)
     {
       _d->simulationPaused =  !_d->simulationPaused;
       events::dispatch<Pause>(_d->simulationPaused ? Pause::pause : Pause::play);
-      handled = true;
-    }
-    break;
-
-    case KEY_COMMA:
-    case KEY_PERIOD:
-    {
-      events::dispatch<Step>(event.keyboard.key == KEY_COMMA ? Step::once : Step::day);
       handled = true;
     }
     break;

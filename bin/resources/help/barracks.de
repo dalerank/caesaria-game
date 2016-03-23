@@ -6,7 +6,7 @@
   "Forts" : "fort"
   "Waffen" : "weapons_workshop"
   "Militärakademie" : "military_academy"
-  "Türme" : "tower (Mauer, Turm und Wachstube)??"
+  "Türme" : "wall_tower_gatehouse"
   "Frieden und Krieg" : "peace_and_war"
  }
 }

@@ -17,18 +17,18 @@
 
 #include "window.hpp"
 #include "label.hpp"
-#include "core/event.hpp"
-#include "core/flagholder.hpp"
 #include "core/logger.hpp"
 #include "gfx/engine.hpp"
 #include "modal_widget.hpp"
 #include "texturedbutton.hpp"
 #include "widgetescapecloser.hpp"
-#include "core/variant_map.hpp"
+
 #include "gfx/decorator.hpp"
 #include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
 #include "widget_factory.hpp"
+#include <GameVfs>
+#include <GameCore>
 
 using namespace gfx;
 
@@ -196,9 +196,9 @@ void Window::_init()
 
   if( !_d->title )
   {
-    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+25 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
     _d->title->setTextAlignment( align::center, align::center );
-    _d->title->setFont( FONT_4 );
+    _d->title->setFont( "FONT_4" );
     _d->title->setSubElement( true );
   }
 
@@ -469,8 +469,9 @@ void Window::setupUI(const vfs::Path& path)
 
 void Window::setTextAlignment(const std::string& horizontal, const std::string& vertical)
 {
-  align::Helper helper;
-  setTextAlignment( helper.findType(horizontal), helper.findType(vertical) );
+  Widget::setTextAlignment(horizontal, vertical);
+  if( _d->title )
+    _d->title->setTextAlignment(horizontal, vertical);
 }
 
 void Window::setTextAlignment(Alignment horizontal, Alignment vertical)

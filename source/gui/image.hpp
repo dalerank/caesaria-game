@@ -31,24 +31,25 @@ class Image : public Widget
 public:
   typedef enum { native=0, fit, image, center, best } Mode;
   //! constructor
-  Image(Widget* parent );
+  Image(Widget* parent);
 
-  Image(Widget* parent, Rect rectangle, const gfx::Picture& pic, Mode mode=image, int id=-1);
-  Image(Widget* parent, Point pos, const gfx::Picture& pic, int id=-1);
+  Image(Widget* parent, const Rect& rectangle, const gfx::Picture& pic, Mode mode=image, int id=-1);
+  Image(Widget* parent, const Point& pos, const gfx::Picture& pic, int id=-1);
 
   //! destructor
   virtual ~Image();
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
-  virtual void setPicture(const gfx::Picture& picture );
+  virtual void setPicture(const gfx::Picture& picture);
   virtual void setPicture(const std::string& rc, int id);
-  virtual void setPicture(const std::string& rc);
+  virtual void setPicture(const std::string& name);
 
-  virtual void setupUI( const VariantMap& ui );
+  virtual void setupUI(const VariantMap& ui);
   void setMode(Mode mode);
-    
+  void setMode(const std::string& mode);
+
   gfx::Picture picture() const;
 
 signals public:

@@ -68,7 +68,9 @@ public:
   virtual void setDrawBackground( bool drawBackground );
 
   //! Turns the border on or off
-  virtual void setDrawBorder( bool border );
+  virtual void setDrawBorder(bool border);
+
+  virtual void setTextOffset(const Point& offset);
 
   //! Enables or disables word wrap for using the edit box as multiline text editor.
   virtual void setWordWrap( bool enable );
@@ -105,9 +107,6 @@ public:
 
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
-
-  //!
-  virtual void setTextOffset(const Point& offset);
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);

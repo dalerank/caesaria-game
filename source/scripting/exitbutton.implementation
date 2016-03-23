@@ -1,3 +1,9 @@
+DEFINE_OBJECT_FUNCTION_0(HelpButton,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(HelpButton,setGeometry,Rect)
+DEFINE_OBJECT_FUNCTION_1(HelpButton,setPosition,Point)
+DEFINE_WIDGET_CALLBACK_0(HelpButton,onClickedEx)
+DEFINE_WIDGET_CONSTRUCTOR(HelpButton)
+
 DEFINE_OBJECT_FUNCTION_0(ExitButton,deleteLater)
 DEFINE_OBJECT_FUNCTION_1(ExitButton,setGeometry,Rect)
 DEFINE_OBJECT_FUNCTION_1(ExitButton,setPosition,Point)

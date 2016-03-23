@@ -24,6 +24,7 @@
 #include "core/utils.hpp"
 #include "core/format.hpp"
 #include "game/infoboxmanager.hpp"
+#include "events/script_event.hpp"
 
 using namespace religion;
 using namespace gfx;
@@ -34,36 +35,33 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_BASEINFOBOX(small_ceres_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(small_mars_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(small_neptune_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(small_venus_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(small_mercury_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(big_ceres_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(big_mars_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(big_neptune_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(big_venus_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(big_mercury_temple,AboutTemple)
-REGISTER_OBJECT_BASEINFOBOX(oracle,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(small_ceres_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(small_mars_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(small_neptune_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(small_venus_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(small_mercury_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(big_ceres_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(big_mars_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(big_neptune_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(big_venus_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(big_mercury_temple,AboutTemple)
+REGISTER_OBJECT_FREEINFOBOX(oracle,AboutTemple)
 
 AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
-  setupUI( ":/gui/infoboxtemple.gui" );
-
   TemplePtr temple = tile.overlay<Temple>();
-  setBase( temple );
+  //setBase( temple );
 
   std::string shortDesc;
   std::string text, longDescr;
-  if( temple.is<TempleOracle>() )
+  /*if( temple.is<TempleOracle>() )
   {
      text = _( "##oracle##" );
      setText( _( "##oracle_info##" ) );
   }
   else
   {
-     DivinityPtr divn = temple->divinity();
+    DivinityPtr divn = temple->divinity();
      bool bigTemple = temple->size().width() > 2;
      shortDesc =  _( divn->shortDescription() );
      text = _( fmt::format( "##{}_{}_temple##",
@@ -85,11 +83,12 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   setTitle( text + shortDesc );
 
-  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );  
+  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );  */
+
+  VariantList vl; vl << tile.epos();
+  events::dispatch<events::ScriptFunc>("OnShowTempleInfobox", vl);
 }
 
-AboutTemple::~AboutTemple() {}
-
-}
+}//end namespace infobox
 
 }//end namespace gui

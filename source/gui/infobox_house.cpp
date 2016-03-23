@@ -188,7 +188,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
         taxesStr = "##no_tax_in_this_year##";
       }
       else
-      {        
+      {
         taxesStr = "##no_visited_by_taxman##";
       }
     }
@@ -230,7 +230,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 {
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
-   
+
   Picture citPic( gui::rc.panel, picId );
   _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
@@ -254,7 +254,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   {
     // too many habitants!
     freeRoomText = fmt::format( "{} {} {}", current, _("##no_room_for_citizens##"),-freeRoom);
-    lbHabitants.setFont( FONT_2_RED );
+    lbHabitants.setFont( "FONT_2_RED" );
   }
 
   lbHabitants.setText( freeRoomText );
@@ -266,7 +266,7 @@ void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const i
   std::string text = utils::i2str(qty);
 
   Label& lb = add<Label>( Rect( Point( 30 + 100 * col, startY + 2 + 30 * row), Size( 80, 50) ) );
-  lb.setFont( FONT_2 );
+  lb.setFont( "FONT_2" );
   lb.setIcon( good::Info( goodType ).picture() );
   lb.setText( text );
   lb.setTextOffset( Point( 30, 0 ));

@@ -30,7 +30,7 @@
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "gfx/tilearea.hpp"
 #include "core/osystem.hpp"
 #include "build.hpp"
@@ -172,7 +172,7 @@ void Destroy::render( Engine& engine )
   for( auto tile : subtrateTiles )
     drawSubtrateTile( renderInfo, *tile );
 
-  // FIRST PART: draw all flat land (walkable/boatable)  
+  // FIRST PART: draw all flat land (walkable/boatable)
   for( auto ftile : flatTiles )
   {
     ftile = ftile->master() ? ftile->master() : ftile;
@@ -205,8 +205,8 @@ void Destroy::renderUi(Engine &engine)
 {
   if( _d->savesum != _d->money4destroy )
   {
-    _d->textPic.fill( 0x0, Rect() );
-    _d->textFont.setColor( 0xffff0000 );
+    _d->textPic.fill( ColorList::clear, Rect() );
+    _d->textFont.setColor( ColorList::red );
     _d->textFont.draw( _d->textPic, fmt::format( "{} Dn", _d->money4destroy ), Point() );
   }
 
@@ -386,7 +386,7 @@ Destroy::Destroy(Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer)
   _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );
-  _d->textFont = Font::create( FONT_5 );
+  _d->textFont = Font::create( "FONT_5" );
   _d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }

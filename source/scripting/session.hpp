@@ -22,15 +22,16 @@
 #include "core/size.hpp"
 #include "gui/predefinitions.hpp"
 #include "world/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include <string>
 
 class Game;
-class Player;
 class PlayerCity;
 class VariantList;
 class VariantMap;
 class Variant;
 class StringArray;
+namespace gfx { class Picture; }
 
 namespace script
 {
@@ -44,6 +45,7 @@ public:
   void setMode(int mode);
   void setOption(const std::string& name,Variant v);
   Variant getOption(std::string name);
+  void showSysMessage(std::string title, std::string message);
   void clearUi();
   void save(const std::string& path);
   void createIssue(const std::string& type, int value);
@@ -54,11 +56,15 @@ public:
   void openUrl(const std::string& url);
   int lastChangesNum() const;
   void addWarningMessage(const std::string& message);
-  Player* getPlayer() const;
-  PlayerCity* getCity() const;
+  PlayerPtr getPlayer() const;
+  PlayerCityPtr getCity() const;
   bool isC3mode() const;
+  bool isSteamAchievementReached(int i);
+  gfx::Picture getSteamUserImage() const;
+  gfx::Picture getSteamAchievementImage(int i) const;
+  std::string getSteamAchievementCaption(int id) const;
   world::Emperor* getEmperor() const;
-  world::Empire* getEmpire() const;
+  world::EmpirePtr getEmpire() const;
   void clearHotkeys();
   void setHotkey(const std::string& name, const std::string& config);
   void setRank(int i, const std::string& name, const std::string& pretty, int salary);
@@ -73,6 +79,7 @@ public:
   void setResolution(const Size& size);
   void showDlcViewer(const std::string& path);
   StringArray tradableGoods() const;
+  std::string getOverlayType(int i) const;
   VariantMap winConditions() const;
   VariantMap getGoodInfo(std::string goodName) const;
   Size getResolution() const;

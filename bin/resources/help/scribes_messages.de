@@ -1,0 +1,7 @@
+{  
+ title : "##scribes_messages##"
+ sound : "fanfare"
+ text  : "Wenn Ihre Untergebenen der Meinung sind, dass ein Ereignis unbedingt Ihrer sofortigen Aufmerksamkeit bedarf, schicken sie Ihnen Nachrichten, die Sie über diesen Button ansehen können. Ein kurzer Fanfarenstoß während des Spiels meldet das Eintreffen einer neuen Mitteilung. Klicken Sie eine Nachricht links an, um sie zu lesen. Nachrichten können in der Auflistung mit Rechtsklick gelöscht werden.\n\nDer Siebte Sinn Ihrer Schreiber für Gefahr neigt zwar leicht zu Übertreibungen, dennoch sollten Sie das Risiko nicht unterschätzen, das die Nichtbeachtung ihrer Meldungen bedeutet. Wenn Sie eine Nachricht über eine Krisensituation erreicht, beispielsweise ein Feuer, ein Aufstand oder ein eingestürztes Gebäude, können Sie den Button mit der Alarmglocke (gleich rechts neben dem Nachrichten-Button) anklicken und direkt an die Problemstelle springen."
+ uri : {
+ }
+}

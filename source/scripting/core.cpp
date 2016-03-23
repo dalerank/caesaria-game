@@ -36,6 +36,7 @@ using namespace gui;
 using namespace gui::dialog;
 using namespace city;
 using namespace world;
+using namespace gfx;
 using namespace vfs;
 
 namespace script
@@ -43,16 +44,17 @@ namespace script
 
 namespace internal
 {
-Game* game = nullptr;
-std::set<std::string> files;
-vfs::FileChangeObserver DirectoryChangeObserver;
-Session* session = nullptr;
-js_State *J = nullptr;
+  Game* game = nullptr;
+  std::set<std::string> files;
+  vfs::FileChangeObserver DirectoryChangeObserver;
+  Session* session = nullptr;
+  js_State *J = nullptr;
+} //end namespace internal
 
-inline std::string to(js_State *J, int n, std::string) { return js_tostring(J, n); }
-inline int32_t to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
+inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
+inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 
-Variant to(js_State *J, int n, Variant)
+Variant engine_js_to(js_State *J, int n, Variant)
 {
   if(js_isboolean(J,n))
     return Variant(js_toboolean(J,n));
@@ -70,31 +72,44 @@ Variant to(js_State *J, int n, Variant)
   return Variant();
 }
 
-void tryPCall(js_State *J, int params)
+bool engine_js_tryPCall(js_State *J, int params)
 {
-  int error = js_pcall(internal::J, params);
-  if (error)
+  try
   {
-    std::string str = js_tostring(internal::J, -1);
-    Logger::warning(str);
+    int error = js_pcall(internal::J, params);
+    if (error)
+    {
+      std::string str = js_tostring(internal::J, -1);
+      Logger::warning(str);
+    }
+    js_pop(internal::J, -1);
+    return false;
+  }
+  catch (...)
+  {
+    return true;
   }
   js_pop(internal::J, -1);
 }
 
-void push(js_State* J,const Size& size)
+void engine_js_push(js_State* J,const Size& size)
 {
   js_newobject(J);
-  js_pushnumber(J, size.width());
-  js_setproperty(J, -2, "w");
-  js_pushnumber(J, size.height());
-  js_setproperty(J, -2, "h");
+  js_pushnumber(J, size.width());  js_setproperty(J, -2, "w");
+  js_pushnumber(J, size.height()); js_setproperty(J, -2, "h");
 }
 
-void push(js_State* J, int32_t value) { js_pushnumber(J,value); }
-void push(js_State* J, const Path& p) { js_pushstring(J,p.toCString()); }
-void push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
+void engine_js_push(js_State* J, const TilePos& pos)
+{
+  js_newobject(J);
+  js_pushnumber(J, pos.i()); js_setproperty(J, -2, "i");
+  js_pushnumber(J, pos.j()); js_setproperty(J, -2, "j");
+}
 
-int push(js_State* J,const Variant& param)
+void engine_js_push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
+
+int engine_js_push(js_State* J,const Variant& param)
 {
   switch( param.type() )
   {
@@ -115,6 +130,18 @@ int push(js_State* J,const Variant& param)
   case Variant::Uchar:
   case Variant::Short:
     js_pushnumber(J, param.toDouble());
+    return 0;
+  break;
+
+  case Variant::NTilePos:
+    engine_js_push(J, param.toTilePos());
+    return 0;
+  break;
+
+  case Variant::Date:
+  case Variant::Time:
+  case Variant::NDateTime:
+    js_pushnumber(J, param.toDateTime().hashdate());
     return 0;
   break;
 
@@ -144,15 +171,15 @@ int push(js_State* J,const Variant& param)
   return 1;
 }
 
-void pushud(js_State* J, const std::string& name, void* v)
+void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
 {
   js_newobject(J);
   js_getglobal(J, name.c_str());
   js_getproperty( J, -1, "prototype");
-  js_newuserdata(J, "userdata", v, nullptr);
+  js_newuserdata(J, "userdata", v, destructor);
 }
 
-void push(js_State *J, const StringArray& items)
+void engine_js_push(js_State *J, const StringArray& items)
 {
   js_newarray(J);
   for (uint32_t i = 0; i<items.size(); i++)
@@ -162,33 +189,48 @@ void push(js_State *J, const StringArray& items)
   }
 }
 
-void push(js_State *J, const VariantMap& items)
+void engine_js_push(js_State *J, const VariantMap& items)
 {
   js_newobject(J);
   for (const auto& item : items)
   {
-    push(J, item.second);
+    engine_js_push(J, item.second);
     js_setproperty(J, -2, item.first.c_str());
   }
 }
 
-void push(js_State* J, const DateTime& t)
+template<class Type>
+void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
 {
-  auto pd = new DateTime(t);
-  pushud(J, TEXT(DateTime), pd);
+  auto pd = new Type(p);
+  engine_js_pushud(J, tname, pd,  destructor);
 }
 
-#define PUSH_SAVEDDATA(type) void push(js_State* J, const type& p) { push(J, p.save()); }
-#define PUSH_USERDATA(type) void push(js_State* J, type* p) { pushud(J, #type, p); }
+#define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
+
+PREDEFINE_TYPE_DESTRUCTOR(Path)
+PREDEFINE_TYPE_DESTRUCTOR(DateTime)
+PREDEFINE_TYPE_DESTRUCTOR(Picture)
+
+#define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
+#define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
+#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
+#define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
 
 PUSH_SAVEDDATA(States)
 PUSH_USERDATA(ContextMenuItem)
-PUSH_USERDATA(PlayerCity)
-PUSH_USERDATA(Player)
-PUSH_USERDATA(Emperor)
-PUSH_USERDATA(Empire)
 
-inline DateTime to(js_State *J, int n, DateTime)
+PUSH_USERDATA_SMARTPTR(PlayerCity)
+PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Overlay)
+PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA(Emperor)
+
+PUSH_USERDATA_WITHNEW(Path)
+PUSH_USERDATA_WITHNEW(DateTime)
+PUSH_USERDATA_WITHNEW(Picture)
+
+inline DateTime engine_js_to(js_State *J, int n, DateTime)
 {
   if (js_isuserdata(J, 1, "userdata"))
   {
@@ -199,7 +241,18 @@ inline DateTime to(js_State *J, int n, DateTime)
   return DateTime();
 }
 
-inline StringArray to(js_State *J, int n, StringArray)
+inline Picture engine_js_to(js_State *J, int n, Picture)
+{
+  if (js_isuserdata(J, 1, "userdata"))
+  {
+    Picture* pic = (Picture*)js_touserdata(J, 1, "userdata");
+    return *pic;
+  }
+
+  return Picture();
+}
+
+inline StringArray engine_js_to(js_State *J, int n, StringArray)
 {
   if (!js_isarray(J, 1))
   {
@@ -220,32 +273,44 @@ inline StringArray to(js_State *J, int n, StringArray)
   return ret;
 }
 
-inline bool to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
-inline Size to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
-inline Point to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
-inline PointF to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
+inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
+inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
+inline Point engine_js_to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
+inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
-inline Rect to(js_State *J, int n, Rect)
+inline TilePos engine_js_to(js_State *J, int n, TilePos) 
+{ 
+  if (js_isobject(J, n))
+  {
+    js_getproperty(J, n, "i");
+    int i = js_tonumber(J, -1);
+    js_getproperty(J, n, "j");
+    int j = js_tonumber(J, -1);
+
+    return TilePos(i, j);
+  }
+  return TilePos();
+}
+
+inline Rect engine_js_to(js_State *J, int n, Rect)
 {
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
                js_toint32(J, n+2), js_toint32(J, n+3) );
 }
 
-} //end namespace internal
-
-void enginePanic(js_State *J)
+void engine_js_Panic(js_State *J)
 {
   Logger::warning("JSE !!! Uncaught exception: %s\n", js_tostring(J, -1));
 }
 
-void engineLog(js_State *J)
+void engine_js_Log(js_State *J)
 {
   const char *text = js_tostring(J, 1);
   Logger::warning( text );
   js_pushundefined(J);
 }
 
-void engineLoadArchive(js_State* J)
+void engine_js_LoadArchive(js_State* J)
 {
   Path archivePath = js_tostring(J, 1);
   bool ignoreCase = js_toboolean(J, 2)>0;
@@ -266,43 +331,46 @@ void engineLoadArchive(js_State* J)
   else { rc.loadFiles(archive); }
 }
 
-void engineReloadFile(vfs::Path path)
+void engine_js_ReloadFile(vfs::Path path)
 {
-  if (internal::files.count( path.toString()))
+  if (internal::files.count(path.toString()))
+  {
+    Logger::warning("JS: script {} reloaded ", path.toString());
     Core::loadModule(path.toString());
+  }
 }
 
-void engineSetVolume(js_State *J)
+void engine_js_SetVolume(js_State *J)
 {
   int type = js_toint32(J, 1);
   int value = js_toint32(J, 2);
   audio::Engine::instance().setVolume((audio::SoundType)type, value);
 }
 
-void engineLoadModule(js_State *J)
+void engine_js_LoadModule(js_State *J)
 {
   vfs::Path scriptName = js_tostring(J, 1);
-  internal::files.insert(scriptName.toString());
+  internal::files.insert(scriptName.absolutePath().toString());
   Core::loadModule(scriptName.toString());
 }
 
-void engineTranslate(js_State *J)
+void engine_js_Translate(js_State *J)
 {
   std::string text = js_tostring(J, 1);
   text = Locale::translate(text);
   js_pushstring(J,text.c_str());
 }
 
-void engineGetOption(js_State *J)
+void engine_js_GetOption(js_State *J)
 {
   std::string name = js_tostring(J, 1);
   Variant value = game::Settings::get(name);
-  int error = internal::push(J, value);
+  int error = engine_js_push(J, value);
   if (error)
     Logger::warning( "!!! Undefined value for js.pcall engineGetOption when find " + name );
 }
 
-void engineSetOption(js_State *J)
+void engine_js_SetOption(js_State *J)
 {
   std::string name = js_tostring(J, 1);
   if (js_isboolean(J,2) )
@@ -332,7 +400,7 @@ void reg_object_function(const std::string& name, const std::string& funcname, j
 
 void script_object_begin(const std::string& name)
 {
-  Logger::debug( "cript-if://object.begin={} stack={}", name, js_gettop(internal::J) );
+  Logger::debug( "script-if://object.begin={} stack={}", name, js_gettop(internal::J) );
   js_getglobal(internal::J, "Object");
   js_getproperty(internal::J, -1, "prototype");
   js_newuserdata(internal::J, "userdata", nullptr, nullptr);
@@ -373,7 +441,7 @@ void Core::loadModule(const std::string& path)
   }
 
   js_getglobal(internal::J,"");
-  internal::tryPCall(internal::J, 0);
+  engine_js_tryPCall(internal::J, 0);
 }
 
 void Core::execFunction(const std::string& funcname)
@@ -383,17 +451,22 @@ void Core::execFunction(const std::string& funcname)
 
 void Core::execFunction(const std::string& funcname, const VariantList& params)
 {
+  if (internal::J == nullptr)
+    return;
+
   int savetop = js_gettop(internal::J);
   js_getglobal(internal::J, funcname.c_str());
   js_pushnull(internal::J);
   for (const auto& param : params)
   {
-    int error = internal::push(internal::J,param);
+    int error = engine_js_push(internal::J,param);
     if (error)
       Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
 
-  internal::tryPCall(internal::J,params.size());
+  bool error = engine_js_tryPCall(internal::J,params.size());
+  if (error)
+    Logger::fatal("Fatal error on call function " + funcname);
   js_pop(internal::J,2);
   if( savetop - js_gettop(internal::J) != 0 )
   {
@@ -433,14 +506,17 @@ void widget_handle_callback_0(Widget* widget,const std::string& callback, const 
       std::string index = widget->getProperty(callback);
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
-      internal::tryPCall(internal::J,0);
+      int error = engine_js_tryPCall(internal::J,0);
+      if (error)
+        Logger::warning("Fatal error on callback " + className + ":" + callback);
       js_pop(internal::J,2); //pop func+param from stack
     }
     else
       Logger::warning(className + "_handle_" + callback + " widget is null");
   }
   catch(...)
-  {}
+  {
+  }
 }
 
 template<typename T,typename P1>
@@ -453,8 +529,8 @@ void widget_handle_callback_1(Widget* widget, P1 value, const std::string& callb
       std::string index = widget->getProperty( callback );
       js_getregistry(internal::J,index.c_str());
       js_pushnull(internal::J);
-      internal::push(internal::J, value);
-      internal::tryPCall(internal::J,1);
+      engine_js_push(internal::J, value);
+      engine_js_tryPCall(internal::J,1);
       js_pop(internal::J,2);
     }
     else
@@ -507,7 +583,7 @@ void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
     if (parent)
     {
       Rtype value = (parent->*f)();
-      internal::push(J,value);
+      engine_js_push(J,value);
     }
     else
       js_pushundefined(J);
@@ -524,9 +600,9 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type) const, P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    auto paramValue1 = internal::to(J, 1, def);
+    auto paramValue1 = engine_js_to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
-    internal::push(J,value);
+    engine_js_push(J,value);
   }
   else
     js_pushundefined(J);
@@ -538,9 +614,9 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
   T* parent = (T*)js_touserdata(J, 0, "userdata");
   if (parent)
   {
-    auto paramValue1 = internal::to(J, 1, def);
+    auto paramValue1 = engine_js_to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
-    internal::push(J,value);
+    engine_js_push(J,value);
   }
   else
     js_pushundefined(J);
@@ -602,6 +678,19 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
+#define DEFINE_OBJECT_GETTER_3(name,rtype,funcname,p1type,p2type,p3type) void name##_##funcname(js_State* J) { \
+                                                  name* object = (name*)js_touserdata(J, 0, "userdata"); \
+                                                  if (object) { \
+                                                      auto paramValue1 = engine_js_to(J, 1, p1type()); \
+                                                      auto paramValue2 = engine_js_to(J, 2, p2type()); \
+                                                      auto paramValue3 = engine_js_to(J, 3, p3type()); \
+                                                      rtype value = object->funcname(paramValue1,paramValue2,paramValue3); \
+                                                      engine_js_push(J,value); \
+                                                  } else { \
+                                                    js_pushundefined(J); \
+                                                  } \
+                                                }
+
 #define DEFINE_VANILLA_CONSTRUCTOR(type,func) void constructor_##type(js_State *J) { \
                                                   js_currentfunction(J); \
                                                   js_getproperty(J, -1, "prototype"); \
@@ -610,53 +699,68 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 
 #define DEFINE_OBJECT_GETTER_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State* J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  if (parent) internal::push(J,parent->funcname(paramValue1,paramValue2)); \
+  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+  if (parent) engine_js_push(J,parent->funcname(paramValue1,paramValue2)); \
   else js_pushundefined(J); \
 }
 
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType paramValue = internal::to(J, 1, paramType()); \
+                                  paramType paramValue = engine_js_to(J, 1, paramType()); \
+                                  if( parent ) parent->funcname( paramValue ); \
+                                  js_pushundefined(J); \
+                                }
+
+#define DEFINE_OBJECT_OVERRIDE_FUNCTION_1(name,funcname,ov,paramType) void name##_##funcname##_##ov(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType paramValue = engine_js_to(J, 1, paramType()); \
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
 
 #define DEFINE_OBJECT_FUNCTION_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
+                                  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+                                  if( parent ) parent->funcname( paramValue1, paramValue2 ); \
+                                  js_pushundefined(J); \
+                                }
+
+#define DEFINE_OBJECT_OVERRIDE_FUNCTION_2(name,funcname,ov,paramType1,paramType2) void name##_##funcname##_##ov(js_State *J) { \
+                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
                                   if( parent ) parent->funcname( paramValue1, paramValue2 ); \
                                   js_pushundefined(J); \
                                 }
 
 #define DEFINE_OBJECT_FUNCTION_3(name,funcname,paramType1,paramType2,paramType3) void name##_##funcname(js_State *J) { \
   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
+  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+  paramType3 paramValue3 = engine_js_to( J, 3, paramType3() ); \
   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3 ); \
   js_pushundefined(J); \
 }
 
 #define DEFINE_OBJECT_FUNCTION_4(name,funcname,paramType1,paramType2,paramType3,paramType4) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-                                  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
-                                  paramType4 paramValue4 = internal::to( J, 4, paramType4() ); \
+                                  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+                                  paramType3 paramValue3 = engine_js_to( J, 3, paramType3() ); \
+                                  paramType4 paramValue4 = engine_js_to( J, 4, paramType4() ); \
                                   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4); \
                                   js_pushundefined(J); \
                                 }
 
 #define DEFINE_OBJECT_FUNCTION_5(name,funcname,paramType1,paramType2,paramType3,paramType4,paramType5) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType1 paramValue1 = internal::to( J, 1, paramType1() ); \
-                                  paramType2 paramValue2 = internal::to( J, 2, paramType2() ); \
-                                  paramType3 paramValue3 = internal::to( J, 3, paramType3() ); \
-                                  paramType4 paramValue4 = internal::to( J, 4, paramType4() ); \
-                                  paramType5 paramValue5 = internal::to( J, 5, paramType5() ); \
+                                  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+                                  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+                                  paramType3 paramValue3 = engine_js_to( J, 3, paramType3() ); \
+                                  paramType4 paramValue4 = engine_js_to( J, 4, paramType4() ); \
+                                  paramType5 paramValue5 = engine_js_to( J, 5, paramType5() ); \
                                   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4, paramValue5 ); \
                                   js_pushundefined(J); \
                                 }
@@ -685,14 +789,20 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "path.implementation"
 #include "spinbox.implementation"
 #include "filelistbox.implementation"
+#include "picture.implementation"
+#include "city.implementation"
+#include "overlay.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
 DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
 DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
-void Core::registerFunctions( Game& game )
+void Core::registerFunctions(Game& game)
 {
+  internal::J = js_newstate(NULL, NULL, JS_STRICT);
+  js_atpanic(internal::J, engine_js_Panic);
+
   internal::game = &game;
   internal::session = new Session(&game);
 #define DEF_GLOBAL_OBJECT(name) js_newobject(internal::J);
@@ -716,12 +826,15 @@ void Core::registerFunctions( Game& game )
 #include "path.interface"
 #include "spinbox.interface"
 #include "filelistbox.interface"
+#include "picture.interface"
+#include "city.interface"
+#include "overlay.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function
   Logger::warning( "STACK state {}", js_gettop(internal::J));
   internal::DirectoryChangeObserver.watch( ":/system" );
-  internal::DirectoryChangeObserver.onFileChange().connect( &engineReloadFile );
+  internal::DirectoryChangeObserver.onFileChange().connect( &engine_js_ReloadFile );
 }
 
 void Core::unref(const std::string& ref)
@@ -731,8 +844,6 @@ void Core::unref(const std::string& ref)
 
 Core::Core()
 {
-  internal::J = js_newstate(NULL, NULL, JS_STRICT);
-  js_atpanic(internal::J, enginePanic);
 }
 
 } //end namespace script

@@ -1,0 +1,6 @@
+DEFINE_OBJECT_DESTRUCTOR(Picture)
+DEFINE_OBJECT_GETTER_0(Picture,const std::string&,name)
+DEFINE_OBJECT_OVERRIDE_FUNCTION_2(Picture,load,rcIndex,std::string,int)
+DEFINE_OBJECT_OVERRIDE_FUNCTION_1(Picture,load,str,std::string)
+DEFINE_OBJECT_GETTER_0(Picture,bool,isValid)
+DEFINE_OBJECT_CONSTRUCTOR(Picture)

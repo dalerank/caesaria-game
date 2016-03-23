@@ -34,7 +34,6 @@ __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
 __REG_PROPERTY(houseModel )
 __REG_PROPERTY(citiesModel)
-__REG_PROPERTY(climateModel)
 __REG_PROPERTY(constructionModel)
 __REG_PROPERTY(ctNamesModel)
 __REG_PROPERTY(settingsPath)
@@ -54,7 +53,6 @@ __REG_PROPERTY(c3video)
 __REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
-__REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
@@ -90,7 +88,6 @@ __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
-__REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
@@ -107,12 +104,13 @@ __REG_PROPERTY(logfile)
 __REG_PROPERTY(rightMenu)
 __REG_PROPERTY(showEmpireMapTiles)
 __REG_PROPERTY(logoImageRc)
-__REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
+__REG_PROPERTY(fontsDirectory)
 __REG_PROPERTY(showStartAware)
 __REG_PROPERTY(verbose)
+__REG_PROPERTY(buildNumber)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -145,9 +143,8 @@ Settings::Settings() : _d( new Impl )
   _d->options[ settingsPath        ] = std::string( "/settings.model" );
   _d->options[ langModel           ] = std::string( "/language.model" );
   _d->options[ archivesModel       ] = std::string( "/archives.model" );
-  _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
-  _d->options[ climateModel        ] = std::string( "/climate.model" );
   _d->options[ language            ] = std::string( "" );
+  _d->options[ fontsDirectory      ] = std::string( "/fonts");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
@@ -169,7 +166,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ layersOptsModel     ] = std::string( "layers_opts.model" );
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
-  _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
   _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
@@ -192,6 +188,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ c3music             ] = std::string( "" );
   _d->options[ talksArchive        ] = std::string( ":/audio/wavs_citizen_en.zip" );
   _d->options[ autosaveInterval    ] = 3;
+  _d->options[ buildNumber         ] = GAME_BUILD_NUMBER;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
   _d->options[ metricSystem        ] = metric::Measure::native;
@@ -200,14 +197,13 @@ Settings::Settings() : _d( new Impl )
   _d->options[ musicVolume         ] = 25;
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
-  _d->options[ worldModel          ] = std::string( "/worldmap.model" );
-  _d->options[ citiesIdModel       ] = std::string( "/cities_id.model" );
+  _d->options[ worldModel          ] = std::string( "worldmap.model" );
+  _d->options[ citiesIdModel       ] = std::string( "cities_id.model" );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
   _d->options[ logoImageRc         ] = "logo";
-  _d->options[ logoImageIndex      ] = 1;
   _d->options[ showTabletMenu      ] = false;
   _d->options[ debugMenu           ] = false;
   _d->options[ showLastChanges     ] = true;
@@ -331,7 +327,6 @@ void Settings::checkC3present()
                                               {houseModel,        "house"},
                                               {constructionModel, "construction"},
                                               {citiesModel,       "cities"},
-                                              {climateModel,      "climate"},
                                               {walkerModel,       "walker"},
                                               {animationsModel,   "animations"},
                                               {empireObjectsModel,"empire_objects"},
@@ -340,27 +335,24 @@ void Settings::checkC3present()
                                               {worldModel,        "worldmap"},
                                               {buildMenuModel,    "build_menu"},
                                               {soundAlias,        "sounds"},
-                                              {videoAlias,        "videos"},
                                               {pic_offsets,       "offsets"},
                                             };
 
   std::string ext;
-  if( useOldGraphics )
+  if (useOldGraphics)
   {
     ext = ".c3";
-    _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "title" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "c3title" ) );
-    _d->options[ logoImageIndex      ] = 2;
+    _d->options[ forbidenTile        ] = Variant(std::string( "org_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "title" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "c3title" ) );
     _d->options[ cellw ] = 30;
   }
   else
   {
     ext = ".model";
-    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "logo" ) );
-    _d->options[ logoImageIndex      ] = 1;
+    _d->options[ forbidenTile        ] = Variant(std::string( "oc3_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "titlerm" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "logo" ) );
     _d->options[ cellw ] = 60;
   }
 

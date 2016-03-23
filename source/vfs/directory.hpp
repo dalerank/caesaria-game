@@ -30,25 +30,26 @@ class Directory : public Path
 {
 public:
   Directory();
-  Directory( const Path& nPath );
-  Directory( const std::string& nPath );
-  Directory( const Directory& nPath );
+  Directory(const Path& nPath);
+  Directory(const std::string& nPath);
+  Directory(const Directory& nPath);
   explicit Directory(const char* nPath);
 
   virtual ~Directory();
 
   //void CopyTo( const NrpDir& pathNew );
-  Path getFilePath( const Path& fileName );
+  Path getFilePath(const Path& fileName);
 
-  Directory operator/(const Directory& dir ) const;
-  Path operator/(const Path& filename ) const;
-  Path operator/(const std::string& filename ) const;
-  Path operator/(const char* filename ) const;
+  Directory operator/(const Directory& dir) const;
+  Path operator/(const Path& filename) const;
+  Path operator/(const std::string& filename) const;
+  Path operator/(const char* filename) const;
 
   Entries entries() const;
-  Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;
+  Path find(const Path& fileName, SensType sens = Path::nativeCase) const;
+  Path find(const std::string& name, bool checkCase, bool checkExt) const;
   Directory up() const;
-  Path relativePathTo( Path path ) const;
+  Path relativePathTo(Path path) const;
   //void Remove();
 
   static Directory current();

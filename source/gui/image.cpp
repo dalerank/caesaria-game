@@ -38,7 +38,7 @@ public:
   Image::Mode mode;
 
 public signals:
-	Signal0<> onClickedSignal;
+  Signal0<> onClickedSignal;
 };
 
 //! constructor
@@ -47,16 +47,16 @@ Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
   _d->mode = Image::fit;
 }
 
-Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int id)
+Image::Image(Widget* parent, const Rect& rectangle, const Picture& pic, Mode mode, int id)
 : Widget( parent, id, rectangle),
-	_d( new Impl )
-{ 
-	_d->mode = mode;
-	if( mode == image )
-	{
-		setWidth( pic.width() );
-		setHeight( pic.height() );
-	}
+  _d( new Impl )
+{
+  _d->mode = mode;
+  if( mode == image )
+  {
+    setWidth( pic.width() );
+    setHeight( pic.height() );
+  }
 
   _d->bgPicture = pic;
 #ifdef _DEBUG
@@ -64,9 +64,9 @@ Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int 
 #endif
 }
 
-Image::Image(Widget* parent, Point pos, const Picture& pic, int id)
-	: Widget( parent, id, Rect( pos, pic.size() ) ),
-		_d( new Impl )
+Image::Image(Widget* parent, const Point& pos, const Picture& pic, int id)
+  : Widget( parent, id, Rect( pos, pic.size() ) ),
+    _d( new Impl )
 {
   _d->mode = Image::image;
 
@@ -148,17 +148,17 @@ void Image::setPicture(const Picture& picture)
 {
   _d->bgPicture = picture;
 
-	if( _d->mode == image )
-	{
-    setWidth( picture.width() );
-    setHeight( picture.height() );
+  if( _d->mode == image )
+  {
+    setWidth(picture.width());
+    setHeight(picture.height());
   }
 }
 
-void Image::setPicture(const string& rc)
+void Image::setPicture(const string& name)
 {
   _d->mode = Image::image;
-  setPicture(Picture(rc));
+  setPicture(Picture(name));
 }
 
 void Image::setPicture(const string& rc, int id)
@@ -172,14 +172,7 @@ void Image::setupUI(const VariantMap& ui)
 
   setPicture( Picture( ui.get( "image" ).toString() ) );
   std::string mode = ui.get( "mode" ).toString();
-  if( mode == "fit" ) { _d->mode = Image::fit; }
-  else if( mode == "image" ) { _d->mode = Image::image; }
-  else if( mode == "native" ) { _d->mode = Image::native; }
-  else if( mode == "center" ) { _d->mode = Image::center; }
-  else if( mode == "best" ) { _d->mode = Image::best; }
-  else { _d->mode = Image::image; }
-
-  setMode(_d->mode);
+  setMode(mode);
 }
 
 void Image::setMode(Image::Mode mode)
@@ -190,6 +183,16 @@ void Image::setMode(Image::Mode mode)
     setWidth( picture().width() );
     setHeight( picture().height() );
   }
+}
+
+void Image::setMode(const std::string & mode)
+{
+  if (mode == "fit") { _d->mode = Image::fit; }
+  else if (mode == "image") { _d->mode = Image::image; }
+  else if (mode == "native") { _d->mode = Image::native; }
+  else if (mode == "center") { _d->mode = Image::center; }
+  else if (mode == "best") { _d->mode = Image::best; }
+  else { _d->mode = Image::image; }
 }
 
 Picture Image::picture() const {  return _d->bgPicture;}

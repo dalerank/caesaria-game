@@ -116,7 +116,7 @@ public:
       state.batch.body.destroy();
       state.icon.picture = Picture::getInvalid();
       state.background = Picture::getInvalid();
-      state.font = Font::create( FONT_2 );
+      state.font = Font::create( "FONT_2" );
     }
   }
 };
@@ -142,7 +142,7 @@ PushButton::PushButton( Widget* parent,
                         const Rect& rectangle,
                         const std::string& caption,
                         int id,
-					              bool noclip,
+                        bool noclip,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
@@ -176,7 +176,7 @@ void PushButton::_updateTexture()
   {
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
-    textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
+    textTxs.fill(NColor(0x00ffffff), Rect( 0, 0, 0, 0 ));
     stFont.draw( textTxs, text(), textRect.lefttop() + _d.text.offset, true, false );
   }
 
@@ -201,7 +201,7 @@ void PushButton::_updateBackground( ElementState state )
   bool fit = false;
   auto& buttonState = d.buttonStates[ state ];
   if( !buttonState.background.isValid() )
-  {    
+  {
     switch( d.bg.style )
     {
     case greyBorderLineSmall:
@@ -302,7 +302,7 @@ void PushButton::setupUI(const VariantMap &ui)
   if( tmp.isValid() )
   {
     BackgroundStyleHelper helper;
-    setBackgroundStyle( helper.findType( tmp.toString() ) );    
+    setBackgroundStyle( helper.findType( tmp.toString() ) );
   }
 
   setIsPushButton( (bool)ui.get( "pushbutton" ) );
@@ -490,22 +490,22 @@ Signal1<Widget*>& PushButton::onClickedEx() { return _dfunc()->signal.onClickedE
 
 bool PushButton::_btnMouseUp( const NEvent& event )
 {
-	bool wasPressed = isPressed();
+  bool wasPressed = isPressed();
 
-	if ( !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
-	{
-		if (!isPushButton())
-			setPressed(false);
-		return true;
-	}
+  if ( !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
+  {
+    if (!isPushButton())
+      setPressed(false);
+    return true;
+  }
 
   setPressed(!isPushButton() ? false : !isPressed());
 
   if( (!isPushButton() && wasPressed ) ||
       (isPushButton() && wasPressed != isPressed()) )
-		_btnClicked();
+    _btnClicked();
 
-	return true;
+  return true;
 }
 
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
@@ -551,12 +551,12 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   }
 
   if( _d.bg.textChanged )
-	{    
-		_updateTexture();
+  {
+    _updateTexture();
     _d.bg.textChanged = false;
-	}
+  }
 
-	Widget::beforeDraw( painter  );
+  Widget::beforeDraw( painter  );
 }
 
 bool PushButton::isBodyVisible() const { return _dfunc()->bg.visible; }
@@ -570,8 +570,8 @@ void PushButton::draw( gfx::Engine& painter )
     return;
 
   __D_REF(_d,PushButton);
-	// todo:	move sprite up and text down if the pressed state has a sprite
-	//			  draw sprites for focused and mouse-over
+  // todo:	move sprite up and text down if the pressed state has a sprite
+  //			  draw sprites for focused and mouse-over
   const ButtonState& state = _d.buttonStates[ _d.state.current ];
 
   if( isBodyVisible() )
@@ -580,7 +580,7 @@ void PushButton::draw( gfx::Engine& painter )
     pipe.draw( state.background )
         .fallback( state.batch.body )
         .fallback( state.batch.fallback );
-	}
+  }
 
   if( _d.text.visible && _d.text.picture.isValid() )
   {
@@ -641,8 +641,7 @@ void PushButton::setFont( const Font& font )
   d.bg.dirty = true;
 }
 
-void PushButton::setFont(const std::string& fname) { setFont( Font::create( fname ) ); }
-void PushButton::setFont(FontType type, NColor color) { Widget::setFont(type,color); }
+void PushButton::setFont(const std::string& fname,NColor color) { setFont( Font::create(fname).withColor(color) ); }
 Picture& PushButton::_textPicture() { return _dfunc()->text.picture; }
 Font PushButton::font( ElementState state ) const {  return _dfunc()->buttonStates[ state ].font; }
 

@@ -40,7 +40,7 @@ public:
     loadConstructor,
     loadMission,
     loadSavedGame,
-    closeApplication,
+    res_close,
     reloadScreen,
     unlknowState=0xff
   } Result;
@@ -51,7 +51,7 @@ public:
   virtual void handleEvent( NEvent& event);
   virtual void setOption(const std::string &name, Variant value);
 
-  virtual void draw();
+  virtual void draw(gfx::Engine& engine);
   virtual void initialize();
   virtual void afterFrame();
 

@@ -40,20 +40,5 @@ private:
   Mode _mode;
 };
 
-class Step : public GameEvent
-{
-public:
-  enum { once=1, day=25 };
-  static GameEventPtr create(unsigned int count);
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  Step(unsigned int count);
-  unsigned int _count;
-};
-
 } //end namespace events
 #endif //_CAESARIA_CHANGE_SPEED_EVENT_H_INCLUDE_

@@ -24,7 +24,8 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/variant_list.cpp"
       "${BASE_SOURCE_DIR}/core/position_array.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
-      "${BASE_SOURCE_DIR}/core/font.cpp"
+      "${BASE_SOURCE_DIR}/font/font.cpp"
+      "${BASE_SOURCE_DIR}/font/font_collection.cpp"
       "${BASE_SOURCE_DIR}/core/color_list.cpp"
       "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
@@ -51,6 +52,7 @@ set( TILESET_DEP_SOURCES_LIST
 )
 
 include_directories( ${BASE_SOURCE_DIR} )
+include_directories( ${BASE_SOURCE_DIR}/include )
 include_directories( ${DEP_DIR} )
 include_directories( ${SDL2MINI_INCLUDE_DIR})
 include_directories( ${PNG_INCLUDE_DIR})

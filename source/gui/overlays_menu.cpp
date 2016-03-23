@@ -50,7 +50,7 @@ signals public:
 
 OverlaysMenu::OverlaysMenu( Widget* parent, const Rect& rectangle, int id )
   : Widget( parent, id, rectangle ), _d( new Impl )
-{ 
+{
   _addButtons( citylayer::all );
 }
 
@@ -120,16 +120,16 @@ void OverlaysMenu::_addButtons(const int type )
   break;
 
   default: break;
-  }  
+  }
 }
 
 void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   PushButton& btn = add<PushButton>( Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
-  btn.setFont( FONT_1 );
+  btn.setFont( "FONT_1" );
   btn.setNotClipped( true );
-  
+
   if( offset.x() != 0 )
     _d->buttons.push_back( &btn );
 }
@@ -179,7 +179,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     case guiButtonClicked:
       {
         _d->buttons.reset();
-                
+
         emit _d->onSelectOverlayTypeSignal( event.gui.caller->ID() );
         hide();
       }
@@ -188,7 +188,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     default:
     break;
     }
-  } 
+  }
 
   if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
   {
