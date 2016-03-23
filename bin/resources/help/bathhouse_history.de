@@ -1,8 +1,8 @@
-{  
+{
  title : "##baths##"
  sound : "fanfare"
  text  : "Die römischen Bäder dienten nicht allein der Reinigung. Sie waren Zentren für Unterhaltung, Gesundheit und Gesellschaft, so wie heute Sportclubs. Die größten Badehäuser belegten eine Fläche von 30 Morgen und boten gleichzeitig 1600 Menschen in großen gewölbten Hallen oder kleinen, abgeschirmten Kammern Platz. Die römischen Bäder waren verschwenderisch ausgestattet Einrichtungen mit verspiegelten Wänden, Mosaikböden und marmornen Schwimmbecken. Sklaven bewegten sich zur Erfüllung ihrer Aufgaben durch kilometerlange Tunnels unterhalb des Fußbodens, damit die Badenden nicht gestört wurden, waren jedoch immer in Reichweite, um jeden Wunsch zu erfüllen. Bäder waren nach Geschlechtern getrennt.\nNach dem Betreten zahlt der Bürger in der Haupthalle eine Gebühr, entkleidete sich in einem Umkleideraum und überließ die Gewänder seinem Sklaven. Sodann konnte er auf dem Sportplatz einer schweißtreibenden Vergnügung nachgehen. Wenn er davon genug hatte, begab er sich erst in das Kaltwasserbecken ('Frigidarium'), dann in Wärmeraum ('Tepidarium'), Heißraum ('Caldarium') und Dampfraum ('Sudatorium') - traditionell in dieser Reihenfolge oder je nach persönlicher Vorliebe. Nach dem Bad besuchte er die 'Unctuaria', wo seine Haut geschrubbt und gesalbt wurde. Nun, gründlich gereinigt und entspannt, konnte er weitere Abwechslung in Leseräumen, Spielsalons, Gast- und Weinstuben und sogar Theatern, Kunstgalerien und Museen finden.\nReichere Römer machten private Bäder zum Mittelpunkt ihrer Häuser. Die Villen verfügten über Öfen, die vor allem zur Heißwasserversorgung ihrer Bäder dienten. Männer badeten manchmal in Wein, Frauen in Milch. Selbst die ständigen @Forts& in den entlegensten Winkeln des Imperiums hatten Bäder für die dort stationierten Soldaten.\nDie meisten Bäder waren zwar kostenlos, jedoch erhoben die besseren eine kleine Gebühr, um die Sklaven und Armen fernzuhalten. Die Bäder wurden mit öffentlichen Geldern oder aus der Privatkasse des Kaisers erbaut, um sich das Wohlwollen der Bürger zu erhalten."
  uri : {
   "Forts" : "fort_history"
-  }
+ }
 }

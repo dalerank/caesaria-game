@@ -1,10 +1,10 @@
-{  
+{
  title : "##iron_mine_help##"
  sound : "fanfare"
  text  : "Legen Sie eine Eisenerzmine an, um Erz für den Export abzubauen oder um selbst @Waffen& herstellen zu können. Eisenminen müssen stets in felsigem Gebiet angelegt werden.\nWie die meisten Gewerbebetriebe gehören auch die der Eisenerzgewinnung in Wohngebieten zu den unerwünschten Nachbarn. Eisenerzminen benötigen Zugang zum lokalen Arbeitsmarkt und Straßenanbindung zu Waffenschmieden oder Lagerhäusern. Wenn ein Karren mit Eisenerz gefüllt ist, bringt ein @Arbeiter& die LAdung zur nächsten Schmiede, falls dort noch Platz ist. Wenn alle Produktionsstätten vollständig versorgt sind oder nicht funktionierenm gelangt das Eisen in das nächste @Lagerhaus& mit freiem Platz, von wo aus Sie es exportieren können, wenn Sie über die entsprechende @Handelsroute& verfügen. Eisenerzminen zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Mine rechts an, um sich deren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat.\n\nKlicken Sie @hier&, wenn Sie mehr über die Einsenerzgewinnung im römischen Imperium erfahren möchten."
  uri : {
   "Waffen" : "weapons_workshop"
-  "Arbeiter" : "Arbeiter??"
+  "Arbeiter" : "worker"
   "Lagerhaus" : "warehouse"
   "Handelsroute" : "trade"
   "hier" : "iron_mine_history"

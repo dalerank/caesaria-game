@@ -1,10 +1,10 @@
-{  
+{
  title : "##colosseum##"
  sound : "fanfare"
  text  : "Das Kolosseum war für das alte Rom so bedeutend wie der Eifelturm für Paris, die Freiheitsstatue für New York oder der Big Ben für London. Der Bau wurde 70 n. Chr. an der Stelle begonnen, an der einst Neros verhasstes @Domus& Aureleus gestanden hatte. In dem Bestreben, die bösen Erinnerungen an seinen unbeliebten Vorgänger auszulöschen, legte Kaiser Vespasian Neros künstlichen See trocken und ordnete den Bau des flavischen Amphitheaters an (Vesoasians Familienname lautete Flavius), um den Bürgern von Rom kostenloses Spiele zu können. Dieses @Amphitheater& erhielt dann wegen der Nähe zu Neros gigantischer Statue den im Volksmund gebräuchlichen Namen @Colossus& Neronis. Der Name blieb erhalten, selbst nachdem die Statue schon lange entfernt worden war. Nach der Vollendung des Kolosseums durch Vespasians Sohn Titus im Jahre 80 n. Chr. wurden dort an 100 aufeinanderfolgenden Tagen kostenlose Spiele ausgetragen. Das Kolosseum bot 50.000 Römern Platz, die dort Gladiatorenkämpfe, Kämpfe mit wilden Tieren, Kriegsspiele und sogar nachgestellte Seeschlachten bewunderten, für die Das Amphitheater komplett geflutet werden konnte. Nach den Spielen konnte die gesamte Menge das Theater durch 80 Ausgänge innerhalb von fünf Minuten verlassen. Erfahrene Seeleute wurden für die Überdachungsvorrichtung aus Segeltuch eingesetzt, die im Bedarefsfall die meisten Sitze vor Regen oder Sonne schützen konnte. Unterhalb der Arena befand sich ein Labyrinth aus Kammern, Käfigen und Gängen für Tiere und Gefangene."
  uri : {
   "Domus" : "governorHouse"
   "Amphitheater": "amphitheater"
-  "Colossus" : "Statuen??"
+  "Colossus" : "statuary"
  }
 }
