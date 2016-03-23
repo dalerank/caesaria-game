@@ -5,7 +5,7 @@
  uri : {
   "Handel" : "trade"
   "Kriminalität" : "crime"
-  "Bevölkerung und Stimmung" : "Bevölkerung und Stimmung??"
+  "Bevölkerung und Stimmung" : "population_and_mood"
   "Finanzberater" : "finance_advisor"
   "Forum" : "forum"
   "Senat" : "senate"

@@ -7,9 +7,9 @@
   "Silos" : "granary"
   "Werft" : "shipyard"
   "Kai" : "wharf"
-  "Weizen" : "Weizenfarm??"
-  "Fleisch" : "Fleisch, Obst und Gemüse??"
+  "Weizen" : "wheat_farm"
+  "Fleisch, Obst und Gemüse" : "meat_farm"
   "Handel" : "trade"
-  "hier" : "Landwirtschaft (geschichte)??"
+  "hier" : "farm_history"
  }
 }

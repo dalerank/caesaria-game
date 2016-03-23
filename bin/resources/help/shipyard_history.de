@@ -3,6 +3,6 @@
  sound : "fanfare"
  text  : "Seltsamerweise fuhren die Römer nur ungern zur See, obwohl ihre Stadt an einem großen Fluss lag und sich das Imperium über ein großes Meer erstreckte. Küstenfischerei in kleinem Rahmen war sogar während der Eroberung Italiens bereits das Höchstmaß ihrer maritimen Aktivitäten. Kriegsflotten wurden je nach Bedarf zusammengestellt - in den Punischen Kriegen stand Rom Carthago, einer großen Seemacht, gegenüber - jedoch in Friedenszeiten nicht weiter unterhalten. Rom eroberte sich das Mittelmeer erst, als die Bedürfnisse des Imperiums eine große Handelsflotte und Kriegsschiffe, die sich vor Piraten schützen sollten, erforderlich machten.\nHandelsschiffe waren dabei für das Kaiserreich möglicherweise sogar von größerer Bedeutung als Kriegsschiffe. Sie wurden nach den im Mittelmeerraum gebräuchlichen Traditionen gebaut, die noch von den Griechen stammten und in schwerfälligen, bauchigen Fahrzeugen resultierten, die zwar stabil und seetauglich, jedoch auch langsam und schwer zu manövrieren waren. Frachtschiffe besaßen alle dieselbe Grundform, wurden jedoch in Größen von 20 Tonnen (als gewöhnliche Frachter) bis 600 Tonnen (als @Weizentransporter&) gebaut."
  uri : {
-  "Weizentransporter" : "Getreideanbau (historie)??"
+  "Weizentransporter" : "wheat_farm_history"
  }
 }
