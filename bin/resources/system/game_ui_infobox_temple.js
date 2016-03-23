@@ -64,8 +64,8 @@ game.ui.infobox.aboutTemple = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256)
   ibox.blackFrame.geometry = {x:16, y:56, w:510, h:62}
 
-  var overlay = g_session.city.getOverlay(location)
-  if (overlay.typename == "oracle") {
+  var temple = g_session.city.getOverlay(location).as(Temple)
+  if (temple.typename == "oracle") {
     ibox.title = _u("oracle")
     ibox.lbText.text = _u("oracle_info")
   } else {

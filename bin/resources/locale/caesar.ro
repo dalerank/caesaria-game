@@ -1,6 +1,7 @@
 {"##some_food_on_next_month##":"- Ai puțină mâncare pentru luna următoare",
 "##have_no_food_on_next_month##":"- Nu mai ai mâncare pentru luna următoare",
 "##small_food_on_next_month##":"- Foarte puțină hrană pentru luna următoare",
+"##build_your_rom##":"Regiune aleatoare",
 "##city_barbarian_off_tlp##":"Barbarii nu vor ataca orașul tău",
 "##city_barbarian_off##":"Barbari : OPRIT",
 "##city_barbarian_on##":"Barbari : PORNIT",

@@ -7,3 +7,5 @@
 #include "objects/fort.hpp"
 #include "objects/infodb.hpp"
 #include "objects/house_spec.hpp"
+#include "objects/religion.hpp"
+#include "objects/objects_factory.hpp"

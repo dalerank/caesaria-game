@@ -29,6 +29,7 @@
 #include <GameCity>
 #include <GameWorld>
 
+#include "religion/divinities.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
 
@@ -38,6 +39,7 @@ using namespace city;
 using namespace world;
 using namespace gfx;
 using namespace vfs;
+using namespace religion;
 
 namespace script
 {
@@ -224,6 +226,7 @@ PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
 PUSH_USERDATA_SMARTPTR(Overlay)
 PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Divinity)
 PUSH_USERDATA(Emperor)
 
 PUSH_USERDATA_WITHNEW(Path)
@@ -278,8 +281,8 @@ inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, 
 inline Point engine_js_to(js_State *J, int n, Point) { return Point( js_toint32(J, n), js_toint32(J, n+1) );}
 inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
-inline TilePos engine_js_to(js_State *J, int n, TilePos) 
-{ 
+inline TilePos engine_js_to(js_State *J, int n, TilePos)
+{
   if (js_isobject(J, n))
   {
     js_getproperty(J, n, "i");
@@ -475,7 +478,7 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
 }
 
 template<typename T>
-void desctructor_jsobject(js_State *J, void* p)
+void destructor_jsobject(js_State *J, void* p)
 {
   T* ptr = (T*)p;
   delete ptr;
@@ -486,7 +489,7 @@ void constructor_jsobject(js_State *J)
 {
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", new T(), &desctructor_jsobject<T>);
+  js_newuserdata(J, "userdata", new T(), &destructor_jsobject<T>);
 }
 
 template<typename T>
@@ -622,6 +625,25 @@ void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
     js_pushundefined(J);
 }
 
+template<class T>
+void reg_overlay_constructor(js_State *J, const std::string& name)
+{
+  T* ov;
+  if (js_isstring(J,1))
+  {
+    std::string name = js_tostring(J, 1);
+    ov = safety_cast<T*>(TileOverlayFactory::instance().create(name).object());
+  }
+  else if(js_isuserdata(J, 1, "userdata"))
+  {
+    ov = (T*)js_touserdata(J, 1, "userdata");
+  }
+
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", safety_cast<T*>(ov), nullptr);
+}
+
 void reg_widget_constructor(js_State *J, const std::string& name)
 {
   Widget* widget = nullptr;
@@ -650,7 +672,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 }
 
 
-#define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { desctructor_jsobject<name>(J,p); }
+#define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { destructor_jsobject<name>(J,p); }
 #define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
 #define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) { auto p=&name::funcname; object_call_func_0<name>(J,p); }
 
@@ -772,6 +794,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
 #define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
+#define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
 
 #include "widget.implementation"
 #include "menu.implementation"
@@ -792,6 +815,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "picture.implementation"
 #include "city.implementation"
 #include "overlay.implementation"
+#include "religion.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
@@ -829,6 +853,7 @@ void Core::registerFunctions(Game& game)
 #include "picture.interface"
 #include "city.interface"
 #include "overlay.interface"
+#include "religion.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function
