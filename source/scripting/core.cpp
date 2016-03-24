@@ -672,9 +672,9 @@ void reg_divinity_constructor(js_State *J)
 }
 
 template<class T>
-void reg_overlay_constructor(js_State *J)
+void reg_overlay_constructor(js_State *J, const std::string& tname)
 {
-  T* ov;
+  T* ov = nullptr;
   if (js_isstring(J,1))
   {
     std::string name = js_tostring(J, 1);
@@ -682,7 +682,11 @@ void reg_overlay_constructor(js_State *J)
   }
   else if(js_isuserdata(J, 1, "userdata"))
   {
-    ov = (T*)js_touserdata(J, 1, "userdata");
+    auto ptr = (Overlay*)js_touserdata(J, 1, "userdata");
+    ov = safety_cast<T*>(ptr);
+
+    if (!ov && ptr)
+      Logger::warning("Cant convert {} to {}", ptr->info().typeName(), tname);
   }
 
   js_currentfunction(J);
@@ -840,7 +844,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_CONSTRUCTOR(name) { auto p = &constructor_##name; reg_object_constructor(#name, p); }
 #define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
-#define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J); }
+#define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.implementation"

@@ -40,7 +40,6 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_STATICINFOBOX(elevation,"", "##elevation_info##" )
 REGISTER_OBJECT_STATICINFOBOX(aqueduct,"", "##aqueduct_info##")
 REGISTER_OBJECT_STATICINFOBOX(garden,"", "##garden_info##")
 REGISTER_OBJECT_STATICINFOBOX(statue_small,"", "##statue_small_info##")

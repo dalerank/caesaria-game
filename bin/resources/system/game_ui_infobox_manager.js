@@ -9,6 +9,10 @@ game.ui.infobox.show = function(typename,location)
   case "oracle":
     game.ui.infobox.aboutTemple(location)
   break;
+
+  case "roadBlock": case "elevation":
+    game.ui.infobox.aboutObject(typename)
+  break;
   }
 }
 
