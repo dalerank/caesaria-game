@@ -1,0 +1,8 @@
+{
+ title : "##prefecture##"
+ sound : "fanfare"
+ text  : "Die polizeiliche Kontrolle der Stadt war ein heikles Unterfangen. Der 'Praefectus Uri', dessen Aufgaben denen eines Bürgermeisters entsprachen, leitete eine Gruppe 'Ädile', die ihrerseits Patrouillen von Wach- und Feuerwehrleuten organisierten.\nStraßenbeleuchtungen gab es kaum, und die Straßen waren bei Nacht nur etwas für Abenteuerlustige. Schlägereien erregten kaum Aufsehen, wenn sie nicht gerade in Mord ausarteten oder Prominente darin verwickelt waren. Aufstände waren an der Tagesordnung. Die Kaiser neigten dazu, bürgerliche Streitigkeiten sich selbst zu überlassen, stationierten jedoch zahlreiche Truppen in der Nähe der Stadt, um eventuelle Aufstände im Keim ersticken zu können.\nFeuer waren da schon eine ernstere Gefahr. Die Die Insulae mit ihrer hölzernen Obergeschossen wurden in großen Blöcken ohne Feuermauern zwischen den einzelnen Wohnungen gebaut, und die Römer pflegten mit offenen Feuerstellen zu heizen, zu kochen und Licht zu erzeugen. Die Bürger reagierten blitzschnell, sobald ein Feuer gemeldet wurde, und bildeten Eimerketten zum nächsten @Brunnen&. Sachschäden waren naturgemäß groß, egal wie schnell ein Feuer bekämpft werden konnte.\nRoms heftigste Feuersbrunst ereignete sich 64 n. Chr. während Neros Herrschaft. Die Historiker streiten sich darüber, ob Nero tatsächlich dazu sang, als Rom brannte. Die meisten glauben zwar, dass der Kaiser die Brandstiftung selbst befohlen hatte - die Sachlage ist jedoch strittig. Das Feuer hätte jedenfalls nicht einmal dann eingedämmt werden können, wenn man jedem einzelnen Römer einen Wassereimer in die Hand gedrückt hätte. Bis zu zwei Drittel der Stadt wurden zerstört."
+ uri : {
+  "Brunnen" : "fountain_history"
+ }
+}

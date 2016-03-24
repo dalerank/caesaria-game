@@ -1,0 +1,14 @@
+{
+ title : "##meat_fruit_and_vegetables##"
+ sound : "fanfare"
+ text  : "@Weizen& ist das Grundnahrungsmittel auf dem Speiseplan Ihrer Bevölkerung, doch sind zusätzliche Nahrungsmittel, wie z.B. Fleisch, Gemüse und Obst, wichtig für die allgemeine Gesundheit und Zufriedenheit. Zusätzlich angebaute Feldfrüchte sind gewöhnlich gewinnbringendere Exportartikel als Weizen. Das Klima in Ihrer Provinz lässt es jedoch vielleicht nicht zu, alle diese Nahrungsmittel herzustellen. Das bedeutet, dass Sie einige davon importieren müssen, damit Ihre Bürger zufrieden sind. Folgen Sie diesem Querverweis, wenn Sie detaillierte Informationen über die Rolle, die @Nahrungsmittel und Landwirtschaft& spielen, haben möchten.\nDie meisten Farmen sind unerwünschte Nachbarn und senken den Wert der in der Nähe gelegenen Wohngebiete, Obstfarmen jedoch sind hübsch anzuschauen und die Menschen leben gerne neben ihnen. Sämtliche Farmen können nur auf Ackerland gebaut werden, das an den gelben Halmen auf der Karte zu erkennen ist. Wenn Sie einen Farmtyp mit dem Gebäude-Button ausgewählt haben, wechselt der Mauszeiger zu einer grünen, schemenhaften Darstellung einer Farm, sobald sich der Zeiger über fruchtbarem Land befindet.\nFarmen brauchen Zugang zum lokalen Arbeitsmarkt und Straßenanbindung zu einem @Silo&. Wenn die Ernte eingebracht ist, schiebt ein Farmer den vollen Karren zum nächsten Silo, falls es noch Platz hat, oder zu einem @Lagerhaus&, wenn das Silo voll ist. Nahrungsmittel, die zu einem Silo gebracht wurden, werden von den @Markthändlerinnen& an die Bevölkerung verteilt, während die an ein Lagerhaus gelieferten Lebensmittel exportiert werden können, sofern Sie dafür eine offene Handelsroute haben. Solange die Farm arbeitet, können Sie die Feldfrüchte auf den Feldern wachsen sehen. Klicken Sie eine Farm rechts an, wenn Sie Informationen bezüglich ihrer Produktivität erhalten möchten.\n\nFolgen Sie den Querverweisen, wenn Sie mehr über die historische Rolle von @Fleisch& oder @Obst und Gemüse& im römischen Imperium lesen möchten."
+ uri : {
+  "Weizen" : "wheat_farm"
+  "Nahrungsmittel und Landwirtschaft" : "food_and_farming"
+  "Silo" : "granary"
+  "Lagerhaus" : "warehouse"
+  "Markthändlerinnen" : "market"
+  "Fleisch" : "meat_farm_history"
+  "Obst und Gemüse" : "fruit_farm_history"
+ }
+}

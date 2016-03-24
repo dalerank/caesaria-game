@@ -2,6 +2,7 @@
 var game = {}
 game.ui = {}
 game.ui.dialogs = {}
+game.ui.infobox = {}
 game.sound = {}
 
 /********************** namespace level **********************************/

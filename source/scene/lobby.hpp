@@ -40,7 +40,7 @@ public:
     loadConstructor,
     loadMission,
     loadSavedGame,
-    closeApplication,
+    res_close,
     reloadScreen,
     unlknowState=0xff
   } Result;

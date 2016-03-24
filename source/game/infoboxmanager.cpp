@@ -25,6 +25,7 @@
 #include "objects/constants.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
+#include "events/script_event.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
 #include "gui/infobox_working.hpp"
 #include "core/common.hpp"
@@ -39,7 +40,6 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_STATICINFOBOX(elevation,"", "##elevation_info##" )
 REGISTER_OBJECT_STATICINFOBOX(aqueduct,"", "##aqueduct_info##")
 REGISTER_OBJECT_STATICINFOBOX(garden,"", "##garden_info##")
 REGISTER_OBJECT_STATICINFOBOX(statue_small,"", "##statue_small_info##")
@@ -105,7 +105,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
     Logger::debug( "Tile debug info: dsrbl={}", tile.param( Tile::pDesirability ) );
   }
 
-  type = object::typeOrDefault( overlay );
+  type = object::typeOrDefault(overlay);
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
@@ -124,6 +124,12 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
     infoBox->setPosition( pos );
     infoBox->setFocus();
     infoBox->setWindowFlag( Window::fdraggable, !_d->boxLocked );
+  }
+
+  if (!infoBox && type != object::unknown)
+  {
+    VariantList vl; vl << pos;
+    events::dispatch<events::ScriptFunc>("OnShowOverlayInfobox", vl);
   }
 }
 

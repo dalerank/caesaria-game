@@ -1,33 +1,42 @@
-var g_config = {
-  level: {
+var g_config = {}
+
+g_config.level = {
     res_menu: 0,
     res_restart: 2
-  },
+}
 
-  audio: {
+g_config.lobby = {
+    res_close:5
+}
+
+g_config.audio = {
     theme: 2,
     speech: 4
-  },
+}
 
-  climate: {
+g_config.climate = {
     central: 0,
     northen: 1,
     desert: 2
-  },
+}
 
-  gift: {
+g_config.gift = {
     modest: 1,
     generous: 2,
     lavish: 3
-  },
+}
 
-  metric: {
+g_config.metric = {
     none: 0,
     modern: 1,
     roman: 2
-  },
+}
 
-  advisor: {
+g_config.rc = {
+    panel : "paneling"
+}
+
+g_config.advisor = {
     none: 0,
     employers: 1,
     military: 2,
@@ -42,9 +51,9 @@ var g_config = {
     finance: 11,
     main: 12,
     unknown: 13
-  },
+}
 
-  layer : {
+g_config.layer = {
     simple : 0,
     water : 1,
     fire : 2,
@@ -69,11 +78,10 @@ var g_config = {
     commerce : 29, tax : 30, market : 31, sentiment : 32, unemployed : 33, comturnover : 34,
     build : 35, destroyd : 36, constructor : 37,
     products : 38
-  },
+}
 
-  saves : {
+g_config.saves = {
     ext : ".oc3save",
     fast : "_fastsave",
     auto : "_autosave",
-  }
 }

@@ -140,11 +140,6 @@ sim.ui.dialogs.showCitySettings = function() {
   }, {
     base: "city_buildoverdraw",
     states: ["off", "on"],
-    group: "draw",
-    flag: "overdrawOnBuild"
-  }, {
-    base: "city_buildoverdraw",
-    states: ["off", "on"],
     group: "city",
     flag: "showGodsUnhappyWarn"
   }, {
@@ -180,7 +175,7 @@ sim.ui.dialogs.showCitySettings = function() {
   },*/ {
     base: "city_mapmoving",
     states: ["lmb", "mmb"],
-    group: "draw",
+    group: "game",
     flag: "mmbMoving"
   }, {
     base: "city_chastener",
@@ -210,7 +205,7 @@ sim.ui.dialogs.showCitySettings = function() {
   }, {
     base: "city_border",
     states: ["off", "on"],
-    group: "draw",
+    group: "game",
     flag: "borderMoving"
   }, {
     base: "city_forest_fire",

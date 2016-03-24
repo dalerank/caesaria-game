@@ -171,7 +171,12 @@ void Window::addCloseCode(int code)
     closers = list.front();
 
   if (closers != nullptr)
+  {
     closers->addCloseCode(code);
+    auto modalScreen = safety_cast<ModalScreen*>(parent());
+    if (modalScreen)
+      modalScreen->installEventHandler(closers);
+  }
 }
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
@@ -403,8 +408,12 @@ void Window::setBackground(Window::BackgroundType type)
 
 void Window::setModal()
 {
-  ModalScreen* mdScr = new ModalScreen( parent() );
-  mdScr->addChild( this );
+  ModalScreen* mdScr = new ModalScreen(parent());
+  mdScr->addChild(this);
+
+  auto list = findChildren<WidgetClosers*>();
+  for (auto closer : list)
+    mdScr->installEventHandler(closer);
 }
 
 void Window::setFont(const Font& font)

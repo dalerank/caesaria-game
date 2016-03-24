@@ -126,12 +126,12 @@ public:
   //!
   virtual void setIcon(const std::string& rc, int index);
 
-  virtual void setIconOffset( const Point& offset );
+  virtual void setIconOffset(const Point& offset);
 
 
   //!
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fontname, NColor color=NColor());
+  virtual void setFont(const Font& font );
+  virtual void setFont(const std::string& fontname, NColor color=NColor());
 
   virtual void setAlpha(unsigned int value);
 

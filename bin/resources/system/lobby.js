@@ -326,7 +326,7 @@ lobby.ui.mainmenu.showpage = function()
   if (dlc.exist())
      lobby.ui.addButton("##mainmenu_mcmxcviii##", function() { lobby.ui.options.showdlc() } )
 
-  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(5); } );
+  lobby.ui.addButton("##mainmenu_quit##",         function() { g_session.setMode(g_config.lobby.res_close); } );
 }
 
 lobby.start = function()

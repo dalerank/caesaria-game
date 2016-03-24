@@ -166,6 +166,7 @@ void FontCollection::initialize(const vfs::Directory& resourcePath, const std::s
   _addFont( "FONT_2_WHITE",absolutFontfilename, 18, false, false, ColorList::white );
   _addFont( "FONT_2_YELLOW",absolutFontfilename,18, false, false, ColorList::yellow );
   _addFont( "FONT_3",      absolutFontfilename, 20, false, false, ColorList::black );
+  _addFont( "FONT_3_WHITE",absolutFontfilename, 20, false, false, ColorList::white );
   _addFont( "FONT_4",      absolutFontfilename, 24, false, false, ColorList::black );
   _addFont( "FONT_5",      absolutFontfilename, 28, false, false, ColorList::black);
   _addFont( "FONT_6",      absolutFontfilename, 32, false, false, ColorList::black);

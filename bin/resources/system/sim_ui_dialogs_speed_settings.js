@@ -20,7 +20,7 @@ sim.ui.dialogs.showSpeedOptions = function()
         sim.timescale.value = value
     }
 
-    var spnScrollSpeed = w.addSpinbox(28, 60, w.w-28*2, 24);
+    var spnScrollSpeed = w.addSpinbox(28, 90, w.w-28*2, 24);
     spnScrollSpeed.text = "##gmspdwnd_scroll_speed##";
     spnScrollSpeed.postfix = " %";
     spnScrollSpeed.value = saveScroolSpeed;
@@ -32,7 +32,7 @@ sim.ui.dialogs.showSpeedOptions = function()
         g_session.setAdvflag("scrollSpeed",value)
     }
 
-    var spnAutpsaveInterval = w.addSpinbox(28, 60, w.w-28*2, 24);
+    var spnAutpsaveInterval = w.addSpinbox(28, 120, w.w-28*2, 24);
     spnAutpsaveInterval.text = "##gmspdwnd_autosave_interval##";
     spnAutpsaveInterval.postfix = " m.";
     spnAutpsaveInterval.range = { min: 0, max: 12, step: 1 }

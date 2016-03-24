@@ -78,6 +78,8 @@ void BuildAny::_exec( Game& game, unsigned int )
 
     if( !buildOk )
     {
+      if (!_overlay->errorDesc().empty())
+        events::dispatch<WarningMessage>(_overlay->errorDesc(), 1);
       Logger::info( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
       return;
     }

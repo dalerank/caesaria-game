@@ -1,13 +1,13 @@
-{  
+{
  title : "##house##"
  sound : "fanfare"
  text  : "Die ersten römischen Häuser waren einfache Lehmhütten, doch als Rom vom Bauernhof zu einer Stadt mit einer Million Einwohnern avancierte, hielt der Wohnungsbau mit dieser Entwicklung Schritt. Villen, die ersten wirklich komfortablen Behausungen in Europa, waren in den Provinzen bald weit verbreitet, auch wenn sich in Rom selbst nur zwei von zehn Einwohnern eine Villa leisten konnten. Typische Villen besaßen gemauerte Wände, Mosaikböden, Säulengänge, fließendes Wasser und hochentwickelte @Bäder&. Zentrale Heizungssysteme unter dem Boden hielten Kälte und Feuchtigkeit aus Räumen fern und lieferten heißes Wasser. Größere Villen wurden um einen Hof mit einem @Brunnen& oder Zierbecken errichtet und mit @Statuen& und Säulen umgeben.\nSelbst die schönsten Villen waren nur spärlich möbliert und enthielten lediglich ein paar Stühle, Hocker und Betten aus Holz. Die Speiseräume waren mit einem niedrigen Tisch in der Mitte eingerichtet, und das Essen wurde auf Kissen liegend eingenommen. Trinkschalen aus Glas und hochwertige 'Samische' @Töpferwaren& füllten die Schränke, und einige Haushalte benutzen sogar Gegenstände aus Silber. Mit wohlriechendem @Olivenöl& gefüllte Lampen erhellten jene die Nacht, die es sich leisten konnten. Römer, deren Tage nicht bei Sonnenuntergang endeten, benutzten normalerweise billige, rußende Kerzen zur Beleuchtung.\nDie reichsten Römer bauten palastartige Landhäuser auf sich ständig vergrößerndem Grundbesitz mit vielen Gebäuden, hübschen Parks und @Gärten&. Die 80 Prozent der Römer, die zwar nach Hausbesitz strebten, diesen Traum aber nicht verwirklichen konnten, mieteten sich Wohnungen in überfüllten Wohnblocks (Insulae) mit bis zu sieben Stockwerken - Aufzüge gab es nicht. Aufgrund der Steinbauweise war das Erdgeschoss am begehrtesten und auch am teuersten und wurde normalerweise an Geschäfte vermietet. Jedes weitere Stockwerk wurde mit immer mehr Holz und immer weniger Steine gebaut, wodurch es leichter wurde und einfacher zu errichten war. Die obersten Stockwerke waren ziemlich instabil sowie den Unbilden des Wetters ausgesetzt und es bestand größte Einsturz- sowie Feuergefahr, denn in der ganzen Stadt wurden zum Heizen, Kochen und Beleuchten offene Feuerstellen verwendet."
  uri : {
   "Bäder" : "bathhouse_history"
   "Brunnen" : "fountain_history"
-  "Statuen" : "statue (Statuen Geschichte)??"
-  "Töpferwaren" : "Töpferwaren (Geschichte)??"
-  "Olivenöl" : "Olivenöl (Geschichte)??"
+  "Statuen" : "statuary"
+  "Töpferwaren" : "pottery_history"
+  "Olivenöl" : "oil_history"
   "Gärten" : "garden_plaza"
  }
 }

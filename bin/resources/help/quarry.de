@@ -1,8 +1,8 @@
-{  
+{
  title : "##quarry##"
  sound : "fanfare"
  text  : "Auch wenn Marmor im Mittelmeerraum nicht unbedingt selten ist, sind kommerziell nutzbaren Gesteinsadern mit architektonisch wertvollem Marmor ausgesprochen schwer zu finden. Marmor ist eine wertvolle Handelsware und entsprechend teuer zu importieren.\nOrakle und große Tempel benötigen Marmor jedoch zu ihrer Herstellung. Sie brauchen zwei Karrenlieferungen Marmor aus Ihren Lagerhäusern, um eins dieser Gebäude errichten zu können.\n\nMarmorsteinbrüche müssen in felsigem Gebiet angelegt werden. Sie brauchen Straßenanbindung zum Arbeitsmarkt, um funktionieren zu können, und wenn es soweit ist, bringen die Arbeiter des Steinbruchs die Steine zum nächstgelegen Warenhaus mit freiem Platz.\nMarmorsteinbrüche sind unerwünschte Nachbarn. Im Gegensatz zu den übrigen Rohstoffen muss Marmor jedoch nicht in einer Produktionsstätte weiterverarbeitet werden.\n\nKlicken Sie @hier&, wenn Sie mehr über die Marmorgewinnung im römischen Imperium erfahren möchten."
  uri : {
-  "hier" : "Marmorsteinbruch (Geschichte)??"
+  "hier" : "quarry_history"
  }
 }

@@ -1,9 +1,9 @@
 DEF_GLOBAL_OBJECT(engine)
-  REGISTER_FUNCTION(engineLog,"log",1);
-  REGISTER_FUNCTION(engineLoadModule,"loadModule",1);
-  REGISTER_FUNCTION(engineTranslate,"translate",1);
-  REGISTER_FUNCTION(engineGetOption,"getOption",1);
-  REGISTER_FUNCTION(engineSetOption,"setOption",1);
-  REGISTER_FUNCTION(engineSetVolume,"setVolume",2);
-  REGISTER_FUNCTION(engineLoadArchive, "loadArchive", 2);
+  REGISTER_FUNCTION(engine_js_Log,"log",1);
+  REGISTER_FUNCTION(engine_js_LoadModule,"loadModule",1);
+  REGISTER_FUNCTION(engine_js_Translate,"translate",1);
+  REGISTER_FUNCTION(engine_js_GetOption,"getOption",1);
+  REGISTER_FUNCTION(engine_js_SetOption,"setOption",1);
+  REGISTER_FUNCTION(engine_js_SetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engine_js_LoadArchive, "loadArchive", 2);
 REGISTER_GLOBAL_OBJECT(engine)

@@ -148,7 +148,7 @@ PushButton::PushButton( Widget* parent,
 {
   setDebugName( TEXT(PushButton) );
 
-  setBackgroundStyle( bgStyle );
+  setBackgroundStyle(bgStyle);
   setTextAlignment( align::center, align::center );
 
   setText( caption );

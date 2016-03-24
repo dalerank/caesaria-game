@@ -1,11 +1,11 @@
-{  
+{
  title : "##fort##"
  sound : "fanfare"
  text  : "In Forts sind die Legionen untergebracht, die Ihre Stadt vor Eindringlingen schützen.\nWenn Sie ein neues Fort errichten, werden Sie gefragt, ob es für Legionäre, berittene Hilfstruppen oder speertragende Hilfstruppen sein soll. Weitere Informationen über diese Waffengattungen erhalten Sie unter @Frieden und Krieg&.\nWenn es in Ihrer Stadt eine aktive @Kaserne& gibt, werden die Soldaten nach Abschluss ihrer Ausbildung zu dem neuen Fort marschieren. Sobald 16 Soldaten auf dem Exerzierplatz des Forts strammstehen, hat die Legion ihre volle Truppenstärke erreicht. Die Legionen ziehen es vor, in Ihren Forts zu bleiben, wenn ihre Dienste nicht erforderlich sind. Und nach einem Kampf wollen sie unbedingt zu ihrem Fort zurückkehren. Gesundheit und Moral der Soldaten verbessern sich Stück für Stück, wenn sie in ihrem Fort sind, und auch alle im Kampf erlittenen Verluste werden dort wieder ausgeglichen. Konsultieren Sie Ihren @Militärberater&, wenn Sie Ihre Truppen inspizieren möchten.\nEine Provinz kann höchstens sechs Forts unterhalten. Durch die Lärmentwicklung und die Gefahr, die von ihnen ausgeht, beeinträchtigen Forts die Attraktivität der Umgebung mehr als jedes andere Gebäude. Errichten Sie sie daher besser außerhalb Ihrer Stadt. Forts benötigen keine Straßenanbindung und können weder einstürzen noch in Brand geraten.\n\nKlicken Sie @hier&, wenn Sie eine kurze Geschichte der römischen Forts lesen möchten."
  uri : {
   "Frieden und Krieg" : "peace_and_war"
   "Kaserne" : "barracks"
-  "Militärberater" : "military_advisor"
+  "Militärberater" : "legion_advisor"
   "hier" : "fort_history"
  }
 }

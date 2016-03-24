@@ -1,6 +1,7 @@
 SCRIPT_OBJECT_BEGIN(Image)
   SCRIPT_OBJECT_FUNCTION(Image,deleteLater,0)
   SCRIPT_OBJECT_FUNCTION(Image,setPicture_str,1)
+  SCRIPT_OBJECT_FUNCTION(Image,setMode,1)
   SCRIPT_OBJECT_FUNCTION(Image,setPicture_pic,1)
   SCRIPT_OBJECT_FUNCTION(Image,setPicture_rcIndex,2)
   SCRIPT_OBJECT_FUNCTION(Image,setGeometry,2)

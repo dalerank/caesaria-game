@@ -1,0 +1,19 @@
+{  
+ title : "##employment##"
+ sound : "fanfare"
+ text  : "Almost every structure you build (except for housing) needs employees. The city's water supply, food sources, industries and commercial ventures all need workers.\n In an ideal world, you will always have one job for every worker who wants one. Unfortunately, not even Caesar himself is such a perfect governor. You are likely to face two problems at different times: Not enough jobs, or not enough workers.\n When more citizens are seeking work than there are jobs for them to do, the surplus workers end up unemployed. You can see them sitting on your Senate steps. High unemployment is a major cause of poor mood in a city, and has been known to even cause social unrest. Try to cure this fast, by putting more people to work, or, when desperate, demolishing some housing, which will force people to leave your city.\n When you don't have enough workers, visit your @Labor Advisor& to set priorities and ensure that crucial jobs get filled. Create new housing areas (or help existing houses evolve) to accommodate more people. Make sure the city @mood& is good, and new immigrants will soon come to take those open jobs. Read about @wages& and @taxes& to learn how to do that.\n Your population is always larger than your workforce. Only some plebeians aged 20 to 50 work for wages. The rest are too young, too old, or out of the workforce for personal reasons. Patricians don't work at all. Usually, you can solve labor shortages by increasing your overall population, but sometimes you might need to pay more attention to the @composition of your populace&.\n One other option in times of labor shortage is to tell your @Trade Advisor& to turn industries off, freeing up their workers for other areas."
+ uri : {
+  "Prefects" : "prefect"
+  "Population" : "population"
+  "Employment" : "employment"
+  "wages" : "wages" 
+  "mood" : "mood"
+  "taxes" : "taxes"
+  "composition of your populace" : "composition_populace"
+  "Labor Advisor" : "labor_advisor"
+  "Trade Advisor" : "trade_advisor"
+  "Education Overlay" : "education_overlay" 
+  "Culture Rating" : "culture_rating"
+  "Education Advisor" : "education_advisor"
+ }
+}

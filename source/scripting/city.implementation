@@ -1,0 +1,7 @@
+DEFINE_OBJECT_GETTER_1(PlayerCity,OverlayPtr,getOverlay,const TilePos&,TilePos())
+DEFINE_OBJECT_GETTER_2(PlayerCity,getOption,std::string,bool)
+DEFINE_OBJECT_GETTER_0(PlayerCity,const States&,states)
+DEFINE_OBJECT_GETTER_2(PlayerCity,getBuildOption,std::string,bool)
+DEFINE_OBJECT_FUNCTION_2(PlayerCity,setBuildOption,std::string,int)
+DEFINE_OBJECT_FUNCTION_2(PlayerCity,setOption,std::string,int)
+DEFINE_OBJECT_GETTER_0(PlayerCity,std::string,name)

@@ -1,0 +1,16 @@
+{
+ title : "##wine_workshop##"
+ sound : "fanfare"
+ text  : "Die Winzer verarbeiten hier die Trauben aus Ihren @Weinbergen& zu Wein.\nDa der Abbau von Rohmaterial arbeitsintensiver ist als dessen Weiterverarbeitung, können Sie mit den Erträgen eines Weinbergs zwei Kellereien betreiben.\nWie die meisten Gewerbebetriebe sind auch Weinkellereien in Wohngebieten unbeliebte Nachbarn, obwohl sie nicht ganz so unerwünschte sind wie die anderen Betriebe. Produktionsstätten benötigen Zugang zu einem nahen Arbeitsmarkt sowie Straßenanbindung zu ihrem Rohstofflieferanten und einem @Lagerhaus&. @Arbeiter& bringen den fertigen Wein in das nächste Lagerhaus mit freiem Platz. Sie können ihn exportieren, falls dafür eine passende @Handelsroute& offen ist, und @Markthändlerinnen& bringen etwas davon zu ihren Märkten, wenn eine entsprechende Nachfrage in den Wohngebieten besteht.\nWein gehört zu den Waren, die Ihre eigenen Bürger brauchen, um für Ihre @Wohnungen& die höchste Ausbaustufe zu erreichen. Der Bau der größten Villen ist nur möglich, wenn mehrere Weinsorten verfügbar sind. Sie können Ihren Bewohnern einen einheimischen und einen importierten Wein anbieten oder zwei importierte Weinsorten. Mit zwei einheimischen Weinsorten werden deren verwöhnte Gaumen jedoch nicht zufrieden sein, selbst wenn sie aus verschiedenen Kellereien stammen. Die Patrizier betrachten Ihre gesamte lokale Weinproduktion schlicht und ergreifend als dieselbe Weinsorte.\n\Darüber hinaus müssen Sie ausreichend Bestände auf Lager haben, wenn Sie größere @Feste& abhalten wollen, so dass wirklich jedermann in Ihrer Stadt genug davon bekommt.\nWein ist gewöhnlich eine der wertvollsten Exportwaren überhaupt.\nWeinkellereien zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Produktionsstätte rechts an, um sich ihren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat.\n\nWenn Sie mehr zum Thema Wein im römischen Imperium lesen möchten, klicken Sie @hier&."
+ uri : {
+  "Weinbergen" : "olive_farm"
+  "Lagerhaus" : "warehouse"
+  "Arbeiter" : "worker"
+  "Handelsroute" : "trade"
+  "Markthändlerinnen" : "market"
+  "trade route" : "trade_route"
+  "Wohnungen" : "house"
+  "Feste" : "entertainment_advisor"
+  "hier" : "wine_history"
+ }
+}
