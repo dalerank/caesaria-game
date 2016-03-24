@@ -28,6 +28,10 @@ game.ui.infobox.show = function(typename,location)
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;
+
+  case "barracks":
+    game.ui.infobox.aboutBarracks(location);
+  break;
   }
 }
 

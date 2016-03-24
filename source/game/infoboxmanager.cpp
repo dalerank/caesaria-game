@@ -148,27 +148,6 @@ bool Manager::canCreate(const object::Type type) const
 
 void infobox::Manager::setBoxLock(bool lock) { _d->boxLocked = lock; }
 
-StaticInfoboxCreator::StaticInfoboxCreator(const std::string &caption, const std::string &desc):
-  title( caption ), text( desc )
-{}
-
-Infobox* StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
-{
-  Size size = parent->size();
-  Infobox& infoBox = parent->add<Infobox>( Infobox::defaultRect );
-  infoBox.setPosition( Point( ( size.width() - infoBox.width()) / 2,
-                                 size.height() - infoBox.height()) );
-  OverlayPtr overlay = city->getOverlay( pos );
-
-  std::string caption = overlay.isValid()
-                                  ? overlay->info().prettyName()
-                                  : title;
-
-  infoBox.setTitle( _( caption ) );
-  infoBox.setText( _( text ) );
-  return &infoBox;
-}
-
 ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const std::string &descr, bool drawWorkers)
   : title( caption ), text( descr ), isDrawWorkers( drawWorkers )
 {

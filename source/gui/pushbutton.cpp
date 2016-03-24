@@ -326,6 +326,11 @@ void PushButton::setupUI(const VariantMap &ui)
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
 }
 
+void PushButton::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
 void PushButton::setTextOffset(const Point& offset) { _dfunc()->text.offset = offset;}
 bool PushButton::isPushButton() const { return _dfunc()->is.pushButton; }
 

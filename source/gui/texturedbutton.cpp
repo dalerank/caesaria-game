@@ -86,6 +86,11 @@ void HelpButton::setupUI(const VariantMap& ui)
   _helpid = ui.get( "uri" ).toString();
 }
 
+void HelpButton::setupUI(const vfs::Path & ui)
+{
+  TexturedButton::setupUI(ui);
+}
+
 void HelpButton::setHelpId(const std::string& id)
 {
   _helpid = id;

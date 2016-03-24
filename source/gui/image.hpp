@@ -47,6 +47,7 @@ public:
   virtual void setPicture(const std::string& name);
 
   virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& ui);
   void setMode(Mode mode);
   void setMode(const std::string& mode);
 

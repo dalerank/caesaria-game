@@ -62,19 +62,6 @@ public:
   }
 };
 
-class StaticInfoboxCreator : public InfoboxCreator
-{
-public:
-  StaticInfoboxCreator( const std::string& caption,
-                       const std::string& desc );
-
-  virtual ~StaticInfoboxCreator() {}
-
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
-
-  std::string title, text;
-};
-
 class ServiceInfoboxCreator : public InfoboxCreator
 {
 public:

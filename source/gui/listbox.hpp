@@ -206,6 +206,7 @@ public:
 
   //!
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path& path);
 
 signals public:
   Signal1<const ListBoxItem&>& onItemSelectedAgain();

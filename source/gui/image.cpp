@@ -175,6 +175,11 @@ void Image::setupUI(const VariantMap& ui)
   setMode(mode);
 }
 
+void Image::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
 void Image::setMode(Image::Mode mode)
 {
   _d->mode = mode;

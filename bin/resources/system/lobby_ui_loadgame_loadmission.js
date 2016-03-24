@@ -13,7 +13,7 @@ lobby.ui.loadgame.loadmission = function()
     var selector = wnd.addFileSelector(210, 350, 300, 260);
     selector.background = false;
     selector.itemHeight = 16;
-    selector.font = "FONT_1";
+    selector.itemsFont = "FONT_1";
     selector.itemColor = { hovered:"0xff000000" };
 
     var files = g_session.getFiles(g_session.missionsdir.str, ".mission");

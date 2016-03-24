@@ -129,6 +129,11 @@ void Dialogbox::setupUI(const VariantMap& ui)
   Window::setupUI( ui );
 }
 
+void Dialogbox::setupUI(const vfs::Path & ui)
+{
+  Window::setupUI(ui);
+}
+
 Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
 
 Signal1<Widget*>&      Dialogbox::onYesEx()   { return _d->signal.onOkEx; }

@@ -58,6 +58,7 @@ public:
 
   //!
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path &ui);
 
 protected:
   virtual void _finalizeResize();

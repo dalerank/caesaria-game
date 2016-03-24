@@ -279,6 +279,11 @@ void EditBox::setupUI(const VariantMap& ui)
   _d->needUpdateTexture = true;
 }
 
+void EditBox::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
 //! called if an event happened.
 bool EditBox::onEvent(const NEvent& event)
 {

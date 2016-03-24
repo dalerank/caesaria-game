@@ -81,13 +81,15 @@ public:
   virtual void setAlpha( unsigned int value );
 
   //!
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
 
   //!
   virtual void setLineIntervalOffset(const int offset);
 
   //!
   virtual void setupUI( const VariantMap &ui );
+  virtual void setupUI(const vfs::Path &path);
 
   //!
   virtual void setTextOffset( Point offset );

@@ -38,6 +38,7 @@ public:
   virtual void setValue(int value);
   virtual void setPostfix(const std::string& str);
   virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& path);
     
 signals public:
   virtual Signal1<int>& onChange();
