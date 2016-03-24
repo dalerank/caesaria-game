@@ -131,12 +131,6 @@ struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobo
 static Registrator_##name rtor_##name; \
 }
 
-#define REGISTER_OBJECT_STATICINFOBOX(name,a,b) \
-namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new StaticInfoboxCreator(a,b) ); }}; \
-static Registrator_##name rtor_##name; \
-}
-
 #define REGISTER_OBJECT_SERVICEINFOBOX(name,a,b) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new ServiceInfoboxCreator(a,b) ); }}; \
