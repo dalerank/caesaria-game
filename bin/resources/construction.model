@@ -891,6 +891,7 @@
     class : "industry"
     sound : [ "winery", 1 ]
     inflammability : 0.7
+    image : [ "commerce", 86 ]
     animation : { rc : "commerce", start : 87, count : 12, offset : [ 140, 36 ], delay : 4 }
     stock.image : {
       qty_100 : { qty : 100, image : [ "vinardst", 1 ], offset : [0,27] }
