@@ -271,6 +271,8 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   _animation().load( ResourceGroup::security, 56, 6);
   _animation().setOffset( Point( 9, 30 ) );
   _fgPictures().resize(1);
+  _ground().clear();
+  _ground().append( "ground", 2 );
 }
 
 unsigned int TempleOracle::currentVisitors() const { return 500; }
