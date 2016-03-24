@@ -296,14 +296,16 @@ inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0
 inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
 inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
 
+inline Path engine_js_to(js_State *J, int n, Path) { return vfs::Path( js_tostring(J, n)); }
+
 inline Point engine_js_to(js_State *J, int n, Point) 
 { 
   if (js_isobject(J, n))
   {
     js_getproperty(J, n, "x");
-    int x = js_tonumber(J, -1);
+    int x = js_toint32(J, -1);
     js_getproperty(J, n, "y");
-    int y = js_tonumber(J, -1);  
+    int y = js_toint32(J, -1);  
     return Point(x, y);
   }
   return Point(js_toint32(J, n), js_toint32(J, n + 1));
@@ -314,9 +316,9 @@ inline TilePos engine_js_to(js_State *J, int n, TilePos)
   if (js_isobject(J, n))
   {
     js_getproperty(J, n, "i");
-    int i = js_tonumber(J, -1);
+    int i = js_toint32(J, -1);
     js_getproperty(J, n, "j");
-    int j = js_tonumber(J, -1);
+    int j = js_toint32(J, -1);
 
     return TilePos(i, j);
   }
@@ -847,6 +849,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
+#include "widget.template"
 #include "widget.implementation"
 #include "menu.implementation"
 #include "window.implementation"

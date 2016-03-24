@@ -691,6 +691,11 @@ void DictionaryText::setTextAlignment( Alignment horizontal, Alignment vertical 
   _d->flags.invalidate = true;
 }
 
+void DictionaryText::setTextAlignment(const std::string & horizontal, const std::string & vertical)
+{
+  Widget::setTextAlignment(horizontal, vertical);
+}
+
 void DictionaryText::_finalizeResize() {  _d->flags.invalidate = true; }
 
 void DictionaryText::setLineIntervalOffset( const int offset )
@@ -708,6 +713,11 @@ void DictionaryText::setupUI(const VariantMap& ui)
 
   Variant vTextOffset = ui.get( "text.offset" );
   if( vTextOffset.isValid() ){ setTextOffset( vTextOffset.toPoint() ); }
+}
+
+void DictionaryText::setupUI(const vfs::Path & path)
+{
+  Widget::setupUI(path);
 }
 
 void DictionaryText::setTextOffset(Point offset) {  _d->text.offset = offset;}
