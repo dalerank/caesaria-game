@@ -1,0 +1,47 @@
+#define TEMPLATE_WIDGET_BEGIN(WidgetType) \
+SCRIPT_OBJECT_BEGIN(WidgetType) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,width,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,height,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,bottom,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,deleteLater,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setText,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setTooltipText,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setFont,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setTextAlignment,2) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setGeometry,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setPosition,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setFocus,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,visible,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setVisible,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setEnabled,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setSubElement,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setInternalName,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,getProperty,1) \
+  SCRIPT_OBJECT_FUNCTION(Window,setupUI,1) 
+
+#define TEMPLATE_WIDGET_END(WidgetType) \
+  SCRIPT_OBJECT_CONSTRUCTOR(WidgetType) \
+SCRIPT_OBJECT_END(WidgetType)
+
+#define TEMPLATE_WIDGET_IMPLEMENTATION(WidgetType) \
+DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,width) \
+DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,height) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,bottom) \
+DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
+DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
+DEFINE_OBJECT_FUNCTION_0(WidgetType,setFocus) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setText,std::string) \
+DEFINE_OBJECT_FUNCTION_2(WidgetType,setTextAlignment,std::string,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setInternalName,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setGeometry,Rect) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setPosition,Point) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setVisible,bool) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setEnabled,bool) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setupUI,Path) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setTooltipText,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setSubElement,bool) \
+DEFINE_OBJECT_FUNCTION_2(WidgetType,setProperty,std::string,Variant) \
+DEFINE_OBJECT_GETTER_1(WidgetType,const Variant&,getProperty,const std::string&,"") \
+DEFINE_WIDGET_CONSTRUCTOR(WidgetType)

@@ -1106,4 +1106,9 @@ void ListBox::setupUI(const VariantMap& ui)
   }
 }
 
+void ListBox::setupUI(const vfs::Path & path)
+{
+  Widget::setupUI(path);
+}
+
 }//end namespace gui

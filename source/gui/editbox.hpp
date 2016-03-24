@@ -134,6 +134,7 @@ public:
 
   //! Reads attributes of the element
   virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& ui);
 
   virtual void beforeDraw( gfx::Engine& painter );
 

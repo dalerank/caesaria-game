@@ -98,6 +98,7 @@ public:
   virtual void setIsPushButton( bool value );
 
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path &ui);
 
   virtual void setTextOffset( const Point& offset );
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());

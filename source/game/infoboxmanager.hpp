@@ -62,19 +62,6 @@ public:
   }
 };
 
-class StaticInfoboxCreator : public InfoboxCreator
-{
-public:
-  StaticInfoboxCreator( const std::string& caption,
-                       const std::string& desc );
-
-  virtual ~StaticInfoboxCreator() {}
-
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
-
-  std::string title, text;
-};
-
 class ServiceInfoboxCreator : public InfoboxCreator
 {
 public:
@@ -128,12 +115,6 @@ static Registrator_##name rtor_##name; \
 #define REGISTER_OBJECT_BASEINFOBOX(name,a) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new BaseInfoboxCreator<a>() ); }}; \
-static Registrator_##name rtor_##name; \
-}
-
-#define REGISTER_OBJECT_STATICINFOBOX(name,a,b) \
-namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new StaticInfoboxCreator(a,b) ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

@@ -1,27 +1,16 @@
 //*************************** Window class begin ***************************************//
+UpdateWidgetPrototype(Window.prototype)
 Object.defineProperty( Window.prototype, "title", { set: function (str) { this.setText( _t(str) ); }} );
-Object.defineProperty( Window.prototype, "geometry", { set: function (rect) { this.setGeometry(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h); }} );
 Object.defineProperty( Window.prototype, "mayMove", { set: function(may) { this.setWindowFlag("fdraggable",may); }} );
 Object.defineProperty( Window.prototype, "onCloseCallback", { set: function (func) { this.onCloseEx(func); }} );
 Object.defineProperty( Window.prototype, "model", { set: function (path) { this.setupUI(path); }} );
-Object.defineProperty( Window.prototype, "internalName", { set: function (name) { this.setInternalName(name); }} );
 Object.defineProperty( Window.prototype, "titleFont", { set: function (fname) { this.setFont(fname); }} );
-Object.defineProperty( Window.prototype, "w", { get: function () { return this.width(); }} );
-Object.defineProperty( Window.prototype, "h", { get: function() { return this.height(); }} );
 
 Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
   if (en)
   {
     var locker = new GameAutoPauseWidget(this);
     locker.activate();
-  }
-}})
-
-Object.defineProperty( Window.prototype, "position", { set: function(pos) {
-  if (arguments.length==1) {
-    this.setPosition(arguments[0].x, arguments[0].y)
-  } else if(arguments.length==2) {
-    this.setPosition(arguments[0],arguments[1])
   }
 }})
 

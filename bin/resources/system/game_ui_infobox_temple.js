@@ -1,6 +1,6 @@
 game.ui.infobox.simple = function(rx,ry,rw,rh) {
   var ibox = g_ui.addSimpleWindow(rx,ry,rw,rh)
-  ibox.title = "FONT_5"
+  ibox.font = "FONT_5"
 
   ibox.blackFrame = ibox.addLabel(0, 0, 0, 0)
   ibox.blackFrame.style = "blackFrame"
@@ -9,7 +9,16 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   ibox.btnHelp = ibox.addHelpButton(12, ibox.h-36)
   ibox.btnHelp.text = "##infobox_tooltip_help##"
 
-  //ibox.lbText = ibox.addLabel(32, 64, ibox.w-54, 64)
+  ibox.setInfoText = function(text) {
+    if (!ibox.lbText)
+    {
+      ibox.lbText = ibox.addLabel(32, 64, ibox.w-54, ibox.h-128)
+      ibox.lbText.multiline = true
+      ibox.lbText.textAlign = {h:"center",v:"center"}
+    }
+
+    ibox.lbText.text = text
+  }
 
   ibox.setAutoPosition = function() {
       var resolution = g_session.resolution
