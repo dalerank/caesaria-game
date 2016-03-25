@@ -13,7 +13,8 @@ game.ui.infobox.show = function(typename,location)
   case "roadBlock": case "elevation": case "aqueduct":
   case "garden": case "statue_small": case "statue_middle":
   case "statue_big": case "native_hut": case "native_field":
-  case "native_center": case "high_bridge":
+  case "native_center": case "high_bridge": case "fortification":
+  case "wall":
     game.ui.infobox.aboutObject(typename)
   break;
 
