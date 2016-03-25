@@ -1,24 +1,18 @@
-//*************************** Overlay class begin ***************************************//
 function UpdateOverlayPrototype(objProto) {
-  Object.defineProperty(objProto, 'typename', { get : function() { return g_session.getOverlayType( obj.type() )}})
-
+  Object.defineProperty(objProto, "typename", { get : function() { return g_session.getOverlayType( this.type() )}})
   objProto.as = function(type) { return new type(this); }
 }
 
-UpdateOverlayPrototype(Overlay)
+//*************************** Overlay class begin ***************************************//
+UpdateOverlayPrototype(Overlay.prototype)
 //*************************** Overlay class end ***************************************//
 
-function UpdateWorkingBuildingPrototype(objProto) {
-  UpdateOverlayPrototype(objProto)
-
-  Object.defineProperty(objProto.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
-}
 //*************************** Temple class begin ***************************************//
-UpdateOverlayPrototype(Temple)
+UpdateOverlayPrototype(Temple.prototype)
+Object.defineProperty( Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
+Object.defineProperty( Temple.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
 
-Object.defineProperty(Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
 //*************************** Temple class end ***************************************//
 
-//*************************** Ruin class begin ***************************************//
-UpdateOverlayPrototype(Ruins)
-//*************************** Ruin class end ***************************************//
+UpdateOverlayPrototype(Ruins.prototype)
+UpdateOverlayPrototype(Reservoir.prototype)

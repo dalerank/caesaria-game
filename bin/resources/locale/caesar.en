@@ -1623,7 +1623,7 @@
 "##work##":"Working",
 "##advemployer_panel_haveworkers##":"work",
 "##abwrk_working##":"works",
-"##advemployer_panel_workers##":"workers",
+"##advemployer_panel_workers##":"Workers",
 "##unhandled_key_value_7##":"Working at reduced capacity. Hardly any employees arrived recently",
 "##empbutton_simple_work##":"Working well, but more workers could to be allocated to our sector",
 "##working_industry##":"working industry in the city",
@@ -2013,7 +2013,7 @@
 "##scholar##":"Schoolchild",
 "##scholars##":"school age",
 "##roadBlock##":"Road block",
-"##roadBlock_info##":"Use roadblocks to restrict service workers patrol routes to where they are needed (that is, the housing areas)",
+"##roadBlock_info##":"Road blocks stop wandering walkers but not destination walkers. They are often crucial to the design of a city, preventing random walkers from wandering into sectors that they cannot benefit. Gatehouses also act like roadblocks, but because gatehouses are more expensive, ugly, and take up a lot more space, it is unwise to use a gatehouse purely as a roadblock. ",
 "##warehouse_no_workers##":"Skeleton staff only. Will not dispatch or receive goods",
 "##egift_generous##":"Generous:",
 "##minimap_tooltip##":"Click on this overview map to move to distant parts of your city",
@@ -2316,4 +2316,5 @@
 "##olive_groves_and_vineyards##":"Olive groves and vineyards",
 "##wild_animals##":"Wild animals",
 "##need_restart_mission_for_apply_changes##":"The mission must be reopend for the changes to take effect.",
+"##gmenu_basicstrategy##":"Basic strategy",
 }

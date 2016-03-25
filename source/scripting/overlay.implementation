@@ -6,3 +6,8 @@ DEFINE_OBJECT_GETTER_0(Temple,bool,isActive)
 DEFINE_OBJECT_FUNCTION_1(Temple,setActive,bool)
 DEFINE_OBJECT_GETTER_0(Temple,unsigned int,maximumWorkers)
 DEFINE_OBJECT_GETTER_0(Temple,unsigned int,numberWorkers)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(Reservoir)
+DEFINE_OBJECT_GETTER_0(Reservoir,bool,haveWater)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(Ruins)

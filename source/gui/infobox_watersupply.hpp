@@ -46,16 +46,7 @@ public:
   virtual void _showHelp();
 };
 
-class AboutReservoir : public AboutConstruction
-{
-public:
-  AboutReservoir( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual ~AboutReservoir();
-
-  virtual void _showHelp();
-};
-
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_

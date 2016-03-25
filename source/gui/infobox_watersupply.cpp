@@ -38,7 +38,6 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_BASEINFOBOX(reservoir,AboutReservoir)
 REGISTER_OBJECT_BASEINFOBOX(fountain,AboutFontain)
 REGISTER_OBJECT_BASEINFOBOX(well,AboutWell)
 
@@ -63,7 +62,7 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
       text = "##fountain_will_soon_be_hooked##";
     }
     else if( fountain->isActive() )
-    {     
+    {
       text = fountain->mayWork()
               ? "##fountain_info##"
               : "##fountain_not_work##";
@@ -81,32 +80,6 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
 AboutFontain::~AboutFontain(){}
 void AboutFontain::_showHelp() { ui()->add<DictionaryWindow>( object::fountain ); }
-
-AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
-  : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
-{
-  setTitle( _("##reservoir##") );
-
-  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbText()->setWordwrap( true );
-
-  ReservoirPtr reservoir = tile.overlay<Reservoir>();
-  setBase( reservoir );
-
-  std::string text;
-  if( reservoir.isValid() )
-  {
-    text = reservoir->haveWater()
-              ? "##reservoir_info##"
-              : "##reservoir_no_water##";
-  }
-
-  _lbText()->setText( _(text) );
-}
-
-AboutReservoir::~AboutReservoir() {}
-
-void AboutReservoir::_showHelp() { ui()->add<DictionaryWindow>( object::reservoir ); }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
