@@ -175,6 +175,11 @@ void Image::setupUI(const VariantMap& ui)
   setMode(mode);
 }
 
+void Image::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
 void Image::setMode(Image::Mode mode)
 {
   _d->mode = mode;
@@ -185,14 +190,17 @@ void Image::setMode(Image::Mode mode)
   }
 }
 
-void Image::setMode(const std::string & mode)
+void Image::setMode(const std::string & alias)
 {
-  if (mode == "fit") { _d->mode = Image::fit; }
-  else if (mode == "image") { _d->mode = Image::image; }
-  else if (mode == "native") { _d->mode = Image::native; }
-  else if (mode == "center") { _d->mode = Image::center; }
-  else if (mode == "best") { _d->mode = Image::best; }
-  else { _d->mode = Image::image; }
+  Image::Mode mode = _d->mode;
+  if (alias == "fit") { mode = Image::fit; }
+  else if (alias == "image") { mode = Image::image; }
+  else if (alias == "native") { mode = Image::native; }
+  else if (alias == "center") { mode = Image::center; }
+  else if (alias == "best") { mode = Image::best; }
+  else { mode = Image::image; }
+
+  setMode(mode);
 }
 
 Picture Image::picture() const {  return _d->bgPicture;}

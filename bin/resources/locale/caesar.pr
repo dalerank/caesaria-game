@@ -605,7 +605,7 @@ Está casa não tem acesso a bibliotecas. É preciso que ela tenha acesso a bibl
 "##pottery_workshop_info##":"Aqui, artesãos moldam a argila para fabricar a cerâmica que os cidadões utilizam para guardar suas mercadorias. Você pode comerciar a cerâmica, ou deixar que os mercadores da cidade distribuam este produto e assim as pessoas possam melhorar as condições de suas moradias.",
 "##barber_need_workers##":"Esta cidade precisa de mais trabalhadores",
 "##some_crime_risk##":"Esta área apresenta algum risco de criminalidade",
-"##nativeHut_info##":"Alguns nativos vivem aqui, levando em paz suas vidas simples. Eles desejam apenas não serem incomodados.",
+"##native_hut_info##":"Alguns nativos vivem aqui, levando em paz suas vidas simples. Eles desejam apenas não serem incomodados.",
 "##lionTamer_high_workless##":"Existe muito desemprego aqui",
 "##marketBuyer_so_hungry##":"Não há comida suficiente aqui! Como eu posso viver assim?",
 "##teacher_so_hungry##":"Não há comida suficiente aqui. Isto está fazendo os cidadões descontentes",

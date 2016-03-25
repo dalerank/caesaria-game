@@ -136,6 +136,11 @@ void GroupBox::setupUI(const VariantMap &ui)
   _d->needUpdateTexture = true;
 }
 
+void GroupBox::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
 void GroupBox::_finalizeResize()
 {
   Widget::_finalizeResize();

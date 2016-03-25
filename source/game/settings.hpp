@@ -32,7 +32,6 @@ public:
   __GS_PROPERTY(ctNamesModel)
   __GS_PROPERTY(localePath)
   __GS_PROPERTY(resourcePath)
-  __GS_PROPERTY(pantheonModel)
   __GS_PROPERTY(houseModel)
   __GS_PROPERTY(citiesModel)
   __GS_PROPERTY(empireObjectsModel)

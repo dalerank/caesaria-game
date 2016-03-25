@@ -29,11 +29,11 @@ var ctsettings = {
         g_session.city.setBuildOption(obj.flag, value);
         break;
       case "gui":
-        this.setguiv(obj.flag);
-        break;
+        this.setguiv(obj.flag, value);
+      break;
       case "risks":
         g_session.city.setOption(obj.flag, value);
-        break;
+      break;
     }
   },
 
@@ -44,17 +44,22 @@ var ctsettings = {
     } else if (name == "andr_menu") {
       var dm = new Widget("AndroidActionsBar")
       return dm.visible()
+    } else if (name=="rightMenu") {
+      return engine.getOption("rightMenu")
     }
   },
 
-  setguiv: function(name) {
+  setguiv: function(name, value) {
     engine.log("set guiopts " + name);
     if (name == "debug_menu") {
       var dm = sim.ui.topmenu.debugmenu
-      dm.setVisible(!dm.visible())
+      dm.setVisible(value)
     } else if (name == "andr_menu") {
       var dm = new Widget("AndroidActionsBar")
-      dm.setVisible(!dm.visible())
+      dm.setVisible(value)
+    } else if (name=="rightMenu") {
+      engine.setOption("rightMenu",value);
+      g_ui.addInformationDialog( "##pls_note##", "##need_restart_mission_for_apply_changes##" );
     }
   },
 
@@ -66,7 +71,8 @@ var ctsettings = {
       if (value > 100)
         value = 0;
     } else if (obj.group === "gui") {
-      return obj.value ? 0 : 1;
+      value = this.getop(obj)
+      return value ? 0 : 1;
     } else {
       value = this.getop(obj)
       value += 1;
@@ -107,175 +113,42 @@ var ctsettings = {
 }
 
 sim.ui.dialogs.showCitySettings = function() {
-  var items = [{
-    base: "city_opts_god",
-    states: ["off", "on"],
-    group: "city",
-    flag: "godEnabled"
-  }, {
-    base: "city_warnings",
-    states: ["off", "on"],
-    group: "city",
-    flag: "warningsEnabled"
-  }, {
-    base: "city_zoom",
-    states: ["off", "on"],
-    group: "city",
-    flag: "zoomEnabled"
-  }, {
-    base: "city_zoominv",
-    states: ["off", "on"],
-    group: "city",
-    flag: "zoomInvert"
-  }, {
-    base: "city_barbarian",
-    states: ["off", "on"],
-    group: "city",
-    flag: "barbarianAttack"
-  }, {
-    base: "city_tooltips",
-    states: ["off", "on"],
-    group: "game",
-    flag: "tooltips"
-  }, {
-    base: "city_buildoverdraw",
-    states: ["off", "on"],
-    group: "city",
-    flag: "showGodsUnhappyWarn"
-  }, {
-    base: "city_warf_timber",
-    states: ["off", "on"],
-    group: "city",
-    flag: "warfNeedTimber"
-  }, {
-    base: "river_side_well",
-    states: ["off", "on"],
-    group: "city",
-    flag: "riversideAsWell"
-  }, {
-    base: "sldr_wages",
-    states: ["off", "on"],
-    group: "city",
-    flag: "soldiersHaveSalary"
-  }, {
-    base: "personal_tax",
-    states: ["off", "on"],
-    group: "city",
-    flag: "housePersonalTaxes"
-  }, {
-    base: "cut_forest",
-    states: ["off", "on"],
-    group: "city",
-    flag: "cutForest2timber"
-  },/* {
-    base: "rightMenu",
-    states: ["off", "on"],
-    group: "game",
-    flag: "rightMenu"
-  },*/ {
-    base: "city_mapmoving",
-    states: ["lmb", "mmb"],
-    group: "game",
-    flag: "mmbMoving"
-  }, {
-    base: "city_chastener",
-    states: ["off", "on"],
-    group: "city",
-    flag: "legionAttack"
-  },/* {
-    base: "city_androidbar",
-    states: ["off", "on"],
-    group: "game",
-    flag: "showTabletMenu"
-  }, {
-    base: "city_ccuseai",
-    states: ["off", "on"],
-    group: "game",
-    flag: "ccUseAI"
-  },*/ {
-    base: "city_highlight_bld",
-    states: ["off", "on"],
-    group: "city",
-    flag: "highlightBuilding"
-  }, {
-    base: "city_destroy_epdh",
-    states: ["off", "on"],
-    group: "city",
-    flag: "destroyEpidemicHouses"
-  }, {
-    base: "city_border",
-    states: ["off", "on"],
-    group: "game",
-    flag: "borderMoving"
-  }, {
-    base: "city_forest_fire",
-    states: ["off", "on"],
-    group: "city",
-    flag: "forestFire"
-  }, {
-    base: "city_forest_grow",
-    states: ["off", "on"],
-    group: "city",
-    flag: "forestGrow"
-  }, {
-    base: "city_claypit_collapse",
-    states: ["off", "on"],
-    group: "city",
-    flag: "claypitMayCollapse"
-  }, {
-    base: "city_mines_collapse",
-    states: ["off", "on"],
-    group: "city",
-    flag: "minesMayCollapse"
-  }, {
-    base: "draw_svk_border",
-    states: ["off", "on"],
-    group: "city",
-    flag: "svkBorderEnabled"
-  }, {
-    base: "city_farm_use_meadow",
-    states: ["off", "on"],
-    group: "city",
-    flag: "farmUseMeadows"
-  }, {
-    base: "city_fire_risk",
-    group: "risks",
-    flag: "fireCoeff"
-  }, {
-    base: "city_collapse_risk",
-    group: "risks",
-    flag: "collapseKoeff"
-  }, {
-    base: "city_df",
-    states: ["fun", "easy", "simple", "usual", "nicety", "hard", "impossible"],
-    group: "city",
-    flag: "difficulty"
-  }, {
-    base: "city_batching",
-    states: ["off", "on"],
-    group: "game",
-    flag: "batching"
-  }, {
-    base: "city_lockinfo",
-    states: ["off", "on"],
-    group: "game",
-    flag: "lockwindow"
-  }, {
-    base: "city_roadblock",
-    states: ["off", "on"],
-    group: "build",
-    flag: "roadBlock"
-  }, {
-    base: "city_debug",
-    states: ["off", "on"],
-    group: "gui",
-    flag: "debug_menu"
-  }, {
-    base: "city_metric",
-    states: ["quantity", "kilogram", "modius"],
-    group: "game",
-    flag: "metric"
-  }]
+  var items = [
+  {    base: "city_opts_god",    states: ["off", "on"],    group: "city",    flag: "godEnabled"  },
+  {    base: "city_warnings",    states: ["off", "on"],    group: "city",    flag: "warningsEnabled"  },
+  {    base: "city_zoom",    states: ["off", "on"],    group: "city",    flag: "zoomEnabled"  },
+  {    base: "city_zoominv",    states: ["off", "on"],    group: "city",    flag: "zoomInvert"  },
+  {    base: "city_barbarian",    states: ["off", "on"],    group: "city",    flag: "barbarianAttack"  },
+  {    base: "city_tooltips",    states: ["off", "on"],    group: "game",    flag: "tooltips"  },
+  {    base: "city_buildoverdraw",    states: ["off", "on"],    group: "city",    flag: "showGodsUnhappyWarn"  },
+  {    base: "city_warf_timber",    states: ["off", "on"],    group: "city",    flag: "warfNeedTimber"  },
+  {    base: "river_side_well",    states: ["off", "on"],    group: "city",    flag: "riversideAsWell"  },
+  {    base: "sldr_wages",    states: ["off", "on"],    group: "city",    flag: "soldiersHaveSalary"  },
+  {    base: "personal_tax",    states: ["off", "on"],    group: "city",    flag: "housePersonalTaxes"  },
+  {    base: "cut_forest",    states: ["off", "on"],    group: "city",    flag: "cutForest2timber"  },
+  {    base: "rightMenu",    states: ["off", "on"],    group: "gui",    flag: "rightMenu"  },
+  {    base: "city_mapmoving",    states: ["lmb", "mmb"],    group: "game",    flag: "mmbMoving"  },
+  {    base: "city_chastener",    states: ["off", "on"],    group: "city",    flag: "legionAttack"  },
+  /* {    base: "city_androidbar",    states: ["off", "on"],    group: "game",    flag: "showTabletMenu"  },
+  {    base: "city_ccuseai",    states: ["off", "on"],    group: "game",    flag: "ccUseAI"  },*/
+  {    base: "city_highlight_bld",    states: ["off", "on"],    group: "city",    flag: "highlightBuilding"  },
+  {    base: "city_destroy_epdh",    states: ["off", "on"],    group: "city",    flag: "destroyEpidemicHouses"  },
+  {    base: "city_border",    states: ["off", "on"],    group: "game",    flag: "borderMoving"  },
+  {    base: "city_forest_fire",    states: ["off", "on"],    group: "city",    flag: "forestFire"  },
+  {    base: "city_forest_grow",    states: ["off", "on"],    group: "city",    flag: "forestGrow"  },
+  {    base: "city_claypit_collapse",    states: ["off", "on"],    group: "city",    flag: "claypitMayCollapse"  },
+  {    base: "city_mines_collapse",    states: ["off", "on"],    group: "city",    flag: "minesMayCollapse"  },
+  {    base: "draw_svk_border",    states: ["off", "on"],    group: "city",    flag: "svkBorderEnabled"  },
+  {    base: "city_farm_use_meadow",    states: ["off", "on"],    group: "city",    flag: "farmUseMeadows"  },
+  {    base: "city_fire_risk",    group: "risks",    flag: "fireCoeff"  },
+  {    base: "city_collapse_risk",    group: "risks",    flag: "collapseKoeff"  },
+  {    base: "city_df",    states: ["fun", "easy", "simple", "usual", "nicety", "hard", "impossible"],    group: "city",    flag: "difficulty"  },
+  {    base: "city_batching",    states: ["off", "on"],    group: "game",    flag: "batching"  },
+  {    base: "city_lockinfo",    states: ["off", "on"],    group: "game",    flag: "lockwindow"  },
+  {    base: "city_roadblock",    states: ["off", "on"],    group: "build",    flag: "roadBlock"  },
+  {    base: "city_debug",    states: ["off", "on"],    group: "gui",    flag: "debug_menu"  },
+  {    base: "city_metric",    states: ["quantity", "kilogram", "modius"],    group: "game",    flag: "metric"  }
+]
 
   var w = g_ui.addWindow(0, 0, 480, 540);
   w.closeAfterKey({

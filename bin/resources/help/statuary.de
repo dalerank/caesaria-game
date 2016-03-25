@@ -1,0 +1,9 @@
+{
+ title : "##statuary##"
+ sound : "fanfare"
+ text  : "Wie auf so vielen anderen Gebieten erkannten die Römer auch die Spitzenstellung der griechischen Kunst und Bildhauerei an, erweiterten und änderten jedoch den griechischen Stil und deren Techniken. Besonders die Bildhauerei reflektiert die Vorliebe der Römer für Genauigkeit und Realismus. Die Griechen dagegen waren bestrebt, auf der Suche nach der universellen Wahrheit das Dargestellte eher zu idealisieren. Wann immer Archäologen eine 'neue' römische Statue entdecken, versuchen sie - oftmals mit Erfolg - eine Ähnlichkeit mit einer historischen Persönlichkeit festzustellen. Die Römer ergänzten den Einsatz von Meißeln mit Bohrern, mit denen Details wie Haar und Faltenwurf besser ausgestaltet werden konnten. Die römische Bildhauerkunst wird durch Sinnlichkeit charakterisiert, und im kaiserlichen Rom gewährleistete Gigantismus Ruhm.\nDieser Trend erreichte seinen Höhepunkt mit dem Colossus Neronis. Diese enorme vergoldete Bronzestatue, 30 Meter hoch, stellte den Kaiser als Sonnengott dar. Sie befand sich ursprünglich im Eingangsbereich von Neros extravagantem Palast, dem @Domus Aurea&, wurde jedoch später mit Hilfe von 24 Elefanten zum Flavischen Amphitheater geschafft, das dann den Spitznamen @Kolosseum& erhielt. Nach Neros Tod wurde der Kopf des Kolosses entfernt und durch den Kopf des jeweiligen Nachfolgers ersetzt. Der Geschichte ist das letztendliche Schicksal der Statue nicht bekannt, es kann jedoch mit ziemlicher Sicherheit behauptet werden, dass sie wegen ihres Metalls eingeschmolzen wurde."
+ uri : {
+  "Domus Aurea" : "governor_home_history"
+  "Kolosseum" : "colosseum_history"
+ }
+}

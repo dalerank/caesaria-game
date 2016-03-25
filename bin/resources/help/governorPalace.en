@@ -1,7 +1,3 @@
-{  
- title : "##governorPalace##"
- sound : "fanfare"
- text  : ""
- uri : {
- }
+{
+  import : "governorHouse"
 }

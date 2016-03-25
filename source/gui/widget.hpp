@@ -326,8 +326,8 @@ public:
   /** Implement this to set the attributes of your scene node for
    *	scripting languages, editors, debuggers or xml deserialization purposes.
    */
-  virtual void setupUI(const VariantMap& options );
-  virtual void setupUI( const vfs::Path& filename );
+  virtual void setupUI(const VariantMap& options);
+  virtual void setupUI(const vfs::Path& filename);
 
   virtual void installEventHandler( Widget* elementHandler );
 

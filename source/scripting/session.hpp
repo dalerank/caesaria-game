@@ -22,6 +22,7 @@
 #include "core/size.hpp"
 #include "gui/predefinitions.hpp"
 #include "world/predefinitions.hpp"
+#include "religion/romedivinity.hpp"
 #include "game/predefinitions.hpp"
 #include <string>
 
@@ -79,6 +80,8 @@ public:
   void setResolution(const Size& size);
   void showDlcViewer(const std::string& path);
   StringArray tradableGoods() const;
+  Point getCursorPos() const;
+  religion::DivinityPtr addGod(const std::string& id);
   std::string getOverlayType(int i) const;
   VariantMap winConditions() const;
   VariantMap getGoodInfo(std::string goodName) const;

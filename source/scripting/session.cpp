@@ -226,6 +226,16 @@ StringArray Session::tradableGoods() const
   return good::tradable().names();
 }
 
+Point Session::getCursorPos() const
+{
+  return _game->gui()->cursorPos();
+}
+
+religion::DivinityPtr Session::addGod(const std::string & name)
+{
+  return religion::rome::Pantheon::add(name);
+}
+
 std::string Session::getOverlayType(int i) const
 {
   return object::toString(object::Type(i));

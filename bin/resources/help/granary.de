@@ -5,7 +5,7 @@
  uri : {
   "Markt" : "market"
   "Lagerhäusern" : "warehouse"
-  "Nahrungsmittel und Landwirtschaft" : "food_and_farming (Nahrung und Landwirtschaft)??"
+  "Nahrungsmittel und Landwirtschaft" : "food_and_farming"
   "Handel" : "trade"
   "hier" : "granary_history"
  }

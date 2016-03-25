@@ -2,6 +2,7 @@
 "##have_no_food_on_next_month##":"- žádné jídlo na další měsíc",
 "##small_food_on_next_month##":"- velmi málo jídla na další měsíc",
 "##build_your_rom##":"Náhodný region",
+"##primary_funds##":"Primární finance",
 "##city_barbarian_off_tlp##":"Barbaři nebudou útočit na Vaše město.",
 "##enter_dinasty_name_here##":"Napiš jméno tvé dynastie",
 "##city_barbarian_off##":"Barbaři : Vyp.",

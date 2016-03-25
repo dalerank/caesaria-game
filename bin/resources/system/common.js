@@ -1,5 +1,6 @@
 function _t(text) { return engine.translate(text) }
 function _u(text) { return "##"+text+"##" }
+function _ut(text) { return _t(_u(text)) }
 
 var _format = function() {
     var formatted = arguments[0]

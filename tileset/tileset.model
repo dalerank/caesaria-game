@@ -186,28 +186,28 @@
           type : "atlas"
           folder : "/resources/gui"
           files : [ "europe02_*" ]
-        }       
+        }
 
         sprites :
         {
           type : "atlas"
           folder : "/resources/sprites"
           files : [ "sprites_*" ]
-        }     
+        }
 
         gui_stub :
         {
           type : "file"
           folder : "/resources/gui_stub"
           files : [ "*" ]
-        }   
+        }
 
         taxcolumn :
         {
           type : "atlas"
           folder : "/resources/sprites"
           files : [ "taxcolumn_*" ]
-        }     
+        }
 
         empmap :
         {
@@ -216,7 +216,7 @@
           files : [ "the_empire_*" ]
         }
 
-				dlcperf :
+        dlcperf :
         {
           type : "atlas"
           folder : "/resources/gui"
@@ -410,18 +410,11 @@
           files : [ "actorschoola_*" ]
         }
 
-        claypitfill :
-        {
-          type : "atlas"
-          folder : "/resources/commerce"
-          files : [ "claypitf_*" ]
-        }
-
         commerce :
         {
           type : "atlas"
           folder : "/resources/commerce"
-          files : [ "commerce_*" ]
+          files : [ "*" ]
         }
 
         ground :
@@ -464,7 +457,7 @@
           type : "atlas"
           folder : "/resources/warehouse"
           files : [ "*" ]
-        }        
+        }
 
         religion :
         {
@@ -748,6 +741,6 @@
           files : [ "citizen01_*" ]
         }
       }
-    }  
+    }
   }
 }

@@ -3,6 +3,8 @@ var game = {}
 game.ui = {}
 game.ui.dialogs = {}
 game.ui.infobox = {}
+game.religion = {}
+game.religion.pantheon = {}
 game.sound = {}
 
 /********************** namespace level **********************************/

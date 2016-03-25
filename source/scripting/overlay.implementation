@@ -1,1 +1,8 @@
-DEFINE_OBJECT_GETTER_0(Overlay,object::Type,type)
+TEMPLATE_OVERLAY_IMPLEMENTATION(Overlay)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(Temple)
+DEFINE_OBJECT_GETTER_0(Temple,DivinityPtr,divinity)
+DEFINE_OBJECT_GETTER_0(Temple,bool,isActive)
+DEFINE_OBJECT_FUNCTION_1(Temple,setActive,bool)
+DEFINE_OBJECT_GETTER_0(Temple,unsigned int,maximumWorkers)
+DEFINE_OBJECT_GETTER_0(Temple,unsigned int,numberWorkers)

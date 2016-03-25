@@ -148,7 +148,7 @@ PushButton::PushButton( Widget* parent,
 {
   setDebugName( TEXT(PushButton) );
 
-  setBackgroundStyle( bgStyle );
+  setBackgroundStyle(bgStyle);
   setTextAlignment( align::center, align::center );
 
   setText( caption );
@@ -324,6 +324,11 @@ void PushButton::setupUI(const VariantMap &ui)
 
   vlist = ui.get( "disabled" ).toList();
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
+}
+
+void PushButton::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
 }
 
 void PushButton::setTextOffset(const Point& offset) { _dfunc()->text.offset = offset;}

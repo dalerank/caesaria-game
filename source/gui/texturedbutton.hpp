@@ -60,6 +60,7 @@ public:
   HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId);
 
   virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& ui);
   void setHelpId(const std::string& id);
 
 protected:

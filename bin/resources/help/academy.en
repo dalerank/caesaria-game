@@ -1,13 +1,15 @@
-{  
- title : "##colege##"
+{
+ title : "##academy##"
  sound : "fanfare"
  text  : "Academies educate Roman youths aged 13-21 after they graduate from @schools&. To evolve to high levels, housing needs access to this more advanced education. Teachers give academy access as they walk their routes. Use the @Education Overlay& to watch an academy's teachers walk through neighborhoods. Right-click on an academy to see its status. Academies are desirable neighbors. \n Ask your @Education Advisor& about the city's overall need for academies. Each academy can serve only a limited number of youths before its classrooms become overcrowded. As your city's population density increases, keep building more academies to keep the number of classrooms stable. Even houses with access to an academy will want more academies if their classroom size grows too large.\n Academies affect your @Culture Rating&. Keep classrooms small to enhance Culture in your city. Compare the number of youths who need schooling to the number that your academies can accommodate to see how many young people each academy in your city serves. Click @here(1)& to explore the concept of education in Caesar III.\n For a short lesson on the history of academies in the Roman Empire, click @here(2)&."
+          Akademien unterrichten römische Jugendliche im Alter zwischen 13 und 21, nachdem diese ihre @Schulausbildung& abgeschlossen haben. Wenn sich die Häuser auf eine bessere Stufe entwickeln sollen, brauchen sie Zugang zu dieser höheren Bildungsform. Lehrer eröffnen den Zugang zu den Akademien, indem sie sich auf ihre Rundgänge begeben. Verwenden Sie die @Spezialkarte Bildung&, um den Lehrer einer Akademie auf seiner Wanderung durch die Nachbarschaft zu verfolgen. Klicken Sie eine Akademie rechts an, um deren Status zu prüfen. Akademien sind attraktive Nachbarn.\nFragen Sie Ihren @Bildungsberater& nach dem Bedarf an Akademien in der Stadt. Jede Akademie kann jedoch nur eine begrenzte Anzahl Jugendlicher aufnehmen, bis die Klassen überfüllt sind. Wenn die Einwohnerdichte in Ihrer Stadt zunimmt, müssen Sie weitere Akademien bauen, um die Anzahl der Klassen konstant zu halten. Auch die Häuser mit Zugang zu einer Akademie werden weitere Akademien brauchen, wenn die Klassen zu groß werden.\nAkademien beeinflussen Ihre @Kulturwertung&. Halten Sie die Klassengröße möglichst klein, um die Kultur in Ihrer Stadt zu verbessern. Vergleichen Sie die Zahl der Jugendlichen, die unterrichtet werden müssen, mit der Zahl, die Ihre Akademien aufnehmen können, um zu sehen, wie viele junge Leute jede einzelne Akademie in der Stadt versorgt. Klicken Sie @hier(1)&, um mehr über das Bildungskonzept in CasesarIA zu erfahren.\n\nEinen kurzen Abriss über die Akademien im römischen Imperium erhalten sie @hier(2)&."
+
  uri : {
   "schools" : "school"
-  "Education Overlay" : "education_overlay" 
-  "Culture Rating" : "culture_rating"
+  "Education Overlay" : "especial_card_selection"
   "Education Advisor" : "education_advisor"
-  "here(1)" : "http://wikipedia.ru"
-  "here(2)" : "http://wikipedia.ru"
+  "Culture Rating" : "ratings"
+  "here(1)" : "education"
+  "here(2)" : "school_history"
  }
 }

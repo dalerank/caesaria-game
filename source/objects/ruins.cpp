@@ -45,13 +45,13 @@ REGISTER_PARAM_H(spreadFire)
 BurningRuins::BurningRuins()
   : Ruins( object::burning_ruins )
 {
-  setState( pr::fire, 99 );
-  setState( pr::inflammability, 0 );
-  setState( pr::collapsibility, 0 );
-  setState( pr::spreadFire, 0 );
+  setState(pr::fire, 99 );
+  setState(pr::inflammability, 0 );
+  setState(pr::collapsibility, 0 );
+  setState(pr::spreadFire, 0 );
 
   _picture().load( config::rc.land2a, 187 );
-  _animation() = AnimationBank::instance().simple( AnimationBank::animFire+2 );
+  _animation() = AnimationBank::instance().simple(AnimationBank::animFire+2);
   _fgPictures().resize(1);
 }
 
@@ -64,7 +64,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
   if( game::Date::isDayChanged() )
   {
-    bool needSpread = ( state( pr::spreadFire ) == 0 && state( pr::fire ) < 50 );
+    bool needSpread = ( state(pr::spreadFire) == 0 && state(pr::fire) < 50 );
     if( needSpread )
     {
       OverlayList overlays = _map().getNeighbors( pos() ).overlays();
@@ -121,7 +121,7 @@ void BurningRuins::destroy()
 
   BurnedRuinsPtr p( new BurnedRuins() );
   p->drop();
-  p->setInfo( pinfo() );
+  p->setInfo(_parent);
 
   city::FirePtr fire = _city()->statistic().services.find<city::Fire>();
 
@@ -149,7 +149,7 @@ bool BurningRuins::build( const city::AreaInfo& info)
 
   if( fire.isValid() )
   {
-    fire->addLocation( info.pos );
+    fire->addLocation(info.pos);
   }
 
   return true;
@@ -186,13 +186,6 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 }
 
 bool BurningRuins::isNeedRoad() const{  return false; }
-
-std::string BurningRuins::pinfo() const
-{
-  std::string ret = utils::replace( _parent, "{}", "burning_ruins" );
-  return ret;
-}
-
 void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
@@ -202,7 +195,7 @@ BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 
 bool BurnedRuins::build( const city::AreaInfo& info )
 {
-  bool built = Ruins::build( info );
+  bool built = Ruins::build(info);
 
   if( !built )
     return false;
@@ -215,12 +208,6 @@ bool BurnedRuins::isWalkable() const{  return true; }
 bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoad() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
-
-std::string BurnedRuins::pinfo() const
-{
-  std::string ret = utils::replace(_parent, "{}", "burned_ruins");
-  return ret;
-}
 
 CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 {
@@ -257,18 +244,12 @@ bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoad() const{  return false;}
 
-std::string CollapsedRuins::pinfo() const
-{
-  std::string ret = utils::replace(_parent, "{}", "collapsed_ruins");
-  return ret;
-}
-
 PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
 {
   setState( pr::fire, 99 );
   setState( pr::collapsibility, 0 );
 
-  _picture().load( config::rc.land2a, 187 );
+  _picture().load(config::rc.land2a, 187);
   _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
 
   _fgPictures().resize(2);
@@ -310,17 +291,11 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  BurnedRuinsPtr p( new BurnedRuins() );
+  BurnedRuinsPtr p(new BurnedRuins());
   p->drop();
-  p->setInfo( pinfo() );
+  p->setInfo(_parent);
 
   events::dispatch<BuildAny>( pos(), p.object() );
-}
-
-std::string PlagueRuins::pinfo() const
-{
-  std::string ret = utils::replace(_parent, "{}", "plague_ruins");
-  return ret;
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}
@@ -328,7 +303,7 @@ bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 bool PlagueRuins::build( const city::AreaInfo& info )
 {
-  bool built = Ruins::build( info );
+  bool built = Ruins::build(info);
   if (!built)
     return false;
 
@@ -346,12 +321,18 @@ bool PlagueRuins::isNeedRoad() const { return false; }
 Ruins::Ruins(object::Type type)
   : Building( type, Size::square(1) ), _alsoBuilt( true )
 {
-
+  _parent = utils::format( 0xff, "ruins_%04d_text", (int)type);
 }
 
-void Ruins::setInfo(std::string parent) { _parent = parent; }
+void Ruins::setInfo(const std::string& parent) 
+{ 
+  _parent = parent; 
+}
 
-std::string Ruins::pinfo() const { return _parent; }
+std::string Ruins::pinfo() const 
+{ 
+  return utils::replace(_parent, "{}", info().typeName() );
+}
 
 void Ruins::save(VariantMap& stream) const
 {
@@ -369,12 +350,20 @@ void Ruins::load(const VariantMap& stream)
 
 bool Ruins::build(const city::AreaInfo& info)
 {
-  if( info.city->tilemap().at( info.pos ).getFlag(Tile::tlCoast) )
+  if (info.city->tilemap().at( info.pos ).getFlag(Tile::tlCoast))
   {
     return false;
   }
 
-  return Building::build( info );
+  return Building::build(info);
+}
+
+Variant Ruins::getProperty(const std::string & name) const
+{
+  if (name == "pinfo")
+    return Variant(pinfo());
+
+  return Variant();
 }
 
 bool Ruins::getMinimapColor(int& color1, int color2) const

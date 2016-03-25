@@ -181,4 +181,9 @@ void SpinBox::setupUI(const VariantMap& ui)
   _d->actions.inc.pos = ui.get( "incpos" );
 }
 
+void SpinBox::setupUI(const vfs::Path & path)
+{
+  Widget::setupUI(path);
+}
+
 }//end namespace gui

@@ -830,6 +830,7 @@ void Label::setupUI(const VariantMap& ui)
   setBackgroundStyle(ui.get("bgtype").toString());
 }
 
+void Label::setupUI(const vfs::Path & path) { Widget::setupUI(path);  }
 void Label::setTextOffset(Point offset) { _d->text.offset = offset; _d->is.needUpdate = true;}
 void Label::setTextOffset(int x, int y) { _d->text.offset = Point(x,y); _d->is.needUpdate = true; }
 Picture& Label::_textPicture() { return _d->text.picture; }

@@ -8,16 +8,24 @@ function OnUpdateTopMenuCityStats() {
 sim.ui.topmenu.labels = {}
 
 sim.ui.topmenu.help.init = function() {
-    var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_help##"));
+    var m = sim.ui.topmenu.widget.addItem("", _ut("gmenu_help"));
     m.moveToIndex(2)
 
-    m.addItemWithCallback("##gmenu_about##", function() {
-                var wnd = g_ui.addSimpleWindow(0, 0, 500, 300);
-                wnd.model = ":/gui/about.gui";
-                wnd.setModal();
-        })
+    m.addItemWithCallback(_u("gmenu_about"), function() {sim.ui.topmenu.help.aboutGame()} )
+    m.addItemWithCallback(_u("gmenu_basicstrategy"), function() {sim.ui.topmenu.help.aboutStrategy()} )
+    m.addItemWithCallback(_u("gmenu_shortkeys"), function() { sim.ui.topmenu.help.showHotkeys() } )
+}
 
-    m.addItemWithCallback(_t("##gmenu_shortkeys##"), function() { sim.ui.topmenu.help.showHotkeys() } )
+sim.ui.topmenu.help.aboutGame = function() {
+    var wnd = g_ui.addSimpleWindow(0, 0, 500, 300)
+    wnd.model = ":/gui/about.gui"
+    wnd.setModal()
+}
+
+sim.ui.topmenu.help.aboutStrategy = function() {
+    var wnd = g_ui.addSimpleWindow(0, 0, 500, 300)
+    wnd.model = ":/gui/basicstrategy.gui"
+    wnd.setModal()
 }
 
 sim.ui.topmenu.options.init = function() {

@@ -60,18 +60,14 @@ game.ui.dialogs.requestExit = function()
 
 game.ui.dialogs.savegame = function()
 {
-  var savedir = g_session.getOptPath("savedir");
-  var ext = engine.getOption("saveExt");
-
-  engine.log("Find save in " + savedir.str + " with ext " + ext)
-  if (!savedir.exist())
+  engine.log("Find save in " + g_session.savedir.str + " with ext " + g_config.saves.ext)
+  if (!g_session.savedir.exist())
   {
     g_ui.addInformationDialog("##warning##", "##save_directory_not_exist##");
     return;
   }
 
-  var dialog = g_ui.addSaveGameDialog(savedir, ext);
-  dialog.callback = function(path) {
-              g_session.save(path);
-          }
+  var dialog = g_ui.addSaveGameDialog(g_session.savedir, g_config.saves.ext);
+
+  dialog.callback = function(path) { g_session.save(path); }
 }

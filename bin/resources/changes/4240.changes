@@ -15,7 +15,7 @@
 
     items : [
       "1. batch system changes"
-
+      "2. fixed grafic artifacts after switch layers"
     ]
   }
 }

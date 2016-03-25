@@ -1,9 +1,9 @@
-{  
+{
  title : "##bath##"
  sound : "fanfare"
  text  : "Ein Badehaus in der Nachbarschaft steigert die Attraktivität des Wohngebietes in seiner Nähe enorm.\nBenutzen Sie die @Spezialkarte Gesundheit&, um sich die Versorgung der Wohnungen mit Badehäusern anzusehen und die Angestellten der Bäder auf ihren Rundgängen zu verfolgen. Badehäuser brauchen Anschluss an die Rohrleitungen eines @Reservoirs&, um funktionieren zu können. Klicken Sie das Badehaus rechts an, um dessen Status zu prüfen.\n\nWenn Sie etwas erfahren möchten, warum die Römer zu den reinlichsten Menschen der Geschichte gehörten, klicken Sie @hier&."
  uri : {
-  "Spezialkarte Gesundheit" : "Spezialkartenauswahl??"
+  "Spezialkarte Gesundheit" : "special_card_selection"
   "Reservoirs" : "reservoir"
   "hier" : "bathhouse_history"
  }

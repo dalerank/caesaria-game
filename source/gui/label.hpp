@@ -126,12 +126,12 @@ public:
   //!
   virtual void setIcon(const std::string& rc, int index);
 
-  virtual void setIconOffset( const Point& offset );
+  virtual void setIconOffset(const Point& offset);
 
 
   //!
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fontname, NColor color=NColor());
+  virtual void setFont(const Font& font );
+  virtual void setFont(const std::string& fontname, NColor color=NColor());
 
   virtual void setAlpha(unsigned int value);
 
@@ -140,14 +140,15 @@ public:
   //!
   virtual void setColor(const std::string& color);
 
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
 
   //!
-  virtual void setTextAlignment( const std::string& horizontal, const std::string& vertical );
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
 
   virtual void setLineIntervalOffset( const int offset );
 
-  virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& ui);
 
   virtual void setTextOffset(int x, int y);
 
