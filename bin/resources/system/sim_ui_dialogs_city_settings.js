@@ -30,10 +30,10 @@ var ctsettings = {
         break;
       case "gui":
         this.setguiv(obj.flag, value);
-        break;
+      break;
       case "risks":
         g_session.city.setOption(obj.flag, value);
-        break;
+      break;
     }
   },
 
@@ -45,9 +45,8 @@ var ctsettings = {
       var dm = new Widget("AndroidActionsBar")
       return dm.visible()
     } else if (name=="rightMenu") {
-      return engine.getOption("rightMenu");
+      return engine.getOption("rightMenu")
     }
-
   },
 
   setguiv: function(name, value) {
@@ -72,7 +71,8 @@ var ctsettings = {
       if (value > 100)
         value = 0;
     } else if (obj.group === "gui") {
-      return obj.value ? 0 : 1;
+      value = this.getop(obj)
+      return value ? 0 : 1;
     } else {
       value = this.getop(obj)
       value += 1;
