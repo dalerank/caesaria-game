@@ -1,0 +1,11 @@
+{
+ title : "##garden_plaza##"
+ sound : "fanfare"
+ text  : "Die Römer spezialisierten sich möglicherweise in Anlehnung an ihren bäuerlichen Ursprung auf ornamentalen Gartenbau, und es gab keine Villa ohne sorgfältig gepflegte Grünflächen. Die weitläufigen Anlagen der Villen auf dem Land enthielten Obstgärten, Weinberge, Rosen- und Wildblumenbeete, und sogar die städtischen Villen besaßen kleine Gärten mit Wandelwegen, @Statuen&, weinumrankten Pergolen und ornamentalen Becken. Die öffentlichen Parks und Waldgebiete machten dieses 'Rus in Urbe', also Natur in der Stadt, für alle römischen Bürger zugänglich.\nPlazas waren in Rom beliebte Treffpunkte und dienten teilweise denselben Zwecken wie die @Foren&, jedoch auf kleinerem Gebiet und mit weniger Kunstwerken versehen. Auf einer typischen Plaza gab es einen @Brunnen&, Parkbänke und Statuen. Kaufleute, Lebensmittelhändler und @Barbiere& befanden sich ebenfalls stets ganz in der Nähe."
+ uri : {
+  "Statuen" : "statuary"
+  "Foren" : "forum_history"
+  "Brunnen" : "fountain_history"
+  "Barbiere" : "barber"
+ }
+}

@@ -1,8 +1,3 @@
-{  
- title : "##small_mercury_temple##"
- sound : "fanfare"
- text  : ""
- uri : {
-  
- }
+{
+  import : "temple_oracle"
 }

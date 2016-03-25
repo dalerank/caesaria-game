@@ -1,0 +1,12 @@
+{
+ title : "##cereals##"
+ sound : "fanfare"
+ text  : "Weizen ist das Grundnahrungsmittel Ihrer Bevölkerung. Im südlichen Europa ist der Anbau von Getreide doppelt so ergiebig wie der Anbau anderer Dinge (jedoch nicht im Norden oder in Wüstengebieten).\nWeizenfarmen sind unbeliebte Nachbarn und senken den Wert der nahen gelegenen Grundstücke. Sie können nur auf Ackerland angelegt werden, das auf der Karte an den gelben Halmen zu erkennen ist. Wenn Sie einen Farmtyp mit dem Gebäude-Button ausgewählt haben, wechselt der Mauszeiger zu einer grünen, schemenhaften Darstellung einer Farm, sobald sich der Zeiger über fruchtbarem Land befindet.\nFarmen brauchen Zugang zum lokalen Arbeitsmarkt und Straßenanbindung zu einem @Silo&. Wenn die Ernte eingebracht ist, schiebt ein Farmer den vollen Karren zum nächsten Silo, falls es noch Platz hat, oder zum @Lagerhaus&, wenn das Silo voll oder nicht funktionsfähig ist. Nahrungsmittel, die zu einem Silo gebracht wurden, werden von den @Markthändlerinnen& an die Bevölkerung verteilt, während die an ein Lagerhaus gelieferten Lebensmittel exportiert werden, sofern Sie dafür eine offene Handelsroute haben. Solange die Farm arbeitet, können Sie die Feldfrüchte auf den Feldern wachsen sehen. Klicken Sie eine Farm rechts an, wenn Sie Informationen bezüglich ihrer Produktivität erhalten möchten.\nDie Menschen könnten alleine von Getreide leben, jedoch verlangen bessere Häuser zusätzliche Nahrungsmittelarten.\n\nWeitere Informationen hierzu finden Sie unter @Nahrungsmittel und Landwirtschaft&.\n\nKlicken Sie @hier&, wenn Sie mehr über die historische Rolle des Weizens im römischen Imperium erfahren möchten."
+ uri : {
+  "Silo" : "granary"
+  "Lagerhaus" : "warehouse"
+  "Markthändlerinnen" : "market"
+  "Nahrungsmittel und Landwirtschaft" : "food_and_farming"
+  "hier" : "wheat_farm_history"
+ }
+}
