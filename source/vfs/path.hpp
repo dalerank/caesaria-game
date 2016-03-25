@@ -36,13 +36,14 @@ public:
   static const char* firstEntry;
   static const char* secondEntry;
 
-  Path( const char* nPath );
+  Path(const char* nPath);
   Path( );
-  Path( const std::string& nPath );
-  Path( const Path& );
+  Path(const std::string& nPath);
+  Path(const Path& );
   virtual ~Path();
 
-  bool exist( SensType sens=nativeCase ) const;
+  bool exist(SensType sens) const;
+  bool exist() const;
   bool empty() const;
   bool isFolder() const;
   bool isDirectoryEntry() const;
@@ -50,7 +51,7 @@ public:
   //Returns the suffix of the file.
   //The suffix consists of all characters in the file after (but not including) the last '.'.
   std::string suffix() const;
-  
+
   Path addEndSlash() const;
   Path removeEndSlash() const;
 
@@ -58,7 +59,7 @@ public:
 
   char lastChar() const;
   char firstChar() const;
- 
+
   const std::string& toString() const;
   const char* toCString() const;
 
@@ -92,15 +93,18 @@ public:
   //! Returns the base part of a filename, i.e. the name without the directory
   //! part. If no directory is prefixed, the full name is returned.
   /** \param filename: The file to get the basename from */
-  Path baseName( bool keepExtension=true ) const;
+  Path baseName(bool keepExtension=true) const;
 
-  Path getRelativePathTo( const Directory& directory ) const;
+  Path getRelativePathTo(const Directory& directory) const;
 
   //! Returns the directory a file is located in.
   /** \param filename: The file to get the directory from */
   virtual std::string directory() const;
 
-private:  
+  void set(const std::string& path);
+  void add(const std::string& path);
+
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -34,8 +34,8 @@ public:
 
   virtual ~Construction();
 
-  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
-  virtual BuildArea buildArea( const city::AreaInfo& areaInfo ) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual BuildArea buildArea(const city::AreaInfo& areaInfo) const;
   virtual std::string troubleDesc() const;
   virtual bool build( const city::AreaInfo& info );
   virtual void burn();
@@ -64,7 +64,7 @@ public:
   virtual void initialize(const object::Info& mdata);
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:
-  Construction( const object::Type type, const Size& size );
+  Construction(object::Type type, const Size& size);
   gfx::TilesArray& _roadside();
   void _checkDestroyState();
 

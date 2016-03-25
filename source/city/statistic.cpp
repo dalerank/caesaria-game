@@ -225,7 +225,7 @@ unsigned int Statistic::_Tax::possible() const
   HouseList houses = _parent.houses.find();
 
   float taxValue = 0.f;
-  float taxRate = _parent.rcity.treasury().taxRate();
+  float taxRate = (float)_parent.rcity.treasury().taxRate();
 
   for( auto house : houses )
   {
@@ -238,7 +238,7 @@ unsigned int Statistic::_Tax::possible() const
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 
-  return taxValue;
+  return (unsigned int)taxValue;
 }
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const

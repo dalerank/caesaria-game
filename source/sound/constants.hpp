@@ -30,6 +30,11 @@ typedef enum { unknown=0, ambient, theme, game, speech, effects, infobox, count 
 typedef unsigned int Volume;
 const Volume minVolume=0;
 const Volume maxVolume=100;
+inline bool isAvailableMode(int mode)
+{
+  return (mode > unknown && mode < count);
+}
+
 
 } //end namespace audio
 

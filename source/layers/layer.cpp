@@ -31,7 +31,7 @@
 #include "walker/walker.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/city.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "constants.hpp"
 #include "gfx/decorator.hpp"
 #include "core/utils.hpp"
@@ -323,7 +323,7 @@ void Layer::_setTooltipText(const std::string& text)
   __D_REF(d,Layer)
   if( d.tooltip.text != text )
   {
-    Font font = Font::create( FONT_2 );
+    Font font = Font::create( "FONT_2" );
     d.tooltip.text = text;
     Size size = font.getTextSize( text );
 
@@ -332,9 +332,9 @@ void Layer::_setTooltipText(const std::string& text)
       d.tooltip.image = Picture( size, 0, true );
     }
 
-    d.tooltip.image.fill( 0x00000000, Rect( Point( 0, 0 ), d.tooltip.image.size() ) );
-    d.tooltip.image.fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
-    d.tooltip.image.fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
+    d.tooltip.image.fill( ColorList::clear, Rect( Point( 0, 0 ), d.tooltip.image.size() ) );
+    d.tooltip.image.fill( ColorList::black, Rect( Point( 0, 0 ), size ) );
+    d.tooltip.image.fill( ColorList::white, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
     font.draw( d.tooltip.image, text, Point(), false );
   }
 }
@@ -665,7 +665,7 @@ void Layer::afterRender(Engine& engine)
 
     if( _d.tilePosText.isValid() )
     {
-      _d.tilePosText.fill( 0x0 );
+      _d.tilePosText.fill( ColorList::clear );
       _d.debugFont.draw( _d.tilePosText, fmt::format( "{},{}", tile->i(), tile->j() ), false, true );
     }
 
@@ -713,7 +713,7 @@ Layer::Layer(Camera* camera, PlayerCityPtr city )
   _d.greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
   _d.city = city;
   _d.sizeMap = city->tilemap().size();
-  _d.debugFont = Font::create( FONT_1_WHITE );
+  _d.debugFont = Font::create( "FONT_1_WHITE" );
   _d.currentTile = 0;
   _d.posMode = 0;
   _d.terraintPic = object::Info::find( object::terrain ).randomPicture( Size::square( 1 ) );
@@ -767,7 +767,7 @@ Tilemap& Layer::_map() const
   if( _d.city.isValid() )
     return _d.city->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  Logger::warning( "!!! City is null at Walker::_map()" );
   return config::tilemap.invalid();
 }
 
@@ -817,6 +817,18 @@ bool DrawOptions::getFlag(DrawOptions::Flag flag)
 void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
 {
   instance().setFlag( flag, value );
+}
+
+bool DrawOptions::getFlag(const std::string& name)
+{
+  auto flag = findFlag(name);
+  return getFlag(flag);
+}
+
+void DrawOptions::takeFlag(const std::string& name, int value)
+{
+  auto flag = findFlag(name);
+  takeFlag(flag,value);
 }
 
 DrawOptions::Flag DrawOptions::findFlag(const std::string& name)

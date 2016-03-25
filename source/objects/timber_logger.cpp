@@ -150,6 +150,6 @@ void TimberLogger::_checkDistance2forest()
 {
   const Tile& tile = _findNearestForest( city::AreaInfo( _city(), pos() ) );
   _d->distance2forest = tile.i() >= 0
-                          ? tile.epos().distanceFrom( pos() )
+                          ? (int)tile.epos().distanceFrom( pos() )
                           : _d->workRange + 1;
 }

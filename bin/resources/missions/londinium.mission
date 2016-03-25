@@ -23,11 +23,13 @@
     finishDate : "150.01.01"
     next : ":/missions/mission11.briefing"
     title : "##win_procurator_title##"
-    win.text : "##londinium_win_text##"
-    may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##londinium_10_title##"
+    startSound : "londinium_speech"
     overview :  [ "##ondinium_10_overview##" ]
+    winText : "##londinium_win_text##"
+    winContinue : false
+    winSound     : "londinium_win_speech"
   }
 
   empire : {
@@ -45,7 +47,7 @@
         buys : { timber : 40, pottery : 40 }
       }
 
-			Lutetia : {
+      Lutetia : {
         nation : "roman"
 
         sea : true
@@ -56,7 +58,7 @@
         buys : { wheat : 15, pottery : 40 }
       }
 
-			"Augusta Trevorum" : {
+      "Augusta Trevorum" : {
         sea : true
         land : true
         available : true
@@ -188,45 +190,45 @@
     }
 
     change_salary_1#empire_options : {
-			date : "56.08.01"
+      date : "56.08.01"
       empire : {
-				workerSalary : 31
-      } 
+        workerSalary : 31
+      }
     }
 
     change_salary_2#empire_options : {
-			date : "62.08.01"
+      date : "62.08.01"
       empire : {
-				workerSalary : 32
-      } 
+        workerSalary : 32
+      }
     }
 
     change_salary_3#empire_options : {
-			date : "72.08.01"
+      date : "72.08.01"
       empire : {
-				workerSalary : 33
-      } 
+        workerSalary : 33
+      }
     }
 
     change_salary_4#empire_options : {
-			date : "92.08.01"
+      date : "92.08.01"
       empire : {
-				workerSalary : 34
-      } 
+        workerSalary : 34
+      }
     }
 
-		change_salary_5#empire_options : {
-			date : "105.08.01"
+    change_salary_5#empire_options : {
+      date : "105.08.01"
       empire : {
-				workerSalary : 35
-      } 
+        workerSalary : 35
+      }
     }
 
-		change_salary_6#empire_options : {
-			date : "120.08.01"
+    change_salary_6#empire_options : {
+      date : "120.08.01"
       empire : {
-				workerSalary : 36
-      } 
+        workerSalary : 36
+      }
     }
 
     emperor_request_3#city_request : {
@@ -292,7 +294,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_10#city_request : {
+    emperor_request_10#city_request : {
       date : "72.08.01"
       reqtype : "good_request"
       month : 24
@@ -301,7 +303,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_11#city_request : {
+    emperor_request_11#city_request : {
       date : "77.08.01"
       reqtype : "good_request"
       month : 24
@@ -310,7 +312,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_12#city_request : {
+    emperor_request_12#city_request : {
       date : "82.08.01"
       reqtype : "good_request"
       month : 24
@@ -319,7 +321,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_13#city_request : {
+    emperor_request_13#city_request : {
       date : "87.08.01"
       reqtype : "good_request"
       month : 24
@@ -328,7 +330,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_14#city_request : {
+    emperor_request_14#city_request : {
       date : "92.08.01"
       reqtype : "good_request"
       month : 24
@@ -337,7 +339,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_15#city_request : {
+    emperor_request_15#city_request : {
       date : "97.08.01"
       reqtype : "good_request"
       month : 24
@@ -346,7 +348,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_16#city_request : {
+    emperor_request_16#city_request : {
       date : "102.08.01"
       reqtype : "good_request"
       month : 24
@@ -355,7 +357,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-		emperor_request_17#city_request : {
+    emperor_request_17#city_request : {
       date : "107.08.01"
       reqtype : "good_request"
       month : 24
@@ -759,7 +761,7 @@
           video : "spy_barbarian"
         }
       }
-    }    
+    }
   }
 
   buildoptions :

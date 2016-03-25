@@ -1,0 +1,10 @@
+{
+ title : "##reservoir##"
+ sound : "fanfare"
+ text  : "@Aquädukte& leiten das Wasser in Reservoirs, von denen es über Ton- oder Holzröhren zu @Brunnen&, @Bäder& und privaten Wohnhäusern überall in der Stadt geleitet wurde. Um 270 v. Chr. besaß Rom etwa 250 Reservoirs mit Vorflutern, in denen Schmutzablagerungen ausgefiltert wurden, dazu ein hochentwickeltes Netz aus Schleusen und Wasserhähnen, die den Durchfluss des Wassers regulierten. Die Besteuerung von Rohrleitungen zu Privat- und Geschäftshäusern war die Haupteinnahmequelle für die Stadtkasse, der erlaubte Durchmesser der Rohre zu Privathäusern wurde per Gesetz festgelegt. Die Kaiser erkannten, dass sauberes Wasser in reichlicher Menge ein äußerst wichtiger Faktor für die Aufrechterhaltung der bürgerlichen Ordnung war, und befahlen regelmäßige Inspektionen des Wassersystems, zum Teil um Leckstellen zu finden und zu reparieren, aber auch um illegale Zapfstellen aufzuspüren. Bürger mit bescheideneren Ansprüchen holten kostenloses Wasser aus öffentlichen Brunnen."
+ uri : {
+  "Aquädukte" : "aqueduct_history"
+  "Brunnen" : "fountain_history"
+  "Bäder" : "bathhouse_history"
+ }
+}

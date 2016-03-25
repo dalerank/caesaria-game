@@ -60,7 +60,7 @@ public:
   //! prepare render state
   virtual void beforeDraw( gfx::Engine& painter );
 
-  //! override render function 
+  //! override render function
   virtual void draw( gfx::Engine& painter );
 
   virtual void debugDraw(gfx::Engine &painter);
@@ -90,8 +90,7 @@ public:
 
   virtual void setFont( const Font& font, ElementState state );
   virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fname );
-  virtual void setFont( FontType type, NColor color=0 );
+  virtual void setFont( const std::string& fname, NColor color=NColor() );
 
   virtual Font font( ElementState state ) const;
 
@@ -99,12 +98,13 @@ public:
   virtual void setIsPushButton( bool value );
 
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path &ui);
 
   virtual void setTextOffset( const Point& offset );
-  virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=0);
+  virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
 
 signals public:
-  virtual Signal0<>& onClicked(); 
+  virtual Signal0<>& onClicked();
   virtual Signal1<Widget*>& onClickedEx();
 
 protected:

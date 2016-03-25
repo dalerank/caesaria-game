@@ -24,8 +24,10 @@
 #include <GameGfx>
 #include <GameEvents>
 #include <GameVfs>
+#include <GameCity>
 #include <GameLogger>
 #include <GameApp>
+#include "font/font_context.h"
 
 #include "sound/engine.hpp"
 #include "steam.hpp"
@@ -42,143 +44,26 @@ class Lobby::Impl
 public:
   Picture bgPicture;
   Point bgOffset;
-  gui::Lobby* menu;         // menu to display
-  bool isStopped;
   Game* game;
   Engine* engine;
   std::string fileMap;
   int result;
 
-  Picture userImage;
-  gui::Label* lbSteamName;
-
 public:
-  void showCredits();
-  void showLoadMenu();
-  void showNewGame();
-  void showOptionsMenu();
-  void showChangesWindowIfNeed();
-  void playRandomap();
-  void constructorMode();
-  void showMainMenu();
-  void showSoundOptions();
-  void showVideoOptions();
-  void showMissionSelector();
-  void quitGame();
-  void selectFile( std::string fileName );
-  void showMapSelectDialog();
-  void showSaveSelectDialog();
-  void changePlayerName();
-  void showAdvancedMaterials();
-  void startCareer();
-  void showLanguageOptions();
-  void showPackageOptions();
   void fitScreenResolution();
-  void playMenuSoundTheme();
-  void continuePlay();
-  void resolveSteamStats();
-  void changePlayerNameIfNeed(bool force=false);
   void restart();
-  void openDlcDirectory(Widget* sender);
-  void showLogFile();
-  void showChanges();
   gui::Ui& ui();
 };
-
-void Lobby::Impl::showSaveSelectDialog()
-{
-  vfs::Path savesPath = SETTINGS_STR( savedir );
-
-  result = Lobby::loadSavedGame;
-  auto& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
-  loadGameDialog.setShowExtension( false );
-  loadGameDialog.setMayDelete( true );
-
-  CONNECT( &loadGameDialog, onSelectFile(), this, Impl::selectFile );
-  loadGameDialog.setTitle( _("##mainmenu_loadgame##") );
-  loadGameDialog.setText( _("##load_this_game##") );
-
-  changePlayerNameIfNeed();
-}
-
-void Lobby::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
-
-void Lobby::Impl::showLogFile()
-{
-  vfs::Directory logfile = SETTINGS_STR( workDir );
-  logfile = logfile/SETTINGS_STR( logfile );
-  if( !logfile.exist() )
-      dialog::Information( &ui(), "", "Cant found logfile");
-
-  OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
-}
-
-void Lobby::Impl::showChanges()
-{
-  VariantList vl; vl << true;
-  script::Core::execFunction( "OnShowChanges", vl );
-}
-
-void Lobby::Impl::showChangesWindowIfNeed()
-{
-  VariantList vl; vl << false;
-  script::Core::execFunction( "OnShowChanges", vl );
-}
-
-void Lobby::Impl::changePlayerNameIfNeed(bool force)
-{
-  VariantList vl; vl << force;
-  script::Core::execFunction( "OnChangePlayerName", vl );
-}
 
 void Lobby::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
-  SETTINGS_SET_VALUE( resolution, modes.front() );
-  SETTINGS_SET_VALUE( fullscreen, true );
-  SETTINGS_SET_VALUE( screenFitted, true );
+  SETTINGS_SET_VALUE(resolution, modes.front());
+  SETTINGS_SET_VALUE(fullscreen, true);
+  SETTINGS_SET_VALUE(screenFitted, true);
   game::Settings::save();
 
   dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
-}
-
-void Lobby::Impl::playMenuSoundTheme()
-{
-  audio::Engine::instance().play( "main_menu", 50, audio::theme );
-}
-
-void Lobby::Impl::continuePlay()
-{
-  result = Lobby::loadSavedGame;
-  selectFile( SETTINGS_STR( lastGame ) );
-}
-
-void Lobby::Impl::resolveSteamStats()
-{
-  if( steamapi::available() )
-  {
-    int offset = 0;
-    for( int k=0; k < steamapi::achv_count; k++ )
-    {
-      auto achieventId = steamapi::AchievementType(k);
-      if( steamapi::isAchievementReached( achieventId ) )
-      {
-        gfx::Picture pic = steamapi::achievementImage( achieventId );
-        if( pic.isValid() )
-        {
-          auto& img = ui().add<gui::Image>( Point( 10, 100 + offset ), pic );
-          img.setTooltipText( steamapi::achievementCaption( achieventId ) );
-          offset += 65;
-        }
-      }
-    }
-  }
-}
-
-void Lobby::reload()
-{
-  _d->result = Lobby::reloadScreen;
-  _d->isStopped = true;
 }
 
 void Lobby::Impl::restart()
@@ -195,258 +80,91 @@ void Lobby::Impl::restart()
   OSystem::restartProcess( appFile.toString(), appDir.toString(), StringArray() );
 }
 
-void Lobby::Impl::openDlcDirectory(Widget* sender)
+void Lobby::setMode(int mode)
 {
-  if( sender == 0 )
-    return;
-
-  vfs::Path path( sender->getProperty( "path" ).toString() );
-  ui().add<DlcFolderViewer>( path );
-}
-
-void Lobby::Impl::showSoundOptions()
-{
-  events::dispatch<events::ChangeSoundOptions>();
-}
-
-void Lobby::Impl::showLanguageOptions()
-{
-  script::Core::execFunction( "OnShowLanguageDialog" );
-}
-
-void Lobby::Impl::showPackageOptions()
-{
-  ui().add<dialog::PackageOptions>( Rect() );
-}
-
-void Lobby::Impl::startCareer()
-{
-  //menu->clear();
-
-  events::dispatch<events::ScriptFunc>( "OnStartCareer" );
-
-  //CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
-}
-
-void Lobby::newGame()
-{
-  _d->result=startNewGame; _d->isStopped=true;
-}
-
-void Lobby::Impl::showCredits()
-{
-  events::dispatch<events::ScriptFunc>( "OnShowCredits" );
-}
-
-#define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
-
-void Lobby::Impl::showLoadMenu()
-{
-  menu->clear();
-
-  ADD_MENU_BUTTON( "##mainmenu_playmission##", Impl::showMissionSelector )
-  ADD_MENU_BUTTON( "##mainmenu_loadgame##",    Impl::showSaveSelectDialog )
-  ADD_MENU_BUTTON( "##mainmenu_loadmap##",     Impl::showMapSelectDialog )
-  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
-}
-
-void Lobby::Impl::constructorMode()
-{
-  auto& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
-                                                     vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                     -1 );
-  loadFileDialog.setMayDelete( false );
-
-  result = Lobby::loadConstructor;
-  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
-  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
-  loadFileDialog.setText( _("##start_this_map##") );
-
-  changePlayerNameIfNeed();
-
-}
-
-void Lobby::Impl::playRandomap()
-{
-  result = Lobby::loadMission;
-  fileMap = ":/missions/random.mission";
-  isStopped = true;
-}
-
-void Lobby::Impl::showOptionsMenu()
-{
-  menu->clear();
-
-  ADD_MENU_BUTTON( "##mainmenu_language##", Impl::showLanguageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_video##",    Impl::showVideoOptions )
-  ADD_MENU_BUTTON( "##mainmenu_sound##",    Impl::showSoundOptions )
-  ADD_MENU_BUTTON( "##mainmenu_package##",  Impl::showPackageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_plname##",   Impl::changePlayerName )
-  ADD_MENU_BUTTON( "##mainmenu_showlog##",  Impl::showLogFile )
-  ADD_MENU_BUTTON( "##mainmenu_changes##",  Impl::showChanges )
-  ADD_MENU_BUTTON( "##cancel##",            Impl::showMainMenu )
-}
-
-void Lobby::Impl::showNewGame()
-{
-  menu->clear();
-
-  ADD_MENU_BUTTON( "##mainmenu_startcareer##", Impl::startCareer )
-  ADD_MENU_BUTTON( "##mainmenu_randommap##",   Impl::playRandomap )
-  ADD_MENU_BUTTON( "##mainmenu_constructor##", Impl::constructorMode )
-  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
-}
-
-void Lobby::Impl::showMainMenu()
-{
-  menu->clear();
-
-  std::string lastGame = SETTINGS_STR( lastGame );
-  if( !lastGame.empty() )
-    ADD_MENU_BUTTON( "##mainmenu_continueplay##", Impl::continuePlay )
-
-  ADD_MENU_BUTTON( "##mainmenu_newgame##",        Impl::showNewGame )
-  ADD_MENU_BUTTON( "##mainmenu_load##",           Impl::showLoadMenu )
-  ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
-  ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
-
-  if( vfs::Path( ":/dlc" ).exist() )
-    ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
-
-  ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
-
-  showChangesWindowIfNeed();
-}
-
-void Lobby::Impl::showAdvancedMaterials()
-{
-  menu->clear();
-
-  vfs::Directory dir( ":/dlc" );
-  if( !dir.exist() )
+  switch(mode)
   {
-    auto& infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
-    infoDialog.show();
-    showMainMenu();
-    return;
+  case loadMission:
+    _isStopped = true;
+    _d->result = loadMission;
+    if (!vfs::Path(_d->fileMap).exist())
+      Logger::warning("!!! File to load is empty in Lobby::setMode");
+  break;
+
+  case loadMap:
+  case loadConstructor:
+    _isStopped = true;
+    _d->result = mode;
+  break;
+
+  case startNewGame:
+    _d->result=startNewGame;
+    _isStopped=true;
+  break;
+
+  case loadSavedGame:
+    _d->result = Lobby::loadSavedGame;
+    _isStopped = true;
+  break;
+
+  case reloadScreen:
+    _d->result = Lobby::reloadScreen;
+    _isStopped = true;
+  break;
+
+  case res_close:
+    game::Settings::save();
+    _d->result=res_close;
+    _isStopped=true;
+  break;
   }
-
-  StringArray excludeFolders;
-  excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
-  vfs::Entries::Items entries = dir.entries().items();
-  for( auto& it : entries )
-  {
-    if( it.isDirectory )
-    {
-      if( excludeFolders.contains( it.name.toString() ) )
-        continue;
-
-      vfs::Path path2subdir = it.fullpath;
-      std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
-
-      auto& btn = menu->addButton( _(locText), -1 );
-      btn.addProperty( "path", Variant( path2subdir.toString() ) );
-      CONNECT( &btn, onClickedEx(), this, Impl::openDlcDirectory )
-    }
-  }
-
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
-}
-
-void Lobby::Impl::showVideoOptions()
-{
-  events::dispatch<events::ScriptFunc>( "OnShowVideoSettings" );
-}
-
-void Lobby::Impl::showMissionSelector()
-{
-  result = Lobby::loadMission;
-  auto& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
-
-  CONNECT( &wnd, onSelectFile(), this, Impl::selectFile );
-
-  changePlayerNameIfNeed();
-}
-
-void Lobby::Impl::quitGame()
-{
-  game::Settings::save();
-  result=closeApplication;
-  isStopped=true;
-}
-
-void Lobby::Impl::selectFile(std::string fileName)
-{
-  fileMap = fileName;
-  isStopped = true;
-}
-
-void Lobby::Impl::showMapSelectDialog()
-{
-  auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                      -1 );
-  loadFileDialog.setMayDelete( false );
-
-  result = Lobby::loadMap;
-  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
-  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
-  loadFileDialog.setText( _("##start_this_map##") );
-
-  changePlayerNameIfNeed();
 }
 
 Lobby::Lobby( Game& game, Engine& engine ) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
-  _d->isStopped = false;
+  _isStopped = false;
   _d->game = &game;
-  _d->userImage = Picture::getInvalid();
   _d->engine = &engine;
 }
 
 Lobby::~Lobby() {}
 
-void Lobby::draw()
+void Lobby::draw(Engine& engine)
 {
   _d->ui().beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->ui().draw();
-
-  if( steamapi::available() )
-  {
-    _d->engine->draw( _d->userImage, Point( 20, 20 ) );
-  }
 }
 
-void Lobby::handleEvent( NEvent& event )
+void Lobby::handleEvent(NEvent& event)
 {
   if (event.EventType == sEventQuit)
-  {
-    _d->quitGame();
-  }
+    setMode(res_close);
 
   _d->ui().handleEvent( event );
+}
+
+void Lobby::setOption(const std::string& name, Variant value)
+{
+  if(name=="nextFile")
+    _d->fileMap = value.toString();
 }
 
 void Lobby::initialize()
 {
   events::Dispatcher::instance().reset();
-  Logger::warning( "ScreenMenu: initialize start");
-  std::string resName = SETTINGS_STR( titleResource );
-  _d->bgPicture.load( resName, 1);
+  Logger::debug("ScreenMenu: initialize start");
+  std::string resName = SETTINGS_STR(titleResource);
+  _d->bgPicture.load(resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->ui().vsize() - _d->bgPicture.size())/2;
-  _d->bgOffset = Point( tmpSize.width(), tmpSize.height() );
+  _d->bgOffset = Point(tmpSize.width(), tmpSize.height());
 
   _d->ui().clear();
 
-  _d->menu = &_d->ui().add<gui::Lobby>();
-
-  events::dispatch<events::ScriptFunc>( "OnLobbyStart" );
-
-  _d->showMainMenu();
+  events::dispatch<events::ScriptFunc>("OnLobbyStart");
 
   if( OSystem::isAndroid() )
   {
@@ -455,10 +173,10 @@ void Lobby::initialize()
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
       auto& dialog = _d->ui().add<Dialogbox>( dialogRect,
-                                                    "Information", "Is need autofit screen resolution?",
-                                                    Dialogbox::btnYesNo );
+                                              "Information", "Is need autofit screen resolution?",
+                                              Dialogbox::btnYesNo );
       CONNECT( &dialog, onYes(),     &dialog, Dialogbox::deleteLater );
-      CONNECT( &dialog, onNo(), &dialog, Dialogbox::deleteLater );
+      CONNECT( &dialog, onNo(),      &dialog, Dialogbox::deleteLater );
       CONNECT( &dialog, onYes(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 
@@ -466,33 +184,12 @@ void Lobby::initialize()
     }
   }
 
-  if( !OSystem::isAndroid() )
-    _d->playMenuSoundTheme();
-
   if( steamapi::available() )
   {
     steamapi::init();
 
-    std::string steamName = steamapi::userName();
-
-    std::string lastName = SETTINGS_STR( playerName );
-    if( lastName.empty() )
-      SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
-
-    _d->userImage = steamapi::userImage();
-    if( steamName.empty() )
-    {
-      OSystem::error( "Error", "Can't login in Steam" );
-      _d->isStopped = true;
-      _d->result = closeApplication;
-      return;
-    }
-
-    std::string text = fmt::format( "Build {0}\n{1}", GAME_BUILD_NUMBER, steamName );
-    _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
-    _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
-    _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( FONT_3, ColorList::white );
+    VariantList vl; vl << Variant(steamapi::userName());
+    events::dispatch<events::ScriptFunc>("OnReceivedSteamUserName", vl);
   }
 }
 
@@ -507,14 +204,13 @@ void Lobby::afterFrame()
   {
     steamapi::update();
     if( steamapi::isStatsReceived() )
-      _d->resolveSteamStats();
+      events::dispatch<events::ScriptFunc>("OnReceivedSteamStats");
   }
 }
 
-int Lobby::result() const{  return _d->result;}
-bool Lobby::isStopped() const{  return _d->isStopped;}
+int Lobby::result() const { return _d->result;}
 Ui& Lobby::Impl::ui() { return *game->gui(); }
-std::string Lobby::mapName() const{  return _d->fileMap;}
+std::string Lobby::mapName() const { return _d->fileMap;}
 std::string Lobby::playerName() const { return SETTINGS_STR( playerName ); }
 
 }//end namespace scene

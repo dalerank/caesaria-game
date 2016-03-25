@@ -89,9 +89,9 @@ private:
 class EmpireHelper 
 {
 public:
-  static float governorSalaryKoeff( CityPtr city );
-  static GovernorRanks ranks();
-  static GovernorRank getRank(GovernorRank::Level level);
+  static float governorSalaryKoeff(CityPtr city);
+  static GovernorRanks& ranks();
+  static const GovernorRank& getRank(GovernorRank::Level level);
 };
 
 }//end namespace world

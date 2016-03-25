@@ -136,8 +136,8 @@
     desirability : { base : -3, range : 3, step : 1 }
     employers : 8
     class : "entertainment"
-    image : [ "entertainment", 51 ]
-    animation : { rc : "entertainment", start : 52, count : 10, offset : [ 62, 24 ], delay : 2 }
+    image : [ "glschool_a", 1 ]
+    animation : { rc : "glschool_a", start : 2, count : 13, offset : [ 62, 24 ], delay : 2 }
     sound : [ "gladiatorpit", 1 ]
   },
 
@@ -891,6 +891,7 @@
     class : "industry"
     sound : [ "winery", 1 ]
     inflammability : 0.7
+    image : [ "commerce", 86 ]
     animation : { rc : "commerce", start : 87, count : 12, offset : [ 140, 36 ], delay : 4 }
     stock.image : {
       qty_100 : { qty : 100, image : [ "vinardst", 1 ], offset : [0,27] }

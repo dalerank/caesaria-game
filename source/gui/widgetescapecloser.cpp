@@ -25,7 +25,7 @@ REGISTER_CLASS_IN_WIDGETFACTORY(WidgetClosers)
 WidgetClosers::WidgetClosers(Widget* parent)
   : Widget( parent, -1, Rect() )
 {
-  parent->installEventHandler( this );
+  parent->installEventHandler(this);
 }
 
 void WidgetClosers::addCloseCode(int code)

@@ -140,7 +140,7 @@ int GiftHistory::update(const Gift& gift)
   int value = gift.value();
   if( value <= 0 )
   {
-    Logger::warning( "!!! WARNING: Relation update with 0 value from " + gift.sender() );
+    Logger::warning( "!!! Relation update with 0 value from " + gift.sender() );
     value = 1;
   }
 

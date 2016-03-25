@@ -94,8 +94,8 @@ public:
     : Label( parent, rect ),
       _service( service ),
       _info( info )
-  {    
-    setFont( FONT_1_WHITE );
+  {
+    setFont( "FONT_1_WHITE" );
   }
 
   virtual void _updateTexture( gfx::Engine& painter )
@@ -121,7 +121,7 @@ public:
 
 class Entertainment::Impl
 {
-public:  
+public:
   PlayerCityPtr city;
 
   Label* lbBlackframe;
@@ -219,7 +219,7 @@ void Entertainment::_assignFestival( int divinityType, int festSize)
 }
 
 void Entertainment::Impl::updateInfo()
-{ 
+{
   StringArray troubles;
   if( !lbTroubleInfo )
     return;
@@ -334,7 +334,7 @@ void Entertainment::Impl::updateFestivalInfo()
 
   FestivalPtr festivals = city->statistic().services.find<Festival>();
   if( festivals.isValid() )
-  {    
+  {
     std::string text = utils::i2str( monthFromLastFestival ) + " " +  _("##month_from_last_festival##");
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }

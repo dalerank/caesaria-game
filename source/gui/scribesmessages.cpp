@@ -59,17 +59,17 @@ public:
   ScribesListBox( Widget* p, const Rect& rect ) : ListBox( p, rect )
   {
     setFlag( selectOnMove, true );
-    setItemHeight( Font::create( FONT_1 ).getTextSize( "A" ).width() + 4 );
+    setItemsHeight( Font::create( "FONT_1" ).getTextSize( "A" ).width() + 4 );
   }
 
-  virtual ListBoxItem& addItem( const std::string& text, Font font, const int color=0 )
+  virtual ListBoxItem& addItem( const std::string& text, Font font, NColor color=ColorList::clear )
   {
     ListBoxItem& item = ListBox::addItem( text, font, color );
 
     ListBoxItem::OverrideColor& itemfc = item.overrideColors[ ListBoxItem::simple ];
     item.overrideColors[ ListBoxItem::hovered ].font = itemfc.font;
     item.overrideColors[ ListBoxItem::hovered ].Use = true;
-    item.overrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
+    item.overrideColors[ ListBoxItem::hovered ].color = ColorList::red;
 
     item.setIcon( gui::rc.panel, gui::message.simple );
 
@@ -197,7 +197,7 @@ void ScribesMessages::_fillMessages()
 
   for( auto mt : messages )
   {
-    ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
+    ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( "FONT_1" ) );
     item.setData( literals::opened, mt.opened );
     item.setData( literals::date, mt.date );
     item.setData( literals::ext, mt.ext );

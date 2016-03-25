@@ -1,0 +1,9 @@
+{
+ title : "##garden_plaza##"
+ sound : "fanfare"
+ text  : "Sowohl Gärten als auch Plätze haben bei CaesarIA einen eindeutigen Zweck - die Steigerung der Attraktivität von Häusern und die Verschönerung der Stadt. Gärten verwandeln machliegendes Land in wunderschöne Parks. Plätze werden auf bereits existierenden @Straßen& angelegt. Verwenden Sie eine der beiden Optionen, um die Attraktivität eines Viertels zu steigern. Gärten benötigen keine Straßenanbindung.\n\nKlicken Sie @hier&, wenn Sie mehr über Gärten und Plätze im antiken Rom erfahren möchten."
+ uri : {
+  "Straßen" : "road"
+  "hier" : "garden_plaza_history"
+ }
+}

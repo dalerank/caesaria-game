@@ -106,7 +106,7 @@ good::Products Market::mostNeededGoods()
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  for( auto& goodType : good::all() )
+  for( const auto& goodType : good::all() )
   {
     // for all types of good
     good::Stock &stock = _d->goodStore.getStock(goodType);
@@ -138,14 +138,14 @@ int Market::getGoodDemand(const good::Product &goodType)
 void Market::save( VariantMap& stream) const 
 {
   ServiceBuilding::save( stream );
-  VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
+  VARIANT_SAVE_CLASS_D(stream, _d, goodStore)
 }
 
 void Market::load( const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
+  VARIANT_LOAD_CLASS_D(_d, goodStore, stream)
 
   _d->initStore();
 }
@@ -153,16 +153,15 @@ void Market::load( const VariantMap& stream)
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
-  if( isOk && !isLoadingMode )
+  if (isOk && !info.onload)
   {
     Locations locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
     bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
 
-    if( !accessGranary )
+    if (!accessGranary)
         _setError( "##market_too_far_from_granary##" );
-    else if( !accessWarehouse )
+    else if (!accessWarehouse)
         _setError( "##market_too_far_from_warehouse##" );
   }
 

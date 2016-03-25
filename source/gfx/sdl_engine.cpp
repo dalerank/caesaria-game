@@ -27,18 +27,15 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "IMG_savepng.h"
-#include "core/exception.hpp"
-#include "core/requirements.hpp"
-#include "core/position.hpp"
-#include "pictureconverter.hpp"
-#include "core/time.hpp"
 #include "core/logger.hpp"
-#include "core/utils.hpp"
-#include "core/font.hpp"
-#include "core/eventconverter.hpp"
-#include "core/timer.hpp"
+#include "core/signals.hpp"
+#include "core/time.hpp"
 #include "core/debug_timer.hpp"
+#include "core/exception.hpp"
+#include "core/eventconverter.hpp"
+#include "IMG_savepng.h"
+#include "pictureconverter.hpp"
+#include "font/font.hpp"
 #include "sdl_batcher.hpp"
 
 #ifdef GAME_PLATFORM_MACOSX
@@ -211,11 +208,11 @@ void SdlEngine::_drawFrameMetrics()
     if( DebugTimer::ticks() - timeCount > 500 )
     {
       std::string debugTextStr = fmt::format( "fps:{} dc:{}", fps(), _d->drawCall );
-      _d->metrics.lbText.fill( 0, Rect() );
+      _d->metrics.lbText.fill( ColorList::clear, Rect() );
       _d->debugFont.draw( _d->metrics.lbText, debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
-      Logger::warning( "FPS: {}", fps );
+      Logger::debug( "FPS: {}", fps );
 #endif
     }
     draw( _d->metrics.lbText, Point( _d->screen.width() / 2, 2 ), 0 );
@@ -224,19 +221,19 @@ void SdlEngine::_drawFrameMetrics()
 
 void SdlEngine::init()
 {
-  Logger::warning( "SDLGraficEngine: init");
+  Logger::debug( "SDLGraficEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {}", SDL_GetError() );
+    Logger::fatal( "!!! Unable to initialize SDL: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
-  Logger::warning( "SDLGraficEngine: ttf init");
+  Logger::debug( "SDLGraficEngine: ttf init");
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {}", SDL_GetError() );
+    Logger::debug( "!!! Unable to initialize ttf: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -260,7 +257,7 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  Logger::warning( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
+  Logger::debug( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
   if( isFullscreen() )
   {
@@ -284,18 +281,18 @@ void SdlEngine::init()
 
   if (_d->window == NULL)
   {
-    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {}", SDL_GetError() );
+    Logger::fatal( "!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
   }
 
-  Logger::warning("SDLGraficEngine: init successfull");  
+  Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
   SDL_Renderer *renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
-    Logger::warning( "CRITICAL!!! Unable to create renderer: {}", SDL_GetError() );
+    Logger::fatal( "!!! Unable to create renderer: {}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
 
@@ -310,25 +307,25 @@ void SdlEngine::init()
   for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
   {
     SDL_GetRenderDriverInfo( k, &info );
-    Logger::warning( "SDLGraficEngine: availabe render {}", info.name );
+    Logger::debug( "SDLGraficEngine: availabe render {}", info.name );
   }
 
-  SDL_GetRendererInfo( renderer, &info );  
+  SDL_GetRendererInfo( renderer, &info );
   int gl_version;
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
-  Logger::warning( "SDLGraficEngine: init render {}", info.name );
-  Logger::warning( "SDLGraficEngine: using OpenGL {}", gl_version );
-  Logger::warning( "SDLGraficEngine: max texture size is {}x{}", info.max_texture_width, info.max_texture_height );
+  Logger::debug( "SDLGraficEngine: init render {}", info.name );
+  Logger::debug( "SDLGraficEngine: using OpenGL {}", gl_version );
+  Logger::debug( "SDLGraficEngine: max texture size is {}x{}", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
                                                  SDL_TEXTUREACCESS_TARGET,
                                                  _srcSize.width(), _srcSize.height());
 
-  Logger::warning( "SDLGraficEngine: init successfull");
+  Logger::debug( "SDLGraficEngine: init successfull");
   _d->screen.init( screenTexture, 0, 0 );
   _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
 
@@ -337,7 +334,7 @@ void SdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
+  Logger::debug( "SDLGraphicEngine: version:{} compiler:{}", GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
   std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", GAME_BUILD_NUMBER );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
@@ -400,6 +397,29 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   SDL_SetSurfaceBlendMode( ioPicture.surface(), SDL_BLENDMODE_BLEND );
 }
 
+void SdlEngine::updateBatch(Batch& batch, const Point& newpos)
+{
+  if(!batch.native())
+    return;
+
+  int size = batch.native()->size;
+  if(size==0)
+    return;
+
+  std::vector<SDL_Rect> rects(size);
+  SDL_GetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+
+  int deltax = rects.front().x - newpos.x();
+  int deltay = rects.front().y - newpos.y();
+  for (auto& i : rects)
+  {
+    i.x -= deltax;
+    i.y -= deltay;
+  }
+
+  SDL_SetBatchDstRects(_d->renderer,batch.native(), rects.data(), size);
+}
+
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
   try
@@ -407,16 +427,13 @@ void SdlEngine::unloadPicture( Picture& ioPicture )
     if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
     if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
   }
-  catch(...)
-  {
-
-  }
+  catch(...)  {}
 
   ioPicture = Picture();
 }
 
 void SdlEngine::Impl::renderStart()
-{ 
+{
   SDL_GetMouseState( &mousepos.rx(), &mousepos.ry() );
   SDL_RenderClear(renderer);  // black background for a complete redraw
   batcher.reset();
@@ -445,7 +462,7 @@ void SdlEngine::Impl::renderFinish()
 Size SdlEngine::viewportSize() const { return _srcSize * _d->screenScale; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
-{    
+{
   if( !picture.isValid() )
       return;
 
@@ -669,7 +686,7 @@ void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
 }
 
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
-{  
+{
   Impl::MaskInfo& mask = _d->mask;
 
   if( !mask.equals( rmask, gmask, bmask, amask ) )
@@ -709,7 +726,7 @@ void SdlEngine::setScale( float scale )
   static float lastScale = 0;
   if( lastScale != scale )
   {
-    Logger::warning( "SdlEngine: set scale {}", scale );
+    Logger::debug( "SdlEngine: set scale {}", scale );
     lastScale = scale;
   }
 
@@ -753,6 +770,7 @@ Engine::Modes SdlEngine::modes() const
   ADD_RESOLUTION(1600,900)
   ADD_RESOLUTION(1440,800)
   ADD_RESOLUTION(1280,1024)
+  ADD_RESOLUTION(1280,800)
   ADD_RESOLUTION(1024,768)
   ADD_RESOLUTION(800,600)
 #undef ADD_RESOLUTION
@@ -771,7 +789,7 @@ Engine::Modes SdlEngine::modes() const
   }
 
   Modes ret;
-  for( auto& mode : uniqueModes )
+  for( const auto& mode : uniqueModes )
   {
     int width = (mode >> 16)&0xffff;
     if( width <= maxWidth )
@@ -794,7 +812,7 @@ void SdlEngine::setFlag( int flag, int value )
 
   switch( flag )
   {
-  case showMetrics: _d->debugFont = Font::create( FONT_2 ); break;
+  case showMetrics: _d->debugFont = Font::create( "FONT_2" ); break;
   case batching:  _d->batcher.setActive( value );  break;
   default: break;
   }

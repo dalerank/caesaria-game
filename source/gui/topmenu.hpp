@@ -30,25 +30,12 @@ namespace gui
 class TopMenu : public MainMenu
 {
 public:
-  TopMenu( Widget* parent, const int height, bool useIcon );
+  TopMenu(Widget* parent, const int height, bool useIcon);
 
   // draw on screen
-  void draw( gfx::Engine& engine );  
-  void setFunds( int value );
-  void setPopulation( int value );
+  virtual void draw(gfx::Engine& engine);
 
 signals public:
-  Signal0<>& onExit();
-  Signal0<>& onSave();
-  Signal0<>& onEnd();
-  Signal0<>& onLoad();
-  Signal1<bool>& onToggleConstructorMode();
-  Signal0<>& onRestart();
-  Signal0<>& onShowVideoOptions();
-  Signal0<>& onShowSoundOptions();
-  Signal0<>& onShowGameSpeedOptions();
-  Signal0<>& onShowCityOptions();
-  Signal1<Advisor>& onRequestAdvisor();
   Signal1<int>& onShowExtentInfo();
 
 private:

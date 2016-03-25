@@ -1,0 +1,9 @@
+{
+ title : "##market##"
+ sound : "fanfare"
+ text  : "Die Führung eines Geschäfts war ein Beruf für die Unterschicht und wurde gerne Sklaven oder Freigelassenen überlassen. Nach Ciceros Meinung war Kaufmannsberuf auf der Liste akzeptabler Berufe für kultivierte Römer ganz weit unten anzusiedeln. Märkte waren pulsierende Orte, auf denen die volle Bandbreite von Produkten aus dem gesamten Imperium angeboten wurde. Die meisten Märkte wurden im Freien errichtet, jedoch beherbergten einige Gebäude, wie zum Beispiel die 'Basilicae' festeingerichtete Geschäfte und waren damit Vorläufer der modernen Einkaufszentren.\nDie Basilicae, angesehene Einkaufsadressen, boten den Käufern Erholung von der Sommerhitze, wenn sie die feinsten Waren aus dem Imperium begutachteten. Sie wurden immer in der Nähe eines @Forums& gebaut. Einer der größten und bekanntesten dieser Märkte war die Basilica Julia, die außerdem als Gerichtshof und Versammlungshalle des @Senats& fungierte. Verhandlungen waren für die Öffentlichkeit zugänglich, und die Rechtsanwälte heuerten aus den Reihen der Marktkunden oft und gerne zahlreiche bezahlte Zuschauer, die ihnen zujubeln und damit die Richter beeindrucken sollten. Die Basilica Julia brannte zweimal aus. Diese Feuer hinterließen auf dem Marmorboden gründe Flecken, die von geschmolzenen Kupfermünzen stammen. Kaiser Caligula liebte es, Kupfermünzen vom Dach der Basilica zu werfen und zuzusehen, wie sich die Menschen darum balgten.\nWeniger fest installierte Märkte, sogenannte 'Tabernae', gab es seit den frühesten Zeiten der Republik. Diese einfachen Buden waren Marktstände oder Farmer bis zum Geldverleiher, seine Waren anbieten konnte."
+ uri : {
+  "Forums" : "forum"
+  "Senats" : "senate"
+ }
+}

@@ -96,7 +96,7 @@ void Peace::timeStep(const unsigned int time )
   MilitaryPtr ml = _city()->statistic().services.find<Military>();
   if( ml.isNull() )
   {
-    Logger::warning( "!!! WARNING: not found military service" );
+    Logger::error( "not found military service" );
     crashhandler::printstack(false);
     return;
   }
@@ -149,7 +149,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 {
   if( overlay.isNull() )
   {
-    Logger::warning( "WARNING!!! Peace::buildingDestroyed overlay is null" );
+    Logger::error( "Peace::buildingDestroyed overlay is null" );
     return;
   }
 

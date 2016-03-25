@@ -45,7 +45,7 @@ bool ClayPit::build(const city::AreaInfo& info)
 {
   bool isOk = Factory::build( info );
 
-  bool mayCollapse = info.city->getOption( PlayerCity::minesMayCollapse ) != 0;
+  bool mayCollapse = _cityOpt(PlayerCity::minesMayCollapse) != 0;
   if( !mayCollapse )
     _setUnworkingInterval( 0 );
 
@@ -61,7 +61,7 @@ void ClayPit::flood()
 {
   deleteLater();
 
-  Logger::warning( "WARNING!!! ClaiPit was flooded at [{},{}]", pos().i(), pos().j() );
+  Logger::debug( "!!! ClaiPit was flooded at [{},{}]", pos().i(), pos().j() );
 
   OverlayPtr flooded( new FloodedClayPit() );
   flooded->drop();
@@ -93,7 +93,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
   const_cast<ClayPit*>( this )->_setError( near_water ? "" : "##clay_pit_need_water##" );
 
   return near_water;
-} 
+}
 
 FloodedClayPit::FloodedClayPit()
   : Ruins(object::flooded_clay_pit)

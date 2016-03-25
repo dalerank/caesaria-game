@@ -32,7 +32,7 @@
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 #include "tower.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "gatehouse.hpp"
 #include "objects_factory.hpp"
 
@@ -237,7 +237,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   th._fgPictures().clear();
   int index;
   switch( directionFlags )
-  {  
+  {
   case 0: index = 178; break;  // no neighbours!
   case 1: index = 168; break;  //
   case 2: index = 157; break;  // E

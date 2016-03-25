@@ -1,0 +1,12 @@
+{  
+ title : "##wall_tower_gatehouse##"
+ sound : "fanfare"
+ text  : "To keep enemies at bay, enclose your city in walls. A determined enemy will eventually breach walls, but thick walls can take a very long time to penetrate.\n Build walls just as you build roads. Click on the map at the wall's starting point, and hold down the left mouse button, dragging the wall to the desired length and thickness. You are unlikely to build walls right away, so don't forget to reserve some space at the edges of the map for them. Walls do not require road access, and don't affect the desirability of nearby property.\n Walls are substantially more formidable when towers are incorporated at regular intervals. Towers must be built over existing wall. When given road access and sufficient labor, these towers employ guards, who must be trained at a working @barracks&. Tower guards patrol walls that are at least doubly thick, and shower invaders who dare come within range with javelins.\n Towers with active guards also have a ballista on top of them; ballistae are very powerful weapons that will also automatically fire upon any invader who comes within range.\n Walls and towers together make an impressive defense. Unfortunately, at least from a military standpoint, they are equally impassable to your own citizens unless you incorporate gatehouses. Your city needs at least one entry point (where immigrants appear) and one exit (where trade caravans leave). You can only build a gatehouse over existing road, not wall. When you try to build it, note that the direction the building faces changes every few seconds, to allow you to build it in the direction you want; simply click when it is facing the right way for you.\n Ordinary citizens prefer not to venture into your province's hinterlands, so when they reach a gatehouse they turn around and go back into the city.\n Follow these links for general information about @peace and war& and monitoring your @legions&, or for historical text about city walls or @towers and gatehouses&."
+ uri : {
+  "barracks" : "barracks"
+  "peace and war" : "peace_and_war"
+  "legions" : "legion"
+  "towers and gatehouses" : "history_wall_tower"
+  "here" : "http://wikipedia.ru"
+ }
+}

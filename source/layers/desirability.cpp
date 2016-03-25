@@ -22,7 +22,7 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "city/statistic.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/event.hpp"
 #include "core/utils.hpp"
 #include "constants.hpp"

@@ -58,7 +58,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
   int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
-    Logger::warning( "Execute random collapse event" );
+    Logger::info( "Execute random collapse event" );
     _d->isDeleted = true;
 
     ConstructionList ctrs;

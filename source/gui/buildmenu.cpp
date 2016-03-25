@@ -23,6 +23,7 @@
 #include <GameCore>
 #include <GameLogger>
 #include <GameObjects>
+#include <GameCity>
 #include <GameGui>
 
 #include "gfx/decorator.hpp"
@@ -53,7 +54,7 @@ public:
   BuildButton( Widget* parent, const std::string& caption, const Rect& rectangle, int id )
       : PushButton( parent, rectangle, caption, id )
   {
-    Font fontRed = Font::create( FONT_2_RED );
+    Font fontRed = Font::create( "FONT_2_RED" );
 
     setFont( fontRed, stHovered );
     setTextAlignment( align::upperLeft, align::center );
@@ -92,7 +93,7 @@ public:
     Font f = font( state );
 
     if( f.isValid() && cost() >= 0 )
-    {           
+    {
       std::string text = utils::i2str( cost() );
       Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-27, height() ),
                                      align::lowerRight, verticalTextAlign() );
@@ -130,7 +131,7 @@ void BuildMenu::initialize()
   int max_text_width = 0;
   int max_cost_width = 0;
   Size textSize;
-  Font font = Font::create( FONT_2 );
+  Font font = Font::create( "FONT_2" );
 
   VariantMap allItems = config::load( _d->menuModel );
   VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
@@ -175,7 +176,7 @@ void BuildMenu::initialize()
 BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
-{  
+{
   if( !_dfunc()->options.isGroupAvailable( menuType ) )
     return;
 
@@ -248,7 +249,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::religion:       ret = &parent->add<BuildMenu_religion>      ( Rect( 0, 0, 60, 1 )); break;
   case development::temple:         ret = &parent->add<BuildMenu_temple>        ( Rect( 0, 0, 60, 1 )); break;
   case development::big_temple:     ret = &parent->add<BuildMenu_bigtemple>     ( Rect( 0, 0, 60, 1 )); break;
-  default:       break; // DO NOTHING 
+  default:       break; // DO NOTHING
   };
 
   if( ret )

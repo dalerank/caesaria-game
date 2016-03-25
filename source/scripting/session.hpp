@@ -20,12 +20,18 @@
 
 #include "core/namedtype.hpp"
 #include "core/size.hpp"
+#include "gui/predefinitions.hpp"
+#include "world/predefinitions.hpp"
+#include "game/predefinitions.hpp"
 #include <string>
 
 class Game;
+class PlayerCity;
 class VariantList;
 class VariantMap;
+class Variant;
 class StringArray;
+namespace gfx { class Picture; }
 
 namespace script
 {
@@ -36,19 +42,48 @@ public:
   Session(Game* game) { _game = game; }
   void continuePlay(int years);
   void loadNextMission();
-  void quitGame();
-  void reloadScene();
-  void startCareer();
+  void setMode(int mode);
+  void setOption(const std::string& name,Variant v);
+  Variant getOption(std::string name);
+  void showSysMessage(std::string title, std::string message);
+  void clearUi();
+  void save(const std::string& path);
+  void createIssue(const std::string& type, int value);
+  void createDir(const std::string& dir);
+  int getAdvflag(const std::string& flag) const;
+  void setAdvflag(const std::string& flag, int value);
+  void loadLocalization(const std::string& name);
   void openUrl(const std::string& url);
-  int lastChangesNum();
-  StringArray getCredits();
-  int videoModesCount();
-  void playAudio(const std::string& filename, int volume, const std::string& mode);
-  Size getVideoMode(int index);
+  int lastChangesNum() const;
+  void addWarningMessage(const std::string& message);
+  PlayerPtr getPlayer() const;
+  PlayerCityPtr getCity() const;
+  bool isC3mode() const;
+  bool isSteamAchievementReached(int i);
+  gfx::Picture getSteamUserImage() const;
+  gfx::Picture getSteamAchievementImage(int i) const;
+  std::string getSteamAchievementCaption(int id) const;
+  world::Emperor* getEmperor() const;
+  world::EmpirePtr getEmpire() const;
+  void clearHotkeys();
+  void setHotkey(const std::string& name, const std::string& config);
+  void setRank(int i, const std::string& name, const std::string& pretty, int salary);
+  DateTime getGameDate() const;
+  std::string formatDate(DateTime date, bool roman) const;
+  StringArray getCredits() const;
+  StringArray getFiles(const std::string& dir, const std::string& ext);
+  StringArray getFolders(const std::string& dir, bool full);
+  int videoModesCount() const;
+  void playAudio(const std::string& filename, int volume, int mode);
+  Size getVideoMode(int index) const;
   void setResolution(const Size& size);
-  StringArray tradableGoods();
-  VariantMap getGoodInfo(const std::string& goodName);
-  Size getResolution();
+  void showDlcViewer(const std::string& path);
+  StringArray tradableGoods() const;
+  Point getCursorPos() const;
+  std::string getOverlayType(int i) const;
+  VariantMap winConditions() const;
+  VariantMap getGoodInfo(std::string goodName) const;
+  Size getResolution() const;
   void setFont(const std::string& fontname);
   void setLanguage(const std::string& lang,const std::string& audio);
 

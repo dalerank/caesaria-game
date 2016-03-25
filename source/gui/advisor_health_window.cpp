@@ -122,7 +122,7 @@ public:
     _service = service;
     _info = info;
 
-    setFont( FONT_1_WHITE );
+    setFont( "FONT_1_WHITE" );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -196,7 +196,7 @@ void Health::_updateAdvice()
   HealthCarePtr hc = _city->statistic().services.find<HealthCare>();
   if( !hc.isValid() )
   {
-    Logger::warning( "WARNING !!! HealthCare service not exist" );
+    Logger::warning( "!!! HealthCare service not exist" );
     return;
   }
 
@@ -238,7 +238,7 @@ void Health::_updateAdvice()
       }
 
       if( needDoctors > 0 )
-      {          
+      {
         outText << "##healthadv_some_regions_need_doctors##";
         outText << "##healthadv_some_regions_need_doctors_2##";
       }
@@ -269,7 +269,7 @@ void Health::_initUI()
   INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
   if( !lbBlackframe )
   {
-    Logger::warning( "WARNING !!! Can't initialize Health adwisor window" );
+    Logger::warning( "!!! Can't initialize Health adwisor window" );
     return;
   }
 
@@ -315,7 +315,7 @@ void Health::_showDetailInfo(Widget* widget)
                                       b->numberWorkers(), b->patientsCurrent() );
       auto& btn = frame.add<PushButton>( Rect( offset, size ), text, -1, false, PushButton::whiteBorderUp );
       btn.addProperty( "pos", b->pos().hash() );
-      btn.setFont( Font::create( FONT_1 ) ) ;
+      btn.setFont( Font::create( "FONT_1" ) ) ;
       offset = btn.leftbottom() + Point( 0, 2 );
       index++;
       CONNECT_LOCAL( &btn, onClickedEx(), Health::_moveCamera )

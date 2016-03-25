@@ -1,0 +1,9 @@
+{
+ title : "##legion_advisor##"
+ sound : "fanfare"
+ text  : "Klicken Sie @hier&, um mehr über Krieg und Frieden bei CaesarIA zu erfahren.\n\nIhr Legionenberater behält die Verteidigungslegionen der Stadt im Auge. Hinter den Namen der einzelnen Legionen sehen Sie Buttons, mit denen Sie zum aktuellen Standort der Legion in Ihrer Provinz gehen können; befehlen Sie der Legion, dass sie zu ihrem @Stamm-Fort& zurückkehren soll, oder wählen Sie sie für den kaiserlichen Dienst aus. Benutzen Sie letzte Option, wenn Caesar Truppen von Ihnen angefordert. Ihr Kaiserlicher Berater setzt die Legion in Bewegung, während der Legionenberater nur bestimmt, welche Legionen marschieren sollen.\nDer Legionenberater berichtet darüber hinaus auch über die Gesamtzahl der aktiven Soldaten Ihrer Provinz, erinnert Sie an eventuell eingegangene Berichte betreffs feindlicher Aktivitäten und zeigt die Truppenanforderungen des Kaisers."
+ uri : {
+  "hier" : "peace_and_war"
+  "Stamm-Fort" : "fort"
+ }
+}

@@ -434,7 +434,7 @@ bool Aqueduct::canAddRoad(PlayerCityPtr city, const TilePos& pos) const
   if (tilemap.at(tile_pos_d[south]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
   if (tilemap.at(tile_pos_d[west]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
 
-  Logger::warning( "direction flags={0}", directionFlags );
+  Logger::debug( "direction flags={0}", directionFlags );
 
   switch (directionFlags)
   {

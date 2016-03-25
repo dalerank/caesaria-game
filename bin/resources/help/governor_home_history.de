@@ -1,0 +1,10 @@
+{
+ title : "##governorHouse##"
+ sound : "fanfare"
+ text  : "Das Haus eines Regenten gibt Aufschluss darüber, wer er ist und wie er seine Macht ausübt. Es muss verschwenderischer als das seiner reichsten Untertanen ausgestattet sein, um seine Überlegenheit zu demonstrieren. Trotzdem sollte es nicht so extravagant sein, dass es Verstimmung oder sogar Rebellion unter der Bevölkerung hervorrufen könnte.\nKaiser Nero überspannte den Bogen durch sein Domus Aurea (Goldenes Haus). Nachdem im Jahre 64 n. Chr. ein Feuer fast ganz Rom zerstört hatte (ein Feuer, bei dem sich die meisten Historiker einig sind, dass es auf Neros Befehl gelegt wurde, um Platz für seine Gebäude zu schaffen und ein Pogrom gegen das Christentum zu rechtfertigen), bestand Neros Plan für die Erneuerung der Stadt allein darin, für sich selbst einen monumentalen Palast zu erbauen. Das Domus umfasste vier Distrikte und stellte unglaublich Luxus zur Schau. Gold, Silber und wertvolle Steine dekorierten jeden Raum und Flur. Ein runder Speisesaal drehte sich synchron mit der Rotation der Erde. Auf den weiteren Bodenflächen waren Weinberge, Obstgärten, Parks, Gärten, Weiden und ganze Wälder zu finden. Neros größte Eitelkeit war der @Colossus& Neronis, eine gigantische Bronzestatue, die den Kaiser als Sonnengott porträtierte.\ nNach Neros Selbstmord im Jahre 69 n. Chr. steckte sein Nachfolger Neronis noch ein paar weitere Millionen Sesterzen in den Domus, jedoch wurden die Arbeiten mit dem Ende seiner dreimonatigen Regentschaft eingestellt. Die nachfolgenden Kaiser versuchten dann, für den Domus einen besseren Verwendungszweck zu finden, und im Laufe der Zeit wurde der Komplex von der Stadt wieder absorbiert. Das @Kolosseum& erhob sich an der Stelle, an der Nero einen See hatte anlegen lassen. Öffentliche @Bäder& ersetzten einen Teil der ehemaligen kaiserlichen Residenz."
+ uri : {
+  "Colossus" : "statuary"
+  "Kolosseum" : "colosseum_history"
+  "Bäder" : "bathhouse_history"
+ }
+}

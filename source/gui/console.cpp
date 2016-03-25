@@ -1,16 +1,45 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+
 #include "console.hpp"
 #include "console_commands.hpp"
 #include "environment.hpp"
-#include "core/saveadapter.hpp"
-#include "gfx/engine.hpp"
-#include "core/utils.hpp"
-#include "core/color_list.hpp"
-#include "core/variant_map.hpp"
-#include "core/event.hpp"
+#include <GameCore>
+#include <GameVfs>
+#include <GameCore>
 #include <GameLogger>
+#include <GameGfx>
+
+using namespace gfx;
 
 namespace gui
 {
+
+class Console::Impl
+{
+public:
+  Picture bg;
+  bool dirty = true;
+  Size commandTextSize;
+  Font font;
+  unsigned int curIndex = 0;
+
+  int commandCursorWidth;
+};
 
 class ConsoleLogger : public LogWriter
 {
@@ -29,22 +58,28 @@ public:
 Console::Console( Widget* parent, int id, const Rect& rectangle )
       : Widget( parent, id, rectangle ),
         consoleHistoryIndex_(0),
-        toggle_visible_(NONE)
+        toggle_visible_(NONE), _d(new Impl)
 {
-  calculateConsoleRect( ui()->rootWidget()->size() );										//calculate the console rectangle
-
-  resizeMessages();														//resize message array
-
-  registerDefaultCommands_();
+  calculateConsoleRect(ui()->rootWidget()->size());										//calculate the console rectangle
 
   hide();
   cursorPos_ = 1;
 
-  _font = Font::create( FONT_1_WHITE );
+  setFont( Font::create("default",12).withColor(ColorList::yellow) );
   _opacity = 0;
+  _logger = SmartPtr<ConsoleLogger>(new ConsoleLogger());
+  _logger->drop();
+  _logger->console = this;
+  _d->bg = Picture(size(),0,true);
+
+  Logger::registerWriter(TEXT(ConsoleLogger), _logger.object() );
   Widget::setVisible(false);
 
+  resizeMessages();
+  registerDefaultCommands_();
+
   appendMessage( "Console initialized" );								//append a message
+  _updateCommandRect();
 }
 
 void Console::SaveCommands_()
@@ -53,9 +88,14 @@ void Console::SaveCommands_()
 
   VariantMap commands;
   for( const auto& it : console_history_ )
-    commands[ it ] = Variant( "" );
+    commands[it] = Variant("");
 
   config::save( commands, path );
+}
+
+Font Console::font() const
+{
+  return _d->font;
 }
 
 void Console::LoadSaveCommands_()
@@ -76,24 +116,26 @@ void Console::registerDefaultCommands_()			//! loads a few default commands into
 {
   LoadSaveCommands_();
 
-  RegisterCommand( new IC_Command_ECHO() );
-  RegisterCommand( new IC_Command_HELP() );
-  RegisterCommand( new IC_Command_LIST() );
-  RegisterCommand( new IC_Command_CLS() );
-  RegisterCommand( new IC_Command_SCRIPT() );
+  RegisterCommand(new IC_Command_ECHO() );
+  RegisterCommand(new IC_Command_HELP() );
+  RegisterCommand(new IC_Command_LIST() );
+  RegisterCommand(new IC_Command_CLS() );
+  RegisterCommand(new IC_Command_SCRIPT() );
+}
+
+void Console::setFont(const Font& font)
+{
+  _d->font = font;
+  resizeMessages();
 }
 
 void Console::resizeMessages()											//! resize the message count
 {
-  unsigned int maxLines = 0;
   unsigned int lineHeight = 0;
   int fontHeight = 0;
-  if( calculateLimits(maxLines,lineHeight,fontHeight) )
-  {
-    unsigned int messageCount = console_messages_.size();
-    if(messageCount > maxLines)
-      console_messages_.erase( console_messages_.begin(), console_messages_.begin() + messageCount - maxLines );
-  }
+  unsigned int maxLines;
+  bool isOk = calculateLimits(maxLines, lineHeight, fontHeight);
+  console_messages_.resize(isOk ? maxLines : 10);
 }
 
 void Console::toggleVisible()											//! toggle the visibility of the console
@@ -111,19 +153,24 @@ void Console::setVisible( bool vis )											//! toggle the visibility of the 
 
 void Console::appendMessage( const std::string& message )
 {
-  console_messages_.push_back( message );
+  auto messages = utils::split(message, "\n");
+  for (const auto& i : messages)
+  {
+    _d->curIndex = (_d->curIndex + 1) % console_messages_.size();
+    console_messages_[_d->curIndex] = i;
+  }
+  _d->dirty = true;
 }
 
 void Console::clearMessages()											//! clear all the messages in the sink
 {
   console_messages_.clear();
+  _d->dirty = true;
 }
 
 void Console::draw( gfx::Engine& painter )
 {
-  resizeMessages();
-
-  if( !_font.isValid() )
+  if( !font().isValid() )
   {
     Widget::draw( painter );
     return;
@@ -135,74 +182,64 @@ void Console::draw( gfx::Engine& painter )
     {
       if( toggle_visible_ == DOWNLIGTH )
       {
-        if( _opacity > 5 ) _opacity -= 9;
-        else setVisible( false );
+        if (_opacity > 5) _opacity -= 9;
+        else setVisible(false);
+        _d->dirty = true;
       }
       else
       {
-        if( _opacity < 0xff )	_opacity += 3;
+        if (_opacity < 0xff)	_opacity += 3;
         else toggle_visible_ = NONE;
+        _d->dirty = true;
       }
     }
 
-    PointsArray array = absoluteRect().lines().points();
-
-    NColor color = ColorList::red;
-
-    color.setAlpha(_opacity);
-    painter.drawLines(color, array);
-
-    color = ColorList::blue;
-    color.setAlpha(_opacity / 2);
-    painter.fillRect(color, absoluteRect());
-
-    Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
+    Rect textRect, shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
 
-    unsigned int maxLines, lineHeight;											//now, render the messages
-    int fontHeight=0;
-    if(!calculateLimits(maxLines,lineHeight,fontHeight))
+    if(_d->dirty)
     {
-      return;
+      Decorator::drawLines(_d->bg, ColorList::red, relativeRect().lines());
+      _d->bg.fill(ColorList::blue);
+
+      unsigned int maxLines, lineHeight;											//now, render the messages
+      int fontHeight=0;
+      if (!calculateLimits(maxLines,lineHeight,fontHeight))
+      {
+        return;
+      }
+
+      Rect lineRect( textRect.left(),						//calculate the line rectangle
+                     textRect.top(),
+                     textRect.right(),
+                     textRect.bottom() + lineHeight);
+
+      for (unsigned int index = 0; index < console_messages_.size(); index++)
+      {
+        unsigned int rindex = (_d->curIndex + index) % console_messages_.size();
+        const std::string& line = console_messages_[rindex];
+        font().draw(_d->bg, line, lineRect.lefttop(), false, false);
+        lineRect += Point(0, lineHeight);						//update line rectangle
+      }
+
+      std::string shellText = "$>" + currentCommand_;
+
+      font().draw( _d->bg, shellText, shellRect.lefttop(), false, false);	//draw the prompt string
+
+      _d->dirty = false;
+      _d->bg.update();
+      _d->bg.setAlpha(_opacity/3*2);
     }
 
-    Rect lineRect( textRect.left(),						//calculate the line rectangle
-                   textRect.top(),
-                   textRect.right(),
-                   textRect.bottom() + lineHeight);
+    painter.draw( _d->bg, absoluteRect().lefttop() );
 
-//    NColor fontcolor = DefaultColors::white;
-
-  /* for(unsigned int i = 0; i < console_messages_.size(); i++)
-   {
-     _font.Draw( console_messages_[i].c_str(),
-          lineRect,
-          fontcolor,
-          false, true,
-          &getAbsoluteClippingRectRef() );									//we draw each line with the configured font and color vertically centered in the rectangle
-
-     lineRect.UpperLeftCorner.Y += lineHeight;						//update line rectangle
-     lineRect.LowerRightCorner.Y += lineHeight;
-   }
-
-   std::string shellText = conf[ PROMT ];	//now, render the prompt
-   shellText.append( L"$>" );
-   size_t textSize = shellText.size();
-   shellText.append( currentCommand_ );
-
-   _font.Draw(  shellText,
-                shellRect,
-                fontcolor,
-                false, false,
-                &getAbsoluteClippingRectRef() );											//draw the prompt string
-
-        if( ( DateTime::getElapsedTime() % 700 ) < 350 )
+    if( DateTime::elapsedTime() % 700 < 350 )
     {
-      core::NSizeU pos = _font.getDimension( shellText.subString( 0, textSize + cursorPos_ - 1 ).c_str() );
-      _font.Draw( L"_", core::RectI( pos.Width , 0, pos.Width + 20, pos.Height ) + shellRect.UpperLeftCorner,
-            0xffff0000,
-            false, false, &getAbsoluteClippingRectRef() );
-    }	*/
+      NColor color = ColorList::white;
+      color.setAlpha(_opacity/2);
+      painter.fillRect( color, Rect(0, 0, _d->commandCursorWidth,shellRect.height()*0.8)
+                        +absoluteRect().leftbottom() + Point(_d->commandTextSize.width(), -shellRect.height()) );
+    }
   }
 
   Widget::draw( painter );
@@ -264,18 +301,27 @@ void Console::setNextCommand_()
 
 void Console::inputChar_( unsigned int key_char, bool shift_down )
 {
-  if(key_char)
+  if (key_char)
   {
     char buf[2];
     buf[0] = key_char;
     buf[1] = 0;
     std::string astr = buf;
 
-    //if(shift_down)
-    //  astr = utils::localUpper( astr );
-
     currentCommand_ = currentCommand_.substr( 0, cursorPos_-1 ) + astr + currentCommand_.substr( cursorPos_-1, 0xff );
     cursorPos_++;
+  }
+
+  _updateCommandRect();
+}
+
+void Console::_updateCommandRect()
+{
+  if (font().isValid())
+  {
+    _d->commandTextSize = font().getTextSize(("$>" + currentCommand_).substr(0, 2 + cursorPos_ - 1));
+    _d->commandCursorWidth = font().getWidthFromCharacter('X');
+    _d->dirty = true;
   }
 }
 
@@ -287,40 +333,32 @@ void Console::keyPress( const NEvent& event )
       resolveCommand_();
   }
   else if( event.keyboard.pressed )
+  {
+    switch ( event.keyboard.key )
     {
-      switch ( event.keyboard.key )
-      {
-        case KEY_BACK:
-              if( currentCommand_.size() > 0 && cursorPos_ > 1 )
-              {
-                cursorPos_--;
-                currentCommand_.erase( cursorPos_-1 );
-              }//
-              break;
-        case KEY_DELETE:
-                if( cursorPos_ <= currentCommand_.size() )
-              {
-                 currentCommand_.erase( cursorPos_-1 );
-              }
-              break;
-        case KEY_UP:									//
-              setPrevCommand_();
-              break;
-        case KEY_LEFT:
-        case KEY_RIGHT:
-              moveCursor_( event.keyboard.key == KEY_LEFT );
-              break;
-        case KEY_DOWN:
-              setNextCommand_();
-              break;
-        case KEY_TAB:									//
-              tabComplete();
-              break;
-        default:
-              inputChar_( event.keyboard.symbol, event.keyboard.shift );
-                break;
-      }
+      case KEY_BACK:
+        if( currentCommand_.size() > 0 && cursorPos_ > 1 )
+        {
+          cursorPos_--;
+          currentCommand_.erase( cursorPos_-1 );
+        }
+      break;
+      case KEY_DELETE:
+            if( cursorPos_ <= currentCommand_.size() )
+               currentCommand_.erase( cursorPos_-1 );
+      break;
+      case KEY_UP: setPrevCommand_(); break;
+
+      case KEY_LEFT:
+      case KEY_RIGHT: moveCursor_( event.keyboard.key == KEY_LEFT ); break;
+
+      case KEY_DOWN: setNextCommand_(); break;
+      case KEY_TAB: tabComplete(); break;
+      default: inputChar_( event.keyboard.symbol, event.keyboard.shift ); break;
     }
+  }
+
+  _updateCommandRect();
 }
 
 void Console::handleCommandString( const std::string& wstr)						//! handle the current command string
@@ -369,7 +407,7 @@ void Console::addToHistory( const std::string& wstr)								//! add to history a
 
 void Console::calculateConsoleRect( const Size& screenSize )	//! calculate the whole console rect
 {
-  setGeometry( RectF(0.1,0,0.9,0.3) );
+  setGeometry( RectF(0.1f,0.f,0.9f,0.3f) );
 }
 
 void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calculate the messages rect and prompt / shell rect
@@ -377,13 +415,13 @@ void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calcula
   unsigned int maxLines, lineHeight;
   int fontHeight;
 
-  if( calculateLimits(maxLines,lineHeight,fontHeight) )
+  if (calculateLimits(maxLines,lineHeight,fontHeight) )
   {
-    shellRect = absoluteRect();
-    shellRect.setTop( shellRect.bottom() - lineHeight );
+    shellRect = Rect(Point(), size());
+    shellRect.setTop(shellRect.bottom() - lineHeight);
 
-    textRect = absoluteRect();
-    textRect.setBottom( textRect.top() + lineHeight );
+    textRect = Rect(Point(), size());
+    textRect.setBottom(textRect.top() + lineHeight );
   }
   else
   {
@@ -396,10 +434,10 @@ bool Console::calculateLimits(unsigned int& maxLines, unsigned int& lineHeight,i
 {
   unsigned int consoleHeight = height();
 
-  if( _font.isValid() && consoleHeight > 0)
+  if( font().isValid() && consoleHeight > 0)
   {
-    fontHeight = _font.getTextSize("X").height() + 2;
-    lineHeight = fontHeight + 5;
+    fontHeight = font().getTextSize("X").height() + 2;
+    lineHeight = fontHeight + 2;
     maxLines = consoleHeight / lineHeight;
     if(maxLines > 2)
     {

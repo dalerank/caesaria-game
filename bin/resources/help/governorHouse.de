@@ -1,0 +1,8 @@
+{
+ title : "##governorHouse##"
+ sound : "fanfare"
+ text  : "Sie sollten in Ihrer Stadt auf jeden Fall ein eigenes Haus besitzen. Ungeachtet dessen, ob Sie ein Haus, eine Villa oder einen Palast bauen, wird die Resident des Gouverneurs bald zum Treffpunkt der wichtigsten Einwohner und sozialen Aufsteiger der Stadt werden. Die Residenz des Gouverneurs ist eines der attraktivsten Gebäude in der Stadt und umso beliebter, je größer es ist.\n\nWenn Sie etwas über den berüchtigtsten Kaiserpalast Roms erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "hier" : "governor_home_history"
+ }
+}

@@ -1,0 +1,9 @@
+{
+ title : "##barbers##"
+ sound : "fanfare"
+ text  : "Reichere Wohngebiete erwarten, dass sie regelmäßig von einem Barbier besucht werden. Barbiere steigern die Attraktivität der nahegelegenen Wohngebiete.\nBenutzen Sie die @Spezialkarte Gesundheit&, um sich die Versorgung der Häuser mit Barbieren anzusehen und den Barbier auf seinen Rundgängen zu beobachten. Klicken Sie den Barbierladen rechts an, um dessen Status zu prüfen.\n\nKlicken Sie @hier&, wenn Sie mehr über die römische Haarmode erfahren möchten."
+ uri : {
+  "Spezialkarte Gesundheit" : "special_card_selection"
+  "hier" : "barber_history"
+ }
+}

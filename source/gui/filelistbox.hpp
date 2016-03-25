@@ -29,13 +29,13 @@ namespace gui
 class FileListBox : public ListBox
 {
 public:
-  FileListBox( Widget* parent );
-  FileListBox( Widget* parent, const Rect& rectangle, int id );
+  FileListBox(Widget* parent);
+  FileListBox(Widget* parent, const Rect& rectangle, int id);
 
-  void setShowTime( bool show );
-  void setShowExtension( bool show );
+  void setShowTime(bool show);
+  void setShowExtension(bool show);
 
-  virtual ListBoxItem& addItem(const std::string &text, Font font, const int color);
+  virtual ListBoxItem& addItem(const std::string &text, Font font, NColor color);
 
 protected:
   virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );

@@ -1,0 +1,5 @@
+DEFINE_DIVINITY_CONSTRUCTOR(Divinity)
+DEFINE_OBJECT_GETTER_0(Divinity,std::string,shortDescription)
+DEFINE_OBJECT_GETTER_0(Divinity,std::string,internalName)
+DEFINE_OBJECT_GETTER_0(Divinity,const Picture&,picture)
+DEFINE_OBJECT_GETTER_0(Divinity,float,relation)

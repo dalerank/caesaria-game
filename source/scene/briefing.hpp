@@ -29,7 +29,6 @@ class Game;
 namespace scene
 {
 
-// displays the newGame/loadGame/quitGame menu
 class Briefing : public Base
 {
 public:
@@ -40,13 +39,13 @@ public:
     unlknowState=0xff
   } Result;
 
-  Briefing( Game& game, gfx::Engine& engine, std::string filename );
+  Briefing(Game& game, gfx::Engine& engine, std::string filename);
   virtual ~Briefing();
 
-  virtual void handleEvent( NEvent& event);
+  virtual void handleEvent(NEvent& event);
 
   // draws the menu/menubar/etc... on the screen
-  virtual void draw();
+  virtual void draw(gfx::Engine& engine);
   virtual void initialize();
 
   std::string getMapName() const;
@@ -56,7 +55,7 @@ public:
 
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace scene

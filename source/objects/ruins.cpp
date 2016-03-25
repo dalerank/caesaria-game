@@ -77,7 +77,7 @@ void BurningRuins::timeStep(const unsigned long time)
         {
           auto building = overlay.as<Building>();
           float fireValue = building.isValid() ? building->state( pr::fire ) : 50;
-          float chanceFire = fireValue/100.f * (_city()->getOption( PlayerCity::fireKoeff )/100.f);
+          float chanceFire = fireValue/100.f * (_cityOpt(PlayerCity::fireKoeff)/100.f);
           if( math::probably( chanceFire ) )
           {
             overlay->burn();
@@ -144,7 +144,7 @@ bool BurningRuins::build( const city::AreaInfo& info)
   tile().setFlag( Tile::tlRoad, false );
 
   city::FirePtr fire = info.city->statistic().services.find<city::Fire>();
-  _value = (info.city->getOption( PlayerCity::fireKoeff ) / 100.f) *
+  _value = (_cityOpt(PlayerCity::fireKoeff) / 100.f) *
            (defaultForce / 100.f);
 
   if( fire.isValid() )

@@ -80,10 +80,10 @@ SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list 
 {
   SmartPtr<Object> p;
 
-  int minDistance=99;
-  for( auto obj : list )
+  float minDistance=99.f;
+  for (auto obj : list)
   {
-    int distance = obj->pos().distanceFrom( pos );
+    float distance = obj->pos().distanceFrom(pos);
     if( distance < minDistance )
     {
       minDistance =  distance;
@@ -139,7 +139,7 @@ SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
   for( auto obj : list )
   {
     int state = obj->state( name );
-    if( lowValue < state );
+    if( lowValue < state )
     {
       lowValue = state;
       ret = obj;
@@ -152,7 +152,7 @@ SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
 template< class Object >
 int objectState( SmartPtr<Object> object, Param name, int defaultValue=0 )
 {
-  return object.isValid() ? object->state( name ) : defaultValue;
+  return object.isValid() ? (int)object->state( name ) : defaultValue;
 }
 
 template<class Object, class Parent>

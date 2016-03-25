@@ -96,7 +96,7 @@ public:
   }
 };
 
-Briefing::Briefing( Game& game, Engine& engine, std::string filename ) : _d( new Impl )
+Briefing::Briefing(Game& game, Engine& engine, std::string filename ) : _d( new Impl )
 {
   _d->isStopped = false;
   _d->game = &game;
@@ -106,7 +106,7 @@ Briefing::Briefing( Game& game, Engine& engine, std::string filename ) : _d( new
 
 Briefing::~Briefing() {}
 
-void Briefing::draw()
+void Briefing::draw(Engine& engine)
 {
   _d->game->gui()->beforeDraw();
   _d->game->gui()->draw();
@@ -121,7 +121,7 @@ void Briefing::initialize()
 {
   _d->game->gui()->clear();;
 
-  Logger::warning( "Briefing: initialize start");
+  Logger::debug( "Briefing: initialize start");
 
   VariantMap vm = config::load( _d->filename );
 
@@ -161,9 +161,9 @@ void Briefing::initialize()
 
     std::string missionTt = vm.get( "title" ).toString();
     auto& missionTitle = mapback.add<gui::Label>( Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
-    missionTitle.setFont( Font::create( FONT_5 ));
+    missionTitle.setFont( "FONT_5" );
     _d->cityCaption = &mapback.add<gui::Label>( Rect( 200, 600, 200 + textYOffset, 630 ) );
-    _d->cityCaption->setFont( FONT_2 );
+    _d->cityCaption->setFont( "FONT_2" );
     _d->cityCaption->setText( _(briefingCaption) );
 
     _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size::square( 27 ), -1, 179 );

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
- 
+
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"
@@ -44,44 +44,52 @@ int main(int argc, char* argv[])
 #else
   workdir = vfs::Path( argv[0] ).directory();
 #endif
+
   game::Settings& options = game::Settings::instance();
-  Logger::registerWriter( Logger::consolelog, "" );
+  Logger::registerWriter(Logger::consolelog, "");
 
-  options.setwdir( workdir.toString() );
-  options.checkwdir( argv, argc );
-  options.resetIfNeed( argv, argc );
-  Logger::registerWriter( Logger::filelog, workdir.toString() );
+  options.setwdir(workdir.toString());
+  bool wdirChanged = options.checkwdir( argv, argc );
+  if (wdirChanged)
+    workdir = SETTINGS_STR(workDir);
 
-  SimpleLogger LOG("Game");
+  options.resetIfNeed(argv, argc);
+  Logger::registerWriter(Logger::filelog, workdir.toString());
 
-  LOG.info("Setting workdir to " + SETTINGS_STR(workDir));
+  Logger::info("Setting workdir to " + SETTINGS_STR(workDir));
 
-  LOG.info("Loading game settings");
+  Logger::info("Loading game settings");
   if( options.haveLastConfig() )
     options.loadLastConfig();
 
-  options.checkCmdOptions( argv, argc );
+  options.checkCmdOptions(argv, argc);
   options.checkC3present();
 
-  std::string systemLang = SETTINGS_STR( language );
-
-  if( steamapi::available() )
+  if (!KILLSWITCH(verbose))
   {
-    if( !steamapi::connect() )
+    Logger::addFilter(LogWriter::info);
+    Logger::addFilter(LogWriter::debug);
+  }
+
+  std::string systemLang = SETTINGS_STR(language);
+
+  if (steamapi::available())
+  {
+    if (!steamapi::connect())
     {
-      LOG.fatal("Failed to connect to steam");
+      Logger::fatal("Failed to connect to steam");
       return EXIT_FAILURE;
     }
 
-    if( systemLang.empty() )
+    if (systemLang.empty())
       systemLang = steamapi::language();
   }
 
-  options.changeSystemLang( systemLang );
+  options.changeSystemLang(systemLang);
 
-  LOG.info("Language set to " + SETTINGS_STR(language));
-  LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
-  LOG.info("Cell width set to {}", SETTINGS_VALUE(cellw).toInt());
+  Logger::info("Language set to " + SETTINGS_STR(language));
+  Logger::info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
+  Logger::info("Cell width set to " + SETTINGS_VALUE(cellw).toInt());
 
   try
   {
@@ -93,12 +101,11 @@ int main(int argc, char* argv[])
   }
   catch( Exception& e )
   {
-    LOG.fatal("Critical error: " + e.getDescription());
-
+    Logger::fatal("Critical error: " + e.getDescription());
     crashhandler::printstack();
   }
 
-  if( steamapi::available() )
+  if (steamapi::available())
     steamapi::close();
 
   crashhandler::remove();

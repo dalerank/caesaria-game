@@ -186,8 +186,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
     _d->mouseY = ret.mouse.y = sdlEvent.motion.y;
 
-    ret.mouse.control = mods & KMOD_CTRL;
-    ret.mouse.shift = mods & KMOD_SHIFT;
+    ret.mouse.control = (mods & KMOD_CTRL)>0;
+    ret.mouse.shift = (mods & KMOD_SHIFT)>0;
     ret.mouse.buttonStates = _d->mouseButtonStates;
   }
   break;
@@ -231,8 +231,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.mouse.x = sdlEvent.button.x;
     ret.mouse.y = sdlEvent.button.y;
 
-    ret.mouse.control = mods & KMOD_CTRL;
-    ret.mouse.shift = mods & KMOD_SHIFT;
+    ret.mouse.control = (mods & KMOD_CTRL)>0;
+    ret.mouse.shift = (mods & KMOD_SHIFT)>0;
     ret.mouse.type = NEvent::Mouse::moved;
 
     switch(sdlEvent.button.button)
@@ -329,6 +329,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
+    ret.keyboard.alt = (sdlEvent.key.keysym.mod & KMOD_ALT) != 0;
     ret.keyboard.symbol = sdlEvent.key.keysym.sym;
   }
   break;

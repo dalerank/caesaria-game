@@ -26,7 +26,7 @@
 #include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
 #include "gfx/render_info.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/signals.hpp"
 #include "core/event.hpp"
 #include "walker/constants.hpp"
@@ -49,9 +49,12 @@ public:
                  showRocks=0x20000
                } Flag;
   static DrawOptions& instance();
-  static bool getFlag( Flag flag );
-  static void takeFlag( Flag flag, int value );
-  static DrawOptions::Flag findFlag( const std::string& name );
+  static bool getFlag(Flag flag);
+  static void takeFlag(Flag flag, int value);
+
+  static bool getFlag(const std::string& name);
+  static void takeFlag(const std::string& name, int value);
+  static DrawOptions::Flag findFlag(const std::string& name);
 
 private:
   DrawOptions();

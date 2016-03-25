@@ -1,0 +1,12 @@
+{  
+ title : "##marble_quarry##"
+ sound : "fanfare"
+ text  : "Although marble is not rare in the Mediterranean, commercially viable veins of architectural-grade marble are hard to come by. Marble is a valuable export commodity, and correspondingly expensive to import.\n Oracles and large temples require marble for their construction. You need two cartloads of marble in a city warehouse to build one of either of these structures.\n Marble quarries must be adjacent to rocks. They need road access to labor in order to operate, and when ready, their workers will take the stone to the nearest working warehouse with space.\n Marble quarries are undesirable neighbors. Unlike other raw materials, marble is not processed in a workshop.\n Click @here& to read about marble quarrying in the Roman Empire."
+ uri : {
+  "furniture" : "furniture"
+  "trade route" : "trade_route"
+  "warehouse" : "warehouse"
+  "workers wheel" : "cart_pusher"
+  "here" : "http://wikipedia.ru"
+ }
+}

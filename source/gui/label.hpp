@@ -32,58 +32,61 @@ class Label : public Widget
 public:
   typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone,
                  bgWhiteFrame, bgBlackFrame,
-                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundMode;
+                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundStyle;
   //! constructor
-  Label( Widget* parent );
+  Label(Widget* parent);
 
-  Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
-         BackgroundMode background = bgNone, int id=-1);
+  Label(Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
+        BackgroundStyle background = bgNone, int id=-1);
 
-  Label( Widget* parent, const Rect& rectangle, const std::string& text, Font font);
+  Label(Widget* parent, const Rect& rectangle, const std::string& text, Font font);
 
   //! destructor
   virtual ~Label();
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
-  virtual void setPadding( const Rect& margin );
+  void setPadding(const Rect& padding);
 
   //! Get the font which is used right now for drawing
   virtual Font font() const;
 
   //! Sets whether to draw the background
-  virtual void setBackgroundMode( BackgroundMode mode );
+  void setBackgroundStyle(BackgroundStyle style);
+
+  //!
+  void setBackgroundStyle(const std::string& style);
 
   virtual void beforeDraw( gfx::Engine& painter );
 
   //! Return background draw
-  virtual BackgroundMode backgroundMode() const;
+  virtual BackgroundStyle backgroundStyle() const;
 
   //!
   virtual bool onEvent(const NEvent &event);
 
   //!
-  virtual bool isBorderVisible() const;
+  bool isBorderVisible() const;
 
   //!
-  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
+  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=NColor());
 
   //!
-  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=0,
+  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=NColor(),
                           Alignment halign=align::automatic, Alignment valign=align::automatic );
 
   //!
   virtual void canvasDraw(const gfx::Picture& picture, const Point& point);
 
   //! Sets whether to draw the border
-  virtual void setBorderVisible(bool draw);
+  void setBorderVisible(bool draw);
 
   //! Set whether the text in this label should be clipped if it goes outside bounds
-  virtual void setTextRestrainedInside(bool restrainedInside);
+  void setTextRestrainedInside(bool restrainedInside);
 
   //! Checks if the text in this label should be clipped if it goes outside bounds
-  virtual bool isTextRestrainedInside() const;
+  bool isTextRestrainedInside() const;
 
   //! Enables or disables word wrap for using the static text as
   //! multiline text control.
@@ -96,10 +99,10 @@ public:
   virtual void setText(const std::string& text);
 
   //! Returns the height of the text in pixels when it is drawn.
-  virtual int textHeight() const;
+  int textHeight() const;
 
   //! Returns the width of the current text, in the current font
-  virtual int textWidth() const;
+  int textWidth() const;
 
   //! Set whether the string should be interpreted as right-to-left (RTL) text
   /** \note This component does not implement the Unicode bidi standard, the
@@ -107,38 +110,49 @@ public:
   main difference when RTL is enabled is that the linebreaks for multiline
   elements are performed starting from the end.
   */
-  virtual void setRightToLeft(bool rtl);
+  void setRightToLeft(bool rtl);
 
   //! Checks if the text should be interpreted as right-to-left text
-  virtual bool isRightToLeft() const;
+  bool isRightToLeft() const;
 
-  virtual void setPrefixText( const std::string& prefix );
+  void setPrefixText(const std::string& prefix);
 
-  virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
+  virtual void setBackgroundPicture(const gfx::Picture& picture, Point offset=Point());
 
-  virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
-  virtual void setIcon( const std::string& rc, int index );
+  virtual void setBackgroundPicture(const std::string& rcname);
 
-  virtual void setIconOffset( const Point& offset );
+  virtual void setIcon(const gfx::Picture& icon, Point offset=Point());
 
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fontname );
-  virtual void setFont( FontType type, NColor color=0 );
+  //!
+  virtual void setIcon(const std::string& rc, int index);
 
-  virtual void setAlpha( unsigned int value );
+  virtual void setIconOffset(const Point& offset);
+
+
+  //!
+  virtual void setFont(const Font& font );
+  virtual void setFont(const std::string& fontname, NColor color=NColor());
+
+  virtual void setAlpha(unsigned int value);
 
   virtual void setColor(NColor color);
+
+  //!
   virtual void setColor(const std::string& color);
 
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
-  virtual void setTextAlignment( const std::string& horizontal, const std::string& vertical );
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
+
+  //!
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
 
   virtual void setLineIntervalOffset( const int offset );
 
-  virtual void setupUI( const VariantMap &ui );
+  virtual void setupUI(const VariantMap& ui);
+  virtual void setupUI(const vfs::Path& ui);
 
-  virtual void setTextOffset( Point offset );
-    
+  virtual void setTextOffset(int x, int y);
+
+  virtual void setTextOffset(Point offset);
 signals public:
   virtual Signal0<>& onClicked();
   virtual Signal1<Widget*>& onClickedA();

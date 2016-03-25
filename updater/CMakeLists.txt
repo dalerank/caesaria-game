@@ -35,8 +35,9 @@ set( UPD_DEP_SOURCES_LIST
 
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")
 
-include_directories( ${BASE_SOURCE_DIR} )
-include_directories( ${DEP_DIR} )
+include_directories( ${BASE_SOURCE_DIR}
+                     ${DEP_DIR}
+                     ${BASE_SOURCE_DIR}/include )
 
 add_executable(${PROJECT_NAME}
                ${UPD_SRC_LIST} ${UPD_INC_LIST}
@@ -51,7 +52,7 @@ if( BUILD_CURL )
   target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARY})
 endif()
 
-find_package( CURL )
+find_package(CURL)
 if (CURL_FOUND)
   include_directories(${CURL_INCLUDE_DIR})
   target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARY})
@@ -79,7 +80,7 @@ endif(APPLE)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
   message("CaesarIA-updater: building in release mode")
   if(NOT APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
@@ -87,7 +88,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
   message("CaesarIA-updater: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
-endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif()
 
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
@@ -100,28 +101,26 @@ if(WIN32)
   set(UPDATER_BINARY_FILENAME ${UPDATER_BINARY_FILENAME}.exe)
 endif(WIN32)
 
-ADD_CUSTOM_COMMAND(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${WORK_DIR}/${UPDATER_BINARY_FILENAME}"
-)
-
-if(EXT_BINDIR)
-  message( "updater: ext bindir=${CMAKE_SOURCE_DIR}/${EXT_BINDIR}")
+if(NOT MSVC)
   ADD_CUSTOM_COMMAND(
       TARGET ${PROJECT_NAME}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${WORK_DIR}/${UPDATER_BINARY_FILENAME}"
   )
-endif(EXT_BINDIR)
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+  set(EXECUTABLE_OUTPUT_PATH ${WORK_DIR})
+endif()
 
 # set compiler options
-if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
   if(NOT HAIKU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
-  endif(NOT HAIKU)
-endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  endif()
+endif()
 
-# Enforce C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+if(NOT MSVC)
+  # Enforce C++11
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()

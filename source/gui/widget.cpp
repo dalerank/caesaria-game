@@ -153,7 +153,7 @@ Widget::Widgets& Widget::_children() { return _dfunc()->children;}
 
 void Widget::setPosition( const Point& position )
 {
-	const Rect rectangle( position, size() );
+  const Rect rectangle( position, size() );
   setGeometry( rectangle );
 }
 
@@ -387,12 +387,12 @@ bool Widget::enabled() const
 
 bool Widget::bringToFront()
 {
-	if( parent() )
-	{
-		return parent()->bringChildToFront( this );
-	}
+  if( parent() )
+  {
+    return parent()->bringChildToFront( this );
+  }
 
-	return false;
+  return false;
 }
 
 bool Widget::bringChildToFront( Widget* element )
@@ -433,12 +433,12 @@ bool Widget::sendChildToBack( Widget* child )
 
 bool Widget::sendToBack()
 {
-	if( parent() )
-	{
-		return parent()->sendChildToBack( this );
-	}
+  if( parent() )
+  {
+    return parent()->sendChildToBack( this );
+  }
 
-	return false;
+  return false;
 }
 
 Widget* Widget::findChild(int id, bool searchChildren) const
@@ -479,7 +479,7 @@ Widget* Widget::findChild(const std::string& internalName, bool searchChildren) 
   return e;
 }
 
-bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/ ) const
+bool Widget::next(int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/) const
 {
     // we'll stop searching if we find this number
     int wanted = startOrder + ( reverse ? -1 : 1 );
@@ -668,7 +668,7 @@ void Widget::setupUI( const VariantMap& options )
     else
     {
       widgetType = newWidgetOptions.get( "type" ).toString();
-    }       
+    }
 
     if( !widgetType.empty() )
     {
@@ -702,7 +702,7 @@ void Widget::setupUI( const VariantMap& options )
 
 void Widget::setupUI(const vfs::Path& filename)
 {
-  Logger::warning( "Widget: load gui model from " + filename.toString() );
+  Logger::debug( "Widget: load gui model from " + filename.toString() );
   setupUI( config::load( filename ) );
 }
 
@@ -905,7 +905,7 @@ void Widget::setWidth( unsigned int width )
   setGeometry( rectangle );
 }
 
-void Widget::setHeight( unsigned int height )
+void Widget::setHeight(unsigned int height)
 {
   const Rect rectangle( relativeRect().lefttop(), Size( width(), height ) );
   setGeometry( rectangle );
@@ -921,7 +921,7 @@ void Widget::setVisible( bool visible ){  _dfunc()->flag.visible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->flag.tabStop;}
 bool Widget::hasTabgroup() const{  return _dfunc()->isTabGroup;}
 void Widget::setText( const std::string& text ){  _dfunc()->text.value = text;}
-void Widget::setTooltipText( const std::string& text ) {  _dfunc()->text.tooltip = text;}
+void Widget::setTooltipText( const std::string& text ) { _dfunc()->text.tooltip = text;}
 std::string Widget::text() const{  return _dfunc()->text.value;}
 std::string Widget::tooltipText() const{  return _dfunc()->text.tooltip;}
 int Widget::ID() const{  return _dfunc()->id;}
@@ -933,7 +933,6 @@ bool Widget::isHovered() const{  return ui()->isHovered( this );}
 bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFont(const Font& font) {}
-void Widget::setFont(const std::string& font) { setFont( Font::create( font ) ); }
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }
@@ -970,28 +969,38 @@ Alignment Widget::verticalTextAlign() const{  return _dfunc()->textAlign.vertica
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
 Font Widget::font() const { return Font(); }
 
-void Widget::setFont(FontType type, NColor color)
+void Widget::setFont(const std::string& name, NColor color)
 {
-  Font font = Font::create( type );
+  Font font = Font::create( name );
   if( color.color != 0 )
     font.setColor( color );
   setFont( font );
 }
 
 
-void Widget::setRight( int newRight )
+void Widget::setRight(int newRight)
 {
   Rect r = relativeRect();
   r.rright() = newRight;
-  setGeometry( r );
+  setGeometry(r);
 }
 
 void Widget::moveToCenter() { setCenter( parent()->center() ); }
 
 void Widget::addProperty(const std::string& name, const Variant& value)
 {
-  _dfunc()->properties[ name ] = value;
+  auto it = _dfunc()->properties.find(name);
+  if (it != _dfunc()->properties.end())
+    Logger::warning("WARNING!!! Widget {} already have property {}", internalName(), name);
+
+  _dfunc()->properties[name] = value;
 }
+
+void Widget::setProperty(const std::string& name, const Variant& value)
+{
+  _dfunc()->properties[name] = value;
+}
+
 
 void Widget::canvasDraw(const std::string& text, const Point& point, Font font, NColor color)
 {
@@ -1005,31 +1014,38 @@ void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
 
 const Variant& Widget::getProperty(const std::string& name) const
 {
-  VariantMap::const_iterator it = _dfunc()->properties.find( name );
+  if (name.empty())
+  {
+    Logger::warning("WARNING !!! Try get property by empty name from {}", internalName());
+    static Variant inv;
+    return inv;
+  }
+
+  VariantMap::const_iterator it = _dfunc()->properties.find(name);
   return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 
-const VariantMap&Widget::properties() const
+const VariantMap& Widget::properties() const
 {
   return _dfunc()->properties;
 }
 
-void Widget::installEventHandler( Widget* elementHandler )
+void Widget::installEventHandler(Widget* elementHandler)
 {
-  _dfunc()->eventHandlers.insert( elementHandler );
+  _dfunc()->eventHandlers.insert(elementHandler);
 }
 
 void Widget::setCenter(Point center)
 {
-  Rect newRect( Point( center.x() - width() / 2, center.y() - height() / 2), size() );
-  setGeometry( newRect );
+  Rect newRect(Point(center.x() - width() / 2, center.y() - height() / 2), size());
+  setGeometry(newRect);
 }
 
-void Widget::setBottom( int b )
+void Widget::setBottom(int b)
 {
   Rect r = _dfunc()->rect.relative;
-  r.setBottom(  b );
-  setGeometry( r );
+  r.setBottom(b);
+  setGeometry(r);
 }
 
 }//end namespace gui

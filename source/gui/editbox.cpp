@@ -205,7 +205,7 @@ Font EditBox::activeFont()
   if ( _d->overrideFont.isValid() )
     return _d->overrideFont;
 
-  return Font::create( FONT_2 );
+  return Font::create( "FONT_2" );
 }
 
 //! Sets another color for the text.
@@ -217,6 +217,12 @@ void EditBox::setOverrideColor( NColor color )
 
 //! Turns the border on or off
 void EditBox::setDrawBorder(bool border) {	_d->border = border; }
+
+void EditBox::setTextOffset(const Point& offset)
+{
+  _d->textOffset = offset;
+  _d->needUpdateTexture = true;
+}
 
 //! Sets if the text should use the overide color or the color in the gui skin.
 void EditBox::setEnabledColor(bool enable) {	_d->overrideColorEnabled = enable; }
@@ -271,6 +277,11 @@ void EditBox::setupUI(const VariantMap& ui)
     _d->textOffset = vOffset.toPoint();
 
   _d->needUpdateTexture = true;
+}
+
+void EditBox::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
 }
 
 //! called if an event happened.
@@ -789,7 +800,7 @@ void EditBox::beforeDraw(Engine& painter)
     if( !_d->textPicture.isValid() || ( size() != _d->textPicture.size() ) )
     {
       _d->textPicture = Picture( size(), 0, true );
-      _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
+      _d->textPicture.fill( ColorList::clear, Rect( 0, 0, 0, 0) );
     }
 
     if( !_d->background.image.isValid() )
@@ -813,9 +824,9 @@ void EditBox::beforeDraw(Engine& painter)
 
     NColor simpleTextColor, markTextColor;
 
-    simpleTextColor = 0xff000000;
+    simpleTextColor = ColorList::black;
 
-    markTextColor = 0xffffffff;
+    markTextColor = ColorList::white;
 
     if( _d->lastBreakFont.isValid() )
     {
@@ -833,7 +844,7 @@ void EditBox::beforeDraw(Engine& painter)
       const int hlineCount = ml ? _getLineFromPos(realmend) - hlineStart + 1 : 1;
       const int lineCount = ml ? _d->brokenText.size() : 1;
 
-      _d->textPicture.fill( 0x00000000, Rect(0, 0, 0, 0) );
+      _d->textPicture.fill( ColorList::clear, Rect(0, 0, 0, 0) );
       if( !_d->text.empty() )
       {
         for (int i=0; i < lineCount; ++i)
@@ -1009,7 +1020,7 @@ void EditBox::draw( Engine& painter )
     if( t < 500 )
     {
       Point p = _d->textOffset + absoluteRect().lefttop();
-      painter.drawLine( 0xff000000, p + _d->cursorRect.lefttop() + Point( 0, 3),
+      painter.drawLine( ColorList::black, p + _d->cursorRect.lefttop() + Point( 0, 3),
                                     p + _d->cursorRect.leftbottom() - Point( 0, 6 ) );
     }
   }

@@ -580,10 +580,10 @@ template< class T >
 inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
 {
   SmartList< T > ret;
-  auto buildings = _parent.rcity.overlays();
+  const auto& buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( object::typeOrDefault( bld ) == type || type == object::any )
+    if( (object::typeOrDefault(bld) == type) || type == object::any )
       ret.addIfValid( bld.as<T>() );
   }
 

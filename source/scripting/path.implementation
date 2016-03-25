@@ -1,0 +1,17 @@
+DEFINE_OBJECT_DESTRUCTOR(Path)
+DEFINE_OBJECT_GETTER_0(Path,bool,exist)
+DEFINE_OBJECT_GETTER_1(Path,Path,baseName,bool,true)
+DEFINE_OBJECT_GETTER_0(Path,const std::string&,toString)
+DEFINE_OBJECT_FUNCTION_1(Path,add,std::string)
+DEFINE_OBJECT_FUNCTION_1(Path,set,std::string)
+DEFINE_OBJECT_CONSTRUCTOR(Path)
+
+DEFINE_OBJECT_DESTRUCTOR(Directory)
+DEFINE_OBJECT_GETTER_0(Directory,bool,exist)
+DEFINE_OBJECT_GETTER_1(Directory,Path,baseName,bool,true)
+DEFINE_OBJECT_GETTER_3(Directory,Path,find,std::string,bool,bool)
+DEFINE_OBJECT_GETTER_0(Directory,const std::string&,toString)
+DEFINE_OBJECT_FUNCTION_1(Directory,add,std::string)
+DEFINE_OBJECT_FUNCTION_1(Directory,set,std::string)
+DEFINE_OBJECT_CONSTRUCTOR(Directory)
+

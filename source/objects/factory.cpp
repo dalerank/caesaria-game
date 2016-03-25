@@ -37,6 +37,7 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "objects/config.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -100,9 +101,6 @@ public:
   bool produceGood;
   unsigned int finishedQty;
   std::map<int,Picture> stockImages;
-
-public:
-  void productReady();
 };
 
 Factory::Factory(const good::Product inType, const good::Product outType,
@@ -122,6 +120,8 @@ Factory::Factory(const good::Product inType, const good::Product outType,
   _d->goodStore.setCapacity( 1000 );
   _d->goodStore.setCapacity(_d->goods.in.type(), 200);
   _d->goodStore.setCapacity(_d->goods.out.type(), 100);
+
+  _fgPictures().resize(config::fgpic::idxFactoryMax);
   CONNECT( &_d->goodStore, onChangeState, this, Factory::_storeChanged );
 }
 
@@ -282,7 +282,7 @@ std::string Factory::troubleDesc() const
   return ret;
 }
 
-void Factory::save( VariantMap& stream ) const
+void Factory::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, production.rate )
@@ -292,7 +292,7 @@ void Factory::save( VariantMap& stream ) const
   VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
 }
 
-void Factory::load( const VariantMap& stream)
+void Factory::load(const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
@@ -312,7 +312,7 @@ float Factory::productRate() const{  return _d->production.rate;}
 
 void Factory::_storeChanged()
 {
-  _fgPicture(1) = _getSctockImage( inStock().qty() );
+  _fgPicture(config::fgpic::idxFactoryStock) = _getSctockImage(inStock().qty());
 }
 
 math::Percent Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
@@ -324,7 +324,7 @@ std::string Factory::cartStateDesc() const
   auto cartPusher = walkers().valueOrEmpty(0).as<CartPusher>();
   if( cartPusher.isValid() )
   {
-    if( cartPusher->pathway().isValid() )
+    if (cartPusher->pathway().isValid())
     {
       return cartPusher->pathway().isReverse()
                ? "##factory_cart_returning_from_delivery##"
@@ -360,15 +360,6 @@ void Factory::initialize(const object::Info& mdata)
     Picture image; VARIANT_LOAD_PICTURE(image, stageVm);
     image.addOffset( stageVm.get("offset"));
     _d->stockImages[ index ] = image;
-  }
-}
-
-void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)
-{
-  if( oldFormat < 70 )
-  {
-     _d->production.rate = stream.get( "productionRate", 9.6f );
-     _d->production.progress = stream.get( "progress", 0.f );
   }
 }
 

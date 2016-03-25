@@ -1,0 +1,14 @@
+{
+ title : "##oil_workshop##"
+ sound : "fanfare"
+ text  : "Die Arbeiter pressen hier die Oliven Ihrer @Ölfarmen& zu Öl.\nMit dem Ertrag einer einigen Olivenfarm können Sie zwei Ölmühlen betreiben.\nWie die meisten Gewerbebetriebe sind auch Ölmühlen in Wohngebieten unerwünschte Nachbarn. Produktionsstätten benötigen Zugang zu einem nahen Arbeitsmarkt und Straßenanbindung zu einem @Lagerhaus& und zu dem Olivenhain, der sie versorgt. @Arbeiter& bringen das fertige Öl dann in das nächste Lagerhaus mit freiem Platz. Sie können es exportieren, falls dafür eine passende @Handelsroute& offen ist, und @Markthändlerinnen& bringen etwas davon zu ihren Märkten, wenn in den Wohngebieten eine entsprechende Nachfrage besteht.\nÖl gehört zu den Waren, die Ihre eigenen Bürger brauchen, um für Ihre @Wohnungen& die höchste Ausbaustufe zu erreichen. Ölmühlen zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Produktionsstätte rechts an, um sich ihren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat.\n\nWenn Sie mehr über Öl im römischen Imperium erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "Ölfarmen" : "olive_farm"
+  "Lagerhaus" : "warehouse"
+  "Arbeiter" : "worker"
+  "Handelsroute" : "trade"
+  "Markthändlerinnen" : "market"
+  "Wohnungen" : "house"
+  "hier" : "oil_history"
+ }
+}

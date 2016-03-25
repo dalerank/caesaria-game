@@ -16,19 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "androidactions.hpp"
-#include "core/event.hpp"
 #include "environment.hpp"
 #include "texturedbutton.hpp"
 #include "scene/level.hpp"
 #include "gfx/camera.hpp"
 #include "widget_helper.hpp"
 #include "events/showtileinfo.hpp"
-#include "events/savegame.hpp"
-#include "events/loadgame.hpp"
+#include "events/script_event.hpp"
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
 #include "gui/ingame_menu.hpp"
-#include "core/hash.hpp"
+#include <GameVfs>
+#include <GameCore>
 
 using namespace gfx;
 using namespace events;
@@ -86,7 +85,7 @@ public:
   TexturedButton* btnZoomIn;
   TexturedButton* btnZoomOut;
 
-public signals:  
+public signals:
   Signal1<int> onChangeZoomSignal;
 };
 
@@ -95,6 +94,7 @@ ActionsBar::ActionsBar( Widget* parent)
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
+  setInternalName("AndroidActionsBar");
   GET_DWIDGET_FROM_UI( _d, btnMenu     )
   GET_DWIDGET_FROM_UI( _d, btnShowHelp )
   GET_DWIDGET_FROM_UI( _d, btnEnter    )
@@ -210,21 +210,19 @@ void ActionsHandler::_showIngameMenu()
   }
 }
 
-void ActionsHandler::_showSaveDialog() { ShowSaveDialog::create()->dispatch(); }
-void ActionsHandler::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+void ActionsHandler::_showSaveDialog() { events::dispatch<ScriptFunc>("OnShowSaveDialog"); }
+void ActionsHandler::_showLoadDialog() { events::dispatch<ScriptFunc>("OnShowSaveSelectDialog"); }
 
 void ActionsHandler::_restartGame()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->restart();
+  if( _scene )
+    _scene->setMode(scene::Level::res_restart);
 }
 
 void ActionsHandler::_exitToMainMenu()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->exit();
+  if( _scene )
+    _scene->setMode(scene::Level::res_menu);
 }
 
 void ActionsHandler::_showTileHelp()
@@ -237,4 +235,4 @@ void ActionsHandler::_showTileHelp()
 
 }//end namespace tablet
 
-}//end namespace gui
+}//end namespace gui-

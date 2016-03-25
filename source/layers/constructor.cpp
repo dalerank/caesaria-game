@@ -26,7 +26,7 @@
 #include "city/city.hpp"
 #include "core/event.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "objects/fortification.hpp"
 #include "core/utils.hpp"
 #include "gfx/camera.hpp"
@@ -62,7 +62,7 @@ public:
   TilePos lastTilePos;
   TilePos startTilePos;
   bool splineEnabled;
-  int drawRadius;  
+  int drawRadius;
   bool kbShift, kbCtrl;
   bool lmbPressed;
   bool overdrawBuilding;
@@ -272,7 +272,7 @@ void Constructor::_updatePreviewTiles( bool force )
     {
       if( !tile )
       {
-        Logger::warning( "WARNING !!!: ConstructorArea: tile is null" );
+        Logger::warning( "!!! ConstructorArea: tile is null" );
         continue;
       }
       Size size;
@@ -316,11 +316,11 @@ void Constructor::_buildAll()
   {
     Logger::warning( "LayerEditor: No tiles for build" );
     return;
-  }  
+  }
 
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
-  {    
+  {
     areaInfo.pos = tile->epos();
     tile->overlay()->build( areaInfo );
   }
@@ -682,7 +682,7 @@ Constructor::Constructor(Camera& camera, PlayerCityPtr city, Renderer* renderer)
   d.needUpdateTiles = false;
   d.resForbiden = SETTINGS_STR( forbidenTile );
   d.startTilePos = TilePos::invalid();
-  d.text.font = Font::create( FONT_5 );
+  d.text.font = Font::create( "FONT_5" );
   d.readyForExit = false;
   d.drawRadius = 1;
   d.splineEnabled = false;

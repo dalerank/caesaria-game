@@ -19,6 +19,7 @@
 #include <GameGfx>
 #include <GameEvents>
 #include <GameLogger>
+#include <GameCity>
 #include <GameGui>
 
 using namespace gfx;
@@ -128,6 +129,11 @@ void Dialogbox::setupUI(const VariantMap& ui)
   Window::setupUI( ui );
 }
 
+void Dialogbox::setupUI(const vfs::Path & ui)
+{
+  Window::setupUI(ui);
+}
+
 Signal0<>& Dialogbox::onYes() {  return _d->signal.onOk;}
 
 Signal1<Widget*>&      Dialogbox::onYesEx()   { return _d->signal.onOkEx; }
@@ -167,11 +173,11 @@ void Dialogbox::setText(const std::string& text)
 {
   INIT_WIDGET_FROM_UI( Label*, lbText )
 
-  Font titleFont = _titleWidget() ? _titleWidget()->font() : Font::create( FONT_4 );
+  Font titleFont = _titleWidget() ? _titleWidget()->font() : Font::create( "FONT_4" );
 
   Font textFont = lbText
                 ? lbText->font()
-                : Font::create( FONT_3 );
+                : Font::create( "FONT_3" );
 
   int titleHeight = titleFont.getTextSize( "A" ).height();
   int textLineHeight = textFont.getTextSize( "A" ).height() + textFont.kerningHeight();

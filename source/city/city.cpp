@@ -81,7 +81,6 @@ public:
   void calculatePopulation();
 
  struct {
-  Signal1<int> onPopulationChanged;
   Signal1<std::string> onWarningMessage;
   Signal2<TilePos,std::string> onDisasterEvent;
   Signal0<> onBuildingOptionsChanged;
@@ -162,7 +161,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isMonthChanged() )
   {
-    _d->monthStep( this, game::Date::current() );      
+    _d->monthStep( this, game::Date::current() );
   }
 
   if( game::Date::isWeekChanged() )
@@ -195,14 +194,13 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 void PlayerCity::Impl::calculatePopulation()
 {
   states.population = statistic->population.current();
-  emit signal.onPopulationChanged( states.population );
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
-{  
+{
   _d->border[ type ] = &_d->tilemap.at( pos );
 }
 
@@ -307,13 +305,6 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   LOG_CITY.info( "Start parse savemap" );
-  int saveFormat = stream.get( "saveFormat", minimumOldFormat );
-  bool needLoadOld = saveFormat < GAME_BUILD_NUMBER;
-
-  if( needLoadOld )
-  {
-    LOG_CITY.warn( "Trying to load from format {}", saveFormat );
-  }
 
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
@@ -331,7 +322,6 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse options" );
   VARIANT_LOAD_CLASS_D_LIST( _d, options, stream )
-  setOption( PlayerCity::forceBuild, 1 );
 
   LOG_CITY.info( "Parse funds" );
   VARIANT_LOAD_CLASS_D( _d, funds, stream )
@@ -340,35 +330,38 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Parse trade/build/win params" );
   VARIANT_LOAD_CLASS_D( _d, tradeOptions, stream )
   VARIANT_LOAD_CLASS_D( _d, buildOptions, stream )
-  _d->winTargets.load( stream.get( "winTargets").toMap() );
+  _d->winTargets.load(stream.get( "winTargets").toMap());
 
   LOG_CITY.info( "Load overlays" );
-  VariantMap overlays = stream.get( "overlays" ).toMap();
+  VariantMap vmOverlays = stream.get( "overlays" ).toMap();
 
-  for( const auto& item : overlays)
+  for( const auto& item : vmOverlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
-    object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
+    object::Type overlayType = (object::Type)config.get(ovconfig::idxType).toInt();
     TilePos pos = config.get( ovconfig::idxLocation, TilePos::invalid() );
 
     auto overlay = Overlay::create( overlayType );
     if( overlay.isValid() && config::tilemap.isValidLocation( pos ) )
     {
-      city::AreaInfo info( this, pos );
-      overlay->build( info );
-      overlay->load( overlayParams );      
-      //support old formats
-      if( needLoadOld )
-        overlay->debugLoadOld( saveFormat, overlayParams );
+      city::AreaInfo info(this, pos);
+      info.onload = true;
 
-      _d->overlays.push_back( overlay );
+      overlay->build(info);
+      overlay->load(overlayParams);
+      _d->overlays.push_back(overlay);
     }
     else
     {
       LOG_CITY.warn( "Can't load overlay " + item.first );
     }
+  }
+
+  for( auto overlay : _d->overlays )
+  {
+    overlay->afterLoad();
   }
 
   LOG_CITY.info( "Parse walkers info" );
@@ -419,7 +412,6 @@ void PlayerCity::load( const VariantMap& stream )
     }
   }
 
-  setOption( PlayerCity::forceBuild, 0 );
   setOption( PlayerCity::constructorMode, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
@@ -455,7 +447,18 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
   emit _d->signal.onBuildingOptionsChanged();
 }
 
-const city::States &PlayerCity::states() const              { return _d->states; }
+bool PlayerCity::getBuildOption(const std::string& name, bool) const
+{
+  object::Type vtype = object::findType(name);
+  return _d->buildOptions.isBuildingAvailable(vtype);
+}
+
+void PlayerCity::setBuildOption(const std::string& name, int value)
+{
+  object::Type vtype = object::findType(name);
+  _d->buildOptions.setBuildingAvailable(vtype, value>0);
+}
+
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
 Signal0<>& PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
@@ -470,11 +473,16 @@ const good::Store& PlayerCity::sells() const                { return _d->tradeOp
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const                     { return _d->tilemap.climate(); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::trSea | world::EmpireMap::trLand; }
-Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
-Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
+
+const city::States &PlayerCity::states() const
+{
+  _d->states.money = _d->funds.money();
+  _d->states.favor = empire()->emperor().relation(name()).value();
+  return _d->states;
+}
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 {
@@ -496,12 +504,18 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
   }
   else if( opt == svkBorderEnabled )
   {
-    _d->tilemap.setSvkBorderEnabled( value );
+    _d->tilemap.setSvkBorderEnabled(value>0);
   }
   else if( opt == climateType )
   {
     _d->tilemap.setClimate( (ClimateType)value );
   }
+}
+
+void PlayerCity::setOption(const std::string& name, int value)
+{
+  OptionType type = city::findOption(name);
+  setOption(type, value);
 }
 
 int PlayerCity::prosperity() const
@@ -511,8 +525,14 @@ int PlayerCity::prosperity() const
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
 {
-  city::Options::const_iterator it = _d->options.find( opt );
+  auto it = _d->options.find( opt );
   return (it != _d->options.end() ? it->second : 0 );
+}
+
+int PlayerCity::getOption(const std::string& optname,bool) const
+{
+  OptionType type = city::findOption(optname);
+  return getOption(type);
 }
 
 void PlayerCity::clean()
@@ -546,7 +566,6 @@ int PlayerCity::culture() const { return statistic().services.value<city::Cultur
 int PlayerCity::peace() const { return statistic().services.value<city::Peace>(); }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
-int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
@@ -602,7 +621,10 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      events::dispatch<ShowInfobox>( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
+      std::string title = _("##barbarian_attack_title##");
+      std::string text = _("##barbarian_attack_text##");
+      std::string video = "spy_army";
+      events::dispatch<ShowInfobox>(title, text, true, video);
     }
   }
   else if( object.is<world::Messenger>() )

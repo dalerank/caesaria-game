@@ -77,25 +77,25 @@ ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )
   _d->alignEnabled = other._d->alignEnabled;
 
   _d->icon = other._d->icon;
-	_d->tag = other._d->tag;
+  _d->tag = other._d->tag;
   _d->state = other._d->state;
-	_d->text = other._d->text;
-	_d->data = other._d->data;
+  _d->text = other._d->text;
+  _d->data = other._d->data;
 
-	for( unsigned int i=0; i < count;i++ )
-	{
-		overrideColors[ i ].Use = other.overrideColors[ i ].Use;
-		overrideColors[ i ].font = other.overrideColors[ i ].font;
-		overrideColors[ i ].color = other.overrideColors[ i ].color;
-	}
+  for( unsigned int i=0; i < count;i++ )
+  {
+    overrideColors[ i ].Use = other.overrideColors[ i ].Use;
+    overrideColors[ i ].font = other.overrideColors[ i ].font;
+    overrideColors[ i ].color = other.overrideColors[ i ].color;
+  }
 
-	return *this;
+  return *this;
 }
 
 ListBoxItem& ListBoxItem::invalidItem()
 {
-	static ListBoxItem invalidItem = ListBoxItem();
-	return invalidItem;
+  static ListBoxItem invalidItem = ListBoxItem();
+  return invalidItem;
 }
 
 void ListBoxItem::setTextAlignment( Alignment horizontal, Alignment vertical )
@@ -117,6 +117,7 @@ void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 
   if( _d->textPic.isValid() )
   {
+    _d->textPic.fill(ColorList::clear);
     f.draw( _d->textPic, _d->text, p );
   }
 }
@@ -143,10 +144,21 @@ void ListBoxItem::draw(const std::string& text, Font f, const Point& p )
 
 void ListBoxItem::clear()
 {
-  if( _d->textPic.isValid() )
+  if (_d->textPic.isValid())
   {
-    _d->textPic.fill( 0x0 );
+    _d->textPic.fill(ColorList::clear);
   }
+}
+
+ListBoxItem::ColorType ListBoxItem::findColorType(const std::string& name)
+{
+  if(TEXT(simple)==name) return simple;
+  if(TEXT(hovered)==name) return hovered;
+  if(TEXT(iconSimple)==name) return iconSimple;
+  if(TEXT(iconHovered)==name) return iconHovered;
+  if(TEXT(background)==name) return background;
+  if(TEXT(all)==name) return all;
+  return count;
 }
 
 ListBoxItem::~ListBoxItem(){}

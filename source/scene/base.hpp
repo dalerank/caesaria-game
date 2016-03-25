@@ -24,6 +24,7 @@
 #include "core/smartptr.hpp"
 
 struct NEvent;
+class Variant;
 
 namespace gfx
 {
@@ -47,18 +48,21 @@ class Base
 public:
   virtual ~Base();
 
-  virtual void handleEvent( NEvent& event) {}
-  virtual void draw() = 0;
+  virtual void handleEvent(NEvent& event) {}
+  virtual void draw(gfx::Engine& engine) = 0;
+  virtual void setMode(int mode);
+  virtual void setOption(const std::string& name,Variant value);
+  virtual Variant getOption(const std::string& name);
 
   // this method is executed after every frame. default: do nothing
   virtual void afterFrame() {}
 
   // runs the screen (main loop), returns _wevent
-  void update( gfx::Engine& engine );
+  void update(gfx::Engine& engine);
   void stop();
 
   // draws the complete frame
-  void drawFrame( gfx::Engine &engine );
+  void drawFrame(gfx::Engine &engine);
   virtual gfx::Camera* camera() const;
 
   virtual void initialize() = 0;
@@ -66,7 +70,7 @@ public:
 
   virtual int result() const = 0;
 
-  virtual bool installEventHandler( EventHandlerPtr );
+  virtual bool installEventHandler(EventHandlerPtr);
 protected:
   Base();
 

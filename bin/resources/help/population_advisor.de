@@ -1,0 +1,8 @@
+{
+ title : "##population_advisor##"
+ sound : "fanfare"
+ text  : "Konsultieren Sie diesen Berater, wenn Sie Informationen über die Größe und die Zusammensetzung Ihrer Bevölkerung benötigen. Standardmäßig stellt das erste Diagramm, das im Hauptfenster erscheint, die gesamte Einwohnerschaft über die Zeit betrachtet dar. Wenn Sie sich bewähren, steigt diese Kurve stetig, mit nur kleineren Abweichungen nach oben und unten, an. Katastrophen oder schlechtes Management erscheinen als tiefe Einschnitte.\nKlicken Sie eines der kleineren Diagramme an, um es im Hauptfenster darzustellen. 'Zensus' zeigt die Zusammensetzung der Bevölkerung nach Altersstufen. Nur Personen zwischen 20 und 50 Jahren zählen zu Ihren Arbeitskräften, diejenigen unter 22 benötigen Schulen und Akademien. Wenn dieses Diagramm einen Einbruch bei den 20- bis 50jährigen aufweist, gibt es in Ihrer Stadt möglicherweise einen Mangel an Arbeitern, auch wenn die Bevölkerungszahl an sich ziemlich hoch ist.\n'Gesellschaft' gliedert Ihre Bevölkerung nach ihrem Einkommen auf. Je mehr Menschen in den Spalten mit höherem Einkommen verzeichnet sind, desto höher werden auch die Steuereinnahmen sein. Ein großer Unterschied zwischen reichen und armen Bürgern kann der Stimmung in der Stadt abträglich sein, und viele Bürger mit niedrigem Einkommen senken die Wohlstandswertung.\nDas kleinere Fenster unterhalb der Diagramme summiert die Nahrungsmittelreserven Ihrer Stadt und meldet, wie viel Abwechslung der Speiseplan den Leuten bietet, Darüber hinaus können Sie sehen, ob Menschen in der Stadt eintreffen, oder ob sie sie verlassen.\n\Hilfe zum Thema @Bevölkerung& erläutert, wie die Diagramme auszuwerten sind."
+ uri : {
+  "Bevölkerung" : "population_and_mood"
+ }
+}

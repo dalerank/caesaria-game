@@ -31,27 +31,19 @@ static std::string sanitizeString( const std::string& str)
 
   for (std::string::size_type i = 0; i < str.length(); ++i)
   {
-      switch (str[i])
-      {
-      case '"':              output += "\\\"";              break;
-      case '/':              output += "\\/";               break;
-      case '\b':             output += "\\b";               break;
-      case '\f':             output += "\\f";               break;
-      case '\n':             output += "\\n";               break;
-      case '\r':             output += "\\r";               break;
-      case '\t':             output += "\\t";               break;
-      case '\\':             output += "\\\\";              break;
-      default:               output += str[i];            break;
-      }
+    switch (str[i])
+    {
+    case '\"':              output += "\\\"";              break;
+    //case '/':              output += "\\/";               break;
+    case '\b':             output += "\\b";               break;
+    case '\f':             output += "\\f";               break;
+    case '\n':             output += "\\n";               break;
+    case '\r':             output += "\\r";               break;
+    case '\t':             output += "\\t";               break;
+    case '\\':             output += "\\\\";              break;
+    default:               output += str[i];            break;
+    }
   }
-
-  /*str = utils::replace( str, "\\", "\\\\");
-  str = utils::replace( str, "\"", "\\\"");
-  str = utils::replace( str, "\b", "\\b");
-  str = utils::replace( str, "\f", "\\f");
-  str = utils::replace( str, "\n", "\\n");
-  str = utils::replace( str, "\r", "\\r");
-  str = utils::replace( str, "\t", "\\t");*/
   output += "\"";
   return output;
 }
@@ -157,7 +149,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::Map: // variant is a map?
     {
       VariantMap vmap = data.toMap();
-      
+
       if( vmap.empty() )
       {
         str = "{}";
@@ -169,7 +161,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         std::string serializedValue;
         serializedValue.reserve( 512 );
         for( auto& item : vmap )
-        {        
+        {
           serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
@@ -298,17 +290,24 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
     int token = Json::lookAhead(json, index);
     switch( token )
     {
-      case JsonTokenString:      return Json::parseString(json, index, success);
-      case JsonTokenNumber:      return Json::parseNumber(json, index);
-      
-      case JsonTokenCommentOpen:
-        Json::parseComment(json, index, success); 
+      case JsonTokenString:      
+      {
+        std::string str;
+        Json::parseString(json, index, success, str);
+        return Variant(str);
+      }
       break;
-      
-      case JsonTokenCurlyOpen: 
-      case JsonTokenObjectName: 
+
+      case JsonTokenNumber:      return Json::parseNumber(json, index);
+
+      case JsonTokenCommentOpen:
+        Json::parseComment(json, index, success);
+      break;
+
+      case JsonTokenCurlyOpen:
+      case JsonTokenObjectName:
           return Json::parseObject(json, index, success);
-      
+
       case JsonTokenSquaredOpen: return Json::parseArray(json, index, success);
       case JsonTokenTrue:  Json::nextToken(json, index); return Variant(true);
       case JsonTokenFalse: Json::nextToken(json, index); return Variant(false);
@@ -398,7 +397,8 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
     default:
       {
         //Parse the key/value pair's name
-        std::string name = Json::parseString(json, index, success).toString();
+        std::string name;
+        Json::parseString(json, index, success,name);
 
         if(!success)
         {
@@ -414,7 +414,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
         {
           success = false;
           std::string errText = utils::format( 0xff, "Wrong token colon near \"%s\"", name.c_str() );
-          return Variant( errText );
+          return Variant(errText);
         }
 
         //Parse the key/value pair's value
@@ -439,7 +439,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 /**
  * parseArray
  */
-Variant Json::parseArray(const std::string &json, int &index, bool &success)
+VariantList Json::parseArray(const std::string &json, int &index, bool &success)
 {
   VariantList list;
 
@@ -477,7 +477,7 @@ Variant Json::parseArray(const std::string &json, int &index, bool &success)
     }
   }
 
-  return Variant(list);
+  return list;
 }
 
 /**
@@ -520,7 +520,7 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
 
   int lastIndex = math::clamp<int>( index + 64, 0, json.size() );
   for( int i=index; i < lastIndex; i++ )
-  {    
+  {
     if( json[i+1] != limiter )
     {
       s += json[ i ];
@@ -559,9 +559,9 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
 /**
  * parse string with colons
  */
-Variant Json::parseString(const std::string &json, int &index, bool &success)
+void Json::parseString(const std::string &json, int &index, bool &success, std::string& str)
 {
-        std::string s;
+  str.clear();
         char c;
 
         Json::eatWhitespace(json, index);
@@ -592,68 +592,32 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 
             c = json[index++];
 
-            if( c == '\"' || c == '\\' )
+            switch (c)
             {
-              s += c;
-            }
-            else if(c == '/')
-            {
-              s.append("/");
-            }
-            else if(c == 'b')
-            {
-              s.append("\b");
-            }
-            else if(c == 'f')
-            {
-              s.append("\f");
-            }
-            else if(c == 'n')
-            {
-              s.append("\n");
-            }
-            else if(c == 'r')
-            {
-              s.append("\r");
-            }
-            else if(c == 't')
-            {
-              s.append("\t");
-            }
-            else if(c == 'u')
-            {
-//                                 int remainingLength = json.size() - index;
-// 
-//                                 if(remainingLength >= 4)
-//                                 {
-//                                         std::string unicodeStr = json.substr(index, 4);
-// 
-//                                         int symbol = utils::fromHex( unicodeStr.c_str() );
-// 
-//                                         s.append( symbol );
-// 
-//                                         index += 4;
-//                                 }
-//                                 else
-//                                 {
-//                                         break;
-//                                 }
-              _GAME_DEBUG_BREAK_IF( true && "yet not work")
+            case '\"': case '\\': str += c; break;
+            case '/': str.append("/"); break;
+            case 'b': str.append("\b"); break;
+            case 'f': str.append("\f"); break;
+            case 'n': str.append("\n"); break;
+            case 'r': str.append("\r"); break;
+            case 't': str.append("\t"); break;
+
+            case 'u':
+              _GAME_DEBUG_BREAK_IF(true && "yet not work");
+            break;
             }
           }
           else
           {
-            s += c;
+            str += c;
           }
         }
 
         if(!complete)
         {
                 success = false;
-                return Variant();
+                str.clear();
         }
-
-        return Variant(s);
 }
 
 /**
