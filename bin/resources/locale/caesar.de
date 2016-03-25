@@ -2269,4 +2269,5 @@
 "##meat_fruit_and_vegetables##":"Fleisch, Obst und Gemüse",
 "##olive_groves_and_vineyards##":"Olivenhaine und Weinberge",
 "##wild_animals##":"Wilde Tiere",
+"##need_restart_mission_for_apply_changes##":"Die Mission muss neugestartet werden, damit die Änderungen wirksam werden.",
 }
