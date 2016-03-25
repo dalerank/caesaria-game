@@ -14,6 +14,16 @@ game.ui.infobox.aboutObject = function(typename,info) {
   return ibox
 }
 
+game.ui.infobox.aboutRuins = function(location) {
+  var ibox = this.aboutConstruction(0,0,510,350)
+
+  var ruins = g_session.city.getOverlay(location).as(Ruins)
+  engine.log(ruins.typename)
+
+  ibox.title = _u(ruins.typename)
+  ibox.setInfoText(ruins.getProperty("pinfo"))
+}
+
 game.ui.infobox.aboutBarracks = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350)
   ibox.blackFrame.geometry = {x:16, y:80, w:ibox.w-32, h:56}

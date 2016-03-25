@@ -25,7 +25,7 @@ class Ruins : public Building
 {
 public:
   Ruins( object::Type type );
-  void setInfo( std::string parent );
+  void setInfo(const std::string& parent);
 
   virtual std::string pinfo() const;
   virtual void save(VariantMap &stream) const;
@@ -33,9 +33,10 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual void collapse() {}
   virtual void burn() {}
+  virtual Variant getProperty(const std::string& name) const;
   virtual bool getMinimapColor(int &color1, int color2) const;
 
-  void afterBuild() { _alsoBuilt=false; }
+  void afterBuild() {_alsoBuilt=false;}
 protected:
   std::string _parent;
   float _value;
@@ -60,7 +61,6 @@ public:
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
   virtual bool isNeedRoad() const;
-  virtual std::string pinfo() const;
 };
 
 class BurnedRuins : public Ruins
@@ -74,7 +74,6 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual bool isNeedRoad() const;
   virtual void destroy();
-  virtual std::string pinfo() const;
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;
@@ -90,7 +89,6 @@ public:
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoad() const;
-  virtual std::string pinfo() const;
 };
 
 class PlagueRuins : public Ruins
@@ -103,7 +101,6 @@ public:
   virtual bool build( const city::AreaInfo& info );
   virtual bool isWalkable() const;
   virtual void destroy();
-  virtual std::string pinfo() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
 

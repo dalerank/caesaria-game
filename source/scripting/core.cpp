@@ -851,6 +851,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.template"
+#include "overlay.template"
 #include "widget.implementation"
 #include "menu.implementation"
 #include "window.implementation"
