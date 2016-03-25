@@ -7,12 +7,17 @@ function UpdateOverlayPrototype(objProto) {
 UpdateOverlayPrototype(Overlay.prototype)
 //*************************** Overlay class end ***************************************//
 
-//*************************** Temple class begin ***************************************//
-UpdateOverlayPrototype(Temple.prototype)
-Object.defineProperty( Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
-Object.defineProperty( Temple.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+function UpdateWorkingBuildingPrototype(objProto) {
+  UpdateOverlayPrototype(objProto)
 
+  Object.defineProperty(objProto.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+}
+//*************************** Temple class begin ***************************************//
+UpdateWorkingBuildingPrototype(Temple)
+Object.defineProperty(Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
 //*************************** Temple class end ***************************************//
 
-UpdateOverlayPrototype(Ruins.prototype)
 UpdateOverlayPrototype(Reservoir.prototype)
+//*************************** Ruin class begin ***************************************//
+UpdateOverlayPrototype(Ruins)
+//*************************** Ruin class end ***************************************//
