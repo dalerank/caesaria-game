@@ -5,6 +5,6 @@
  uri : {
   "Colossus Neronis" : "statuary
   "Colosseum" : "colosseum_history"
-  "baths" : "bathhouse_history"
+  "baths" : "baths_history"
  }
 }
