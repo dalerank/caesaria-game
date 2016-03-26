@@ -56,6 +56,7 @@ namespace internal
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
+inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
 {
@@ -850,6 +851,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.template"
+#include "overlay.template"
 #include "widget.implementation"
 #include "menu.implementation"
 #include "window.implementation"

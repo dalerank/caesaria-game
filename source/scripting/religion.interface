@@ -1,7 +1,12 @@
 SCRIPT_OBJECT_BEGIN(Divinity)
-	SCRIPT_OBJECT_FUNCTION(Divinity,shortDescription,0)
 	SCRIPT_OBJECT_FUNCTION(Divinity,internalName,0)
+	SCRIPT_OBJECT_FUNCTION(Divinity,setName,1)
+	
+	SCRIPT_OBJECT_FUNCTION(Divinity,setService,1)
+	SCRIPT_OBJECT_FUNCTION(Divinity,setPicture,1)	
 	SCRIPT_OBJECT_FUNCTION(Divinity,picture,0)
+
 	SCRIPT_OBJECT_FUNCTION(Divinity,relation,0)
+	SCRIPT_OBJECT_FUNCTION(Divinity,setRelation,1)
 	SCRIPT_OBJECT_CONSTRUCTOR(Divinity)
 SCRIPT_OBJECT_END(Divinity)

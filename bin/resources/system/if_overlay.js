@@ -1,16 +1,24 @@
-g_config.getObjectTypename = function(obj) {
-  return g_session.getOverlayType( obj.type() )
+//*************************** Overlay class begin ***************************************//
+function UpdateOverlayPrototype(objProto) {
+  Object.defineProperty(objProto, 'typename', { get : function() { return g_session.getOverlayType( obj.type() )}})
+
+  objProto.as = function(type) { return new type(this); }
 }
 
-//*************************** Overlay class begin ***************************************//
-Object.defineProperty( Overlay.prototype, "typename", { get : function() { return g_config.getObjectTypename(this)}})
-
-Overlay.prototype.as = function(type) { return new type(this); }
+UpdateOverlayPrototype(Overlay)
 //*************************** Overlay class end ***************************************//
 
-//*************************** Temple class begin ***************************************//
-Object.defineProperty( Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
-Object.defineProperty( Temple.prototype, "typename", { get : function() { return g_config.getObjectTypename(this)}})
-Object.defineProperty( Temple.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+function UpdateWorkingBuildingPrototype(objProto) {
+  UpdateOverlayPrototype(objProto)
 
+  Object.defineProperty(objProto.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+}
+//*************************** Temple class begin ***************************************//
+UpdateOverlayPrototype(Temple)
+
+Object.defineProperty(Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
 //*************************** Temple class end ***************************************//
+
+//*************************** Ruin class begin ***************************************//
+UpdateOverlayPrototype(Ruins)
+//*************************** Ruin class end ***************************************//

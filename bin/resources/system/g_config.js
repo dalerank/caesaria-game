@@ -80,6 +80,14 @@ g_config.layer = {
     products : 38
 }
 
+g_config.gods = {
+  ceres : "ceres",
+  mars : "mars",
+  neptune : "neptune",
+  venus : "venus",
+  mercury : "mercury"
+}
+
 g_config.saves = {
     ext : ".oc3save",
     fast : "_fastsave",

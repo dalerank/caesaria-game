@@ -1,0 +1,16 @@
+#define TEMPLATE_OVERLAY_BEGIN(OverlayType) \
+SCRIPT_OBJECT_BEGIN(OverlayType) \
+	SCRIPT_OBJECT_FUNCTION(OverlayType,type,0) \
+	SCRIPT_OBJECT_FUNCTION(OverlayType,size,0) \
+	SCRIPT_OBJECT_FUNCTION(OverlayType,getProperty,1)
+
+
+#define TEMPLATE_OVERLAY_END(OverlayType) \
+  SCRIPT_OBJECT_CONSTRUCTOR(OverlayType) \
+SCRIPT_OBJECT_END(OverlayType)
+
+#define TEMPLATE_OVERLAY_IMPLEMENTATION(OverlayType) \
+DEFINE_OBJECT_GETTER_0(OverlayType,object::Type,type) \
+DEFINE_OBJECT_GETTER_0(OverlayType,const Size&,size) \
+DEFINE_OBJECT_GETTER_1(OverlayType,Variant,getProperty,const std::string&,std::string()) \
+DEFINE_OVERLAY_CONSTRUCTOR(OverlayType)

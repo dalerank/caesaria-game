@@ -22,6 +22,7 @@ var modules = [
                   "g_config_minimap",
                   "g_config_climate",
                   "init_render",
+                  "game_pantheon",
                   "game_ui_dialogs",
                   "game_sound_player",
                   "game_ui_dialogs_audio_opts",

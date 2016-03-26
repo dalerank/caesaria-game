@@ -2013,6 +2013,7 @@
 "##scholar##":"Schoolchild",
 "##scholars##":"school age",
 "##roadBlock##":"Road block",
+"##roadBlock_info##":"Use roadblocks to restrict service workers patrol routes to where they are needed (that is, the housing areas)",
 "##warehouse_no_workers##":"Skeleton staff only. Will not dispatch or receive goods",
 "##egift_generous##":"Generous:",
 "##minimap_tooltip##":"Click on this overview map to move to distant parts of your city",
@@ -2314,4 +2315,5 @@
 "##meat_fruit_and_vegetables##":"Meat, fruit and vegetables",
 "##olive_groves_and_vineyards##":"Olive groves and vineyards",
 "##wild_animals##":"Wild animals",
+"##need_restart_mission_for_apply_changes##":"The mission must be reopend for the changes to take effect.",
 }

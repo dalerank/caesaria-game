@@ -31,7 +31,6 @@ namespace game
 #define __REG_PROPERTY(a) const char* Settings::a = TEXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
-__REG_PROPERTY(pantheonModel )
 __REG_PROPERTY(houseModel )
 __REG_PROPERTY(citiesModel)
 __REG_PROPERTY(constructionModel)
@@ -134,7 +133,6 @@ Settings::Settings() : _d( new Impl )
   std::string application_path = vfs::Directory::applicationDir().toString();
   setwdir( application_path );
 
-  _d->options[ pantheonModel       ] = std::string( "/pantheon.model" );
   _d->options[ sg2model            ] = std::string( "/sg2.model" );
   _d->options[ houseModel          ] = std::string( "/house.model" );
   _d->options[ constructionModel   ] = std::string( "/construction.model" );

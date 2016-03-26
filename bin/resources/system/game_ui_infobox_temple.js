@@ -90,7 +90,7 @@ game.ui.infobox.aboutTemple = function(location) {
     ibox.lbText.text = _u("oracle_info")
   } else {
     var divn = temple.divinity()
-    var shortDesc = divn.shortDescription()
+    var shortDesc = _u(divn.internalName()+"_desc")
     var text = _format( "{0}_{1}_temple",
                         temple.big ? "big" : "small",
                         divn.internalName())
