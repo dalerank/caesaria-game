@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 #original script from IgorLynx https://github.com/IgorLynx/CSV-to-JSON
 
 import urllib2
