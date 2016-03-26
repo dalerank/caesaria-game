@@ -1,7 +1,7 @@
 {
  title : "##content##"
  sound : "fanfare"
- text  : "@Common Problems&\n Game Concepts\n @\tPopulation and Mood&\n @\tPlebeians&\n @\tPatricians&\n @\tWorkers&\n @\tEmployment&\n @\tWater Supply&\n @\tFood and Farming&\n @\tIndustry&\n @\tTrade&\n @\tMoney&\n @\tEntertainment&\n @\tEducation&\n @\tReligion&\n @\tPeace and War&\n @\tHealth and Disease&\n @\tCrime&\n @\tRatings&\n The Main Map\n Buildings\n @Housing&\n @Roads&\n Water Structures\n @Reservoir&\n @Aqueduct&\n @Fountain&\n @Well&\n Health and Sanitation\n @Barber&\n @Bathhouse&\n @Doctor's Clinic&\n @Hospital&\n Religion Buildings\n @Temples and Oracle&\n Education Establishments\n @School&\n @Academy&\n @Library&\n @Mission Post&\n Entertainment Buildings\n @Theater&\n @Amphitheater&\n @Colosseum&\n @Hippodrome&\n @Gladiator School&\n @Lion House&\n @Actors' Colony&\n @Charioteer School&\n Government Structures\n @Forum&\n @Senate&\n @Governor's Residences&\n @Statues and Triumphal Arch&\n Engineering and Other Buildings\n @Gardens and Plaza&\n @Engineer's Post&\n @Bridges&\n @Shipyard&\n @Dock&\n @Wharf&\n Security Buildings\n @Wall, Tower and Gatehouse&\n @Prefecture&\n @Fort&\n @Barracks&\n @Military Academy& @\n Industrial Structures\n Farms\n @Wheat&\n @Meat, Vegetables and Fruit&\n @Olives and Vines&\n Raw Materials\n @Clay Pit&\n @Iron Mine&\n @Timber Yard&\n @Marble Quarry&\n Workshops\n @Wine&\n @Oil&\n @Weapons&\n @Furniture&\n @Pottery&\n @Market&\n @Granary&\n @Warehouse&\n Advisors Menu\n @Labor Advisor&\n @Military Advisor&\n @Emperor Advisor&\n @City Progress Advisor&\n @Trade Advisor&\n @Population Advisor&\n @Health Advisor&\n @Education Advisor&\n @Entertainment Advisor&\n @Festivals&\n @Religion Advisor&\n @Finances Advisor&\n @Chief Advisor&\n @Empire Map&\n @Messages from Your Scribes&\n"
+ text  : "@Common Problems&\n\nGame Concepts\n\t@Population and Mood&\n\t@Plebeians&\n\t@Patricians&\n\t@Workers&\n\n\t@Employment&\n\t@Water Supply&\n\t@Food and Farming&\n\t@Industry&\n\t@Trade&\n\t@Money&\n\t@Entertainment&\n\t@Education&\n\t@Religion&\n\t@Peace and War&\n\t@Health and Disease&\n\t@Crime&\n\t@Ratings&\n\nThe MAIN MAP\n\nBuildings\n\t@Housing&\n\t@Roads&\n\n\tWater Structures\n\t@Reservoir&\n\t@Aqueduct&\n\t@Fountain&\n\t@Well&\n\n\tHealth and Sanitation\n\t@Barber&\n\t@Bathhouse&\n\t@Doctor's Clinic&\n\t@Hospital&\n\n\tReligion Buildings\n\t@Temples and Oracle&\n\n\tEducation Establishments\n\t@School&\n\t@Academy&\n\t@Library&\n\t@Mission Post&\n\n\tEntertainment Buildings\n\t@Theater&\n\t@Amphitheater&\n\t@Colosseum&\n\t@Hippodrome&\n\t@Gladiator School&\n\t@Lion House&\n\t@Actors' Colony&\n\t@Charioteer School&\n\n\tGovernment Structures\n\t@Forum&\n\t@Senate&\n\t@Governor's Residences&\n\t@Statues and Triumphal Arch&\n\n\tEngineering and Other Buildings\n\t@Gardens and Plaza&\n\t@Engineer's Post&\n\t@Bridges&\n\t@Shipyard&\n\t@Dock&\n\t@Wharf&\n\n\tSecurity Buildings\n\t@Wall, Tower and Gatehouse&\n\t@Prefecture&\n\t@Fort&\n\t@Barracks&\n\t@Military Academy&\n\n\tIndustrial Structures\n\n\t\tFarms\n\t\t@Wheat&\n\t\t@Meat, Vegetables and Fruit&\n\t\t@Olives and Vines&\n\n\t\tRaw Materials\n\t\t@Clay Pit&\n\t\t@Iron Mine&\n\t\t@Timber Yard&\n\t\t@Marble Quarry&\n\n\t\tWorkshops\n\t\t@Wine&\n\t\t@Oil&\n\t\t@Weapons&\n\t\t@Furniture&\n\t\t@Pottery&\n\n\t\t@Market&\n\t\t@Granary&\n\t\t@Warehouse&\n\nAdvisors Menu\n\t@Labor Advisor&\n\t@Military Advisor&\n\t@Emperor Advisor&\n\t@City Progress Advisor&\n\t@Trade Advisor&\n\t@Population Advisor&\n\t@Health Advisor&\n\t@Education Advisor&\n\t@Entertainment Advisor&\n\t@Festivals&\n\t@Religion Advisor&\n\t@Finances Advisor&\n\t@Chief Advisor&\n\n\t@Empire Map&\n\t@Messages from Your Scribes&"
  uri : {
   "Common Problems" : "common_problems"
   "Population and Mood" : "population_and_mood"
@@ -84,16 +84,14 @@
   "Anzeige: Datum" : "Fenster: Datumsanzeige??"
   "Kartenauswahl-Button" : "special_card_selection"
   "Steuerleiste ein-/ausblenden" : "Steuerleiste ein-/ausblenden??"
-  
-  @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n @&\n"
 
   "Labor Advisor" : "labor_advisor"
   "Military Advisor" : "legion_advisor"
   "Emperor Advisor" : "emperor_advisor"
   "City Progress Advisor" : "ratings_advisor"
   "Trade Advisor" : "trade_advisor"
-  "Population Advisor" : "health_advisor"
-  "Health Advisor" : "population_advisor"
+  "Population Advisor" : "population_advisor"
+  "Health Advisor" : "health_advisor"
   "Education Advisor" : "education_advisor"
   "Entertainment Advisor" : "entertainment_advisor"
   "Festivals" : "entertainment_advisor"
