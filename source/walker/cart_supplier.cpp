@@ -235,7 +235,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
   pathPropagator.propagate( _d->maxDistance);
 
   // try get that good from a granary
-  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granery,
+  _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granary,
                                                              type, qty, pathWay, _d->reservationID,
                                                              building );
 
@@ -251,7 +251,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
   {
     // we found a destination!
     setPos( pathWay.startPos() );
-    setPathway(pathWay);    
+    setPathway(pathWay);
   }
   else
   {
@@ -329,4 +329,3 @@ TilePos CartSupplier::places(Walker::Place type) const
 
   return Human::places( type );
 }
-

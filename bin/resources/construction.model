@@ -493,7 +493,7 @@
     animation : { rc : "commerce", start : 2, count : 9, offset : [ 90, 45 ], delay : 4 }
   },
 
-  granery : {
+  granary : {
     cost : 100,
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 6

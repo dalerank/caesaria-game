@@ -32,7 +32,7 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::granary, Granary)
 
 namespace {
 GAME_LITERALCONST(goodStore)
@@ -117,7 +117,7 @@ public:
   Pictures granarySprite;
 };
 
-Granary::Granary() : WorkingBuilding(object::granery, Size(3,3)), _d(new Impl)
+Granary::Granary() : WorkingBuilding(object::granary, Size(3,3)), _d(new Impl)
 {
   _d->store.granary = this;
 

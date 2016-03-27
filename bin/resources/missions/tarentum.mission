@@ -484,7 +484,7 @@
       market : true
       wine_workshop : true
       lumber_mill : true
-      granery : true
+      granary : true
       warehouse : true
       wheat_farm : true
       vinard : true

@@ -149,7 +149,7 @@
       small_mercury_temple : true
       roadBlock : true
       market : true
-      granery : true
+      granary : true
       wheat_farm : true
       senate : true
     }

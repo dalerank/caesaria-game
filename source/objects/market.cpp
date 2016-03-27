@@ -135,7 +135,7 @@ int Market::getGoodDemand(const good::Product &goodType)
   return res;
 }
 
-void Market::save( VariantMap& stream) const 
+void Market::save( VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
   VARIANT_SAVE_CLASS_D(stream, _d, goodStore)
@@ -156,7 +156,7 @@ bool Market::build(const city::AreaInfo& info)
   if (isOk && !info.onload)
   {
     Locations locations = roadside().locations();
-    bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
+    bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granary );
     bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
 
     if (!accessGranary)

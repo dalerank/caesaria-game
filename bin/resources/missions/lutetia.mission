@@ -754,7 +754,7 @@
 
       shipyard : false
       market : true
-      granery : true
+      granary : true
       warehouse : true
       school : true
       academy : true
