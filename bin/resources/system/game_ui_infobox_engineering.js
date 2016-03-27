@@ -47,6 +47,21 @@ game.ui.infobox.aboutBarracks = function(location) {
     ibox.setWorkingStatus(barracks.active)
   }
 
+  ibox.help_uri = barracks.typename;
   ibox.setModal()
   ibox.setFocus()
+}
+
+game.ui.infobox.aboutRaw = function(location) {
+  var ibox = this.aboutConstruction(0,0,510,350)
+  ibox.blackFrame.geometry = {x:16, y:170, w:ibox.w-32, h:64}
+
+  var lbProgress = ibox.addLabel(16, 40, ibox.w-32,24)
+
+  var lbAbout = ibox.addLabel(16, 70, ibox.w-32, 24)
+  lbAbout.multiline = true
+
+  var lbProductivity = ibox.addLabel( 16, 70, ibox.w-32, 24)
+  lbProductivity.multiline = true
+  lbProductivity.textAlign = { v:"upperLeft", h:"upperLeft" }
 }

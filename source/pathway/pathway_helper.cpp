@@ -97,7 +97,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
                        startPos.i(), startPos.j(), construction->name().c_str(),
                        construction->pos().i(), construction->pos().j() );
     }
-  }  
+  }
 
   return way;
 }
@@ -111,14 +111,14 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
 DirectRoute PathwayHelper::shortWay(const TilePos& startPos, ConstructionList buildings, WayType type)
 {
   DirectRoute route;
-  for( auto it : buildings )
+  for (auto it : buildings)
   {
-    Pathway path = create( startPos, it, type );
-    if( path.isValid() )
+    Pathway path = create(startPos, it, type);
+    if (path.isValid())
     {
       if( !route.isValid() )
       {
-        route.set( it, path );
+        route.set(it, path);
       }
       else
       {
@@ -134,7 +134,7 @@ DirectRoute PathwayHelper::shortWay(const TilePos& startPos, ConstructionList bu
 }
 
 DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type)
-{  
+{
   ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
   return shortWay( startPos, constructions, type );
 }
@@ -176,7 +176,7 @@ Pathway PathwayHelper::randomWay(PlayerCityPtr city, const TilePos& startPos, in
     do
     {
       Tile* destPos = tiles.random();
-      Pathway pathway = create( startPos, destPos->pos(), PathwayHelper::allTerrain );
+      Pathway pathway = create(startPos, destPos->pos(), PathwayHelper::allTerrain);
 
       if( pathway.isValid() )
       {

@@ -67,7 +67,7 @@ int Entertainment::_getLevelValue( HousePtr house )
   }
   case citylayer::theater: return (int) house->getServiceValue( Service::theater );
   case citylayer::amphitheater: return (int) house->getServiceValue( Service::amphitheater );
-  case citylayer::colloseum: return (int) house->getServiceValue( Service::colloseum );
+  case citylayer::colosseum: return (int) house->getServiceValue( Service::colosseum );
   case citylayer::hippodrome: return (int) house->getServiceValue( Service::hippodrome );
   }
 
@@ -131,7 +131,7 @@ void Entertainment::onEvent( const NEvent& event)
     {
     case NEvent::Mouse::moved:
     {
-      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)     
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
 
       std::string text = "";
       if( tile != 0 )
@@ -145,7 +145,7 @@ void Entertainment::onEvent( const NEvent& event)
           case citylayer::entertainment:  typeName = "entertainment";  break;
           case citylayer::theater:        typeName = "theater";        break;
           case citylayer::amphitheater:   typeName = "amphitheater";   break;
-          case citylayer::colloseum:      typeName = "colloseum";      break;
+          case citylayer::colosseum:      typeName = "colosseum";      break;
           case citylayer::hippodrome:     typeName = "hippodrome";     break;
           }
 
@@ -155,7 +155,7 @@ void Entertainment::onEvent( const NEvent& event)
             text = fmt::format( "##{}_entertainment_access##", lvlValue / 10 );
           }
           else
-          {            
+          {
             std::string levelName = _getAccessLevel( lvlValue );
             text = levelName + typeName + "_access##";
           }
@@ -267,7 +267,7 @@ Entertainment::Entertainment(Camera& camera, PlayerCityPtr city, Type type )
   {
   case citylayer::entertainment:
     _d->flags << object::unknown << object::theater
-              << object::amphitheater << object::colloseum
+              << object::amphitheater << object::colosseum
               << object::hippodrome << object::actorColony
               << object::gladiatorSchool << object::lionsNursery
               << object::chariotSchool;
@@ -286,8 +286,8 @@ Entertainment::Entertainment(Camera& camera, PlayerCityPtr city, Type type )
     _visibleWalkers() << walker::actor << walker::gladiator;
   break;
 
-  case citylayer::colloseum:
-    _d->flags << object::colloseum << object::gladiatorSchool << object::lionsNursery;
+  case citylayer::colosseum:
+    _d->flags << object::colosseum << object::gladiatorSchool << object::lionsNursery;
     _visibleWalkers() << walker::gladiator << walker::lionTamer;
   break;
 

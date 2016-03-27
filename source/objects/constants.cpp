@@ -38,7 +38,7 @@ public:
       __REG_TYPE( amphitheater )
       __REG_TYPE( theater )
       __REG_TYPE( hippodrome )
-      __REG_TYPE( colloseum )
+      __REG_TYPE( colosseum )
       __REG_TYPE( actorColony )
       __REG_TYPE( gladiatorSchool )
       __REG_TYPE( lionsNursery )

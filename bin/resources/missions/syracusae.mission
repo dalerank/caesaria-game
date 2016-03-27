@@ -99,15 +99,15 @@
     }
 
     first_colosseum_work#start_work : {
-      building : [ "colloseum" ]
+      building : [ "colosseum" ]
       no_troubles : true
       type : "start_work"
       action : {
         message#messagebox : {
           send2scribe : true
           video : "1st_glad"
-          title : "##working_colloseum_title##"
-          text : "##working_colloseum_text##"
+          title : "##working_colosseum_title##"
+          text : "##working_colosseum_text##"
         }
       }
     }

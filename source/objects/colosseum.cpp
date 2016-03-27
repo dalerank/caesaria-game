@@ -33,7 +33,7 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::colloseum, Colosseum)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::colosseum, Colosseum)
 
 class Colosseum::Impl
 {
@@ -45,7 +45,7 @@ public:
   } lastshow;
 };
 
-Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5,5) ), _d( new Impl )
+Colosseum::Colosseum() : EntertainmentBuilding(Service::colosseum, object::colosseum, Size(5,5) ), _d( new Impl )
 {
   setPicture(ResourceGroup::entertainment, 36);
 
@@ -71,7 +71,7 @@ void Colosseum::deliverService()
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
-      (lastSrvc == Service::colloseum
+      (lastSrvc == Service::colosseum
         ? _d->lastshow.glads : _d->lastshow.lions) = game::Date::current();
     }
   }
@@ -85,7 +85,7 @@ void Colosseum::deliverService()
 Service::Type Colosseum::serviceType() const
 {
   int lionValue = traineeValue( walker::lionTamer );
-  return lionValue > 0 ? Service::colloseum : Service::amphitheater;
+  return lionValue > 0 ? Service::colosseum : Service::amphitheater;
 }
 
 bool Colosseum::build( const city::AreaInfo& info )
@@ -122,19 +122,19 @@ std::string Colosseum::troubleDesc() const
   bool gladiators = isShowGladiatorBattles();
   if( !(lions && gladiators))
   {
-    return "##trouble_colloseum_no_shows##";
+    return "##trouble_colosseum_no_shows##";
   }
 
-  if( lions && gladiators )  { return "##trouble_colloseum_full_work##";  }
-  else if( lions ) { return "##colloseum_have_only_lions##"; }
-  else             { return "##trouble_colloseum_have_only_gladiatros##"; }
+  if( lions && gladiators )  { return "##trouble_colosseum_full_work##";  }
+  else if( lions ) { return "##colosseum_have_only_lions##"; }
+  else             { return "##trouble_colosseum_have_only_gladiatros##"; }
 }
 
 bool Colosseum::isNeedGladiators() const
 {
-  GladiatorSchoolList colloseums = _city()->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
+  GladiatorSchoolList colosseums = _city()->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
 
-  return colloseums.empty();
+  return colosseums.empty();
 }
 
 Service::Type Colosseum::_getServiceManType() const
@@ -144,7 +144,7 @@ Service::Type Colosseum::_getServiceManType() const
 }
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }
-bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colloseum; }
+bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colosseum; }
 int Colosseum::maxVisitors() const{ return 1500; }
 DateTime Colosseum::lastAnimalBoutDate() const { return _d->lastshow.lions; }
 DateTime Colosseum::lastGladiatorBoutDate() const { return _d->lastshow.glads; }

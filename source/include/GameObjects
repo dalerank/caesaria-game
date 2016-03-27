@@ -9,5 +9,6 @@
 #include "objects/house_spec.hpp"
 #include "objects/ruins.hpp"
 #include "objects/religion.hpp"
+#include "objects/factory.hpp"
 #include "objects/objects_factory.hpp"
 #include "objects/watersupply.hpp"
