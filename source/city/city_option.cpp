@@ -91,7 +91,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::c3gameplay, 0 );
   resetIfNot( PlayerCity::warfNeedTimber, 1 );
   resetIfNot( PlayerCity::showGodsUnhappyWarn, 1);
-  resetIfNot( PlayerCity::claypitMayCollapse, 1);
+  resetIfNot( PlayerCity::claypitMayFloods, 1);
   resetIfNot( PlayerCity::minesMayCollapse, 1);
   resetIfNot( PlayerCity::riversideAsWell, 1);
   resetIfNot( PlayerCity::soldiersHaveSalary, 1);

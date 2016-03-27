@@ -44,7 +44,7 @@ public:
                  warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
-                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
+                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayFloods,
                  minesMayCollapse, riversideAsWell, soldiersHaveSalary, housePersonalTaxes,
                  cutForest2timber, ironInRocks, svkBorderEnabled, farmUseMeadows,
                  constructorMode } OptionType;

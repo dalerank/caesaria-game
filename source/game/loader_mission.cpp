@@ -77,7 +77,7 @@ bool Mission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
-  
+
   if( currentVesion == vm[ TEXT(version) ].toInt() )
   {
     std::string mapToLoad = vm[ literals::map ].toString();
@@ -131,9 +131,9 @@ bool Mission::load( const std::string& filename, Game& game )
     city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
     city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );        
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
     city->setOption( PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
-    city->setOption( PlayerCity::claypitMayCollapse, vm.get( TEXT(claypitMayCollapse), 1 ) );
+    city->setOption( PlayerCity::claypitMayFloods, vm.get( TEXT(claypitMayCollapse), 1 ) );
     city->setOption( PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
     city->setOption( PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
     city->setOption( PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
@@ -193,7 +193,7 @@ bool Mission::load( const std::string& filename, Game& game )
 
     return true;
   }
- 
+
   return false;
 }
 
