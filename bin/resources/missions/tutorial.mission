@@ -31,13 +31,14 @@
     caption : "##new_village##"
     winText : "##tutorial_win_text##"
     startSound : "tutorial_speech"
-    winSound     : "tutorial_win_speech"
-    overview :  [ "##tutorial_text##",
-                  "@img=picture2_00002",
-                  "##tutorial_text_roads##",
-                  "@img=picture3_00002",
-                  "##tutorial_text_roads2##",
-                  "@img=picture3_00003"]
+    winSound : "tutorial_win_speech"
+    overview : [ "##tutorial_text##",
+                 "@img=picture2_00002",
+				 "##right_mouse_btn_tutorial##",
+                 "##tutorial_text_roads##",
+                 "@img=picture3_00002",
+                 "##tutorial_text_roads2##",
+                 "@img=picture3_00003"]
   }
 
   empire : {
