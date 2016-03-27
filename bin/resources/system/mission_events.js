@@ -87,8 +87,9 @@ sim.ui.missionWin = function()
   wnd.setModal();
   wnd.mayMove = false;
 
+  engine.log(minfo.winText)
   if (minfo.winText.length > 0)
-    g_ui.addInformationDialog( "", minfo.winText );
+    g_ui.addInformationDialog("", minfo.winText);
 }
 
 sim.start = function()
