@@ -74,7 +74,7 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
     case 0xb43: case 0xb53: case 0xb57:         ovType = object::olive_farm;    break;
     case 0xb4e: case 0xb52:                     ovType = object::fig_farm;    break;
     case 0xb38:                                 ovType = object::market;    break;
-    case 0xb7c + 71:                            ovType = object::granery;    break;  //0xbc3 - (71 is id granary in original game)
+    case 0xb7c + 71:                            ovType = object::granary;    break;  //0xbc3 - (71 is id granary in original game)
     case 0xb2f:                                 ovType = object::reservoir;    break;
     case 0xb9a:                                 ovType = object::oil_workshop;    break;
     case 0x34d: case 0x34e: case 0x34f: case 0x350: ovType = object::elevation;    break;
@@ -145,7 +145,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-  } 
+  }
   else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
   {
     ovType = object::aqueduct;
@@ -164,7 +164,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
-    oTile.setFlag( Tile::clearAll, true );    
+    oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
     oTile.setImgId( changeId );
   }
@@ -192,7 +192,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     city::AreaInfo info( city, oTile.pos() );
     overlay->build( info );
     city->addOverlay( overlay );
-  }  
+  }
 
   if( changeId > 0 )
   {

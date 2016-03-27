@@ -78,7 +78,7 @@ public:
       __REG_TYPE( big_venus_temple )
       __REG_TYPE( oracle )
       __REG_TYPE( market )
-      __REG_TYPE( granery )
+      __REG_TYPE( granary )
       __REG_TYPE( warehouse )
       __REG_TYPE( wheat_farm)
       __REG_TYPE( fig_farm )

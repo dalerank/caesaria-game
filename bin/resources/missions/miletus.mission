@@ -614,7 +614,7 @@
       small_mercury_temple : true
       shipyard : true
       market : true
-      granery : true
+      granary : true
       warehouse : true
       school : true
       academy : true

@@ -17,7 +17,7 @@
   farm : [ "wheat_farm", "fig_farm", "olive_farm", "vinard",
                   "meat_farm", "vegetable_farm" ]
 
-  commerce : [ "market", "granery", "warehouse" ]
+  commerce : [ "market", "granary", "warehouse" ]
 
   raw_material : [ "quarry", "iron_mine", "lumber_mill", "clay_pit" ]
   factory : [ "wine_workshop", "oil_workshop", "weapons_workshop",

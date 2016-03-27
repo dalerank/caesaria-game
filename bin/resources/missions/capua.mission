@@ -244,7 +244,7 @@
       lumber_mill : true
       roadBlock : true
       furniture_workshop : true
-      granery : true
+      granary : true
       warehouse : true
       wheat_farm : true
       fig_farm : true

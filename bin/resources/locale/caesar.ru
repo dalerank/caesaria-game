@@ -2317,4 +2317,5 @@
 "##common_problems##":"Общие проблемы",
 "##industry##":"Промышленость",
 "##gmenu_basicstrategy##":"Основы игры",
+"##briefing_third_title##":"350 до н.э. - Третье назначение",
 }
