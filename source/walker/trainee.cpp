@@ -59,8 +59,8 @@ void TraineeWalker::_init(walker::Type traineeType)
   case walker::actor:      _d->necBuildings << object::theater
                                             << object::amphitheater;  break;
   case walker::gladiator:  _d->necBuildings << object::amphitheater
-                                            << object::colloseum;  break;
-  case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
+                                            << object::colosseum;  break;
+  case walker::lionTamer:  _d->necBuildings << object::colosseum;  break;
   case walker::soldier:    _d->necBuildings << object::military_academy
                                             << object::fort_legionaries
                                             << object::fort_horse

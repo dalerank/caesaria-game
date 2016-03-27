@@ -63,7 +63,7 @@ g_config.layer = {
     entertainment : 6,
     theater : 7,
     amphitheater : 8,
-    colloseum : 9,
+    colosseum : 9,
     hippodrome : 10,
     health : 11,
     healthAll : 12,

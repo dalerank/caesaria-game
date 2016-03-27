@@ -138,6 +138,7 @@ game.ui.infobox.aboutTemple = function(location) {
     ibox.setWorkingStatus(temple.active)
   }
 
+  ibox.help_uri = temple.typename
   ibox.setFocus()
   ibox.setModal()
 }

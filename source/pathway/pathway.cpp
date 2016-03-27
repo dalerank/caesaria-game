@@ -158,7 +158,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   case direction::west       : _d->endPos += TilePos( -1, 0 ); break;
   case direction::northWest  : _d->endPos += TilePos( -1, 1 ); break;
   default:
-    _d->endPos += TilePos( 0, 1 );  break;
+    _d->endPos += TilePos(0, 1);  break;
     Logger::warning( "!!! Unexpected Direction:{}", direction);
   break;
   }
@@ -169,9 +169,15 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   }
 }
 
-void Pathway::setNextTile( const Tile& tile )
+void Pathway::setNextTile(const Tile& tile)
 {
-  _d->tiles.push_back( const_cast<Tile*>( &tile ) );
+  if (_d->endPos == tile.epos())
+  {
+    Logger::warning("Pathway: cant add same tile as end");
+    return;
+  }
+
+  _d->tiles.push_back(const_cast<Tile*>(&tile));
   _d->endPos = tile.epos();
 }
 
@@ -186,7 +192,7 @@ bool Pathway::contains(const Tile& tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( auto itTile = _d->tiles.rbegin();
+  for (auto itTile = _d->tiles.rbegin();
        itTile != _d->tiles.rend(); ++itTile)
   {
     if (*itTile == &tile)
@@ -259,7 +265,7 @@ void Pathway::load(const Tilemap& tmap, const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, endPos,   stream )
   VariantList vmTiles = stream.get( literals::tiles ).toList();
   for( const auto& it : vmTiles )
-    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it.toTilePos() )) );
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at(it.toTilePos())) );
 
   VARIANT_LOAD_ANY_D( _d, reverse, stream )
   VARIANT_LOAD_ANY_D( _d, step, stream )
@@ -286,8 +292,7 @@ Pathway Pathway::copy(unsigned int start, int stop) const
 
   ret.init( *_d->tiles[ start ] );
   stop = (stop == -1 ? _d->tiles.size() : stop );
-  for( int i=start+1; i < stop; i++ )
-  {
+  for (int i=start+1; i < stop; i++) {
     ret.setNextTile( *_d->tiles[ i ] );
   }
 

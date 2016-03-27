@@ -35,14 +35,14 @@ static SimpleLogger LOG_PF( "PathFinder" );
 
 class Pathfinder::Impl
 {
-public:  
+public:
   TilePossibleCondition condition;
 
   class Grid : std::vector< AStarPoint* >
   {
   public:
     inline size_type hash( const TilePos& pos ) const { return pos.j() * _size.width() + pos.i(); }
-    
+
     AStarPoint* operator[](const TilePos& pos ) const
     {
       return *(begin() + hash( pos ));
@@ -56,15 +56,15 @@ public:
         *it = 0;
       }
 
-    	_size = Size( width, height );
-    	resize( _size.area() );
+      _size = Size( width, height );
+      resize( _size.area() );
     }
-    
+
     void init( Tile* tile )
     {
-      *(begin() + hash( tile->pos() ) ) = new AStarPoint( tile );	
+      *(begin() + hash( tile->pos() ) ) = new AStarPoint( tile );
     }
-    
+
     Size _size;
   };
 
@@ -235,55 +235,58 @@ void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = 
 
 bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
-  for( auto aaIt=arrivedArea.begin(); aaIt != arrivedArea.end(); )
+  for (auto aaIt=arrivedArea.begin(); aaIt != arrivedArea.end();)
   {
-    if( *aaIt == NULL ) { aaIt = arrivedArea.erase( aaIt ); }
-    else { aaIt++; }
+    if (*aaIt == nullptr) {
+      aaIt = arrivedArea.erase(aaIt);
+    } else {
+      aaIt++;
+    }
   }
 
-  if( arrivedArea.empty() )
+  if (arrivedArea.empty())
   {
-    LOG_PF.warn( "AStar: no arrived area" );
-    return false;
-  }  
-
-  AStarPoint* ap = at( startPos );
-  if( !ap || !ap->tile )
-  {
-    LOG_PF.warn( "AStar: wrong start pos at [{},{}]", startPos.i(), startPos.j());
+    LOG_PF.warn("AStar: no arrived area");
     return false;
   }
 
-  oPathWay.init( *(ap->tile) );
-
-  foreach( tile, arrivedArea )
+  AStarPoint* ap = at(startPos);
+  if (!ap || !ap->tile)
   {
-    if( (*tile)->pos() == startPos )
+    LOG_PF.warn("AStar: wrong start pos at [{},{}]", startPos.i(), startPos.j());
+    return false;
+  }
+
+  oPathWay.init(*(ap->tile));
+
+  for (auto tile : arrivedArea)
+  {
+    if (tile->pos() == startPos)
     {
-      oPathWay.setNextTile( *(*tile) );
+      oPathWay.setNextTile(*tile);
       return true;
     }
   }
 
-  bool useRoad = (( flags & Pathway::ignoreRoad ) == 0 );
+  bool useRoad = ((flags & Pathway::ignoreRoad) == 0);
 
-  if( (flags & Pathway::customCondition)) {}
-  else if( (flags & Pathway::roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
-  else if( (flags & Pathway::terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
-  else if( (flags & Pathway::deepWaterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isDeepWater ); }
-  else if( (flags & Pathway::waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
+  if ((flags & Pathway::customCondition)) {}
+  else if((flags & Pathway::roadOnly) > 0) { condition = makeDelegate(this, &Impl::isRoad); }
+  else if((flags & Pathway::terrainOnly) > 0) { condition = makeDelegate(this, &Impl::isTerrain); }
+  else if((flags & Pathway::deepWaterOnly) > 0) { condition = makeDelegate(this, &Impl::isDeepWater); }
+  else if((flags & Pathway::waterOnly) > 0) { condition = makeDelegate(this, &Impl::isWater); }
   else
   {
     return false;
   }
 
   // Define points to work with
-  AStarPoint* start = at( startPos );
-  if( !start )
+  AStarPoint* start = at(startPos);
+  if (!start)
     return false;
   APoints endPoints;
 
-  foreach( tile, arrivedArea ) { endPoints.push_back( at( (*tile)->pos() ) ); }
+  for (auto tile : arrivedArea) { endPoints.push_back(at(tile->pos())); }
 
   AStarPoint* current = NULL;
   AStarPoint* child = NULL;
@@ -298,11 +301,11 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   openList.push_back( start );
   start->opened = true;
 
-  while( n == 0 || ( !_inArea( endPoints, current ) && n < maxLoopCount ))
+  while (n == 0 || ( !_inArea(endPoints, current) && n < maxLoopCount))
   {
     n++;
     // Look for the smallest F value in the openList and make it the current point
-    foreach( point, openList)
+    foreach(point, openList)
     {
       if( *point == openList.front() || (*point)->getFScore() <= current->getFScore() )
       {
@@ -311,7 +314,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     }
 
     // Stop if we reached the end
-    if( _inArea( endPoints, current ) )
+    if (_inArea( endPoints, current))
     {
       break;
     }
@@ -338,16 +341,16 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
         if( (flags & Pathway::fourDirection) && !(x==0 || y==0) )
           continue;
         // Get this point
-        child = at( current->getPos() + TilePos( x, y ) );
+        child = at(current->getPos() + TilePos(x, y));
 
-        if( !child )
+        if (!child)
         {
           //LOG_PF.info( "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
           continue;
         }
 
         // If it's closed or not walkable then pass
-        if( child->closed || !isWalkable( child->getPos() ) )
+        if (child->closed || !isWalkable( child->getPos()))
         {
           continue;
         }
@@ -357,15 +360,15 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
         {
           // if the next horizontal point is not walkable or in the closed list then pass
           //AStarPoint* tmpPoint = getPoint( current->pos + TilePos( 0, y ) );
-          TilePos tmp = current->getPos() + TilePos( 0, y );
-          if( !isWalkable( tmp ) || at( tmp )->closed)
+          TilePos tmp = current->getPos() + TilePos(0, y);
+          if (!isWalkable(tmp) || at(tmp)->closed)
           {
             continue;
           }
 
           tmp = current->getPos() + TilePos( x, 0 );
           // if the next vertical point is not walkable or in the closed list then pass
-          if( !isWalkable( tmp ) || at( tmp )->closed)
+          if (!isWalkable(tmp) || at(tmp)->closed)
           {
             continue;
           }
@@ -376,11 +379,11 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
         {
           // If it has a wroste g score than the one that pass through the current point
           // then its path is improved when it's parent is the current point
-          if (child->getGScore() > child->getGScore(current, useRoad ))
+          if (child->getGScore() > child->getGScore(current, useRoad))
           {
             // Change its parent and g score
             child->setParent(current);
-            child->computeScores( endPoints.front(), useRoad );
+            child->computeScores(endPoints.front(), useRoad);
           }
         }
         else
@@ -391,16 +394,20 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
 
           // Compute it's g, h and f score
           child->setParent(current);
-          child->computeScores( endPoints.front(), useRoad );
+          child->computeScores(endPoints.front(), useRoad);
         }
       }
     }
   }
 
   // Reset
-  foreach( point, openList) { (*point)->opened = false; }
+  for (auto point : openList) {
+    point->opened = false;
+  }
 
-  foreach( point, closedList) { (*point)->closed = false; }
+  for (auto point : closedList) {
+    point->closed = false;
+  }
 
   if( n == maxLoopCount )
   {
@@ -414,19 +421,18 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   }
   // Resolve the path starting from the end point
   APoints lPath;
-  while( current->hasParent() && current != start )
+  while (current->hasParent() && current != start)
   {
-    lPath.insert( lPath.begin(), 1, current );
+    lPath.insert(lPath.begin(), 1, current);
     current = current->getParent();
     n++;
   }
 
-  foreach( pathPoint, lPath )
-  {
-    oPathWay.setNextTile( *((*pathPoint)->tile) );
+  for( auto pathPoint : lPath) {
+    oPathWay.setNextTile( *(pathPoint->tile) );
   }
 
-  return oPathWay.length() > 0;
+  return oPathWay.length() > 1;
 }
 
 Pathfinder::~Pathfinder() {}

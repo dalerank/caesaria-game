@@ -26,7 +26,7 @@ namespace citylayer
 {
 
 typedef enum { simple=0, water, fire, damage, desirability,
-       entertainments, entertainment, theater, amphitheater, colloseum, hippodrome,
+       entertainments, entertainment, theater, amphitheater, colosseum, hippodrome,
        health, healthAll, doctor, hospital, barber, baths,
        food,
        religion,
@@ -46,7 +46,7 @@ public:
   static Helper& instance();
   static std::string prettyName( Type t );
   static const VariantMap& getConfig( Type t );
-  
+
 protected:
   Helper();
 

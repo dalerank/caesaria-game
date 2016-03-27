@@ -6,8 +6,8 @@
   "Unterhaltungseinrichtung" : "entertainment"
   "Spezialkarte Unterhaltung" : "special_card_selection"
   "Künstlerkolonien" : "actorColony_history"
-  "Gladiatorenschulen" : "gladiatorSchool"
-  "Löwenhäusern" : "lionsNursery"
-  "Wagenbauern" : "chariotSchool"
+  "Gladiatorenschulen" : "gladiatorSchool_history"
+  "Löwenhäusern" : "lionsNursery_history"
+  "Wagenbauern" : "chariotSchool_history"
  }
 }

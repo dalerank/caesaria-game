@@ -28,7 +28,7 @@
   }
 
   entertainment : {
-    buildings : [ "theater", "amphitheater", "colloseum", "hippodrome", "actorColony",
+    buildings : [ "theater", "amphitheater", "colosseum", "hippodrome", "actorColony",
                   "gladiatorSchool", "lionsNursery", "chariotSchool" ]
   }
 
@@ -52,7 +52,7 @@
   }
 
   religion : {
-    buildings : [ "oracle" ] 
+    buildings : [ "oracle" ]
     submenu : [ "temple", "big_temple" ]
   }
 

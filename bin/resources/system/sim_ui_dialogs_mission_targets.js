@@ -6,6 +6,8 @@ function OnShowMissionTargetsWindow()
 sim.ui.dialogs.showMissionTargets = function()
 {
     var wint = g_session.winConditions();
+    for (var i in wint)
+      engine.log(i + "  :  " + wint[i]);
 
     var missionTitle = wint.caption;
     if(missionTitle.lenght===0) missionTitle = "##build_your_rome##";

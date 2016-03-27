@@ -11,7 +11,7 @@
                   "governorPalace", "statue_small", "statue_middle",
                   "statue_big" ]
 
-  entertainment : [ "theater", "amphitheater", "colloseum", "hippodrome", "actorColony",
+  entertainment : [ "theater", "amphitheater", "colosseum", "hippodrome", "actorColony",
                   "gladiatorSchool", "lionsNursery", "chariotSchool" ]
 
   farm : [ "wheat_farm", "fig_farm", "olive_farm", "vinard",

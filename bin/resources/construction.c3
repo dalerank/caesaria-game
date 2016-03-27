@@ -123,7 +123,7 @@
     employers : 150
   },
 
-  colloseum : {
+  colosseum : {
     cost : 500,
     desirability : { base : -3, range : 3, step : 1 }
     class : "entertainment"

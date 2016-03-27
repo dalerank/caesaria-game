@@ -60,7 +60,7 @@
   entertainment : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "tree",
-                       "theater", "amphitheater", "colloseum", "hippodrome", "roadBlock", "plague_ruins" ]
+                       "theater", "amphitheater", "colosseum", "hippodrome", "roadBlock", "plague_ruins" ]
   }
 
   theater : {
@@ -75,10 +75,10 @@
                        "amphitheater", "roadBlock", "plague_ruins" ]
   }
 
-  colloseum : {
+  colosseum : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
-                       "colloseum", "roadBlock", "plague_ruins" ]
+                       "colosseum", "roadBlock", "plague_ruins" ]
   }
 
   hippodrome : {
