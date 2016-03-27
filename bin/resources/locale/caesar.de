@@ -1970,6 +1970,7 @@
 "##scholar##":"Schulkind",
 "##scholars##":"im Schulalter",
 "##roadBlock##":"Straßensperre",
+"##roadBlock_info##":"Straßensperren stoppen wanderde Bevölkerung, aber nicht Bürger mit einem bestimmten Ziel. Sie sind häufig entscheidend für die Gestaltung einer Stadt, denn sie verhindert, das Bürger Bereiche deiner Stadt zufällig besuchen können, welche von ihnen nicht profitieren. Torhäuser wirken auch wie Straßensperren, jedoch sind Torhäuser teurer, hässlicher und nehmen viel mehr Platz in Anspruch. Daher ist es unklug, ein Torhaus lediglich als eine Straßensperre zu verwenden.",
 "##warehouse_no_workers##":"Nur Rumpfmannschaft. Kann Waren weder ausgeben noch annehmen",
 "##egift_generous##":"Großzügig:",
 "##minimap_tooltip##":"Auf diese Übersichtskarte klicken, um zu entfernten Teilen Ihrer Stadt zu gelangen",
@@ -2270,4 +2271,5 @@
 "##olive_groves_and_vineyards##":"Olivenhaine und Weinberge",
 "##wild_animals##":"Wilde Tiere",
 "##need_restart_mission_for_apply_changes##":"Die Mission muss neugestartet werden, damit die Änderungen wirksam werden.",
+"##gmenu_basicstrategy##":"Basis Strategie",
 }

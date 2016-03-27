@@ -5,6 +5,6 @@
  uri : {
   "Colossus" : "statuary"
   "Kolosseum" : "colosseum_history"
-  "Bäder" : "bathhouse_history"
+  "Bäder" : "baths_history"
  }
 }
