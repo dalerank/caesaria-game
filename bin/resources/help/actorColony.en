@@ -6,8 +6,8 @@
   "entertainment" : "entertainment"
   "Entertainment Overlay" : "special_card_selection"
   "actors colonies" : "actorColony_history"
-  "gladiator school" : "gladiatorSchool"
-  "lion pits" : "lionsNursery"
-  "chariot makers" : "chariotSchool"
+  "gladiator school" : "gladiatorSchool_history"
+  "lion pits" : "lionsNursery_history"
+  "chariot makers" : "chariotSchool_history"
  }
 }
