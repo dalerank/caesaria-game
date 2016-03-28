@@ -12,7 +12,10 @@ before_install:
 - sudo apt-get -qq install -y mingw32-x-binutils mingw32-x-gcc mingw32-x-runtime
 - sudo apt-get -qq install sshpass
 - sudo apt-get -qq install g++-4.8
-- if [ "$CXX" == "g++" ]; then export CXX="i686-w64-mingw32-g++" CC="i686-w64-mingw32-gcc"; fi
+- export MINGW=/opt/mingw32
+- export PATH=$MINGW/bin:$PATH
+- export CXX="i686-w64-mingw32-g++" 
+- export CC="i686-w64-mingw32-gcc"
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - mkdir $TRAVIS_BUILD_DIR/build
