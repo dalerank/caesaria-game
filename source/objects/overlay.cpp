@@ -72,7 +72,13 @@ const Desirability& Overlay::desirability() const
   return info().desirability();
 }
 
-void Overlay::setState(Param, double) {}
+void Overlay::setState(int, float) {}
+float Overlay::state(int name) const { return 0.; }
+
+void Overlay::updateState(int name, float value)
+{
+  setState(name, state(name) + value);
+}
 
 void Overlay::setType(const object::Type type)
 {

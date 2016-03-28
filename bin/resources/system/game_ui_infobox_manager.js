@@ -15,7 +15,17 @@ game.ui.infobox.show = function(typename,location)
   case "statue_big": case "native_hut": case "native_field":
   case "native_center": case "high_bridge": case "fortification":
   case "wall":
-    game.ui.infobox.aboutObject(typename)
+    game.ui.infobox.aboutObject(typename);
+  break;
+
+  case "iron_mine": case "quarry": case "lumber_mill": case "clay_pit":
+  case "meat_farm": case "fig_farm": case "olive_farm": case "vegetable_farm":
+  case "wheat_farm": case "vinard":
+    game.ui.infobox.aboutRaw(location);
+  break;
+
+  case "reservoir":
+    game.ui.infobox.aboutReservoir(location);
   break;
 
   case "low_bridge":

@@ -3,6 +3,7 @@ var game = {}
 game.ui = {}
 game.ui.dialogs = {}
 game.ui.infobox = {}
+game.ui.caesopedia = {}
 game.religion = {}
 game.religion.pantheon = {}
 game.sound = {}

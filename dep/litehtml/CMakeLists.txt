@@ -10,8 +10,14 @@ endif()
 
 if(CMAKE_BUILD_TYPE_RELEASE)
   set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_RELEASE})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
 else()
   set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_DEBUG})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
+
+if(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
 endif()
 
 set(SOURCE_LITEHTML src/background.cpp

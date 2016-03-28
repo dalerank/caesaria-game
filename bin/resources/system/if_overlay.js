@@ -1,24 +1,53 @@
-//*************************** Overlay class begin ***************************************//
-function UpdateOverlayPrototype(objProto) {
-  Object.defineProperty(objProto, 'typename', { get : function() { return g_session.getOverlayType( obj.type() )}})
-
-  objProto.as = function(type) { return new type(this); }
+g_config.overlay.params = {
+  unknown : 0,
+  fire : 1,
+  damage : 2,
+  inflammability : 3,
+  collapsibility : 4,
+  destroyable : 5,
+  health : 6,
+  happiness : 7,
+  happinessBuff : 8,
+  healthBuff : 9,
+  settleLock : 10,
+  lockTerrain : 11,
+  food : 12,
+  reserveExpires : 13
 }
 
-UpdateOverlayPrototype(Overlay)
-//*************************** Overlay class end ***************************************//
-
-function UpdateWorkingBuildingPrototype(objProto) {
-  UpdateOverlayPrototype(objProto)
-
-  Object.defineProperty(objProto.prototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+function UpdateOverlayPrototype(ObjectPrototype) {
+  Object.defineProperty(ObjectPrototype, "typename", { get : function() { return g_session.getOverlayType( this.type() )}})
+  ObjectPrototype.as = function(type) { return new type(this); }
 }
-//*************************** Temple class begin ***************************************//
-UpdateOverlayPrototype(Temple)
 
-Object.defineProperty(Temple.prototype, "big", { get : function() { return this.size().w > 2 }})
-//*************************** Temple class end ***************************************//
 
-//*************************** Ruin class begin ***************************************//
-UpdateOverlayPrototype(Ruins)
-//*************************** Ruin class end ***************************************//
+function UpdateWorkingBuildingPrototype(ObjectPrototype) {
+  UpdateOverlayPrototype(ObjectPrototype)
+
+  Object.defineProperty(ObjectPrototype, "active", { get : function() { return this.isActive()}, set: function(en) { this.setActive(en)}})
+}
+
+function UpdateTemplePrototype(ObjectPrototype) {
+  UpdateWorkingBuildingPrototype(ObjectPrototype)
+  Object.defineProperty(ObjectPrototype, "big", { get : function() { return this.size().w > 2 }})
+}
+
+function UpdateFactoryPrototype(ObjectPrototype) {
+  UpdateWorkingBuildingPrototype(ObjectPrototype)
+  Object.defineProperty(ObjectPrototype, "produce", { get : function() {
+      var gtype = this.getProperty("produce");
+      return g_config.good.getInfo(gtype);
+    }
+  })
+  Object.defineProperty(ObjectPrototype, "consume", { get : function() {
+      var gtype = this.getProperty("consume");
+      return g_config.good.getInfo(gtype);
+    }
+  })
+}
+
+UpdateOverlayPrototype(Overlay.prototype)
+UpdateOverlayPrototype(Ruins.prototype)
+UpdateTemplePrototype(Temple.prototype)
+UpdateOverlayPrototype(Reservoir.prototype)
+UpdateFactoryPrototype(Factory.prototype)

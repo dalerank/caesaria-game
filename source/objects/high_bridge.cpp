@@ -147,7 +147,7 @@ public:
     //_fgPicturesRef().clear();
   }
 
-  void setState( Param name, double value )
+  void setState(int name, float value )
   {
     if( _parent && name == pr::destroyable && value )
     {
@@ -241,7 +241,7 @@ bool HighBridge::canBuild( const city::AreaInfo& areaInfo ) const
 
   TilePos endPos, startPos;
   _d->direction=direction::none;
-  
+
   OverlayPtr ov = areaInfo.city->getOverlay( areaInfo.pos );
   if( ov.isNull() )
   {
@@ -282,7 +282,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
       tiles.pop_back();
       tiles.pop_back();
-      
+
       tiles.erase( tiles.begin() );
       _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingWest );
       _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
@@ -334,7 +334,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.erase( tiles.begin() );
 
       for( auto tile : tiles )
-      {        
+      {
         _d->addSpan( tile->pos() - startPos, HighBridgeSubTile::spanWest );
       }
 
@@ -346,10 +346,10 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   case direction::southWest:
     {
       TilesArea tiles( tilemap, endPos, startPos );
-      
+
       tiles.pop_back();
       tiles.pop_back();
-      
+
       tiles.erase( tiles.begin() );
       TilePos liftPos = tiles.front()->pos();
       tiles.erase( tiles.begin() );
@@ -357,7 +357,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
       for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
-      {        
+      {
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
       _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentNorthL );
@@ -416,7 +416,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
         stop = tile->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? direction::northWest : direction::none;
         break;
-      }      
+      }
     }
 
     bool mayBuild = _checkOnlyWaterUnderBridge( city, start, stop );
@@ -495,9 +495,9 @@ bool HighBridge::build( const city::AreaInfo& info  )
   _checkParams( info.city, _d->direction, startPos, endPos, info.pos );
 
   if( _d->direction != direction::none )
-  {    
+  {
     _computePictures( info.city, startPos, endPos, _d->direction );
-   
+
     foreach( it, _d->subtiles )
     {
       HighBridgeSubTilePtr subtile = *it;
@@ -507,9 +507,9 @@ bool HighBridge::build( const city::AreaInfo& info  )
       subtile->_imgId = tile.imgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
-      
+
       events::dispatch<events::BuildAny>( buildPos, subtile.object() );
-    }    
+    }
   }
 
   return true;
@@ -536,7 +536,7 @@ bool HighBridge::canDestroy() const
 }
 
 void HighBridge::destroy()
-{ 
+{
   for( auto tile : _d->subtiles )
   {
     tile->_parent = 0;

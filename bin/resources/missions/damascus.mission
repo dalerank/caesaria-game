@@ -742,7 +742,7 @@
       pottery_workshop : true
       weapons_workshop : true
       furniture_workshop : true
-      granery : true
+      granary : true
       warehouse : true
 
       vinard : true

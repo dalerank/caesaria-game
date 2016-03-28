@@ -72,7 +72,7 @@ APPEND_NAMEDTYPE_ID(garden,               3)
 APPEND_NAMEDTYPE_ID(amphitheater,         4)
 APPEND_NAMEDTYPE_ID(theater,              5)
 APPEND_NAMEDTYPE_ID(hippodrome,           6)
-APPEND_NAMEDTYPE_ID(colloseum,            7)
+APPEND_NAMEDTYPE_ID(colosseum,            7)
 APPEND_NAMEDTYPE_ID(actorColony,          8)
 APPEND_NAMEDTYPE_ID(gladiatorSchool,      9)
 APPEND_NAMEDTYPE_ID(lionsNursery,         10)
@@ -109,7 +109,7 @@ APPEND_NAMEDTYPE_ID(fortArea,             32)
 
 // commerce
 APPEND_NAMEDTYPE_ID(market,               33)
-APPEND_NAMEDTYPE_ID(granery,              34)
+APPEND_NAMEDTYPE_ID(granary,              34)
 APPEND_NAMEDTYPE_ID(warehouse,            35)
 
 // farms

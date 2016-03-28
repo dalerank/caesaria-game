@@ -68,7 +68,7 @@ const std::map<object::Type,EntertInfo> EntertInfo::defaults =
                 {
                   { object::theater, {"##theaters##", "##peoples##"} },
                   { object::amphitheater, {"##amphitheaters##", "##peoples##"} },
-                  { object::colloseum, {"##colloseum##", "##peoples##"} },
+                  { object::colosseum, {"##colosseum##", "##peoples##"} },
                   { object::hippodrome, {"##hippodromes##",  "-"} }
                 };
 
@@ -226,14 +226,14 @@ void Entertainment::Impl::updateInfo()
 
   const EntertInfo& thInfo = getInfo( object::theater );
   const EntertInfo& amthInfo = getInfo( object::amphitheater );
-  const EntertInfo& clsInfo = getInfo( object::colloseum );
+  const EntertInfo& clsInfo = getInfo( object::colosseum );
 
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
   int minTheaterSrvc = maxServiceValue;
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
   int nextLevelMin = 0;
   int nextLevelAmph = 0;
-  int nextLevelColloseum = 0;
+  int nextLevelColosseum = 0;
   int maxHouseLevel = 0;
 
   HouseList houses = city->statistic().houses.all();
@@ -260,10 +260,10 @@ void Entertainment::Impl::updateInfo()
       amptServed += (house->hasServiceAccess( Service::amphitheater ) ? habitants : 0 );
     }
 
-    if(house->isEntertainmentNeed( Service::colloseum ))
+    if(house->isEntertainmentNeed( Service::colosseum ))
     {
       clsNeed += habitants;
-      clsServed += (house->hasServiceAccess( Service::colloseum) ? habitants : 0);
+      clsServed += (house->hasServiceAccess( Service::colosseum) ? habitants : 0);
     }
 
     if( house->isEntertainmentNeed( Service::hippodrome ) )
@@ -280,7 +280,7 @@ void Entertainment::Impl::updateInfo()
       {
       case HouseSpecification::needTheater: nextLevelMin++; break;
       case HouseSpecification::needAmphitheater: nextLevelAmph++; break;
-      case HouseSpecification::needColosseum: nextLevelColloseum++; break;
+      case HouseSpecification::needColosseum: nextLevelColosseum++; break;
       }
     }
   }
@@ -301,7 +301,7 @@ void Entertainment::Impl::updateInfo()
   if( thInfo.buildingCount == 0 ) { troubles << "##your_city_need_theaters##"; }
   if( amthInfo.partlyWork > 0){ troubles << "##some_amphitheaters_no_actors##"; }
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
-  if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
+  if( clsInfo.partlyWork > 0 ){ troubles << "##small_colosseum_show##"; }
 
   HippodromeList hippodromes = city->statistic().objects.find<Hippodrome>( object::hippodrome );
   for( auto h : hippodromes )
@@ -369,8 +369,8 @@ void Entertainment::Impl::initUI( Entertainment* parent )
   auto& amphInfo = getInfo( object::amphitheater );
   lbBlackframe->add<EntertainmentInfoLabel>( Rect( startPoint + Point( 0, rowOffset*idxAmph), labelSize),
                                              object::amphitheater, amphInfo );
-  auto& colloseumInfo = getInfo( object::colloseum );
-  lbBlackframe->add<EntertainmentInfoLabel>( Rect( startPoint + Point( 0, rowOffset*idxColosseum), labelSize), object::colloseum, colloseumInfo );
+  auto& colosseumInfo = getInfo( object::colosseum );
+  lbBlackframe->add<EntertainmentInfoLabel>( Rect( startPoint + Point( 0, rowOffset*idxColosseum), labelSize), object::colosseum, colosseumInfo );
 
   auto& hippoInfo = getInfo( object::hippodrome );
   lbBlackframe->add<EntertainmentInfoLabel>( Rect( startPoint + Point( 0, rowOffset*idxHippodrome), labelSize), object::hippodrome, hippoInfo );
