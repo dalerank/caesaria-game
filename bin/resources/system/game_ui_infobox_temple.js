@@ -15,14 +15,9 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   ibox.blackFrame.style = "blackFrame"
   ibox.blackFrame.textOffset = {x:50, y:15}
 
-
-  ibox.btnHelp = ibox.addHelpButton(16, ibox.h-40);
-  ibox.btnHelp.text = "##infobox_tooltip_help##";
-  ibox.help_uri = "unknown";
-  ibox.btnHelp.callback = function() {
-    engine.log("Show caesapedia for " + ibox.help_uri);
-    game.ui.caesopedia.show(ibox.help_uri);
-  }
+  ibox.btnHelp = ibox.addHelpButton(12, ibox.h-36);
+  ibox.btnHelp.text = _u("infobox_tooltip_help");
+  ibox.btnHelp.uri = "unknown";
 
   ibox.setInfoText = function(text) {
     if (!ibox.lbText)
@@ -54,12 +49,21 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
   ibox.btnNext = ibox.addButton(ibox.w-36,12,24,24)
   ibox.btnNext.text = ">"
   ibox.btnNext.style = "whiteBorderUp"
-  ibox.tooltip = "##infobox_construction_comma_tip##"
+  ibox.tooltip = _u("infobox_construction_comma_tip")
 
   ibox.btnPrev = ibox.addButton(ibox.w-60,12,24,24)
   ibox.btnPrev.text = "<"
   ibox.btnPrev.style = "whiteBorderUp"
-  ibox.btnPrev.tooltip = "##infobox_construction_comma_tip##"
+  ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
+
+  ibox.btnInfo = ibox.addButton(38, ibox.h-36,100,24)
+  ibox.btnInfo.callback = function() {
+    var state = _format( "Damage={0}\nFire={1}\n",
+                         this.building.getState(g_config.overlay.params.damage),
+                         this.building.getState(g_config.overlay.params.fire) );
+
+    g_ui.addInformationDialog("Building status", state);
+  }
 
   ibox.setWorkingStatus = function(active) {
     if (!ibox.btnToggleWorks)
@@ -99,7 +103,7 @@ game.ui.infobox.aboutReservoir = function(location) {
   var text = reservoir.haveWater()
                       ? "reservoir_info"
                       : "reservoir_no_water";
-  ibox.help_uri = reservoir.typename;
+  ibox.btnHelp.uri = reservoir.typename;
   ibox.setInfoText( _u(text) );
 }
 
@@ -138,7 +142,7 @@ game.ui.infobox.aboutTemple = function(location) {
     ibox.setWorkingStatus(temple.active)
   }
 
-  ibox.help_uri = temple.typename
+  ibox.btnHelp.uri = temple.typename
   ibox.setFocus()
   ibox.setModal()
 }

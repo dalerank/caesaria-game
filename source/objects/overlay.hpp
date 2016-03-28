@@ -103,7 +103,9 @@ public:
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const Desirability& desirability() const;
 
-  virtual void setState(Param name, double value);
+  virtual void setState(int name, float value);
+  virtual float state(int name) const;
+  void updateState(int name, float value);
 
   std::string name();// landoverlay debug name
   void setName(const std::string& name);
