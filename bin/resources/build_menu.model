@@ -38,7 +38,7 @@
   }
 
   commerce : {
-    buildings : [ "market", "granery", "warehouse" ]
+    buildings : [ "market", "granary", "warehouse" ]
     submenu : [ "farm", "raw_material", "factory" ]
   }
 

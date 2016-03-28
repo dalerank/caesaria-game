@@ -623,7 +623,7 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-      granery : true
+      granary : true
       warehouse : true
       school : true
       academy : true

@@ -109,7 +109,7 @@ APPEND_NAMEDTYPE_ID(fortArea,             32)
 
 // commerce
 APPEND_NAMEDTYPE_ID(market,               33)
-APPEND_NAMEDTYPE_ID(granery,              34)
+APPEND_NAMEDTYPE_ID(granary,              34)
 APPEND_NAMEDTYPE_ID(warehouse,            35)
 
 // farms

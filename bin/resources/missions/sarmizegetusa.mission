@@ -769,7 +769,7 @@
       weapons_workshop : true
       furniture_workshop : true
       pottery_workshop : true
-      granery : true
+      granary : true
       warehouse : true
 
       wheat_farm : true

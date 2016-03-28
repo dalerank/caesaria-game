@@ -772,7 +772,7 @@
       missioner_post : false
 
       market : true
-      granery : true
+      granary : true
       warehouse : true
 
       wheat_farm : true
