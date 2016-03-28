@@ -39,22 +39,17 @@ class Pantheon::Impl
 {
 public:  
   DivinityList divinties;
-
-  template<typename T>
-  void addDivn()
-  {
-    auto divn = RomeDivinity::create<T>();
-    divinties.push_back( divn.object() );
-  }
 };
 
-Pantheon::Pantheon() : _d( new Impl )
+Pantheon::Pantheon() : _d(new Impl)
 {
-  _d->addDivn<Ceres>();
-  _d->addDivn<Neptune>();
-  _d->addDivn<Mercury>();
-  _d->addDivn<Venus>();
-  _d->addDivn<Mars>();
+#define ADD_GOD(type) _d->divinties.push_back(new type()); _d->divinties.back()->drop();
+  ADD_GOD(Ceres)
+  ADD_GOD(Neptune)
+  ADD_GOD(Mercury)
+  ADD_GOD(Venus)
+  ADD_GOD(Mars)
+#undef ADD_GOD
 }
 
 DivinityPtr Pantheon::get(RomeDivinity::Type name )
@@ -62,7 +57,7 @@ DivinityPtr Pantheon::get(RomeDivinity::Type name )
   return get( RomeDivinity::findIntName( name ) );
 }
 
-DivinityPtr Pantheon::get( const std::string& name)
+DivinityPtr Pantheon::get(const std::string& name)
 {
   DivinityList divines = instance().all();
   for( auto& current : divines )
@@ -74,6 +69,23 @@ DivinityPtr Pantheon::get( const std::string& name)
   return DivinityPtr();
 }
 
+DivinityPtr Pantheon::add(const std::string& name)
+{
+  DivinityPtr divn = get(name);
+
+  if (divn.isNull())
+  {
+    auto& gods = instance()._d->divinties;
+    divn = DivinityPtr(new RomeDivinity(RomeDivinity::Type(gods.size())));  
+    divn->setInternalName(name);
+    divn->drop();
+
+    gods.push_back(divn); //remove automatically
+  }
+
+  return divn;
+}
+
 Pantheon::~Pantheon() {}
 DivinityList Pantheon::all(){ return _d->divinties; }
 DivinityPtr Pantheon::mars(){  return get( RomeDivinity::Mars ); }
@@ -82,20 +94,12 @@ DivinityPtr Pantheon::venus(){ return get( RomeDivinity::Venus ); }
 DivinityPtr Pantheon::mercury(){  return get( RomeDivinity::Mercury ); }
 DivinityPtr Pantheon::ceres() {  return get( RomeDivinity::Ceres );}
 
-void Pantheon::load( const VariantMap& stream )
+void Pantheon::load(const VariantMap& stream)
 {  
   for( auto name : RomeDivinity::getIntNames() )
   {
-    DivinityPtr divn = get( name );
-
-    if( divn.isNull() )
-    {
-      divn.attachObject( new RomeDivinity( RomeDivinity::Count ) );
-      divn->drop();
-      _d->divinties.push_back( divn );
-    }
-
-    divn->load( stream.get( name ).toMap() );
+    auto divn = get(name);
+    divn->load( stream.get(name).toMap() );
   }
 }
 

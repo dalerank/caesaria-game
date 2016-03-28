@@ -387,7 +387,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
       return BuildingPtr();
    }
 
-   res = reserveShortestPath<Granary>(object::granery, stock, reservationID, pathPropagator, oPathWay);
+   res = reserveShortestPath<Granary>(object::granary, stock, reservationID, pathPropagator, oPathWay);
 
    return res;
 }
@@ -513,4 +513,3 @@ TilePos CartPusher::places(Walker::Place type) const
 
   return Human::places( type );
 }
-

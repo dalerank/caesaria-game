@@ -32,7 +32,7 @@ public:
     religionNeptune, religionCeres, religionVenus, religionMars, religionMercury, oracle,
     doctor, barber, baths, hospital,
     school, library, academy,
-    theater, amphitheater, colloseum,
+    theater, amphitheater, colosseum,
     hippodrome,
     recruter,
     crime,

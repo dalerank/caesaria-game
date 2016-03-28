@@ -37,7 +37,6 @@ public:
   virtual std::string name() const = 0;
   virtual float relation() const = 0;
   virtual Service::Type serviceType() const = 0;
-  virtual std::string shortDescription() const = 0;
   virtual const gfx::Picture& picture() const = 0;
   virtual void updateRelation( float income, PlayerCityPtr city ) = 0;
   virtual DateTime lastFestivalDate() const = 0;
@@ -45,6 +44,10 @@ public:
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
   virtual void setEffectPoint( int value ) = 0;
+  virtual void setRelation(float value) = 0;
+  virtual void setPicture(gfx::Picture picture) = 0;
+  virtual void setService(const std::string& service) = 0;
+  virtual void setName(const std::string& name) = 0;
   virtual object::Type templeType( TempleSize size ) const = 0;
   virtual void setInternalName(const std::string &newName) = 0;
   virtual int wrathPoints() const = 0;

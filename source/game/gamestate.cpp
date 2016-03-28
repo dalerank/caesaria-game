@@ -226,9 +226,7 @@ void InSplash::loadWalkersMetadata(bool& isOk, std::string& result)
 void InSplash::loadReligionConfig(bool& isOk, std::string& result)
 {
   result = "##initialize_religion##";
-  vfs::Path filename = SETTINGS_RC_PATH( pantheonModel );
-  VariantMap pantheon = config::load( filename );
-  religion::rome::Pantheon::instance().load( pantheon );
+  script::Core::execFunction("OnInitRomePantheon");  
 }
 
 void InSplash::fadeSplash(bool& isOk, std::string& result)

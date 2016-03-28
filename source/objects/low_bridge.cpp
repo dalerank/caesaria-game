@@ -386,7 +386,7 @@ void LowBridge::load(const VariantMap& stream)
   VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
   int lenth = math::min( vl_tinfo.size(), _d->subtiles.size() );
   for( int i=0; i < lenth; i++ )
-  {    
+  {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
   }
 }
@@ -431,9 +431,9 @@ bool LowBridgeSubTile::build(const city::AreaInfo &areainfo)
   return true;
 }
 
-void LowBridgeSubTile::setState(Param name, double value)
+void LowBridgeSubTile::setState(int name, float value)
 {
-  if( _parent && name == pr::destroyable && value )
+  if (_parent && name == pr::destroyable && value)
   {
     _parent->hide();
   }

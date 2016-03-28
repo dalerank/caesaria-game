@@ -110,16 +110,16 @@ float TaxCollector::takeMoney() const
 
 void TaxCollector::_reachedPathway()
 {
-  if( _d->return2base )
+  if (_d->return2base)
   {
-    if( base().isValid() )
+    if (base().isValid())
     {
-      base()->applyService( this );
+      base()->applyService(this);
     }
 
-    Logger::debug( "TaxCollector: path history" );
-    for( const auto& step : _d->history )
-      Logger::debug( "       [{},{}]:{}", step.first.i(), step.first.j(), step.second );
+    Logger::debug("TaxCollector: path history");
+    for (const auto& step : _d->history)
+      Logger::debug("       [{},{}]:{}", step.first.i(), step.first.j(), step.second);
 
     deleteLater();
     return;
@@ -128,10 +128,10 @@ void TaxCollector::_reachedPathway()
   {
     _d->return2base = true;
 
-    Pathway way = PathwayHelper::create( pos(), base(), PathwayHelper::roadFirst );
-    if( way.isValid() )
+    Pathway way = PathwayHelper::create(pos(), base(), PathwayHelper::roadFirst);
+    if (way.length() > 1)
     {
-      _updatePathway( way );
+      _updatePathway(way);
       go();
       return;
     }

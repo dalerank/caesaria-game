@@ -148,7 +148,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Entertainment>( citylayer::entertainment );
   _d->instanceLayer<Entertainment>( citylayer::theater );
   _d->instanceLayer<Entertainment>( citylayer::amphitheater );
-  _d->instanceLayer<Entertainment>( citylayer::colloseum );
+  _d->instanceLayer<Entertainment>( citylayer::colosseum );
   _d->instanceLayer<Entertainment>( citylayer::hippodrome );
   _d->instanceLayer<Crime>();
   _d->instanceLayer<Destroy>( this );

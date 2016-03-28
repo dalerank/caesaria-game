@@ -123,7 +123,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
   good::Products priorityGoods = _d->market->mostNeededGoods();
-  
+
   //only look at goods that shall not be stockpiled
   priorityGoods.exclude( _city()->tradeOptions().locked() );
 
@@ -147,7 +147,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
       if( good::isFood( _d->priorityGood ) )
       {
         // try get that good from a granary
-        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granary, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
         if( _d->destBuildingPos == TilePos::invalid() )
@@ -235,7 +235,7 @@ void MarketBuyer::_reachedPathway()
    // get goods from destination building
    OverlayPtr building = _map().overlay( _d->destBuildingPos );
    if( overlays.contain( building ) )
-   {      
+   {
       if( building.is<Granary>() )
       {
         auto granary = building.as<Granary>();
@@ -290,7 +290,7 @@ void MarketBuyer::_reachedPathway()
             }
           }
         }
-      }      
+      }
    }
 
    unsigned long delay = 0;

@@ -81,6 +81,7 @@ if(HAIKU)
 endif(HAIKU)
 
 if(APPLE)
+  INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
   set(EXECUTABLE_FILENAME "tileset.macos")
 endif(APPLE)
 
@@ -135,10 +136,7 @@ endif()
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-  if(NOT HAIKU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
-  endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
 endif()
 
 if(NOT MSVC)

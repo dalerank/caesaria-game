@@ -1,6 +1,7 @@
 lobby.ui.loadgame.loadmission = function()
 {
     var wnd = g_ui.addWindow(0, 0, 1024, 768);
+    var missionPath = "";
     var missionInfo = null;
     wnd.title = "##mainmenu_playmission##";
     wnd.moveToCenter()
@@ -32,9 +33,9 @@ lobby.ui.loadgame.loadmission = function()
     btnLoad.textAlign = { v:"center", h:"center" };
     btnLoad.text = "##start_this_map##";
     btnLoad.callback = function() {
-       if(missionInfo.map.length>0)
+       if(missionPath.length>0)
        {
-         g_session.setOption("nextFile",missionInfo.map);
+         g_session.setOption("nextFile",missionPath);
          g_session.setMode(3);
        }
      };
@@ -45,8 +46,8 @@ lobby.ui.loadgame.loadmission = function()
     lbExitHelp.textAlign = { v:"center", h:"center" };
 
     selector.onSelectedCallback = function(index) {
-        var path = files[index];
-        missionInfo = g_session.getMissionInfo(path);
+        missionPath = files[index];
+        missionInfo = g_session.getMissionInfo(missionPath);
 
         g_session.loadLocalization(missionInfo.localization);
 

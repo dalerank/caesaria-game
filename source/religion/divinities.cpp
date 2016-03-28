@@ -92,11 +92,6 @@ void RomeDivinity::load(const VariantMap& vm)
   _relation.current = (float)vm.get( "relation", relation::neitralMood );
   _lastFestival = vm.get( "lastFestivalDate", game::Date::current() ).toDateTime() ;
 
-  _shortDesc = vm.get( "shortDesc" ).toString();
-  if( _shortDesc.empty() )
-  {
-    _shortDesc  = fmt::format( "##{0}_desc##", internalName() );
-  }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );
   _smallCurseDone = vm.get( "smallCurseDone");
@@ -129,8 +124,6 @@ void RomeDivinity::load(const VariantMap& vm)
   }
 }
 
-std::string RomeDivinity::shortDescription() const { return _shortDesc; }
-
 Service::Type RomeDivinity::serviceType() const { return _service; }
 
 const Picture&RomeDivinity::picture() const { return _pic; }
@@ -149,7 +142,6 @@ VariantMap RomeDivinity::save() const
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation.current;
   ret[ "lastFestivalDate" ] = _lastFestival;
-  ret[ "shortDesc" ] = Variant( _shortDesc );
   ret[ "wrath" ] = _wrathPoints;
   ret[ "blessingDone" ] = _blessingDone;
   ret[ "smallCurseDone" ] = _smallCurseDone;
@@ -238,6 +230,17 @@ void RomeDivinity::checkAction( PlayerCityPtr city )
     _relation.current += 30;
   }
 }
+
+void RomeDivinity::setRelation(float value) { _relation.current = value; }
+
+void RomeDivinity::setPicture(gfx::Picture picture) { _pic = picture; }
+
+void RomeDivinity::setService(const std::string & service)
+{
+  _service = ServiceHelper::getType(service);
+}
+
+void RomeDivinity::setName(const std::string & name) { _name = name;} 
 
 RomeDivinity::RomeDivinity(Type type)
 {

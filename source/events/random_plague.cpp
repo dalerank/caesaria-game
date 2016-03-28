@@ -66,7 +66,7 @@ void RandomPlague::_exec( Game& game, unsigned int time)
     for( unsigned int k=0; k < number4burn; k++ )
     {
       HousePtr house = houses.random();
-      house->setState( pr::health, 0 );
+      house->setState( pr::health, 0.f );
     }
   }
 }

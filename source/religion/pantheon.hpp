@@ -50,6 +50,8 @@ public:
   static DivinityPtr get(RomeDivinity::Type name);
   static DivinityPtr get(const std::string& name);
 
+  static DivinityPtr add(const std::string& name);
+
   virtual ~Pantheon();
 
 private:

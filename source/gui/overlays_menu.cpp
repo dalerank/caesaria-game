@@ -91,7 +91,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::entertainment, startPos );
     _addButton( citylayer::theater, startPos+=offset );
     _addButton( citylayer::amphitheater, startPos+=offset );
-    _addButton( citylayer::colloseum, startPos+=offset );
+    _addButton( citylayer::colosseum, startPos+=offset );
     _addButton( citylayer::hippodrome, startPos+=offset );
   break;
 

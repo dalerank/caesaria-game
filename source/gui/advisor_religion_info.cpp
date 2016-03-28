@@ -85,8 +85,9 @@ void ReligionDetails::_updateTexture()
   {
     d.lastFestival = d.divinity->lastFestivalDate().monthsTo( game::Date::current() );
 
+    std::string  shortDesc = fmt::format("##{}_desc##", d.divinity->internalName());
     canvasDraw( d.divinity->name(), Point() );
-    canvasDraw( fmt::format( "({})", _( d.divinity->shortDescription() ) ), Point( 80, 0 ), Font::create( "FONT_1" ) );
+    canvasDraw( fmt::format( "({})", _(shortDesc)), Point( 80, 0 ), Font::create( "FONT_1" ));
     canvasDraw( utils::i2str( d.temples.small_n ), Point( 220, 0 ) );
     canvasDraw( utils::i2str( d.temples.big_n ), Point( 280, 0 ) );
 
