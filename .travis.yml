@@ -19,9 +19,9 @@ before_script:
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
 - PACK_DIR=$TRAVIS_BUILD_DIR/../caesaria-r
-- mkdir PACK_DIR
-- unzip -n caesaria_latest_resources.zip -d PACK_DIR
-- cp PACK_DIR/resources/gfx/* $TRAVIS_BUILD_DIR/bin/resources/gfx  
+- mkdir $PACK_DIR
+- unzip -n caesaria_latest_resources.zip -d $PACK_DIR
+- cp $PACK_DIR/resources/gfx/* $TRAVIS_BUILD_DIR/bin/resources/gfx  
 script:
 - cd $TRAVIS_BUILD_DIR/build
 - make -j4
