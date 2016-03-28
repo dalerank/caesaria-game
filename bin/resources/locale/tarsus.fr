@@ -1,0 +1,11 @@
+{
+  "##tarsus_preview_title##" : "Marchander sa survie"
+  "##tarsus_overview##" : "La Syrie et la Judée ont récemment rejoint notre Empire, mais je m'interroge sur la profondeur de leur loyauté. Nous avons besoin d'un nouveau port de commerce dans la province frontalière de Cilicia. Bâtissez une cité à Tarsus, afin d'illuminer ces régions de la puissance de Rome. \n
+Vous serez heureux d'apprendre qu'il ne vous sera pas nécessaire de produire votre nourriture à Tarsus. Cette province désertique est en effet totalement stérile. Il vous faudra donc importer toute votre nourriture. \n
+De nombreuses provinces à l'Est de Rome se rebellent contre notre autorité, et nos légions sont requises sur d'autres frontières. Vous risquez d'avoir des problèmes d'ordre militaire dans cette région. Bien que nous n'ayons aucun grand ennemi dans les parages, nos alliés ne sont pas particulièrement débordants d'enthousiasme à notre égard. Défendez votre cité, et constituez-y une ou deux légions. \n
+Contrairement à Hispania ou à la Gaule, où les indigènes sont faciles à impressionner, cette région du monde est civilisée depuis les temps anciens. Votre cité à Tarsus devra donc atteindre des objectifs élevés afin de démontrer la supériorité des Romains. Enfin, il serait bon que vous leur appreniez combien il peut être profitable de commercer avec l'Empire Romain."
+  
+  "##tarsus_preview_mission##" : "La Syrie et la Judée ont récemment rejoint notre Empire, mais je m'interroge sur la profondeur de leur loyauté. Nous avons besoin d'un nouveau port de commerce dans la province frontalière de Cilicia. Bâtissez une cité à Tarsus, afin d'illuminer ces régions de la puissance de Rome. \n
+Vous serez heureux d'apprendre qu'il ne vous sera pas nécessaire de produire votre nourriture à Tarsus. Cette province désertique est en effet totalement stérile. Il vous faudra donc importer toute votre nourriture."
+}
+  

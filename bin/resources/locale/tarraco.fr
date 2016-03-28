@@ -1,0 +1,13 @@
+{
+  "##tarraco_overview##" : "Je désire à nouveau que vous fondiez une cité. Mais les critères de succès seront cette fois un peu différents. \n
+L'Empire Romain est en crise. En raison de la colère de Cérès, ou de l'incompétence de certains humains, la famine ravage actuellement l'Empire. Vous avez à présent suffisamment d'expérience en tant que gouverneur pour être capable d'appréhender les conséquences fâcheuses du manque de nourriture. \n
+Je me vois donc obligé d'accélérer notre colonisation de la nouvelle province d'Hispania. Les géomètres impériaux m'ont signalé l'existence d'une vallée aux terres fertiles et disposant d'un bon accès à une rivière permettant le commerce maritime. Construisez-y une colonie fermière, et tenez-vous prêt à expédier de la nourriture en Italie. \n
+Comme d'habitude, je jugerai de votre performance, et j'attends de vous des résultats concrets. Bien que votre cité n'ait pas besoin d'accueillir autant de monde que la précédente, il faudra qu'elle soit plus prospère et que son niveau d'éducation soit plus élevé. En remerciement de la confiance que je vous accorde, j'estime avoir droit à quelques faveurs. Je vous réclamerai fréquemment de la nourriture, et j'apprécierai que mes requêtes soient satisfaites promptement. \n
+De nombreuses vies dépendent de cette nouvelle source de nourriture. Il n'existe aucune menace militaire dans les environs de Tarraco. Vous devrez donc uniquement vous consacrer à la gestion de votre cité et mettre un terme à la famine, afin que le peuple regagne confiance en son gouvernement."
+  
+  "##tarraco_preview_mission##" : "e désire à nouveau que vous fondiez une cité. Mais les critères de succès seront cette fois un peu différents. \n
+L'Empire Romain est en crise. En raison de la colère de Cérès, ou de l'incompétence de certains humains, la famine ravage actuellement l'Empire. Vous avez à présent suffisamment d'expérience en tant que gouverneur pour être capable d'appréhender les conséquences fâcheuses du manque de nourriture. \n
+Je me vois donc obligé d'accélérer notre colonisation de la nouvelle province d'Hispania. Les géomètres impériaux m'ont signalé l'existence d'une vallée aux terres fertiles et disposant d'un bon accès à une rivière permettant le commerce maritime. Construisez-y une colonie fermière, et tenez-vous prêt à expédier de la nourriture en Italie."
+  
+  "##tarraco_preview_title##" : "Famine dans l'Empire"
+}

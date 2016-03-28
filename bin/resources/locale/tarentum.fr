@@ -1,0 +1,35 @@
+{
+  "##tarentum_3_overview##" : "Maintenant que vous avez prouvé vos compétences, je désire que vous fondiez une petite cité juste au Sud de Rome. 
+
+Afin d'atteindre une population de taille raisonnable, il vous faudra fournir plus de biens et de services. Planifiez soigneusement. Le Sénat de Rome compte bien faire des bénéfices en investissant son argent pour vous aider à démarrer. \n
+Votre nouvelle province est riche en ressources. Installez des industries et des routes de commerce, puis exportez des biens pour gagner les fonds supplémentaires dont vous aurez besoin. Assurez-vous également que tous vos citoyens payent des taxes. 
+
+Vous devriez construire un dock, afin de pouvoir commercer par la mer. Construisez le dock en bordure de la rivière, et donnez lui accès à un entrepôt afin de stocker les produits d'import-export.\n
+ \n
+Des navires de commerce s'approcheront de votre dock lorsque vous aurez ouvert une route de commerce maritime, et indiqué à votre conseiller commercial la nature des biens à vendre et à acheter. Comme la plupart des bâtiments, le dock doit avoir accès à une route et à de la main-d'œuvre.\n
+ 
+
+Je n'attends rien de particulièrement extraordinaire de votre part. Je jugerai de votre performance sur cinq critères : le niveau culturel de votre cité, sa prospérité économique, votre capacité à maintenir l'ordre et la paix, l'estime que je vous porte et la taille de votre population. Rassurez-vous, les objectifs que je vous ai fixés sont plutôt modestes. Vous ne devriez pas avoir trop de mal à satisfaire mes requêtes. Je serais particulièrement enchanté si vous y parvenez dans les plus brefs délais. 
+
+Votre nouvelle province est située dans des terres qui ne respectent pas encore entièrement l'autorité de Rome. Nos anciens rivaux, les Etrusques, essayeront peut-être de vous nuire. Construisez les installations de sécurité qui sont à votre disposition afin d'éviter que ces barbares ne deviennent une réelle menace. Vous pouvez construire des structures défensives et créer une légion afin de combattre l'ennemi. 
+
+Les murs ne feront que ralentir la progression de l'ennemi, car il est possible d'y ouvrir des brèches. Pour construire des murs, procédez de la même façon que pour les routes, c'est-à-dire en cliquant sur le point de départ du mur, puis en gardant le bouton de la souris appuyé jusqu'au point d'arrivée.\n
+ \n
+Construisez de préférence des murs à double épaisseur, afin que des gardes puissent y patrouiller.\n
+ \n
+Construisez des tours à l'intérieur de vos murs afin de les défendre. Les gardes des tours lancent des javelines sur tous les ennemis qui passent à leur portée. Chaque tour dispose de sa propre baliste, qui peut infliger des dommages considérables.\n
+ \n
+\n
+Afin d'entraîner des gardes pour les tours et des soldats pour vos forts, il vous faut construire une caserne. La caserne seule permet d'entraîner des gardes pour les tours, des auxiliaires à cheval et des auxiliaires équipés de javelines. Si on lui fournit des armes, elle permet également d'entraîner des légionnaires. Ce sont les meilleurs combattants à votre disposition.\n
+ \n
+Vos devez construire un fort pour chaque légion avant de pouvoir entraîner des auxiliaires ou des légionnaires. Construisez vos forts à l'écart des quartiers résidentiels.\n
+ \n
+Les nouvelles recrues peuvent se rendre de la caserne à un fort sans avoir besoin d'utiliser une route. 
+
+Vous ne pouvez pas isoler complètement votre province du reste du monde. Vos citoyens et les marchands ont besoin de pouvoir aller et venir librement. Pensez à inclure des corps de garde à l'entrée de votre cité, ainsi qu'au point de sortie."
+  
+  "##tarentum_3_overview_2##" : "Et si ces maudits Etrusques tentent de vous faire des problèmes, faites-leur payer cher leur audace d'oser s'élever contre Rome!"
+  
+  "##tarentum_preview_mission##" : "Votre nouvelle province est située dans des terres qui ne respectent pas encore entièrement l'autorité de Rome. Nos anciens rivaux, les Etrusques, essayeront peut-être de vous nuire. Construisez les installations de sécurité qui sont à votre disposition afin d'éviter que ces barbares ne deviennent une réelle menace. Vous pouvez construire des structures défensives et créer une légion afin de combattre l'ennemi."
+  "##tarentum_preview_title##" : "Votre première cité"
+}
