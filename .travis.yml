@@ -28,6 +28,8 @@ script:
 after_success:
 - cd $TRAVIS_BUILD_DIR/bin
 # Prepare ZIP archive
+- rm resources/settings.model
+- echo "{ oldgfx:1 } >> resources/settings.model
 - ZIPNAME=caesaria-0.5-linux64-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
