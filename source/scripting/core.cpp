@@ -243,6 +243,8 @@ PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
 PUSH_USERDATA_SMARTPTR(Overlay)
 PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Ruins)
+PUSH_USERDATA_SMARTPTR(Factory)
 PUSH_USERDATA_SMARTPTR(Divinity)
 PUSH_USERDATA(Emperor)
 
@@ -299,14 +301,14 @@ inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)j
 
 inline Path engine_js_to(js_State *J, int n, Path) { return vfs::Path( js_tostring(J, n)); }
 
-inline Point engine_js_to(js_State *J, int n, Point) 
-{ 
+inline Point engine_js_to(js_State *J, int n, Point)
+{
   if (js_isobject(J, n))
   {
     js_getproperty(J, n, "x");
     int x = js_toint32(J, -1);
     js_getproperty(J, n, "y");
-    int y = js_toint32(J, -1);  
+    int y = js_toint32(J, -1);
     return Point(x, y);
   }
   return Point(js_toint32(J, n), js_toint32(J, n + 1));

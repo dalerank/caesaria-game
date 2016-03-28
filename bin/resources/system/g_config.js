@@ -33,7 +33,8 @@ g_config.metric = {
 }
 
 g_config.rc = {
-    panel : "paneling"
+    panel : "paneling",
+    invalidIndex : 567
 }
 
 g_config.advisor = {

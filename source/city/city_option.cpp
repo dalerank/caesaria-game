@@ -56,7 +56,7 @@ public:
     _O(forestGrow)
     _O(warfNeedTimber)
     _O(showGodsUnhappyWarn)
-    _O(claypitMayCollapse)
+    _O(claypitMayFloods)
     _O(minesMayCollapse)
     _O(riversideAsWell)
     _O(soldiersHaveSalary)
