@@ -30,7 +30,7 @@ public:
   LowBridgeSubTile( const TilePos& pos, int index );
 
   virtual ~LowBridgeSubTile();
-  virtual void setState( Param name, double value);
+  virtual void setState(int name, float value);
 
   std::string errorDesc() const;
   bool isWalkable() const;

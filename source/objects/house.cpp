@@ -1137,7 +1137,7 @@ const Pictures& House::pictures(Renderer::Pass pass) const
   return Building::pictures( pass );
 }
 
-double House::state(Param param) const
+float House::state(int param) const
 {
   if( param == pr::food ) { return _d->getFoodLevel(); }
   else if( param == pr::health ) { return Building::state( pr::health ) + Building::state( pr::healthBuff ); }

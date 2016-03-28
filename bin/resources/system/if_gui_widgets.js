@@ -44,17 +44,16 @@ function UpdateButtonPrototype(objProto) {
    Object.defineProperty(objProto, "style", {  set: function(sname) { this.setBackgroundStyle(sname) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
  }
-
-UpdateButtonPrototype(PushButton.prototype)
 //*************************** button class end***************************************//
 
-//*************************** TexturedButton class ***************************************//
+//*************************** Buttons classes begin***************************************//
+UpdateButtonPrototype(PushButton.prototype)
 UpdateButtonPrototype(TexturedButton.prototype)
-//*************************** TexturedButton class end***************************************//
-
-//*************************** ExitButton class ***************************************//
 UpdateButtonPrototype(ExitButton.prototype)
-//*************************** ExitButton class end***************************************//
+
+UpdateButtonPrototype(HelpButton.prototype)
+Object.defineProperty(HelpButton.prototype, "uri", { set: function(uri) { this.setProperty("uri", uri) }} )
+//*************************** Buttons classes end***************************************//
 
 //*************************** Spinbox class ***************************************//
 function Spinbox(parent) { return new SpinBox(parent); }
