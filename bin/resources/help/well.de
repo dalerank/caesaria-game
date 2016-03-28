@@ -1,0 +1,10 @@
+{
+ title : "##well##"
+ sound : "fanfare"
+ text  : "Nur die ärmsten Wohngebiete sind für ihre @Wasserversorgung& auf Ziehbrunnen angewiesen. Baue einen Ziehbrunnen für die Trinkwasserversorgung, wenn es nicht praktikabel wäre, einen @Brunnen& zu errichten. Durch Ziehbrunnen können sich Häuser etwas mehr entwickeln, als es ohne sie der Fall wäre. Häuser mit Ziehbrunnenversorgung werden es jedoch nicht besonders weit bringen. Ziehbrunnen haben den kleinsten Verteilungsradius aller Wasserversorgungseinrichtungen. Ziehbrunnen brauchen keine Anbindung an Straßen oder einen Arbeitsmarkt, steigern jedoch die allgemeine Arbeitskräfteanforderung deiner Wasserversorgung.\n\nKlicke @hier&, wenn du mehr zum Thema Ziehbrunnen im römischen Imperium erfahren möchtest."
+ uri : {
+  "Wasserversorgung" : "water_supply"
+  "Brunnen" : "fountain"
+  "hier" : "well_history"
+ }
+}

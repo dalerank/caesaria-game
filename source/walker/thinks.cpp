@@ -71,7 +71,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   ret.addIf( params[ Info::monthWithFood ] < 3,     "_so_hungry" )
      .addIf( params[ Info::godsMood ] < 3,          "_gods_angry" )
-     .addIf( params[ Info::colloseumCoverage ] < 3, "_need_colloseum" )
+     .addIf( params[ Info::colosseumCoverage ] < 3, "_need_colosseum" )
      .addIf( params[ Info::theaterCoverage ] < 3,   "_need_theater" )
      .addIf( params[ Info::entertainment ] < 20,    "_low_entertainment" )
      .addIf( params[ Info::needWorkers ] > 0,       "_need_workers" )

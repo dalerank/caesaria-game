@@ -45,6 +45,22 @@ public:
 
 } // end namespacce align
 
+namespace margin
+{
+
+enum Type
+{
+  //!
+  left=0,
+  top,
+  right,
+  bottom,
+  count
+};
+
+}
+
+typedef margin::Type Margin;
 typedef align::Type Alignment;
 
 #endif // __CAESARIA_ALIGNMENT_H_INCLUDED__

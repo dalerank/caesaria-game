@@ -15,25 +15,20 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#include "buildmenu.hpp"
+
 #include <cstdio>
 #include <cstring>
 
-#include "buildmenu.hpp"
-#include "core/gettext.hpp"
-#include "pushbutton.hpp"
+#include <GameCore>
+#include <GameLogger>
+#include <GameObjects>
+#include <GameCity>
+#include <GameGui>
+
 #include "gfx/decorator.hpp"
-#include "core/event.hpp"
-#include "environment.hpp"
-#include "core/time.hpp"
-#include "core/variant_map.hpp"
-#include "core/utils.hpp"
-#include "objects/metadata.hpp"
 #include "city/build_options.hpp"
-#include "objects/constants.hpp"
 #include "events/playsound.hpp"
-#include "core/logger.hpp"
-#include "core/saveadapter.hpp"
-#include "core/variant_list.hpp"
 
 //using namespace constants;
 using namespace gfx;
@@ -59,19 +54,35 @@ public:
   BuildButton( Widget* parent, const std::string& caption, const Rect& rectangle, int id )
       : PushButton( parent, rectangle, caption, id )
   {
-    _cost = 0;
-
-    //Font& font = FontCollection::instance().getFont(FONT_2);
-    Font fontRed = Font::create( FONT_2_RED );
+    Font fontRed = Font::create( "FONT_2_RED" );
 
     setFont( fontRed, stHovered );
     setTextAlignment( align::upperLeft, align::center );
     setTextOffset( Point( 15, 0 ) );
+
+    auto& btn = add<HelpButton>( Point(width()-24,0), "");
+    btn.setAlignment( align::lowerRight, align::lowerRight, align::lowerRight, align::lowerRight );
   }
 
-  void setSound( const std::string& name )
+  HelpButton* helpButton() const
+  {
+    auto items = findChildren<HelpButton*>();
+    if( !items.empty() )
+      return items.front();
+
+    return nullptr;
+  }
+
+  void setSound(const std::string& name)
   {
     addProperty( "sound", name );
+  }
+
+  void setHelpType(const std::string& id)
+  {
+    auto btn = helpButton();
+    if( btn )
+      btn->setHelpUri( id );
   }
 
   void _updateTexture()
@@ -81,10 +92,10 @@ public:
 
     Font f = font( state );
 
-    if( f.isValid() && _cost >= 0 )
-    {           
-      std::string text = utils::i2str( _cost );
-      Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-10, height() ),
+    if( f.isValid() && cost() >= 0 )
+    {
+      std::string text = utils::i2str( cost() );
+      Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-27, height() ),
                                      align::lowerRight, verticalTextAlign() );
       canvasDraw( text, textRect.lefttop(), f );
     }
@@ -94,13 +105,14 @@ public:
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );
+
+    auto btn = helpButton();
+    if( btn )
+      btn->setVisible(cost() > 0);
   }
 
-  void setCost(const int cost)   {    _cost = cost;  }
-  int cost() const  {    return _cost;  }
-
-private:
-  int _cost;   // cost of the building
+  void setCost(const int cost){ addProperty("cost",cost); }
+  int cost() const            { return getProperty("cost").toInt();}
 };
 
 BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
@@ -119,7 +131,7 @@ void BuildMenu::initialize()
   int max_text_width = 0;
   int max_cost_width = 0;
   Size textSize;
-  Font font = Font::create( FONT_2 );
+  Font font = Font::create( "FONT_2" );
 
   VariantMap allItems = config::load( _d->menuModel );
   VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
@@ -154,7 +166,7 @@ void BuildMenu::initialize()
     max_cost_width = std::max(max_cost_width, textSize.width());
   }
 
-  setWidth( std::max(150, max_text_width + max_cost_width + 30) );
+  setWidth( std::max(150, max_text_width + max_cost_width + 30 + 27) );
 
   // set the same size for all buttons
   for( auto button : buildButtons )
@@ -164,7 +176,7 @@ void BuildMenu::initialize()
 BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
-{  
+{
   if( !_dfunc()->options.isGroupAvailable( menuType ) )
     return;
 
@@ -195,11 +207,12 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    auto& button = add<BuildButton>( _(info .prettyName()),
+    auto& button = add<BuildButton>( _(info.prettyName()),
                                      Rect( 0, height(), width(), height() + 25 ), -1 );
     button.setCost(cost);
     button.setID( buildingType );
     button.setSound( "bmsel_" + info.name() );
+    button.setHelpType( info.typeName() );
 
     setHeight( height() + 30 );
 
@@ -236,7 +249,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::religion:       ret = &parent->add<BuildMenu_religion>      ( Rect( 0, 0, 60, 1 )); break;
   case development::temple:         ret = &parent->add<BuildMenu_temple>        ( Rect( 0, 0, 60, 1 )); break;
   case development::big_temple:     ret = &parent->add<BuildMenu_bigtemple>     ( Rect( 0, 0, 60, 1 )); break;
-  default:       break; // DO NOTHING 
+  default:       break; // DO NOTHING
   };
 
   if( ret )

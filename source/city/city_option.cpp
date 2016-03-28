@@ -39,7 +39,6 @@ public:
     _O(godEnabled)
     _O(fishPlaceEnabled)
     _O(updateRoadsOnNextFrame)
-    _O(forceBuild)
     _O(warningsEnabled)
     _O(updateTiles)
     _O(zoomEnabled)
@@ -57,7 +56,7 @@ public:
     _O(forestGrow)
     _O(warfNeedTimber)
     _O(showGodsUnhappyWarn)
-    _O(claypitMayCollapse)
+    _O(claypitMayFloods)
     _O(minesMayCollapse)
     _O(riversideAsWell)
     _O(soldiersHaveSalary)
@@ -92,7 +91,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::c3gameplay, 0 );
   resetIfNot( PlayerCity::warfNeedTimber, 1 );
   resetIfNot( PlayerCity::showGodsUnhappyWarn, 1);
-  resetIfNot( PlayerCity::claypitMayCollapse, 1);
+  resetIfNot( PlayerCity::claypitMayFloods, 1);
   resetIfNot( PlayerCity::minesMayCollapse, 1);
   resetIfNot( PlayerCity::riversideAsWell, 1);
   resetIfNot( PlayerCity::soldiersHaveSalary, 1);

@@ -21,3 +21,8 @@
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant.hpp"
+#include "core/exception.hpp"
+#include "core/eventconverter.hpp"
+#include "core/format.hpp"
+#include "core/debug_timer.hpp"
+#include "core/tilerect.hpp"

@@ -46,7 +46,7 @@ FileListBox::FileListBox(Widget* parent, const Rect& rectangle, int id)
 void FileListBox::setShowTime(bool show) { setFlag( showTime, show ); }
 void FileListBox::setShowExtension(bool show) { setFlag( showExtension, show ); }
 
-ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
+ListBoxItem& FileListBox::addItem(const std::string& text, Font font, NColor color)
 {
   DateTime time = vfs::Info( text ).modified();
   int gmtOffset = OSystem::gmtOffsetMs() / DateTime::secondsInHour;
@@ -76,7 +76,7 @@ void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const
 
   if( isFlag( showTime ) )
   {
-    Font f = Font::create( FONT_1 );
+    Font f = Font::create( "FONT_1" );
 
     std::string timeStr = item.data( "time" ).toString();
     Rect finalRect = f.getTextRect( timeStr, Rect( Point(), frameRect.size() ), align::lowerRight, align::center );

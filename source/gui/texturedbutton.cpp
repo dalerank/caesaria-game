@@ -77,19 +77,33 @@ HelpButton::HelpButton(Widget* parent)
 HelpButton::HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id)
   : TexturedButton( parent, pos, Size(defaultSize,defaultSize), id, States( gui::button.help ) )
 {
-  _helpid = helpId;
 }
 
 void HelpButton::setupUI(const VariantMap& ui)
 {
   TexturedButton::setupUI( ui );
-  _helpid = ui.get( "uri" ).toString();
+  setProperty("uri", ui.get("uri"));
+}
+
+void HelpButton::setupUI(const vfs::Path & ui)
+{
+  TexturedButton::setupUI(ui);
+}
+
+void HelpButton::setHelpUri(const std::string& uri)
+{
+  setProperty("uri", uri);
 }
 
 void HelpButton::_btnClicked()
 {
-  if( !_helpid.empty() )
-    ui()->add<DictionaryWindow>( _helpid  );
+  std::string helpUri = getProperty("uri").toString();
+  if (!helpUri.empty()) {
+    ui()->add<DictionaryWindow>(helpUri);
+  }
+  else {
+    PushButton::_btnClicked();
+  }
 }
 
 ExitButton::ExitButton(Widget* parent)

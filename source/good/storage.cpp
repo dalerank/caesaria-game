@@ -65,7 +65,7 @@ Storage::Storage() : _gsd( new Impl )
   _gsd->reset();
 }
 
-void Storage::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
+void Storage::setCapacity(const int maxQty) { _gsd->capacity = maxQty;}
 int Storage::capacity() const {  return _gsd->capacity; }
 
 int Storage::qty() const
@@ -202,7 +202,7 @@ void Storage::load( const VariantMap& stream )
 {
   if( stream.empty() )
   {
-    Logger::warning( "!!! WARNING: Storage::load from empty stream" );
+    Logger::warning( "!!! Storage::load from empty stream" );
     return;
   }
 

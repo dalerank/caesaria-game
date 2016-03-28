@@ -41,7 +41,7 @@ public:
   void loadTranslator( vfs::Path filename )
   {
     VariantMap items = config::load( directory/filename );
-    Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
+    Logger::info( "Locale: load translation from " + (directory/filename).toString() );
 
     for( auto& item : items )
     {
@@ -56,7 +56,7 @@ public:
   {
     vfs::Path filename( "caesar.en" );
     VariantMap items = config::load( directory/filename );
-    Logger::warning( "Locale: load default translation from " + (directory/filename).toString() );
+    Logger::info( "Locale: load default translation from " + (directory/filename).toString() );
 
     for( auto& item : items )
     {

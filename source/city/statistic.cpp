@@ -57,7 +57,7 @@ static const float minBalanceKoeff=.5f;
 }
 
 float Statistic::_Balance::koeff() const
-{ 
+{
   float result = atan( _parent.rcity.states().population / popBalanceKoeff );
   return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
@@ -225,7 +225,7 @@ unsigned int Statistic::_Tax::possible() const
   HouseList houses = _parent.houses.find();
 
   float taxValue = 0.f;
-  float taxRate = _parent.rcity.treasury().taxRate();
+  float taxRate = (float)_parent.rcity.treasury().taxRate();
 
   for( auto house : houses )
   {
@@ -238,7 +238,7 @@ unsigned int Statistic::_Tax::possible() const
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 
-  return taxValue;
+  return (unsigned int)taxValue;
 }
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
@@ -432,7 +432,7 @@ size_t Statistic::_Food::inGranaries() const
 {
   int foodSum = 0;
 
-  GranaryList granaries = _parent.objects.find<Granary>( object::granery );
+  GranaryList granaries = _parent.objects.find<Granary>( object::granary );
   for( auto gr : granaries ) { foodSum += gr->store().qty(); }
 
   return foodSum;

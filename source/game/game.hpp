@@ -76,9 +76,8 @@ public:
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
   int  timeMultiplier() const;
-  void setNextScreen( scene::ScreenType screen);
-
-private:  
+  void setNextScreen(scene::ScreenType screen);
+private:
   __DECLARE_IMPL(Game)
 };
 

@@ -44,7 +44,7 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
   auto sharpPos = name.find( "#" );
   const std::string serviceTypename = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
-  Logger::warning( "CityServiceFactory: try find creator for service " + serviceTypename );
+  Logger::info("CityServiceFactory: try find creator for service " + serviceTypename);
 
   auto creator = instance()._d->find( serviceTypename );
   if( creator.isValid() )
@@ -54,7 +54,7 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
     return srvc;
   }
 
-  Logger::warning( "CityServiceFactory: not found creator for service " + name );
+  Logger::warning("CityServiceFactory: not found creator for service " + name);
   return SrvcPtr();
 }
 
@@ -67,7 +67,7 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 
   if( found.isValid() )
   {
-    Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
+    Logger::error( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
     return;
   }
 

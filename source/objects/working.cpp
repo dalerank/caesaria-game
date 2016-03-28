@@ -47,14 +47,14 @@ public:
   WalkerList walkerList;
   std::string errorStr;
   bool clearAnimationOnStop;
-  float laborAccessKoeff;
+  unsigned int laborAccessKoeff;
 
 public signals:
   Signal1<bool> onActiveChangeSignal;
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
-  : Building( type, size ), _d( new Impl )
+  : Building(type, size), _d( new Impl )
 {
   _d->workers.current = 0;
   _d->workers.type = walker::unknown;
@@ -181,29 +181,29 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
-  if( game::Date::isDayChanged() )
+  if (game::Date::isDayChanged())
   {
-    if( mayWork() )
+    if (mayWork())
     {
-      if( _animation().isStopped() )
+      if (_animation().isStopped())
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animation().isRunning() )
+      if (_animation().isRunning())
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animation().isRunning() )
+  if (_animation().isRunning())
   {
-    _animation().update( time );
+    _animation().update(time);
     const Picture& pic = _animation().currentFrame();
-    if( pic.isValid() && !_fgPictures().empty() )
+    if (pic.isValid() && !_fgPictures().empty())
     {
       _fgPictures().back() = _animation().currentFrame();
     }
@@ -242,17 +242,17 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
 {
   if( walker.isNull() )
   {
-    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    Logger::warning( "!!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
     return;
   }
 
-   if( walker->isDeleted() )
-   {
-      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
-     return;
-   }
+  if( walker->isDeleted() )
+  {
+     Logger::warning( "!!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+    return;
+  }
 
-   _d->walkerList.push_back( walker );
+  _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()

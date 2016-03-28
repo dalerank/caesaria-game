@@ -166,7 +166,7 @@ Tile& getInvalidSafe()
   if( config::tilemap.isValidLocation( invalidTileSafe.pos() ) )
   {
     invalidTileSafe = Tile( TilePos::invalid() );
-    Logger::warning( "!!! WARNING function getInvalidSafe call" );
+    Logger::warning( "!!! Function getInvalidSafe call" );
   }
 
   return invalidTileSafe;

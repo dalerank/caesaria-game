@@ -1,5 +1,5 @@
 {
- title : "##trade_and_industry##"
+ title : "##tax_and_industry##"
  speech : "tutorial2_taxes"
  items : [ "##tax_tutorial##",
            "@img=picture4_00006",

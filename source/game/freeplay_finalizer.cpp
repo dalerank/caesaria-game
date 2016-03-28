@@ -24,6 +24,7 @@
 #include "world/emperor.hpp"
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
+#include "gfx/tilesarray.hpp"
 #include "world/config.hpp"
 #include "gfx/tilemap.hpp"
 

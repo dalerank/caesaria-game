@@ -28,79 +28,88 @@ class ContextMenu;
 
 class ContextMenuItem : public Label
 {
-public:    
+public:
   typedef enum { hoverIndex=3 } OpacityIndex;
-  typedef enum { alignRigth=0x1, alignLeft=0x2, alignHorizCenter=0x4, 
-		alignTop=0x10, alignBottom=0x20, alignVertCenter=0x40, 
-		alignAuto=0xff } SubMenuAlign;
+  typedef enum { alignRigth=0x1, alignLeft=0x2, alignHorizCenter=0x4,
+    alignTop=0x10, alignBottom=0x20, alignVertCenter=0x40,
+    alignAuto=0xff } SubMenuAlign;
 
-  typedef enum 
+  typedef enum
   {
     drawSubmenuSprite = 0,
     drawCount
   } DrawFlag;
 
-
-  ContextMenuItem( Widget* parent, const std::string& text );
+  ContextMenuItem(Widget* parent, const std::string& text);
 
   virtual ~ContextMenuItem();
 
   virtual bool isSeparator() const;
 
-  virtual void setCommandId( int cmdId);   
+  virtual void setCommandId( int cmdId);
 
   virtual int commandId() const;
 
-  virtual ContextMenu* subMenu() const;
+  virtual ContextMenu* submenu() const;
 
-  virtual void setIsSeparator(bool separator );
+  virtual void setIsSeparator(bool separator);
 
   virtual void toggleCheck();
 
   virtual void draw(gfx::Engine &painter);
 
-  virtual void setFlag( DrawFlag flagName, bool set=true );
+  virtual void setFlag(DrawFlag flagName, bool set=true);
 
-  virtual void setIcon( const gfx::Picture& icon, Point offset );
+  virtual void setIcon(const gfx::Picture& icon,const Point& offset);
 
   virtual bool isHovered() const;
 
-  virtual void setHovered( bool hover );
+  virtual void setHovered(bool hover);
 
+  //!
   virtual bool isAutoChecking();
-  virtual void setAutoChecking( bool autoChecking );
+
+  //!
+  virtual void setAutoChecking(bool autoChecking);
 
   virtual bool isPointInside(const Point& point) const;
 
-  virtual void setChecked( bool check );
+  virtual void setChecked(bool check);
 
   virtual bool isChecked() const;
 
   virtual int offset() const;
 
-  virtual void setOffset( int offset );
+  virtual void setOffset(int offset);
 
-  virtual void setDimmension( const Size& size );
+  virtual void setDimmension(const Size& size);
 
   virtual const Size& dimmension() const;
 
   //! Adds a sub menu from an element that already exists.
-  virtual void setSubMenu( ContextMenu* menu );
+  virtual void setSubmenu(ContextMenu* menu);
 
-  virtual ContextMenu* addSubMenu( int id = -1 );
+  virtual ContextMenu* addSubmenu(int id = -1);
 
-  virtual void setSubMenuAlignment( SubMenuAlign align );
+  virtual ContextMenuItem* addSubmenuItem(const std::string& text);
+
+  virtual void setSubmenuAlignment(SubMenuAlign align);
 
   virtual SubMenuAlign subMenuAlignment() const;
 
-  void setSubMenuIconVisible( bool visible );
+  void setSubmenuIconVisible(bool visible);
+
+  void moveToIndex(int index);
+
+  virtual void setVisible(bool visible);
 
 signals public:
   Signal1<bool>& onChecked();
+  Signal2<Widget*,bool>& onCheckedEx();
   Signal1<int>& onAction();
 
 protected:
-  virtual void _updateTexture( gfx::Engine& painter );
+  virtual void _updateTexture(gfx::Engine& painter);
 
 private:
   __DECLARE_IMPL(ContextMenuItem)

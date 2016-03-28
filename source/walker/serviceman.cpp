@@ -92,7 +92,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::oracle:
     //_setAnimation( gfx::unknown );
   break;
-  
+
   case Service::religionNeptune:
   case Service::religionCeres:
   case Service::religionVenus:
@@ -100,7 +100,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::religionMercury:
     _setType( walker::priest );
   break;
-  
+
   case Service::engineer:  _setType( walker::engineer ); break;
   case Service::doctor:    _setType( walker::doctor );   break;
   case Service::hospital:  _setType( walker::surgeon );  break;
@@ -109,7 +109,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::school:    _setType( walker::scholar);   break;
   case Service::theater:   _setType( walker::actor );    break;
   case Service::amphitheater: _setType( walker::gladiator ); break;
-  case Service::colloseum:  _setType( walker::lionTamer );    break;
+  case Service::colosseum:  _setType( walker::lionTamer );    break;
   case Service::hippodrome: _setType( walker::charioteer ); break;
   case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::plebFemale; break;
   case Service::missionary: _setType( walker::missioner ); break;
@@ -132,7 +132,7 @@ const TilePos& ServiceWalker::baseLocation() const { return _d->basePos; }
 Service::Type ServiceWalker::serviceType() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath( int orders )
-{  
+{
   if( orders == noOrders )
   {
     orders = goServiceMaximum;
@@ -144,7 +144,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
   pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
-  PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);  
+  PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
   PathwayPtr bestPath;
 
   if( (orders & goServiceMaximum) == goServiceMaximum )
@@ -300,7 +300,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   if( base.isNull() )
   {
-    Logger::warning( "!!!Warning: Try send from unexist base " );
+    Logger::warning( "!!! Try send from unexist base " );
     return;
   }
 
@@ -308,13 +308,13 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
   if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
     auto servBuilding = base.as<ServiceBuilding>();
-    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
 
   if( !base.is<WorkingBuilding>() )
   {
-    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -354,7 +354,7 @@ void ServiceWalker::_reachedPathway()
   }
   else
   {
-    // walker finished service => get back to service building    
+    // walker finished service => get back to service building
     _pathway().move( Pathway::reverse );
     _computeDirection();
     go();
@@ -408,7 +408,7 @@ void ServiceWalker::_noWay()
     }
   }
 
-  Logger::warning( "!!! WARNING: ServiceWalker die because have not way to go");
+  Logger::warning( "!!!  ServiceWalker die because have not way to go");
   die();
 }
 
@@ -489,7 +489,7 @@ bool ServiceWalker::die()
 
   case Service::theater: start=409; stop=416; rcGroup=ResourceGroup::citizen1; break;
   case Service::amphitheater: start=97; stop=104; rcGroup=ResourceGroup::citizen2; break;
-  case Service::colloseum: start=513; stop=520; rcGroup=ResourceGroup::citizen1; break;
+  case Service::colosseum: start=513; stop=520; rcGroup=ResourceGroup::citizen1; break;
   case Service::hippodrome: break;
 
   case Service::market: start=921; stop=928; rcGroup=ResourceGroup::citizen1; break;

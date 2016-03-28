@@ -21,7 +21,7 @@ Vector2D.prototype.set = function(x, y)
 Vector2D.prototype.clone = function()
 {
   return new Vector2D(this.x,this.y);
-}
+};
 
 Vector2D.prototype.add = function(v)
 {
@@ -72,7 +72,7 @@ Vector2D.prototype.rotate = function(a)
 	this.x = x;
 	this.y = y;
 	return this;
-}
+};
 
 // Numeric 2D info functions (non-mutating)
 //

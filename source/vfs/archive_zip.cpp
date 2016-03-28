@@ -46,7 +46,7 @@ ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 bool ZipArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
     std::string fileExtension = filename.extension();
-    Logger::warning( "ZipArchiveLoader: extension is " + fileExtension );
+    Logger::debug( "ZipArchiveLoader: extension is " + fileExtension );
     return utils::isEquale( fileExtension, ".zip", utils::equaleIgnoreCase )
            || utils::isEquale( fileExtension, ".pk3", utils::equaleIgnoreCase )
            || utils::isEquale( fileExtension, ".gz", utils::equaleIgnoreCase )
@@ -454,7 +454,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
   if ((e.header.GeneralBitFlag & ZIP_FILE_ENCRYPTED) && (e.header.CompressionMethod == 99))
   {
-    Logger::warning( "Reading encrypted file." );
+    Logger::debug( "Reading encrypted file." );
     unsigned char salt[16]={0};
     const unsigned short saltSize = (((e.header.Sig & 0x00ff0000) >>16)+1)*4;
     File.seek(e.Offset);
@@ -498,14 +498,14 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
                     &zctx); // encryption context
     if (rc != 10)
     {
-      Logger::warning( "Error on encryption closing" );
+      Logger::error( "Error on encryption closing" );
       return NFile();
     }
 
     File.read(fileMAC, 10);
     if (strncmp(fileMAC, resMAC, 10))
     {
-      Logger::warning( "Error on encryption check" );
+      Logger::error( "Error on encryption check" );
       return NFile();
     }
 
@@ -606,7 +606,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
+        Logger::error( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -622,7 +622,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       int err = BZ2_bzDecompressInit(&bz_ctx, 0, 0); /* decompression */
       if(err != BZ_OK)
       {
-        Logger::warning( "bzip2 decompression failed. File cannot be read." );
+        Logger::error( "bzip2 decompression failed. File cannot be read." );
         return NFile();
       }
 
@@ -638,7 +638,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != BZ_OK)
       {
-        Logger::warning( "Error decompressing +" + item( index ).fullpath.toString() );
+        Logger::error( "Error decompressing +" + item( index ).fullpath.toString() );
         return NFile();
       }
       else
@@ -657,7 +657,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       pcData.resize( decryptedSize );
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
+        Logger::error( "Not enough memory for decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
 
@@ -678,7 +678,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != SZ_OK)
       {
-        Logger::warning( "Error decompressing " + item( index ).fullpath.toString() );
+        Logger::error( "Error decompressing " + item( index ).fullpath.toString() );
         return NFile();
       }
       else
@@ -695,12 +695,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      Logger::warning( "file {} has unsupported compression method", item( index ).fullpath.toCString() );
+      Logger::error( "file {} has unsupported compression method", item( index ).fullpath.toCString() );
       return NFile();
     }
   }
 
-  Logger::warning( "Can't read file " + item( index ).fullpath.toString() );
+  Logger::error( "Can't read file " + item( index ).fullpath.toString() );
   return NFile();
 }
 

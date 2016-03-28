@@ -34,7 +34,7 @@ namespace scene
 class Level: public Base
 {
 public:
-  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_quit} ResultType;
+  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_reserved, res_quit} ResultType;
   Level( Game& game, gfx::Engine& engine );
   virtual ~Level();
 
@@ -42,8 +42,8 @@ public:
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
-  virtual void draw();  
-  virtual void animate( unsigned int time );
+  virtual void draw(gfx::Engine& engine);
+  virtual void animate(unsigned int time);
   virtual void afterFrame();
   virtual int result() const;
   virtual bool installEventHandler(EventHandlerPtr);
@@ -54,18 +54,13 @@ public:
   void setCameraPos( TilePos pos, bool force=false );
   void switch2layer( int layer );
 
-public slots:
-  void loadStage(std::string filename);
-  void quit();
-  void restart();
-  void exit();
+  virtual void setOption(const std::string &name, Variant value);
+  virtual Variant getOption(const std::string &name);
+  virtual void setMode(int mode);
 
 private slots:
   void _resolveLoad();
-  void _resolveEnterButton();
-  void _requestExitGame();
   bool _tryExecHotkey( NEvent& event );
-  void _handleDebugEvent( int event );
 
 private:
   class Impl;

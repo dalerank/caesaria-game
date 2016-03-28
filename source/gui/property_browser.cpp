@@ -39,7 +39,7 @@ PropertyBrowser::PropertyBrowser( Widget* parent, int id ) :
   _attribTable->setGeometry( RectF(0.0f, 0.0f, 1.0f, 1.0f));
   _attribTable->addColumn( "attribute", 0 );
   _attribTable->addColumn( "value", 1 );
-  _attribTable->setItemFont( Font::create(FONT_1) );
+  _attribTable->setItemFont( Font::create("FONT_1") );
   _attribTable->setSubElement( true );
 
   // refresh attrib list
@@ -122,7 +122,7 @@ AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, cons
 }
 
 void PropertyBrowser::_createTable()
-{  
+{
   foreach( it, _attribList )
     (*it)->deleteLater();
 
@@ -135,7 +135,7 @@ void PropertyBrowser::_createTable()
 
     _attribList.push_back(n);
     n->setValue( it->second );
-    n->setFont( Font::create( FONT_1 ) );
+    n->setFont( Font::create( "FONT_1" ) );
 
     _attribList.back()->setSubElement( true );
   }

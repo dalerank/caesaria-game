@@ -44,7 +44,7 @@ public:
   {
     lastUpdateTime = DateTime::elapsedTime();
 
-    background.fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background.width()-2, background.height()-2 ) );
+    background.fill( ColorList::white, Rect( ratingStartPos.x(), ratingStartPos.y(), background.width()-2, background.height()-2 ) );
     font.draw( background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
     font.draw( background, utils::i2str( senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
     font.draw( background, utils::i2str( senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
@@ -63,10 +63,10 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->lastUpdateTime = 0;
   _d->background = Picture( Size( 240, 80 ), 0, true );
 
-  _d->background.fill( 0xff000000, Rect( Point( 0, 0 ), _d->background.size() ) );
-  _d->background.fill( 0xffffffff, Rect( Point( 1, 1 ), _d->background.size() - Size( 2, 2 ) ) );
-  
-  _d->font = Font::create( FONT_1 );
+  _d->background.fill( ColorList::black, Rect( Point( 0, 0 ), _d->background.size() ) );
+  _d->background.fill( ColorList::white, Rect( Point( 1, 1 ), _d->background.size() - Size( 2, 2 ) ) );
+
+  _d->font = Font::create( "FONT_1" );
 
   _d->font.draw( _d->background, _("##senatepp_unemployment##"), _d->startPos, false, false );
   _d->font.draw( _d->background, _("##senatepp_clt_rating##"), _d->startPos + _d->offset, false, false );

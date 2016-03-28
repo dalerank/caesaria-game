@@ -1,8 +1,8 @@
-{  
+{
   size : [ 640, 432 ]
   bgtype : "whiteFrame"
   static : true
-  
+
   lbIcon#Label : {
     geometry : [ 10, 10, 50, 50 ]
     image : "paneling_00257"
@@ -75,5 +75,13 @@
     geometry : [ 70, 395, 570, 415 ]
     text : "##set_mayor_salary##"
     bgtype : "blackBorderUp"
+  }
+
+  btnHelp#TexturedButton : {
+    geometry : [ 12, "ph-39", 36, "ph-15" ]
+    normal : [ "paneling", 528 ]
+    hovered : [ "paneling", 529 ]
+    pressed : [ "paneling", 530 ]
+    disabled : [ "paneling", 531 ]
   }
 }

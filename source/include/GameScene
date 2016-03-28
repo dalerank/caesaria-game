@@ -1,4 +1,4 @@
 #include "scene/lobby.hpp"
-#include "scene/logo.hpp"
+#include "scene/splashscreen.hpp"
 #include "scene/level.hpp"
 

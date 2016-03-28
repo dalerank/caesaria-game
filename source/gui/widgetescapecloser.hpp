@@ -27,7 +27,7 @@ class WidgetClosers : public Widget
 {
   std::set<int> _codes;
 public:
-  WidgetClosers( Widget* parent );
+  WidgetClosers(Widget* parent);
   void addCloseCode(int code);
   static void insertTo( Widget* parent, int code1=KEY_KEY_CODES_COUNT, int code2=KEY_ESCAPE );
   virtual bool onEvent(const NEvent &event);

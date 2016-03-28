@@ -60,7 +60,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file, bool streaming) const
   //Were we able to load the bitmap?
   if (temp == NULL)
   {
-    Logger::warning( "Unable to load bitmap: {0}", SDL_GetError());
+    Logger::error( "Unable to load bitmap: {0}", SDL_GetError());
     return Picture::getInvalid();
   }
 
@@ -68,7 +68,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file, bool streaming) const
 
   if( pic.size().area() == 0 )
   {
-    Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
+    Logger::error( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 

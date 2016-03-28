@@ -26,6 +26,7 @@
 #include <mutex>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <thread>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
@@ -109,12 +110,16 @@ public:
   Folders folders;
   SoundCache cachedSounds;
   StringArray extensions;
-  std::string currentTheme;
   threading::SafeThreadPtr thread;
 
   std::recursive_mutex mutex;
   SamplesInfo needLoad;
   bool running;
+
+  std::string currentTheme;
+  Signal0<> onThemeStoppedSignal;
+  unsigned int lastTimeThemeUpdate,
+               themeStopCheckInterval;
 
 public:
   void nextLoad();
@@ -129,7 +134,7 @@ public:
 
 void Engine::setVolume(audio::SoundType type, Volume value)
 {
-  _d->volumes[ type ] = value;
+  _d->volumes[type] = value;
   _updateSamplesVolume();
 }
 
@@ -156,7 +161,7 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ speech ] = maxVolumeValue() / 2;
   _d->volumes[ effects ] = maxVolumeValue() / 2;
   _d->volumes[ infobox ] = maxVolumeValue() / 2;
-
+  _d->themeStopCheckInterval = 10000;
   _d->extensions << ".ogg" << ".wav";
   _d->running = true;
   addFolder( Directory() );
@@ -172,7 +177,7 @@ void Engine::init()
      return;        // avoid init twice
   }
 
-  Logger::warning( "Game: initialize SDL sound subsystem" );
+  Logger::debug( "Game: initialize SDL sound subsystem" );
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) != -1)
   {
     // open an audio channel
@@ -185,20 +190,20 @@ void Engine::init()
     Logger::warning( "Game: try open audio" );
     if(Mix_OpenAudio(freq, format, channels, samples) != -1)
     {
-      Logger::warning( "Game: sound check if we got the right audi format" );
+      Logger::debug( "Game: sound check if we got the right audi format" );
       Mix_QuerySpec(&freq, &format, &channels);
       if (format == AUDIO_S16SYS)
       {
-        Logger::warning( "Game: finished sound initializing" );
+        Logger::debug( "Game: finished sound initializing" );
         sound_ok = true;
 
-        Logger::warning( "Game: try allocate 16 mixing channels" );
+        Logger::debug( "Game: try allocate 16 mixing channels" );
         Mix_AllocateChannels(16);
 
-        Logger::warning( "Game: start playing sounds" );
+        Logger::debug( "Game: start playing sounds" );
         Mix_ResumeMusic();
 
-        Logger::warning( "Game: bind ChannelFinished" );
+        Logger::debug( "Game: bind ChannelFinished" );
         Mix_ChannelFinished( &_resolveChannelFinished );
       }
       else
@@ -219,19 +224,21 @@ void Engine::init()
     Logger::warning( "Could not initialize sound system. Muting ");
   }
 
-  Logger::warning( "Game: sound initialization ok" );
+  Logger::debug( "Game: sound initialization ok" );
   _d->useSound = sound_ok;
 
-  _d->thread = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &Engine::run ) );
+  _d->thread = threading::SafeThread::create(threading::SafeThread::WorkFunction(this, &Engine::run));
   _d->thread->setDelay( 100 );
-  //_d->thread->join();
 }
 
 void Engine::exit()
 {
   _d->running = false;
-  _d->thread->join();
-  Mix_CloseAudio();
+  Mix_ChannelFinished(nullptr);
+  _d->thread->stop();
+  //?
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  //Mix_CloseAudio();
 }
 
 Path Engine::Impl::findFullPath( const std::string& sampleName )
@@ -258,10 +265,10 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   }
   else
   {
-    if( sPath.exist() )
+    if (sPath.exist())
       return sPath;
 
-    for( auto& folder : folders )
+    for (auto& folder : folders)
     {
       rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
@@ -270,6 +277,11 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   }
 
   return Path();
+}
+
+Signal0<>& Engine::onThemeStopped()
+{
+  return _d->onThemeStoppedSignal;
 }
 
 unsigned int Engine::Impl::loadSound(const std::string& sampleName)
@@ -281,7 +293,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
   if( samples.size() < maxSamplesNumber )
   {
-    unsigned int sampleHash = Hash( sampleCanonical );
+    unsigned int sampleHash = Hash(sampleCanonical);
     Samples::iterator i = samples.find( sampleHash );
 
     if( i != samples.end() )
@@ -360,7 +372,7 @@ bool Engine::isPlaying(const std::string& sampleName) const
 
 void Engine::stop(const std::string& sampleName) const
 {
-  _d->stop( sampleName );
+  _d->stop(sampleName);
 }
 
 void Engine::stop(int channel)
@@ -378,9 +390,18 @@ void Engine::stop(int channel)
   }
 }
 
-void Engine::run( bool& continues )
+void Engine::run(bool& continues)
 {
   _d->nextLoad();
+
+  if (DateTime::elapsedTime() - _d->lastTimeThemeUpdate > _d->themeStopCheckInterval)
+  {
+    _d->lastTimeThemeUpdate = DateTime::elapsedTime();
+    _d->themeStopCheckInterval = math::clamp<int>(_d->themeStopCheckInterval * 2, 1000, 10000);
+    if (!isPlaying(_d->currentTheme))
+      emit _d->onThemeStoppedSignal();
+  }
+
   continues = _d->running;
 }
 
@@ -399,7 +420,7 @@ void Engine::_updateSamplesVolume()
 }
 
 void Helper::initTalksArchive(const vfs::Path& filename)
-{ 
+{
   static Path saveFilename;
 
   FileSystem::instance().unmountArchive( saveFilename );
@@ -421,9 +442,10 @@ void Engine::Impl::nextLoad()
   clearFinishedChannels();
   resetIfalias( info.name );
 
-  if( info.type == theme )
+  if (info.type == theme)
   {
-    stop( currentTheme );
+    stop(currentTheme);
+    themeStopCheckInterval = 1000;
     currentTheme = info.name;
   }
 
@@ -493,36 +515,8 @@ void Engine::Impl::clearFinishedChannels()
 void  Engine::Impl::resetIfalias(std::string& sampleName)
 {
   Aliases::iterator it = aliases.find( Hash( sampleName ) );
-  if( it != aliases.end() )
+  if (it != aliases.end())
     sampleName = it->second;
-}
-
-void Muter::activate(int value)
-{
-  Engine& ae = Engine::instance();
-  _states[ ambient ] = ae.volume( ambient );
-  _states[ theme ] = ae.volume( theme );
-
-  ae.setVolume( audio::ambient, value );
-  ae.setVolume( audio::theme, value );
-}
-
-Muter::~Muter()
-{
-  Engine& ae = Engine::instance();
-  for( auto& it : _states )
-    ae.setVolume( it.first, it.second );
-}
-
-SampleDeleter::~SampleDeleter()
-{
-  if( !_sample.empty() )
-    Engine::instance().stop( _sample );
-}
-
-void SampleDeleter::assign(const std::string& sampleName)
-{
-  _sample = sampleName;
 }
 
 }//end namespace audio

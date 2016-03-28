@@ -43,7 +43,6 @@
 #include "city/terrain_generator.hpp"
 #include "events/fishplace.hpp"
 #include "city/config.hpp"
-#include "climatemanager.hpp"
 #include "freeplay_finalizer.hpp"
 
 using namespace religion;
@@ -78,7 +77,7 @@ bool Mission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
-  
+
   if( currentVesion == vm[ TEXT(version) ].toInt() )
   {
     std::string mapToLoad = vm[ literals::map ].toString();
@@ -111,7 +110,7 @@ bool Mission::load( const std::string& filename, Game& game )
       game::Loader mapLoader;
       if( !vfs::Path( mapToLoad ).exist() )
       {
-        Logger::warning( "WARNING !!! Cant find map {} for mission {}", mapToLoad, filename );
+        Logger::error( "Cant find map {} for mission {}", mapToLoad, filename );
         return false;
       }
       mapLoader.load( mapToLoad, game );
@@ -128,13 +127,13 @@ bool Mission::load( const std::string& filename, Game& game )
     city->mayor()->setRank( vm.get( "player.rank", 0 ).toEnum<world::GovernorRank::Level>() );
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
-    Logger::warning( "GameLoaderMission: load city options ");
+    Logger::debug( "GameLoaderMission: load city options ");
     city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
     city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );        
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
     city->setOption( PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
-    city->setOption( PlayerCity::claypitMayCollapse, vm.get( TEXT(claypitMayCollapse), 1 ) );
+    city->setOption( PlayerCity::claypitMayFloods, vm.get( TEXT(claypitMayCollapse), 1 ) );
     city->setOption( PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
     city->setOption( PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
     city->setOption( PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
@@ -154,7 +153,7 @@ bool Mission::load( const std::string& filename, Game& game )
     }
 
     game.empire()->setCitiesAvailable( false );
-    Logger::warning( "GameLoaderMission: load empire state" );
+    Logger::debug( "GameLoaderMission: load empire state" );
     game.empire()->load( vm.get( "empire" ).toMap() );
 
     city::VictoryConditions winConditions;
@@ -194,7 +193,7 @@ bool Mission::load( const std::string& filename, Game& game )
 
     return true;
   }
- 
+
   return false;
 }
 

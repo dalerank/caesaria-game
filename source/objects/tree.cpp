@@ -83,7 +83,7 @@ void Tree::timeStep( const unsigned long time )
     _d->health = math::clamp( _d->health+5, 0, 100 );
     bool mayHealth4grow = _d->health > 50;
     bool growLast5years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 5;
-    bool haveRuleToGrow = _city()->getOption( PlayerCity::forestGrow );
+    bool haveRuleToGrow = _cityOpt(PlayerCity::forestGrow) > 0;
 
     if( haveRuleToGrow && mayHealth4grow && !growLast5years)
       grow();

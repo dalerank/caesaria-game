@@ -24,6 +24,7 @@
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
+#include "gfx/tilesarray.hpp"
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
@@ -261,7 +262,7 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
   default: break;
   }
 
-  Logger::warning( "CRITICAL: Unexpected type {} in Tilemap::getNeighbors", type );
+  Logger::fatal( "Unexpected type {} in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 

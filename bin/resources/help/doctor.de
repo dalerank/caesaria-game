@@ -1,0 +1,10 @@
+{
+ title : "##ovrm_clinic##"
+ sound : "fanfare"
+ text  : "Reichere Wohngebiete erwarten regelmäßige Besuche durch einen Arzt. Die Ärzte tragen in dem Gebiet, das sie versorgen, zur @Gesundheit& bei. Benutzen Sie die @Spezialkarte Gesundheit&, um sich die Versorgung der Wohngebiete durch eine Klinik anzusehen und beobachten Sie die Ärzte bei ihren Hausbesuchen - das dürfte die einzige Möglichkeit sein, ihnen bei der Arbeit zuzusehen. Klicken Sie die Klinik rechts an, um ihren Status zu prüfen.\n\nKlicken Sie @hier&, wenn sie mehr über die römischen Ärzte erfahren möchten."
+ uri : {
+  "Gesundheit" : "health_and_sickness"
+  "Spezialkarte Gesundheit" : "special_card_selection"
+  "hier" : "doctor_history"
+ }
+}

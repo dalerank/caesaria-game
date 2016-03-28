@@ -62,7 +62,7 @@ public:
     {
       if( stream.size() != 9 )
       {
-        Logger::warning( "{0} [{1} {2}]", "Incorrect argument number in ", __FILE__, __LINE__ );
+        Logger::info( "{0} [{1} {2}]", "Incorrect argument number in ", __FILE__, __LINE__ );
         return;
       }
 

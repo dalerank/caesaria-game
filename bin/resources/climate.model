@@ -1,5 +1,0 @@
-{
-  central : [ ":/gfx/pics_oc3.zip", ":/gfx/pics_land1a.zip" ]
-  northen : [ ":/gfx/pics_north.zip"]
-  desert : [ ":/gfx/pics_south.zip"]
-}

@@ -19,6 +19,8 @@
 
 VariantMap::VariantMap() {}
 
+const Variant VariantMap::defValue = Variant();
+
 VariantMap::VariantMap(const VariantMap& other)
 {
   *this = other;
@@ -46,13 +48,13 @@ VariantMap& VariantMap::operator=(const VariantMap& other)
 {
   clear();
 
-  for( auto& item : other)
-      (*this)[ item.first ] = item.second;
+  for (const auto& item : other)
+      (*this)[item.first] = item.second;
 
   return *this;
 }
 
-Variant VariantMap::get(const std::string& name, Variant defaultVal) const
+Variant VariantMap::get(const std::string& name,const Variant& defaultVal) const
 {
   VariantMap::const_iterator it = find( name );
   return (it != end() ? it->second : defaultVal );

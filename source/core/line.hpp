@@ -36,6 +36,24 @@ public:
     Line a = { p1, p2, color };
     push_back( a );
   }
+
+  Lines& append(const Point& p1, const Point& p2)
+  {
+    this->push_back({p1,p2});
+    return *this;
+  }
+
+  std::vector<Point> points() const
+  {
+    std::vector<Point> pnts;
+    for (const auto& line : *this)
+    {
+      pnts.push_back(line.begin);
+      pnts.push_back(line.end);
+    }
+
+    return pnts;
+  }
 };
 
 #endif //__CAESARIA_LINE_INCLUDE_H__

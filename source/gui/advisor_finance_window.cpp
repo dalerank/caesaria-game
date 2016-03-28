@@ -113,7 +113,7 @@ public:
     lastyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
     thisyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
-    setFont( FONT_1 );
+    setFont( "FONT_1" );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -136,10 +136,10 @@ public:
     if( dline )
     {
       Rect p( absoluteRect().leftbottom() + Point( 200, -1 ), Size( 72, 1) );
-      painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
+      painter.drawLine( ColorList::black, p.lefttop(), p.righttop() );
 
       p = Rect( absoluteRect().leftbottom() + Point( 340, -1 ), Size( 72, 1) );
-      painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
+      painter.drawLine( ColorList::black, p.lefttop(), p.righttop() );
     }
   }
 
@@ -210,13 +210,13 @@ public:
    : Window( parent, Rect( Point(), size), title )
   {
     setTextAlignment( align::center, align::center );
-    setFont( FONT_3 );
+    setFont( "FONT_3" );
     setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( "FONT_1" );
+    listbox.setItemsHeight( 16 );
 
     const econ::DateIssues& history = city->treasury().getIssueHistory().issues();
     DateTime lasttime;

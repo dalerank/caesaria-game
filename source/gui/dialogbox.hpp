@@ -37,6 +37,7 @@ public:
 
   virtual bool onEvent(const NEvent& event);
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path &ui);
   virtual void draw(gfx::Engine& painter);
   virtual void setTitle(const std::string& title);
   virtual void setText(const std::string &text);

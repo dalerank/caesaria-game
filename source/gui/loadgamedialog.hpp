@@ -32,12 +32,13 @@ namespace dialog
 class LoadGame : public LoadFile
 {
 public:
-  LoadGame( Widget* parent, const vfs::Directory& dir );
+  LoadGame(Widget* parent);
+  LoadGame(Widget* parent, const vfs::Directory& dir);
   virtual ~LoadGame();
 
 protected:
   virtual void _fillFiles();
-  void _showPreview( const ListBoxItem& item );
+  void _showPreview(const ListBoxItem& item);
   void _changeSort();
 
   typedef enum { sortName=0, sortDate, sortFast, sortAuto, sortUser, sortCount } SortMode;

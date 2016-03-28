@@ -95,7 +95,6 @@ public:
   }
 };
 
-
 class TraineeMap : public std::map<walker::Type,int>
 {
 public:
@@ -137,8 +136,8 @@ public:
   CityKoeffs cityKoeffs;
 };
 
-Building::Building(const object::Type type, const Size& size )
-  : Construction( type, size ), _d( new Impl )
+Building::Building(object::Type type, const Size& size)
+  : Construction(type, size), _d(new Impl)
 {
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
@@ -299,13 +298,13 @@ Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
 
 void Building::_updateBalanceKoeffs()
 {
-  if( !_city().isValid() )
+  if (!_city().isValid())
     return;
 
   float balance = std::max<float>( _city()->statistic().balance.koeff(), 0.1f );
 
-  float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
-  if( !_city()->getOption(PlayerCity::c3gameplay) )
+  float fireKoeff = balance * _cityOpt(PlayerCity::fireKoeff) / 100.f;
+  if (!_cityOpt(PlayerCity::c3gameplay))
   {
     int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
     if( anyWater > 0 )
@@ -313,5 +312,5 @@ void Building::_updateBalanceKoeffs()
   }
 
   _d->cityKoeffs.fireRisk = math::clamp( fireKoeff, 0.f, 9.f );
-  _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
+  _d->cityKoeffs.collapseRisk = balance * _cityOpt(PlayerCity::collapseKoeff) / 100.f;
 }

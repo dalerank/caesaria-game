@@ -21,6 +21,7 @@
 #include "engine.hpp"
 #include "core/direction.hpp"
 #include "core/signals.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace gfx
 {

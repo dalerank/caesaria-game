@@ -32,7 +32,7 @@
 #include "objects/aqueduct.hpp"
 #include "gfx/textured_path.hpp"
 #include "game/gamedate.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "core/utils.hpp"
 
 using namespace gfx;
@@ -74,7 +74,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
     {
       // Base set of visible objects
       needDrawAnimations = true;
-      areaSize = overlay->size();      
+      areaSize = overlay->size();
     }
     else
     {
@@ -112,7 +112,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto aqueduct = tile.overlay<Aqueduct>();
         if( aqueduct.isValid() )
         {
-          Font f = Font::create( FONT_2 ).withColor( 0xffff0000 );
+          Font f = Font::create( "FONT_2" ).withColor( ColorList::red );
           int df = aqueduct->water();
           f.draw( rinfo.engine.screen(), utils::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
@@ -124,7 +124,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
         {
           std::string text = utils::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
-          Font f = Font::create( FONT_2 ).withColor( 0xffff0000 );
+          Font f = Font::create( "FONT_2" ).withColor( ColorList::red );
           f.draw( rinfo.engine.screen(), text, screenPos + Point( 20, -80 ), false );
         }
       }

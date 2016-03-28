@@ -1,0 +1,10 @@
+{
+ title : "##health_and_sickness##"
+ sound : "fanfare"
+ text  : "Die Gesundheit in Ihrer Stadt ist ein Indikator dafür, wie wahrscheinlich das Ausbrechen einer Krankheit ist. Ernähren Sie die Bürger gut und sorgen Sie für regelmäßige Hausbesuche durch einen Arzt aus einer @Klinik&, damit die Gesundheit steigt und die Wahrscheinlichkeit von Krankheiten reduziert wird.\nWenn die allgemeine Gesundheit abnimmt und Krankheiten ausbrechen, sollten alle kranken Personen in einem funktionierenden @Krankenhaus& Ihrer Stadt behandelt werden. Die Kranken, für die keine Krankenhausbetten zur Verfügung stehen, können leider nicht gerettet werden. Wie schon das Sprichwort sagt: Vorsicht ist besser als Nachsicht, daher sollten Sie der Vorbeugung viel Aufmerksamkeit schenken.\nIhre Bevölkerung ist nicht so dumm wie sie aussieht, und selbst die Bewohner der bescheidensten Häuser verlangen regelmäßige Besuche eines Arztes. Bauen Sie daher Kliniken, um die Versorgung zu gewährleisten. Nur die reicheren Bürger sind so paranoid, dass sie außerdem noch Zugang zu einem Krankenhaus verlangen.\n\nBadehäuser und Barbiere dienen eher der Kontakt- als der Körperpflege, sie stehen als wünschenswerte Nachbarn so oder so hoch im Kurs.\nSo gut Sie auch regieren, das Ausbrechen einer Seuche können Sie nie ganz ausschließen. Eine solche kann jederzeit und ohne Warnung zuschlagen, auch wenn das selten vorkommt. Venus ist dafür bekannt, dass sie jenen Städten eine Seuche schickt, auf die sie ganz besonders zornig ist. Wenn es in Ihren Städten jedoch genügend Krankenhäuser gibt, werden die Kranken genesen. Falls die Versorgung mit Krankenhäusern unzureichend ist oder es in den Krankenhäusern nicht genügend Arbeitskräfte gibt, werden einige der erkrankten Bürger sterben. Diese unglücklichen und vermeidbaren Todesfälle wirken sich verständlicherweise auf die Stimmung in Ihrer Stadt aus, und das bestimmt nicht positiv. Vergessen Sie nicht, ab und zu Ihren @Gesundheitsberater& aufzusuchen."
+ uri : {
+  "Klinik" : "doctor"
+  "Krankenhaus" : "hospital"
+  "Gesundheitsberater" : "health_advisor"
+ }
+}

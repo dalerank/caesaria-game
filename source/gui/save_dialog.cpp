@@ -34,6 +34,7 @@
 #include "environment.hpp"
 #include "widgetescapecloser.hpp"
 #include "dialogbox.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
@@ -42,6 +43,8 @@ namespace gui
 
 namespace dialog
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(SaveGame)
 
 class SaveGame::Impl
 {
@@ -57,6 +60,7 @@ public:
 
 signals public:
   Signal1<std::string> onFileSelectedSignal;
+  Signal2<Widget*,std::string> onFileSelectedSignalEx;
 };
 
 void SaveGame::Impl::findFiles()
@@ -67,14 +71,23 @@ void SaveGame::Impl::findFiles()
   std::sort( names.begin(), names.end() );
 
   if( lbxSaves )
-    lbxSaves->addItems( names );
+  {
+    lbxSaves->clear();
+    lbxSaves->addLines(names);
+  }
+}
+
+SaveGame::SaveGame(Widget* parent)
+  : SaveGame(parent->ui(), vfs::Directory(), ".oc3save", -1)
+{
+
 }
 
 SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
-: Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
+  : Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/savefile.gui" );
-  
+
   GET_DWIDGET_FROM_UI( _d, edFilename )
   GET_DWIDGET_FROM_UI( _d, lbxSaves )
 
@@ -92,6 +105,18 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   WidgetClosers::insertTo( this, KEY_RBUTTON );
   GameAutoPauseWidget::insertTo( this );
   setModal();
+}
+
+void SaveGame::setDirectory(const std::string& dir)
+{
+  _d->directory = dir;
+  _d->findFiles();
+}
+
+void SaveGame::setFilter(const std::string& filter)
+{
+  _d->extension = filter;
+  _d->findFiles();
 }
 
 void SaveGame::_resolveOkClick()
@@ -125,13 +150,14 @@ void SaveGame::_resolveListboxChange( const ListBoxItem& item )
 void SaveGame::_resolveDblListboxChange( const ListBoxItem& item )
 {
   vfs::Path path = item.text();
-  _d->edFilename->setText( path.baseName().removeExtension() );
+  _d->edFilename->setText(path.baseName().removeExtension());
   _resolveOkClick();
 }
 
 void SaveGame::_save()
 {
-  emit _d->onFileSelectedSignal( _d->realFilename.toString() );
+  emit _d->onFileSelectedSignal(_d->realFilename.toString());
+  emit _d->onFileSelectedSignalEx( this, _d->realFilename.toString());
   deleteLater();
 }
 
@@ -144,6 +170,7 @@ void SaveGame::draw(gfx::Engine& painter )
 }
 
 Signal1<std::string>& SaveGame::onFileSelected() {  return _d->onFileSelectedSignal; }
+Signal2<Widget*, std::string>&SaveGame::onFileSelectedEx() { return _d->onFileSelectedSignalEx; }
 
 }//end namespace dialog
 

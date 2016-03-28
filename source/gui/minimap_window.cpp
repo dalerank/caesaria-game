@@ -16,23 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "minimap_window.hpp"
-#include "gfx/tilemap.hpp"
+#include <GameGfx>
 #include "game/minimap_colours.hpp"
-#include "gfx/tile.hpp"
 #include "objects/overlay.hpp"
 #include "core/time.hpp"
-#include "gfx/engine.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "objects/constants.hpp"
-#include "gfx/camera.hpp"
 #include "walker/walker.hpp"
 #include "core/tilerect.hpp"
 #include "core/color_list.hpp"
 #include "texturedbutton.hpp"
-#include "gfx/tilemap_config.hpp"
-#include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -408,7 +403,7 @@ void Minimap::Impl::initStaticMmap()
   Tilemap& tmap = city->tilemap();
   int mapSize = tmap.size();
 
-  bg.image.fill( 0xff000000, Rect() );
+  bg.image.fill( ColorList::black, Rect() );
   bg.image.update();
 
   size.setWidth( getBitmapCoordinates( mapSize-1, mapSize-1, mapSize ).x() );
@@ -425,7 +420,7 @@ void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
   int mapSize = tmap.size();
 
   if( clear )
-    canvas.fill( 0xff000000, Rect() );
+    canvas.fill( ColorList::black, Rect() );
 
   int c1, c2;
   int mmapWidth = canvas.width();
@@ -542,24 +537,19 @@ Signal1<int>& Minimap::onZoomChange() { return _d->signal.onZoomChange; }
 
 bool Minimap::_onMousePressed( const NEvent::Mouse& event)
 {
-  if( NEvent::Mouse::mouseLbtnRelease == event.type )
-  {
-    Point clickPosition = screenToLocal( event.pos() );
+  Point clickPosition = screenToLocal( event.pos() );
 
-    int mapsize = _d->city->tilemap().size();
-    Size minimapSize = _d->bg.image.size();
+  int mapsize = _d->city->tilemap().size();
+  Size minimapSize = _d->bg.image.size();
 
-    Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
-    clickPosition -= offset;
-    TilePos tpos;
-    tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
-    tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
+  Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
+  clickPosition -= offset;
+  TilePos tpos;
+  tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
+  tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
-    emit _d->signal.onCenterChange( tpos );
-    return true;
-  }
-
-  return false;
+  emit _d->signal.onCenterChange( tpos );
+  return true;
 }
 
 }//end namespace gui

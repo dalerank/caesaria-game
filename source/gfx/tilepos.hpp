@@ -61,6 +61,7 @@ public:
   TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
   TilePos& operator+=(const TilePos& other) { set( _x + other._x, _y + other._y ); return *this; }
   TilePos& operator-=(const TilePos& other) { set( _x - other._x, _y - other._y ); return *this; }
+  TilePos& move(int x, int y) { set( _x + x, _y + y); return *this; }
   TilePos operator+(const TilePos& other) const { return TilePos( _x + other._x, _y + other._y ); }
   TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
   TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }

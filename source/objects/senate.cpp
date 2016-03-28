@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/position_array.hpp"
+#include "city/states.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -125,7 +126,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
+      Logger::debug( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;
@@ -248,7 +249,7 @@ int Senate::status(Senate::Status status) const
     case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
     case peace:      return _city()->peace();
-    case favour:     return _city()->favour();
+    case favour:     return _city()->states().favor;
     }
   }
 

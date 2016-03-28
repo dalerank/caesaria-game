@@ -18,10 +18,10 @@
 #ifndef __CAESARIA_CITYSERVICE_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_H_INCLUDED__
 
-#include "core/smartptr.hpp"
-#include "core/variant.hpp"
 #include "predefinitions.hpp"
+#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
 
 namespace city
 {

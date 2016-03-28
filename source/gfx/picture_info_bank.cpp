@@ -150,7 +150,7 @@ enum { idxIndex=0, idxXOffset, idxYOffset };
 
 void PictureInfoBank::initialize(vfs::Path filename)
 {
-  Logger::warning( "PictureInfoBank: start load offsets from " + filename );
+  Logger::debug( "PictureInfoBank: start load offsets from " + filename );
   VariantMap configVm = config::load( filename );
 
   std::string rc;
@@ -158,7 +158,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
   for( auto& item : configVm )
   {
     Variant v = item.second;
-    Logger::warning( "Set offset for " + item.first );
+    Logger::debug( "Set offset for " + item.first );
     if( v.type() == Variant::Map )
     {
       VariantMap vm = v.toMap();

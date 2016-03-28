@@ -29,8 +29,6 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual void timeStep(const unsigned long time);
   virtual void deliverGood();
-protected:
-  virtual void _storeChanged();
 };
 
 

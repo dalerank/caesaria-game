@@ -1,0 +1,10 @@
+{
+ title : "##empire_map_help##"
+ sound : "fanfare"
+ text  : "Ihre Aktivitäten im Ausland werden hauptsächlich auf dieser Karte gesteuert.\nZu Beginn einer neuen Aufgabe können Sie mit Hilfe der Imperiumskarte neue Handelspartner finden. Ihre Stadt erkennen Sie an der schwarz-goldenen Flagge; Handelsstädte besitzen rote und die übrigen römischen Städte blaue Banner. Fremde Städte haben goldene Fähnchen. Klicken Sie eine der Handelsstädte an, und schauen Sie, welche Waren sie anbieten und was sie kaufen möchte. Für die Eröffnung einer Handelsroute wird eine Gebühr erhoben, deren Höhe normalerweise der Länge dieser Straße entspricht. Achten Sie darauf, dass zwischen See- und Landrouten unterschieden werden muss. Ohne Dock können Sie keinen Seehandel betreiben.\nIn den meisten Provinzen benötigen Sie irgendwann einmal mehrere Handelsrouten, um all Ihre Exportwaren verkaufen zu können. Wählen Sie Ihre erste Handelsroute jedoch mit Bedacht aus, und wägen Sie den Nutzen und die Kosten ab. Die Eröffnung einer Handelsroute, die Produktion von Rohmaterial, die Einrichtung entsprechender Verarbeitungsbetriebe und -gebäude sowie der Bau von Lagerhäusern oder Docks stellen eine große Investition dar. Vergewissern Sie sich, dass sich das auch bezahlt macht, denn wenn es schiefgeht, haben Sie vielleicht nicht mehr das nötige Geld, um eine zweite Route einrichten zu können.\nDie ersten Aufgaben zu Beginn des Imperiums bieten nur geringe Möglichkeiten zum Handel. Im Laufe der Zeit dehnen sich die Grenzen des Imperiums jedoch immer weiter aus, und weitere Städte werden verfügbar, die mehr Ressourcen und größeren Bedarf an Ihren Waren haben.\nIhre Schreiber werden Ihnen regelmäßig Nachrichten übermitteln. Wenn Sie sich auf eindringende Armeen oder militärische Aktivitäten im näheren Umkreis beziehen, können Sie diese mit Hilfe der Imperiumskarte lokalisieren. Auf dieser Karte können Sie auch die Grenzen des Imperiums sehen.\n\Die Hilfeeinträge zu @Handel&, @Gewerbe& und @Frieden und Krieg& enthalten weitere Informationen zu diesem Thema."
+ uri : {
+  "Handel" : "trade"
+  "Gewerbe" : "industry"
+  "Frieden und Krieg" : "peace_and_war"
+ }
+}

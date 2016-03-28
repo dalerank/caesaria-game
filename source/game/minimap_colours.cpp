@@ -26,7 +26,7 @@ namespace minimap
 Colors::Colors(const ClimateType climate) {
 	if (climate == game::climate::central)
 	{
-		int colours[][8] = {
+		int colours[][ITEM_COLORS_SIZE] = {
 			{0x000000}, // background
 			{0x6b8a31, 0x738231, 0x6b7129, 0x527929, 0x6b8231, 0x6b7931, 0x636918, 0x737931}, // empty 1
 			{0x6b7929, 0x6b7929, 0x7b8a39, 0x6b7121, 0x737931, 0x737929, 0x526921, 0x737929}, // empty 2
@@ -56,7 +56,7 @@ Colors::Colors(const ClimateType climate) {
 	}
 	else if (climate == game::climate::northen)
 	{
-		int colours[][8] = {{0x000000}, // background
+		int colours[][ITEM_COLORS_SIZE] = {{0x000000}, // background
 			{0x4A8231, 0x527929, 0x526929, 0x397121, 0x527931, 0x4A7129, 0x4A6918, 0x527929}, // empty 1
 			{0x4A7129, 0x4A7129, 0x5A8239, 0x4A6921, 0x5A7131, 0x5A7129, 0x316921, 0x527129}, // empty 2
 			{0x527931, 0x083808, 0x082808, 0x527929}, // tree 1
@@ -85,7 +85,7 @@ Colors::Colors(const ClimateType climate) {
 	}
 	else if (climate == game::climate::desert)
 	{
-		int colours[][8] = {{0x000000}, // background
+		int colours[][ITEM_COLORS_SIZE] = {{0x000000}, // background
 			{0xBDBA9C, 0xC6BAA5, 0xBDBA9C, 0xD6CBAD, 0xA59A7B, 0xCECBAD, 0xC6C3A5, 0xCECBAD}, // empty 1
 			{0xB5B294, 0xBDBAA5, 0xC6C3AD, 0xC6BA9C, 0xBDB294, 0xB5AA94, 0xDEDBBD, 0xD6D3B5}, // empty 2
 			{0xA59A7B, 0x214110, 0x526921, 0xA59A7B}, // tree 1
@@ -114,8 +114,10 @@ Colors::Colors(const ClimateType climate) {
 	}
 }
 
+void Colors::setColor(int mode, int index, int color)
+{
 
-
+}
 
 }//end namespace minimap
 

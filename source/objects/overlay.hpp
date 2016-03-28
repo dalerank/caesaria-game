@@ -42,30 +42,30 @@ class Overlay : public Serializable, public ReferenceCounted
 {
 public:
   template<typename ObjClass, typename... Args>
-  static SmartPtr<ObjClass> create( const Args & ... args)
+  static SmartPtr<ObjClass> create(const Args & ... args)
   {
-    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
-    instance->initialize( object::Info::find( instance->type() ) );
+    SmartPtr<ObjClass> instance(new ObjClass(args...));
+    instance->initialize(object::Info::find(instance->type()));
     instance->drop();
 
     return instance;
   }
 
   template<typename ObjClass>
-  static SmartPtr<ObjClass> create( object::Type type )
+  static SmartPtr<ObjClass> create(object::Type type)
   {
-    return ptr_cast<ObjClass>( create( type ));
+    return ptr_cast<ObjClass>(create(type));
   }
 
-  static OverlayPtr create( object::Type type );
+  static OverlayPtr create(object::Type type);
 
-  Overlay( const object::Type type, const Size& size=Size(1,1));
+  Overlay(object::Type type, const Size& size=Size(1,1));
   virtual ~Overlay();
 
   gfx::Tile& tile() const;  // master tile, in case of multi-tile area
-  TilePos pos() const;
+  const TilePos& pos() const;
   const Size& size() const;  // size in tiles (1x1, 2x2, ...)
-  void setSize( const Size& size );
+  void setSize(const Size& size);
 
   bool isDeleted() const;  // returns true if the overlay should be forgotten
   void deleteLater();
@@ -73,10 +73,10 @@ public:
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual bool isFlat() const;
-  virtual void initTerrain( gfx::Tile& terrain ) = 0;
+  virtual void initTerrain(gfx::Tile& terrain) = 0;
   virtual std::string errorDesc() const;
 
-  virtual bool build( const city::AreaInfo& info );
+  virtual bool build(const city::AreaInfo& info);
   virtual bool canDestroy() const;
   virtual void destroy();  // handles the delete
   virtual gfx::TilesArray area() const;
@@ -84,50 +84,54 @@ public:
   virtual void burn();
   virtual void collapse();
 
-  virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
+  virtual Point offset(const gfx::Tile &tile, const Point& subpos) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
-  virtual void changeDirection( gfx::Tile *masterTile, Direction direction);
-  virtual bool getMinimapColor( int& color1, int& color2 ) const;
+  virtual void changeDirection(gfx::Tile *masterTile, Direction direction);
+  virtual bool getMinimapColor(int& color1, int& color2) const;
 
   // graphic
   virtual void setPicture(gfx::Picture picture);
   virtual void setPicture(const std::string& resource, const int index);
-  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
+  virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
 
   virtual const gfx::Picture& picture() const;
   virtual std::string sound() const;
 
-  void setAnimation( const gfx::Animation& animation );
+  void setAnimation(const gfx::Animation& animation);
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const Desirability& desirability() const;
 
-  virtual void setState( Param name, double value );
+  virtual void setState(int name, float value);
+  virtual float state(int name) const;
+  void updateState(int name, float value);
 
-  std::string name();  // landoverlay debug name
-  void setName( const std::string& name );
+  std::string name();// landoverlay debug name
+  void setName(const std::string& name);
+  virtual Variant getProperty(const std::string& name) const;
 
   object::Type type() const;
   object::Group group() const;
 
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream );
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
-  virtual void initialize( const object::Info& mdata );
+  virtual void initialize(const object::Info& mdata);
   virtual void reinit();
 
   const object::Info& info() const;
 
-  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 
+  virtual void afterLoad();
 protected:
   void setType(const object::Type type);
   gfx::Animation& _animation();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
   gfx::Tilemap& _map() const;
+  int _cityOpt(int name);
   gfx::Pictures& _fgPictures();
   gfx::Picture& _fgPicture(unsigned int index);
   const gfx::Picture &_fgPicture(unsigned int index) const;
@@ -137,13 +141,5 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-#ifdef DEBUG
-class OverlayDebugQueue : public DebugQueue<Overlay>
-{
-public:
-  static void print();
-};
-#endif
 
 #endif //_CAESARIA_OVERLAY_H_INCLUDE_

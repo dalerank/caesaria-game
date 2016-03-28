@@ -61,7 +61,7 @@ TradeGoodInfo::TradeGoodInfo(Widget *parent, const Rect &rect, good::Product goo
   _d->qty.importing = importQty;
   Decorator::draw( _d->border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
-  setFont( FONT_2_WHITE );
+  setFont( "FONT_2_WHITE" );
 }
 
 void TradeGoodInfo::draw(Engine &painter)

@@ -29,7 +29,7 @@
 #include "objects/house_level.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
@@ -87,7 +87,7 @@ public:
 
 class CityRenderer::Impl
 {
-public: 
+public:
   PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
   gui::Ui* guienv;
@@ -148,7 +148,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Entertainment>( citylayer::entertainment );
   _d->instanceLayer<Entertainment>( citylayer::theater );
   _d->instanceLayer<Entertainment>( citylayer::amphitheater );
-  _d->instanceLayer<Entertainment>( citylayer::colloseum );
+  _d->instanceLayer<Entertainment>( citylayer::colosseum );
   _d->instanceLayer<Entertainment>( citylayer::hippodrome );
   _d->instanceLayer<Crime>();
   _d->instanceLayer<Destroy>( this );
@@ -242,7 +242,7 @@ void CityRenderer::Impl::setLayer(int type)
 }
 
 void CityRenderer::render()
-{  
+{
   LayerPtr layer = _d->layers.current;
   Engine& engine = *_d->engine;
   static int lastZoom = 0;
@@ -334,7 +334,7 @@ void CityRenderer::rotateRight()
   _d->tilemap->turnRight();
   _d->camera.refresh();
   _d->camera.tiles();
-  _d->resetWalkersAfterTurn();  
+  _d->resetWalkersAfterTurn();
   _d->awareExperimental();
 }
 

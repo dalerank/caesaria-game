@@ -212,7 +212,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
       if( !route.first.isValid() )
       {
-        Logger::warning( "!!! WARNING: LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
+        Logger::warning( "!!! LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
         route = PathwayHelper::shortWay( city, position, object::warehouse, PathwayHelper::roadOnly );
       }
 

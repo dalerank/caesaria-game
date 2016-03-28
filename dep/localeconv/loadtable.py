@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 #original script from IgorLynx https://github.com/IgorLynx/CSV-to-JSON
 
 import urllib2
@@ -43,7 +43,8 @@ for rows in list:
 		key = row[1]
 		if len(key) > 0:
 			for x in range(2, len(row)):
-				write(x,"\"{}\":\"{}\",\n".format(key, row[x]))
+				if len(row[x]) > 0:
+					write(x,"\"{}\":\"{}\",\n".format(key, row[x]))
 
 for i in range(2, col_count):
 	write(i, "}")

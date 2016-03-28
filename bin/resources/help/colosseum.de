@@ -1,0 +1,13 @@
+{
+ title : "##colosseum##"
+ sound : "fanfare"
+ text  : "Das Kolosseum ist ein ganz spezielles großes @Amphitheater&, das nur Gladiatoren- und Löwenkämpfe bietet, jedoch keine Theaterstücke. Ein Kolosseum benötigt eine @Gladiatorenschule& und ein Löwenhaus, um mit Darstellern versorgt zu werden. Darüber hinaus braucht es zusätzlich normale Arbeiter, wie die meisten anderen Gebäude auch.\nDie Gladiatoren und Löwenbändiger des Kolosseums stellen Zugang her, indem sie durch die umliegenden Viertel gehen. Je mehr Darsteller durch ein bestimmtes Wohngebiet wandern, desto weiter kann es sich entwickeln. Sehr schöne Viertel verlangen die Besuche von Schauspielern, Gladiatoren und Löwenbändigern aus einem @Theater&, einem @Amphitheater& und ein Kolosseum. Kolossen reduzieren wegen des Lärms und des Verkehrs, den sie verursachen, die Attraktivität der Umgebung.\nRufen Sie mit Hilfe des @Unterhaltungsberaters& die Versorgung mit Kolossen in der Stadt. Wenn Sie die Darsteller auf ihren Wegen durch die Stadt verfolgen möchten, benutzen Sie die @Spezialkarte Unterhaltung&. Klicken Sie ein Kolosseum rechts an, um sich seinen Status anzusehen und um festzustellen, welche Spiele dort momentan stattfinden. Wenn die Spiele immer nur kurze Zeit stattfinden, müssen die Darsteller wahrscheinlich zu weit bis zu ihrer Arbeitsstelle laufen.\n\nKlicken Sie @hier&, wenn Sie mehr über das historische Kolosseum in Rom erfahren möchten."
+ uri : {
+  "Amphitheater" : "amphitheater"
+  "Gladiatorenschule" : "actorColony"
+  "Theater" : "theater"
+  "Unterhaltungsberaters" : "entertainment_advisor"
+  "Spezialkarte Unterhaltung" : "special_card_selection"
+  "hier" : "colosseum_history"
+ }
+}

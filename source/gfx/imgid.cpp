@@ -65,7 +65,7 @@ std::string toResource( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    Logger::warning( "WARNING !!! TileHelper unknown image Id={} ", imgId );
+    Logger::warning( "!!! TileHelper unknown image Id={} ", imgId );
   }
 
   std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
@@ -93,7 +93,7 @@ int fromResource( const std::string& pic_name )
   else if (res_pfx == config::rc.land3a) { res_id += 778; }
   else
   {
-    Logger::warning( "WARNING !!! TileHelper unknown image " + pic_name );
+    Logger::warning( "!!! TileHelper unknown image " + pic_name );
     res_id = 0;
   }
 

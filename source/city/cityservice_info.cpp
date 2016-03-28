@@ -109,7 +109,7 @@ void Info::timeStep(const unsigned int time )
 
   bool isMonthChanged = game::Date::current().month() != _d->lastDate.month();
   if( isMonthChanged )
-  {    
+  {
     bool isYearChanged = game::Date::current().year() != _d->lastDate.year();
     _d->lastDate = game::Date::current();
 
@@ -141,7 +141,7 @@ void Info::timeStep(const unsigned int time )
     last[ cityWages   ] = _city()->treasury().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
     last[ crimeLevel  ] = _city()->statistic().crime.level();
-    last[ favour      ] = _city()->favour();
+    last[ favour      ] = _city()->states().favor;
     last[ prosperity  ] = _city()->prosperity();
     last[ monthWtWar  ] = _city()->statistic().military.months2lastAttack();
     last[ blackHouses ] = _city()->statistic().houses.terribleNumber();

@@ -36,15 +36,15 @@ public:
   virtual void destroy();
 
   /** Call every frame */
-  virtual void timeStep( const unsigned int time );
+  virtual void timeStep(const unsigned int time);
 
-  void setCamera( gfx::Camera* camera );
+  void setCamera(gfx::Camera* camera);
 
   /** name of this service **/
   static std::string defaultName();
 
   virtual ~AmbientSound();
-  AmbientSound( PlayerCityPtr city );
+  AmbientSound(PlayerCityPtr city);
 private:
 
   class Impl;

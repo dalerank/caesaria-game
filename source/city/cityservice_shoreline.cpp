@@ -25,6 +25,7 @@
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"
 #include "cityservice_factory.hpp"
+#include "gfx/tilesarray.hpp"
 
 using namespace gfx;
 

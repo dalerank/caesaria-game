@@ -33,10 +33,6 @@ public:
 
   ~DebugHandler();
 
-public signals:
-  Signal2<scene::Level*,bool>& onFailedMission();
-  Signal2<scene::Level*,bool>& onWinMission();
-
 private:
   class Impl;
   ScopedPtr<Impl> _d;
@@ -53,7 +49,7 @@ public:
   ~FileChangeObserver();
 
   void check();
-  void setFilename( const std::string& fname );
+  void setFilename(const std::string& fname);
 };
 
 #endif //_CAESARIA_DEBUGHANDLER_INCLUDE_H_

@@ -1,0 +1,1 @@
+var g_paths = {}

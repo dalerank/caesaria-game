@@ -31,14 +31,13 @@ public:
    // called when a trainee is created
    virtual void deliverTrainee() = 0;
 
-   virtual void save( VariantMap& stream) const;
-   virtual void load( const VariantMap& stream);
+   virtual void save(VariantMap& stream) const;
+   virtual void load(const VariantMap& stream);
 
 protected:
-
-private:
    DateTime _lastSendDate;
    int _trainingDelay;
+   gfx::Pictures _ground;
 };
 
 class GladiatorSchool : public TrainingBuilding
@@ -47,6 +46,7 @@ public:
    GladiatorSchool();
    virtual void deliverTrainee();
    virtual void timeStep(const unsigned long time);
+   virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
 };
 
 class LionsNursery : public TrainingBuilding

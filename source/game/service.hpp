@@ -32,7 +32,7 @@ public:
     religionNeptune, religionCeres, religionVenus, religionMars, religionMercury, oracle,
     doctor, barber, baths, hospital,
     school, library, academy,
-    theater, amphitheater, colloseum,
+    theater, amphitheater, colosseum,
     hippodrome,
     recruter,
     crime,
@@ -44,7 +44,7 @@ public:
 
   Service() : _value( 0 ), _min( 0 ), _max( 100 ) {}
 
-  void set( float i ) { _value = math::clamp<float>( i, _min, _max); }
+  void set(float i) { _value = math::clamp<float>( i, (float)_min, (float)_max); }
   float value() const { return _value; }
 
   int max() const { return _max; }

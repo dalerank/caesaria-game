@@ -1,0 +1,16 @@
+{
+ title : "##weapons_workshop##"
+ sound : "fanfare"
+ text  : "Waffenschmieden verarbeiten Eisenerz aus Ihren @Eisenerzminen& zu Waffen.\nEine Eisenerzmine kann zwei Schmieden mit Eisenerz versorgen. Wie die meisten Gewerbebetriebe sind auch Waffenschmieden in Wohngebieten unerwünschte Nachbarn. Produktionsstätten benötigen Zugang zu einem nahen Arbeitsmarkt und Straßenanbindung zu einem @Lagerhaus& und zu der Eisenerzmine, die sie versorgt. @Arbeiter& bringen die fertigen Waffen zu der @Kaserne&, falls diese Waffen für die Ausrüstung ihrer Legionäre benötigt, oder in ein @Lagerhaus&, wenn die Kasernen keinen Platz mehr hat. Sie können die Waffen aber auch exportieren, wenn Sie eine passende @Handelsroute& dafür offen haben.\nManchmal wird es Ihnen nicht möglich sein, das benötigte Eisenerz in Ihrer Provinz selbst abzubauen, Sie können es dann aber importieren. Es ist normalerweise weitaus billiger, Eisenerz zu importieren und Schmieden zu bauen, um es von diesen zu Waffen verarbeiten zu lassen, als die Waffen selbst zu importieren. Waffen sind meistens sehr wertvolle Exportartikel.\nSie können erst dann Legionäre in @Forts& stationieren, wenn Sie Waffen haben, die Sie entweder selbst hergestellt oder importiert haben. Hilfstruppen bringen ihre eigene Waffen mit.\n\nWaffenschmieden zeigen viel Bewegung, wenn sie arbeiten. Klicken Sie eine Produktionsstätte rechts an, um sich ihren Status anzusehen, insbesondere dann, wenn sie ihren Betrieb eingestellt hat. Folgen Sie diesen Querverweisen, wenn Sie mehr über @Frieden und Krieg& oder @Verteidigungseinrichtungen& lesen möchten.\n\nWenn Sie mehr zum Thema römische Waffen erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "Eisenerzminen" : "iron_mine"
+  "Lagerhaus" : "warehouse"
+  "Arbeiter" : "worker"
+  "Kaserne" : "barracks"
+  "Handelsroute" : "trade"
+  "Forts" : "fort"
+  "Frieden und Krieg" : "peace_and_war"
+  "Verteidigungseinrichtungen" : "wall_tower_gatehouse"
+  "hier" : "weapon_history"
+ }
+}

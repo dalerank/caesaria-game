@@ -1,0 +1,5 @@
+TEMPLATE_WIDGET_IMPLEMENTATION(EditBox)
+DEFINE_WIDGET_CALLBACK_0(EditBox,onEnterPressedEx)
+DEFINE_OBJECT_FUNCTION_1(EditBox,setTextOffset,Point)
+DEFINE_OBJECT_FUNCTION_1(EditBox,moveCursor,int)
+DEFINE_WIDGET_CALLBACK_1(EditBox,onTextChangedEx,std::string)

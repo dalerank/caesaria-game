@@ -41,7 +41,7 @@ namespace city
 class Scribes::Impl
 {
 public:
-  bool unreadMessage_n;
+  int unreadMessage_n;
   Scribes::Messages messages;
 
   Signal1<int> onChangeMessageNumberSignal;

@@ -52,8 +52,8 @@ void RatingButton::_updateTexture()
 {
   PushButton::_updateTexture();
 
-  Font digitFont = Font::create( FONT_4 );
-  Font targetFont = Font::create( FONT_1 );
+  Font digitFont = Font::create( "FONT_4" );
+  Font targetFont = Font::create( "FONT_1" );
 
   canvasDraw( utils::i2str( _value ), Point( width() / 2 - 10, 17 ), digitFont );
   canvasDraw( fmt::format( "{0} {1}", _target, _("##wndrt_need##") ), Point( 10, height() - 20 ), targetFont );

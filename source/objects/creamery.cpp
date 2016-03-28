@@ -46,7 +46,6 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
 Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2,2) )
 {
   setPicture( info().randomPicture( size() ) );
-  _fgPictures().resize(3);
 }
 
 bool Creamery::canBuild( const city::AreaInfo& areaInfo ) const
@@ -65,9 +64,4 @@ bool Creamery::build( const city::AreaInfo& info )
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 
   return true;
-}
-
-void Creamery::_storeChanged()
-{
-  _fgPicture(1) = _getSctockImage( inStock().qty() );
 }

@@ -39,7 +39,7 @@ public:
     Picture image;
   } background;
 
-	bool scaleImage;
+  bool scaleImage;
   GroupBox::Style style;
 
   bool needUpdateTexture;
@@ -52,13 +52,13 @@ GroupBox::GroupBox(Widget *parent)
 }
 
 GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
-: Widget( parent, id, rectangle ), _d( new Impl )
+  : Widget( parent, id, rectangle ), _d(new Impl)
 {
-	#ifdef _DEBUG
+  #ifdef _DEBUG
      setDebugName("GroupBox");
-	#endif
+  #endif
 
-  _d->scaleImage = true;	
+  _d->scaleImage = true;
   _d->needUpdateTexture = true;
   _d->style = style;
 }
@@ -134,6 +134,18 @@ void GroupBox::setupUI(const VariantMap &ui)
   else if( style == "whiteFrame" ) _d->style = whiteFrame;
   else if( style == "none" ) _d->style = none;
   _d->needUpdateTexture = true;
+}
+
+void GroupBox::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
+void GroupBox::_finalizeResize()
+{
+  Widget::_finalizeResize();
+
+  _d->background.body.move(absoluteRect().lefttop());
 }
 
 }//end namespace gui

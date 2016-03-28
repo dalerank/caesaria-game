@@ -25,7 +25,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "city/victoryconditions.hpp"
@@ -205,7 +205,7 @@ void Ratings::Impl::checkPeaceRating()
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
-    Logger::warning( "!!! WARNING: checkPeaceRating failed some is null" );
+    Logger::warning( "!!! checkPeaceRating failed some is null" );
     return;
   }
 
@@ -340,9 +340,10 @@ Ratings::Ratings(Widget* parent, PlayerCityPtr city )
   INIT_WIDGET_FROM_UI( RatingButton*, btnFavour )
   if( btnFavour )
   {
-    btnFavour->setValue( _d->city->favour() );
+    int favor = _d->city->states().favor;
+    btnFavour->setValue(favor);
     btnFavour->setTarget( targets.needFavour() );
-    add<RatingColumn>( btnFavour->relativeRect().center(), _d->city->favour() );
+    add<RatingColumn>(btnFavour->relativeRect().center(), favor);
   }
   CONNECT( btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 

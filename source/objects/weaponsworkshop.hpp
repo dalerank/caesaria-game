@@ -28,8 +28,6 @@ public:
 
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
   virtual bool build(const city::AreaInfo &info);
-protected:
-  virtual void _storeChanged();
 };
 
 #endif //_CAESARIA_WEAPONS_WORKSHOP_H_INCLUDE_

@@ -27,8 +27,8 @@
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const good::Product inGood, const good::Product outGood,
-           const object::Type type, const Size& size );
+  Factory(const good::Product inGood, const good::Product outGood,
+          const object::Type type, const Size& size);
   virtual ~Factory();
 
   good::Stock& inStock();
@@ -48,11 +48,11 @@ public:
   virtual void deliverGood();
   virtual void receiveGood();
 
-  virtual int progress();
-  virtual void updateProgress( float value );
+  virtual int progress() const;
+  virtual void updateProgress(float value);
 
   virtual bool isActive() const;
-  virtual void setActive( bool active );
+  virtual void setActive(bool active);
 
   virtual bool mayWork() const;
   virtual bool haveMaterial() const;
@@ -60,20 +60,19 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream );
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
-  virtual void setProductRate( const float rate );
+  virtual void setProductRate(const float rate);
   virtual float productRate() const;
   virtual math::Percent effciency() const;
 
+  virtual Variant getProperty(const std::string &name) const;
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
   std::string cartStateDesc() const;
   virtual void initialize(const object::Info& mdata);
-
-  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   virtual bool _mayDeliverGood() const;
@@ -83,14 +82,14 @@ protected:
   virtual void _productReady();
   virtual const gfx::Picture& _getSctockImage(int qty);
 
-  void _weekUpdate( unsigned int time );
-  void _setConsumeGoodType( int index, good::Product product );
-  void _setUnworkingInterval( unsigned int weeks );
+  void _weekUpdate(unsigned int time);
+  void _setConsumeGoodType(int index, good::Product product);
+  void _setUnworkingInterval(unsigned int weeks);
   virtual void _reachUnworkingTreshold();
 
 protected:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_FACTORY_BUILDING_H_INCLUDE_

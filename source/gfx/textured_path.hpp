@@ -33,8 +33,8 @@ namespace gfx
 class TexturedPath
 {
 public:
-  static void draw(const Pathway& way, const RenderInfo& rinfo, NColor color=0, const Point& doff=Point());
-  static void draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color=0, const Point& doff=Point());
+  static void draw(const Pathway& way, const RenderInfo& rinfo, NColor color=NColor(), const Point& doff=Point());
+  static void draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color=NColor(), const Point& doff=Point());
 };
 
 struct ColoredWay

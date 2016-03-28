@@ -373,23 +373,31 @@ StringArray Entries::Items::files(const std::string& ext) const
   StringArray ret;
 
   bool any = ext.empty();
-  for( auto& item : *this )
+  for (auto& item : *this)
   {
-    if( any || item.fullpath.isMyExtension( ext ) )
+    if (any || item.fullpath.isMyExtension( ext ))
       ret << item.fullpath.toString();
   }
 
   return ret;
 }
 
-StringArray Entries::Items::folders() const
+StringArray Entries::Items::folders(bool full) const
 {
   StringArray ret;
 
-  for( auto& item : *this )
+  StringArray excludeFolders;
+  excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
+
+  for (const auto& item : *this)
   {
-    if( item.isDirectory )
-      ret << item.fullpath.toString();
+    if (item.isDirectory)
+    {
+      if (excludeFolders.contains(item.name.toString()))
+        continue;
+
+      ret << (full ? item.fullpath.toString() : item.name.toString());
+    }
   }
 
   return ret;

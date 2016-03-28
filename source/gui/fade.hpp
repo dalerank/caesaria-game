@@ -26,10 +26,8 @@ namespace gui
 class Fade : public Label
 {
 public:
-  //
   Fade( Widget *parent, int alpha=0xff, const Rect& rect=Rect() );
-
-  virtual ~Fade();
+  void addCloseCode(int code);
 };
 
 }//end namespace gui

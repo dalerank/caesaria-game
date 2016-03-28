@@ -67,7 +67,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
     return true;
   }
 
-  Logger::warning( "WARNING!!! CityRequestDispatcher: cannot load request with type " + type );
+  Logger::error( "CityRequestDispatcher: cannot load request with type " + type );
   return false;
 }
 

@@ -62,7 +62,7 @@ void OSystem::error(const std::string& title, const std::string& text)
     int syserror = ::system(command.c_str());
     if( syserror )
     {
-      Logger::warning( "WARNING: Cant execute command " + command );
+      Logger::error( "WARNING: Cant execute command " + command );
     }
   }
 
@@ -134,7 +134,7 @@ void OSystem::getProcessTree(int pid, StringArray& out)
   while (pid != 0)
   {
     std::string name = getProcessName(pid);
-    Logger::warning( "{} - {}", pid, name.c_str() );
+    Logger::info( "{} - {}", pid, name.c_str() );
     pid = getParentPid( pid );
     vfs::Path pname( name );
     out.push_back( pname.baseName().toString() );
@@ -146,7 +146,7 @@ void OSystem::openUrl(const std::string& url, const std::string& prefix)
 {
 #ifdef GAME_PLATFORM_LINUX
   std::string command = prefix + "xdg-open '" + url + "'";
-  Logger::warning( command );
+  Logger::info( command );
   ::system( command.c_str() );
 #elif defined(GAME_PLATFORM_WIN)
   ShellExecuteA(0, "Open", url.c_str(), 0, 0 , SW_SHOW );
@@ -259,7 +259,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
 
   vfs::Path updateBatchFile =  targetdir.getFilePath( restartBatchFile );
 
-  Logger::warning( "Preparing CaesarIA update batch file in " + updateBatchFile );
+  Logger::info( "Preparing CaesarIA update batch file in " + updateBatchFile );
 
   std::ofstream batch(updateBatchFile.toCString());
 
@@ -313,7 +313,7 @@ void OSystem::markFileAsExecutable( const std::string& filename )
 {
   vfs::Path path( filename );
 #if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
-  Logger::warning( "Marking file as executable: " + path.toString() );
+  Logger::info( "Marking file as executable: " + path.toString() );
 
   struct stat mask;
   stat(path.toCString(), &mask);
@@ -322,20 +322,20 @@ void OSystem::markFileAsExecutable( const std::string& filename )
 
   if( chmod(path.toCString(), mask.st_mode) == -1)
   {
-    Logger::warning( "Could not mark file as executable: " + path.toString() );
+    Logger::info( "Could not mark file as executable: " + path.toString() );
   }
 #endif
 }
 
 void OSystem::restartProcess( const std::string& filename, const std::string& dir, const StringArray& cmds)
 {
-  Logger::warning( "Preparing restart...");
+  Logger::info( "Preparing restart...");
   std::string _updateBatchFile = _prepareUpdateBatchFile( filename, dir, cmds );  
 
 #ifdef GAME_PLATFORM_WIN
   if (!_updateBatchFile.empty())
   {
-    Logger::warning( "Update batch file pending, launching process.");
+    Logger::info( "Update batch file pending, launching process.");
 
     // Spawn a new process
 
@@ -351,7 +351,7 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
     vfs::Path batchFilePath( _updateBatchFile );
     vfs::Directory parentPath = batchFilePath.directory();
 
-    Logger::warning( "Starting batch file " + batchFilePath.toString() + " in " + parentPath.toString() );
+    Logger::info( "Starting batch file " + batchFilePath.toString() + " in " + parentPath.toString() );
 
     BOOL success = CreateProcessA( NULL, (LPSTR) batchFilePath.toString().c_str(), NULL, NULL,  false, 0, NULL,
                                    parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
@@ -374,14 +374,14 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
     }
     else
     {
-      Logger::warning( "Process started");
+      Logger::info( "Process started");
       exit(0);
     }
   }
 #else
   if (!_updateBatchFile.empty() )
   {
-    Logger::warning( "Relaunching CaesarIA updater via shell script " + _updateBatchFile );
+    Logger::info( "Relaunching CaesarIA updater via shell script " + _updateBatchFile );
 
     // Perform the system command in a fork
     //int r = fork();
@@ -393,7 +393,7 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
       return;
     }
 
-    Logger::warning( "Process spawned.");
+    Logger::info( "Process spawned.");
 
     // Done here too
     return;

@@ -21,6 +21,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "gfx/tilesarray.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 #include "gfx/imgid.hpp"

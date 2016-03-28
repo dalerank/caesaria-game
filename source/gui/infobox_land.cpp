@@ -39,10 +39,10 @@ REGISTER_OBJECT_BASEINFOBOX(tree,AboutLand)
 
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
-{ 
+{
   int id = lbTextId;
   Label& lbText = add<Label>( Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, id );
-  lbText.setFont( FONT_2 );
+  lbText.setFont( "FONT_2" );
   lbText.setTextAlignment( align::upperLeft, align::center );
   lbText.setWordwrap( true );
 
@@ -64,8 +64,8 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   {
     title = "##trees_and_forest_caption##";
     _helpUri = "trees";
-    text = "##trees_and_forest_text##";    
-  } 
+    text = "##trees_and_forest_text##";
+  }
   else if( tile.getFlag( Tile::tlWater ) )
   {
     std::string typeStr = tile.getFlag( Tile::tlCoast )
@@ -118,19 +118,19 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     _helpUri = "meadow";
     text = "##meadow_text##";
   }
-  else 
+  else
   {
     title = "##clear_land_caption##";
     _helpUri = "clear_land";
     text = "##clear_land_text##";
   }
-  
+
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   text = _(text );
 #ifdef DEBUG
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
-                                           tile.i(), tile.j(),  
+                                           tile.i(), tile.j(),
                                           ((unsigned int) tile.imgId() ) );
 #endif
   setTitle( _( title ));

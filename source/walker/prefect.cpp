@@ -131,7 +131,7 @@ void Prefect::_back2Prefecture()
 
   if( prefecture.isNull() )
   {
-    Logger::warning( "!!! WARNING: Prefect lost base " );
+    Logger::warning( "!!!Prefect lost base " );
     deleteLater();
     return;
   }
@@ -165,8 +165,8 @@ void Prefect::_serveHouse( HousePtr house )
   if( !house.isValid() )
     return;
 
-  int healthLevel = house->state( pr::health );
-  if( healthLevel < 1 )
+  float healthLevel = house->state( pr::health );
+  if( healthLevel < 1.f )
   {
     house->deleteLater();
 

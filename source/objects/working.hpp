@@ -42,7 +42,7 @@ public:
   virtual math::Percent productivity() const;
   virtual bool mayWork() const;
 
-  virtual void setActive(const bool value);  // if false then this building is stopped
+  virtual void setActive(bool value);  // if false then this building is stopped
   virtual bool isActive() const;
 
   virtual void destroy();

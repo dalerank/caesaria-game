@@ -106,7 +106,7 @@ void HealthCare::Impl::updateValue(PlayerCityPtr city)
   int houseWithBadHealth = 0;
   for( auto house : habitable )
   {
-    unsigned int hLvl = house->state( pr::health );
+    uint32_t hLvl = (uint32_t)house->state( pr::health );
     value += hLvl;
     if( hLvl < health::bad )
     {

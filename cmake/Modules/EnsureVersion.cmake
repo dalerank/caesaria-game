@@ -99,7 +99,6 @@ MACRO(ENSURE_VERSION requested_version found_version var_too_old)
     else (found_vers_num LESS req_vers_num)
         set( ${var_too_old} TRUE )
     endif (found_vers_num LESS req_vers_num)
-
 ENDMACRO(ENSURE_VERSION)
 
 MACRO(ENSURE_VERSION2 requested_version2 found_version2 var_too_old2)

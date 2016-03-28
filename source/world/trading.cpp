@@ -19,6 +19,7 @@
 #include "empire.hpp"
 #include "city.hpp"
 #include "good/storage.hpp"
+#include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
@@ -135,7 +136,7 @@ TraderoutePtr TradeRoutes::find( const std::string& begin, const std::string& en
   auto it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
-    Logger::warning( "!!! WARNING: Trade route no exist [{0} to {1}]", begin, end );
+    Logger::warning( "!!! Trade route no exist [{0} to {1}]", begin, end );
     return TraderoutePtr();
   }
 
@@ -158,7 +159,7 @@ TraderoutePtr TradeRoutes::create( const std::string& begin, const std::string& 
   TraderoutePtr route = find( begin, end );
   if( route.isValid() )
   {
-    Logger::warning( "!!!WARNING: Want create route, but it exist [{0} to {1}]", begin, end );
+    Logger::warning( "!!! Want create route, but it exist [{0} to {1}]", begin, end );
     return route;
   }
 
@@ -225,7 +226,7 @@ unsigned int TradeRoutes::getRouteOpenCost(const std::string& start, const std::
   }
   else
   {
-    Logger::warning( "!!! WARNING: getTradeRouteOpenCost city not found " + (startCity.isNull() ? start : stop) );
+    Logger::warning( "!!! getTradeRouteOpenCost city not found " + (startCity.isNull() ? start : stop) );
   }
 
   return 0;
@@ -294,13 +295,13 @@ void TradeRoutes::load( const VariantMap& stream)
       }
       else
       {
-        Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+        Logger::warning( " Trading::load cant create route from {0} to {1}",
                          beginCity, endCity );
       }
     }
     else
     {
-      Logger::warning( "WARNING!!! Trading::load cant create route from " + it.first );
+      Logger::warning( "!!! Trading::load cant create route from " + it.first );
     }
   }
 }

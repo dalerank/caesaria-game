@@ -48,13 +48,13 @@ public:
   std::string restartFile;
 };
 
-bool OC3::load( const std::string& filename, Game& game )
+bool OC3::load(const std::string& filename, Game& game)
 {
-  Logger::warning( "GameLoaderOc3: start loading from " + filename );
+  Logger::debug( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = config::load( filename );
   if( vm.empty() )
   {
-    Logger::warning( "!!! WARNING: GameLoaderOc3 empty file " + filename );
+    Logger::error( "!!! WARNING: GameLoaderOc3 empty file " + filename );
     return false;
   }
   
@@ -83,20 +83,30 @@ bool OC3::load( const std::string& filename, Game& game )
     return true;
   }
 
-  Logger::warning( "!!! WARNING: GameLoaderOc3 unsupported version {0}", fileVersion );
+  Logger::debug( "GameLoaderOc3 unsupported version {0}", fileVersion );
   return false;
 }
 
 int OC3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
-  VariantMap vm = config::load( filename );
-  VariantMap scenario_vm = vm[ "scenario" ].toMap();
+  std::string str = vfs::NFile::open(filename).readAll().toString();
+  int indexScenario = str.find("scenario");
+  int indexClm = str.find("climate", indexScenario)+7;
+  for (int i = 0; i < 10; i++)
+  {
+    char clmType = str[indexClm + i];
+    switch (clmType) {
+    case '0': return 0;
+    case '1': return 1;
+    case '2': return 2;
+    }
+  }
 
-  return scenario_vm.get( "climate", -1 );
+  return -1;
 }
 
-bool OC3::isLoadableFileExtension( const std::string& filename )
+bool OC3::isLoadableFileExtension(const std::string& filename)
 {
   return vfs::Path( filename ).isMyExtension( ".oc3save" );
 }

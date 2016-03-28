@@ -68,9 +68,9 @@ typedef struct js_StackTrace js_StackTrace;
 
 /* Limits */
 
-#define JS_STACKSIZE 256	/* value stack size */
-#define JS_ENVLIMIT 64		/* environment stack size */
-#define JS_TRYLIMIT 64		/* exception stack size */
+#define JS_STACKSIZE 512	/* value stack size */
+#define JS_ENVLIMIT 128		/* environment stack size */
+#define JS_TRYLIMIT 128		/* exception stack size */
 #define JS_GCLIMIT 10000	/* run gc cycle every N allocations */
 
 /* instruction size -- change to unsigned int if you get integer overflow syntax errors */

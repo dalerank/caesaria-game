@@ -54,7 +54,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 
   const int id = lbHelpId;
   auto& lb = add<Label>( Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, id );
-  lb.setFont( Font::create( FONT_2 ) );
+  lb.setFont( Font::create( "FONT_2" ) );
   lb.setWordwrap( true );
 
   setText( "" );
@@ -71,7 +71,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 }
 
 void AboutWorkingBuilding::setText(const std::string& text)
-{  
+{
   if( Widget* lb = findChild( lbHelpId ) )
   {
     StringArray messages;

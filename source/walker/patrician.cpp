@@ -79,7 +79,7 @@ bool Patrician::_findNewWay( const TilePos& pos )
   ConstructionList buildings;
   if( !_d->house.isValid() )
   {
-    Logger::warning( "WARNING !!! Patrician have no house" );
+    Logger::warning( "!!! Patrician have no house" );
     return false;
   }
   else
@@ -149,7 +149,7 @@ bool Patrician::_findNewWay( const TilePos& pos )
   }
   else
   {
-    Logger::warning( "WARNING !!! Patrician cant find way" );
+    Logger::warning( "!!! Patrician cant find way" );
     die();
   }
 
@@ -195,7 +195,7 @@ void Patrician::_reachedPathway()
     break;
 
     default:
-      Logger::warning( "WARNING !!! Unknown overlay type {} for patrician way", object::toString( objType ) );
+      Logger::warning( "!!! Unknown overlay type {} for patrician way", object::toString( objType ) );
     break;
     }
   }
@@ -211,7 +211,7 @@ void Patrician::send2City( HousePtr house )
   if( !house.isValid() )
   {
     deleteLater();
-    Logger::warning( "WARNING !!! Cant start patrician from null house" );
+    Logger::warning( "!!! Cant start patrician from null house" );
     return;
   }
 

@@ -101,7 +101,7 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
   if( event->_type.empty() )
     return GameEventPtr();
 
-  Logger::warning( "PostponeEvent: load event " + event->_name );
+  Logger::info( "PostponeEvent: load event " + event->_name );
   return ret;
 }
 
@@ -116,7 +116,7 @@ void PostponeEvent::_executeIncludeEvents()
 
 void PostponeEvent::_exec(Game& game, unsigned int)
 {
-  Logger::warning( "Start event name=" + _name + " type=" + _type );
+  Logger::info( "Start event name=" + _name + " type=" + _type );
 
   std::vector<Impl::Worker> actions{ makeDelegate( _d.data(), &Impl::executeRequest ),
                                      makeDelegate( _d.data(), &Impl::executeEvent ),

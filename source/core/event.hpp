@@ -369,6 +369,7 @@ struct NEvent
     bool pressed:1; //! If not true, then the key was left up
     bool shift:1; //! True if shift was also pressed
     bool control:1; //! True if ctrl was also pressed
+    bool alt:1; //! True if alt was also pressed
   };
 
   struct _InputEvent

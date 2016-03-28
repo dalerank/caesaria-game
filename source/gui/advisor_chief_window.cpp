@@ -16,42 +16,23 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
-#include "gfx/decorator.hpp"
-#include "core/gettext.hpp"
-#include "gui/pushbutton.hpp"
-#include "gui/label.hpp"
+#include <GameGfx>
+#include <GameCore>
+#include <GameLogger>
+#include <GameGui>
+#include <GameCity>
 #include "game/resourcegroup.hpp"
-#include "core/utils.hpp"
-#include "gfx/engine.hpp"
-#include "core/gettext.hpp"
-#include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "core/color.hpp"
-#include "gui/texturedbutton.hpp"
 #include "game/funds.hpp"
 #include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
-#include "city/migration.hpp"
-#include "city/statistic.hpp"
 #include "dictionary.hpp"
-#include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
-#include "city/cityservice_military.hpp"
-#include "city/cityservice_disorder.hpp"
-#include "city/cityservice_health.hpp"
-#include "city/cityservice_religion.hpp"
-#include "city/cityservice_festival.hpp"
-#include "city/goods_updater.hpp"
-#include "city/sentiment.hpp"
 #include "world/barbarian.hpp"
 #include "game/gamedate.hpp"
-#include "city/cityservice_culture.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
-#include "core/logger.hpp"
-#include "core/color_list.hpp"
-#include "city/states.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -102,11 +83,11 @@ public:
     : PushButton( parent, rectangle, "", -1, false, PushButton::noBackground )
   {
     _title = title;
-    _dfont = Font::create( FONT_2_WHITE );
+    _dfont = Font::create( "FONT_2_WHITE" );
 
     setIcon( gui::rc.panel, gui::id.chiefIcon );
     setIconOffset( { 6, 8 } );
-    setFont( FONT_2 );
+    setFont( "FONT_2" );
     setTextAlignment(align::upperLeft, align::center);
 
     setTextOffset( Point( 255, 0) );
@@ -125,7 +106,7 @@ public:
   {
     _reasons = reasons;
     auto r = _reasons.random();
-    setFont( FONT_2, r.color );
+    setFont( "FONT_2", r.color );
     setText( _( r ) );
   }
 
@@ -145,7 +126,7 @@ protected:
 
 class Chief::Impl
 {
-public:  
+public:
   class InformationRows
      : public std::map<Advice::Type,InfomationRow*>
   {
@@ -181,7 +162,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent)
   __D_REF(_d, Chief )
   Base::setupUI( ":/gui/chiefadv.gui" );
 
-  WidgetClosers::insertTo( this );  
+  WidgetClosers::insertTo( this );
 
   _d.city = city;
   _d.initRows( this, width() );
@@ -292,7 +273,7 @@ void Chief::Impl::drawMigrationState()
 }
 
 void Chief::Impl::drawFoodStockState()
-{   
+{
   bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
   ColoredStrings reasons;
@@ -406,11 +387,11 @@ void Chief::Impl::drawMilitary()
         if( is_kind_of<world::Barbarian>( obj ) ||
             is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( obj->location() );
+          float distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
             maxThreat = obj;
-            minDistance = distance;
+            minDistance = (int)distance;
           }
         }
       }
