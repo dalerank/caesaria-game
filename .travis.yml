@@ -1,21 +1,13 @@
 language: cpp
 compiler:
-- gcc
+- i686-w64-mingw32-gcc
 branches:
 - windows-build
 before_install:
 # Get build dependencies
-- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-- sudo add-apt-repository --yes ppa:tobydox/mingw-x-precise
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libasound2-dev
-- sudo apt-get -qq install -y mingw32-x-binutils mingw32-x-gcc mingw32-x-runtime
-- sudo apt-get -qq install sshpass
-- sudo apt-get -qq install g++-4.8
-- export MINGW=/opt/mingw32
-- export PATH=$MINGW/bin:$PATH
-- export CXX="i686-w64-mingw32-g++" 
-- export CC="i686-w64-mingw32-gcc"
+- sudo apt-get remove -qq -y mingw32
+- sudo apt-get -qq install cmake p7zip-full build-essential libasound2-dev mingw-w64
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - mkdir $TRAVIS_BUILD_DIR/build
