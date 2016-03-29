@@ -5,6 +5,6 @@
  uri : {
   "Gesundheit" : "health_and_sickness"
   "Spezialkarte Gesundheit" : "special_card_selection"
-  "hier" : "doctor_history"
+  "hier" : "clinic_history"
  }
 }
