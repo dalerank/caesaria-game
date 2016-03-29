@@ -40,6 +40,20 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
       ibox.mayMove = g_session.getAdvflag("lockwindow")
   }
 
+  ibox.setWorkersStatus = function(x, y, picId, need, have) {
+    ibox.blackFrame.setVisible(need > 0)
+    if (0 == need)
+      return;
+
+    // number of workers
+    ibox.blackFrame.icon = {rc:"paneling", index:picId}
+    ibox.blackFrame.iconOffset = {x:20, y:10};
+
+    ibox.blackFrame.text = _format( "{0} {1} ({2} {3})",
+                                  have, _ut("employers"),
+                                  need, _ut("requierd"))
+  }
+
   return ibox;
 }
 
@@ -83,21 +97,6 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
 
     ibox.btnToggleWorks.text = active ? _u("abwrk_working") : _u("abwrk_not_working")
   }
-
-  ibox.setWorkersStatus = function(x, y, picId, need, have) {
-    ibox.blackFrame.setVisible(need > 0)
-    if (0 == need)
-      return;
-
-    // number of workers
-    ibox.blackFrame.icon = {rc:"paneling", index:picId}
-    ibox.blackFrame.iconOffset = {x:20, y:10};
-
-    ibox.blackFrame.text = _format( "{0} {1} ({2} {3})",
-                                  have, _ut("employers"),
-                                  need, _ut("requierd"))
-  }
-
 
   return ibox
 }

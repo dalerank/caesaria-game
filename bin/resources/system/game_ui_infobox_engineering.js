@@ -201,7 +201,7 @@ game.ui.infobox.aboutSenate = function(location) {
 
   var lb = ibox.addLabel(60, 35, ibox.w-32, 30);
   lb.text = _format( "{0} {1}", _ut("senate_save"), senate.getProperty("funds"));
-  lb.icon = g_config.good.getInfo(g_config.goog.denaries).picture;
+  lb.icon = g_config.good.getInfo(g_config.good.denaries).picture.local;
   lb.textOffset = {x:30, y:0};
 
   lb = ibox.addLabel(32, 65, ibox.w-32, 30);
@@ -210,10 +210,14 @@ game.ui.infobox.aboutSenate = function(location) {
   lb = ibox.addLabel(60, 215, 300, 24);
   lb.text = _u("visit_rating_advisor");
 
-  var btnAdvisor = ibox.addTexturedButton(350, 215, 28,28);
+  var btnAdvisor = ibox.addTexturedButton(340, 208, 28,28);
   btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
   btnAdvisor.callback = function() {
     g_session.setOption("advisor",g_config.advisor.ratings);
     ibox.deleteLater();
   }
+
+  ibox.setAutoPosition()
+  ibox.setModal()
+  ibox.setFocus()
 }
