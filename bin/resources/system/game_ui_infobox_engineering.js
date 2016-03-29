@@ -185,3 +185,35 @@ game.ui.infobox.aboutRaw = function(location) {
   ibox.setModal()
   ibox.setFocus()
 }
+
+game.ui.infobox.aboutSenate = function(location) {
+  var ibox = this.simple(0, 0, 510, 290)
+  ibox.blackFrame.geometry = {x:16, y:126, w:ibox.w-32, h:62}
+
+  var senate = g_session.city.getOverlay(location).as(Senate);
+  ibox.overlay = senate;
+
+  g_session.playAudio("bmsel_senate_00001", 100, g_config.audio.infobox);
+  ibox.title = _u(senate.typename);
+
+  // number of workers
+  ibox.setWorkersStatus(32, 136, 542, senate.maximumWorkers(), senate.numberWorkers());
+
+  var lb = ibox.addLabel(60, 35, ibox.w-32, 30);
+  lb.text = _format( "{0} {1}", _ut("senate_save"), senate.getProperty("funds"));
+  lb.icon = g_config.good.getInfo(g_config.goog.denaries).picture;
+  lb.textOffset = {x:30, y:0};
+
+  lb = ibox.addLabel(32, 65, ibox.w-32, 30);
+  lb.text = _format( "{0} {1}", _ut("senate_thisyear_tax"), senate.getProperty("thisYearTax") );
+
+  lb = ibox.addLabel(60, 215, 300, 24);
+  lb.text = _u("visit_rating_advisor");
+
+  var btnAdvisor = ibox.addTexturedButton(350, 215, 28,28);
+  btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
+  btnAdvisor.callback = function() {
+    g_session.setOption("advisor",g_config.advisor.ratings);
+    ibox.deleteLater();
+  }
+}

@@ -37,6 +37,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutFactory(location);
   break;
 
+  case "senate":
+    game.ui.infobox.aboutSenate(location);
+  break;
+
   case "fountain":
     game.ui.infobox.aboutFountain(location);
   break;

@@ -58,3 +58,4 @@ UpdateTemplePrototype(Temple.prototype);
 UpdateOverlayPrototype(Reservoir.prototype);
 UpdateServiceBuildingPrototype(Fountain.prototype);
 UpdateFactoryPrototype(Factory.prototype);
+UpdateWorkingBuildingPrototype(Senate.prototype);
