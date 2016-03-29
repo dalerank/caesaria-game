@@ -39,8 +39,12 @@
 #include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
+<<<<<<< HEAD
+#ifndef CAESARIA_PLATFORM_WIN
+=======
 
 #ifndef GAME_PLATFORM_WIN
+>>>>>>> master
   #define GL_GLEXT_PROTOTYPES
 #endif
 

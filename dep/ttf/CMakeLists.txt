@@ -1,6 +1,8 @@
 project(ttf)
 
 #find_package(Freetype REQUIRED)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
+
 message("FREETYPE_DIR is" ${FREETYPELIB_HOME})
 
 file(GLOB TTF_HEADERS_LIST "*.h")
