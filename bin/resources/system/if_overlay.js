@@ -1,3 +1,5 @@
+g_config.overlay = {};
+
 g_config.overlay.params = {
   unknown : 0,
   fire : 1,
@@ -13,13 +15,12 @@ g_config.overlay.params = {
   lockTerrain : 11,
   food : 12,
   reserveExpires : 13
-}
+};
 
 function UpdateOverlayPrototype(ObjectPrototype) {
   Object.defineProperty(ObjectPrototype, "typename", { get : function() { return g_session.getOverlayType( this.type() )}})
   ObjectPrototype.as = function(type) { return new type(this); }
 }
-
 
 function UpdateWorkingBuildingPrototype(ObjectPrototype) {
   UpdateOverlayPrototype(ObjectPrototype)
@@ -33,7 +34,7 @@ function UpdateTemplePrototype(ObjectPrototype) {
 }
 
 function UpdateFactoryPrototype(ObjectPrototype) {
-  UpdateWorkingBuildingPrototype(ObjectPrototype)
+  UpdateWorkingBuildingPrototype(ObjectPrototype);
   Object.defineProperty(ObjectPrototype, "produce", { get : function() {
       var gtype = this.getProperty("produce");
       return g_config.good.getInfo(gtype);
@@ -46,8 +47,13 @@ function UpdateFactoryPrototype(ObjectPrototype) {
   })
 }
 
-UpdateOverlayPrototype(Overlay.prototype)
-UpdateOverlayPrototype(Ruins.prototype)
-UpdateTemplePrototype(Temple.prototype)
-UpdateOverlayPrototype(Reservoir.prototype)
-UpdateFactoryPrototype(Factory.prototype)
+function UpdateServiceBuildingPrototype(ObjectPrototype) {
+  UpdateWorkingBuildingPrototype(ObjectPrototype);
+}
+
+UpdateOverlayPrototype(Overlay.prototype);
+UpdateOverlayPrototype(Ruins.prototype);
+UpdateTemplePrototype(Temple.prototype);
+UpdateOverlayPrototype(Reservoir.prototype);
+UpdateServiceBuildingPrototype(Fountain.prototype);
+UpdateFactoryPrototype(Factory.prototype);

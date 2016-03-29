@@ -24,6 +24,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutRaw(location);
   break;
 
+  case "fountain":
+    game.ui.infobox.aboutFountain(location);
+  break;
+
   case "reservoir":
     game.ui.infobox.aboutReservoir(location);
   break;
@@ -52,5 +56,6 @@ game.ui.infobox.show = function(typename,location)
 
 function OnShowOverlayInfobox(location) {
   var overlay = g_session.city.getOverlay(location)
+  engine.log(overlay.typename);
   game.ui.infobox.show(overlay.typename, location)
 }

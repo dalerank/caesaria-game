@@ -168,6 +168,6 @@
   water : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "reservoir",
-                       "fountain", "well", "aqueduct", "tree", "waymark", "plague_ruins" ]
+                       "fountain", "well", "aqueduct", "tree", "waymark", "plague_ruins", "rock" ]
   }
 }

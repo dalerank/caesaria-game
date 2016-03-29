@@ -53,6 +53,28 @@ game.ui.infobox.aboutBarracks = function(location) {
   ibox.setFocus()
 }
 
+game.ui.infobox.aboutFountain = function(location) {
+  var ibox = this.aboutConstruction(0,0,480,320);
+
+  var fountain = g_session.city.getOverlay(location);
+  ibox.title = _u(fountain.typename);
+  ibox.overlay = fountain;
+
+  var reservoirAccess = fountain.getProperty("reservoirAccess");
+  var reservoirWater = fountain.getProperty("reservoirWater");
+  var text = "fountain_unknown_status";
+
+  if (reservoirAccess && reservoirWater<=0) {
+    text = "fountain_will_soon_be_hooked";
+  } if (fountain.active) {
+    text = fountain.mayWork() ? "fountain_info" : "fountain_not_work";
+  } else {
+    text = reservoirAccess ? "need_full_reservoir_for_work" : "need_reservoir_for_work";
+  }
+
+  ibox.setInfoText(_u(text));
+}
+
 game.ui.infobox.aboutRaw = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
   ibox.blackFrame.geometry = {x:16, y:170, w:ibox.w-32, h:64};
