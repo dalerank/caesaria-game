@@ -25,32 +25,28 @@ game.ui.infobox.aboutRuins = function(location) {
 }
 
 game.ui.infobox.aboutBarracks = function(location) {
-  var ibox = this.aboutConstruction(0,0,510,350)
-  ibox.blackFrame.geometry = {x:16, y:80, w:ibox.w-32, h:56}
+  var ibox = this.aboutConstruction(0,0,510,350);
+  ibox.blackFrame.geometry = {x:16, y:80, w:ibox.w-32, h:56};
 
-  var barracks = g_session.city.getOverlay(location).as(Barracks)
-  engine.log(barracks.typename)
+  var barracks = g_session.city.getOverlay(location).as(Barracks);
+  engine.log(barracks.typename);
+  ibox.overlay = barracs;
 
-  ibox.title = _u(barracks.typename)
-  ibox.setInfoText(_u("barracks_info"))
+  ibox.title = _u(barracks.typename);
+  ibox.setInfoText(_u("barracks_info"));
 
-  var lbWeaponQty = ibox.addLabel(20, ibox.lbText.bottom(), ibox.w-32, 24)
-  lbWeaponQty.font = "FONT_3"
-  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.goodQty("weapon") )
+  var lbWeaponQty = ibox.addLabel(20, ibox.lbText.bottom(), ibox.w-32, 24);
+  lbWeaponQty.font = "FONT_3";
+  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.goodQty("weapon") );
 
-  ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers())
-  ibox.setWorkingStatus(barracks.active)
-  ibox.setAutoPosition()
-
-  ibox.btnToggleWorks.callback = function() {
-    barracks.active = !barracks.active
-    ibox.setWorkingStatus(barracks.active)
-  }
+  ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers());
+  ibox.setWorkingStatus(barracks.active);
+  ibox.setAutoPosition();
 
   ibox.btnHelp.uri = barracks.typename;
-  ibox.setAutoPosition()
-  ibox.setModal()
-  ibox.setFocus()
+  ibox.setAutoPosition();
+  ibox.setModal();
+  ibox.setFocus();
 }
 
 game.ui.infobox.aboutFountain = function(location) {
@@ -75,55 +71,84 @@ game.ui.infobox.aboutFountain = function(location) {
   ibox.setInfoText(_u(text));
 }
 
+game.ui.infobox.aboutWharf = function(location) {
+  var ibox = game.ui.infobox.aboutFactory(location);
+
+  var waitBoat = ibox.overlay.getProperty("waitBoat");
+  if (waitBoat)
+  {
+    var lb = ibox.addLabel( ibox.lbProduction.left(), ibox.lbProduction.bottom(), ibox.w/2, 25);
+    lb.multiline = true;
+    lb.text = _u("wait_for_fishing_boat");
+    ibox.lbText.position = { x:lb.left(), y:lb.bottom() + 5 };
+  }
+}
+
+game.ui.infobox.aboutShipyard = function(location) {
+  var ibox = game.ui.infobox.aboutFactory(location);
+
+  var progressCount = ibox.overlay.progress();
+  if (progressCount > 1 && progressCount < 100)
+  {
+    var lb = ibox.addLabel(ibox.lbProduction.left(), ibox.lbProduction.bottom(), ibox.w/2, 25);
+    lb.multiline = true;
+    lb.text = _u("build_fishing_boat");
+    ibox.lbText.position = { x:lb.left(), y:lb.bottom() + 5 };
+  }
+}
+
 game.ui.infobox.aboutFactory = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256);
   ibox.blackFrame.geometry = {x:16, y:160, w:ibox.w-32, h:52}
-  var factory = g_session.getOverlay(location).as(Factory);
+
+  var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.overlay = factory;
   ibox.title = _u(factory.typename);
 
   // paint progress
   var text = _format( "{0} {1}%", _ut("rawm_production_complete_m"), factory.progress() );
 
-  Size lbSize( (width() - 20) / 2, 25 );
-  ibox.lbProduction = ibox.addLabel(20, 40, ibox.w-20, 25);
+  ibox.lbProduction = ibox.addLabel(20, 40, ibox.w/2, 25);
   ibox.lbProduction.text = text
 
-  var effciencyText = _format("{0} {1}%", _ut("effciency"), factory.effciency);
-  var lbEffciency = ibox.addLabel( 20, ibox.lbProductivity.bottom(), ibox.w-20, 25), effciencyText );
+  var effciencyText = _format("{0} {1}%", _ut("effiency"), factory.effiency);
+  var lbEffciency = ibox.addLabel( ibox.w/2, 40, ibox.w/2, 25);
+  lbEffciency.text = effciencyText;
 
-if( factory->produce().type() != good::none )
-{
-  add<Image>( Point( 10, 10), factory->produce().picture() );
-}
+  var pinfo = factory.produce;
+  ibox.addImage(10, 10, pinfo.picture.local);
 
-// paint picture of in good
-if( factory->inStock().type() != good::none )
-{
-  Label& lbStockInfo = add<Label>( Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
-  lbStockInfo.setIcon( good::Info( factory->inStock().type() ).picture() );
+  var cinfo = factory.consume;
+  // paint picture of in good
+  if (cinfo.type != g_config.good.none)
+  {
+    var lbStockInfo = ibox.addLabel(20, 65, ibox.w-40, 25);
+    lbStockInfo.icon = cinfo.picture.local;
 
-  std::string whatStock = fmt::format( "##{0}_factory_stock##", factory->consume().name() );
-  std::string typeOut = fmt::format( "##{0}_factory_stock##", factory->produce().name() );
-  std::string text = utils::format( 0xff, "%d %s %d %s",
-                                    factory->inStock().qty() / 100,
-                                    _(whatStock),
-                                    factory->outStock().qty() / 100,
-                                    _(typeOut) );
+    var whatStock = _format( "{0}_factory_stock", cinfo.name );
+    var typeOut = _format( "{0}_factory_stock", pinfo.name );
+    var text = _format( "{0} {1} {2} {3}",
+                        0,//factory.inStock().qty() / 100,
+                        _ut(whatStock),
+                        0, //factory.outStock().qty() / 100,
+                        _ut(typeOut) );
 
-  lbStockInfo.setText( text );
-  lbStockInfo.setTextOffset( Point( 30, 0 ) );
+    lbStockInfo.text = text;
+    lbStockInfo.textOffset = { x:30, y:0 };
+  }
 
-  _lbText()->setGeometry( Rect( lbStockInfo.leftbottom() + Point( 0, 5 ),
-                                _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
-  _lbText()->setFont( "FONT_1" );
-}
+  var workInfo = factory.workersProblemDesc();
+  var cartInfo = factory.cartStateDesc();
+  ibox.setInfoText(_format( "{0} {1}", _t(workInfo), _t(cartInfo)));
 
-std::string workInfo = factory->workersProblemDesc();
-std::string cartInfo = factory->cartStateDesc();
-setText( utils::format( 0xff, "%s %s", _(workInfo), _( cartInfo ) ) );
+  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers());
+  ibox.setWorkingStatus(factory.active);
 
-_updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
+  ibox.setAutoPosition();
+  ibox.setModal();
+  ibox.setFocus();
+
+  return ibox;
 }
 
 game.ui.infobox.aboutRaw = function(location) {
@@ -132,6 +157,7 @@ game.ui.infobox.aboutRaw = function(location) {
 
   var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.title = _u(factory.typename);
+  ibox.overlay = factory;
   ibox.btnHelp.uri = factory.typename;
 
   var lbProgress = ibox.addLabel(20, 45, ibox.w-32,24);
@@ -149,18 +175,11 @@ game.ui.infobox.aboutRaw = function(location) {
 
   lbProductivity.text = _t(problemText) + _t(cartInfo);
 
-  var ginfo = factory.getProperty("produce");
-  ginfo = g_config.good.getInfo(ginfo);
-  engine.log(ginfo.name)
+  var ginfo = factory.produce;
   ibox.addImage(10, 10, factory.produce.picture.local);
 
   ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers())
   ibox.setWorkingStatus(factory.active)
-
-  ibox.btnToggleWorks.callback = function() {
-    factory.active = !factory.active
-    ibox.setWorkingStatus(factory.active)
-  }
 
   ibox.setAutoPosition()
   ibox.setModal()

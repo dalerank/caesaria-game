@@ -56,11 +56,13 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
   ibox.btnPrev.style = "whiteBorderUp"
   ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
 
-  ibox.btnInfo = ibox.addButton(38, ibox.h-36,100,24)
+  ibox.btnInfo = ibox.addButton(38, ibox.h-36,100,24);
+  ibox.btnInfo.text = _u("about_ctr_info");
+  ibox.btnInfo.style = "whiteBorderUp";
   ibox.btnInfo.callback = function() {
     var state = _format( "Damage={0}\nFire={1}\n",
-                         this.building.getState(g_config.overlay.params.damage),
-                         this.building.getState(g_config.overlay.params.fire) );
+                         this.building.state(g_config.overlay.params.damage),
+                         this.building.state(g_config.overlay.params.fire) );
 
     g_ui.addInformationDialog("Building status", state);
   }
@@ -72,6 +74,11 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
       ibox.btnToggleWorks.geometry = { x:ibox.blackFrame.w-110, y:(ibox.blackFrame.h-25)/2, w:100, h:25 }
       ibox.btnToggleWorks.style = "blackBorderUp"
       ibox.btnToggleWorks.font = "FONT_1"
+
+      ibox.btnToggleWorks.callback = function() {
+        ibox.overlay.active = !ibox.overlay.active
+        ibox.setWorkingStatus(ibox.overlay.active)
+      }
     }
 
     ibox.btnToggleWorks.text = active ? _u("abwrk_working") : _u("abwrk_not_working")

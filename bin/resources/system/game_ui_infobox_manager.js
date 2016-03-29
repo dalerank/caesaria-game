@@ -24,6 +24,19 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutRaw(location);
   break;
 
+  case "shipyard":
+    game.ui.infobox.aboutShipyard(location);
+  break;
+
+  case "wharf":
+    game.ui.infobox.aboutWharf(location);
+  break;
+
+  case "pottery_workshop": case "weapons_workshop": case "furniture_workshop":
+  case "wine_workshop": case "oil_workshop":
+    game.ui.infobox.aboutFactory(location);
+  break;
+
   case "fountain":
     game.ui.infobox.aboutFountain(location);
   break;
