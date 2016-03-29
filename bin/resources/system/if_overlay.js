@@ -35,6 +35,7 @@ function UpdateTemplePrototype(ObjectPrototype) {
 
 function UpdateFactoryPrototype(ObjectPrototype) {
   UpdateWorkingBuildingPrototype(ObjectPrototype);
+  Object.defineProperty(ObjectPrototype, "effiency", { get: function() { return getProperty("effiency");}})
   Object.defineProperty(ObjectPrototype, "produce", { get : function() {
       var gtype = this.getProperty("produce");
       return g_config.good.getInfo(gtype);

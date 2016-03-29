@@ -75,6 +75,57 @@ game.ui.infobox.aboutFountain = function(location) {
   ibox.setInfoText(_u(text));
 }
 
+game.ui.infobox.aboutFactory = function(location) {
+  var ibox = this.aboutConstruction(0,0,510,256);
+  ibox.blackFrame.geometry = {x:16, y:160, w:ibox.w-32, h:52}
+  var factory = g_session.getOverlay(location).as(Factory);
+  ibox.overlay = factory;
+  ibox.title = _u(factory.typename);
+
+  // paint progress
+  var text = _format( "{0} {1}%", _ut("rawm_production_complete_m"), factory.progress() );
+
+  Size lbSize( (width() - 20) / 2, 25 );
+  ibox.lbProduction = ibox.addLabel(20, 40, ibox.w-20, 25);
+  ibox.lbProduction.text = text
+
+  var effciencyText = _format("{0} {1}%", _ut("effciency"), factory.effciency);
+  var lbEffciency = ibox.addLabel( 20, ibox.lbProductivity.bottom(), ibox.w-20, 25), effciencyText );
+
+if( factory->produce().type() != good::none )
+{
+  add<Image>( Point( 10, 10), factory->produce().picture() );
+}
+
+// paint picture of in good
+if( factory->inStock().type() != good::none )
+{
+  Label& lbStockInfo = add<Label>( Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
+  lbStockInfo.setIcon( good::Info( factory->inStock().type() ).picture() );
+
+  std::string whatStock = fmt::format( "##{0}_factory_stock##", factory->consume().name() );
+  std::string typeOut = fmt::format( "##{0}_factory_stock##", factory->produce().name() );
+  std::string text = utils::format( 0xff, "%d %s %d %s",
+                                    factory->inStock().qty() / 100,
+                                    _(whatStock),
+                                    factory->outStock().qty() / 100,
+                                    _(typeOut) );
+
+  lbStockInfo.setText( text );
+  lbStockInfo.setTextOffset( Point( 30, 0 ) );
+
+  _lbText()->setGeometry( Rect( lbStockInfo.leftbottom() + Point( 0, 5 ),
+                                _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
+  _lbText()->setFont( "FONT_1" );
+}
+
+std::string workInfo = factory->workersProblemDesc();
+std::string cartInfo = factory->cartStateDesc();
+setText( utils::format( 0xff, "%s %s", _(workInfo), _( cartInfo ) ) );
+
+_updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
+}
+
 game.ui.infobox.aboutRaw = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
   ibox.blackFrame.geometry = {x:16, y:170, w:ibox.w-32, h:64};
