@@ -38,13 +38,14 @@ public:
 
   CityPtr beginCity() const;
   CityPtr endCity() const;
+  bool isMyCity( CityPtr city ) const;
   CityPtr partner( const std::string& name ) const;
   std::string name() const;
 
   void timeStep( unsigned int time );
   PointsArray points( bool reverse=false ) const;
   bool containPoint(const Point &pos, int devianceDistance=10 );
-  void setPoints(const PointsArray& points , bool seaRoute);
+  void setPoints(const PointsArray& points, bool seaRoute);
   const gfx::Pictures& pictures() const;
 
   bool isSeaRoute() const;

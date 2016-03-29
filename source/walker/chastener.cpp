@@ -35,21 +35,12 @@
 
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeChastenerSoldier, walker::romeChastenerSoldier, Chastener, chasterner )
+REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerSoldier, Chastener)
 
 Chastener::Chastener( PlayerCityPtr city, walker::Type type )
     : EnemySoldier( city, type )
 {
   addFriend( walker::romeChastenerElephant );
-}
-
-ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
-{
-  ChastenerPtr ret( new Chastener( city, type ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
 }
 
 int Chastener::agressive() const { return 3; }

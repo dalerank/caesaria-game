@@ -22,15 +22,13 @@
 
 class RomeArcher : public RomeSoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RomeArcherPtr create( PlayerCityPtr city,
-                               walker::Type type=walker::romeSpearman );
-
   virtual void timeStep(const unsigned long time);
 
 protected:
   virtual void _fire(TilePos pos );
-  RomeArcher(PlayerCityPtr city, walker::Type type);
+  RomeArcher(PlayerCityPtr city, walker::Type type=walker::romeSpearman);
 };
 
 #endif //_CAESARIA_ROMEARCHER_INCLUDE_H_

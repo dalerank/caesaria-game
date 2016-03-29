@@ -23,9 +23,8 @@
 
 class Balista : public WallGuard
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static BalistaPtr create( PlayerCityPtr city );
-
   virtual ~Balista();
 
   void setActive( bool active );

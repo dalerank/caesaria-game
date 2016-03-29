@@ -22,12 +22,13 @@
 namespace gui
 {
 
-WidgetCalc::WidgetCalc(Widget& widget, const VariantMap& vars) : _widget( widget )
+WidgetCalc::WidgetCalc(Widget& widget, const VariantMap& vars, int rwidth) : _widget( widget )
 {
   _alias[ "w" ] = widget.width();
   _alias[ "h" ] = widget.height();
   _alias[ "pw" ] = widget.parent()->width();
   _alias[ "ph" ] = widget.parent()->height();
+  _alias[ "%" ] = rwidth;
 
   for( auto& it : vars )
     _alias[ it.first ] = it.second.toInt();
@@ -86,6 +87,12 @@ double WidgetCalc::_number(const std::string &str, unsigned *idx)
         div *= 10.0;
         ++*idx;
       }
+    }
+
+    if(str[*idx] == '%')
+    {
+      result = result / 100.f * _alias[ "%" ];
+      ++*idx;
     }
   }
 

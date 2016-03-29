@@ -36,8 +36,7 @@ void Aborigens::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -54,11 +53,11 @@ void Aborigens::drawTile( const RenderInfo& rinfo, Tile& tile )
       discontentLevel = (int)nativeHut->discontent();
       needDrawAnimations = false;
 
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -76,21 +75,13 @@ void Aborigens::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
-LayerPtr Aborigens::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Aborigens( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Aborigens::handleEvent(NEvent& event)
+void Aborigens::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -106,7 +97,7 @@ void Aborigens::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Aborigens::Aborigens( Camera& camera, PlayerCityPtr city)

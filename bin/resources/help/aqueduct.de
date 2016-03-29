@@ -1,0 +1,9 @@
+{
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text  : "Aquädukte können @Reservoirs& miteinander verbinden. Sie sorgen selbst nicht für Wasser und brauchen weder Straßenanbindung noch Zugang zu Arbeitskräften. Bei der Länge unterliegen Aquädukte keinen Beschränkungen. Aquädukte dürfen sich nicht kreuzen, Straßen können jedoch unter Ihnen durchlaufen. Wenn Sie rasch ein Aquädukt brauchen möchten, klicken Sie den Reservoir-Button an, so als ob Sie ein Reservoir bauen wollten. Klicken Sie dann ein bereits vorhandenes Reservoir links an, Halten Sie die Maustaste gedrückt, und 'ziehen' Sie den Zeiger bis an die Stelle, an der Sie Ihr neues Reservoir errichten möchten. Wenn Sie eine bebaubare Stelleausgewählt haben und keine Hindernisse den Verlauf unterbrechen, wird das neue Reservoir automatisch über ein Aquädukt mit dem alten verbunden.\n\nKlicken Sie @hier&, wenn Sie mehr über die Geschichte der Aquädukte im römischen Imperium erfahren möchten."
+ uri : {
+  "Reservoirs" : "reservoir"
+  "hier" : "aqueduct_history"
+ }
+}

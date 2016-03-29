@@ -28,24 +28,16 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::spear, Spear)
 
-SpearPtr Spear::create(PlayerCityPtr city)
-{
-  SpearPtr ret( new Spear( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Spear::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
-  foreach( w, walkers )
+  for( auto w : walkers )
   {
-    (*w)->updateHealth( -10 );
-    (*w)->acceptAction( Walker::acFight, startPos() );
+    w->updateHealth( -10 );
+    w->acceptAction( Walker::acFight, startPos() );
   }
 
-  ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( dstPos() ));
+  ConstructionPtr c = _map().overlay<Construction>( dstPos() );
   if( c.isValid() )
   {
     c->updateState( pr::damage, 5 );
@@ -61,11 +53,15 @@ void Spear::setPicInfo(const std::string& rc, unsigned int index)
   _picIndex = index;
 }
 
+void Spear::initialize(const VariantMap& options)
+{
+  ThrowingWeapon::initialize( options );
+  setName( _("##spear##") );
+}
+
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::spear );
   _picIndex = 114;
   _picRc = ResourceGroup::sprites;
-
-  setName( _("##spear##") );
 }

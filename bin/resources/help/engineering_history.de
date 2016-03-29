@@ -1,0 +1,8 @@
+{
+ title : "##engineers##"
+ sound : "fanfare"
+ text  : "Die große Zahl der römischen Ruinen im Mittelmeerraum legt ein deutliches Zeugnis für die Kunstfertigkeit der Römer und ihren Enthusiasmus beim Bauen ab, insbesondere nach der Erfindung des Zements. Es bestand eine große Nachfrage nach Landvermessern und Architekten, die in hohem Ansehen standen.\nDie Forderungen der Armee nach @Straßen und Brücken& zog viele der fähigsten Baumeister in den Dienst des Militärs. Die meisten Soldaten trugen Bauwerkzeuge bei sich, und die Legionen stellten viele Ingenieure ein. Wenn diese Ingenieursmannschaften einmal nicht mit militärischen Aufgaben beschäftigt waren, konnte der Kaiser sie für zivile Projekte einsetzen.\nDen Ingenieuren mangelte es nie an Arbeit. Der Grund dafür waren die Aufträge der reicheren Bürger für die Errichtung öffentlicher Gebäude, die ständigen Einstürze der schlecht gebauten Insulae und der dort häufig auftretenden Feuer, die in neueroberten Gebieten ständig benötigten Militärwege und Befestigungsanlagen und der Wunsch der Provinzbewohner, ihre Mitbürger in der Stadt nachzuahmen."
+ uri : {
+  "Straßen und Brücken" : "road_history"
+ }
+}

@@ -46,8 +46,8 @@ public:
   std::string nextMission() const;
   std::string newTitle() const;
   std::string winText() const;
-  std::string beginSpeech() const;
-  std::string winSpeech() const;
+  std::string startSound() const;
+  std::string winSound() const;
   int needPopulation() const;
   int maxHouseLevel() const;
   const StringArray& overview() const;

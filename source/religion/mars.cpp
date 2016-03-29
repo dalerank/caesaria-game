@@ -30,6 +30,7 @@
 
 using namespace gfx;
 using namespace events;
+using namespace city;
 
 namespace religion
 {
@@ -37,31 +38,33 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Mars::create()
-{
-  DivinityPtr ret( new Mars() );
-  ret->setInternalName( baseDivinityNames[ romeDivMars ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Mars::updateRelation(float income, PlayerCityPtr city)
 {  
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Mars::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(mars)
+                    : SML_TEMPLE_TYPE(mars);
+}
+
+Mars::Mars()
+  : RomeDivinity( RomeDivinity::Mars )
+{
+
+}
+
 void Mars::_doWrath(PlayerCityPtr city)
 {
-  GameEventPtr message = ShowInfobox::create( _("##wrath_of_mars_title##"),
-                                              _("##wrath_of_mars_text##"),
-                                              ShowInfobox::send2scribe,
-                                              "god_mars" );
-  message->dispatch();
+  events::dispatch<ShowInfobox>( _("##wrath_of_mars_title##"),
+                                 _("##wrath_of_mars_text##"),
+                                 true,
+                                 "god_mars" );
 
   VariantMap vm = config::load( ":/mars_wrath.model" );
-  GameEventPtr barb_attack = PostponeEvent::create( "", vm );
-  barb_attack->dispatch();
+  events::dispatch<PostponeEvent>( "", vm );
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
@@ -82,21 +85,19 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
     text = "##smallcurse_of_mars_failed_text##";
   }
 
-  GameEventPtr message = ShowInfobox::create( _(title),
-                                              _(text),
-                                              ShowInfobox::send2scribe );
+  events::dispatch<ShowInfobox>( _(title),
+                                 _(text),
+                                 true );
 
-  message->dispatch();
 }
 
 void Mars::_doBlessing(PlayerCityPtr city)
 {
-  GameEventPtr event = ShowInfobox::create( _("##spirit_of_mars_title##"),
-                                            _("##spirit_of_mars_text##"),
-                                            ShowInfobox::send2scribe );
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##spirit_of_mars_title##"),
+                                 _("##spirit_of_mars_text##"),
+                                 true );
 
-  city::SrvcPtr spiritOfmars = city::SpiritOfMars::create( city );
+  SrvcPtr spiritOfmars = Srvc::create<SpiritOfMars>( city, 6 );
   spiritOfmars->attach();
 }
 

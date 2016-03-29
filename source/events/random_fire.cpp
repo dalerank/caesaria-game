@@ -56,7 +56,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
   int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
-    Logger::warning( "Execute random fire event" );
+    Logger::info( "Execute random fire event" );
     _d->isDeleted = true;
 
     std::set<object::Group> exclude;
@@ -65,6 +65,9 @@ void RandomFire::_exec( Game& game, unsigned int time)
             << object::group::disaster;
 
     ConstructionList ctrs = game.city()->statistic().objects.findNotIn<Construction>( exclude );
+
+    if( ctrs.empty() )
+      return;
 
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
 

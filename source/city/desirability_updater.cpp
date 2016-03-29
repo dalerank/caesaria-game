@@ -45,16 +45,6 @@ public:
   void update(PlayerCityPtr city, bool positive );
 };
 
-SrvcPtr DesirabilityUpdater::create( PlayerCityPtr city )
-{
-  DesirabilityUpdater* e = new DesirabilityUpdater( city );
-
-  SrvcPtr ret( e );
-  ret->drop();
-
-  return ret;
-}
-
 void DesirabilityUpdater::timeStep( const unsigned int time )
 {
   if( game::Date::isMonthChanged() )

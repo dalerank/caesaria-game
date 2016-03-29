@@ -106,7 +106,7 @@ Infobox* PManager::show( gui::Widget* parent, PlayerCityPtr city, const TilePos&
   Impl::Creators::iterator it = _d->creators.find( walkers.empty() ? walker::unknown : walkers.front()->type() );
   if( it == _d->creators.end() )
   {
-    return new citizen::AboutPeople( parent, city, pos );
+    return &parent->add<citizen::AboutPeople>( city, pos );
   }
   else
   {

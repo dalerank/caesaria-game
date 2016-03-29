@@ -32,10 +32,11 @@
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 #include "core/foreach.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "city/states.hpp"
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
@@ -68,15 +69,13 @@ public:
 };
 
 ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
-  : Human( city ), _d( new Impl )
+  : Citizen( city, walker::serviceman ), _d( new Impl )
 {
-  _setType( walker::serviceman );
-  _setNation( city->states().nation );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
   _d->wayFailedCounter = 0;
-  _d->lastHousePos = gfx::tilemap::invalidLocation();
+  _d->lastHousePos = TilePos::invalid();
 
   _init(service);
 }
@@ -84,7 +83,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
 void ServiceWalker::_init(const Service::Type service)
 {
   _d->service = service;
-  NameGenerator::NameType nameType = NameGenerator::male;
+  NameGenerator::NameType nameType = NameGenerator::plebMale;
 
   switch (_d->service)
   {
@@ -93,7 +92,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::oracle:
     //_setAnimation( gfx::unknown );
   break;
-  
+
   case Service::religionNeptune:
   case Service::religionCeres:
   case Service::religionVenus:
@@ -101,7 +100,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::religionMercury:
     _setType( walker::priest );
   break;
-  
+
   case Service::engineer:  _setType( walker::engineer ); break;
   case Service::doctor:    _setType( walker::doctor );   break;
   case Service::hospital:  _setType( walker::surgeon );  break;
@@ -110,9 +109,9 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::school:    _setType( walker::scholar);   break;
   case Service::theater:   _setType( walker::actor );    break;
   case Service::amphitheater: _setType( walker::gladiator ); break;
-  case Service::colloseum:  _setType( walker::lionTamer );    break;
+  case Service::colosseum:  _setType( walker::lionTamer );    break;
   case Service::hippodrome: _setType( walker::charioteer ); break;
-  case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::female; break;
+  case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::plebFemale; break;
   case Service::missionary: _setType( walker::missioner ); break;
 
   case Service::library:
@@ -133,7 +132,7 @@ const TilePos& ServiceWalker::baseLocation() const { return _d->basePos; }
 Service::Type ServiceWalker::serviceType() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath( int orders )
-{  
+{
   if( orders == noOrders )
   {
     orders = goServiceMaximum;
@@ -145,7 +144,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
   pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
-  PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);  
+  PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
   PathwayPtr bestPath;
 
   if( (orders & goServiceMaximum) == goServiceMaximum )
@@ -228,7 +227,7 @@ ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
 
-  TilesArea reachedTiles( _city()->tilemap(), reachDistance(), pos );
+  TilesArea reachedTiles( _map(), reachDistance(), pos );
   for( auto tile : reachedTiles )
     res.addIfValid( tile->overlay<Building>() );
 
@@ -301,7 +300,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   if( base.isNull() )
   {
-    Logger::warning( "!!!Warning: Try send from unexist base " );
+    Logger::warning( "!!! Try send from unexist base " );
     return;
   }
 
@@ -309,13 +308,13 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
   if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
     auto servBuilding = base.as<ServiceBuilding>();
-    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
 
   if( !base.is<WorkingBuilding>() )
   {
-    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -355,7 +354,7 @@ void ServiceWalker::_reachedPathway()
   }
   else
   {
-    // walker finished service => get back to service building    
+    // walker finished service => get back to service building
     _pathway().move( Pathway::reverse );
     _computeDirection();
     go();
@@ -409,7 +408,7 @@ void ServiceWalker::_noWay()
     }
   }
 
-  Logger::warning( "!!! WARNING: ServiceWalker die because have not way to go");
+  Logger::warning( "!!!  ServiceWalker die because have not way to go");
   die();
 }
 
@@ -490,7 +489,7 @@ bool ServiceWalker::die()
 
   case Service::theater: start=409; stop=416; rcGroup=ResourceGroup::citizen1; break;
   case Service::amphitheater: start=97; stop=104; rcGroup=ResourceGroup::citizen2; break;
-  case Service::colloseum: start=513; stop=520; rcGroup=ResourceGroup::citizen1; break;
+  case Service::colosseum: start=513; stop=520; rcGroup=ResourceGroup::citizen1; break;
   case Service::hippodrome: break;
 
   case Service::market: start=921; stop=928; rcGroup=ResourceGroup::citizen1; break;
@@ -543,26 +542,17 @@ TilePos ServiceWalker::places(Walker::Place type) const
   return Human::places( type );
 }
 
-ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
-{
-  ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
-  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
-  ret->drop();
-  return ret;
-}
-
 BuildingPtr ServiceWalker::base() const
 {
   return _map().overlay( baseLocation() ).as<Building>();
 }
 
 ServiceWalker::~ServiceWalker() {}
-void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
-WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::create( city, serviceType ).object();  }
+void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = utils::objPosOrDefault( base ); }
 
 bool ReachedBuildings::contain(object::Type type) const
 {
-  for( auto& i : *this )
+  for( const auto& i : *this )
     if( i->type() == type )
       return true;
 
@@ -582,4 +572,9 @@ void ReachedBuildings::cancelService(Service::Type service)
 {
   for( auto i : *this )
     i->cancelService( service );
+}
+
+WalkerPtr ServicemanCreator::create(PlayerCityPtr city)
+{
+  return Walker::create<ServiceWalker>( city, serviceType ).object();
 }

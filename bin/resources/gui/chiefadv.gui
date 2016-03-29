@@ -1,0 +1,22 @@
+{
+  buttons : "off"
+  size : [ 640, 420 ]
+  static : true
+  
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00266"
+  }
+
+  lbTitle#Label : {
+    geometry : [ 60, 10, 380, 50 ]
+    text : "##chief_advisor##"
+    font : "FONT_3"
+    text.align : [ "upperLeft", "center" ]
+  }
+
+  gbox#GroupBox : {
+    geometry : [ 20, 55, "100%-20", "100%-20" ]
+    bgtype : "blackFrame"    
+  }
+}

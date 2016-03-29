@@ -29,7 +29,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Disorder)
 class Disorder : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   std::string reason() const;
@@ -37,8 +36,9 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
-private:
+
   Disorder(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

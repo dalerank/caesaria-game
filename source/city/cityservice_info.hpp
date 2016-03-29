@@ -19,6 +19,7 @@
 #define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 
 #include "cityservice.hpp"
+#include "core/time.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -33,7 +34,7 @@ public:
   typedef enum { population=0, funds, tax, taxpayes,
                  monthWithFood, foodKoeff, godsMood,
                  needWorkers, maxWorkers, workless,
-                 crimeLevel, colloseumCoverage, theaterCoverage,
+                 crimeLevel, colosseumCoverage, theaterCoverage,
                  entertainment, lifeValue, education,
                  payDiff, monthWtWar, cityWages,
                  romeWages, peace, milthreat,
@@ -44,7 +45,7 @@ public:
 
   class Parameters : public std::vector<int>
   {
-  public:    
+  public:
     DateTime date;
 
     Parameters();
@@ -58,7 +59,7 @@ public:
   {
     DateTime date;
     int value;
-  };  
+  };
 
   class History : public std::vector<Parameters>
   {
@@ -74,8 +75,6 @@ public:
     void load( const VariantMap& vm );
   };
 
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
   Parameters lastParams() const;
   Parameters params( unsigned int monthAgo ) const;
@@ -89,8 +88,8 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-private:
   Info(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

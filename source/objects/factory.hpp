@@ -21,13 +21,14 @@
 
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
-#include "good/good.hpp"
+#include "good/turnover.hpp"
+#include "good/helper.hpp"
 
 class Factory : public WorkingBuilding
 {
 public:
-  Factory( const good::Product inGood, const good::Product outGood,
-           const object::Type type, const Size& size );
+  Factory(const good::Product inGood, const good::Product outGood,
+          const object::Type type, const Size& size);
   virtual ~Factory();
 
   good::Stock& inStock();
@@ -36,8 +37,8 @@ public:
   good::Stock& outStock();
   const good::Stock& outStock() const;
 
-  good::Product consumeGoodType() const;
-  good::Product produceGoodType() const;
+  const good::Info& consume() const;
+  const good::Info& produce() const;
 
   good::Store& store();
 
@@ -47,11 +48,11 @@ public:
   virtual void deliverGood();
   virtual void receiveGood();
 
-  virtual int progress();
-  virtual void updateProgress( float value );
+  virtual int progress() const;
+  virtual void updateProgress(float value);
 
   virtual bool isActive() const;
-  virtual void setActive( bool active );
+  virtual void setActive(bool active);
 
   virtual bool mayWork() const;
   virtual bool haveMaterial() const;
@@ -59,13 +60,14 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
-  virtual void setProductRate( const float rate );
+  virtual void setProductRate(const float rate);
   virtual float productRate() const;
-  virtual unsigned int effciency() const;
+  virtual math::Percent effciency() const;
 
+  virtual Variant getProperty(const std::string &name) const;
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
@@ -76,27 +78,18 @@ protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
-  void _weekUpdate( unsigned int time );
-  void _setConsumeGoodType( int index, good::Product product );
-  void _productReady();
-  void _productProgress();
-  void _setUnworkingInterval( unsigned int weeks );
+  virtual void _productProgress();
+  virtual void _productReady();
+  virtual const gfx::Picture& _getSctockImage(int qty);
+
+  void _weekUpdate(unsigned int time);
+  void _setConsumeGoodType(int index, good::Product product);
+  void _setUnworkingInterval(unsigned int weeks);
   virtual void _reachUnworkingTreshold();
 
 protected:
   class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-class Creamery : public Factory
-{
-public:
-  Creamery();
-
-  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
-  virtual bool build(const city::AreaInfo &info);
-protected:
-  virtual void _storeChanged();
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_FACTORY_BUILDING_H_INCLUDE_

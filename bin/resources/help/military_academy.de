@@ -1,0 +1,9 @@
+{
+ title : "##militaryAcademy##"
+ sound : "fanfare"
+ text  : "Eine Militärakademie führt die Ausbildung der Soldaten weiter, die sie in einer @Kaserne& erhalten haben. Abgesehen von der Verbesserung der allgemeinen Kampffähigkeiten, wird den Legionären in einer Militärakademie auch der Einsatz 'Schildkrötenformation' beigebracht. Weitere Informationen über Formationen erhalten Sie unter @Frieden und Krieg&.\nWenn Sie eine sehr gefährliche Aufgabe angenommen haben, kann der kleine Vorteil, den eine Militärakademie mit sich bringt, den Unterschied zwischen Sieg und Niederlage Ihrer Legion ausmachen. Die Militärakademie ist jedoch ein in Wohngebieten unerwünschter Nachbar. Sie erfordert wie die meisten Gebäude Arbeiter und Straßenanbindung."
+ uri : {
+  "Kaserne" : "barracks"
+  "Frieden und Krieg" : "peace_and_war"
+ }
+}

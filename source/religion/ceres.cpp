@@ -32,27 +32,30 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Ceres::create()
-{
-  DivinityPtr ret( new Ceres() );
-  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Ceres::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Ceres::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(ceres)
+                    : SML_TEMPLE_TYPE(ceres);
+}
+
+Ceres::Ceres()
+  : RomeDivinity( RomeDivinity::Ceres )
+{
+
+}
+
 void Ceres::_doWrath( PlayerCityPtr city )
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
-                                                            _("##wrath_of_ceres_description##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            "god_ceres");
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##wrath_of_ceres_title##"),
+                                         _("##wrath_of_ceres_description##"),
+                                         true,
+                                         "god_ceres");
 
   FarmList farms = city->statistic().objects.farms();
 
@@ -64,9 +67,8 @@ void Ceres::_doWrath( PlayerCityPtr city )
 
 void Ceres::_doBlessing(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_ceres_title##"),
-                                                            _("##blessing_of_ceres_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##blessing_of_ceres_title##"),
+                                         _("##blessing_of_ceres_description##") );
 
   FarmList farms = city->statistic().objects.farms();
 
@@ -79,9 +81,8 @@ void Ceres::_doBlessing(PlayerCityPtr city)
 
 void Ceres::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_ceres_title##"),
-                                                            _("##smallcurse_of_ceres_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##smallcurse_of_ceres_title##"),
+                                         _("##smallcurse_of_ceres_description##") );
 
   FarmList farms = city->statistic().objects.farms();
 

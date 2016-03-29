@@ -32,7 +32,6 @@ public:
 class Animal : public Walker
 {
 public:
-  Animal( PlayerCityPtr city );
   virtual ~Animal();
 
   virtual void send2City(const TilePos& start );
@@ -43,6 +42,7 @@ public:
   virtual std::string thoughts( Thought th) const;
 
 protected:
+  Animal( PlayerCityPtr city, walker::Type type );
   virtual void _findNewWay(const TilePos &start);
 
   class Impl;
@@ -59,7 +59,7 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
 
-  Herbivorous( walker::Type type, PlayerCityPtr city );
+  Herbivorous(PlayerCityPtr city , walker::Type type);
 
 private:
   int _noWayCount;
@@ -68,26 +68,19 @@ private:
 class Sheep : public Herbivorous
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
-private:
   Sheep( PlayerCityPtr city );
 };
 
 class Zebra : public Herbivorous
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
-private:
   Zebra( PlayerCityPtr city );
 };
 
 class Wolf : public Animal
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
+  Wolf( PlayerCityPtr city );
   virtual void send2City(const TilePos& start);
   virtual bool die();
   virtual int agressive() const;
@@ -100,7 +93,6 @@ protected:
   virtual void _findNewWay(const TilePos& start);
 
 private:
-  Wolf( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

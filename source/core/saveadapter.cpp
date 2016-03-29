@@ -30,7 +30,7 @@ namespace config
 
 VariantMap load( const vfs::Path& filename )
 {
-  Logger::warning( "SaveAdapter: try load model from {}", filename.toString() );
+  Logger::info( "SaveAdapter: try load model from {}", filename.toString() );
   NFile f = NFile::open( filename );
 
   return load( f );
@@ -41,6 +41,9 @@ VariantMap load( vfs::NFile f )
   if( f.isOpen() )
   {
     ByteArray data = f.readAll();
+
+    if( data.empty() )
+      return VariantMap();
 
     bool jsonParsingOk;
     Variant ret = Json::parse( data.toString(), jsonParsingOk );
@@ -62,7 +65,7 @@ VariantMap load( vfs::NFile f )
   return VariantMap();
 }
 
-bool save( const VariantMap& options, const vfs::Path& filename )
+bool save(const VariantMap& options, const vfs::Path& filename)
 {
   std::string data = Json::serialize( options.toVariant(), " " );
   if( !data.empty() )

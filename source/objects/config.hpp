@@ -23,7 +23,7 @@ namespace config
 
 namespace fgpic
 {
-enum { idxMainPic = 0 };
+enum { idxMainPic = 0, idxFactoryStock=1, idxFactoryAnim=2, idxFactoryMax=3 };
 }
 
 namespace servicebld

@@ -26,11 +26,13 @@ namespace rome
 
 class Mars : public RomeDivinity
 {
+  DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
-  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
+  virtual object::Type templeType( TempleSize size ) const;
 
 protected:
+  Mars();
   virtual void _doWrath( PlayerCityPtr city );
   virtual void _doBlessing( PlayerCityPtr city );
   virtual void _doSmallCurse( PlayerCityPtr city );

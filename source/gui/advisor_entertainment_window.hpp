@@ -29,7 +29,7 @@ namespace advisorwnd
 class Entertainment : public Base
 {
 public:
-  Entertainment( PlayerCityPtr city, Widget* parent, int id );
+  Entertainment( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
 

@@ -50,7 +50,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::triumphal_arch, TriumphalArch)
 // transport 93 - missionaire post   2 x 2
 // circus    1 ~ 18 hippodrome    5x(5 x 5)
 
-SmallStatue::SmallStatue() : Building( object::statue_small, Size(1) )
+SmallStatue::SmallStatue() : Building( object::statue_small, Size::square(1) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -60,7 +60,7 @@ SmallStatue::SmallStatue() : Building( object::statue_small, Size(1) )
 
 bool SmallStatue::isNeedRoad() const {  return false; }
 
-MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
+MediumStatue::MediumStatue() : Building( object::statue_middle, Size::square(2) )
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -70,7 +70,7 @@ MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
 
 bool MediumStatue::isNeedRoad() const {  return false; }
 
-BigStatue::BigStatue() : Building( object::statue_big, Size(3))
+BigStatue::BigStatue() : Building( object::statue_big, Size::square(3))
 {
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -81,9 +81,9 @@ BigStatue::BigStatue() : Building( object::statue_big, Size(3))
 bool BigStatue::isNeedRoad() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
-TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size(3) )
+TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size::square(3) )
 {
-  _picture().load( ResourceGroup::land3a, 43 );
+  _picture().load( config::rc.land3a, 43 );
   _animation().load("land3a", 44, 1);
   _animation().setOffset( Point( 63, 97 ) );
   _fgPictures().resize(1);

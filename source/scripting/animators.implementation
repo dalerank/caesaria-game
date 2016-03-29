@@ -1,0 +1,6 @@
+DEFINE_OBJECT_FUNCTION_0(PositionAnimator,deleteLater)
+DEFINE_OBJECT_FUNCTION_1(PositionAnimator,setDestination,Point)
+DEFINE_OBJECT_FUNCTION_1(PositionAnimator,setSpeed,PointF)
+DEFINE_OBJECT_FUNCTION_1(PositionAnimator,setTime,int)
+DEFINE_OBJECT_FUNCTION_2(PositionAnimator,setFlag,std::string,bool)
+DEFINE_WIDGET_CONSTRUCTOR(PositionAnimator)

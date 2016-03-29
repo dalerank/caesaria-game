@@ -16,26 +16,29 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "overlay.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/infodb.hpp"
 #include "city/city.hpp"
+#include "gfx/tilesarray.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
-#include "gfx/helper.hpp"
+#include "objects_factory.hpp"
 #include "core/logger.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace gfx;
 
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
-static SimpleLogger LOG_OVERLAY(CAESARIA_STR_EXT(Overlay));
+static SimpleLogger LOG_OVERLAY(TEXT(Overlay));
+static Picture invalidSavePicture;
 }
-
 
 class Overlay::Impl
 {
-public:  
+public:
   Pictures fgPictures;
   object::Type overlayType;
   object::Group overlayClass;
@@ -48,27 +51,34 @@ public:
   PlayerCityPtr city;
 };
 
-Overlay::Overlay(const object::Type type, const Size& size)
-: _d( new Impl )
+OverlayPtr Overlay::create(object::Type type)
+{
+  return TileOverlayFactory::instance().create( type );
+}
+
+Overlay::Overlay(object::Type type, const Size& size)
+  : _d(new Impl)
 {
   _d->masterTile = 0;
   _d->size = size;
   _d->isDeleted = false;
   _d->name = "unknown";
 
-  setType( type );
-
-#ifdef DEBUG
-  OverlayDebugQueue::instance().add( this );
-#endif
+  setType(type);
 }
 
-Desirability Overlay::desirability() const
+const Desirability& Overlay::desirability() const
 {
   return info().desirability();
 }
 
-void Overlay::setState(Param, double) {}
+void Overlay::setState(int, float) {}
+float Overlay::state(int name) const { return 0.; }
+
+void Overlay::updateState(int name, float value)
+{
+  setState(name, state(name) + value);
+}
 
 void Overlay::setType(const object::Type type)
 {
@@ -89,8 +99,20 @@ Tilemap& Overlay::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
-  return gfx::tilemap::getInvalid();
+  Logger::warning( "!!! City is null at Overlay::_map()" );
+  return config::tilemap.invalid();
+}
+
+int Overlay::_cityOpt(int name)
+{
+  if(_d->city.isNull())
+  {
+    Logger::warning("!!! Try to get city option when city not initialized");
+    crashhandler::printstack(false);
+    return 0;
+  }
+
+  return _d->city->getOption((PlayerCity::OptionType)name);
 }
 
 void Overlay::setPicture(Picture picture)
@@ -134,7 +156,7 @@ Tile& Overlay::tile() const
   if( !_d->masterTile )
   {
     LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
-    static Tile invalid( gfx::tilemap::invalidLocation() );
+    static Tile invalid( TilePos::invalid() );
     return invalid;
   }
   return *_d->masterTile;
@@ -207,36 +229,50 @@ void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
-void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
+void Overlay::afterLoad() {}
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
-Animation& Overlay::_animation(){  return _d->animation;}
+Animation& Overlay::_animation() { return _d->animation;}
 Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
-gfx::Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
-Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
-const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
+Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
+const Picture& Overlay::_fgPicture( unsigned int index ) const { return _d->fgPictures[index]; }
 Picture& Overlay::_picture(){  return _d->picture; }
 object::Group Overlay::group() const{  return _d->overlayClass;}
-void Overlay::setPicture(const char* resource, const int index){ _picture().load( resource, index ); }
+void Overlay::setPicture(const std::string& resource, const int index){ _picture().load( resource, index ); }
 const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}
 void Overlay::deleteLater() { _d->isDeleted  = true;}
-void Overlay::destroy(){}
+void Overlay::destroy() {}
 const Size& Overlay::size() const{ return _d->size;}
 bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
-object::Type Overlay::type() const{ return _d->overlayType;}
+object::Type Overlay::type() const { return _d->overlayType;}
 
-TilePos Overlay::pos() const
+Variant Overlay::getProperty(const std::string & name) const { return Variant(); }
+
+Picture& Overlay::_fgPicture(unsigned int index)
+{
+  if (index >= _d->fgPictures.size())
+  {
+    LOG_OVERLAY.warn( "_fgPicture try get picture over array you need set size for fgpicture before" );
+    crashhandler::printstack(false);
+    if (index>9)
+      return invalidSavePicture;
+    _d->fgPictures.resize(index + 1);
+  }
+  return _d->fgPictures[index];
+}
+
+const TilePos& Overlay::pos() const
 {
   if( !_d->masterTile )
   {
     LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
   return _d->masterTile->epos();
 }
@@ -259,30 +295,11 @@ TilesArray Overlay::area() const
     return gfx::TilesArray();
   }
 
-  return _city()->tilemap().area( pos(), size() );
+  return _map().area( pos(), size() );
 }
+
+bool Overlay::getMinimapColor(int& color1, int& color2) const { return false; }
 
 Overlay::~Overlay()
 {
-#ifdef DEBUG
-  OverlayDebugQueue::instance().rem( this );
-#endif
 }  // what we shall to do here?
-
-#ifdef DEBUG
-void OverlayDebugQueue::print()
-{
-  OverlayDebugQueue& inst = (OverlayDebugQueue&)instance();
-  if( !inst._pointers.empty() )
-  {
-    LOG_OVERLAY.debug( "PRINT OVERLAY DEBUG QUEUE" );
-    foreach( it, inst._pointers )
-    {
-      Overlay* ov = (Overlay*)*it;
-      LOG_OVERLAY.debug( "{} - {} [{},{}] ref:{}", ov->name(),
-                         object::toString( ov->type() ),
-                         ov->pos().i(), ov->pos().j(), ov->rcount() );
-    }
-  }
-}
-#endif

@@ -27,6 +27,7 @@ class Tilemap;
 class TilemapCamera;
 class TilesArray;
 class Renderer;
+typedef unsigned int ImgID;
 
 }
 

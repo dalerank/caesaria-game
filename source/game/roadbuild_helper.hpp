@@ -18,7 +18,6 @@
 #define __CAESARIA_ROADPROPAGATOR_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
-#include "core/position.hpp"
 #include "gfx/tilesarray.hpp"
 #include "core/singleton.hpp"
 
@@ -32,7 +31,7 @@ public:
   * the path is returned in oPathWay
   */
   static gfx::TilesArray createPath(gfx::Tilemap& tileMap,
-                                    TilePos startTile, TilePos destination,
+                                    const TilePos& startTile, const TilePos& destination,
                                     bool roadAssignment=false, bool returnRect=false);
 
   void canBuildRoad(const gfx::Tile* tile, bool& ret);

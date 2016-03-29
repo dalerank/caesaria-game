@@ -27,21 +27,21 @@ protected:
   //bool managed;
   T *obj;
 public:
-  
+
   void deleteObject()
   {
     //check again
     if (obj==NULL) return;
-  
+
     //delete object
     delete obj;
     obj = 0;
   }
-  
+
   void dereferenceObject()
   {
     if (obj==0) return;
-     
+
     //check if last reference
     unsigned int lastRef = obj->rcount();
     obj->drop();
@@ -49,7 +49,7 @@ public:
     if ( lastRef == 1)
       obj = 0;
   }
-  
+
   void referenceObject(void *aVObj)
   {
     //convert to T
@@ -63,7 +63,7 @@ public:
 
     //reference new object
     obj = anObj;
-  
+
     //check again
     if( obj == 0 ) return;
 
@@ -74,7 +74,7 @@ public:
   void attachObject(void * anObj) {    obj = (T*)anObj;   }
   inline T* object() const { return obj;  }
   inline T* operator->() const   { return obj; }
-  
+
   SmartPtr()   { obj = 0;  }
 
   ~SmartPtr()  { dereferenceObject();  }
@@ -128,13 +128,16 @@ public:
   }
 
   inline bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
-  inline T& operator[] (int index)  {    return (*obj)[index];  }  
+  inline T& operator[] (int index)  {    return (*obj)[index];  }
   inline bool isNull() const  {    return obj == 0;  }
   inline bool isValid() const   {    return obj != 0;  }
 };
 
 template<class A, class B>
 inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ); }
+
+template<class A, typename... Args>
+inline SmartPtr<A> ptr_make(Args... args) { SmartPtr<A> ret( new A( args... ) ); ret->drop(); return ret; }
 
 template<class A, class B>
 inline bool is_kind_of( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ) != 0; }

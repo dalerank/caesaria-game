@@ -1,0 +1,13 @@
+{
+ title : "##prefecture##"
+ sound : "fanfare"
+ text  : "Als einzige Bastion der inneren Sicherheit sind @Präfekten& wahrscheinlich die einzigen Arbeiter, die für das Überleben Ihrer Stadt noch wichtiger sind als die @Ingenieure&. Weisen Sie Ihren @Arbeitsberater& an, dass er ihnen einen hohen Stellenwert einräumen soll.\nPräfekturen schicken ihre Präfekten auf Patrouille, um die Gebäude auf Brandgefahr zu prüfen und um sich um Kriminalität und innere Unruhen zu kümmern. Jedes Gebäude, das sich nicht auf der Route eines Präfekten befindet, kann unter Umständen niederbrennen (es gibt jedoch ein paar Ausnahmen: Reservoirs, Aquädukte, Brunnen, Ziehbrunnen, Gärten, Statuen, Mauern und Forts).\nDie Präfekten setzen sich in Bewegung, um Aufständische so schnell wie möglich dingfest zu machen. Sie sind dazu ermächtigt, Randalierer, die gewalttätig werden, auszuschalten. Ebenso versuchen sie, brennende Gebäude zu löschen, bevor sich die Flammen ausbreiten können und die ganze Stadt in Schutt und Asche legen.\nVerwenden Sie die @Spezialkarte Risiken&, um Gebäude zu finden, bei denen die Brandgefahr besteht, und Wohngebiete, die anfällig für Unruhen sind. Aufstände können Ihrer Friedenswertung schaden und verursachen erheblichen Sachschaden, wenn sie nicht umgehend niedergeschlagen werden.\nAllerdings ist auch hier wieder Vorsicht besser als Nachsicht. Mehr über die Verhinderung von Aufständen finden Sie unter @Kriminalität&.\nTrotz ihrer Bedeutung sind Präfekturen keine guten Nachbarn und beeinträchtigen die Attraktivität der nahe gelegenen Wohnsiedlungen. Sie brauchen Straßenanbindung und Arbeitskräfte, um zu funktionieren.\n\nHier können Sie mehr über die @historische& Rolle der Präfekten im römischen Imperium erfahren."
+ uri : {
+  "Präfekten" : "worker"
+  "Ingenieure" : "engineering_post"
+  "Arbeitsberater" : "labor_advisor"
+  "Spezialkarte Risiken" : "special_card_selection"
+  "Kriminalität" : "crime"
+  "historische" : "prefecture_history"
+ }
+}

@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -29,10 +29,10 @@ namespace gui
 namespace advisorwnd
 {
 
-class Health : public Window
+class Health : public Base
 {
 public:
-  Health( PlayerCityPtr city, Widget* parent, int id );
+  Health( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -41,9 +41,10 @@ private:
    * @brief Calls when player press help button
    */
   void _showHelp();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  void _updateAdvice();
+  void _initUI();
+  void _showDetailInfo(Widget* widget);
+  void _moveCamera(Widget* widget);
 };
 
 }

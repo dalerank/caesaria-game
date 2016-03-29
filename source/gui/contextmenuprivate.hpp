@@ -31,7 +31,7 @@ class ContextMenuItem;
 class ContextMenu::Impl
 {
 public:
-	std::vector< ContextMenuItem* > items;
+  std::vector<ContextMenuItem*> items;
 
   struct {
     int index;
@@ -40,10 +40,10 @@ public:
 
   unsigned int changeTime;
 
-	Point pos;
-	Widget* eventParent;
-	Font lastFont;
-	CloseMode closeHandling;
+  Point pos;
+  Widget* eventParent;
+  Font lastFont;
+  CloseMode closeHandling;
 
   struct {
     bool invalidate;

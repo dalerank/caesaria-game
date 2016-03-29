@@ -34,10 +34,22 @@
 #include "format.hpp"
 #include "vfs/directory.hpp"
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
 #include <android/log.h>
 #include <SDL_system.h>
 #endif
+
+const char* LogWriter::severity(LogWriter::Severity s) 
+{
+  switch (s) {
+  case LogWriter::debug: return "[DEBUG]";
+  case LogWriter::info:  return "[INFO]";
+  case LogWriter::warn:  return "[WARN]";
+  case LogWriter::error: return "[ERROR]";
+  case LogWriter::fatal: return "[FATAL]";
+  }
+  return "[UNKNOWN]";
+}
 
 class FileLogWriter : public LogWriter
 {
@@ -102,10 +114,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID    
-    __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+#ifdef GAME_PLATFORM_ANDROID
+    __android_log_print(ANDROID_LOG_DEBUG, GAME_PLATFORM_NAME, "%s", str.c_str() );
     if( newline )
-      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
+      __android_log_print(ANDROID_LOG_DEBUG, GAME_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
@@ -120,46 +132,52 @@ class Logger::Impl
 {
 public:
   typedef std::map<std::string,LogWriterPtr> Writers;
-  typedef List<std::string> Filters;
+  typedef StringArray Filters;
 
   Filters filters;
 
   Writers writers;
 
-  void write( const std::string& message, bool newline=true )
+  void write(LogWriter::Severity s, const std::string& message, bool newline = true)
+  {
+    write(LogWriter::severity(s) + message, newline);
+  }
+
+  void write(const std::string& message, bool newline=true)
   {
     // Check for filter pass
-    bool pass = filters.size() == 0;
-    for( auto& filter : filters )
+    for (auto& filter : filters)
     {
-      if (message.compare( 0, filter.length(), filter ) == 0)
-      {
-        pass = true;
-        break;
-      }
+      if (message.compare(0, filter.length(), filter) == 0)
+        return;
     }
-    if (!pass) return;
 
-    for( auto&& item : writers )
+    for( auto& item : writers )
     {
-      if( item.second.isValid() )
+      if (item.second.isValid())
       {
-        item.second->write( message, newline );
+        item.second->write(message, newline);
       }
     }
   }
 
 };
 
-void Logger::_print( const std::string& str ) {  instance()._d->write( str ); }
-void Logger::warning(const std::string& text) {  instance()._d->write( text );}
-void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
+void Logger::_print(LogWriter::Severity s,const std::string& str ) {  instance()._d->write(s,str); }
+void Logger::warningIf(bool warn, const std::string& text){  if (warn) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
 
 void Logger::addFilter(const std::string& text)
 {
-  if (hasFilter(text)) return;
-  instance()._d->filters.append(text);
+  if (hasFilter(text))
+    return;
+
+  instance()._d->filters.addIfValid(text);
+}
+
+void Logger::addFilter(LogWriter::Severity s)
+{
+  instance()._d->filters.addIfValid(LogWriter::severity(s));
 }
 
 bool Logger::hasFilter(const std::string& text)
@@ -190,9 +208,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
   case consolelog:
   {
-    LogWriterPtr wr( new ConsoleLogWriter() );
-    wr->drop();
-    registerWriter( "__console", wr );
+    auto wr = ptr_make<ConsoleLogWriter>();
+    registerWriter( "__console", wr.as<LogWriter>() );
   }
   break;
 
@@ -200,9 +217,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
     vfs::Directory workdir( param );
     vfs::Path fullname = workdir/"stdout.txt";
-    LogWriterPtr wr( new FileLogWriter( fullname.toString() ) );
-    wr->drop();
-    registerWriter( "__log", wr );
+    auto wr = ptr_make<FileLogWriter>( fullname.toString() );
+    registerWriter( "__log", wr.as<LogWriter>() );
   }
   break;
 
@@ -238,12 +254,11 @@ SimpleLogger::SimpleLogger( const std::string& category)
   : _category(category)
 {}
 
-void SimpleLogger::llog(SimpleLogger::Severity severity, const std::string &text)
+void SimpleLogger::llog(LogWriter::Severity s, const std::string &text)
 {
-  std::string rtext = toS(severity) + " ";
-  rtext += _category;
-  rtext += ": " + text;
-  write(rtext);
+  write(fmt::format("{} {}: {}", LogWriter::severity(s),
+                                 _category,
+                                 text));
 }
 
 bool SimpleLogger::isDebugEnabled() const {
@@ -252,20 +267,4 @@ bool SimpleLogger::isDebugEnabled() const {
 #else
   return false;
 #endif
-}
-
-const std::string SimpleLogger::toS(SimpleLogger::Severity severity) {
-  switch (severity) {
-    case Severity::DBG:
-      return "[DEBUG]";
-    case Severity::INFO:
-      return "[INFO]";
-    case Severity::WARN:
-      return "[WARN]";
-    case Severity::ERR:
-      return "[ERROR]";
-    case Severity::FATAL:
-      return "[FATAL]";
-  }
-  return "[UNKNOWN]";
 }

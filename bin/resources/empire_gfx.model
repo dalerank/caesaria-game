@@ -1,0 +1,99 @@
+{
+  ship : {
+    pictures : [ ["empire_bits",112] ]
+  }
+
+  aqueduct : {
+    pictures : [ ["empire_bits",107] ]
+  }
+
+  palms : {
+    pictures : [ ["empire_bits",111] ]
+  }
+
+  colosseum : {
+    pictures : [ ["empire_bits",114] ]
+  }
+
+  rocks : {
+    pictures : [ ["empire_bits",106] ]
+  }
+
+  rocks2 : {
+    pictures : [ ["empire_bits",115] ]
+  }
+
+  rocks3 : {
+    pictures : [ ["empire_bits",117] ]
+  }
+
+  palms2 : {
+    pictures : [ ["empire_bits",121] ]
+  }
+
+  world_othercity : {
+    pictures : [ ["empire_bits",8] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 15,  frames : 6,  delay : 4,  step : 1, reverse : 1,        loop : true }
+  }
+
+  world_distantcity : {
+    pictures : [ ["empire_bits",15] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 21,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [18,5],  loop : true }
+  }
+
+  world_seatradecity : {
+    pictures : [ ["empire_bits",22] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 28,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [15,10],  loop : true }
+  }
+
+  world_landtradecity : {
+    pictures : [ ["empire_bits",15] ]
+    offset : [ -10, 23 ]
+    animation : { rc : "empire_bits", start : 21,  frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [18,5],  loop : true }
+  }
+
+  world_romancapital : {
+    pictures : [ ["roma",1] ]
+    offset : [ -20, 30 ]
+    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [5,-5], loop : true }
+  }
+
+  world_romancity : {
+    pictures : [ ["empire_bits",22] ]
+    offset : [ -5, 17 ]
+    animation : { rc : "empire_bits", start : 7,   frames : 6,  delay : 4,  step : 1, reverse : 1, offset : [16, 10 ], loop : true }
+  }
+
+  world_army : {
+    animation : { rc : "empire_bits", start : 37,  frames : 16, delay : 1,  step : 1, offset : "center",  loop : true }
+  }
+
+  world_barbarian : {
+    animation : { rc : "empire_brb", start : 1,  frames : 12, delay : 1,  step : 1, offset : "center",  loop : true }
+  }
+
+  world_playerarmy : {
+    pictures : [ ["empire_bits",1] ]
+    animation : { rc : "empire_bits", start : 72,  frames : 6,  delay : 1,  step : 1, offset : "center",  loop : true }
+  }
+
+  world_ourcity : {
+    pictures : [ ["empire_bits",1] ]
+    animation : { rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1,                     loop : true }
+  }
+
+  world_merchantsea : {
+    pictures : [ ["empire_bits",69] ]
+  }
+
+  world_merchantland : {
+    pictures : [ ["empire_bits",70] ]
+  }
+
+  world_goodcaravan : {
+    pictures : [ ["empire_panels", 25] ]
+  }
+}

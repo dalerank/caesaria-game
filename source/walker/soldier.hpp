@@ -34,6 +34,7 @@ public:
                  back2base,
                  duckout,
                  patrol,
+                 doStuck,
                  userAction,
                  doNothing=0xff } SldrAction;
 
@@ -65,7 +66,7 @@ public:
   void addFriend( walker::Type friendType);
 
 protected:
-  Soldier(PlayerCityPtr city, walker::Type type);
+  Soldier( PlayerCityPtr city, walker::Type type);
 
   SldrAction _subAction() const;
   void _setSubAction( SldrAction action );
@@ -77,20 +78,5 @@ protected:
 private:
   __DECLARE_IMPL(Soldier)
 };
-
-template< class T >
-class SoldierCreator : public WalkerCreator
-{
-public:
-  WalkerPtr create( PlayerCityPtr city ) { return T::create( city, rtype ).object();  }
-  SoldierCreator( const walker::Type type ) { rtype = type;  }
-  walker::Type rtype;
-};
-
-#define REGISTER_SOLDIER_IN_WALKERFACTORY(type,rtype,rclass,ctorname) \
-namespace { \
-struct Registrator_##ctorname { Registrator_##ctorname() { WalkerManager::instance().addCreator( type, new SoldierCreator<rclass>( rtype ) ); }}; \
-static Registrator_##ctorname rtor_##ctorname; \
-}
 
 #endif //_CAESARIA_SOLDIER_INCLUDE_H_

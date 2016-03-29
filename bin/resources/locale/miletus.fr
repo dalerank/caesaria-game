@@ -1,0 +1,17 @@
+{
+  "##miletus_preview_title##" : "Le poisson ou l'appât"
+  "##miletus_overview##" : "A présent que les Grecs ont rejoint à contrecœur notre Empire, notre récente expansion vers l'Est doit continuer. C'est à vous de faire de Miletus une grande cité. Miletus est la clé qui permettra d'ouvrir les portes de l'Asie à l'autorité Romaine, mais également d'accéder à l'Egypte et à la Syrie. \n
+Créez une cité sur la côte Lycienne. J'attends de vous que vous atteignez des niveaux de Culture et de Prospérité bien supérieurs à ceux de vos précédents accomplissements. Les peuples de l'Est doivent clairement se rendre compte des bénéfices de l'autorité Romaine. \n
+Le manque de terres cultivables dans cette province risque de vous compliquer les choses. D'ailleurs, il est inconcevable que vous puissiez parvenir à cultiver suffisamment de nourriture. Cependant, Miletus offre aux citoyens Romains une nouvelle façon de gagner leur vie. A Miletus, vous vous essayerez à la pêche ! \n
+Les Romains ont toujours été des marins hésitants. Bien qu'il nous arrive de prendre la mer pour aller conquérir des territoires ennemis et étendre notre Empire, nous préférons garder les pieds au sec. Aucune cité Romaine n'a jamais développé la pêche à grande échelle pour se nourrir. \n
+C'est à vous que revient l'honneur de changer cela. Les eaux qui bordent Miletus abondent de poissons. Vous pouvez repérer les bancs de poissons en observant les oiseaux qui les survolent. 
+
+Construisez un chantier naval afin de fabriquer des bateaux de pêche.  Construisez ensuite des quais afin de leur fournir un équipage et de leur permettre de décharger leur cargaison. Un quai ne peut s'occuper que d'un seul bateau de pêche, et il vous faudra donc construire un nouveau quai pour chaque bateau de pêche que votre chantier naval fabriquera. \n
+Les employés des quais emporteront le poisson dans un grenier, à partir duquel il pourra être distribué comme n'importe quelle autre nourriture. 
+
+Ah, au fait, bien que cette province soit plutôt paisible, 'paisible' devient un terme assez relatif lorsque vous vous éloignez autant de Rome. Tenez-vous donc sur vos gardes. Faites attention aux rapports vous signalant une activité ennemie, et soyez prêt à défendre votre cité. Des murs et des tours gardés par une ou deux légions devraient cependant être amplement suffisants."
+  "##miletus_preview_mission##" : "A présent que les Grecs ont rejoint à contrecœur notre Empire, notre récente expansion vers l'Est doit continuer. C'est à vous de faire de Miletus une grande cité. Miletus est la clé qui permettra d'ouvrir les portes de l'Asie à l'autorité Romaine, mais également d'accéder à l'Egypte et à la Syrie. \n
+Créez une cité sur la côte Lycienne. J'attends de vous que vous atteignez des niveaux de Culture et de Prospérité bien supérieurs à ceux de vos précédents accomplissements. Les peuples de l'Est doivent clairement se rendre compte des bénéfices de l'autorité Romaine. \n
+Le manque de terres cultivables dans cette province risque de vous compliquer les choses."
+}
+  

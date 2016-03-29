@@ -22,6 +22,8 @@
 #include "constants.hpp"
 #include "walker/walker.hpp"
 
+
+
 class Fort : public WorkingBuilding
 {
 public:
@@ -49,7 +51,7 @@ public:
 
   virtual void destroy();
 
-  virtual TilePos freeSlot( WalkerPtr who ) const;
+  virtual TilePos findSlot( WalkerPtr who ) const;
   virtual void changePatrolArea();
   virtual TilePos patrolLocation() const;
 

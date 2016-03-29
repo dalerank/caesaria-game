@@ -35,7 +35,8 @@
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "core/common.hpp"
+#include "gfx/tilemap_config.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 
@@ -57,8 +58,8 @@ void FishingBoat::save( VariantMap& stream ) const
 
   VARIANT_SAVE_ANY_D( stream, _d, destination )
   VARIANT_SAVE_CLASS_D( stream, _d, stock )
-  stream[ "mode" ] = (int)_d->mode;
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  VARIANT_SAVE_ENUM_D( stream, _d, mode )
+  stream[ "base" ] = utils::objPosOrDefault( _d->base );
 }
 
 void FishingBoat::load( const VariantMap& stream )
@@ -66,10 +67,11 @@ void FishingBoat::load( const VariantMap& stream )
   Ship::load( stream );
   VARIANT_LOAD_ANY_D( _d, destination, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, stock, stream )
-  _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
+  VARIANT_LOAD_ENUM_D( _d, mode, stream )
+  //(State)stream.get( "mode", (int)wait ).toInt();
 
   TilePos basepos = stream.get( "base" );
-  _d->base = _map().overlay( basepos ).as<CoastalFactory>();
+  _d->base = _map().overlay<CoastalFactory>( basepos );
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );
@@ -181,35 +183,28 @@ bool FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
-  _animation().load( ResourceGroup::carts, 265, 8 );
-  _animation().setDelay( gfx::Animation::slow );
+  _animation().load(ResourceGroup::carts, 265, 8);
+  _animation().setDelay(gfx::Animation::slow);
 
   bool created = Ship::die();
   return created;
 }
 
-FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
+FishingBoat::FishingBoat(PlayerCityPtr city)
+  : Ship( city ), _d( new Impl )
 {
-  _setType( walker::fishingBoat );
-  setName( _("##fishing_boat##") );
+  _setType(walker::fishingBoat);
+  setName(_("##fishing_boat##"));
   _d->mode = wait;
-  _d->stock.setType( good::fish );
-  _d->stock.setCapacity( 100 );
-}
-
-FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
-{
-  FishingBoatPtr ret( new FishingBoat( city ) );
-  ret->drop();
-
-  return ret;
+  _d->stock.setType(good::fish);
+  _d->stock.setCapacity(100);
 }
 
 void FishingBoat::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  switch( _d->mode )
+  switch (_d->mode)
   {
   case go2fishplace: _d->mode = catchFish; break;
   case back2base: _d->mode = unloadFish; break;
@@ -217,33 +212,32 @@ void FishingBoat::_reachedPathway()
   }
 }
 
-Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
+Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos)
 {
-  FishPlaceList places = city->statistic().walkers.find<FishPlace>( walker::fishPlace, gfx::tilemap::invalidLocation() );
+  FishPlaceList places = city->statistic().walkers.find<FishPlace>(walker::fishPlace, TilePos::invalid());
 
-  int minDistance = 999;
+  float minDistance = 999.f;
   FishPlacePtr nearest;
-  for( auto place : places )
+  for (auto place : places)
   {
-    int currentDistance = pos.distanceFrom( place->pos() );
-    if( currentDistance < minDistance )
+    float currentDistance = pos.distanceFrom(place->pos());
+    if (currentDistance < minDistance)
     {
       minDistance = currentDistance;
       nearest = place;
     }
   }
 
-  if( nearest != 0 )
+  if (nearest != 0)
   {
-    Pathway way = PathwayHelper::create( pos, nearest->pos(), PathwayHelper::deepWater );
-
+    Pathway way = PathwayHelper::create(pos, nearest->pos(), PathwayHelper::deepWater);
     return way;
   }
 
   return Pathway();
 }
 
-void FishingBoat::send2city( CoastalFactoryPtr base, TilePos start )
+void FishingBoat::send2city(CoastalFactoryPtr base, TilePos start)
 {
   _d->base = base;
   setPos( start );

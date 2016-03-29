@@ -32,15 +32,12 @@ namespace advisorwnd
 class Trade : public Base
 {
 public:
-  Trade( PlayerCityPtr city, Widget* parent, int id );
-
+  Trade( Widget* parent, PlayerCityPtr city );
   virtual void draw( gfx::Engine& painter );
 
-signals public:
-  Signal0<>& onEmpireMapRequest();
-
 private:
-  void _showHelp();
+  void _showGoodsPriceWindow();
+  void _showEmpireMap();
 
   class Impl;
   ScopedPtr< Impl > _d;

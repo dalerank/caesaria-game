@@ -19,17 +19,17 @@
 #define __CAESARIA_CITY_OPTION_H_INCLUDED__
 
 #include "city.hpp"
+#include "core/serialized_map.hpp"
 
 namespace city
 {  
 
 PlayerCity::OptionType findOption( const std::string& name);
 
-class Options : public std::map<int, int>
+class Options : public SerializedMap<int,int>
 {
 public:
-  VariantList save() const;
-  void load(const VariantList &stream );
+  virtual void load(const VariantList &stream );
   void resetIfNot( int name, int value );
 };
 

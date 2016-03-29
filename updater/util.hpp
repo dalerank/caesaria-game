@@ -18,11 +18,10 @@
 
 #include "core/utils.hpp"
 #include "vfs/path.hpp"
+#include "core/platform_specific.hpp"
 
 // Platform-specific Sleep(int msec) definition
-#ifdef CAESARIA_PLATFORM_WIN
-	#include <windows.h>
-#else
+#ifdef GAME_PLATFORM_UNIX
 	// Linux doesn't know Sleep(), add a substitute def
 	#include <unistd.h>
 	#define Sleep(x) usleep(static_cast<int>(1000 * (x)))

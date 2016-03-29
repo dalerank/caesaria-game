@@ -48,9 +48,9 @@ GameEventPtr Notify::attack(const std::string& cityname, const std::string& mess
   ev->_d->message = message;
   ev->_d->object = object->name();
 
-  if( is_kind_of<world::Barbarian>( object ) )  {  ev->_d->type = Notification::barbarian;  }
-  else if( is_kind_of<world::RomeChastenerArmy>( object ) ) { ev->_d->type = Notification::chastener; }
-  else { ev->_d->type = Notification::unknown; }
+  if( is_kind_of<world::Barbarian>( object ) )  {  ev->_d->type = notification::barbarian;  }
+  else if( is_kind_of<world::RomeChastenerArmy>( object ) ) { ev->_d->type = notification::chastener; }
+  else { ev->_d->type = notification::unknown; }
 
   GameEventPtr evPtr( ev );
   evPtr->drop();
@@ -69,7 +69,7 @@ void Notify::_exec(Game& game, unsigned int)
 
     if( mil.isValid() )
     {
-      mil->addNotification( _d->message, _d->object, (Notification::Type)_d->type );
+      mil->addNotification( notification::Describe{ (notification::Type)_d->type, _d->message, _d->object } );
     }
   }
 }

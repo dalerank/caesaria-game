@@ -16,19 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "androidactions.hpp"
-#include "core/event.hpp"
 #include "environment.hpp"
 #include "texturedbutton.hpp"
 #include "scene/level.hpp"
 #include "gfx/camera.hpp"
 #include "widget_helper.hpp"
 #include "events/showtileinfo.hpp"
-#include "events/savegame.hpp"
-#include "events/loadgame.hpp"
+#include "events/script_event.hpp"
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
 #include "gui/ingame_menu.hpp"
-#include "core/hash.hpp"
+#include <GameVfs>
+#include <GameCore>
 
 using namespace gfx;
 using namespace events;
@@ -61,7 +60,7 @@ public:
 
     if( event.EventType == sEventMouse  )
     {
-      if( event.mouse.type == mouseLbtnRelease )
+      if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
       {
         if( forbidenArea.isPointInside( event.mouse.pos() ) )
           return;
@@ -86,15 +85,16 @@ public:
   TexturedButton* btnZoomIn;
   TexturedButton* btnZoomOut;
 
-public signals:  
+public signals:
   Signal1<int> onChangeZoomSignal;
 };
 
 ActionsBar::ActionsBar( Widget* parent)
-  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(CAESARIA_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(TEXT(AndroidActionsBar)), bgNone ), _d( new Impl )
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 
+  setInternalName("AndroidActionsBar");
   GET_DWIDGET_FROM_UI( _d, btnMenu     )
   GET_DWIDGET_FROM_UI( _d, btnShowHelp )
   GET_DWIDGET_FROM_UI( _d, btnEnter    )
@@ -132,7 +132,7 @@ bool ActionsBar::onEvent(const NEvent &event)
       return true;
     }
   }
-  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  else if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::moved )
   {
     return true;
   }
@@ -199,7 +199,7 @@ void ActionsHandler::_sendKeyboardEvent(int key, bool ctrl)
 
 void ActionsHandler::_showIngameMenu()
 {
-  IngameMenu* menu = IngameMenu::create( ui() );
+  IngameMenu* menu = &ui()->add<IngameMenu>();
   if( menu )
   {
     CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
@@ -210,21 +210,19 @@ void ActionsHandler::_showIngameMenu()
   }
 }
 
-void ActionsHandler::_showSaveDialog() { ShowSaveDialog::create()->dispatch(); }
-void ActionsHandler::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+void ActionsHandler::_showSaveDialog() { events::dispatch<ScriptFunc>("OnShowSaveDialog"); }
+void ActionsHandler::_showLoadDialog() { events::dispatch<ScriptFunc>("OnShowSaveSelectDialog"); }
 
 void ActionsHandler::_restartGame()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->restart();
+  if( _scene )
+    _scene->setMode(scene::Level::res_restart);
 }
 
 void ActionsHandler::_exitToMainMenu()
 {
-  scene::Level* level = safety_cast<scene::Level*>( _scene );
-  if( level )
-    level->exit();
+  if( _scene )
+    _scene->setMode(scene::Level::res_menu);
 }
 
 void ActionsHandler::_showTileHelp()
@@ -232,10 +230,9 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  auto event = ShowTileInfo::create( _tilepos );
-  event->dispatch();
+  events::dispatch<ShowTileInfo>( _tilepos );
 }
 
 }//end namespace tablet
 
-}//end namespace gui
+}//end namespace gui-

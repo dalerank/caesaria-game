@@ -29,13 +29,13 @@ PREDEFINE_CLASS_SMARTPOINTER(Roads)
 class Roads : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
   virtual void timeStep( const unsigned int time );
   virtual ~Roads();
-private:
+
   Roads(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

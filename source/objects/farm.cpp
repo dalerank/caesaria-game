@@ -20,7 +20,6 @@
 #include "core/exception.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
 #include "good/stock.hpp"
 #include "good/helper.hpp"
 #include "city/city.hpp"
@@ -34,8 +33,8 @@
 #include "core/foreach.hpp"
 #include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
-#include "gfx/helper.hpp"
 #include "events/clearland.hpp"
+#include "objects/config.hpp"
 #include "objects_factory.hpp"
 #include "city/states.hpp"
 
@@ -52,7 +51,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 class FarmTile : public Construction
 {
 public:
-  FarmTile() : Construction( object::farmtile, Size( 1 ) ) {}
+  FarmTile() : Construction( object::farmtile, Size(1,1) ) {}
   FarmTile(const good::Product outGood, const TilePos& farmpos);
   virtual ~FarmTile() {}
   Picture& getPicture();
@@ -70,10 +69,9 @@ private:
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
 FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
- : Construction( object::farmtile, Size( 1 ) )
+ : Construction( object::farmtile, Size(1,1) )
 {
   _farmpos = farmpos;
-  //_animation.load( ResourceGroup::commerce, picIdx, 5);
   setPicture( computePicture( outGood, 0 ) );
 }
 
@@ -125,43 +123,42 @@ class Farm::Impl
 {
 public:
   Locations sublocs;
+  float meadowsCoverage;
   int lastProgress;
 };
 
 Farm::Farm(const good::Product outGood, const object::Type farmType )
-  : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
+  : Factory( good::none, outGood, farmType, Size(3,3) ), _d( new Impl )
 {
   outStock().setCapacity( 100 );
 
   _d->lastProgress = 0;
-  _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
-              << TilePos( 2, 1) << TilePos( 1, 0) << TilePos( 2, 0);
+  _d->meadowsCoverage = 1.f;
+  _d->sublocs.append(0, 0)
+             .append(2, 2)
+             .append(2, 1)
+             .append(1, 0)
+             .append(2, 0);
 
   Picture mainPic = _getMainPicture();
-  mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
-  _fgPictures().push_back( mainPic );  // farm building
+  mainPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
+  _fgPicture(config::fgpic::idxMainPic) = mainPic;  // farm building
 
   for( auto& pos : _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
-    tPic.addOffset( tile::tilepos2screen( pos ) );
+    tPic.addOffset( pos.toScreenCoordinates() );
     _fgPictures().push_back( tPic );
   }
   setPicture( Picture::getInvalid() );
-
-  //init();
 }
 
 bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool on_meadow = false;
 
   TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
-  for( auto tile : area )
-  {
-    on_meadow |= tile->getFlag( Tile::tlMeadow );
-  }
+  bool on_meadow = area.count( Tile::tlMeadow ) > 0;
 
   Farm* non_const_this = const_cast< Farm* >( this );
   non_const_this->_setError( on_meadow ? "" : _("##farm_need_farmland##") );
@@ -174,7 +171,7 @@ void Farm::burn()
   Factory::burn();
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() )
       ov->burn();
   }
@@ -185,7 +182,7 @@ void Farm::collapse()
   Factory::collapse();
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() )
       ov->collapse();
   }
@@ -195,15 +192,19 @@ void Farm::destroy()
 {
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
-      GameEventPtr e = ClearTile::create( ov->pos() );
-      e->dispatch();
+      events::dispatch<ClearTile>( ov->pos() );
     }
   }
 
   Factory::destroy();
+}
+
+math::Percent Farm::productivity() const
+{
+  return Factory::productivity() * _d->meadowsCoverage;
 }
 
 void Farm::computeRoadside()
@@ -212,18 +213,12 @@ void Farm::computeRoadside()
 
   for( auto& pos : _d->sublocs )
   {
-    ConstructionPtr ov = _city()->getOverlay( pos ).as<Construction>();
-    if( ov.isValid() && ov->type() == object::farmtile )
+    auto construction = _map().overlay<Construction>( pos );
+    if( object::typeOrDefault( construction ) == object::farmtile )
     {
-      _roadside().append( ov->roadside() );
+      _roadside().append( construction->roadside() );
     }
   }
-}
-
-void Farm::init()
-{
-  _fgPictures().resize(5+1);
-  computePictures();
 }
 
 void Farm::computePictures()
@@ -246,9 +241,9 @@ void Farm::computePictures()
       amount = 0;  // for next subTiles
     }
 
-    auto farmTile = _city()->getOverlay( _d->sublocs[n] ).as<FarmTile>();
+    auto farmTile = _map().overlay<FarmTile>( _d->sublocs[n] );
     if( farmTile.isValid() )
-      farmTile->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
+      farmTile->setPicture( FarmTile::computePicture( produce().type(), percentTile ));
   }
 }
 
@@ -269,22 +264,35 @@ void Farm::timeStep(const unsigned long time)
   }
 }
 
-bool Farm::build( const city::AreaInfo& info )
+void Farm::_updateMeadowsCoverage()
 {
-  setSize( Size( 2 ) );
+  if (_cityOpt(PlayerCity::farmUseMeadows)>0)
+  {
+    auto tiles = area();
+    _d->meadowsCoverage = (float)tiles.count(Tile::tlMeadow) / (float)tiles.size();
+  }
+}
+
+bool Farm::build(const city::AreaInfo& info)
+{
+  setSize(Size(2,2));
   city::AreaInfo upInfo = info;
-  if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
+  if (!info.onload) //it flag use real build
   {
     upInfo.pos += TilePos(0,1);
-
-    _buildFarmTiles( info, upInfo.pos );
+    _buildFarmTiles(info, upInfo.pos);
   }
 
-  _fgPictures().resize( 0 );
-  Factory::build( upInfo );
+  _fgPictures().clear();
+  Factory::build(upInfo);
 
-  setPicture( _getMainPicture() );
+  if (_d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0)
+    _d->meadowsCoverage = 1.f;
+  _fgPictures().resize(config::fgpic::idxFactoryMax);
+
+  setPicture(_getMainPicture());
   computePictures();
+  _updateMeadowsCoverage();
 
   return true;
 }
@@ -309,11 +317,27 @@ void Farm::load( const VariantMap& stream )
     Logger::warning( "!!! WARNING: Farm [{0},{1}] lost tiles. Will add default locations", pos().i(), pos().j() );
     _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
                 << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
-    foreach( it, _d->sublocs )
-      *it += pos() - TilePos( 0, 1 );
+    for( auto& location : _d->sublocs )
+      location += pos() - TilePos( 0, 1 );
   }
 
   computePictures();
+  _updateMeadowsCoverage();
+}
+
+TilesArray Farm::meadows() const
+{
+  return area().select( Tile::tlMeadow );
+}
+
+TilesArray Farm::area() const
+{
+  TilesArray ret;
+  ret.append( Factory::area() );
+  for( const auto& st : _d->sublocs )
+    ret.append( &_map().at( st ) );
+
+  return ret;
 }
 
 unsigned int Farm::produceQty() const
@@ -330,11 +354,8 @@ void Farm::initialize(const object::Info& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  Picture ret = info().randomPicture();
-  if( !ret.isValid() )
-    ret.load(ResourceGroup::commerce, 12);
-
-  return ret;
+  return info().randomPicture()
+               .withFallback( ResourceGroup::commerce, 12 );
 }
 
 Farm::~Farm() {}
@@ -387,7 +408,7 @@ FarmVegetable::FarmVegetable() : Farm(good::vegetable, object::vegetable_farm)
 
 OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 {
-  OverlayPtr farmtile( new FarmTile( produceGoodType(), ppos ) );
+  OverlayPtr farmtile( new FarmTile( produce().type(), ppos ) );
   farmtile->drop();
   farmtile->build( info );
   info.city->addOverlay( farmtile );
@@ -396,7 +417,7 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 
 void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
 {
-  for( auto&& location : _d->sublocs )
+  for( auto& location : _d->sublocs )
   {
     city::AreaInfo tInfo = info;
     tInfo.pos += location;

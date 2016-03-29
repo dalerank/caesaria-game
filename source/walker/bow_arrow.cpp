@@ -19,20 +19,13 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
+#include "gfx/tilesarray.hpp"
 #include "walkers_factory.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::bow_arrow, BowArrow)
 
 namespace {
 const int defaultAttackValue=-3;
-}
-
-BowArrowPtr BowArrow::create(PlayerCityPtr city)
-{
-  BowArrowPtr ret( new BowArrow( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void BowArrow::_onTarget()
@@ -48,7 +41,8 @@ void BowArrow::_onTarget()
 const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
 int BowArrow::_rcStartIndex() const { return 130; }
 
-BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
+BowArrow::BowArrow(PlayerCityPtr city)
+  : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
 

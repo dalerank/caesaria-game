@@ -63,8 +63,6 @@ public:
 
 public signals:
   Signal1<int>& onLayerSwitch();
-  Signal3<object::Type,TilePos,int>& onBuilt();
-  Signal3<object::Type,TilePos,int>& onDestroyed();
 
 public slots:
   void rotateRight();

@@ -25,14 +25,14 @@
 class Propagator;
 
 /** This walker goes to work */
-class TraineeWalker : public Human
+class TraineeWalker : public Citizen
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static TraineeWalkerPtr create( PlayerCityPtr city, walker::Type traineeType );
-
   virtual int value() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
   void setBase(BuildingPtr building);
+  BuildingPtr base() const;
   BuildingPtr receiver() const;
 
   virtual void save( VariantMap& stream) const;
@@ -42,7 +42,7 @@ public:
 
   virtual ~TraineeWalker();
 protected:
-  TraineeWalker( PlayerCityPtr city, walker::Type traineeType);
+  TraineeWalker( PlayerCityPtr city, walker::Type traineeType=walker::trainee );
   void _computeWalkerPath( bool roadOnly );
 
   void _checkDestination(const object::Type buildingType, Propagator& pathPropagator);
@@ -60,11 +60,5 @@ class TraineeWalkerCreator : public WalkerCreator
 public:
   virtual WalkerPtr create( PlayerCityPtr city );
 };
-
-#define REGISTER_TRAINEEMAN_IN_WALKERFACTORY(type,trainee,a) \
-namespace { \
-struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new TraineeWalkerCreator() ); }}; \
-static Registrator_##a rtor_##a; \
-}
 
 #endif //__CAESARIA_TRAINEEWALKER_H_INCLUDED__

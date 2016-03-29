@@ -17,7 +17,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "player.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 
 class Player::Impl
@@ -35,7 +35,7 @@ Player::Player() : _d( new Impl )
   _d->funds = 0;
   _d->salary = 0;
   _d->rank = world::GovernorRank::citizen;
-  _d->color = DefaultColors::red;
+  _d->color = ColorList::red;
 }
 
 PlayerPtr Player::create()

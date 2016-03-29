@@ -30,9 +30,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Animals)
 class Animals : public Srvc
 {
 public:
-  /** Constructor **/
-  static SrvcPtr create( PlayerCityPtr city );
-
   static std::string defaultName();
 
   /** Calls every frame **/
@@ -43,8 +40,8 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-private:
   Animals( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

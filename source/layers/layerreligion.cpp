@@ -22,6 +22,8 @@
 #include "city/statistic.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
+#include "objects/religion.hpp"
+#include "gfx/textured_path.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
 
@@ -30,14 +32,26 @@ using namespace gfx;
 namespace citylayer
 {
 
+class Religion::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
+
 int Religion::type() const { return citylayer::religion; }
 
 void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -63,12 +77,12 @@ void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -86,13 +100,34 @@ void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-void Religion::handleEvent(NEvent& event)
+void Religion::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Religion::_updatePaths()
+{
+  auto wbuilding = _d->overlay.selected.as<Temple>();
+  if( wbuilding.isValid() )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
+void Religion::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -108,9 +143,21 @@ void Religion::handleEvent(NEvent& event)
                   ? "##religion_access_full##"
                   : utils::format( 0xff, "##religion_access_%d_temple##", templeAccess );
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case NEvent::Mouse::btnLeftPressed:
+    {
+      if( _d->overlay.underMouse.is<Temple>() )
+      {
+        _d->overlay.selected = _d->overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -118,19 +165,11 @@ void Religion::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
-}
-
-LayerPtr Religion::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Religion( camera, city ) );
-  ret->drop();
-
-  return ret;
+  Layer::onEvent( event );
 }
 
 Religion::Religion( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 9 )
+  : Info( camera, city, 9 ), _d( new Impl )
 {
   _addWalkerType( walker::priest );
   _initialize();

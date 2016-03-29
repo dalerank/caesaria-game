@@ -28,6 +28,8 @@ class EmpireMapWindow : public Widget
 {
 public:
   typedef enum { showCityInfo=0x1 } Flag;
+
+  EmpireMapWindow( Widget* parent, int id, PlayerCityPtr city );
   static EmpireMapWindow* create( PlayerCityPtr city, Widget* parent, int id );
 
   virtual ~EmpireMapWindow();
@@ -43,16 +45,15 @@ public:
 
 protected:
   void _changePosition();
+  void _showTradeAdvisor();
+  virtual bool _onMousePressed( const NEvent::Mouse& event);
   const Point& _offset() const;
 
   Widget* _resetInfoPanel();
-  void _showHelp();
   void _toggleAi();
 
   class Impl;
   ScopedPtr< Impl > _d;
-
-  EmpireMapWindow( Widget* parent, int id, PlayerCityPtr city );
 };
 
 }//end namespace gui

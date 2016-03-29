@@ -20,23 +20,24 @@
 #include "filesystem.hpp"
 #include "entries.hpp"
 #include "directory.hpp"
+#include "fileinfo.hpp"
 #include "core/utils.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) 
-  #ifdef CAESARIA_PLATFORM_LINUX
+#elif defined(GAME_PLATFORM_UNIX)
+  #ifdef GAME_PLATFORM_LINUX
     //#include <sys/io.h>
     #include <linux/limits.h>
-  #elif defined(CAESARIA_PLATFORM_MACOSX)
+  #elif defined(GAME_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
   #include <libgen.h>
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
@@ -94,7 +95,7 @@ void Path::splitToDirPathExt( Path* path,
 
               if ( path )
               {
-                std::string rp = utils::replace( name.substr( 0, i + 1 ), "\\", "/" ) ;   
+                std::string rp = utils::replace( name.substr( 0, i + 1 ), "\\", "/" ) ;
                 *path = Path( rp );
               }
               return;
@@ -126,9 +127,9 @@ Path Path::addEndSlash() const
 Path Path::removeBeginSlash() const
 {
   std::string pathTo = _d->path;
- 
+
   if( pathTo.empty() )
-      return Path( "" ); 
+      return Path( "" );
 
   char endsym = *pathTo.begin();
   if( endsym == '/' || endsym == '\\' )
@@ -140,7 +141,7 @@ Path Path::removeBeginSlash() const
 Path Path::removeEndSlash() const
 {
   std::string pathTo = _d->path;
-    
+
   if( pathTo.empty() )
       return "";
 
@@ -159,30 +160,30 @@ bool Path::empty() const { return _d->path.empty(); }
 
 bool Path::exist(SensType sens) const
 {
-  if( empty() )
-  {
+  if (empty())
     return false;
-  }
 
   return FileSystem::instance().existFile( *this, sens );
 }
 
+bool Path::exist() const { return exist(nativeCase); }
+
 
 bool Path::isFolder() const
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   WIN32_FILE_ATTRIBUTE_DATA fad;
   if( ::GetFileAttributesExA( _d->path.c_str(), ::GetFileExInfoStandard, &fad )== 0 )
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   struct stat path_stat;
   if ( ::stat( toString().c_str(), &path_stat) != 0 )
       return false;
 
   return S_ISDIR(path_stat.st_mode);
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 }
 
 bool Path::isDirectoryEntry() const
@@ -216,23 +217,21 @@ std::string Path::suffix() const
   return ret.empty() ? "" : ret.substr(1);
 }
 
-Path::Path( const std::string& nPath ) : _d( new Impl )
+Path::Path(const std::string& nPath) : _d( new Impl )
 {
   _d->path = utils::replace( nPath, "\\", "/" );
   _d->checkRcPrefix();
 }
 
-Path::Path( const Path& nPath ) : _d( new Impl )
+Path::Path(const Path& nPath) : _d( new Impl )
 {
   _d->path = nPath._d->path;
   _d->checkRcPrefix();
 }
 
-Path::Path( const char* nPath ) : _d( new Impl )
-{
-  _d->path = utils::replace( nPath, "\\", "/" );
-  _d->checkRcPrefix();
-}
+Path::Path(const char* nPath )
+   : Path(std::string(nPath))
+{}
 
 Path::Path() : _d( new Impl )
 {
@@ -245,7 +244,7 @@ const char *Path::toCString() const { return _d->path.c_str(); }
 std::string Path::removeExtension() const
 {
   std::string::size_type index = _d->path.find_last_of( '.' );
-  if( index != std::string::npos )
+  if (index != std::string::npos)
   {
     return _d->path.substr( 0, index );
   }
@@ -256,7 +255,7 @@ std::string Path::removeExtension() const
 Path Path::changeExtension( const std::string& newExtension ) const
 {
   std::string ext = newExtension;
-  if( !ext.empty() )
+  if (!ext.empty())
   {
     ext = ( ext[0] == '.' ? ext : ("." + ext) );
   }
@@ -267,14 +266,14 @@ Path::~Path(){}
 
 Path Path::absolutePath() const
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   char *p=0;
   char fpath[_MAX_PATH];
 
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
   std::string tmp = utils::replace( p, "\\", "/");
   return tmp;
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   char* p=0;
   char fpath[4096];
   fpath[0]=0;
@@ -295,16 +294,16 @@ Path Path::absolutePath() const
     return Path( std::string(p) + "/" );
   else
     return Path( std::string(p) );
-#endif // CAESARIA_PLATFORM_UNIX
+#endif // GAME_PLATFORM_UNIX
 }
 
 
 //! flatten a path and file name for example: "/you/me/../." becomes "/you"
-Path Path::flattenFilename( const Path& root ) const
+Path Path::flattenFilename(const Path& root) const
 {
   std::string directory = addEndSlash().toString();
-  directory = utils::replace( directory, "\\", "/" );
-  
+  directory = utils::replace(directory, "\\", "/");
+
   Directory dir;
   Path subdir;
 
@@ -316,11 +315,11 @@ Path Path::flattenFilename( const Path& root ) const
   {
     subdir = Path( directory.substr(lastpos, pos - lastpos + 1) );
 
-    if( subdir.toString() == "../" )
+    if (subdir.toString() == "../")
     {
       if (lastWasRealDir)
       {
-        dir = dir.up().up();
+        dir = dir.up().addEndSlash();
         lastWasRealDir=( dir.toString().size()!=0);
       }
       else
@@ -363,7 +362,7 @@ Path Path::getRelativePathTo( const Directory& directory ) const
   unsigned int it1=0;
   unsigned int it2=0;
 
-#if defined (CAESARIA_PLATFORM_WIN)
+#if defined (GAME_PLATFORM_WIN)
   char partition1 = 0, partition2 = 0;
   Path prefix1, prefix2;
   if ( it1 > 0 )
@@ -386,15 +385,15 @@ Path Path::getRelativePathTo( const Directory& directory ) const
   {
     return *this;
   }
-#endif //CAESARIA_PLATFORM_WIN
+#endif //GAME_PLATFORM_WIN
 
 
-  for (; i<list1.size() && i<list2.size() 
-#if defined (CAESARIA_PLATFORM_WIN)
+  for (; i<list1.size() && i<list2.size()
+#if defined (GAME_PLATFORM_WIN)
     && ( utils::isEquale( list1[ it1 ], list2[ it2 ], utils::equaleIgnoreCase ) )
-#elif defined(CAESARIA_PLATFORM_UNIX)
-    && ( list1[ it1 ]== list2[ it2 ] )	
-#endif //CAESARIA_PLATFORM_UNIX
+#elif defined(GAME_PLATFORM_UNIX)
+    && ( list1[ it1 ] == list2[ it2 ] )
+#endif //GAME_PLATFORM_UNIX
     ; ++i)
   {
     ++it1;
@@ -481,7 +480,7 @@ bool Path::operator==( const std::string& other ) const
   return toString() == other;
 }
 
-char &Path::operator [](const unsigned int index)
+char& Path::operator [](const unsigned int index)
 {
   return _d->path[index];
 }
@@ -510,8 +509,15 @@ Path Path::operator +(const Path& other)
 
 Path Path::canonical() const
 {
-  return utils::localeLower( _d->path );
+  return utils::localeLower(_d->path);
+}
+
+Info Path::info() const { return Info( *this ); }
+void Path::set(const std::string& path) { *this = path; }
+
+void Path::add(const std::string& path)
+{
+  *this = vfs::Directory(*this)/path;
 }
 
 } //end namespace vfs
-

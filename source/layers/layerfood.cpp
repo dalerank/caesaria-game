@@ -39,8 +39,7 @@ void Food::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -59,12 +58,12 @@ void Food::drawTile( const RenderInfo& rinfo, Tile& tile )
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
-    else      //other buildings
+    else //other buildings
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base);
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -102,13 +101,13 @@ void Food::drawWalkers(const RenderInfo& rinfo, const Tile &tile)
   }
 }
 
-void Food::handleEvent(NEvent& event)
+void Food::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -121,7 +120,7 @@ void Food::handleEvent(NEvent& event)
 
           if( houseHabitantsCount > 0 )
           {
-            good::Store& st = house->goodStore();
+            good::Store& st = house->store();
             int foodQty = 0;
             for( good::Product k=good::wheat; k <= good::vegetable; ++k )
             {
@@ -148,15 +147,7 @@ void Food::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
-}
-
-LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Food( camera, city ) );
-  ret->drop();
-
-  return ret;
+  Layer::onEvent( event );
 }
 
 Food::Food( Camera& camera, PlayerCityPtr city)

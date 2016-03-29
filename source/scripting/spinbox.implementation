@@ -1,0 +1,5 @@
+TEMPLATE_WIDGET_IMPLEMENTATION(SpinBox)
+DEFINE_OBJECT_FUNCTION_1(SpinBox,setColor,std::string)
+DEFINE_OBJECT_FUNCTION_1(SpinBox,setPostfix,std::string)
+DEFINE_OBJECT_FUNCTION_1(SpinBox,setValue,int)
+DEFINE_WIDGET_CALLBACK_1(SpinBox,onChangeA,int)

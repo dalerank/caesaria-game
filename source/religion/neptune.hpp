@@ -28,11 +28,14 @@ namespace rome
 
 class Neptune : public RomeDivinity
 {
+  DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
-  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
+  virtual object::Type templeType( TempleSize size ) const;
 
 protected:
+  Neptune();
+
   void _doWrath( PlayerCityPtr city );
   void _doSmallCurse( PlayerCityPtr city );
   void _doBlessing( PlayerCityPtr city );

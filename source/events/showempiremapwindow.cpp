@@ -50,19 +50,18 @@ void ShowEmpireMap::_exec(Game& game, unsigned int)
 { 
   if( !game.empire()->isAvailable() )
   {
-    GameEventPtr e = WarningMessage::create( "##not_available##", 1 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##not_available##", 1 );
 
     return;
   }
 
-  List<EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<EmpireMapWindow*>();
+  auto* empWindow = game.gui()->findWidget<EmpireMapWindow>();
 
   if( _show )
   {
-    if( !wndList.empty() )
+    if( empWindow != nullptr )
     {
-      wndList.front()->bringToFront();
+      empWindow->bringToFront();
     }
     else
     {
@@ -71,9 +70,9 @@ void ShowEmpireMap::_exec(Game& game, unsigned int)
   }
   else
   {
-    if( !wndList.empty() )
+    if( empWindow != nullptr )
     {
-      wndList.front()->deleteLater();
+      empWindow->deleteLater();
     }
   }
 }

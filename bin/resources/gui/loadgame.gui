@@ -1,0 +1,16 @@
+{  
+  size : [ 670, 384 ]
+
+  btnSort#PushButton :
+  {
+    geometry : [ 14, 14, "14+140", "14+25" ]
+    font : "FONT_2"
+    bgtype : "whiteBorderUp"
+  }
+
+  imgPreview#Image :
+  {
+    geometry : [ "pw-164", 80, "pw-20", 190 ]
+    mode : "best"
+  }
+}

@@ -28,7 +28,7 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::baths, Baths)
 
-Baths::Baths() : HealthBuilding(Service::baths, object::baths, Size(2) )
+Baths::Baths() : HealthBuilding(Service::baths, object::baths, Size(2,2) )
 {
   _haveReservorWater = false;
   _fgPictures().resize(1);
@@ -47,7 +47,7 @@ bool Baths::build( const city::AreaInfo& info )
   bool result = ServiceBuilding::build( info );
   _myArea = area();
 
-  if( !haveReservoirWater( info.city->tilemap(), info.pos ) )
+  if (!haveReservoirWater(info.city->tilemap(), info.pos))
   {
     _setError( "##need_access_to_full_reservoir##" );
   }

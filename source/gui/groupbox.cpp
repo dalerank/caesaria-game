@@ -20,6 +20,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/drawstate.hpp"
 #include "widget_factory.hpp"
 
 using namespace gfx;
@@ -32,35 +33,32 @@ REGISTER_CLASS_IN_WIDGETFACTORY(GroupBox)
 class GroupBox::Impl
 {
 public:
-  Batch background;
-  Pictures backgroundNb;
-  Picture backgroundImage;
-	bool scaleImage;
+  struct {
+    Batch body;
+    Pictures fallback;
+    Picture image;
+  } background;
+
+  bool scaleImage;
   GroupBox::Style style;
+
   bool needUpdateTexture;
 };
 
 //! constructor
 GroupBox::GroupBox(Widget *parent)
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : GroupBox( parent, Rect( 0, 0, 1, 1 ), -1, blackFrame )
 {
-  #ifdef _DEBUG
-      setDebugName("GroupBox");
-  #endif
-
-  _d->scaleImage = true;
-  _d->needUpdateTexture = true;
-  _d->style = blackFrame;
 }
 
 GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
-: Widget( parent, id, rectangle ), _d( new Impl )
+  : Widget( parent, id, rectangle ), _d(new Impl)
 {
-	#ifdef _DEBUG
-    	setDebugName("GroupBox");
-	#endif
+  #ifdef _DEBUG
+     setDebugName("GroupBox");
+  #endif
 
-  _d->scaleImage = true;	
+  _d->scaleImage = true;
   _d->needUpdateTexture = true;
   _d->style = style;
 }
@@ -74,17 +72,10 @@ void GroupBox::draw(gfx::Engine& painter )
   if (!visible())
       return;
 
-  if( _d->backgroundImage.isValid() )
-  {
-    painter.draw( _d->backgroundImage, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
-  else
-  {
-    if( _d->background.valid() )
-      painter.draw( _d->background, &absoluteClippingRectRef() );
-    else
-      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
+  DrawState pipe(painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->background.image )
+      .fallback( _d->background.body )
+      .fallback( _d->background.fallback );
 
   Widget::draw( painter );
 }
@@ -94,11 +85,11 @@ bool GroupBox::isBackgroundImageScaled() const {	return _d->scaleImage; }
 
 void GroupBox::setBackgroundImage( const Picture& image )
 {
-  _d->backgroundImage = image;
+  _d->background.image = image;
   _d->needUpdateTexture = true;
 }
 
-const Picture& GroupBox::backgroundImage() const {  return _d->backgroundImage; }
+const Picture& GroupBox::backgroundImage() const {  return _d->background.image; }
 void GroupBox::setScaleBackgroundImage( bool scale ) { _d->scaleImage = scale; }
 
 void GroupBox::setStyle( Style style )
@@ -113,7 +104,7 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
   {
     _d->needUpdateTexture = false;
 
-    if( !_d->backgroundImage.isValid() )
+    if( !_d->background.image.isValid() )
     {
       Decorator::Mode styles[] = { Decorator::whiteFrame, Decorator::blackFrame, Decorator::pure };
 
@@ -121,12 +112,12 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
                        Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ), nullptr, Decorator::normalY );
 
-      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.body.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {
-        _d->background.destroy();
+        _d->background.body.destroy();
         Decorator::reverseYoffset( pics );
-        _d->backgroundNb = pics;
+        _d->background.fallback = pics;
       }
     }
   }
@@ -143,6 +134,18 @@ void GroupBox::setupUI(const VariantMap &ui)
   else if( style == "whiteFrame" ) _d->style = whiteFrame;
   else if( style == "none" ) _d->style = none;
   _d->needUpdateTexture = true;
+}
+
+void GroupBox::setupUI(const vfs::Path & ui)
+{
+  Widget::setupUI(ui);
+}
+
+void GroupBox::_finalizeResize()
+{
+  Widget::_finalizeResize();
+
+  _d->background.body.move(absoluteRect().lefttop());
 }
 
 }//end namespace gui

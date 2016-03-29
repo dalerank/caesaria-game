@@ -25,14 +25,18 @@ class Ruins : public Building
 {
 public:
   Ruins( object::Type type );
-  void setInfo( std::string parent ) { _parent = parent; }
-  std::string pinfo() const { return _parent; }
+  void setInfo(const std::string& parent);
 
+  virtual std::string pinfo() const;
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
   virtual bool build(const city::AreaInfo &info);
-  void afterBuild() { _alsoBuilt=false; }
+  virtual void collapse() {}
+  virtual void burn() {}
+  virtual Variant getProperty(const std::string& name) const;
+  virtual bool getMinimapColor(int &color1, int color2) const;
 
+  void afterBuild() {_alsoBuilt=false;}
 protected:
   std::string _parent;
   float _value;
@@ -46,14 +50,13 @@ public:
   BurningRuins();
 
   virtual void timeStep(const unsigned long time);
-  virtual void burn();
   virtual bool build(const city::AreaInfo &info);
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
   virtual bool isFlat() const { return false; }
-  virtual void collapse();
   virtual bool canDestroy() const;
+  virtual bool getMinimapColor(int& color1, int& color2) const;
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
@@ -81,9 +84,7 @@ class CollapsedRuins : public Ruins
 public:
   CollapsedRuins();
 
-  virtual void burn();
   virtual bool build(const city::AreaInfo &info);
-  virtual void collapse();
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
@@ -96,7 +97,6 @@ public:
   PlagueRuins();
 
   virtual void timeStep(const unsigned long time);
-  virtual void burn();
   virtual bool isDestructible() const;
   virtual bool build( const city::AreaInfo& info );
   virtual bool isWalkable() const;

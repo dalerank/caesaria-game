@@ -26,7 +26,7 @@ namespace city
 class WrathOfVenus : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city, int month=3, int strong=1);
+  static SrvcPtr create(PlayerCityPtr city);
   virtual void timeStep( const unsigned int time);
 
   static std::string defaultName();
@@ -35,8 +35,8 @@ public:
   virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
 
+  WrathOfVenus( PlayerCityPtr city, int month=3, int strong=1 );
 private:
-  WrathOfVenus( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

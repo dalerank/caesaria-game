@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_omap.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
 #include "game.hpp"
@@ -60,7 +60,7 @@ bool OMap::load(const std::string& filename, Game& game)
   VariantMap vm;
   if( vfs::Path( filename ).isMyExtension( ".zmap" ) )
   {
-    Logger::warning( "OMap not loading citymap from zip" );
+    Logger::error( "OMap not loading citymap from zip" );
     return false;
   }
   else

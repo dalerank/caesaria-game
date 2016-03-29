@@ -42,17 +42,20 @@ NameGenerator& NameGenerator::instance()
 
 NameGenerator::~NameGenerator(){}
 
-std::string NameGenerator::rand( NameType type )
+std::string NameGenerator::rand(NameType type , world::Nation nation)
 {
   const NameGenerator& ng = instance();
 
   StringArray* names;
   switch( type )
   {
-  case male: names = &ng._d->male; break;
-  case female: names = &ng._d->female; break;
+  case plebMale: names = &ng._d->male; break;
+  case plebFemale: names = &ng._d->female; break;
   case patricianMale: names = &ng._d->male; break;
   case patricianFemale: names = &ng._d->female; break;
+  case indigeneMale: names = &ng._d->male; break;
+  case indigeneFemale: names = &ng._d->female; break;
+  case merchant: names = &ng._d->male; break;
   }
 
   return names->random() + " " + ng._d->surname.random();

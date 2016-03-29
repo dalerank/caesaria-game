@@ -18,17 +18,25 @@
 #ifndef __CAESARIA_CITYSERVICE_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_H_INCLUDED__
 
-#include "core/smartptr.hpp"
-#include "core/variant.hpp"
 #include "predefinitions.hpp"
+#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
 
 namespace city
 {
 
+PREDEFINE_CLASS_SMARTPOINTER(Srvc)
+
 class Srvc : public ReferenceCounted
 {
 public:
+  template<typename Class, typename... Args>
+  static SrvcPtr create( const Args & ... args)
+  {
+    auto instance = ptr_make<Class>( args... );
+    return ptr_cast<Srvc>( instance );
+  }
   /**
    * @brief Call every frame
    * @param Current frame in city
@@ -65,8 +73,6 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-typedef SmartPtr<Srvc> SrvcPtr;
 
 }//end namespace city
 

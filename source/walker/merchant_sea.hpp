@@ -24,10 +24,8 @@
 /** This is the empire merchant which buy/sell goods at warehouses */
 class SeaMerchant : public Merchant
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-  static SeaMerchantPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
-
   virtual ~SeaMerchant();
 
   void send2city();
@@ -45,6 +43,7 @@ public:
 
   virtual std::string thoughts(Thought th) const;
   virtual TilePos places(Place type) const;
+  virtual void initialize(const VariantMap &options);
 
   std::string parentCity() const;
 
@@ -52,7 +51,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  SeaMerchant( PlayerCityPtr city );
+  SeaMerchant( PlayerCityPtr city, world::MerchantPtr merchant=nullptr );
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -34,12 +34,17 @@ namespace dialog
 class SaveGame : public Window
 {
 public:
-  SaveGame( Ui* ui, vfs::Directory dir, std::string fileExt, int id );
+  SaveGame(Widget* parent);
+  SaveGame(Ui* ui, vfs::Directory dir, std::string fileExt, int id);
 
-  virtual void draw( gfx::Engine& painter );
+  void setDirectory(const std::string& dir);
+  void setFilter(const std::string& filter);
+
+  virtual void draw(gfx::Engine& painter);
 
 signals public:
   Signal1<std::string>& onFileSelected();
+  Signal2<Widget*,std::string>& onFileSelectedEx();
 
 private:
   void _resolveListboxChange(const ListBoxItem &item);

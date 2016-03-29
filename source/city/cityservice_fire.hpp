@@ -30,7 +30,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Fire)
 class Fire : public city::Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
   virtual void timeStep( const unsigned int time );
@@ -40,8 +39,8 @@ public:
 
   const UqLocations& locations() const;
 
-private:
   Fire( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -43,7 +43,7 @@ public:
   WharfPtr findFreeWharf( PlayerCityPtr city );
 };
 
-Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size(2)),
+Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size::square(2)),
   _d( new Impl )
 {
   // transport 1 2 3 4
@@ -68,7 +68,7 @@ void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
   if( game::Date::isWeekChanged() )
-  {    
+  {
     if( numberWorkers() > 0 && walkers().size() == 0 )
     {
       receiveGood();
@@ -95,23 +95,23 @@ void Shipyard::timeStep(const unsigned long time)
 
   if( progress() >= 100.0 )
   {
-    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )
+    if( store().freeQty( produce().type() ) > 0
         && _d->boat.isNull() )
     {
       updateProgress( -100.f );
 
-      _d->boat = FishingBoat::create( _city() );
+      _d->boat = Walker::create<FishingBoat>( _city() );
       _d->boat->send2city( this, landingTile().pos() );
     }
-    }
+  }
 }
 
 bool Shipyard::build(const city::AreaInfo& info)
 {
-  if( info.city->getOption( PlayerCity::warfNeedTimber ) == 0 )
-    _setConsumeGoodType( 0, good::none );
+  if (info.city->getOption(PlayerCity::warfNeedTimber) == 0)
+    _setConsumeGoodType(0, good::none);
 
-  return CoastalFactory::build( info );
+  return CoastalFactory::build(info);
 }
 
 bool Shipyard::mayWork() const

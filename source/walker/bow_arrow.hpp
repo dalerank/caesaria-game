@@ -21,15 +21,12 @@
 class BowArrow : public ThrowingWeapon
 {
 public:
-  static BowArrowPtr create( PlayerCityPtr city );
+  BowArrow( PlayerCityPtr city );
 
 protected:
   virtual void _onTarget();
   virtual const char* rcGroup() const;
   virtual int _rcStartIndex() const;
-
-private:
-  BowArrow( PlayerCityPtr city );
 };
 
 #endif //__CAESARIA_BOW_ARROW_H_INCLUDED__

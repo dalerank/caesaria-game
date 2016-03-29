@@ -18,7 +18,6 @@
 #ifndef _CAESARIA_WORLD_TRADING_INCLUDE_H_
 #define _CAESARIA_WORLD_TRADING_INCLUDE_H_
 
-//#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "predefinitions.hpp"
@@ -31,6 +30,33 @@
 namespace world
 {
 
+class Trading;
+
+class TradeRoutes
+{
+public:
+  TradeRoutes();
+  ~TradeRoutes();
+
+  void init(EmpirePtr empire);
+
+  VariantMap save() const;
+
+  void load( const VariantMap& stream );
+  TraderoutePtr find( unsigned int index );
+  TraderoutePtr find( const std::string& begin, const std::string& end );
+  TraderouteList from( const std::string& begin );
+  unsigned int getRouteOpenCost(const std::string& start, const std::string& stop ) const;
+
+  TraderouteList all();
+  TraderoutePtr create( const std::string& begin, const std::string& end );
+  void timeStep( unsigned int time );
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
 class Trading
 {
 public:
@@ -42,12 +68,6 @@ public:
 
   VariantMap save() const;
   void load(const VariantMap& stream);
-
-  TraderoutePtr findRoute( const std::string& begin, const std::string& end );
-  TraderoutePtr findRoute( unsigned int index );
-  TraderouteList routes( const std::string& begin );
-  TraderouteList routes();
-  TraderoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void setPrice( good::Product gtype, int bCost, int sCost );
   PriceInfo getPrice( good::Product gtype );

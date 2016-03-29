@@ -44,20 +44,9 @@ public:
   bool once;
 };
 
-WalkerPtr TileTrigger::create(PlayerCityPtr city)
+TileTrigger::TileTrigger( PlayerCityPtr city )
+  : Walker( city, walker::trigger ), _d( new Impl )
 {
-  TileTrigger* trigger = new TileTrigger( city );
-
-  WalkerPtr ret( trigger );
-  ret->drop();
-
-  return ret;
-}
-
-TileTrigger::TileTrigger( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
-{
-  _setType( walker::trigger );
-
   setName( _("##trigger##") );
   _setHealth( 0 );
 

@@ -18,7 +18,7 @@
 
 #include "gl_engine.hpp"
 
-#ifdef CAESARIA_GL_RENDER
+#ifdef GAME_GL_RENDER
 
 #include <cstdlib>
 #include <string>
@@ -40,20 +40,20 @@
 #include <SDL_ttf.h>
 
 
-#ifndef CAESARIA_PLATFORM_WIN
+#ifndef GAME_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   #define glOrtho glOrthof
-  #undef CAESARIA_USE_FRAMEBUFFER
+  #undef GAME_USE_FRAMEBUFFER
   #include <SDL_opengles.h>
   #define USE_GLES
 #else
   #include <SDL_opengl.h>
 #endif
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   #ifndef GL_GLEXT_PROTOTYPES
     #define ASSIGNGLFUNCTION(type,name) name = (type)wglGetProcAddress( #name );
     PFNGLCREATESHADERPROC glCreateShader;
@@ -83,7 +83,7 @@
     PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
   #endif
 
-  #ifndef CAESARIA_PLATFORM_MACOSX
+  #ifndef GAME_PLATFORM_MACOSX
     #define glGenFramebuffers         glGenFramebuffersEXT
     #define glGenTextures             glGenTexturesEXT
     #define glGenRenderbuffers        glGenRenderbuffersEXT
@@ -95,10 +95,10 @@
     #define glFramebufferTexture2D    glFramebufferTexture2DEXT
   #endif
 #else
-  #undef CAESARIA_USE_SHADERS
+  #undef GAME_USE_SHADERS
 #endif
 
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "pictureconverter.hpp"
 #include "core/utils.hpp"
 #include "core/time.hpp"
@@ -106,7 +106,7 @@
 
 namespace gfx{
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
 
 static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
 "void main(void) \n"
@@ -213,14 +213,14 @@ void FrameBuffer::_createFramebuffer( unsigned int& id )
   int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
   {
-    Logger::warning( "FrameBuffer:: init framebuffer so good ");
+    Logger::debug( "FrameBuffer:: init framebuffer so good ");
   }
   else
   {
      if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
      {
        _isOk = false;
-       Logger::warning("FrameBuffer:: init framebuffer failed");
+       Logger::debug("FrameBuffer:: init framebuffer failed");
      }
   }
 }
@@ -360,7 +360,7 @@ void PostprocFilter::setVariables(const VariantMap& variables)
 
 void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
 {
-#ifdef CAESARIA_USE_SHADERS
+#ifdef GAME_USE_SHADERS
   vfs::NFile file = vfs::NFile::open( fragmentShader );
   if( !file.isOpen() )
     return;
@@ -407,7 +407,7 @@ void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
   glGetProgramiv(_program, GL_LINK_STATUS, &linked);
   if( linked )
   {
-    Logger::warning( "GlEngine: sucessful link shader program " + fragmentShader.toString() );
+    Logger::debug( "GlEngine: sucessful link shader program " + fragmentShader.toString() );
   }
 #endif
 }
@@ -431,8 +431,8 @@ void PostprocFilter::begin()
 {
   glUseProgram( _program );
 
-  foreach( i, _variables )
-    setUniformVar( i->first, i->second );
+  for( auto i : _variables )
+    setUniformVar( i.first, i.second );
 }
 
 
@@ -458,11 +458,11 @@ void EffectManager::load(vfs::Path effectModel)
 {
   VariantMap stream = config::load( effectModel );
 
-  VariantMap technique = stream.get( CAESARIA_STR_EXT(technique) ).toMap();
+  VariantMap technique = stream.get( STRINGIFY(technique) ).toMap();
 
-  foreach( pass, technique )
+  for( auto pass : technique )
   {
-    VariantMap variables = pass->second.toMap();
+    VariantMap variables = pass.second.toMap();
     PostprocFilterPtr effect = PostprocFilter::create();
     std::string shaderFile = variables.get( "shader" ).toString();
     variables.erase( "shader" );
@@ -492,7 +492,7 @@ public:
   Size viewportSize;
   bool useViewport;
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   FrameBuffer fb;
   EffectManager effects;
 #endif
@@ -505,7 +505,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
+      Logger::fatal( "!!! Unable to create SDL-window: {0}", SDL_GetError() );
       THROW("Failed to create window");
     }
   }
@@ -527,7 +527,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
+  Logger::debug( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -577,10 +577,10 @@ void GlEngine::init()
 
   _d->context = SDL_GL_CreateContext(_d->window);
 
-  Logger::warning("SDLGraficEngine: init successfull");
+  Logger::debug("SDLGraficEngine: init successfull");
 #endif
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   #ifndef GL_GLEXT_PROTOTYPES
     ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
     ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
@@ -608,15 +608,15 @@ void GlEngine::init()
     ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
     ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
   #endif //GL_GLEXT_PROTOTYPES
-#endif //CAESARIA_USE_FRAMEBUFFER
+#endif //GAME_USE_FRAMEBUFFER
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
-  Logger::warning( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
-  Logger::warning( "Vendor     : {}", glGetString(GL_VENDOR));
-  Logger::warning( "Renderer   : {}", glGetString(GL_RENDERER));
-  Logger::warning( "Version    : {}", glGetString(GL_VERSION));
-  Logger::warning( "Extensions : {}", glGetString(GL_EXTENSIONS));
+  Logger::debug( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
+  Logger::debug( "Vendor     : {}", glGetString(GL_VENDOR));
+  Logger::debug( "Renderer   : {}", glGetString(GL_RENDERER));
+  Logger::debug( "Version    : {}", glGetString(GL_VERSION));
+  Logger::debug( "Extensions : {}", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -633,14 +633,14 @@ void GlEngine::init()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  Logger::warning( "GrafixEngine: set caption");
+  Logger::debug( "GrafixEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
-                                               CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                               CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+                                               GAME_VERSION_MAJOR, GAME_VERSION_MINOR, GAME_VERSION_REVSN,
+                                               GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.initialize( _srcSize );
@@ -661,9 +661,9 @@ void GlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  if( flag == showMetrics )
   {
-    _d->debugFont = Font::create( FONT_2 );
+    _d->debugFont = Font::create( "FONT_2" );
   }
 }
 
@@ -705,15 +705,9 @@ Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects
   return Batch();
 }
 
-void GlEngine::unloadBatch(const Batch &batch)
-{
-
-}
-
-void GlEngine::setVirtualSize( const Size& rect )
-{
-
-}
+void GlEngine::updateBatch(Batch& batch, const Point& newpos) {}
+void GlEngine::unloadBatch(const Batch &batch) {}
+void GlEngine::setVirtualSize( const Size& rect ) {}
 
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
@@ -784,7 +778,7 @@ void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 
 void GlEngine::startRenderFrame()
 {
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.begin();
@@ -795,15 +789,15 @@ void GlEngine::startRenderFrame()
 
 void GlEngine::endRenderFrame()
 {
-  if( getFlag( Engine::debugInfo ) )
+  if( getFlag( Engine::showMetrics ) )
   {
     std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _d->fpsText.fill( 0, Rect() );
+    _d->fpsText.fill( ColorList::clear, Rect() );
     _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
     draw( _d->fpsText, Point( _srcSize.width() / 2, 2 ) );
   }
 
-#ifdef CAESARIA_USE_FRAMEBUFFER
+#ifdef GAME_USE_FRAMEBUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
     _d->fb.draw( _d->effects.effects() );

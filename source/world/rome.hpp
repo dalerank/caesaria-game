@@ -42,6 +42,7 @@ public:
   virtual PlayerPtr mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
+  virtual void load(const VariantMap &stream);
   virtual DateTime lastAttack() const;
   virtual int strength() const;
   virtual void delayTrade(unsigned int);

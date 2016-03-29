@@ -1,0 +1,9 @@
+{
+ title : "##health_advisor##"
+ sound : "fanfare"
+ text  : "Dieser Berater berichtet, wie viele funktionierende Badehäuser, Barbiere, Kliniken und Krankenhäuser es in der Stadt gibt, wie viele Personen sie nutzen und wie gut die allgemeine Versorgung durch sie ist. Wenn Sie ein Defizit in einem oder mehreren Bereichen entdecken, benutzen Sie die @Spezialkarte Gesundheit&, um die Viertel zu finden, die von neuen Gesundheitseinrichtung am meisten profitieren würden. Bürger, die von keinem Arzt besucht werden, haben ein größeres Risiko zu erkranken, insbesondere, wenn sie sich nicht gesund ernähren.\n\nDer Eintrag zur @Gesundheit& kann Ihnen dabei helfen, die Funktionsweise dieser Tafel zu verstehen."
+ uri : {
+  "Spezialkarte Gesundheit" : "special_card_selection"
+  "Gesundheit" : "health_and_sickness"
+ }
+}

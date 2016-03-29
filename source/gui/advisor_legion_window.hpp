@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/signals.hpp"
 #include "objects/predefinitions.hpp"
 #include "city/predefinitions.hpp"
@@ -29,10 +29,10 @@ namespace gui
 namespace advisorwnd
 {
 
-class Legion : public Window
+class Legion : public Base
 {
 public:
-  Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts);
+  Legion( Widget* parent, PlayerCityPtr city, FortList forts);
 
   virtual void draw( gfx::Engine& painter );
 
@@ -40,7 +40,6 @@ private:
   void _handleMove2Legion( FortPtr fort );
   void _handleRetreaLegion( FortPtr fort );
   void _handleServiceEmpire( FortPtr fort );
-  void _showHelp();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "active_points.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/variant_list.hpp"
 
 using namespace gfx;
@@ -31,7 +31,7 @@ ActivePoints::ActivePoints()
 
 TilePos ActivePoints::get( unsigned int index) const
 {
-  return index < maxPoints ? (*this)[index] : tilemap::invalidLocation();
+  return index < maxPoints ? (*this)[index] : TilePos::invalid();
 }
 
 void ActivePoints::set( unsigned int index, const TilePos& pos)

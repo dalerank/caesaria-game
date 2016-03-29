@@ -18,7 +18,7 @@
 #include "areainfo.hpp"
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/tilesarray.hpp"
 
 namespace city

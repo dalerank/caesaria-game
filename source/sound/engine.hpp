@@ -25,6 +25,7 @@
 #include "core/variant.hpp"
 #include "constants.hpp"
 #include "config.hpp"
+#include "core/signals.hpp"
 #include "core/singleton.hpp"
 
 namespace audio
@@ -38,7 +39,7 @@ public:
   void loadAlias(const vfs::Path& filename );
   void addFolder( vfs::Directory dir );
 
-  Volume volume( SoundType type ) const;
+  Volume volume(SoundType type) const;
 
   int maxVolumeValue() const;
 
@@ -47,41 +48,24 @@ public:
   void init();
   void exit();
 
-  void play( std::string sampleName, int volume, SoundType type, bool force=false);
+  void play(std::string sampleName, int volume, SoundType type, bool force=false);
   void play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
-  bool isPlaying(const std::string& sampleName ) const;
+  bool isPlaying(const std::string& sampleName) const;
 
-  void stop(const std::string& sampleName ) const;
-  void stop( int channel );
+  void stop(const std::string& sampleName) const;
+  void stop(int channel);
 
-  void run( bool& );
+  void run(bool&);
+public signals:
+  Signal0<>& onThemeStopped();
+
 private:
   Engine();
   void _updateSamplesVolume();
 
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-class Muter
-{
-public:
-  void activate( int value );
-  ~Muter();
-
-private:
-  std::map< SoundType, int > _states;
-};
-
-class SampleDeleter
-{
-public:
-  ~SampleDeleter();
-  void assign( const std::string& sampleName );
-
-private:
-  std::string _sample;
 };
 
 class Helper

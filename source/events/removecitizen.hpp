@@ -20,6 +20,7 @@
 
 #include "event.hpp"
 #include "game/citizen_group.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -27,7 +28,7 @@ namespace events
 class RemoveCitizens : public GameEvent
 {
 public:
-  static GameEventPtr create(TilePos center, const CitizenGroup& group );
+  static GameEventPtr create(const TilePos& center, const CitizenGroup& group );
 
 protected:
   virtual void _exec(Game& game, unsigned int time );
@@ -40,6 +41,6 @@ private:
   CitizenGroup _group;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_

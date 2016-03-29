@@ -21,58 +21,67 @@
 #include "variant.hpp"
 #include "delegate.hpp"
 
+/**
+ * @brief Simple [string,variant] map container
+ */
 class VariantMap : public std::map<std::string, Variant>
 {
 public:
-  typedef Delegate2< const std::string&, const Variant& > Visitor;
+  typedef Delegate2<const std::string&, const Variant&> Visitor;
 
-  VariantMap() {}
+  /**
+   * @brief default constructor
+   */
+  VariantMap();
 
-  VariantMap( const VariantMap& other )
-  {
-    *this = other;
-  }
+  static const Variant defValue;
 
-  VariantMap& operator+=(const VariantMap& other )
-  {
-    for (auto& it : other)
-    {
-      (*this)[ it.first ] = it.second;
-    }
+  /**
+   * @brief copy constructor
+   * @param parent container
+   */
+  VariantMap(const VariantMap& other);
 
-    return *this;
-  }
+  /**
+   * @brief will add values from other container
+   * @param other container
+   * @return ref to self
+   */
+  VariantMap& operator+=(const VariantMap& other );
 
-  void visitEach( Visitor visitor )
-  {
-    for (auto& it : *this)
-    {
-      visitor( it.first, it.second );
-    }
-  }
+  /**
+   * @brief Do function for each element in container
+   * @param function
+   */
+  void visitEach(Visitor visitor);
 
-  VariantMap& operator=(const VariantMap& other )
-  {
-    clear();
+  /**
+   * @brief replace values from other cotainer
+   * @param other container
+   * @return ref to self
+   */
+  VariantMap& operator=(const VariantMap& other);
 
-    for( auto& item : other)
-    {
-      (*this)[ item.first ] = item.second;
-    }
+  /**
+   * @brief find and return value by key or empty value
+   * @param key
+   * @param default value which returns if key not found
+   * @return variant
+   */
+  Variant get(const std::string& name,const Variant& defaultVal=defValue) const;
 
-    return *this;
-  }
+  /**
+   * @brief check this key contains in container
+   * @param key
+   * @return true if found
+   */
+  bool has(const std::string& name) const;
 
-  Variant get( const std::string& name, Variant defaultVal=Variant() ) const
-  {
-    VariantMap::const_iterator it = find( name );
-    return (it != end() ? it->second : defaultVal );
-  }
-
-  Variant toVariant() const
-  {
-    return Variant( *this );
-  }
+  /**
+   * @brief Convert container to variant
+   * @return variant
+   */
+  Variant toVariant() const;
 };
 
 #endif // __CAESARIA_VARIANT_MAP_H_INCLUDED__

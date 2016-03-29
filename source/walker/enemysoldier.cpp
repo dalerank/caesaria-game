@@ -42,12 +42,12 @@
 
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::britonSoldier, walker::britonSoldier, EnemySoldier, briton)
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::gladiatorRiot, walker::gladiatorRiot, EnemySoldier, glriot)
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSoldier, EnemySoldier, etruscan)
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::britonSoldier, EnemySoldier, briton )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::gladiatorRiot, EnemySoldier, glriot)
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::etruscanSoldier, EnemySoldier, etruscan)
 
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
-: Soldier( city, type )
+  : Soldier( city, type )
 {
   _setSubAction( check4attack );
   setAttackPriority( attackAll );
@@ -65,21 +65,21 @@ object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
-  WalkerList enemies = _findEnemiesInRange( attackDistance() );
+  WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
-  if( !enemies.empty() )
+  if( enemy.isValid() )
   {
     _setSubAction( Soldier::fightEnemy );
-    setTarget( enemies.front()->pos() );
+    setTarget( enemy->pos() );
     fight();
   }
   else
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
-    if( !constructions.empty() )
+    auto building = _findContructionsInRange( attackDistance() ).firstOrEmpty();
+    if( building.isValid() )
     {
       _setSubAction( Soldier::destroyBuilding );
-      setTarget( constructions.front()->pos() );
+      setTarget( building->pos() );
       fight();
     }
   }
@@ -136,7 +136,7 @@ void EnemySoldier::_reachedPathway()
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   WalkerList walkers;
 
   for( unsigned int k=0; k <= range; k ++ )
@@ -187,21 +187,21 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    int size = _city()->tilemap().size();
+    int size = _map().size();
     pathway = _findPathway2NearestConstruction( size/2 );
   }   
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::create( pos(), _city()->borderInfo().roadExit,
+    pathway = PathwayHelper::create( pos(), _city()->getBorderInfo( PlayerCity::roadExit ).epos(),
                                      PathwayHelper::allTerrain );
-    setTarget( TilePos( -1, -1) );
+    setTarget( TilePos::invalid() );
   }
 
   if( !pathway.isValid() )
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
-    setTarget( TilePos( -1, -1) );
+    setTarget( TilePos::invalid() );
     _failedWayCounter++;
   }
 
@@ -381,7 +381,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   case destroyBuilding:
   {    
     ConstructionList constructions;
-    ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( target() ) );
+    ConstructionPtr c = _map().overlay<Construction>( target() );
 
     if( c.isValid() && !_atExclude.count( c->group() ) )
     {
@@ -414,24 +414,13 @@ EnemySoldier::~EnemySoldier() {}
 
 int EnemySoldier::agressive() const { return 2; }
 
-EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, walker::Type type )
-{
-  EnemySoldierPtr ret( new EnemySoldier( city, type ) );
-  ret->setName( NameGenerator::rand( NameGenerator::male ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
-}
-
 void EnemySoldier::send2City( TilePos pos )
 {
   setPos( pos );
   _check4attack();
   attach();
 
-  events::GameEventPtr e = events::MilitaryThreat::create( 1 );
-  e->dispatch();
+  events::dispatch<events::MilitaryThreat>( 1 );
 }
 
 bool EnemySoldier::die()

@@ -19,6 +19,9 @@
 #define __CAESARIA_CITY_STATES_H_INCLUDED__
 
 #include "world/nation.hpp"
+#include "core/time.hpp"
+
+class VariantMap;
 
 namespace city
 {
@@ -28,7 +31,11 @@ struct States
   unsigned int age = 0;
   world::Nation nation = world::nation::unknown;
   unsigned int population = 0;
-  bool romeCity = false;
+  int favor = 0;
+  int money = 0;
+  DateTime birth;
+
+  VariantMap save() const;
 };
 
 }//end namespace city

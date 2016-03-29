@@ -28,20 +28,20 @@ REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorPalace, GovernorsPalace)
 // housng1a 47 - governor's villa    4 x 4
 // housng1a 48 - governor's palace   5 x 5
 
-GovernorsHouse::GovernorsHouse() : WorkingBuilding( object::governorHouse, Size(3) )
+GovernorsHouse::GovernorsHouse() : WorkingBuilding( object::governorHouse, Size(3,3) )
 {
   setMaximumWorkers(5);
   _picture().load( ResourceGroup::housing, 46 );
 }
 
-GovernorsVilla::GovernorsVilla() : WorkingBuilding( object::governorVilla, Size(4) )
+GovernorsVilla::GovernorsVilla() : WorkingBuilding( object::governorVilla, Size(4,4) )
 {
   setMaximumWorkers(10);
   setWorkers(0);    
   _picture().load( ResourceGroup::housing, 47 );
 }
 
-GovernorsPalace::GovernorsPalace() : WorkingBuilding( object::governorPalace, Size( 5 ) )
+GovernorsPalace::GovernorsPalace() : WorkingBuilding( object::governorPalace, Size(5,5) )
 {
   setMaximumWorkers(15);
   setWorkers(0);  

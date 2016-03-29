@@ -21,14 +21,16 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
+#include "layers/layer.hpp"
 #include "objects/predefinitions.hpp"
 
-class SenatePopupInfo
+class SenatePopupInfo : public citylayer::LayerDrawPass
 {
 public:
   SenatePopupInfo();
 
-  void draw(const Point& cursorPos, gfx::Engine& painter, SenatePtr senate);
+  virtual void draw( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+
   ~SenatePopupInfo();
 private:
   class Impl;

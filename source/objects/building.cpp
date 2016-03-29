@@ -33,6 +33,7 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
+#include "good/storage.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -94,7 +95,6 @@ public:
   }
 };
 
-
 class TraineeMap : public std::map<walker::Type,int>
 {
 public:
@@ -136,8 +136,8 @@ public:
   CityKoeffs cityKoeffs;
 };
 
-Building::Building(const object::Type type, const Size& size )
-: Construction( type, size ), _d( new Impl )
+Building::Building(object::Type type, const Size& size)
+  : Construction(type, size), _d(new Impl)
 {
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
@@ -172,6 +172,12 @@ void Building::storeGoods(good::Stock &stock, const int amount)
   std::string bldType = debugName();
   Logger::warning( "This building should not store any goods {0} at [{1},{2}]",
                    bldType, pos().i(), pos().j() );
+}
+
+good::Store& Building::store()
+{
+  static good::Storage invalidStorage;
+  return invalidStorage;
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)
@@ -250,10 +256,10 @@ float Building::evaluateTrainee(walker::Type traineeType)
 void Building::reserveTrainee(walker::Type traineeType) { _d->reserved.trainees.reserve(traineeType); }
 void Building::cancelTrainee(walker::Type traineeType) { _d->reserved.trainees.erase(traineeType);}
 
-void Building::updateTrainee(  TraineeWalkerPtr walker )
+void Building::updateTrainee( TraineeWalkerPtr walker )
 {
    _d->reserved.trainees.erase( walker->type() );
-   _d->trainees[ walker->type() ] += walker->value() ;
+   _d->trainees[ walker->type() ] += walker->value();
 }
 
 void Building::setTraineeValue(walker::Type type, int value)
@@ -292,13 +298,13 @@ Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
 
 void Building::_updateBalanceKoeffs()
 {
-  if( !_city().isValid() )
+  if (!_city().isValid())
     return;
 
   float balance = std::max<float>( _city()->statistic().balance.koeff(), 0.1f );
 
-  float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
-  if( !_city()->getOption(PlayerCity::c3gameplay) )
+  float fireKoeff = balance * _cityOpt(PlayerCity::fireKoeff) / 100.f;
+  if (!_cityOpt(PlayerCity::c3gameplay))
   {
     int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
     if( anyWater > 0 )
@@ -306,5 +312,5 @@ void Building::_updateBalanceKoeffs()
   }
 
   _d->cityKoeffs.fireRisk = math::clamp( fireKoeff, 0.f, 9.f );
-  _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
+  _d->cityKoeffs.collapseRisk = balance * _cityOpt(PlayerCity::collapseKoeff) / 100.f;
 }

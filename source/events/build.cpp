@@ -16,15 +16,14 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "build.hpp"
-#include "objects/objects_factory.hpp"
-#include "game/game.hpp"
-#include "game/funds.hpp"
-#include "playsound.hpp"
+#include <GameApp>
+#include <GameCore>
+#include <GameEvents>
+#include <GameObjects>
+#include <GameLogger>
+
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
-#include "core/logger.hpp"
-#include "objects/working.hpp"
-#include "warningmessage.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -34,7 +33,7 @@ namespace events
 
 GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
-  return create( pos, TileOverlayFactory::instance().create( type ) );
+  return create( pos, Overlay::create( type ) );
 }
 
 GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
@@ -56,20 +55,19 @@ void BuildAny::_exec( Game& game, unsigned int )
   if( _overlay.isNull() )
     return;
 
-  OverlayPtr ctOv = game.city()->getOverlay( _pos );
+  OverlayPtr overlay2build = game.city()->getOverlay( _pos );
 
   bool mayBuild = true;
-  if( ctOv.isValid() )
+  if( overlay2build.isValid() )
   {
-    mayBuild = ctOv->isDestructible();
+    mayBuild = overlay2build->isDestructible();
   }
 
   TilePos offset(10, 10);
   int enemies_n =  game.city()->statistic().walkers.count<EnemySoldier>( _pos - offset, _pos + offset );
   if( enemies_n > 0 && _overlay->group() != object::group::disaster)
   {
-    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##too_close_to_enemy_troops##", 2 );
     return;
   }
 
@@ -80,7 +78,9 @@ void BuildAny::_exec( Game& game, unsigned int )
 
     if( !buildOk )
     {
-      Logger::warning( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
+      if (!_overlay->errorDesc().empty())
+        events::dispatch<WarningMessage>(_overlay->errorDesc(), 1);
+      Logger::info( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
       return;
     }
 
@@ -95,21 +95,18 @@ void BuildAny::_exec( Game& game, unsigned int )
 
       if( construction->group() != object::group::disaster )
       {
-        auto event = PlaySound::create( "buildok", 1, 100 );
-        event->dispatch();
+        events::dispatch<PlaySound>( "buildok", 1, 100 );
       }
 
       if( construction->isNeedRoad() && construction->roadside().empty() )
       {
-        auto event = WarningMessage::create( "##building_need_road_access##", 1 );
-        event->dispatch();
+        events::dispatch<WarningMessage>( "##building_need_road_access##", 1 );
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        auto event = WarningMessage::create( error, 1 );
-        event->dispatch();
+        events::dispatch<WarningMessage>( error, 1 );
       }
 
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
@@ -118,15 +115,13 @@ void BuildAny::_exec( Game& game, unsigned int )
         unsigned int worklessCount = game.city()->statistic().workers.workless();
         if( worklessCount < wb->maximumWorkers() )
         {
-          auto event = WarningMessage::create( "##city_need_more_workers##", 2 );
-          event->dispatch();
+          events::dispatch<WarningMessage>( "##city_need_more_workers##", 2 );
         }
 
         int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
-          auto event = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
-          event->dispatch();
+          events::dispatch<WarningMessage>( "##working_build_poor_labor_warning##", 2 );
         }
       }
     }
@@ -136,10 +131,12 @@ void BuildAny::_exec( Game& game, unsigned int )
     auto construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      auto event = WarningMessage::create( construction->errorDesc(), 1 );
-      event->dispatch();
+      events::dispatch<WarningMessage>( construction->errorDesc(), 1 );
     }
   }
+
+  if(game.isPaused())
+    game.step(1);
 }
 
 } //end namespace events

@@ -28,14 +28,14 @@ REGISTER_CLASS_IN_WIDGETFACTORY(MultilineButton)
 MultilineButton::MultilineButton(Widget *parent, const Rect& rectangle, const StringArray& strs, int id)
   : PushButton( parent, rectangle, "", id )
 {
-  _layout = new VLayout( this, Rect( 0, 0, width(), height()), -1 );
+  _layout = &add<VLayout>( Rect( 0, 0, width(), height()), -1 );
   setText( _strings );
 }
 
 MultilineButton::MultilineButton(Widget *parent)
   : PushButton( parent, Rect(), "", -1 )
 {
-  _layout = new VLayout( this, Rect( 0, 0, width(), height()), -1 );
+  _layout = &add<VLayout>( Rect( 0, 0, width(), height()), -1 );
 }
 
 Label* MultilineButton::line( unsigned int index)
@@ -49,7 +49,7 @@ Label* MultilineButton::line( unsigned int index)
   return safety_cast<Label*>( *it );
 }
 
-void gui::MultilineButton::setLineFont(unsigned int index, Font font)
+void MultilineButton::setLineFont(unsigned int index, Font font)
 {
   Label* lb = line( index );
   if( lb )
@@ -73,13 +73,13 @@ void MultilineButton::setText(const StringArray& text)
   PushButton::setText( "" );
   _strings = text;
   Widgets children = _layout->children();
-  for( auto&& child : children )
+  for( auto& child : children )
     child->remove();
 
   for( auto& it : _strings )
   {
-    Label* lb = new Label( _layout, Rect(), it );
-    lb->setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
+    auto& label = _layout->add<Label>( Rect(), it );
+    label.setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
   }
 }
 

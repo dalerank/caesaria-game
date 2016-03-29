@@ -41,21 +41,23 @@ public:
   DivinityList divinties;
 };
 
-Pantheon::Pantheon() : _d( new Impl )
+Pantheon::Pantheon() : _d(new Impl)
 {
-  _d->divinties.push_back( rome::Ceres::create() );
-  _d->divinties.push_back( rome::Neptune::create() );
-  _d->divinties.push_back( rome::Mercury::create() );
-  _d->divinties.push_back( rome::Venus::create() );
-  _d->divinties.push_back( rome::Mars::create() );
+#define ADD_GOD(type) _d->divinties.push_back(new type()); _d->divinties.back()->drop();
+  ADD_GOD(Ceres)
+  ADD_GOD(Neptune)
+  ADD_GOD(Mercury)
+  ADD_GOD(Venus)
+  ADD_GOD(Mars)
+#undef ADD_GOD
 }
 
-DivinityPtr Pantheon::get( RomeDivinityType name )
+DivinityPtr Pantheon::get(RomeDivinity::Type name )
 {
-  return get( baseDivinityNames[ name ] );
+  return get( RomeDivinity::findIntName( name ) );
 }
 
-DivinityPtr Pantheon::get( const std::string& name)
+DivinityPtr Pantheon::get(const std::string& name)
 {
   DivinityList divines = instance().all();
   for( auto& current : divines )
@@ -67,29 +69,37 @@ DivinityPtr Pantheon::get( const std::string& name)
   return DivinityPtr();
 }
 
+DivinityPtr Pantheon::add(const std::string& name)
+{
+  DivinityPtr divn = get(name);
+
+  if (divn.isNull())
+  {
+    auto& gods = instance()._d->divinties;
+    divn = DivinityPtr(new RomeDivinity(RomeDivinity::Type(gods.size())));  
+    divn->setInternalName(name);
+    divn->drop();
+
+    gods.push_back(divn); //remove automatically
+  }
+
+  return divn;
+}
+
 Pantheon::~Pantheon() {}
 DivinityList Pantheon::all(){ return _d->divinties; }
-DivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
-DivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
-DivinityPtr Pantheon::venus(){ return get( romeDivVenus ); }
-DivinityPtr Pantheon::mercury(){  return get( romeDivMercury ); }
-DivinityPtr Pantheon::ceres() {  return get( romeDivCeres );}
+DivinityPtr Pantheon::mars(){  return get( RomeDivinity::Mars ); }
+DivinityPtr Pantheon::neptune() { return get( RomeDivinity::Neptune ); }
+DivinityPtr Pantheon::venus(){ return get( RomeDivinity::Venus ); }
+DivinityPtr Pantheon::mercury(){  return get( RomeDivinity::Mercury ); }
+DivinityPtr Pantheon::ceres() {  return get( RomeDivinity::Ceres );}
 
-void Pantheon::load( const VariantMap& stream )
+void Pantheon::load(const VariantMap& stream)
 {  
-  for( int index=0; baseDivinityNames[ index ] != 0; index++ )
+  for( auto name : RomeDivinity::getIntNames() )
   {
-    DivinityPtr divn = get( baseDivinityNames[ index ] );
-
-    if( divn.isNull() )
-    {
-      divn = DivinityPtr( new rome::RomeDivinity() );
-      divn->setInternalName( baseDivinityNames[ index ] );
-      divn->drop();
-      _d->divinties.push_back( divn );
-    }
-
-    divn->load( stream.get( baseDivinityNames[ index ] ).toMap() );
+    auto divn = get(name);
+    divn->load( stream.get(name).toMap() );
   }
 }
 
@@ -103,7 +113,7 @@ void Pantheon::save(VariantMap& stream)
   }
 }
 
-void Pantheon::doFestival( RomeDivinityType who, int type )
+void Pantheon::doFestival(RomeDivinity::Type who, int type )
 {
   auto divn = get( who ).as<RomeDivinity>();
   if( divn.isValid() )

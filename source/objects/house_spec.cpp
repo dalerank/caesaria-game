@@ -46,7 +46,7 @@ public:
   std::string levelName;
   std::string internalName;
   unsigned int srvcInterval, goodInterval, foodInterval;
- 
+
   int taxRate;
 
   // required services
@@ -121,7 +121,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
       case 0: ref = "##missing_entertainment_theater##"; needBuilding = object::theater; break;
       case 1: ref = "##missing_entertainment_amph##"; needBuilding = object::amphitheater; break;
       case 2: ref = "##missing_entertainment_also##"; needBuilding = object::amphitheater; break;
-      case 3: ref = "##missing_entertainment_colloseum##"; needBuilding = object::colloseum; break;
+      case 3: ref = "##missing_entertainment_colosseum##"; needBuilding = object::colosseum; break;
       case 4: ref = "##missing_entertainment_hippodrome##"; needBuilding = object::hippodrome; break;
         //##missing_entertainment_patrician##
       }
@@ -198,35 +198,35 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
     return false;
   }
 
-  if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
+  if( _d->requiredGoods[good::pottery] != 0 && house->store().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
     needBuilding = object::pottery_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
+  if( _d->requiredGoods[good::furniture] != 0 && house->store().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
     needBuilding = object::furniture_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
+  if( _d->requiredGoods[good::oil] != 0 && house->store().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
     needBuilding = object::oil_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
+  if( _d->requiredGoods[good::wine] != 0 && house->store().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
     needBuilding = object::wine_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
+  if( _d->requiredGoods[good::prettyWine] != 0 && house->store().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
     needBuilding = object::wine_workshop;
@@ -247,18 +247,17 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   default: break;
   }
 
-  Logger::warning( "!!!Warning: Unknown interval name {0}", name );
+  Logger::warning( "!!! Unknown interval name {0}", name );
   return 0;
 }
 
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
   int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
-  TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
   BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
-                                                                               housePos - offset, housePos + offset );
+                                                                               housePos, aresOffset );
 
   int ret = 0;
   for( auto bld : buildings )
@@ -325,7 +324,7 @@ int HouseSpecification::computeFoodLevel(HousePtr house) const
 {
   int res = 0;
 
-  const good::Store& goodStore = house->goodStore();
+  const good::Store& goodStore = house->store();
   res += goodStore.qty(good::wheat) > 0 ? 1 : 0;
   res += goodStore.qty(good::fish) > 0 ? 1 : 0;
   res += goodStore.qty(good::meat) > 0 ? 1 : 0;
@@ -341,7 +340,7 @@ int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
    int res = 0;
    res += house->hasServiceAccess(Service::theater) ? 10 : 0;
    res += house->hasServiceAccess(Service::amphitheater) ? 20 : 0;
-   res += house->hasServiceAccess(Service::colloseum) ? 30 : 0;
+   res += house->hasServiceAccess(Service::colosseum) ? 30 : 0;
    res += house->hasServiceAccess(Service::hippodrome) ? 40 : 0;
    return res;
 }
@@ -405,10 +404,10 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   bool haveLibrary = house->hasServiceAccess(Service::library);
   if( haveSchool )
   {
-    res = 1;   
+    res = 1;
     if( haveAcademy )
     {
-      res = 2;      
+      res = 2;
       if( haveLibrary )
       {
         res = 3;
@@ -459,7 +458,7 @@ float HouseSpecification::evaluateServiceNeed(HousePtr house, const Service::Typ
       break;
    case Service::theater:
    case Service::amphitheater:
-   case Service::colloseum:
+   case Service::colosseum:
    case Service::hippodrome:
       res = evaluateEntertainmentNeed(house, service);
       break;
@@ -631,7 +630,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 {
   PlayerCityPtr city = house->_city();
 
-  TilesArea area( city->tilemap(), house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
+  TilesArea area( city->tilemap(), house->pos() - TilePos( 2, 2 ), house->size() + Size(4, 4) );
 
   float middleDesirbl = 0;;
 
@@ -687,7 +686,7 @@ HouseSpecHelper& HouseSpecHelper::instance()
 
 HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
-  Logger::warning( "HouseLevelSpec INIT" );
+  Logger::debug( "HouseLevelSpec INIT" );
 }
 
 HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
@@ -740,7 +739,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->minEducationLevel = hSpec.get( "education" ).toInt();
     spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
-    
+
     spec._d->requiredGoods[good::wheat] = 1;  // hard coded ... to be changed!
     spec._d->requiredGoods[good::fish] = 1;
     spec._d->requiredGoods[good::meat] = 1;
@@ -763,13 +762,13 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
     for( auto& v : varConsumptions )
     {
-      spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
+      spec._d->consumptionMuls[ good::Helper::type( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
     for( auto& it : vmTextures )
     {
-      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
+      std::string arName = fmt::format( "h{}_{}", spec._d->houseLevel, it.first );
       StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];

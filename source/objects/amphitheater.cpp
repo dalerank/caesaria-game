@@ -47,7 +47,7 @@ public:
 };
 
 Amphitheater::Amphitheater()
-  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
+  : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3,3)), _d( new Impl )
 {
   _fgPictures().resize(2);
 
@@ -91,7 +91,7 @@ bool Amphitheater::build( const city::AreaInfo& info)
   GladiatorSchoolList gladiators = info.city->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
   if( gladiators.empty() )
   {
-    _setError( "##colloseum_haveno_gladiatorpit##" );
+    _setError( "##colosseum_haveno_gladiatorpit##" );
   }
 
   return true;
@@ -110,7 +110,7 @@ void Amphitheater::deliverService()
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
-      (lastSrvc == Service::colloseum
+      (lastSrvc == Service::colosseum
         ? _d->lastshow.glads : _d->lastshow.arts ) = game::Date::current();
     }
   }

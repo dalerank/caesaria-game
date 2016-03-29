@@ -1,0 +1,8 @@
+{
+ title : "##wine##"
+ sound : "fanfare"
+ text  : "Der Ursprung des Weines liegt in der Urzeit verborgen. Viele Tierarten wurden dabei beobachtet, wie sie bevorzugt fermentierte Beeren zu sich nahmen und einige Anthropologen behaupten, das die Menschheit nur aus dem Grund die Landwirtschaft erlernt hatte, um einen ausreichende Bestand an alkoholischen Getränken sicherzustellen. Einige der ältesten @Tonscherben& liefern den Beweis dafür, dass die Gefäße früher einmal Traubensaft enthalten hatten. Wein war also bereits in Zeiten der Römer ein uraltes Getränk.\nKeine Orgie war ohne den reichlich fließenden Wein komplett, der zu jeder Mahlzeit und zu jeder Tages- und Nachtzeit getrunken wurde. Römer, die einfach nur ihren Durst stillen, wollten, mischten ihren Wein mit Wasser. Wein wurde im römischen Kaiserreich an vielen Orten produziert. Heute wie damals hatten Weinkenner ihre bevorzugten Lagen, und obwohl es sich bei Wein um ein lokales Produkt handelte, wurde Wein ausgiebig gehandelt und über weite Strecken verschifft."
+ uri : {
+  "Tonscherben" : "pottery_history"
+ }
+}

@@ -20,7 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "gfx/predefinitions.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace city
 {
@@ -30,6 +30,7 @@ class AreaInfo
 public:
   PlayerCityPtr city;
   TilePos pos;
+  bool onload = false;
 
   const gfx::TilesArray& tiles() const;
   const gfx::Tile& tile() const;

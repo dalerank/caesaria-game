@@ -28,7 +28,6 @@ class Peace : public city::Srvc
 {
 public:
   typedef enum { rskNone, rskRiots } Risk;
-  static city::SrvcPtr create(PlayerCityPtr city);
 
   virtual void timeStep( const unsigned int time );
   void addCriminal( WalkerPtr wlk );
@@ -41,8 +40,9 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
-private:
+
   Peace(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -114,8 +114,6 @@ public:
   //! determines if a file exists and would be able to be opened.
   bool existFile(const Path& filename, Path::SensType sens=Path::nativeCase) const;
 
-  DateTime getFileUpdateTime( const Path& filename ) const;
-
   Mode setMode( Mode listType );
 
 private:

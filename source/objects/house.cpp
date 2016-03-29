@@ -17,7 +17,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
-#include "gfx/helper.hpp"
 #include "objects/house_spec.hpp"
 #include "core/utils.hpp"
 #include "core/exception.hpp"
@@ -38,6 +37,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
@@ -57,10 +57,10 @@ namespace {
          maxTableTax=25, defaultHappiness=50, maxHappiness=100 };
 
   static int happines4tax[maxTableTax] = { 10,  9,  7,  6,  4,
-                                                2,  1,  0, -1,  -2,
-                                               -2, -3, -4, -5,  -7,
-                                               -9,-11,-13,-15, -17,
-                                              -19,-21,-23,-27, -31 };
+                                            2,  1,  0, -1, -2,
+                                           -2, -3, -4, -5, -7,
+                                           -9,-11,-13,-15,-17,
+                                          -19,-21,-23,-27,-31 };
 
   int getHappines4tax( int tax )
   {
@@ -114,8 +114,8 @@ class Services : public std::map<Service::Type, ISrvcAdapter*>
 public:
   ~Services()
   {
-    foreach(it, *this)
-      delete it->second;
+    for( auto& it : *this)
+      delete it.second;
   }
 
   Services()
@@ -162,10 +162,10 @@ public:
   VariantList save() const
   {
      VariantList ret;
-     foreach( mapItem, *this )
+     for( auto& mapItem : *this )
      {
-       ret.push_back( Variant( (int)mapItem->first ) );
-       ret.push_back( Variant( mapItem->second->value() ) );
+       ret.push_back( Variant( (int)mapItem.first ) );
+       ret.push_back( Variant( mapItem.second->value() ) );
      }
 
      return ret;
@@ -188,11 +188,12 @@ public:
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   good::Storage goodstore;
-  Services services;  // value=access to the service (0=no access, 100=good access)  
+  Services services;  // value=access to the service (0=no access, 100=good access)
   Point randomOffset;
   std::string evolveInfo;
   Habitants habitants;
   Animation healthAnimation;
+  WalkerList walkers;
 
   bool isFlat;
   int currentYear;
@@ -309,17 +310,25 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
+  int maxPatriciansNumber = size().width();
+  if( walkers().count<Patrician>() >= maxPatriciansNumber )
+  {
+    Logger::warning( "!!! House [{},{}] also have maximum patricians in deals", pos().i(), pos().j() );
+    return;
+  }
+
   const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
-    PatricianPtr patric = Patrician::create( _city() );
-    patric->send2City( roads.front()->pos() );
+    auto patrician = Walker::create<Patrician>( _city() );
+    patrician->send2City( this );
   }
 }
 
 void House::_updateTax()
 {
-  int difficulty = _city()->getOption( PlayerCity::difficulty );
+  bool newEconomyModel = _cityOpt(PlayerCity::housePersonalTaxes);
+  int difficulty = _cityOpt(PlayerCity::difficulty);
   float multiply = 1.0f;
   switch (difficulty)
   {
@@ -333,9 +342,19 @@ void House::_updateTax()
   }
 
   float cityTax = _city()->treasury().taxRate() / 100.f;
-  cityTax = (multiply * _d->habitants.mature_n() / _d->spec.taxRate()) * cityTax;
 
-  _d->economy.money -= cityTax;
+  if( newEconomyModel )
+  {
+    float oneManTaxInMonth = spec().taxRate() / (float)spec().tileCapacity();
+    cityTax = multiply * habitants().count() * oneManTaxInMonth * cityTax;
+    _d->economy.money -= cityTax;
+  }
+  else
+  {
+    cityTax = multiply * spec().taxRate() * cityTax * size().area();
+    _d->economy.money = 10;
+  }
+
   _d->economy.tax += cityTax;
 }
 
@@ -406,9 +425,12 @@ void House::_updateCrime()
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
-    TilesArea tiles( _city()->tilemap(), pos() - offset, pos() + sizeOffset + offset );
+    TilesArea tiles( _map(), pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
-    foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
+
+    for( auto it : tiles )
+      averageDes += it->param( Tile::pDesirability );
+
     averageDes /= (tiles.size() + 1);
 
     desirabilityInfluence = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );
@@ -429,7 +451,7 @@ void House::_updateCrime()
                   + foodStockInfluence
                   + poverityHouse
                   + desirabilityInfluence
-                  + (int)state( pr::happinessBuff );  
+                  + (int)state( pr::happinessBuff );
 
   _d->needHappiness = curHappiness;
 
@@ -497,7 +519,7 @@ void House::timeStep(const unsigned long time)
     {
       _levelDown();
     }
-    return; 
+    return;
   }
 
   if( _d->currentYear != game::Date::current().year() )
@@ -512,11 +534,11 @@ void House::timeStep(const unsigned long time)
   if( game::Date::isMonthChanged() )
   {
     setState( pr::settleLock, 0 );
-    _updateTax(); 
+
+    _updateTax();
 
     if( _d->economy.money > 0 ) { _d->poverity--; }
     else { _d->poverity += 2; }
-
     _d->poverity = math::clamp( _d->poverity, 0, 100 );
   }
 
@@ -529,6 +551,11 @@ void House::timeStep(const unsigned long time)
     _checkPatricianDeals();
   }
 
+  if( game::Date::isDayChanged() )
+  {
+    utils::eraseIfDeleted( _d->walkers );
+  }
+
   Building::timeStep( time );
 }
 
@@ -536,8 +563,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 {
   if( size().width() == 1 )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArea area( tmap, pos(), Size(2) );
+    TilesArea area( _map(), pos(), Size(2,2) );
 
     bool mayGrow = true;
 
@@ -557,7 +583,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
         {
           mayGrow = false;
           break;
-        }            
+        }
       }
       else
       {
@@ -573,14 +599,14 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       TilesArray::iterator delIt=area.begin();
       auto selfHouse = (*delIt)->overlay<House>( );
 
-      _d->initGoodStore( Size( growSize ).area() );
+      _d->initGoodStore( Size(growSize, growSize).area() );
 
       ++delIt; //don't remove himself
       for( ; delIt != area.end(); ++delIt )
       {
         auto house = (*delIt)->overlay<House>();
         if( house.isValid() )
-        {          
+        {
           sumHabitants += house->habitants();
 
           house->deleteLater();
@@ -590,7 +616,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 
           house->_setServiceMaxValue( Service::recruter, 0 );
 
-          selfHouse->goodStore().storeAll( house->goodStore() );
+          selfHouse->store().storeAll( house->store() );
         }
       }
 
@@ -600,7 +626,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       //reset desirability level with old house size
       Desirability::update( _city(), this, Desirability::off );
 
-      setSize( Size( growSize ) );
+      setSize( Size(growSize, growSize) );
       //_update( false );
 
       city::AreaInfo info( _city(), pos() );
@@ -627,19 +653,19 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
   bool mayGrow = true;
   TilePos buildPos = tile().pos();
 
-  if( size() == Size( minSize-1 ) )
+  if( size() == Size( minSize-1,minSize-1 ) )
   {
-    Tilemap& tmap = _city()->tilemap();
+    Tilemap& tmap = _map();
     std::map<TilePos, TilesArray> possibleAreas;
 
     TilePos sPos = tile().pos();
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 1, 0 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 1, 1 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
     sPos = tile().pos() - TilePos( 0, 1 );
-    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize,minSize) );
 
     foreach( itArea, possibleAreas )
     {
@@ -682,8 +708,8 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
       {
         buildPos = itArea->first;
         Desirability::update( _city(), this, Desirability::off );
-        setSize( Size( minSize ) );
-        _update( true );
+        setSize(Size(minSize, minSize));
+        _update(true);
         city::AreaInfo info( _city(), buildPos );
         build( info );
 
@@ -766,8 +792,7 @@ void House::_levelUp()
 
     if( _d->houseLevel == HouseLevel::smallVilla )
     {
-      GameEventPtr e = FireWorkers::create( pos(), habitants().mature_n() );
-      e->dispatch();
+      events::dispatch<FireWorkers>( pos(), habitants().mature_n() );
     }
 
     _update( true );
@@ -816,7 +841,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
       tile->setOverlay( 0 );
     }
 
-    setSize( Size( rsize ) );
+    setSize(Size(rsize, rsize));
     city::AreaInfo info( _city(), bpos + moveVector );
     build( info );
   }
@@ -869,20 +894,17 @@ void House::_levelDown()
 
   case HouseLevel::hovel:
   {
-    Tilemap& tmap = _city()->tilemap();
-
     if( size().area() > 1 )
     {
-      TilesArray perimetr = tmap.area( pos(), Size(2) );
+      TilesArray perimetr = _map().area( pos(), Size(2,2) );
       int peoplesPerHouse = habitants().count() / 4;
-      foreach( tile, perimetr )
+      for( auto tile : perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( object::house ) );
+        auto house = Overlay::create<House>( object::house );
         CitizenGroup moveGroup = removeHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 
-        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<Overlay>( house ) );
-        event->dispatch();
+        events::dispatch<BuildAny>( tile->pos(), ptr_cast<Overlay>( house ) );
       }
 
       _setServiceMaxValue( Service::recruter, 0 );
@@ -917,13 +939,13 @@ void House::_levelDown()
 
 void House::buyMarket( ServiceWalkerPtr walker )
 {
-  MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
+  MarketPtr market = _map().overlay<Market>( walker->baseLocation() );
   if( market.isNull() )
     return;
 
   good::Store& marketStore = market->goodStore();
 
-  good::Store& houseStore = goodStore();
+  good::Store& houseStore = store();
   for( auto& goodType : good::all() )
   {
     int houseQty = houseStore.qty(goodType);
@@ -972,7 +994,7 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::academy:
   case Service::theater:
   case Service::amphitheater:
-  case Service::colloseum:
+  case Service::colosseum:
   case Service::hippodrome:
     setServiceValue(service, 100);
   break;
@@ -987,12 +1009,12 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::senate:
     setServiceValue(Service::forum,100);
   break;
-  
+
   case Service::market:
     setServiceValue( Service::market, 100 );
     buyMarket(walker);
   break;
- 
+
   case Service::prefect:
     appendServiceValue(Service::crime, -25);
   break;
@@ -1040,9 +1062,9 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::market:
   {
-    MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
+    MarketPtr market = _map().overlay<Market>( walker->baseLocation() );
     good::Store& marketStore = market->goodStore();
-    good::Store& houseStore = goodStore();
+    good::Store& houseStore = store();
     foreach( goodType, good::all() )
     {
       int houseQty = houseStore.qty( *goodType) / 10;
@@ -1064,7 +1086,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::recruter:
     res = spec().isPatrician() ? 0 : getServiceValue( service );
-  break;   
+  break;
 
   default:
   {
@@ -1092,9 +1114,16 @@ TilesArray House::enterArea() const
 
 bool House::build( const city::AreaInfo& info )
 {
-  bool ret = Building::build( info );  
+  bool ret = Building::build( info );
   _update( true );
   return ret;
+}
+
+bool House::getMinimapColor(int& color1, int& color2) const
+{
+  if( size().width() == 1 ) { color1 = 0xFFA273; color2 = 0xEF824A; }
+  else { color1 = 0xFFB28C; color2 = 0xD65110; }
+  return true;
 }
 
 const Pictures& House::pictures(Renderer::Pass pass) const
@@ -1108,7 +1137,7 @@ const Pictures& House::pictures(Renderer::Pass pass) const
   return Building::pictures( pass );
 }
 
-double House::state(Param param) const
+float House::state(int param) const
 {
   if( param == pr::food ) { return _d->getFoodLevel(); }
   else if( param == pr::health ) { return Building::state( pr::health ) + Building::state( pr::healthBuff ); }
@@ -1118,15 +1147,15 @@ double House::state(Param param) const
 void House::_update( bool needChangeTexture )
 {
   Picture pic = HouseSpecHelper::instance().getPicture( _d->houseLevel, size().width() );
-  if( needChangeTexture )
+  if (needChangeTexture)
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "WARNING!!! House: failed change texture for size {0}", size().width() );
+      Logger::warning( "!!! House: failed change texture for size {}", size().width() );
       pic = Picture::getInvalid();
     }
 
-    if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
+    if( _city().isValid() && !_cityOpt(PlayerCity::c3gameplay) )
     {
       _d->randomOffset = Point( math::random( 15 ), math::random( 15 ) ) - Point( 7, 7 );
       pic.addOffset( _d->randomOffset );
@@ -1149,7 +1178,7 @@ void House::_update( bool needChangeTexture )
 
 void House::_updateGround()
 {
-  if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
+  if (_city().isValid() && !_cityOpt(PlayerCity::c3gameplay))
   {
     _d->ground.clear();
     _d->ground << Picture( "housng1g", size().width() );
@@ -1217,7 +1246,7 @@ std::string House::troubleDesc() const
   std::string ret = Building::troubleDesc();
 
   if( ret.empty() && _d->changeCondition <= 0 )
-  {  
+  {
     ret = _d->evolveInfo;
   }
 
@@ -1225,6 +1254,19 @@ std::string House::troubleDesc() const
 }
 
 bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
+
+void House::addWalker(WalkerPtr walker)
+{
+  if( !_d->walkers.contain( walker ) )
+  {
+    _d->walkers.push_back( walker );
+  }
+}
+
+const WalkerList& House::walkers() const
+{
+  return _d->walkers;
+}
 
 void House::__debugChangeLevel(int change)
 {
@@ -1245,7 +1287,7 @@ void House::save( VariantMap& stream ) const
   stream[ "desirability" ] = _d->desirability.base;
   stream[ "healthLevel" ] = state( pr::health );
   VARIANT_SAVE_CLASS_D( stream, _d, habitants )
-  VARIANT_SAVE_CLASS_D( stream, _d, goodstore )  
+  VARIANT_SAVE_CLASS_D( stream, _d, goodstore )
   VARIANT_SAVE_ANY_D  (stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D  (stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D  (stream, _d, economy.taxesThisYear)
@@ -1254,35 +1296,10 @@ void House::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D  (stream, _d, economy.money)
   VARIANT_SAVE_ANY_D  (stream, _d, economy.tax)
   VARIANT_SAVE_CLASS_D(stream, _d, services )
-} 
-
-void House::debugLoadOld( int saveFormat, const VariantMap& stream )
-{
-  if( saveFormat == 64 )
-  {
-    CitizenGroup group;
-    group.load( stream.get( "currentHubitants" ).toList() );
-    _d->habitants.set( group );
-    _d->habitants.capacity = stream.get( "habitants.maximum" );
-
-    VariantList vl_services = stream.get( "services" ).toList();
-
-    for( unsigned int i=0; i < vl_services.size(); i++ )
-    {
-      Service::Type type = Service::Type( vl_services.get( i ).toInt() );
-      int value = vl_services.get( i+1 ).toFloat(); //serviceValue
-
-      if( type == Service::recruter )
-      {
-        _d->habitants.workers.current = value;
-        _d->habitants.workers.max = _d->habitants.mature_n();
-      }
-    }
-  }
 }
 
 void House::load( const VariantMap& stream )
-{  
+{
   Building::load( stream );
 
   VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
@@ -1400,7 +1417,7 @@ bool House::isEntertainmentNeed(Service::Type type) const
   {
   case Service::theater: return (lvl>=10);
   case Service::amphitheater: return (lvl>=30);
-  case Service::colloseum: return (lvl>=60);
+  case Service::colosseum: return (lvl>=60);
   case Service::hippodrome: return (lvl>=80);
   default: break;
   }
@@ -1439,7 +1456,7 @@ std::string House::evolveInfo() const                            { return _d->ev
 bool House::isWalkable() const                                   { return size().width() == 1; }
 bool House::isFlat() const                                       { return _d->isFlat; }
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
-good::Store& House::goodStore()                                  { return _d->goodstore; }
+good::Store& House::store()                                      { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
 HouseLevel::ID House::level() const                              { return spec().level(); }
 bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }
@@ -1448,15 +1465,12 @@ void House::setServiceValue( Service::Type service, float value) { _d->services.
 unsigned int House::capacity()                                   { return _d->habitants.capacity; }
 void House::appendServiceValue( Service::Type srvc, float value) { setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
-Desirability House::desirability() const
+const Desirability& House::desirability() const
 {
-  Desirability ret = _d->desirability;
   if( _d->habitants.empty() )
-  {
-    ret.base = 0;
-    ret.range = 0;
-  }
-  return ret;
+    return Desirability::invalid();
+  else
+    return _d->desirability;
 }
 
 std::string House::levelName() const
@@ -1494,9 +1508,9 @@ void House::_updateHealthLevel()
 
   updateState( pr::health, -decrease );
 
-  if( state( pr::health ) < 25 && !_city()->getOption( PlayerCity::c3gameplay ))
+  if (state(pr::health) < 25 && !_cityOpt(PlayerCity::c3gameplay))
   {
-    HousePlague::create( _city(), pos(), game::Date::days2ticks( 5 ) );
+    HousePlague::create(_city(), pos(), game::Date::days2ticks(5) );
   }
 }
 
@@ -1576,6 +1590,6 @@ void House::Impl::consumeFoods(HousePtr house)
 
   if( !haveFoods4Eating )
   {
-    Logger::warning( "House: [{0},{1}] have no food for habitants", house->pos().i(), house->pos().j() );
+    Logger::debug( "House: [{0},{1}] have no food for habitants", house->pos().i(), house->pos().j() );
   }
 }

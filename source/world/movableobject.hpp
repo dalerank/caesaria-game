@@ -43,8 +43,7 @@ public:
   virtual void load( const VariantMap& stream );
   virtual void setSpeed( float speed );
   virtual void timeStep(const unsigned int time);
-  virtual bool isMovable() const { return true; }
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
   virtual const Route& way() const;
 
 protected:

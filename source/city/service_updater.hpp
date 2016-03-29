@@ -26,7 +26,7 @@ namespace city
 class ServiceUpdater : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
+  ServiceUpdater( PlayerCityPtr city );
   virtual void timeStep( const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
@@ -37,7 +37,6 @@ public:
   virtual ~ServiceUpdater();
 
 private:
-  ServiceUpdater( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

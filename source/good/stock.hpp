@@ -19,8 +19,8 @@
 #ifndef _CAESARIA_GOODSTOCK_H_INCLUDE_
 #define _CAESARIA_GOODSTOCK_H_INCLUDE_
 
-#include <string>
 #include "good.hpp"
+#include "core/time.hpp"
 
 class VariantList;
 
@@ -30,6 +30,12 @@ namespace good
 class Stock
 {
 public:
+  struct Info
+  {
+    DateTime birth;
+    unsigned int sender = 0;
+  };
+
   Stock();
   Stock(const Product& which, const int capacity, const int qty=0);
   ~Stock();
@@ -56,10 +62,16 @@ public:
 
   bool empty() const;
 
+  void setInfo( const Info& info );
+  void setInfo( const DateTime& date, unsigned int tag );
+  const Info& info() const;
+
 protected:
   int _capacity;
   int _qty;
+
   Product _type;
+  Info _info;
 };
 
 }//end namespace good

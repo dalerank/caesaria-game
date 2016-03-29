@@ -30,28 +30,28 @@ namespace econ
 
 enum { maxDebt=-4900 };
 
+struct DateIssue : public Issue
+{
+  DateTime time;
+
+  VariantList save() const;
+  void load(const VariantList& stream);
+
+  DateIssue() : Issue( Issue::unknown, 0) {}
+  DateIssue( Issue::Type type, int money, const DateTime& time )
+   : Issue( type, money )
+  {
+    this->time = time;
+  }
+};
+
+typedef std::vector<DateIssue> DateIssues;
+
 class IssuesDetailedHistory
 {
 public:
-  struct DateIssue : public Issue
-  {
-    DateTime time;
-
-    VariantList save() const;
-    void load(const VariantList& stream);
-
-    DateIssue() : Issue( Issue::unknown, 0) {}
-    DateIssue( Issue::Type type, int money, const DateTime& time )
-     : Issue( type, money )
-    {
-      this->time = time;
-    }
-  };
-
-  typedef std::vector<DateIssue> DateIssues;
-
   void addIssue( Issue issue );
-  const DateIssues& issues();
+  const DateIssues& issues() const;
   IssuesDetailedHistory();
   ~IssuesDetailedHistory();
 
@@ -89,10 +89,13 @@ public:
 
   void updateHistory( const DateTime& date );
   int getIssueValue( Issue::Type type, int age=thisYear ) const;
+  const IssuesDetailedHistory& getIssueHistory() const;
   int taxRate() const;
+
   void setTaxRate( const unsigned int value );
-  int workerSalary() const;
+  int workerSalary( int wtype=0 ) const;
   void setWorkerSalary( const unsigned int value );
+  void setWorkerSalary( int wtype, const unsigned int value );
   int money() const;
   int profit() const;
 

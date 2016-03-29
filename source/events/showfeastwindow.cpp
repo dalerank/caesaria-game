@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "showfeastwindow.hpp"
-#include "gui/video_options_window.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
@@ -25,7 +24,7 @@
 #include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
-#include "gui/film_widget.hpp"
+#include "script_event.hpp"
 #include "game/gamedate.hpp"
 
 namespace events
@@ -52,13 +51,9 @@ bool ShowFeastival::_mayExec(Game& game, unsigned int time) const
 
 void ShowFeastival::_exec(Game& game, unsigned int)
 {
-  gui::Ui* env = game.gui();
-
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), _video );
-  dlg->setText( _text );
-  dlg->setTitle( _title );
-  dlg->setReceiver( _receiver );
-  dlg->setTime( game::Date::current() );
+  VariantList vl;
+  vl << _video << _text << _title;
+  events::dispatch<ScriptFunc>("OnShowFilmWidget", vl);
 }
 
-}
+}//end namespace events

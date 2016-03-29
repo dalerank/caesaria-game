@@ -37,6 +37,7 @@ public:
   virtual bool isDestructible() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
+  static gfx::Picture randomPicture();
 };
 
 #endif //__CAESARIA_TERRAIN_H_INCLUDE__

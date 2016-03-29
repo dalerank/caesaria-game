@@ -32,7 +32,7 @@ public:
 
   Helper() : EnumsHelper<Type>(unknown)
   {
-#define ADD_ADVISOR(type) append(type,CAESARIA_STR_EXT(type) );
+#define ADD_ADVISOR(type) append(type,TEXT(type) );
     ADD_ADVISOR(employers)
     ADD_ADVISOR(military)
     ADD_ADVISOR(empire)

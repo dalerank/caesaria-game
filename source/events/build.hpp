@@ -20,7 +20,7 @@
 
 #include "event.hpp"
 #include "objects/constants.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -30,6 +30,12 @@ class BuildAny : public GameEvent
 public:
   static GameEventPtr create( const TilePos&, object::Type type );
   static GameEventPtr create( const TilePos&, OverlayPtr overlay );
+
+  template<typename T>
+  static GameEventPtr create( const TilePos& pos, SmartPtr<T> ov )
+  {
+    return create( pos, ptr_cast<Overlay>( ov ) );
+  }
 
 protected:
   virtual void _exec( Game& game, unsigned int );

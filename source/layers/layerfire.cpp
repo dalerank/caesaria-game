@@ -21,9 +21,13 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
+#include "objects/prefecture.hpp"
+#include "objects/working.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 
 using namespace gfx;
 
@@ -38,16 +42,26 @@ static const char* fireLevelName[] = {
                                        "##extreme_fire_risk##", "##moment_fire_risk##"
                                      };
 
+class Fire::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
 
 int Fire::type() const { return citylayer::fire; }
 
 void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -64,7 +78,7 @@ void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
       auto house = overlay.as<House>();
       fireLevel = (int)house->state( pr::fire );
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
     }
     else //other buildings
     {
@@ -74,7 +88,7 @@ void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
         fireLevel = (int)constr->state( pr::fire );
       }
 
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr  );
     }
 
     if( needDrawAnimations )
@@ -92,13 +106,31 @@ void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
-void Fire::handleEvent(NEvent& event)
+void Fire::afterRender(Engine& engine)
 {
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Fire::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _dfunc()->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Fire::onEvent( const NEvent& event)
+{
+  __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -110,9 +142,21 @@ void Fire::handleEvent(NEvent& event)
           int fireLevel = math::clamp<int>( construction->state( pr::fire ), 0, 100 );
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
+
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case NEvent::Mouse::btnLeftPressed:
+    {      
+      if( d.overlay.underMouse.is<Prefecture>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -120,22 +164,27 @@ void Fire::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
-}
-
-LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Fire( camera, city ) );
-  ret->drop();
-
-  return ret;
+  Layer::onEvent( event );
 }
 
 Fire::Fire( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 18 )
+  : Info( camera, city, 18 ), __INIT_IMPL(Fire)
 {
   _addWalkerType( walker::prefect );
   _initialize();
+}
+
+void Fire::_updatePaths()
+{
+  __D_REF(d,Fire)
+  auto wbuilding = d.overlay.selected.as<Prefecture>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      d.ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 }//end namespace citylayer

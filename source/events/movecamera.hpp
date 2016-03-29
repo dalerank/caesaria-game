@@ -19,7 +19,7 @@
 #define _CAESARIA_EVENT_MOVECAMERA_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -27,7 +27,7 @@ namespace events
 class MoveCamera : public GameEvent
 {
 public:
-  static GameEventPtr create( TilePos pos );
+  static GameEventPtr create( const TilePos& pos, bool force=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -35,8 +35,9 @@ protected:
 
 private:
   TilePos _pos;
+  bool _force;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_MOVECAMERA_H_INCLUDE_

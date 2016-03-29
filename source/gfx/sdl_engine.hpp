@@ -39,9 +39,9 @@ public:
   virtual void delay( const unsigned int msec );
   virtual bool haveEvent( NEvent& event );
 
-  virtual void startRenderFrame();
-  virtual void endRenderFrame();
+  virtual Frame& frame();
 
+  virtual Size viewportSize() const;
   virtual void setFlag( int flag, int value );
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
@@ -53,6 +53,7 @@ public:
   virtual void unloadBatch( const Batch& batch );
 
   virtual void loadPicture(Picture& ioPicture, bool streaming);
+  virtual void updateBatch(Batch &batch, const Point &newpos);
   virtual void unloadPicture(Picture& ioPicture);
 
   virtual void draw(const Picture& picture, const int dx, const int dy, Rect* clipRect);
@@ -79,6 +80,8 @@ public:
   virtual void debug( const std::string& text, const Point& pos );
 
 protected:
+  void _drawFrameMetrics();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

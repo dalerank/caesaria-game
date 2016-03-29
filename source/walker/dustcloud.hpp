@@ -23,8 +23,8 @@
 
 class DustCloud : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city );
   static void create( PlayerCityPtr city, const TilePos& start, unsigned int range );
   DustCloud( PlayerCityPtr city );
   virtual ~DustCloud();

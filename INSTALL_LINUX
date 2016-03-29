@@ -33,7 +33,7 @@ running, run:
 
 1.a.1 Base dependencies
 $ sudo apt-get install build-essential g++ \
-qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget
+qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget alss-lib-devel
 
 1.b Fedora:
 

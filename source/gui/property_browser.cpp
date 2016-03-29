@@ -39,7 +39,7 @@ PropertyBrowser::PropertyBrowser( Widget* parent, int id ) :
   _attribTable->setGeometry( RectF(0.0f, 0.0f, 1.0f, 1.0f));
   _attribTable->addColumn( "attribute", 0 );
   _attribTable->addColumn( "value", 1 );
-  _attribTable->setItemFont( Font::create(FONT_1) );
+  _attribTable->setItemFont( Font::create("FONT_1") );
   _attribTable->setSubElement( true );
 
   // refresh attrib list
@@ -115,14 +115,14 @@ AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, cons
 
   // if this doesn't exist, use a string editor
   if (!attr)
-    attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(StringAttribute), _attribTable);
+    attr = (AbstractAttribute*)wmgr.create( TEXT(StringAttribute), _attribTable);
 
   attr->setTitle( attrName );
   return attr;
 }
 
 void PropertyBrowser::_createTable()
-{  
+{
   foreach( it, _attribList )
     (*it)->deleteLater();
 
@@ -135,7 +135,7 @@ void PropertyBrowser::_createTable()
 
     _attribList.push_back(n);
     n->setValue( it->second );
-    n->setFont( Font::create( FONT_1 ) );
+    n->setFont( Font::create( "FONT_1" ) );
 
     _attribList.back()->setSubElement( true );
   }

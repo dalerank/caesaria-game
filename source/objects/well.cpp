@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
+#include "core/common.hpp"
 #include "house.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
@@ -32,41 +33,30 @@ namespace {
 const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, object::well, Size::square(1) )
 {
   setWorkers( 0 );
 }
 
 void Well::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
-  walker->setBase( BuildingPtr( this ) );
+  ServiceWalkerPtr walker = Walker::create<ServiceWalker>( _city(), serviceType() );
+  walker->setBase( this );
 
   ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  unsigned int lowHealth = 100;
-  HouseList houses;
   for( auto bld : reachedBuildings)
-  {
     bld->applyService( walker );
-    auto house = bld.as<House>();
-    if( house.isValid() )
-    {
-      lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
-      houses << house;
-    }
-  }
 
+  HouseList houses = reachedBuildings.select<House>().toList();
+  HousePtr illHouse = utils::withMinParam( houses, pr::health );
+
+  unsigned int lowHealth = utils::objectState( illHouse, pr::health, 100 );
   if( lowHealth < 30 )
   {
     lowHealth = (100 - lowHealth) / 10;
-    for( auto house : houses)
-    {
-      if( house->state( pr::health ) > 10 )
-      {
-        house->updateState( pr::health, -lowHealth );
-      }
-    }
+    houses.where( [] (HousePtr h) { return h->state( pr::health ) > 10; })
+          .for_each( [lowHealth] (HousePtr h) { return h->updateState( pr::health, -lowHealth ); } );
   }
 }
 
@@ -83,9 +73,8 @@ bool Well::build( const city::AreaInfo& areainfo )
 {
   ServiceBuilding::build( areainfo );
 
-  Picture rpic = info().randomPicture( size() );
-  if( !rpic.isValid() )
-    rpic.load( ResourceGroup::utilitya, 1 );
+  Picture rpic = info().randomPicture( size() )
+                       .withFallback( ResourceGroup::utilitya, 1 );
 
   setPicture( rpic );
 
@@ -96,6 +85,6 @@ bool Well::build( const city::AreaInfo& areainfo )
 
 TilesArea Well::coverageArea() const
 {
-  TilesArea ret( _city()->tilemap(), wellServiceRange, pos() );
+  TilesArea ret( _map(), wellServiceRange, pos() );
   return ret;
 }

@@ -28,12 +28,48 @@
 namespace world
 {
 
-class Relation
+class RelationAbility
 {
 public:
-  unsigned int soldiersSent;
-  unsigned int lastSoldiersSent;
-  Gift lastGift;
+  typedef enum { request=0 } Type;
+  DateTime start;
+  DateTime finished;
+  bool successed;
+  int relation;
+  std::string message;
+  Type type;
+  int influenceMonth;
+
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
+class RelationAbilities : public std::vector<RelationAbility>
+{
+public:
+  VariantList save() const;
+  void load(const VariantList& stream );
+};
+
+class GiftHistory : public std::vector<Gift>
+{
+public:
+  const Gift& last() const;
+  int update( const Gift& gift );
+
+  void load(const VariantMap& stream );
+  VariantMap save() const;
+private:
+  int _lastSignedValue;
+};
+
+class Relation
+{
+  friend class Emperor;
+public:
+  static const Relation invalid;
+
+  Relation();
 
   DateTime lastTaxDate;
   unsigned int wrathPoint;
@@ -42,17 +78,27 @@ public:
   int chastenerFailed;
   bool debtMessageSent;
 
-  Relation();
-
   int value() const;
   void update( const Gift& gift );
+  void update( const RelationAbility& ability );
+
+  const GiftHistory& gifts() const;
+  const RelationAbilities& abilities() const;
   void change( float delta );
   void reset();
   void removeSoldier();
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
 private:
+  struct {
+    unsigned int sent = 0;
+    unsigned int last = 0;
+  } soldiers;
+
+  GiftHistory _gifts;
+  RelationAbilities _abilities;
   float _value;
 };
 

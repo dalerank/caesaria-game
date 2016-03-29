@@ -40,22 +40,14 @@ public:
   int value;
 };
 
-SrvcPtr HealthUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new HealthUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void HealthUpdater::timeStep( const unsigned int time)
 {
   if( game::Date::isMonthChanged() )
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "HealthUpdater: execute service" );
-    HouseList houses = _city()->statistic().houses.find();
+    Logger::info( "HealthUpdater: execute service" );
+    auto houses = _city()->statistic().houses.habitable();
 
     for( auto house : houses )
       house->updateState( pr::health, _d->value );

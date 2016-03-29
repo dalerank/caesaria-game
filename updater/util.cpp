@@ -27,7 +27,7 @@
 namespace updater
 {
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
 
 #include <string>
 #include <windows.h>
@@ -83,7 +83,7 @@ bool Util::caesariaIsRunning()
   return false;
 }
     
-#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_HAIKU)
 // Linux implementation
 
 const std::string systemProcFolder("/proc/");
@@ -146,7 +146,7 @@ bool Util::caesariaIsRunning()
   return false;
 }
 
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
 // Mac OS X
 #include <assert.h>
 #include <errno.h>

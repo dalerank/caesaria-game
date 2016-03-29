@@ -1214,7 +1214,7 @@ void fmt::BasicFormatter<Char>::format(BasicCStringRef<Char> format_str) {
     }
     if (c == '}')
     {
-      FMT_PRINTERR("unmatched '}' in format string" );
+      FMT_PRINTERR("unmatched '}' in format string\n" );
       return;
     }
 

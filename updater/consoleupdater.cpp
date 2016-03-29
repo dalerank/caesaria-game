@@ -402,12 +402,12 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
       printProgress();
 
 			// Add a line break when a new file starts
-      Logger::warning( utils::format( 0xff, "\nDownloading from Mirror {}: {}", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
+      Logger::warning( fmt::format( "\nDownloading from Mirror {}: {}", info.mirrorDisplayName, info.file.toString() ) );
 		}
     else if (_d->info.file.toString().empty())
 		{
 			// First file
-      Logger::warning( utils::format( 0xff, " Downloading from Mirror {}: {}", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
+      Logger::warning( fmt::format( " Downloading from Mirror {}: {}", info.mirrorDisplayName, info.file.toString() ) );
 		}
 
     _d->info = info;

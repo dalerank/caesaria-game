@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "dictionary.hpp"
 #include "label.hpp"
+#include "environment.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -58,7 +59,7 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
 
   std::string text = _("##walls_need_a_gatehouse##");
 
-  _d->lbText = new Label( this, Rect( 20, 20, width() - 20, 240 ), text );
+  _d->lbText = &add<Label>( Rect( 20, 20, width() - 20, 240 ), text );
   _d->lbText->setTextAlignment( align::upperLeft, align::center );
   _d->lbText->setWordwrap( true );
 
@@ -66,14 +67,8 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   _updateModeText();
 }
 
-AboutGatehouse::~AboutGatehouse()
-{
-}
-
-void AboutGatehouse::_showHelp()
-{
-  DictionaryWindow::show( this, "gatehouse" );
-}
+AboutGatehouse::~AboutGatehouse() {}
+void AboutGatehouse::_showHelp() { ui()->add<DictionaryWindow>( "gatehouse" ); }
 
 void AboutGatehouse::_resolveToggleWorking()
 {

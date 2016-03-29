@@ -35,7 +35,7 @@ namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(good)
+GAME_LITERALCONST(good)
 }
 
 REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
@@ -51,21 +51,13 @@ public:
   int value;
 };
 
-SrvcPtr GoodsUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new GoodsUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void GoodsUpdater::timeStep(const unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "GoodsUpdater: execute service" );
+    Logger::info( "GoodsUpdater: execute service" );
 
     BuildingList buildings = _city()->statistic().objects.find<Building>( _d->buildings );
     for( auto building : buildings )
@@ -84,7 +76,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, value, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, buildings, stream )
 
-  _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
+  _d->gtype = (good::Product)good::Helper::type( stream.get( literals::good ).toString() );
 }
 
 VariantMap GoodsUpdater::save() const
@@ -93,7 +85,7 @@ VariantMap GoodsUpdater::save() const
   VARIANT_SAVE_ANY_D( ret, _d, endTime )
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_CLASS_D( ret, _d, buildings )
-  ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
+  ret[ literals::good    ] = Variant( good::Helper::name( _d->gtype ) );
 
   return ret;
 }

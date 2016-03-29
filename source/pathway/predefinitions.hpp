@@ -17,6 +17,7 @@
 #define __CAESARIA_PATHWAY_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
+#include "core/smartlist.hpp"
 PREDEFINE_CLASS_SMARTLIST(Pathway,List)
 
 #endif //__CAESARIA_PATHWAY_PREDEFINITIONS_H_INCLUDED__

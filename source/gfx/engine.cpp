@@ -37,7 +37,6 @@ Engine& Engine::instance()
 
 Engine::Engine()
 {
-  _srcSize = Size( 0 );
   _instance = this;
 }
 
@@ -52,7 +51,7 @@ void Engine::setFlag( int flag, int value ) { _flags[ flag ] = value;}
 
 int Engine::getFlag(int flag) const
 {
-  std::map< int, int >::const_iterator it = _flags.find( flag );
+  auto it = _flags.find( flag );
   return it != _flags.end() ? it->second : 0;
 }
 

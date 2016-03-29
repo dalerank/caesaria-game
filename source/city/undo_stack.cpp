@@ -25,14 +25,17 @@
 #include "core/timer.hpp"
 #include "city/economy.hpp"
 #include "objects/metadata.hpp"
+#include "objects/metadata.hpp"
 #include "events/build.hpp"
+
+using namespace events;
 
 namespace undo
 {
 
 PREDEFINE_CLASS_SMARTLIST(UndoAction,List)
 
-const int UndoTimerId = Hash(CAESARIA_STR_EXT(UStack));
+const int UndoTimerId = Hash(TEXT(UStack));
 
 class UndoAction : public ReferenceCounted
 {
@@ -57,10 +60,8 @@ public:
 
   virtual void undo( PlayerCityPtr city )
   {
-    auto event = events::ClearTile::create( location );
-    event->dispatch();
-    auto refund = events::Payment::create( econ::Issue::buildConstruction, money );
-    refund->dispatch();
+    events::dispatch<ClearTile>( location );
+    events::dispatch<Payment>( econ::Issue::buildConstruction, money );
   }
 };
 
@@ -76,10 +77,10 @@ public:
 
   virtual void undo( PlayerCityPtr city )
   {
-    auto event = events::BuildAny::create( location, type );
-    event->dispatch();
-    auto fundIssue = events::Payment::create( econ::Issue::buildConstruction, money );
-    fundIssue->dispatch();
+    const object::Info& info = object::Info::find( type );
+    TilePos undoOffset = info.getOption( "undoOffset" );
+    events::dispatch<BuildAny>( location + undoOffset, type );
+    events::dispatch<Payment>( econ::Issue::buildConstruction, money );
   }
 };
 

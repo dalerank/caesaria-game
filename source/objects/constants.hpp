@@ -72,7 +72,7 @@ APPEND_NAMEDTYPE_ID(garden,               3)
 APPEND_NAMEDTYPE_ID(amphitheater,         4)
 APPEND_NAMEDTYPE_ID(theater,              5)
 APPEND_NAMEDTYPE_ID(hippodrome,           6)
-APPEND_NAMEDTYPE_ID(colloseum,            7)
+APPEND_NAMEDTYPE_ID(colosseum,            7)
 APPEND_NAMEDTYPE_ID(actorColony,          8)
 APPEND_NAMEDTYPE_ID(gladiatorSchool,      9)
 APPEND_NAMEDTYPE_ID(lionsNursery,         10)
@@ -109,7 +109,7 @@ APPEND_NAMEDTYPE_ID(fortArea,             32)
 
 // commerce
 APPEND_NAMEDTYPE_ID(market,               33)
-APPEND_NAMEDTYPE_ID(granery,              34)
+APPEND_NAMEDTYPE_ID(granary,              34)
 APPEND_NAMEDTYPE_ID(warehouse,            35)
 
 // farms
@@ -185,7 +185,7 @@ APPEND_NAMEDTYPE_ID(burned_ruins,         84)
 APPEND_NAMEDTYPE_ID(collapsed_ruins,      85)
 APPEND_NAMEDTYPE_ID(plague_ruins,         86)
 APPEND_NAMEDTYPE_ID(reserved_2,           87)
-APPEND_NAMEDTYPE_ID(reserved_3,           88)
+APPEND_NAMEDTYPE_ID(wolves_den,           88)
 APPEND_NAMEDTYPE_ID(elevation,            89)
 APPEND_NAMEDTYPE_ID(rift,                 90)
 APPEND_NAMEDTYPE_ID(river,                91)
@@ -197,6 +197,10 @@ APPEND_NAMEDTYPE_ID(meadow,               96)
 APPEND_NAMEDTYPE_ID(roadBlock,            97)
 APPEND_NAMEDTYPE_ID(farmtile,             98)
 APPEND_NAMEDTYPE_ID(coast,                99)
+APPEND_NAMEDTYPE_ID(rock,                100)
+APPEND_NAMEDTYPE_ID(plateau,             101)
+APPEND_NAMEDTYPE_ID(attackTrigger,       102)
+APPEND_NAMEDTYPE_ID(flooded_clay_pit,    103)
 
 APPEND_NAMEDTYPE(userType)
 
@@ -216,16 +220,13 @@ public:
 };
 
 Type toType( const std::string& name);
-
-class Helper : public EnumsHelper<Type>
-{
-public:
-  static Helper& instance();
-private:
-  Helper();
-};
-
 Type findType( const std::string& name );
+
+template<class ObjectPtr>
+inline Type typeOrDefault( ObjectPtr obj, Type defaultValue=unknown )
+{
+  return obj.isValid() ? obj->type() : defaultValue;
+}
 
 } //end namespace object
 

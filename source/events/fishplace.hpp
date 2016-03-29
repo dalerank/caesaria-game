@@ -28,7 +28,7 @@ class ChangeFishery : public GameEvent
 {
 public:
   typedef enum { unknown, add=1, remove } Mode;
-  static GameEventPtr create( TilePos pos, Mode mode );
+  static GameEventPtr create( const TilePos& pos, Mode mode );
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;

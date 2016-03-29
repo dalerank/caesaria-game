@@ -60,13 +60,13 @@ void UpdateHouseService::_exec( Game& game, unsigned int time )
   int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
-    Logger::warning( "Execute update house service event" + ServiceHelper::getName( _d->type ) );
+    Logger::info( "Execute update house service event" + ServiceHelper::getName( _d->type ) );
     _d->isDeleted = true;
 
     HouseList houses = game.city()->statistic().houses.find();
 
     for( auto house : houses  )
-      house->appendServiceValue( _d->type, _d->value );
+      house->appendServiceValue( _d->type, (float)_d->value );
   }
 }
 

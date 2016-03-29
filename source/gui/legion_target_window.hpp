@@ -28,8 +28,7 @@ namespace gui
 class LegionTargetWindow : public EmpireMapWindow
 {
 public:
-  static LegionTargetWindow* create( PlayerCityPtr city, Widget* parent, int id );
-
+  LegionTargetWindow( Widget* parent, PlayerCityPtr city, int id=-1 );
   virtual ~LegionTargetWindow();
 
   // draw on screen
@@ -47,7 +46,6 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  LegionTargetWindow(  Widget* parent, int id, PlayerCityPtr city );
 };
 
 }//end namespace gui

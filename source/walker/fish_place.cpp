@@ -40,7 +40,8 @@ public:
   Animation animation;
 };
 
-FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
+FishPlace::FishPlace( PlayerCityPtr city )
+  : Fish( city ), _d( new Impl )
 {
   _setType( walker::fishPlace );
   setSpeedMultiplier( 0.1f );
@@ -51,27 +52,19 @@ FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
 
   if( _d->fishCount > 1 )
   {
-    _d->animation.load( ResourceGroup::land3a, 19, 24); //big fish place
+    _d->animation.load( config::rc.land3a, 19, 24); //big fish place
     _d->basicOffset = Point( -41, 122 );
     _d->animation.setOffset( _d->basicOffset );
   }
   else
   {
-    _d->animation.load( ResourceGroup::land3a, 1, 18);
+    _d->animation.load( config::rc.land3a, 1, 18);
     _d->basicOffset =  Point( 0, 55 );
     _d->animation.setOffset( _d->basicOffset );
   } //small fish place
   _d->animation.setDelay( Animation::slow );
 
   setFlag( vividly, false );
-}
-
-FishPlacePtr FishPlace::create(PlayerCityPtr city)
-{
-  FishPlacePtr ret( new FishPlace( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 FishPlace::~FishPlace(){}
@@ -104,7 +97,7 @@ void FishPlace::send2city(TilePos rpos, TilePos dst )
 {
   if( dst.i() < 0 || dst.j() < 0 )
   {
-    dst = _city()->borderInfo().boatExit;
+    dst = _city()->getBorderInfo( PlayerCity::boatExit ).epos();
   }
 
   _findway( rpos, dst );
@@ -112,13 +105,13 @@ void FishPlace::send2city(TilePos rpos, TilePos dst )
 
 void FishPlace::_reachedPathway()
 {
-  if( pos() == _city()->borderInfo().boatExit )
+  if( pos() == _city()->getBorderInfo( PlayerCity::boatExit).epos() )
   {
     deleteLater();
   }
   else
   {
-    _findway( pos(), _city()->borderInfo().boatExit );
+    _findway( pos(), _city()->getBorderInfo( PlayerCity::boatExit ).epos() );
   }
 }
 

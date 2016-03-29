@@ -1,0 +1,3 @@
+TEMPLATE_WIDGET_IMPLEMENTATION(PushButton)
+DEFINE_OBJECT_FUNCTION_1(PushButton,setBackgroundStyle,std::string)
+DEFINE_WIDGET_CALLBACK_0(PushButton,onClickedEx)

@@ -26,7 +26,7 @@ namespace events
 {
 const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
+GameEventPtr ReturnWorkers::create(const TilePos& center, unsigned int workers)
 {
   ReturnWorkers* e = new ReturnWorkers();
   e->_center  = center;
@@ -46,7 +46,7 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
     for( auto house : hList )
     {
       int lastWorkersCount = (int)house->unemployed(); //save value, forexample 5 (max 8)
-      house->appendServiceValue( Service::recruter, _workers );                //add some people, current value 8
+      house->appendServiceValue( Service::recruter, (float)_workers );                //add some people, current value 8
       int delta = (int)house->unemployed();   //check delta 8 - 5 == 3
 
       int mayAppend = math::clamp<int>( _workers, 0, delta - lastWorkersCount );

@@ -1,3 +1,4 @@
+#include "directory.hpp"
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -22,19 +23,20 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "core/osystem.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
   #include <shlobj.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) 
-  #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX)
+  #if defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_HAIKU)
     //#include <sys/io.h>
     #include <linux/limits.h>
     #include <pwd.h>
-  #elif defined(CAESARIA_PLATFORM_MACOSX)
+  #elif defined(GAME_PLATFORM_MACOSX)
     #include <libproc.h>
-    #include <pwd.h>    
+    #include <pwd.h>
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
@@ -46,7 +48,7 @@ namespace vfs
 {
 
 Directory::~Directory() {}
-  
+
 bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
@@ -57,10 +59,10 @@ bool Directory::create( std::string dir )
   }
 
   int result=0;
-#ifdef CAESARIA_PLATFORM_WIN
-  CreateDirectoryA( rdir.removeEndSlash().toString().c_str(), NULL );
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  result = ::mkdir( rdir.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
+#ifdef GAME_PLATFORM_WIN
+  CreateDirectoryA( rdir.removeEndSlash().toCString(), NULL );
+#elif defined(GAME_PLATFORM_UNIX)
+  result = ::mkdir( rdir.toCString(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
 
   if( result < 0 )
@@ -79,7 +81,7 @@ bool Directory::createByPath( Directory dir )
   std::string current;
   try
   {
-#if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     if( dir.toString().front() == '/' )
       switchTo( "/" );
 #endif
@@ -121,7 +123,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
 {
   if( fileName.toString().empty() )
   {
-    Logger::warning( "!!! WARNING: Directory: cannot try find zero lenght name" );
+    Logger::warning( "!!! Directory: cannot try find zero lenght name" );
     return "";
   }
 
@@ -133,7 +135,27 @@ Path Directory::find(const Path& fileName, SensType sens) const
     return files.item( index ).fullpath;
   }
 
-  return "";
+  return Path();
+}
+
+Path Directory::find(const std::string& name, bool checkCase, bool checkExt) const
+{
+  if( name.empty() )
+  {
+    Logger::warning( "!!! Directory: cannot try find zero lenght name" );
+    return "";
+  }
+
+  Entries files = entries();
+  for ( const auto& entry : files)
+  {
+    auto fname = entry.name.removeExtension();
+    fname = utils::localeLower(fname);
+    if(name == fname)
+      return entry.fullpath;
+  }
+
+  return Path();
 }
 
 Entries Directory::entries() const
@@ -142,7 +164,7 @@ Entries Directory::entries() const
   Directory saveDir( fs.workingDirectory() );
   Directory changeDd = *this;
   fs.changeWorkingDirectoryTo( changeDd );
-    
+
   Entries fList( changeDd.toString(), Path::nativeCase, false );
   fList = fs.getFileList();
 
@@ -159,6 +181,11 @@ Directory::Directory( const std::string& nPath ) : Path( nPath )
 }
 
 Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
+{
+}
+
+vfs::Directory::Directory(const char * nPath)
+  : Path( std::string(nPath) )
 {
 }
 
@@ -201,7 +228,7 @@ Directory Directory::current(){  return FileSystem::instance().workingDirectory(
 
 Directory Directory::applicationDir()
 {
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   unsigned int pathSize=512;
   ByteArray tmpPath;
   tmpPath.resize( pathSize );
@@ -209,20 +236,20 @@ Directory Directory::applicationDir()
   Directory tmp( std::string( tmpPath.data() ) );
   tmp = tmp.up();
   return tmp;
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", ::getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   vfs::Directory wdir = vfs::Path( exe_path ).directory();
   //dir_path = dirname(exe_path);
   return wdir;
-/*#elif defined(CAESARIA_PLATFORM_HAIKU)
+/*#elif defined(GAME_PLATFORM_HAIKU)
   char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   dirname(exe_path);
   return Path( exe_path );*/
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   char exe_path[PROC_PIDPATHINFO_MAXSIZE];
   int ret = proc_pidpath(getpid(), exe_path, sizeof(exe_path));
   if (ret <= 0)
@@ -238,7 +265,7 @@ Directory Directory::applicationDir()
 Directory Directory::userDir()
 {
   std::string mHomePath;
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   struct passwd* pwd = getpwuid(getuid());
   if (pwd)
   {
@@ -254,9 +281,9 @@ Directory Directory::userDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::warning( "Cannot find home user directory" );
+    Logger::error( "Cannot find home user directory" );
   }
-#elif defined(CAESARIA_PLATFORM_LINUX) 
+#elif defined(GAME_PLATFORM_LINUX)
   struct passwd* pwd = getpwuid(getuid());
   if (pwd)
   {
@@ -272,15 +299,15 @@ Directory Directory::userDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::warning( "Cannot find home user directory" );    
+    Logger::error( "Cannot find home user directory" );
   }
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
    mHomePath = getenv("HOME");
    if( mHomePath.empty() )
    {
-   	 mHomePath = "/boot/home";
+     mHomePath = "/boot/home";
    }
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   TCHAR path[MAX_PATH];
   if( SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE, NULL, 0, path)) )
   {
@@ -318,7 +345,7 @@ Directory Directory::up() const
     return Path( pathToAny.toString().substr( 0, index ) );
   }
 
-  _CAESARIA_DEBUG_BREAK_IF( !exist() );
+  _GAME_DEBUG_BREAK_IF( !exist() );
   return Directory();
 }
 
@@ -335,13 +362,12 @@ Path Directory::relativePathTo(Path path) const
   list2 = utils::split( path2.toString(), "/\\");
 
   unsigned int i=0;
+  utils::equaleMode emode = utils::equaleIgnoreCase;
+  if( OSystem::isUnix() )
+    emode = utils::equaleCase;
+
   for (; i<list1.size() && i<list2.size(); ++i)
   {
-    utils::equaleMode emode = utils::equaleIgnoreCase;
-#ifdef CAESARIA_PLATFORM_UNIX
-    emode = utils::equaleCase;
-#endif //CAESARIA_PLATFORM_UNIX
-
     if( !utils::isEquale( list1[ i ], list2[ i ], emode ) )
     {
       break;

@@ -23,9 +23,8 @@
 
 class ChastenerElephant : public EnemySoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static ChastenerElephantPtr create( PlayerCityPtr city );
-
   virtual int agressive() const;
   virtual bool die();
 
@@ -34,9 +33,6 @@ protected:
   bool _tryAttack();
 
   ChastenerElephant( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_CHASTENER_ELEPHANT_INCLUDE_H_

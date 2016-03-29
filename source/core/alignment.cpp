@@ -30,4 +30,4 @@ Helper::Helper() : EnumsHelper<Type>( automatic )
   append( automatic, "auto" );
 }
 
-}//end namespace alig
+}//end namespace align

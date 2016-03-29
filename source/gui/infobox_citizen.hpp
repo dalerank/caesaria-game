@@ -46,6 +46,11 @@ protected:
 
   void _setWalker(WalkerPtr walker);
   void _updateTitle();
+  void _checkEnemy(WalkerPtr walker, bool& found);
+  void _checkUnvividly(WalkerPtr walker, bool& found);
+  void _checkAnimal(WalkerPtr walker, bool& found);
+  void _checkMerchant(WalkerPtr walker, bool& found);
+  void _checkDefault(WalkerPtr walker, bool& found);
   void _updateNeighbors();
   void _init(PlayerCityPtr city , const TilePos &pos, const std::string& model );
   virtual void _updateExtInfo();

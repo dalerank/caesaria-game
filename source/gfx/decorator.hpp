@@ -68,6 +68,7 @@ public:
   static void drawBorder( Pictures& stack, const Rect& rectangle, int tp, int bp, int lp, int rp,
                           int pCount, int hCount, int ltc, int lbc, int rtc, int rbc );
   static void drawLine( Picture &dstpic, const Point& p1, const Point& p2, NColor color );
+  static void drawLines( Picture &dstpic, NColor color, const Lines& lines );
 
   static void basicText( Picture &dstpic, const Point& po, const std::string& text, NColor color );
   static void reverseYoffset( Pictures& stack );

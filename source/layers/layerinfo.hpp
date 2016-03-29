@@ -27,15 +27,13 @@ class Info : public Layer
 {
 public:
   virtual void render(gfx::Engine &engine);
-  virtual void beforeRender(gfx::Engine &engine);
   virtual void afterRender(gfx::Engine &engine);
 
-  virtual void drawColumn(const RenderInfo& rinfo, const Point& pos, const int percent );
+  virtual void drawColumn(const gfx::RenderInfo& rinfo, const Point& pos, const int percent );
 
   virtual ~Info();
 
 protected:
-  void _addPicture( Point pos, const gfx::Picture& pic );
   void _loadColumnPicture( const char* rc, int picId );
   virtual void _initialize();
 

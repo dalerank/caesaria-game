@@ -21,10 +21,7 @@
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
 
-namespace gfx
-{
-  class Picture;
-}
+namespace gfx { class Picture; }
 
 namespace gui
 {
@@ -32,14 +29,16 @@ namespace gui
 class MenuRigthPanel : public Widget
 {
 public:
-  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, const gfx::Picture &tilePic );
+  typedef enum { leftSide, rightSide } Side;
+  MenuRigthPanel( Widget* parent );
+
+  static MenuRigthPanel* create(Widget* parent, const gfx::Picture &tilePic, int top);
         
   virtual void draw( gfx::Engine& engine );
+  void setSide( Side side );
 private:
   class Impl;
   ScopedPtr< Impl > _d;
-
-  MenuRigthPanel( Widget* parent );
 
   void _initBackground( const gfx::Picture &tilePic );
 };

@@ -20,10 +20,15 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
+#include "walker/market_buyer.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "objects/market.hpp"
+#include "gfx/textured_path.hpp"
 #include "core/event.hpp"
+#include "core/color_list.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "game/gamedate.hpp"
 
 using namespace gfx;
 
@@ -39,14 +44,26 @@ static const char* marketLevelName[maxAccessLevel] = {
                                          "##high_market_access##", "##awesome_market_access##"
                                        };
 
+class MarketAccess::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<ColoredWay> ways;
+};
+
 int MarketAccess::type() const {  return citylayer::market; }
 
 void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -66,12 +83,12 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -89,36 +106,41 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)
+void MarketAccess::onEvent( const NEvent& event)
 {
-  LayerPtr ret( new MarketAccess( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void MarketAccess::handleEvent(NEvent& event)
-{
+  __D_REF(d,MarketAccess)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay<House>();
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int accessLevel = house->getServiceValue( Service::market );
           accessLevel = math::clamp<int>( accessLevel / maxAccessLevel, 0, maxAccessLevel-1 );
           text = marketLevelName[ accessLevel ];
         }
+
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( text );
+    }
+    break;
+
+    case NEvent::Mouse::btnLeftPressed:
+    {
+      if( d.overlay.underMouse.is<Market>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -126,15 +148,50 @@ void MarketAccess::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
+}
+
+void MarketAccess::_updatePaths()
+{
+  __D_REF(d,MarketAccess)
+  auto wbuilding = d.overlay.selected.as<Market>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+    {
+      NColor color = walker.is<MarketBuyer>() ? ColorList::red : ColorList::blue;
+      d.ways.push_back( ColoredWay{ walker->pathway().allTiles(), color } );
+    }
+  }
+}
+
+void MarketAccess::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& wayinfo : _dfunc()->ways )
+  {
+    TexturedPath::draw( wayinfo.tiles, rinfo, wayinfo.color );
+  }
+}
+
+void MarketAccess::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
 }
 
 MarketAccess::MarketAccess( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, accessColumnIndex )
+  : Info( camera, city, accessColumnIndex ), __INIT_IMPL(MarketAccess)
 {
-  _addWalkerType( walker::marketBuyer );
-  _addWalkerType( walker::marketLady );
-  _addWalkerType( walker::marketKid );
+  _visibleWalkers() << walker::marketBuyer
+                    << walker::marketLady
+                    << walker::marketKid;
 
   _initialize();
 }

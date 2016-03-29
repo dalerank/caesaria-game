@@ -29,11 +29,3 @@ Docker::Docker( PlayerCityPtr city )
   _setType( walker::docker );
   stock().setCapacity( bigCart );
 }
-
-DockerPtr Docker::create(PlayerCityPtr city )
-{
-  DockerPtr ret( new Docker( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
-}

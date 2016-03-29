@@ -26,16 +26,19 @@ namespace citylayer
 {
 
 typedef enum { simple=0, water, fire, damage, desirability,
-       entertainments, entertainment, theater, amphitheater, colloseum, hippodrome,
+       entertainments, entertainment, theater, amphitheater, colosseum, hippodrome,
        health, healthAll, doctor, hospital, barber, baths,
        food,
        religion,
        risks, crime, aborigen, troubles,
        educations, education, school, library, academy,
-       commerce, tax, market, sentiment, unemployed,
+       commerce, tax, market, sentiment, unemployed, comturnover,
        build, destroyd, constructor,
+       products,
        all, count=0xff
      } Type;
+
+std::string toString( Type t );
 
 class Helper : public EnumsHelper<Type>
 {
@@ -43,7 +46,7 @@ public:
   static Helper& instance();
   static std::string prettyName( Type t );
   static const VariantMap& getConfig( Type t );
-  
+
 protected:
   Helper();
 

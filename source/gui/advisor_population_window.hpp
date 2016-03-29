@@ -31,15 +31,10 @@ namespace advisorwnd
 
 class Population : public Base
 {
-public:
-  Population( PlayerCityPtr city, Widget* parent, int id );
-
-  virtual void draw( gfx::Engine& painter );
-
-private:
-  void _showHelp();
-
   __DECLARE_IMPL(Population)
+public:
+  Population( PlayerCityPtr city, Widget* parent );
+  virtual void draw( gfx::Engine& painter );
 };
 
 }//end advisorwnd advisorwnd

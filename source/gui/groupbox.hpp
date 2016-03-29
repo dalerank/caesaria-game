@@ -29,33 +29,43 @@ public:
   typedef enum { whiteFrame=0, blackFrame, none, count } Style;
 
   //! constructor
-  GroupBox( Widget* parent );
-  GroupBox( Widget* parent, const Rect& rectangle, int id, Style style );
+  GroupBox(Widget* parent);
+  GroupBox(Widget* parent, const Rect& rectangle, int id, Style style);
 
   //! destructor
   virtual ~GroupBox();
 
   //! sets an background image
-  virtual void setBackgroundImage( const gfx::Picture& image);
+  void setBackgroundImage(const gfx::Picture& image);
 
   //! Gets the background image
-  virtual const gfx::Picture& backgroundImage() const;
+  const gfx::Picture& backgroundImage() const;
 
   //! sets if the image should scale to fit the element
-  virtual void setScaleBackgroundImage(bool alignScale);
-  virtual bool isBackgroundImageScaled() const;
+  void setScaleBackgroundImage(bool alignScale);
+
+  //!
+  bool isBackgroundImageScaled() const;
 
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
 
-  virtual void setStyle( Style style );
+  //!
+  void setStyle(Style style);
 
+  //!
   virtual void beforeDraw( gfx::Engine& painter );
 
+  //!
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path &ui);
+
+protected:
+  virtual void _finalizeResize();
+
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gui

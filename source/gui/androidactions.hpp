@@ -20,6 +20,7 @@
 
 #include "window.hpp"
 #include "core/signals.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace scene { class Base; }
 

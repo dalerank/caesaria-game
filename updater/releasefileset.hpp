@@ -98,16 +98,16 @@ struct ReleaseFile
 
 	bool isWrongOS() const
 	{
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef GAME_PLATFORM_LINUX
        if( file.isMyExtension(".exe") || file.isMyExtension(".dll") || file.isMyExtension(".macos") || file.isMyExtension(".haiku") )
            return true;
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
         if( file.isMyExtension(".linux") || file.isMyExtension(".exe") || file.isMyExtension(".dll") || file.isMyExtension(".macos"))
            return true;
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
         if( file.isMyExtension(".linux") || file.isMyExtension(".macos") || file.isMyExtension(".haiku") )
            return true;
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
         if( file.isMyExtension(".linux") || file.isMyExtension(".exe") || file.isMyExtension(".dll") || file.isMyExtension(".haiku"))
             return true;
 #endif

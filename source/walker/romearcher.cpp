@@ -23,7 +23,7 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeSpearman, walker::romeSpearman, RomeArcher, archer )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::romeSpearman, RomeArcher, archer )
 
 RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type )
@@ -34,17 +34,9 @@ RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
 
 void RomeArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), p );
   wait( game::Date::days2ticks( 1 ) / 2 );
-}
-
-RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeArcherPtr ret( new RomeArcher( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void RomeArcher::timeStep(const unsigned long time)
@@ -55,7 +47,7 @@ void RomeArcher::timeStep(const unsigned long time)
   {
   case Soldier::fightEnemy:
   {
-    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
     if( !enemy.isValid() )
     {
@@ -77,7 +69,7 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).valueOrEmpty(0);
+    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).firstOrEmpty();
 
     if( !construction.isValid() )
     {

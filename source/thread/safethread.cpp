@@ -42,6 +42,9 @@ void _THKERNEL(SafeThread* ptr)
 {
   do
   {
+    if( ptr->_d->abortFlag )
+      break;
+
     ptr->_d->onTask();
     std::this_thread::sleep_for( std::chrono::milliseconds( ptr->_d->delay ) );
 
@@ -58,16 +61,15 @@ void _THKERNEL(SafeThread* ptr)
 SafeThread::SafeThread(WorkFunction function) : _d( new Impl )
 {
   _d->function = function;
-  _d->thread = std::thread(_THKERNEL,this);
+  _d->abortFlag = false;  
   _d->delay = 0;
-  _d->abortFlag = false;
   _d->running = true;
+  _d->thread = std::thread(_THKERNEL, this);
 }
 
 SafeThreadPtr SafeThread::create(WorkFunction function)
 {
   SafeThreadPtr p( new SafeThread( function ) );
-  p->drop();
 
   return p;
 }
@@ -76,11 +78,11 @@ SafeThread::SafeThread(WorkFunction function, StopFunction callbackOnFinish) :
   _d( new Impl )
 {
   _d->onFinish = callbackOnFinish;
-  _d->thread = std::thread(_THKERNEL,this);
+  _d->abortFlag = false;  
   _d->running = true;
   _d->delay = 0;
-  _d->abortFlag = false;
   _d->function = function;
+  _d->thread = std::thread(_THKERNEL, this);
 }
 
 bool SafeThread::failed() const
@@ -99,9 +101,15 @@ void SafeThread::join()
     _d->thread.join();
 }
 
+void SafeThread::stop()
+{
+  _d->running = false;
+}
+
 void SafeThread::abort()
 {
   _d->abortFlag = true;
+  _d->running = false;
 }
 
 void SafeThread::setDelay(int ms)
@@ -115,8 +123,8 @@ void SafeThread::Impl::onTask()
 {
   try
   {
-    if( !function.empty() )
-      function( running );
+    if (!function.empty())
+      function(running);
   }
   catch( std::runtime_error& ex )
   {

@@ -24,9 +24,9 @@
 /** This is an immigrant coming with his stuff */
 class HousePlague : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-  static void create( PlayerCityPtr city, TilePos pos, int time);
+  static void create( PlayerCityPtr city, const TilePos& pos, int time);
   ~HousePlague();
 
   virtual void timeStep(const unsigned long time);

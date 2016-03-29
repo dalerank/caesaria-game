@@ -23,11 +23,11 @@
 class EngineerPost : public ServiceBuilding
 {
 public:
-    EngineerPost();
-    virtual void timeStep(const unsigned long time);
-    virtual void deliverService();
+  EngineerPost();
+  virtual void timeStep(const unsigned long time);
+  virtual void deliverService();
 
-    virtual unsigned int walkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 };
 
 #endif

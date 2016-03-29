@@ -74,20 +74,27 @@ public:
 
   inline T& operator*() const
   {
-    _CAESARIA_DEBUG_BREAK_IF( !d );
+    _GAME_DEBUG_BREAK_IF( !d );
     return *d;
   }
 
   inline T *operator->() const
   {
-    _CAESARIA_DEBUG_BREAK_IF( !d );
+    _GAME_DEBUG_BREAK_IF( !d );
     return d;
   }
 
   inline bool operator!() const {		return !d;	}
   inline operator bool() const {	return !isNull();	}
   inline T* data() const	{	return d;	}
-  inline bool isNull() const {	return !d;	}
+  inline bool isNull() const { return !d; }
+
+  template<typename... Args>
+  void createInstance( Args & ... args)
+  {
+    T* instance = new T( args... );
+    reset( instance );
+  }
 
   inline void reset(T *other = 0)
   {

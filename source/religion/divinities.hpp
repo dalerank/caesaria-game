@@ -22,40 +22,61 @@
 #include "gfx/picture.hpp"
 #include "game/service.hpp"
 
+#define DIVINITY_MUST_INITIALIZE_FROM_PANTHEON friend class Pantheon;
+
 namespace religion
 {
 
 namespace rome
 {
+  class Pantheon;
+}
 
 class RomeDivinity : public Divinity
 {
 public:
+  typedef enum
+  {
+    Ceres = 0,
+    Mars,
+    Neptune,
+    Venus,
+    Mercury,
 
-  void assignFestival( int type );
+    Count = 0xff
+  } Type;
+
+  RomeDivinity(Type type = RomeDivinity::Count);
+
+  static std::string findIntName(Type type);
+  static StringArray getIntNames();
+  static std::vector<RomeDivinity::Type> getIntTypes();
 
   virtual VariantMap save() const;
-  virtual void load( const VariantMap& vm );
+  virtual void load(const VariantMap& vm);
 
   virtual std::string name() const { return _name; }
-  virtual std::string shortDescription() const;
   virtual Service::Type serviceType() const;
   virtual const gfx::Picture& picture() const;
   virtual float relation() const;
   virtual float monthDecrease() const;
   virtual void setEffectPoint( int value );
   virtual int wrathPoints() const;
+  virtual object::Type templeType( TempleSize size ) const;
   virtual DateTime lastFestivalDate() const;
-
-  virtual void updateRelation( float income, PlayerCityPtr city );
-
+  virtual void setInternalName(const std::string &newName);
+  virtual void updateRelation(float income, PlayerCityPtr city);
+  virtual std::string internalName() const;
   virtual std::string moodDescription() const;
   virtual void checkAction(PlayerCityPtr city);
 
-  RomeDivinity();
+  virtual void setRelation(float value);
+  virtual void setPicture(gfx::Picture picture);
+  virtual void setService(const std::string& service);
+  virtual void setName(const std::string& name);
 
-  virtual void setInternalName(const std::string &newName);
-  virtual std::string internalName() const;
+  RomeDivinity::Type dtype() const;
+  void assignFestival( int type );
 
 protected:
   virtual void _doBlessing( PlayerCityPtr city ) {}
@@ -64,11 +85,11 @@ protected:
 
   std::string _name;
   Service::Type _service;
-  std::string _shortDesc;
   DateTime _lastFestival;
   bool _blessingDone;
   bool _smallCurseDone;
   int _wrathPoints;
+  RomeDivinity::Type _dtype;
   int _effectPoints;
   gfx::Picture _pic;
   StringArray _moodDescr;
@@ -79,8 +100,6 @@ protected:
     float target;
   } _relation;
 };
-
-}//end namespace rome
 
 }//end namespace religion
 

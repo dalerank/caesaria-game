@@ -50,8 +50,14 @@ private:
 
 #define REGISTER_CLASS_IN_WALKERFACTORY(type,a) \
 namespace { \
-struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new WalkerBaseCreator<a>() ); }}; \
+struct Registrator_##a { Registrator_##a() { WalkerManager::instance().addCreator( type, new WalkerDefaultCreator<a>() ); }}; \
 static Registrator_##a rtor_##a; \
+}
+
+#define REGISTER_NAMED_CLASS_IN_WALKERFACTORY(type,a,name) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { WalkerManager::instance().addCreator( type, new WalkerTypedCreator<a>( type ) ); }}; \
+static Registrator_##name rtor_##name; \
 }
 
 #endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

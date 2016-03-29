@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
 
-#include "core/smartptr.hpp"
+#include "core/smartlist.hpp"
 #include "core/predefinitions.hpp"
 
 namespace world

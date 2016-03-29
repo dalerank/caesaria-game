@@ -12,7 +12,7 @@ void ReleaseFileSet::Visitor::VisitSection(const IniFile& iniFile, const std::st
           // Lets check platform compatibility using 'platforms' property of section
           std::string platform = iniFile.GetValue(section, "platforms");
           if (!platform.empty()) {
-            if (platform.find(CAESARIA_PLATFORM_NAME) == std::string::npos) {
+            if (platform.find(GAME_PLATFORM_NAME) == std::string::npos) {
               return;
             }
           }

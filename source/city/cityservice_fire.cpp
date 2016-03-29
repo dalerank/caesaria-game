@@ -18,6 +18,7 @@
 #include "cityservice_fire.hpp"
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
 #include "cityservice_factory.hpp"
 
@@ -34,15 +35,7 @@ public:
   UqLocations locations;
 };
 
-SrvcPtr Fire::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Fire( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
+std::string Fire::defaultName() { return TEXT(Fire); }
 
 Fire::Fire( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )

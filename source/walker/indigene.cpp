@@ -20,6 +20,7 @@
 #include "city/statistic.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "objects/native.hpp"
+#include "name_generator.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;
@@ -38,14 +39,6 @@ public:
 public:
   Pathway findWay2bestField( PlayerCityPtr city, TilePos pos );
 };
-
-IndigenePtr Indigene::create(PlayerCityPtr city)
-{
-  IndigenePtr ret( new Indigene( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void Indigene::send2city(BuildingPtr base)
 {
@@ -81,8 +74,8 @@ void Indigene::_updateState()
   {
     _d->tryCount++;
 
-    TilePos offset( 1, 1 );
-    NativeFieldList fields = _city()->statistic().objects.find<NativeField>( object::native_field, pos() - offset, pos() + offset );
+    NativeFieldList fields = _city()->statistic().objects
+                                                 .find<NativeField>( object::native_field, pos(), 1 );
     for( auto i : fields )
     {
       _d->wheatQty += i->catchCrops();
@@ -114,9 +107,8 @@ void Indigene::_updateState()
 
   case Impl::go2center:
   {
-    TilePos offset( 1, 1 );
-    NativeCenterList centerList = _city()->statistic().objects.find<NativeCenter>( object::native_center,
-                                                                                   pos() - offset, pos() + offset );
+    NativeCenterList centerList = _city()->statistic().objects
+                                                      .find<NativeCenter>( object::native_center, pos(), 1 );
     if( !centerList.empty() )
     {
       centerList.front()->store( _d->wheatQty );
@@ -155,8 +147,8 @@ void Indigene::_updateState()
 
   case Impl::back2base:
   {
-    TilePos offset( 1, 1 );
-    BuildingList huts = _city()->statistic().objects.find<Building>( object::native_hut, pos() - offset, pos() + offset );
+    BuildingList huts = _city()->statistic().objects
+                                            .find<Building>( object::native_hut, pos(), 1 );
 
     Pathway way;
     if( huts.empty() )
@@ -181,21 +173,19 @@ void Indigene::_updateState()
 }
 
 Indigene::Indigene(PlayerCityPtr city)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::indigene ), _d( new Impl )
 {
-  _setType( walker::indigene );
   _d->wheatQty = 0;
   _d->tryCount = 0;
 
-  setName( _("##indigene##") );
+  setName( NameGenerator::rand( NameGenerator::indigeneMale ) );
 }
 
 
 Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
 {
-  TilePos offset( 5, 5 );
-  NativeFieldList fields = city->statistic().objects.find<NativeField>( object::native_field,
-                                                                        pos - offset, pos + offset );
+  NativeFieldList fields = city->statistic().objects
+                                            .find<NativeField>( object::native_field, pos, 5 );
 
   Pathway way;
   if( !fields.empty() )

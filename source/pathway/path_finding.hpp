@@ -18,14 +18,10 @@
 #ifndef _CAESARIA_PATHFINDING_HPP_INCLUDE_
 #define _CAESARIA_PATHFINDING_HPP_INCLUDE_
 
-#include "core/serializer.hpp"
-#include "core/predefinitions.hpp"
-#include "core/position.hpp"
-#include "core/variant.hpp"
-#include "pathway.hpp"
-#include "objects/overlay.hpp"
-#include "route.hpp"
+#include "objects/predefinitions.hpp"
 #include "objects/constants.hpp"
+#include "gfx/predefinitions.hpp"
+#include "route.hpp"
 
 class Propagator
 {
@@ -33,30 +29,39 @@ public:
   enum { nwseDirections=0, allDirections=1 };
   typedef std::set<object::Type> ObsoleteOverlays;
 
-  Propagator( PlayerCityPtr city );
+  Propagator(PlayerCityPtr city);
   ~Propagator();
 
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
-  void setObsoleteOverlay( object::Type type );
-  void setObsoleteOverlays( const ObsoleteOverlays& ovs );
+  void setObsoleteOverlay(object::Type type);
+  void setObsoleteOverlays(const ObsoleteOverlays& ovs);
 
   /** propagate some data in the road network
   * param origin : propagation origin
   * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
   */
-  void init(TilePos origin);
+  void init(const TilePos& origin);
   void init(gfx::Tile& origin);
   void init(const gfx::TilesArray& origin);
   void init(const ConstructionPtr origin);
+
+  template<typename ObjectPtr>
+  void init(const ObjectPtr origin)
+  {
+    auto constr = ptr_cast<Construction>(origin);
+    if (constr.isValid())
+      init(constr);
+  }
+
   void propagate(const unsigned int maxDistance);
 
   /** returns all paths starting at origin */
   PathwayList getWays(const unsigned int maxDistance);
   DirectPRoutes getRoutes(const object::Type buildingType);
 
-  DirectRoute getShortestRoute( const DirectPRoutes& routes );
-  DirectRoute getShortestRoute( const object::Type buildingType );
+  DirectRoute getShortestRoute(const DirectPRoutes& routes);
+  DirectRoute getShortestRoute(const object::Type buildingType);
 
 private:
   class Impl;

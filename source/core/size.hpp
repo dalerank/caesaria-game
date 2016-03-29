@@ -23,14 +23,18 @@ class SizeF;
 class Size : Vector2<int>
 {
 public:
+  static const Size zero;
+
   Size( const int w, const int h ) : Vector2<int>( w, h ) {}
   Size() : Vector2<int>( 0, 0 ) {}
-  explicit Size( const int s ) : Vector2<int>( s, s ) {}
 
   Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
   inline int width() const { return _x; }
   inline int height() const { return _y; }
+
+  inline int& rw() { return _x; }
+  inline int& rh() { return _y; }
 
   void setWidth( int w ) { _x = w; }
   void setHeight( int h ) { _y = h; }
@@ -46,6 +50,8 @@ public:
   //Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
   Size operator/(float delim) const { return Size( int(_x/delim), int(_y/delim) ); }
   Size operator*(float delim) const { return Size( int(_x*delim), int(_y*delim) ); }
+
+  static Size square(int size) { return Size(size,size); }
 };
 
 class SizeF : Vector2<float>
@@ -53,7 +59,6 @@ class SizeF : Vector2<float>
 public:
   SizeF( const float w, const float h ) : Vector2<float>( w, h ) {}
   SizeF() : Vector2<float>( 0, 0 ) {}
-  explicit SizeF( const float s ) : Vector2<float>( s, s ) {}
 
   SizeF operator+(const SizeF& other) const { return SizeF( _x + other._x, _y + other._y ); }
 

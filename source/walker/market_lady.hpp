@@ -23,8 +23,8 @@
 
 class MarketLady : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static ServiceWalkerPtr create( PlayerCityPtr city  );
   MarketPtr market() const;
 
 protected:

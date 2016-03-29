@@ -1,0 +1,28 @@
+{
+  revision : 4156
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 15, 40, "100%-15", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_2"
+
+    items : [
+      "1. Added javascript engine for script support"
+      "2. Added textures for big wheat carts"
+      "3. Added maps for Massalia and Syracusae"
+      "4. Fixed empire prices shows in trade advisor window"
+      "5. Stockpile state shows correct in trade advisor window"
+      "6. Video settings window, Language dialog, Change player name gialog"
+      "   moved to scripts, you can find script in folder game/resources/script"
+      "7. Added factory input storage textures, it shows when factory have"
+      "   material for works"
+    ]
+  }
+}

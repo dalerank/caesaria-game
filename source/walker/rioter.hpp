@@ -24,8 +24,8 @@
 
 class Rioter : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RioterPtr create( PlayerCityPtr city );
   virtual ~Rioter();
 
   virtual void timeStep(const unsigned long time);
@@ -51,10 +51,8 @@ private:
 
 class NativeRioter : public Rioter
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RioterPtr create( PlayerCityPtr city );
-
-private:
   NativeRioter( PlayerCityPtr city );
 };
 

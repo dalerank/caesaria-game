@@ -22,7 +22,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
-#include "core/utils.hpp"
+#include "core/format.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -33,7 +33,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_BASEINFOBOX(colloseum,AboutColosseum)
+REGISTER_OBJECT_BASEINFOBOX(colosseum,AboutColosseum)
 
 AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
@@ -53,29 +53,29 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
   setTitle( _( coloseum->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
-  
+
   if( coloseum->isNeedGladiators() )
   {
-    new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
+    add<Label>( Rect( 35, 190, width() - 35, 190 + 20 ), _("##colosseum_haveno_gladiatorpit##") );
   }
   else
   {
-    std::string text = _("##colloseum_haveno_animal_bouts##");
+    std::string text = _("##colosseum_haveno_animal_bouts##");
     if( coloseum->isShowLionBattles() )
     {
       DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( game::Date::current() ), "##days##" );
+      text = fmt::format( "{} {} {}", _("##colosseum_animal_contest_runs##"), lastAnimalBoutDate.daysTo( game::Date::current() ), _("##days##") );
     }
-    new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
+    add<Label>( Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
-    text = _("##colloseum_haveno_gladiator_bouts##");
+    text = _("##colosseum_haveno_gladiator_bouts##");
     if( coloseum->isShowGladiatorBattles() )
     {
       DateTime lastGlBoutDate = coloseum->lastGladiatorBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
+      text = fmt::format( "{} {} {}", _("##colosseum_gladiator_contest_runs##"), lastGlBoutDate.daysTo( game::Date::current() ), _("##days##") );
     }
 
-    new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+    add<Label>( Rect( 35, 220, width() - 35, 220 + 20 ), text );
   }
 }
 

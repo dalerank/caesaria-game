@@ -43,6 +43,8 @@ public:
 
   // add the button in the menu.
   void addBuildButton(const object::Type buildingType);
+  void setModel( const std::string& filename );
+  void setC3gameplay( bool enabled );
 
   virtual bool isPointInside(const Point& point) const;
 
@@ -53,9 +55,7 @@ public:
 protected:
   void _resolveButtonClick(Widget* widget);
 
-  city::development::Options _options;
-  city::development::Branch _branch;
-  bool _c3gameplay;
+  __DECLARE_IMPL(BuildMenu)
 };
 
 class BuildMenu_water : public BuildMenu

@@ -27,10 +27,10 @@ public:
   typedef enum { culture, prosperity, peace, favour, workless } Status;
   Senate();
 
-  unsigned int funds() const;
+  int funds() const;
   unsigned int thisYearTax() const;
 
-  float collectTaxes();
+  float takeMoney();
 
   int status( Status status ) const;
 

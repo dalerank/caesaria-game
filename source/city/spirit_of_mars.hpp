@@ -26,7 +26,6 @@ namespace city
 class SpiritOfMars : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city, int month=3);
   virtual void timeStep( const unsigned int time);
 
   static std::string defaultName();
@@ -35,8 +34,8 @@ public:
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
 
+  SpiritOfMars( PlayerCityPtr city, int month=6);
 private:
-  SpiritOfMars( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

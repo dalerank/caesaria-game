@@ -58,7 +58,7 @@ BEGIN_NAMEDTYPE(Type,unknown),
   romeGuard,
   lion,
   spear,  //34
-  fishPlace,
+  fishPlace, //35
   seaMerchant,
   scholar,
   librarian,
@@ -83,8 +83,8 @@ BEGIN_NAMEDTYPE(Type,unknown),
   indigeneRioter,
   indigene,
   missioner,
-  zebra,
-  riverWave,
+  zebra,//60
+  riverWave,//61
   supplier,
   circusCharioter,
   docker,
@@ -95,6 +95,8 @@ BEGIN_NAMEDTYPE(Type,unknown),
   all = 0xff,
   any = all
 END_NAMEDTYPE(Type)
+
+class Info;
 
 } //end namespace walker
 

@@ -1,0 +1,8 @@
+{
+ title : "##towers_and_gates##"
+ sound : "fanfare"
+ text  : "@Mauern& allein können einen Eindringling zwar behindern, ihn aber nicht aufhalten. Verteidungsstellungen hindern Eindringlinge daran, Mauern zu überklettern oder zu beschädigen. Solche Einrichtungen, wie z.B. Wachtürme, wurden in regelmäßigen Abständen an den Mauern angebracht und boten den Soldaten einen Posten, von dem aus sie das umliegende Gelände beobachten konnten. Die Römer bauten gewöhnlich freistehende Türme, die nicht in die eigentliche Mauer integriert waren. Eine Handvoll Bogenschützen oder Speerwerfer in robusten Türmen konnte verheerende Schäden unter den Angreifern anrichten. Türme wurden normalerweise aus demselben Material wie die Mauern gebaut - Holz oder Stein - und waren doppelt so hoch.\nWachzimmer waren ein Versuch, die schwächsten Punkte einer Mauer - die Tore - zu verstärken. Die einfachsten waren mit einem Wachposten besetzt und wurden von innen verriegelt. Die besser befestigten Wachzimmer verfügten über verschiedene Verteidigungseinrichtungen und größere Truppenstärke, waren jedoch an die Tore der Haupteingänge gebunden."
+ uri : {
+  "Mauern" : "wall_history"
+ }
+}

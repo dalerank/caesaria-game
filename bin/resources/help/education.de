@@ -1,0 +1,13 @@
+{
+ title : "##education##"
+ sound : "fanfare"
+ text  : "Roms @Schulen& bieten den meisten Bürgern eine grundlegende Unterweisung im Lesen, Schreiben und Rechnen. Einige Kinder besuchen danach eine @Akademie&, wo sie zusätzlich Unterricht in Geschichte und Rhetorik bekommen. Schulen ermöglichen es den Häusern in ihrem Einzugsgebiet, sich zu erweitern, und sie verbessern Ihre @Kulturwertung&.\nDas Verlangen nach Bildung ändert sich mit der Zusammensetzung Ihrer Einwohnerschaft. In den Anfangszeiten Ihrer Stadt ist die Einwohnerdichte noch gering und es gibt nur wenige Kinder im Schulalter. Im Laufe der Zeit gründen die ursprünglichen Einwanderer Familien und verlangen nach mehr Schulen. Einige Kinder bekommen, wenn sie etwas älter sind die Gelegenheit, sich auf der Akademie größeres Wissen anzueignen. Und Erwachsene verlangen während ihres ganzen Lebens Zugang zu @Bibliotheken&. Um den zukünftigen Bedarf an Bildungseinrichtungen vorhersehen zu können, sollten Sie sich von Ihrem @Bevölkerungsberater& einmal die Altersstruktur Ihrer Bevölkerung zeigen lassen. Kinder bis 13 Jahre sollten Schulen besuchen. Jugendliche von 14 bis 21 Jahren gehen auf die Akademie. Die schönsten Wohngebiete verlangen Zugang zu allen drei Bildungskategorien.\nSchon bei einer noch jungen Stadt sollte mit dem Bau ausreichender Bildungseinrichtungen und deren Anbindung an die Wohngebiete für genügend Schulplätze für alle gesorgt werden. Wenn Ihre Stadt wächst und sich die Häuser dichter aneinanderdrängen, werden diese Einrichtungen irgendwann einmal nicht mehr ausreichen. Die Nachbarschaften werden zwar immer noch die gewünschte Anbindung haben, doch die überfüllten Schulen können den Ansturm so vieler Neuankömmlinge kaum noch bewältigen. Fragen Sie Ihren @Bildungsberater& nach dem stadtweiten Bedarf nach Schulen, Akademien und Bibliotheken. Ihre @Kulturwertung& wird sehr darunter leiden, wenn diese Gebäude überfüllt sind."
+ uri : {
+  "Schulen" : "school"
+  "Akademie" : "academy"
+  "Kulturwertung" : "ratings"
+  "Bibliotheken" : "library"
+  "Bevölkerungsberater" : "population_advisor"
+  "Bildungsberater" : "education_advisor"
+ }
+}

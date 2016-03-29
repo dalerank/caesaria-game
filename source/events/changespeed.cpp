@@ -26,7 +26,6 @@
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/label.hpp"
-#include "gfx/helper.hpp"
 
 using namespace gfx;
 
@@ -52,8 +51,7 @@ Pause::Pause() : _mode( unknown ) {}
 
 void Pause::_exec(Game& game, unsigned int)
 {
-  gui::Widget* rootWidget = game.gui()->rootWidget();
-  gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
+  gui::Label* wdg = safety_cast< gui::Label* >( game.gui()->findWidget( windowGamePausedId ) );
 
   switch( _mode )
   {
@@ -66,9 +64,9 @@ void Pause::_exec(Game& game, unsigned int)
     {
       if( !wdg )
       {
-        Size scrSize = rootWidget->size();
-        wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
-                              _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
+        Size scrSize = game.gui()->vsize();
+        wdg = &game.gui()->add<gui::Label>( Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
+                                            _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
         wdg->setTextAlignment( align::center, align::center );
       }
     }
@@ -88,53 +86,6 @@ void Pause::_exec(Game& game, unsigned int)
 
   default: break;
   }
-}
-
-
-GameEventPtr Step::create(unsigned int count)
-{
-  Step* e = new Step(count);
-  GameEventPtr ret( e );
-  ret->drop();
-  return ret;
-}
-
-void Step::_exec(Game &game, unsigned int)
-{
-  game.step(_count);
-}
-
-bool Step::_mayExec(Game &game, unsigned int) const
-{
-  return game.isPaused();
-}
-
-Step::Step(unsigned int count):_count(count)
-{
-}
-
-GameEventPtr ChangeSpeed::create(int value)
-{
-  ChangeSpeed* ev = new ChangeSpeed();
-  ev->_value = value;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool ChangeSpeed::_mayExec(Game& game, unsigned int) const{  return true;}
-
-ChangeSpeed::ChangeSpeed()
-{
-  _value = 0;
-}
-
-void ChangeSpeed::_exec(Game& game, unsigned int)
-{
-  game.changeTimeMultiplier( _value );  
-
-  GameEventPtr e = WarningMessage::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%", 1 );
-  e->dispatch();
 }
 
 } //end namespace events

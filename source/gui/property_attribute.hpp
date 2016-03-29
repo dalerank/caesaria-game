@@ -31,7 +31,7 @@ public:
   //! sets the parent ID, for identifying where events came from
   void setParentID(int parentID);
 
-  virtual void setFont( Font font );
+  virtual void setFont( const Font& font );
 
   //! save the attribute and possibly post the event to its parent
   virtual bool updateAttrib(bool sendEvent=true);

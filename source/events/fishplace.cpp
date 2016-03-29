@@ -37,7 +37,7 @@ public:
   ChangeFishery::Mode mode;
 };
 
-GameEventPtr ChangeFishery::create( TilePos pos, Mode mode )
+GameEventPtr ChangeFishery::create(const TilePos& pos, Mode mode )
 {
   ChangeFishery* fp = new ChangeFishery();
   fp->_d->location = pos;

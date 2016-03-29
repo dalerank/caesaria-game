@@ -66,15 +66,7 @@ public:
   void showWarningIfNeed();
 };
 
-city::SrvcPtr HealthCare::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new HealthCare( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-std::string HealthCare::defaultName() { return CAESARIA_STR_EXT(HealthCare); }
+std::string HealthCare::defaultName() { return TEXT(HealthCare); }
 
 HealthCare::HealthCare( PlayerCityPtr city )
   : Srvc( city, HealthCare::defaultName() ), _d( new Impl )
@@ -114,7 +106,7 @@ void HealthCare::Impl::updateValue(PlayerCityPtr city)
   int houseWithBadHealth = 0;
   for( auto house : habitable )
   {
-    unsigned int hLvl = house->state( pr::health );
+    uint32_t hLvl = (uint32_t)house->state( pr::health );
     value += hLvl;
     if( hLvl < health::bad )
     {
@@ -157,10 +149,9 @@ void HealthCare::Impl::showWarningIfNeed()
 {
   if( avgMinHealth < health::bad )
   {
-    GameEventPtr e = WarningMessage::create( avgMinHealth < health::terrible
+    events::dispatch<WarningMessage>( avgMinHealth < health::terrible
                                              ? "##minimum_health_terrible##"
                                              : "##minimum_health_bad##", 2 );
-    e->dispatch();
   }
 }
 

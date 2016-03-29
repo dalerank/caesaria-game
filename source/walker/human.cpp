@@ -22,12 +22,32 @@
 Human::Human(PlayerCityPtr city)
   : Walker( city )
 {
+  _initHumabOptions();
+}
+
+Human::Human(PlayerCityPtr city, walker::Type type)
+  : Walker( city, type )
+{
+  _initHumabOptions();
+}
+
+void Human::_initHumabOptions()
+{
   setFlag( Walker::vividly, true );
-  _setNation( city->states().nation );
+  _setNation( _city()->states().nation );
   _rndOffset() = Point( math::random( 15), math::random( 15 ) ) - Point( 7, 7 );
 }
 
-Human::~Human()
+Human::~Human() {}
+
+Citizen::Citizen(PlayerCityPtr city)
+  : Human( city )
+{
+
+}
+
+Citizen::Citizen(PlayerCityPtr city, walker::Type type)
+  : Human( city, type )
 {
 
 }

@@ -32,7 +32,7 @@ public:
   virtual std::string parentCity() const;
 
 protected:
-  Merchant( PlayerCityPtr city );
+  Merchant( PlayerCityPtr city, walker::Type type );
 };
 
 #endif //_CAESARIA_WALKER_MERCHANT_INCLUDE_H_

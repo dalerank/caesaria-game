@@ -21,6 +21,7 @@
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "core/event.hpp"
+#include "core/variant.hpp"
 #include "core/eventconverter.hpp"
 #include "core/timer.hpp"
 #include "core/debug_timer.hpp"
@@ -38,14 +39,27 @@ Base::Base()
 }
 
 Base::~Base() {}
+void Base::setMode(int mode) {}
 
-void Base::drawFrame(gfx::Engine& engine )
+void Base::setOption(const std::string& name, Variant value)
 {
-   engine.startRenderFrame();
-   
-   draw();
-   
-   engine.endRenderFrame();
+
+}
+
+Variant Base::getOption(const std::string& name)
+{
+  return Variant();
+}
+
+void Base::drawFrame(gfx::Engine& engine)
+{
+   engine.frame().start();
+
+   draw(engine);
+   if (engine.getFlag(gfx::Engine::showMetrics))
+     engine.frame().drawMetrics();
+
+   engine.frame().finish();;
 }
 
 gfx::Camera* Base::camera() const { return 0; }

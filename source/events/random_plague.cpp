@@ -56,17 +56,17 @@ void RandomPlague::_exec( Game& game, unsigned int time)
   int population = game.city()->states().population;
   if( _d->popRange.contain( population ) )
   {
-    Logger::warning( "Execute random plague event" );
+    Logger::info( "Execute random plague event" );
     _d->isDeleted = true;
 
-    HouseList houses = game.city()->statistic().houses.find();
+    HouseList houses = game.city()->statistic().houses.habitable();
 
     unsigned int number4burn = math::clamp<unsigned int>( (houses.size() * _d->strong / 100), 1u, 100u );
 
     for( unsigned int k=0; k < number4burn; k++ )
     {
       HousePtr house = houses.random();
-      house->setState( pr::health, 0 );
+      house->setState( pr::health, 0.f );
     }
   }
 }

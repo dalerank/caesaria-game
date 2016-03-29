@@ -1,0 +1,19 @@
+{  
+  btnActionYes#TexturedButton : {
+    geometry : [ "50%-40", "100%-50", "50%+11", "100%-24" ]
+    tooltip : "##confirm_action##"
+    normal : [ "paneling", 239 ]
+    hovered : [ "paneling", 240 ]
+    pressed : [ "paneling", 241 ]
+    disabled : [ "paneling", 242 ]
+  }
+
+  btnActionNo#TexturedButton : {
+    geometry : [ "50%+16", "100%-50", "50%+16+39", "100%-24" ]
+    tooltip : "##reject_action##"
+    normal : [ "paneling", 243 ]
+    hovered : [ "paneling", 244 ]
+    pressed : [ "paneling", 245 ]
+    disabled : [ "paneling", 246 ]
+  }
+}

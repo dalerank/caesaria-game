@@ -19,7 +19,7 @@
 #define _CAESARIA_EVENT_FIREWORKERS_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -27,7 +27,7 @@ namespace events
 class FireWorkers : public GameEvent
 {
 public:
-  static GameEventPtr create( TilePos center, unsigned int workers);
+  static GameEventPtr create( const TilePos& center, unsigned int workers);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -40,6 +40,6 @@ private:
   unsigned int _workers;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_FIREWORKERS_H_INCLUDE_

@@ -30,11 +30,6 @@ class TutorialWindow : public Window
 public:
   TutorialWindow(Widget* parent, vfs::Path tutorial );
   virtual ~TutorialWindow();
-
-private:
-  GameAutoPause _locker;
-  audio::Muter _muter;
-  audio::SampleDeleter _speechDel;
 };
 
 }//end namespace gui

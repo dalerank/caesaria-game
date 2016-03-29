@@ -26,7 +26,6 @@ public:
   Farm(const good::Product outGood, const object::Type type );
 
   virtual ~Farm();
-  void init();
 
   void computePictures();
   void assignTile( const TilePos& pos );
@@ -37,18 +36,22 @@ public:
   virtual void burn();
   virtual void collapse();
   virtual void destroy();
+  virtual math::Percent productivity() const;
   virtual void computeRoadside();
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  gfx::TilesArray meadows() const;
+  gfx::TilesArray area() const;
+
   virtual unsigned int produceQty() const;
   virtual void initialize(const object::Info& mdata);
-
 protected:
   gfx::Picture _getMainPicture();
   OverlayPtr _buildFarmTile( const city::AreaInfo& info, const TilePos& ppos );
   void _buildFarmTiles(const city::AreaInfo& info, const TilePos& pos );
+  void _updateMeadowsCoverage();
 
   class Impl;
   ScopedPtr< Impl > _d;

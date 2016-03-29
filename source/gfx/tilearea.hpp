@@ -34,9 +34,11 @@ public:
   TilesArea( const Tilemap& tmap, int distance, OverlayPtr overlay );
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
 
-  void add(const Tilemap& tmap, const TilePos& center, int distance );
+  TilesArray northSide() const;
 
   TilesArea& operator=(const TilesArray& other);
+private:
+  Size _size;
 };
 
 } //end namespace gfx

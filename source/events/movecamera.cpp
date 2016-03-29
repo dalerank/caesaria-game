@@ -23,10 +23,11 @@
 namespace events
 {
 
-GameEventPtr MoveCamera::create( TilePos pos )
+GameEventPtr MoveCamera::create(const TilePos& pos, bool force)
 {
   MoveCamera* e = new MoveCamera();
   e->_pos = pos;
+  e->_force = force;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -40,7 +41,7 @@ void MoveCamera::_exec(Game& game, unsigned int)
 
   if( level )
   {
-    level->setCameraPos( _pos );
+    level->setCameraPos( _pos, _force );
   }
 }
 

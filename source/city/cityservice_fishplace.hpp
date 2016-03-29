@@ -29,7 +29,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Fishery)
 class Fishery : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
   virtual bool isDeleted() const;
@@ -39,8 +38,8 @@ public:
   virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
 
-private:
   Fishery(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -36,7 +36,6 @@ public:
 protected:
   virtual void _showHelp();
 
-protected:
   object::Type _type;
   Label* _lbProduction;
   Label* _lbEffciency;

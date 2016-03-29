@@ -35,6 +35,7 @@ public:
   virtual void destroy();
   virtual bool mayWork() const;
   unsigned int fillRange() const;
+  virtual Variant getProperty(const std::string &name) const;
 
   virtual void load( const VariantMap& stream);
   virtual void save(VariantMap &stream) const;

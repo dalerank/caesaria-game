@@ -42,7 +42,7 @@ public:
 
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;  
-  virtual void buildingsServed(const std::set<BuildingPtr> &buildings, ServiceWalkerPtr walker);
+  virtual void buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker);
 protected:
   virtual int _getWalkerOrders() const;
 };

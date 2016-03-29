@@ -24,9 +24,8 @@
 
 class Recruter : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RecruterPtr create( PlayerCityPtr city );
-
   int needWorkers() const;
 
   void hireWorkers( const int workers );  
@@ -44,15 +43,13 @@ public:
   virtual bool die();
 
 protected:
+  Recruter( PlayerCityPtr city );
   virtual void _reachedPathway();
   virtual void _centerTile();
   virtual void _noWay();
 
 private:
-  Recruter( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(Recruter)
 };
 
 #endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_

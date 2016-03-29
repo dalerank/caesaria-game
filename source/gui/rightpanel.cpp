@@ -18,6 +18,7 @@
 #include "rightpanel.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
+#include "gfx/drawstate.hpp"
 #include "gfx/decorator.hpp"
 
 using namespace gfx;
@@ -28,17 +29,22 @@ namespace gui
 class MenuRigthPanel::Impl
 {
 public:
-  Batch background;
-  Pictures backgroundNb;
+  struct {
+    Batch body;
+    Pictures fallback;
+  } batch;
+  Picture tile;
 };
 
-MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
+MenuRigthPanel::MenuRigthPanel( Widget* parent )
+  : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
 {
 }
 
 void MenuRigthPanel::_initBackground(const Picture &tilePic)
 {
-  _d->background.destroy();
+  _d->batch.body.destroy();
+  _d->tile = tilePic;
 
   unsigned int y = 0;
 
@@ -49,12 +55,12 @@ void MenuRigthPanel::_initBackground(const Picture &tilePic)
     y += tilePic.height();
   }
 
-  bool batchOk = _d->background.load( pics, lefttop() );
+  bool batchOk = _d->batch.body.load( pics, lefttop() );
   if( !batchOk )
   {
-    _d->background.destroy();
+    _d->batch.body.destroy();
     Decorator::reverseYoffset( pics );
-    _d->backgroundNb = pics;
+    _d->batch.fallback = pics;
   }
 }
 
@@ -63,23 +69,35 @@ void MenuRigthPanel::draw( gfx::Engine& engine )
   if( !visible() )
     return;
 
-  if( _d->background.valid() )
-    engine.draw( _d->background, &absoluteClippingRectRef() );
-  else
-    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( engine, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->batch.body )
+      .fallback( _d->batch.fallback );
 }
 
-MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
+void MenuRigthPanel::setSide(MenuRigthPanel::Side side)
 {
-  MenuRigthPanel* ret = new MenuRigthPanel( parent );
+  switch( side )
+  {
+  case leftSide: setPosition( {0, top() } ); break;
+  case rightSide: setPosition( { static_cast<int>(parent()->width() - width()), top() } ); break;
+  }
 
+  _initBackground( _d->tile );
+}
+
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Picture& tilePic, int top )
+{
+  MenuRigthPanel& ret = parent->add<MenuRigthPanel>();
   if( tilePic.height() == 0 )
-    return ret;
+    return &ret;
 
-  ret->setGeometry( rectangle );
-  ret->_initBackground( tilePic );
+  Rect rect( parent->width() - tilePic.width(), top,
+             parent->width(), parent->height() );
 
-  return ret;
+  ret.setGeometry( rect );
+  ret._initBackground( tilePic );
+
+  return &ret;
 }
 
 }//end namespace gui

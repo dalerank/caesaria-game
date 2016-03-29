@@ -22,9 +22,8 @@
 
 class FishPlace : public Fish
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static FishPlacePtr create( PlayerCityPtr city );
-
   virtual ~FishPlace();
 
   virtual void timeStep(const unsigned long time);

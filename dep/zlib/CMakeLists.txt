@@ -27,8 +27,6 @@ set(ZLIB_SOURCES_LIST
     trees.c
     uncompr.c
     zutil.c
-    zip.c
-    ioapi.c
 )
 
 add_library(${PROJECT_NAME} STATIC ${ZLIB_SOURCES_LIST})
