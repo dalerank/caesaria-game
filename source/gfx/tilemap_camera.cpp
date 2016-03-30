@@ -123,7 +123,7 @@ void TilemapCamera::setViewport(const Size& newSize)
   _d->size.viewport = Size( ( nSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( nSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
-  Logger::warning( "TilemapArea::setViewport w={} h={}, ScreenSize=[{}, {}]", _d->size.viewport.width(), _d->size.viewport.height(),
+  Logger::debug( "TilemapArea::setViewport w={} h={}, ScreenSize=[{}, {}]", _d->size.viewport.width(), _d->size.viewport.height(),
                                                                               newSize.width(), newSize.height() );
 }
 

@@ -31,6 +31,7 @@ public:
   virtual void deliverService();
   virtual bool mayWork() const;
   virtual int maxVisitors() const;
+  virtual Variant getProperty(const std::string& name) const;
 
 protected:
   virtual WalkerList _specificWorkers() const;

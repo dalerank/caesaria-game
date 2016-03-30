@@ -28,7 +28,7 @@ class DebugTimer
 public:
   static unsigned int ticks();
   static void reset( const std::string& name );
-  static unsigned int take(const std::string& name, bool reset=false);
+  static uint64_t take(const std::string& name, bool reset=false);
   static unsigned int delta( const std::string& name, bool reset=false );
 
   static void check( const std::string& prefix, const std::string& name );

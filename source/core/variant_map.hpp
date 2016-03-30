@@ -34,11 +34,13 @@ public:
    */
   VariantMap();
 
+  static const Variant defValue;
+
   /**
    * @brief copy constructor
    * @param parent container
    */
-  VariantMap( const VariantMap& other );
+  VariantMap(const VariantMap& other);
 
   /**
    * @brief will add values from other container
@@ -51,14 +53,14 @@ public:
    * @brief Do function for each element in container
    * @param function
    */
-  void visitEach( Visitor visitor );
+  void visitEach(Visitor visitor);
 
   /**
    * @brief replace values from other cotainer
    * @param other container
    * @return ref to self
    */
-  VariantMap& operator=(const VariantMap& other );
+  VariantMap& operator=(const VariantMap& other);
 
   /**
    * @brief find and return value by key or empty value
@@ -66,14 +68,14 @@ public:
    * @param default value which returns if key not found
    * @return variant
    */
-  Variant get( const std::string& name, Variant defaultVal=Variant() ) const;
+  Variant get(const std::string& name,const Variant& defaultVal=defValue) const;
 
   /**
    * @brief check this key contains in container
    * @param key
    * @return true if found
    */
-  bool has( const std::string& name ) const;
+  bool has(const std::string& name) const;
 
   /**
    * @brief Convert container to variant

@@ -18,44 +18,26 @@
 #include "advisor_emperor_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
-#include "pushbutton.hpp"
 #include "objects/construction.hpp"
-#include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
-#include "groupbox.hpp"
-#include "listbox.hpp"
-#include "listboxitem.hpp"
 #include "core/logger.hpp"
-#include "city/city.hpp"
-#include "city/request.hpp"
 #include "core/foreach.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
-#include "gameautopause.hpp"
-#include "city/statistic.hpp"
-#include "city/victoryconditions.hpp"
-#include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
-#include "dialogbox.hpp"
-#include "events/fundissue.hpp"
-#include "change_salary_window.hpp"
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
-#include "city_donation_window.hpp"
-#include "emperorgiftwindow.hpp"
-#include "gui/environment.hpp"
-#include "gui/dialogbox.hpp"
 #include "world/relations.hpp"
-#include "texturedbutton.hpp"
-#include "dictionary.hpp"
 #include "game/datetimehelper.hpp"
-#include "advisor_request_button.hpp"
-#include "gui/widget_helper.hpp"
 #include "game/gift.hpp"
+
+#include <GameGui>
+#include <GameCity>
+#include <GameEvents>
 
 using namespace gfx;
 using namespace events;
@@ -83,19 +65,7 @@ public:
 
 void Emperor::_showChangeSalaryWindow()
 {
-  if( game::Date::current() > _city->victoryConditions().finishDate() )
-  {
-    dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
-    return;
-  }
-
-  auto& salaryWindow = ui()->add<dialog::ChangeSalary>( _mayor()->salary() );
-
-  salaryWindow.add<HelpButton>( Point( 12, height() - 39), "emperor_advisor" );
-  salaryWindow.setRanks( world::EmpireHelper::ranks() );
-  salaryWindow.show();
-
-  CONNECT_LOCAL( &salaryWindow, onChangeSalary(), Emperor::_changeSalary )
+  events::dispatch<events::ScriptFunc>("ShowPlayerSalarySettings");
 }
 
 void Emperor::_showSend2CityWindow()
@@ -108,11 +78,7 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
-  auto& dialog = ui()->add<dialog::EmperorGift>( _mayor()->money(),
-                                                 _emperor().lastGift( _city->name() ).date() );
-  dialog.show();
-
-  CONNECT_LOCAL( &dialog, onSendGift(), Emperor::_sendGift );
+  events::dispatch<events::ScriptFunc>("OnShowEmperorGiftWindow");
 }
 
 class GiftDetails : public Window
@@ -122,13 +88,15 @@ public:
    : Window( parent, Rect( Point(), size), title )
   {
     setTextAlignment( align::center, align::center );
-    setFont( FONT_3 );
+    setFont( "FONT_3" );
+
     setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( Font::create( "FONT_1" ) );
+    listbox.setItemsHeight( 16 );
+
 
     for( auto it=history.rbegin(); it != history.rend(); ++it )
     {
@@ -216,8 +184,8 @@ public:
     add<ExitButton>( Point( width() - 37, 12 ) );
 
     ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
-    listbox.setItemFont( Font::create( FONT_1 ) );
-    listbox.setItemHeight( 16 );
+    listbox.setItemsFont( Font::create( "FONT_1" ) );
+    listbox.setItemsHeight( 16 );
 
     for( auto it=history.rbegin(); it != history.rend(); ++it )
     {
@@ -263,7 +231,7 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
   INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc )
 
   if( lbEmperorFavour )
-    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->favour() ) );
+    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->states().favor ) );
 
   if( lbEmperorFavourDesc )
     lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
@@ -307,38 +275,9 @@ void Emperor::_sendMoney( int money )
   _updatePrimaryFunds();
 }
 
-void Emperor::_sendGift(int money)
-{
-  if( money > _mayor()->money() )
-  {
-    dialog::Information( ui(),
-                         _("##nomoney_for_gift_title##"),
-                         _("##nomoney_for_gift_text##") );
-    return;
-  }
-
-  _mayor()->appendMoney( -money );
-  _city->empire()->emperor().sendGift( Gift( _city->name(), "gift", money, game::Date::current() ) );
-
-  _updatePrimaryFunds();
-}
-
-void Emperor::_changeSalary( int money )
-{
-  _mayor()->setSalary( money );
-
-  float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( _city ) );
-  if( salKoeff > 1.f )
-  {
-    dialog::Information( ui(),
-                         _("##changesalary_warning##"),
-                         _("##changesalary_greater_salary##") );
-  }
-}
-
 std::string Emperor::_getEmperorFavourStr()
 {
-  return utils::format( 0xff, "##emperor_favour_%02d##", _city->favour() * favourLimiter / maxFavourValue  );
+  return utils::format( 0xff, "##emperor_favour_%02d##", _city->states().favor * favourLimiter / maxFavourValue  );
 }
 
 void Emperor::_resolveRequest(RequestPtr request)

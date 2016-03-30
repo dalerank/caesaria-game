@@ -36,5 +36,7 @@ env:
 notifications:
     slack:
         - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    irc:
+        - "irc.quakenet.org#caesaria"
     on_failure: always
     on_success: never

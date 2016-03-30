@@ -49,15 +49,15 @@ public:
 
 void ServiceUpdater::timeStep( const unsigned int time)
 {
-  if( game::Date::isWeekChanged() )
+  if (game::Date::isWeekChanged())
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "ServiceUpdater: execute service" );
+    Logger::info("ServiceUpdater: execute service");
     auto houses = _city()->statistic().houses.all();
 
-    for( auto house : houses )
-      house->setServiceValue( _d->stype, _d->value );
+    for (auto house : houses)
+      house->setServiceValue(_d->stype, _d->value);
   }
 }
 

@@ -59,8 +59,8 @@ void TraineeWalker::_init(walker::Type traineeType)
   case walker::actor:      _d->necBuildings << object::theater
                                             << object::amphitheater;  break;
   case walker::gladiator:  _d->necBuildings << object::amphitheater
-                                            << object::colloseum;  break;
-  case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
+                                            << object::colosseum;  break;
+  case walker::lionTamer:  _d->necBuildings << object::colosseum;  break;
   case walker::soldier:    _d->necBuildings << object::military_academy
                                             << object::fort_legionaries
                                             << object::fort_horse
@@ -103,7 +103,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
   if( _d->baseLocation == TilePos::invalid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! trainee walker baselocation is unaccessible at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -111,7 +111,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingPtr base = _map().overlay<Building>( _d->baseLocation );
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! trainee walker base is null at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -140,7 +140,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   if( !isNeedTrainee )
   {
-    Logger::warning( "!!! WARNING: not need trainee walker from [{},{}]", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! not need trainee walker from [{},{}]", base->pos().i(), base->pos().j() );
     deleteLater();
     return;
   }
@@ -216,7 +216,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null" );
+    Logger::warning( "!!! trainee walker base is null" );
     deleteLater();
     return;
   }

@@ -1,8 +1,3 @@
-{  
- title : "##plaza##"
- sound : "fanfare"
- text  : ""
- uri : {
-  
- }
+{
+ import : "garden_plaza"
 }

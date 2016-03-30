@@ -1,0 +1,11 @@
+{
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text  : "Genauso wie es in Rom nur ein einziges Hippodrom gibt - den Circus Maximus - kann auch Ihre Stadt nur eins dieser enormen @Unterhaltungsgebäude& haben. Tatsächlich ist es nur großen oder fortschrittlichen Städten wegen der besonderen technischen Herausforderung möglich, eines zu errichten. 'Hippodrom' ist das griechische Wort für 'Pferderennstrecke'.\nIn einem Hippodrom finden nur Wagenrennen statt. Dabei handelt es sich jedoch um die absolut beliebteste Sportart von allen, und kein Haus in der Stadt kann sich bis auf die höchste Stufe entwickeln, wenn es keinen Zugang zu einem Hippodrom bekommt. Denken Sie daran, dass in einem Hippodrom neben den @Wagenlenkern& auch eine große Anzahl konventioneller Arbeiter benötigt werden.\nWagenlenker stellen den Zugang zum Hippodrom her, indem sie durch die Straßen der Viertel fahren. Die unmittelbare Umgebung eines Hippodroms ist wegen des Lärms und Verkehrs, den es verursacht, jedoch ziemlich unattraktiv. Wenn Sie die Wagenlenker des Hippodroms dabei beobachten wollen, wie diese ihre Runden drehen, wählen Sie die @Spezialkarte Unterhaltung&. Klicken Sie das Hippodrom rechts an, um seinen Status zu prüfen.\n\nKlicken Sie @hier&, wenn Sie mehr über den historischen Circus Maximus in Rom erfahren möchten."
+ uri : {
+  "Unterhaltungsgebäude" : "entertainment"
+  "Wagenlenkern" : "actorColony"
+  "Spezialkarte Unterhaltung" : "special_card_selection"
+  "hier" : "hippodrome_history"
+ }
+}

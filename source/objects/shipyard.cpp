@@ -68,7 +68,7 @@ void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
   if( game::Date::isWeekChanged() )
-  {    
+  {
     if( numberWorkers() > 0 && walkers().size() == 0 )
     {
       receiveGood();
@@ -108,10 +108,10 @@ void Shipyard::timeStep(const unsigned long time)
 
 bool Shipyard::build(const city::AreaInfo& info)
 {
-  if( info.city->getOption( PlayerCity::warfNeedTimber ) == 0 )
-    _setConsumeGoodType( 0, good::none );
+  if (info.city->getOption(PlayerCity::warfNeedTimber) == 0)
+    _setConsumeGoodType(0, good::none);
 
-  return CoastalFactory::build( info );
+  return CoastalFactory::build(info);
 }
 
 bool Shipyard::mayWork() const

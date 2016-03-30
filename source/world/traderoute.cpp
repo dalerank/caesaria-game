@@ -59,7 +59,7 @@ public:
   {
     if( !route )
     {
-      Logger::warning( "!!!WARNING: Merchants::load() route is null" );
+      Logger::warning( "!!! Merchants::load() route is null" );
       return;
     }
 
@@ -74,7 +74,7 @@ public:
       }
       else
       {
-        Logger::warning( "!!!WARNING: Merchants::load() cant load merchant index {0} for route {1}",
+        Logger::warning( "!!! Merchants::load() cant load merchant index {0} for route {1}",
                          std::distance( stream.begin(), it ), route->name() );
       }
     }

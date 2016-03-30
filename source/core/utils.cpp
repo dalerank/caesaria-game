@@ -404,8 +404,8 @@ unsigned int toUint(const std::string& in)
 float eventProbability(float probability, int k, int n)
 {
   int limit = math::random( n ) * (1 - probability);
-  return k > limit ? 1 : 0;
-
+  return k > limit ? 1.f : 0.f;
+  
   /*probability = math::clamp<float>( probability, 0, 1);
   k = math::clamp( k, 0, n );
   float q = 1 - probability;

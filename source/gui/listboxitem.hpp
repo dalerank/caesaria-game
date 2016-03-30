@@ -50,25 +50,25 @@ public:
   };
 
   ListBoxItem();
-  ListBoxItem( const ListBoxItem& other );
+  ListBoxItem(const ListBoxItem& other);
 
-	ListBoxItem& operator=( const ListBoxItem& other );
+  ListBoxItem& operator=(const ListBoxItem& other);
   ~ListBoxItem();
 
-  void setText( const std::string& text );
+  void setText(const std::string& text);
   const std::string& text() const;
 
-  void setTooltip( const std::string& text );
+  void setTooltip(const std::string& text);
   const std::string& tooltip() const;
 
-  void setTag(const Variant& tag );
+  void setTag(const Variant& tag);
   const Variant& tag() const;
-	gfx::Picture icon();
-	void setIcon( gfx::Picture pic );
-  void setIcon( const std::string& rc, int index );
+  gfx::Picture icon();
+  void setIcon(gfx::Picture pic);
+  void setIcon(const std::string& rc, int index);
 
   bool isEnabled() const;
-  void setEnabled( bool en );
+  void setEnabled(bool en);
   // A multicolor extension
 
   const Alignment& horizontalAlign() const;
@@ -77,20 +77,20 @@ public:
   bool isAlignEnabled() const;
 
   float currentHovered() const;
-  void updateHovered( float delta );
+  void updateHovered(float delta);
 
   ElementState state() const;
-  void setState( const ElementState& state );
+  void setState(const ElementState& state);
 
   Point textOffset() const;
-  void setTextOffset( Point p );
+  void setTextOffset(Point p);
 
   Point iconOffset() const;
-  void setIconOffset( Point p );
+  void setIconOffset(Point p);
 
   const gfx::Picture& picture() const;
 
-  void setUrl( const std::string& url );
+  void setUrl(const std::string& url);
   const std::string& url() const;
 
   Variant data( const std::string& name ) const;
@@ -99,10 +99,12 @@ public:
 
   void setTextColor( ColorType type, NColor color);
 
-  void updateText( const Point& p, Font f, const Size& s );
+  void updateText(const Point& p, Font f, const Size& s);
   void resetPicture(const Size &s);
   void draw(const std::string& text, Font f , const Point& p);
   void clear();
+
+  static ColorType findColorType(const std::string& name);
 
   struct OverrideColor
   {
@@ -112,7 +114,7 @@ public:
     NColor color;
   };
 
-	//!sets the item text alignment
+  //!sets the item text alignment
   void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   OverrideColor overrideColors[ count ];

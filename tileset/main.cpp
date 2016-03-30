@@ -229,110 +229,110 @@ public:
 };
 
 class AtlasGenerator
-{	
+{
 public:
   std::vector<Texture*> textures;
   StringArray names;
 
   void run(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates,
            const StringArray& dirs, const StringArray& files = StringArray())
-	{
+  {
     StringArray imageFiles;
     imageFiles << files;
 
     for( auto str : dirs )
-		{
+    {
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
-			{
-        Logger::warning("Error: Could not find directory '{0}'", path.toString());
-				return;
-			}
+      {
+        Logger::fatal("Error: Could not find directory '{0}'", path.toString());
+        return;
+      }
 
       getImageFiles(path, imageFiles);
-		}
+    }
 
     Logger::warning( "Found {} images", imageFiles.size() );
 
     std::set<ImageName> imageNameSet;
 
     for( const std::string& filename : imageFiles)
-		{
-			try
-			{
+    {
+      try
+      {
         vfs::NFile file = vfs::NFile::open( filename );
         gfx::Picture image = PictureLoader::instance().load( file, true );
 
         if(image.width() > width || image.height() > height)
-				{
+        {
           Logger::warning( "Error: '{0}' ({1}x{2}) ) is larger than the atlas ({3}x{4}})",
                            filename, image.width(), image.height(), width, height );
-					return;
-				}			        
-				
+          return;
+        }
+
         ImageName in(image, file.path().baseName(false).toString() );
         imageNameSet.insert( in );
-			}
+      }
       catch(...)
-			{
+      {
         Logger::warning( "Could not open file: '" + filename + "'" );
-			}
-		}
-		    
+      }
+    }
+
     Texture* tx = new Texture(width, height);
     textures.push_back( tx );
-		int count = 0;
-		
+    int count = 0;
+
     for( auto& imageName : imageNameSet )
-		{
+    {
       bool added = false;
-			
+
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
-			
+
       for( auto& texture : textures)
-			{
+      {
         if(texture->addImage(imageName.image, imageName.name, padding))
-				{
-					added = true;
-					break;
-				}
-			}
-			
-			if(!added)
-			{
+        {
+          added = true;
+          break;
+        }
+      }
+
+      if(!added)
+      {
         Texture* texture = new Texture(width, height);
         texture->addImage(imageName.image, imageName.name, padding);
         textures.push_back(texture);
-			}
-		}
-		
-		count = 0;
-		
+      }
+    }
+
+    count = 0;
+
     for(Texture* texture : textures)
-		{
+    {
       Logger::warning( "Writing atlas: {} {}", name, utils::i2str(++count));
       std::string txName = name + utils::i2str(count);
       texture->write(txName, fileNameOnly, unitCoordinates, width, height);
       names.push_back( txName + ".png" );
       names.push_back( txName + ".atlas" );
-		}
-	}
-	
+    }
+  }
+
   void getImageFiles(vfs::Path path, StringArray& imageFiles)
-	{
+  {
     if(path.isFolder())
-		{
+    {
       vfs::Directory directory( path );
       StringArray files = directory.entries().items().files( ".png" );
       StringArray directories = directory.entries().items().folders();
 
       imageFiles << files;
-			
+
       for( auto str : directories)
-			{
+      {
         getImageFiles( vfs::Path( str ), imageFiles);
-			}
-		}
+      }
+    }
   }
 };
 
@@ -700,7 +700,7 @@ int main(int argc, char* argv[])
     if(argc < 5)
     {
       Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
-      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");      
+      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
       Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
       Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
       Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
@@ -774,7 +774,7 @@ int main(int argc, char* argv[])
     {
       bg.fill( gray ? ColorList::darkSlateGray : ColorList::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
-    }    
+    }
   }
   bg.update();
 
@@ -785,7 +785,7 @@ int main(int argc, char* argv[])
 
   while(running)
   {
-    static unsigned int lastTimeUpdate = DebugTimer::ticks();    
+    static unsigned int lastTimeUpdate = DebugTimer::ticks();
     while(SDL_PollEvent(&event) != 0)
     {
       if(event.type == SDL_QUIT) running = false;
@@ -802,7 +802,7 @@ int main(int argc, char* argv[])
     index = math::clamp<int>( index, 0, gens.max()-1 );
     engine->frame().start();
 
-    engine->draw( bg, Point() );    
+    engine->draw( bg, Point() );
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800,800) ) );
 
     engine->frame().finish();

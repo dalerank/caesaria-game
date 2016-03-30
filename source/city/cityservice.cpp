@@ -45,9 +45,7 @@ void Srvc::load(const VariantMap& stream) {}
 
 Srvc::~Srvc()
 {
-#ifdef DEBUG
-  Logger::warning( "CityServices: remove {0}", name() );
-#endif
+  Logger::info("CityServices: remove {0}", name());
 }
 
 Srvc::Srvc(PlayerCityPtr city, const std::string& name)
@@ -56,9 +54,7 @@ Srvc::Srvc(PlayerCityPtr city, const std::string& name)
   _d->name = name;
   _d->city = city;
   setDebugName( name );
-#ifdef DEBUG
-  Logger::warning( "CityServices: create {0}", name );
-#endif
+  Logger::info("CityServices: create {0}", name);
 }
 
 PlayerCityPtr Srvc ::_city() const { return _d->city; }

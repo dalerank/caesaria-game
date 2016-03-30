@@ -68,7 +68,7 @@ ShowAdvisorWindow::ShowAdvisorWindow()
 
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
 {
-  bool advEnabled = game.city()->getOption( PlayerCity::adviserEnabled ) > 0;
+  bool advEnabled = game.city()->getOption(PlayerCity::adviserEnabled) > 0;
   if( !advEnabled )
   {
     events::dispatch<WarningMessage>( "##not_available##", 1 );
@@ -94,7 +94,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     else
     {
       auto model = new ParlorModel( game.city() );
-      Parlor::create( game.gui()->rootWidget(), -1, _advisor, model );
+      Parlor::create(game.gui()->rootWidget(), -1, _advisor, model);
     }
   }
   else

@@ -22,7 +22,7 @@
 #include "gfx/picture.hpp"
 #include "game/service.hpp"
 
-#define DIVINITY_MUST_INITIALIZE_FROM_PANTHEON friend class RomeDivinity;
+#define DIVINITY_MUST_INITIALIZE_FROM_PANTHEON friend class Pantheon;
 
 namespace religion
 {
@@ -34,7 +34,6 @@ namespace rome
 
 class RomeDivinity : public Divinity
 {
-  friend class rome::Pantheon;
 public:
   typedef enum
   {
@@ -44,18 +43,19 @@ public:
     Venus,
     Mercury,
 
-    Count=0xff
+    Count = 0xff
   } Type;
 
-  static std::string findIntName( Type type );
+  RomeDivinity(Type type = RomeDivinity::Count);
+
+  static std::string findIntName(Type type);
   static StringArray getIntNames();
   static std::vector<RomeDivinity::Type> getIntTypes();
 
   virtual VariantMap save() const;
-  virtual void load( const VariantMap& vm );
+  virtual void load(const VariantMap& vm);
 
   virtual std::string name() const { return _name; }
-  virtual std::string shortDescription() const;
   virtual Service::Type serviceType() const;
   virtual const gfx::Picture& picture() const;
   virtual float relation() const;
@@ -65,34 +65,26 @@ public:
   virtual object::Type templeType( TempleSize size ) const;
   virtual DateTime lastFestivalDate() const;
   virtual void setInternalName(const std::string &newName);
-  virtual void updateRelation( float income, PlayerCityPtr city );
+  virtual void updateRelation(float income, PlayerCityPtr city);
   virtual std::string internalName() const;
   virtual std::string moodDescription() const;
   virtual void checkAction(PlayerCityPtr city);
+
+  virtual void setRelation(float value);
+  virtual void setPicture(gfx::Picture picture);
+  virtual void setService(const std::string& service);
+  virtual void setName(const std::string& name);
 
   RomeDivinity::Type dtype() const;
   void assignFestival( int type );
 
 protected:
-  template<typename ObjClass, typename... Args>
-  static SmartPtr<ObjClass> create( const Args & ... args)
-  {
-    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
-    instance->setInternalName( findIntName( instance->dtype() ) );
-    instance->drop();
-
-    return instance;
-  }
-
-  RomeDivinity( Type type=RomeDivinity::Count );
-
   virtual void _doBlessing( PlayerCityPtr city ) {}
   virtual void _doWrath( PlayerCityPtr city ) {}
   virtual void _doSmallCurse( PlayerCityPtr city ) {}
 
   std::string _name;
   Service::Type _service;
-  std::string _shortDesc;
   DateTime _lastFestival;
   bool _blessingDone;
   bool _smallCurseDone;

@@ -41,10 +41,10 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   //! Returns pointer to the close button
-  virtual PushButton* button( ButtonName btn ) const;
+  virtual PushButton* button(ButtonName btn) const;
 
   //!
   virtual void beforeDraw(gfx::Engine &painter);
@@ -62,22 +62,26 @@ public:
   //! Get if the window titlebar will be drawn
   virtual bool titleVisible() const;
 
-  virtual void setBackground( gfx::Picture texture );
-  virtual void setBackground( BackgroundType type );
+  virtual void setBackground(gfx::Picture texture);
+  virtual void setBackground(BackgroundType type);
 
   virtual gfx::Picture background() const;
 
   virtual Rect clientRect() const;
   virtual void setModal();
 
-  virtual void setWindowFlag( FlagName flag, bool enabled=true );
-  virtual void setWindowFlag( const std::string& flag, bool enabled=true );
+  virtual void setFont(const Font& font);
+  virtual void setFont(const std::string& fname);
+
+  virtual void setWindowFlag(FlagName flag, bool enabled=true);
+  virtual void setWindowFlag(const std::string& flag, bool enabled=true);
 
   virtual void setupUI(const VariantMap &ui);
 
-  virtual void setupUI(const vfs::Path& path );
+  virtual void setupUI(const vfs::Path& path);
 
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);
+  virtual void setTextAlignment(Alignment horizontal, Alignment vertical);
 
   virtual void setText(const std::string& text);
   virtual void setTitleRect(const Rect& rect);
@@ -99,12 +103,6 @@ protected:
 private:
   class Impl;
   ScopedPtr<Impl> _d;
-};
-
-class SimpleWindow : public Window
-{
-public:
-  SimpleWindow(Widget* parent, const Rect& rect, const std::string& title="", const std::string& ui="");
 };
 
 }//end namespace gui

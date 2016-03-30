@@ -118,7 +118,6 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
     return file;
   }
 
-  //Logger::warning( "FileSystem: create the file using an absolute path " + filename.toString() );
   FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
 
@@ -184,7 +183,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
 				      bool ignorePaths,
 				      const std::string& password)
 {
-  Logger::warning( "FileSystem: mountArchive(path) archive call for " + filename.toString() );
+  Logger::debug( "FileSystem: mountArchive(path) archive call for " + filename.toString() );
   ArchivePtr archive;
 
   // see if archive is already added
@@ -206,12 +205,12 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   // do we know what type it should be?
   if (archiveType == Archive::unknown || archiveType == Archive::folder)
   {
-    Logger::warning( "FileSystem: try to load archive based on file name" );
+    Logger::debug( "FileSystem: try to load archive based on file name" );
     for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
     {        
       if (_d->archiveLoaders[i]->isALoadableFileFormat(filename) )
       {
-        Logger::warning( "FileSystem: find archive reader by extension " + filename.toString() );
+        Logger::debug( "FileSystem: find archive reader by extension " + filename.toString() );
         archive = _d->archiveLoaders[i]->createArchive(filename, ignoreCase, ignorePaths);
         if( archive.isValid() )
         {
@@ -224,7 +223,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
     // try to load archive based on content
     if( archive.isNull() )
     {
-      Logger::warning( "FileSystem: try to load archive based on content" );
+      Logger::debug( "FileSystem: try to load archive based on content" );
       NFile file = createAndOpenFile( filename, Entity::fmRead );
       if( file.isOpen() )
       {
@@ -233,7 +232,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
           file.seek(0);
           if (_d->archiveLoaders[i]->isALoadableFileFormat( file ) )
           {
-            Logger::warning( "FileSystem: find archive reader by content " + filename.toString() );
+            Logger::debug( "FileSystem: find archive reader by content " + filename.toString() );
             file.seek(0);
             archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths);
             if( archive.isValid() )
@@ -287,7 +286,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   if( archive.isValid() )
   {
     const std::string arcType = archive->getTypeName();
-    Logger::warning( "FileSystem: check archive:type-{0} as opened {0}", arcType, filename.toString() );
+    Logger::debug( "FileSystem: check archive:type-{0} as opened {0}", arcType, filename.toString() );
     _d->openArchives.push_back( archive );
     if( password.size() )
     {
@@ -309,7 +308,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
                                     bool ignorePaths,
                                     const std::string& password)
 {
-  Logger::warning( "FileSystem: mountArchive call for " + file.path().absolutePath().toString() );
+  Logger::debug( "FileSystem: mountArchive call for " + file.path().absolutePath().toString() );
   if( !file.isOpen() || archiveType == Archive::folder)
   {
     Logger::warning( "FileSystem: cannot open archive " + file.path().absolutePath().toString() );
@@ -386,7 +385,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-      Logger::warning( "Mount archive {}", file.path().toString() );
+      Logger::debug( "Mount archive {}", file.path().toString() );
       _d->openArchives.push_back(archive);
 
       if (password.size())
@@ -412,7 +411,7 @@ void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = fol
 //! Adds an archive to the file system.
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 {
-  Logger::warning( "FileSystem: mountArchive call for " + archive->getTypeName() );
+  Logger::debug( "FileSystem: mountArchive call for " + archive->getTypeName() );
   for (unsigned int i=0; i < _d->openArchives.size(); ++i)
   {
     if( archive == _d->openArchives[i])
@@ -432,7 +431,7 @@ bool FileSystem::unmountArchive(unsigned int index)
   bool ret = false;
   if (index < _d->openArchives.size())
   {
-    Logger::warning( "FileSystem: unmountArchive {0}", index );
+    Logger::debug( "FileSystem: unmountArchive {0}", index );
     _d->openArchives.erase( _d->openArchives.begin() + index );
     ret = true;
   }
@@ -448,7 +447,7 @@ bool FileSystem::unmountArchive(const Path& filename)
   {
     if (filename == _d->openArchives[i]->entries()->getPath())
     {
-      Logger::warning( "FileSystem: unmountArchive " + filename.toString() );
+      Logger::debug( "FileSystem: unmountArchive " + filename.toString() );
       return unmountArchive(i);
     }
   }
@@ -585,8 +584,6 @@ Entries FileSystem::getFileList()
   Path rpath = utils::replace( workingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
   
-  //Logger::warning( "FileSystem: start listing directory" );
-
   //! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
 	{
@@ -616,7 +613,6 @@ Entries FileSystem::getFileList()
 			//entry.isDirectory = true;
 			//Files.push_back(entry);
     #elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
-			//Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
 			//ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);

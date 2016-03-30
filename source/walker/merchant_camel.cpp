@@ -44,7 +44,7 @@ void MerchantCamel::timeStep(const unsigned long time)
     if( !caravanHead.isValid() )
     {
       die();
-      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan {}", _d->headId );
+      Logger::warning( "!!! MerchantCamel havenot headID caravan {}", _d->headId );
     }
     else
     {
@@ -79,7 +79,7 @@ void MerchantCamel::load(const VariantMap &stream)
 
   if( _d->headId == 0  )
   {
-    Logger::warning( "WARNING !!! MerchantCamel can't have headID." );
+    Logger::warning( "!!! MerchantCamel can't have headID." );
     deleteLater();
   }
 }

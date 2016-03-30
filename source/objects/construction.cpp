@@ -78,13 +78,13 @@ public:
   Extensions extensions;
 };
 
-Construction::Construction(const object::Type type, const Size& size)
-  : Overlay( type, size ), _d( new Impl )
+Construction::Construction(object::Type type, const Size& size)
+  : Overlay(type, size), _d( new Impl )
 {
-  setState( pr::fire, 0 );
-  setState( pr::damage, 0 );
-  setState( pr::inflammability, 1 );
-  setState( pr::collapsibility, 1 );
+  setState(pr::fire, 0);
+  setState(pr::damage, 0);
+  setState(pr::inflammability, 1);
+  setState(pr::collapsibility, 1);
 }
 
 TilesArray& Construction::_roadside() { return _d->accessRoads; }
@@ -111,7 +111,7 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
 
   //on over map size
   if( (int)area.size() != size().area() )
-    return false;  
+    return false;
 
   return true;
 }
@@ -174,8 +174,8 @@ void Construction::computeRoadside()
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
     TilesArray tiles = _map().rect( pos() + TilePos( -dst, -dst ),
-                                     pos() + TilePos( s+dst-1, s+dst-1 ),
-                                     !Tilemap::CheckCorners );
+                                    pos() + TilePos( s+dst-1, s+dst-1 ),
+                                    !Tilemap::CheckCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
@@ -195,7 +195,7 @@ void Construction::burn()
 
     events::dispatch<Disaster>( tile(), Disaster::fire );
 
-    Logger::warning( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+    Logger::debug( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
 }
 
@@ -208,24 +208,19 @@ void Construction::collapse()
 
   events::dispatch<Disaster>( tile(), Disaster::collapse );
 
-  Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
+  Logger::debug( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return Overlay::picture(); }
 
-void Construction::setState( Param param, double value)
+void Construction::setState(int param, float value)
 {
-  _d->states[ param ] = math::clamp<double>( value, 0.f, 100.f );
+  _d->states[param] = math::clamp<float>( value, 0.f, 100.f );
 
-  if( param == pr::damage || param == pr::fire )
+  if(param == pr::damage || param == pr::fire)
   {
     _checkDestroyState();
   }
-}
-
-void Construction::updateState( Param name, double value)
-{
-  setState( name, state( name ) + value );
 }
 
 void Construction::save( VariantMap& stream) const
@@ -255,10 +250,10 @@ void Construction::initialize(const object::Info& mdata)
 {
   Overlay::initialize( mdata );
 
-  double inflammability = mdata.getOption( "inflammability", 1. );
+  float inflammability = mdata.getOption( "inflammability", 1.f );
   setState( pr::inflammability, inflammability );
 
-  double collapsibility = mdata.getOption( "collapsibility", 1. );
+  float collapsibility = mdata.getOption( "collapsibility", 1.f );
   setState( pr::collapsibility, collapsibility );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
@@ -287,7 +282,7 @@ const Picture&Construction::picture(const city::AreaInfo& info) const
   return Overlay::picture( info );
 }
 
-double Construction::state(Param param) const { return _d->states[ param ]; }
+float Construction::state(int param) const { return _d->states[param]; }
 
 TilesArray Construction::enterArea() const
 {
@@ -300,7 +295,7 @@ TilesArray Construction::enterArea() const
 }
 
 void Construction::timeStep(const unsigned long time)
-{  
+{
   for( auto ext : _d->extensions )
     ext->timeStep( this, time );
 

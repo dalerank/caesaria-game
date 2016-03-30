@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/position_array.hpp"
+#include "city/states.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -125,7 +126,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
+      Logger::debug( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;
@@ -184,6 +185,14 @@ void Senate::initialize(const object::Info& mdata)
   _d->flags.set( prosperity, ratings.get( TEXT(prosperity) ).toMap() );
   _d->flags.set( peace,      ratings.get( TEXT(peace     ) ).toMap() );
   _d->flags.set( favour,     ratings.get( TEXT(favour    ) ).toMap() );
+}
+
+Variant Senate::getProperty(const std::string & name) const
+{
+  if (name == "funds") return funds();
+  if (name == "thisYearTax") return thisYearTax();
+
+  return ServiceBuilding::getProperty(name);
 }
 
 void Senate::save(VariantMap& stream) const
@@ -248,7 +257,7 @@ int Senate::status(Senate::Status status) const
     case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
     case peace:      return _city()->peace();
-    case favour:     return _city()->favour();
+    case favour:     return _city()->states().favor;
     }
   }
 

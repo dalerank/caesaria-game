@@ -123,7 +123,7 @@
     employers : 150
   },
 
-  colloseum : {
+  colosseum : {
     cost : 500,
     desirability : { base : -3, range : 3, step : 1 }
     class : "entertainment"
@@ -463,7 +463,7 @@
     sound : [ "market", 1 ]
   },
 
-  granery : {
+  granary : {
     cost : 100,
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 6

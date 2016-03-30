@@ -69,7 +69,7 @@ GameEventPtr RandomAnimals::create( walker::Type type, unsigned int wolvesNumber
 
 void RandomAnimals::_exec( Game& game, unsigned int time)
 {
-  Logger::warning( "Execute random animals event" );
+  Logger::info( "Execute random animals event" );
   if( _d->count > 0 )
   {
     Tilemap& tmap = game.city()->tilemap();

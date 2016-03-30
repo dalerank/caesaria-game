@@ -164,7 +164,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 
   for( auto house : houses )
   {
-    int currentValue = house->getServiceValue( Service::crime )+1;
+    int currentValue = (int)house->getServiceValue( Service::crime )+1;
     if( currentValue >= crime.level.minimum )
     {
       criminalizedHouse.push_back( house );
@@ -180,7 +180,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
   if( (int)criminalizedHouse.size() > protestor_n )
   {
     HousePtr house = criminalizedHouse.random();
-    int hCrimeLevel = house->getServiceValue( Service::crime );
+    int hCrimeLevel = (int)house->getServiceValue( Service::crime );
 
     int sentiment = rcity->sentiment();
     int randomValue = math::random( crime::maxValue );

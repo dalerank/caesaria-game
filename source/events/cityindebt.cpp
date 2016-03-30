@@ -28,12 +28,12 @@
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
 #include "game/funds.hpp"
-#include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
 #include "factory.hpp"
 #include "game/funds.hpp"
+#include "script_event.hpp"
 
 namespace events
 {
@@ -126,11 +126,9 @@ void CityIndebt::_exec(Game& game, unsigned int)
     std::string title = _d->state < _d->title.size() ? _d->title[ _d->state ] : "##city_in_debt_text##";
 
     unsigned int money = _d->state < _d->emperorMoney.size() ? _d->emperorMoney[ _d->state ] : 0;
-    gui::FilmWidget& dlg = game.gui()->add<gui::FilmWidget>( video );
-    dlg.setText( _( text ) );
-    dlg.setTitle( _( title ) );
-    dlg.setTime( game::Date::current() );
-    dlg.show();
+    VariantList vl; 
+    vl << video << text << title;
+    events::dispatch<ScriptFunc>("OnShowFilmWidget", vl);
 
     _d->state++;
 

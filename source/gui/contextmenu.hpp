@@ -63,23 +63,28 @@ public:
   //! Returns amount of menu items
   virtual unsigned int itemCount() const;
 
-  virtual ContextMenuItem* addItem( const std::string& path, const std::string& text, int commandid,
-                                    bool enabled=true, bool hasSubMenu=false,
-                                    bool checked=false, bool autoChecking=false);
+  //!
+  virtual ContextMenuItem* addItem(const std::string& path, const std::string& text, int commandid,
+                                   bool enabled=true, bool hasSubMenu=false,
+                                   bool checked=false, bool autoChecking=false);
 
-	//! Adds a menu item.
-  virtual ContextMenuItem* addItem( const std::string& text, int commandid,
-      		                          bool enabled=true, bool hasSubMenu=false, 
-                                    bool checked=false, bool autoChecking=false);
+  //! Adds a menu item.
+  virtual ContextMenuItem* addItem(const std::string& text, int commandid,
+                                   bool enabled=true, bool hasSubMenu=false,
+                                   bool checked=false, bool autoChecking=false);
+
+  //!
+  virtual ContextMenuItem* addItem(const std::string& path, const std::string& text);
 
   //! Insert a menu item at specified position.
   virtual ContextMenuItem* insertItem( unsigned int idx, const std::string& text, int commandId, bool enabled,
-		                                   bool hasSubMenu, bool checked, bool autoChecking);
+                                       bool hasSubMenu, bool checked, bool autoChecking);
 
-  //! Find a item which has the given CommandId starting from given index
-  virtual ContextMenuItem* findItem( int commandId, unsigned int idxStartSearch ) const;
+  //!
+  virtual ContextMenuItem* findItem(const std::string& name) const;
 
-  virtual ContextMenuItem* findItem( const std::string& name ) const;
+  //!
+  bool itemExist(const std::string& name) const;
 
   //! Adds a separator item to the menu
   virtual void addSeparator();
@@ -115,15 +120,15 @@ public:
 
   virtual void setAllowFocus( bool enabled );
 
-  void beforeDraw( gfx::Engine& painter );
-
-  float getOpacity( unsigned int index=0 ) const;
+  virtual void beforeDraw( gfx::Engine& painter );
 
   int hovered() const;
 
+  void moveItem(ContextMenuItem* item, unsigned int index);
+
 signals public:
   virtual Signal1<int>& onItemAction();
-	
+
 protected:
   void _setHovered( int index );
   void _closeAllSubMenus();
@@ -143,7 +148,7 @@ protected:
   void setItemVisible( unsigned int index, bool visible );
 
   class Impl;
-	ScopedPtr< Impl > _d;
+  ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui

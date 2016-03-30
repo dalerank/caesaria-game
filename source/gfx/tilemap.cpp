@@ -262,7 +262,7 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
   default: break;
   }
 
-  Logger::warning( "CRITICAL: Unexpected type {} in Tilemap::getNeighbors", type );
+  Logger::fatal( "Unexpected type {} in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 

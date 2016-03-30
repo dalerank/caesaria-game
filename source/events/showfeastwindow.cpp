@@ -24,7 +24,7 @@
 #include "core/utils.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
-#include "gui/film_widget.hpp"
+#include "script_event.hpp"
 #include "game/gamedate.hpp"
 
 namespace events
@@ -51,11 +51,9 @@ bool ShowFeastival::_mayExec(Game& game, unsigned int time) const
 
 void ShowFeastival::_exec(Game& game, unsigned int)
 {
-  auto& dlg = game.gui()->add<gui::FilmWidget>( _video );
-  dlg.setText( _text );
-  dlg.setTitle( _title );
-  dlg.setReceiver( _receiver );
-  dlg.setTime( game::Date::current() );
+  VariantList vl;
+  vl << _video << _text << _title;
+  events::dispatch<ScriptFunc>("OnShowFilmWidget", vl);
 }
 
 }//end namespace events

@@ -47,10 +47,7 @@ bin/tools
 bin/*.dll
 dep/*/lib
 bin/steam_appid.txt
-/MSVC/CaesarIA-game/Win32
-/MSVC/CaesarIA-game/source
-/MSVC/updater/Win32
-/MSVC/freetype/Win32
+/MSVC/*
 Win32
 *.sdf
 *.suo
@@ -59,4 +56,4 @@ Win32
 
 # exclude ignore
 !bin/resources
-bin/resources/settings.model
+/bin/resources/settings.model

@@ -57,7 +57,7 @@ void GoodsUpdater::timeStep(const unsigned int time)
   {
     _d->isDeleted = (_d->endTime < game::Date::current());
 
-    Logger::warning( "GoodsUpdater: execute service" );
+    Logger::info( "GoodsUpdater: execute service" );
 
     BuildingList buildings = _city()->statistic().objects.find<Building>( _d->buildings );
     for( auto building : buildings )

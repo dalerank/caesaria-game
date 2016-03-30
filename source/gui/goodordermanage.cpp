@@ -133,7 +133,7 @@ signals public:
 GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city,
                                              good::Product type, int stackedGoods, GoodMode gmode )
   : Window( parent, rectangle, "" ), _d( new Impl )
-{  
+{
   _d->city = city;
   _d->type = type;
   _d->gmode = gmode;
@@ -243,7 +243,7 @@ void GoodOrderManageWindow::updateIndustryState()
     _d->btnIndustryState->setBackgroundStyle( PushButton::noBackground );
     _d->btnIndustryState->setText( _("##no_industries_in_city##" ) );
     return;
-  }  
+  }
 
   std::string postfixWork = (workFactoryCount%10 == 1) ? "##working_industry##" : "##working_industries##";
   std::string postfixIdle = (workFactoryCount%10 == 1) ? "##idle_factory_in_city##" : "##idle_factories_in_city##";
@@ -299,7 +299,7 @@ void GoodOrderManageWindow::updateStackingState()
   }
 
   _d->btnStackingState->setText( text );
-  _d->btnStackingState->setLineFont( 1, Font::create( FONT_0 ) );
+  _d->btnStackingState->setLineFont( 1, Font::create( "FONT_0" ) );
 }
 
 Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }

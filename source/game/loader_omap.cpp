@@ -60,7 +60,7 @@ bool OMap::load(const std::string& filename, Game& game)
   VariantMap vm;
   if( vfs::Path( filename ).isMyExtension( ".zmap" ) )
   {
-    Logger::warning( "OMap not loading citymap from zip" );
+    Logger::error( "OMap not loading citymap from zip" );
     return false;
   }
   else

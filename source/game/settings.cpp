@@ -31,10 +31,8 @@ namespace game
 #define __REG_PROPERTY(a) const char* Settings::a = TEXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
-__REG_PROPERTY(pantheonModel )
 __REG_PROPERTY(houseModel )
 __REG_PROPERTY(citiesModel)
-__REG_PROPERTY(climateModel)
 __REG_PROPERTY(constructionModel)
 __REG_PROPERTY(ctNamesModel)
 __REG_PROPERTY(settingsPath)
@@ -47,8 +45,6 @@ __REG_PROPERTY(worldModel)
 __REG_PROPERTY(minMonthWithFood)
 __REG_PROPERTY(langModel)
 __REG_PROPERTY(worklessCitizenAway)
-__REG_PROPERTY(fastsavePostfix)
-__REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
 __REG_PROPERTY(c3gfx)
 __REG_PROPERTY(c3music)
@@ -56,7 +52,6 @@ __REG_PROPERTY(c3video)
 __REG_PROPERTY(oldgfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
-__REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
@@ -67,7 +62,6 @@ __REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
-__REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(render)
@@ -81,7 +75,6 @@ __REG_PROPERTY(walkerRelations)
 __REG_PROPERTY(freeplay_opts)
 __REG_PROPERTY(cellw)
 __REG_PROPERTY(simpleAnimationModel)
-__REG_PROPERTY(hotkeysModel)
 __REG_PROPERTY(cartsModel)
 __REG_PROPERTY(logoArchive)
 __REG_PROPERTY(titleResource)
@@ -94,7 +87,6 @@ __REG_PROPERTY(borderMoving)
 __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
-__REG_PROPERTY(videoAlias)
 __REG_PROPERTY(playerName)
 __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
@@ -111,11 +103,13 @@ __REG_PROPERTY(logfile)
 __REG_PROPERTY(rightMenu)
 __REG_PROPERTY(showEmpireMapTiles)
 __REG_PROPERTY(logoImageRc)
-__REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
 __REG_PROPERTY(citiesIdModel)
+__REG_PROPERTY(fontsDirectory)
 __REG_PROPERTY(showStartAware)
+__REG_PROPERTY(verbose)
+__REG_PROPERTY(buildNumber)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -139,7 +133,6 @@ Settings::Settings() : _d( new Impl )
   std::string application_path = vfs::Directory::applicationDir().toString();
   setwdir( application_path );
 
-  _d->options[ pantheonModel       ] = std::string( "/pantheon.model" );
   _d->options[ sg2model            ] = std::string( "/sg2.model" );
   _d->options[ houseModel          ] = std::string( "/house.model" );
   _d->options[ constructionModel   ] = std::string( "/construction.model" );
@@ -148,17 +141,13 @@ Settings::Settings() : _d( new Impl )
   _d->options[ settingsPath        ] = std::string( "/settings.model" );
   _d->options[ langModel           ] = std::string( "/language.model" );
   _d->options[ archivesModel       ] = std::string( "/archives.model" );
-  _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
-  _d->options[ climateModel        ] = std::string( "/climate.model" );
   _d->options[ language            ] = std::string( "" );
-  _d->options[ fastsavePostfix     ] = std::string( "_fastsave");
-  _d->options[ saveExt             ] = std::string( ".oc3save");
+  _d->options[ fontsDirectory      ] = std::string( "/fonts");
   _d->options[ walkerModel         ] = std::string( "/walker.model" );
   _d->options[ animationsModel     ] = std::string( "/animations.model" );
   _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
   _d->options[ emblemsModel        ] = std::string( "/emblems.model" );
   _d->options[ remakeModel         ] = std::string( "/remake.model" );
-  _d->options[ ranksModel          ] = std::string( "/ranks.model" );
   _d->options[ pic_offsets         ] = std::string( "/offsets.model" );
   _d->options[ picsArchive         ] = std::string( "/gfx/pics.zip" );
   _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
@@ -168,7 +157,6 @@ Settings::Settings() : _d( new Impl )
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
   _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
-  _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
   _d->options[ cartsModel          ] = std::string( "/carts.model" );
   _d->options[ logoArchive         ] = std::string( "/gfx/pics_wait.zip" );
   _d->options[ titleResource       ] = std::string( "titlerm" );
@@ -176,12 +164,12 @@ Settings::Settings() : _d( new Impl )
   _d->options[ layersOptsModel     ] = std::string( "layers_opts.model" );
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
-  _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
   _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
+  _d->options[ verbose             ] = false;
   _d->options[ rightMenu           ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
@@ -198,6 +186,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ c3music             ] = std::string( "" );
   _d->options[ talksArchive        ] = std::string( ":/audio/wavs_citizen_en.zip" );
   _d->options[ autosaveInterval    ] = 3;
+  _d->options[ buildNumber         ] = GAME_BUILD_NUMBER;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
   _d->options[ metricSystem        ] = metric::Measure::native;
@@ -206,14 +195,13 @@ Settings::Settings() : _d( new Impl )
   _d->options[ musicVolume         ] = 25;
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
-  _d->options[ worldModel          ] = std::string( "/worldmap.model" );
-  _d->options[ citiesIdModel       ] = std::string( "/cities_id.model" );
+  _d->options[ worldModel          ] = std::string( "worldmap.model" );
+  _d->options[ citiesIdModel       ] = std::string( "cities_id.model" );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
   _d->options[ logoImageRc         ] = "logo";
-  _d->options[ logoImageIndex      ] = 1;
   _d->options[ showTabletMenu      ] = false;
   _d->options[ debugMenu           ] = false;
   _d->options[ showLastChanges     ] = true;
@@ -239,7 +227,7 @@ void Settings::set( const std::string& option, const Variant& value )
   instance()._d->options[ option ] = value;
 }
 
-Variant Settings::get( const std::string& option )
+Variant Settings::get(const std::string& option)
 {
   VariantMap::iterator it = instance()._d->options.find( option );
   return  instance()._d->options.end() == it
@@ -247,7 +235,7 @@ Variant Settings::get( const std::string& option )
               : it->second;
 }
 
-void Settings::setwdir( const std::string& wdirstr )
+void Settings::setwdir(const std::string& wdirstr)
 {
   vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
@@ -266,7 +254,7 @@ void Settings::setwdir( const std::string& wdirstr )
   {
     saveDir = wdir/defaultSaveDir;
   }
-  _d->options[ savedir ] = Variant( saveDir.toString() );
+  _d->options[ savedir ] = Variant(saveDir.toString());
 }
 
 void Settings::resetIfNeed(char* argv[], int argc)
@@ -281,7 +269,7 @@ void Settings::resetIfNeed(char* argv[], int argc)
   }
 }
 
-void Settings::checkwdir(char* argv[], int argc)
+bool Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
   {
@@ -289,15 +277,17 @@ void Settings::checkwdir(char* argv[], int argc)
     {
       const char* opts = argv[i+1];
       setwdir( std::string( opts, strlen( opts ) ) );
-      return;
+      return true;
     }
   }
+
+  return false;
 }
 
 void Settings::checkCmdOptions(char* argv[], int argc)
 {
   for (int i = 0; i < argc; i++)
-  {    
+  {
     if( !strcmp( argv[i], "-Lc" ) )
     {
       std::string opts = argv[i+1];
@@ -308,7 +298,7 @@ void Settings::checkCmdOptions(char* argv[], int argc)
     {
       std::string name = std::string( argv[i] ).substr( 1 );
       std::string nextName = (i+1 >= argc ? "" : std::string( argv[i+1] ));
-      if( nextName[0] == '-' || (i+1 == argc)  )
+      if (nextName[0] == '-' || (i+1 == argc))
       {
         bool value = true;
         if( name[0] == '!' )
@@ -316,11 +306,11 @@ void Settings::checkCmdOptions(char* argv[], int argc)
           name = name.substr( 1 );
           value = false;
         }
-        _d->options[ name ] = Variant( value );
+        _d->options[name] = Variant(value);
       }
       else
       {
-        _d->options[ name ] = Variant( nextName );
+        _d->options[name] = Variant(nextName);
         i++;
       }
     }
@@ -329,14 +319,12 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 
 void Settings::checkC3present()
 {
-  std::string c3path = _d->options[ c3gfx ].toString();
-  bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
+  bool useOldGraphics = isC3mode();
 
   std::map<std::string,std::string> items = {
                                               {houseModel,        "house"},
                                               {constructionModel, "construction"},
                                               {citiesModel,       "cities"},
-                                              {climateModel,      "climate"},
                                               {walkerModel,       "walker"},
                                               {animationsModel,   "animations"},
                                               {empireObjectsModel,"empire_objects"},
@@ -345,32 +333,35 @@ void Settings::checkC3present()
                                               {worldModel,        "worldmap"},
                                               {buildMenuModel,    "build_menu"},
                                               {soundAlias,        "sounds"},
-                                              {videoAlias,        "videos"},
                                               {pic_offsets,       "offsets"},
                                             };
 
   std::string ext;
-  if( useOldGraphics )
+  if (useOldGraphics)
   {
     ext = ".c3";
-    _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "title" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "c3title" ) );
-    _d->options[ logoImageIndex      ] = 2;
+    _d->options[ forbidenTile        ] = Variant(std::string( "org_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "title" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "c3title" ) );
     _d->options[ cellw ] = 30;
   }
   else
   {
     ext = ".model";
-    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
-    _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
-    _d->options[ logoImageRc         ] = Variant( std::string( "logo" ) );
-    _d->options[ logoImageIndex      ] = 1;
+    _d->options[ forbidenTile        ] = Variant(std::string( "oc3_land" ) );
+    _d->options[ titleResource       ] = Variant(std::string( "titlerm" ) );
+    _d->options[ logoImageRc         ] = Variant(std::string( "logo" ) );
     _d->options[ cellw ] = 60;
   }
 
   for( auto& item : items )
     _d->options[ item.first ] = item.second + ext;
+}
+
+bool Settings::isC3mode() const
+{
+  bool haveC3path = !_d->options[c3gfx].toString().empty();
+  return (haveC3path || KILLSWITCH(oldgfx));
 }
 
 void Settings::changeSystemLang(const std::string& newLang)
@@ -432,17 +423,17 @@ bool Settings::haveLastConfig()
 
 void Settings::loadLastConfig()
 {
-  VariantMap settings = config::load( SETTINGS_RC_PATH( settingsPath ) );
+  VariantMap settings = config::load(SETTINGS_RC_PATH(settingsPath));
 
-  if( !settings.empty() )
+  if (!settings.empty())
   {
-    for( auto& v : settings ) { set( v.first, v.second ); }
+    for (auto& v : settings) { set(v.first, v.second); }
   }
 }
 
 void Settings::save()
 {
-  config::save( instance()._d->options, rcpath( Settings::settingsPath ) );
+  config::save(instance()._d->options, SETTINGS_RC_PATH(settingsPath));
 }
 
 }//end namespace game

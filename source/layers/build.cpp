@@ -26,7 +26,7 @@
 #include "city/city.hpp"
 #include "core/event.hpp"
 #include "gfx/sdl_engine.hpp"
-#include "core/font.hpp"
+#include "font/font.hpp"
 #include "walker/corpse.hpp"
 #include "objects/fortification.hpp"
 #include "core/utils.hpp"
@@ -296,12 +296,12 @@ void Build::_updatePreviewTiles( bool force )
 
     for( auto tile : tiles )
       _checkPreviewBuild( tile->epos() );
-  }  
+  }
 
   d.sortBuildTiles();
 
-  d.text.image.fill( 0x0, Rect() );
-  d.text.font.setColor( 0xffff0000 );
+  d.text.image.fill( ColorList::clear, Rect() );
+  d.text.font.setColor( ColorList::red );
   d.text.font.draw( d.text.image, fmt::format( "{} Dn", d.money4Construction ), Point() );
 }
 
@@ -326,7 +326,7 @@ void Build::_buildAll()
     return;
   }
 
-  bool buildOk = false;  
+  bool buildOk = false;
   bool tileBusyBuilding = false;
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d.buildTiles )
@@ -723,7 +723,7 @@ Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
   d.needUpdateTiles = false;
   d.resForbiden = SETTINGS_STR( forbidenTile );
   d.startTilePos = TilePos::invalid();
-  d.text.font = Font::create( FONT_5 );
+  d.text.font = Font::create( "FONT_5" );
   d.readyForExit = false;
   d.text.image = Picture( Size( 100, 30 ), 0, true );
   d.btile.green.load( d.resForbiden, 1 );

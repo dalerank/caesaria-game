@@ -21,6 +21,7 @@
 #include "widget_helper.hpp"
 #include "environment.hpp"
 #include "core/logger.hpp"
+#include <GameVfs>
 
 namespace gui
 {

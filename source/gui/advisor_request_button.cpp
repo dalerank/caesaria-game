@@ -70,7 +70,7 @@ void RequestButton::_updateTexture()
 {
   PushButton::_updateTexture();
 
-  Font font = Font::create( FONT_1_WHITE );
+  Font font = Font::create( "FONT_1_WHITE" );
 
   auto goodRequest = _dfunc()->request.as<GoodRequest>();
   if( goodRequest.isValid() )

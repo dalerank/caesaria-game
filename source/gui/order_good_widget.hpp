@@ -19,7 +19,6 @@
 #define __CAESARIA_GOOD_ORDERS_WIDGET_H_INCLUDED__
 
 #include "label.hpp"
-#include "good/store.hpp"
 #include "good/helper.hpp"
 
 namespace gui

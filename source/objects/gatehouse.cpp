@@ -175,7 +175,7 @@ void Gatehouse::destroy()
 
 void Gatehouse::burn()
 {
-  Logger::warning( "WARNING: Gatehouse cant be burn. Ignore." );
+  Logger::debug( "WARNING: Gatehouse cant be burn. Ignore." );
 }
 
 void Gatehouse::timeStep(const unsigned long time)
@@ -242,6 +242,6 @@ void Gatehouse::Impl::updateSprite()
   }
   else
   {
-    Logger::warning( "WARNING!!! Gatehouse::updateSprite none direction used" );
+    Logger::warning( "!!! Gatehouse::updateSprite none direction used" );
   }
 }

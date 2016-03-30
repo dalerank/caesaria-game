@@ -211,7 +211,7 @@ void Tower::deliverService()
 
 void Tower::burn()
 {
-  Logger::warning( "WARNING: Tower cant be burn. Ignore." );
+  Logger::debug( "WARNING: Tower cant be burn. Ignore." );
 }
 
 TilesArray Tower::enterArea() const

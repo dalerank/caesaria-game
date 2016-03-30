@@ -85,13 +85,13 @@ public:
       Image& image = table->add<Image>( Rect( 0, 0, 140, 140 ), pic, Image::best );
       table->addElementToCell( rowNumber, columnNumber, &image );
       table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
-    }    
+    }
   }
 
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( ColorList::black.color & 0xccffffff );
+    background.fill( ColorList::black.withAlha(0xCC) );
     background.update();
   }
 };
@@ -207,7 +207,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
   if( _d->table )
   {
     Path path = _d->table->getCellData( row, column, "path" ).toString();
-    Path save = path;   
+    Path save = path;
     path = path.changeExtension( Locale::current() );
 
     if( !path.exist() )
@@ -220,7 +220,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
       _loadDesc( path );
     }
     else
-    {      
+    {
       OSystem::openUrl( save.toCString(), steamapi::ld_prefix() );
     }
   }

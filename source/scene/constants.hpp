@@ -23,14 +23,15 @@
 namespace scene
 {
 
-enum ScreenType 
-{ 
-  SCREEN_NONE, 
-  SCREEN_MENU, 
-  SCREEN_GAME, 
-  SCREEN_BRIEFING, 
-  SCREEN_QUIT, 
-  SCREEN_MAX 
+enum ScreenType
+{
+  SCREEN_NONE,
+  SCREEN_LOGO,
+  SCREEN_MENU,
+  SCREEN_GAME,
+  SCREEN_BRIEFING,
+  SCREEN_QUIT,
+  SCREEN_MAX
 };
 
 }

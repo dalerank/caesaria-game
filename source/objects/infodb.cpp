@@ -192,13 +192,13 @@ void InfoDB::initialize( vfs::Path filename )
 
     if( btype == object::unknown )
     {
-      Logger::warning( "!!!WARNING: can't associate type with " + kv.first );
+      Logger::warning( "!!!can't associate type with " + kv.first );
       continue;
     }
 
     if( hasData( btype ) )
     {
-      Logger::warning( "!!!WARNING: type {} also initialized ", kv.first );
+      Logger::warning( "!!!type {} also initialized ", kv.first );
       continue;
     }
 

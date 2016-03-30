@@ -53,6 +53,7 @@ public:
   virtual void loadPicture(Picture &ioPicture, bool streamed);
   virtual void unloadPicture(Picture &ioPicture);
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);
+  virtual void updateBatch(Batch &batch, const Point &newpos);
   virtual void unloadBatch( const Batch& batch );
   virtual void setVirtualSize( const Size& rect );
   virtual void startRenderFrame();
@@ -93,7 +94,7 @@ private:
 
   Picture _screen;
   unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
-  float _rmask, _gmask, _bmask, _amask;  
+  float _rmask, _gmask, _bmask, _amask;
 };
 
 #endif

@@ -35,31 +35,36 @@ namespace dialog
 class LoadFile : public Window
 {
 public:
-  LoadFile( Widget* parent, const Rect& rect,
-                  const vfs::Directory& dir, const std::string& ext,
-                  int id );
+  LoadFile(Widget* parent);
+  LoadFile(Widget* parent, const Rect& rect,
+           const vfs::Directory& dir, const std::string& ext,
+           int id);
 
   virtual ~LoadFile();
 
-  virtual void draw( gfx::Engine& engine );  // draw on screen
+  virtual void draw(gfx::Engine& engine);  // draw on screen
 
   virtual bool isPointInside(const Point& point) const;
 
-  void setTitle( const std::string& title );
-  void setText( const std::string& text );
+  void setTitle(const std::string& title);
+  void setText(const std::string& text);
 
-  void setMayDelete( bool mayDelete );
-  void setShowExtension( bool  showExtension );
+  void setDirectory(const std::string& dir);
+  void setFilter(const std::string& exts);
+
+  void setMayDelete(bool mayDelete);
+  void setShowExtension(bool showExtension);
   bool isMayDelete() const;
 
 signals public:
   Signal1<std::string>& onSelectFile();
+  Signal2<Widget*,std::string>& onSelectFileEx();
 
 protected:
-
   virtual void _fillFiles();
-  void _resolveItemSelected( const ListBoxItem& item );
-  void _resolveItemDblClick( const ListBoxItem& item );
+  void _resolveItemSelected(const ListBoxItem& item);
+  void _resolveItemDblClick(const ListBoxItem& item);
+  void _emitSelectFile();
 
   gui::FileListBox* _fileslbx() const;
   const vfs::Directory& _directory() const;

@@ -45,7 +45,7 @@ public signals:
 HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   : Window( p,  Rect( 0, 0, 416, 144 ), "" ), _d( new Impl )
 {
-  Logger::warning( "HirePriorityWnd: show" );
+  Logger::debug( "HirePriorityWnd: show" );
 
   _d->type = type;
   _d->priority = priority;
@@ -54,11 +54,11 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   GameAutoPauseWidget::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
-  lbTitle.setFont( FONT_5 );
+  lbTitle.setFont( "FONT_5" );
   lbTitle.setTextAlignment( align::center, align::center );
 
   Label& lbExit = add<Label>( Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
-  lbExit.setFont( FONT_1 );
+  lbExit.setFont( "FONT_1" );
   lbExit.setTextAlignment( align::center, align::center );
 
   Point start( 65, 44 );

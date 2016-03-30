@@ -191,9 +191,10 @@ inline void clamp_to(T& value, const T low, const T high)
   value = math::min<T>( mx, high);
 }
 
-inline int signnum( float x )
+template < class T >
+inline T signnum( T x )
 {
-  return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
+  return (x > 0) ? (T)1 : ((x < (T)0) ? (T)-1 : (T)0);
 }
 
 inline bool probably( float chance )

@@ -138,17 +138,17 @@ DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
 unsigned int Temple::currentVisitors() const
 {
-  Logger::warning( "!!! WARNING: Basic temple shouldn't return parishionerNumber" );
+  Logger::warning( "!!! Basic temple shouldn't return parishionerNumber" );
   return 0;
 }
 
 void Temple::deliverService()
 {
-  if( walkers().empty() && numberWorkers() > 0 )
+  if (walkers().empty() && numberWorkers() > 0)
   {
     ServiceBuilding::deliverService();
 
-    if( _city()->getOption( PlayerCity::godEnabled ) )
+    if (_cityOpt(PlayerCity::godEnabled))
     {
       _updateBuffs();
     }
@@ -167,7 +167,7 @@ void Temple::initialize(const object::Info& mdata)
 
 bool Temple::build(const city::AreaInfo& info)
 {
-  if( info.city->getOption( PlayerCity::c3gameplay ) )
+  if (info.city->getOption(PlayerCity::c3gameplay))
     _ground().clear();
 
   return ServiceBuilding::build( info );
@@ -203,7 +203,7 @@ void TempleCeres::_updateBuffs()
 
 void TempleCeres::initialize(const object::Info& mdata)
 {
-  Temple::initialize( mdata );  
+  Temple::initialize( mdata );
 }
 
 BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
@@ -258,7 +258,7 @@ void TempleMercury::_updateBuffs()
 
 TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), object::small_mercury_temple, 49 )
 {
-  _setBuffValue( 0.1 );
+  _setBuffValue( 0.1f );
 }
 
 BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), object::big_mercury_temple, 50 )
@@ -271,6 +271,8 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   _animation().load( ResourceGroup::security, 56, 6);
   _animation().setOffset( Point( 9, 30 ) );
   _fgPictures().resize(1);
+  _ground().clear();
+  _ground().append( "ground", 2 );
 }
 
 unsigned int TempleOracle::currentVisitors() const { return 500; }
@@ -291,7 +293,7 @@ bool TempleOracle::build( const city::AreaInfo& info )
 SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size::square(2) )
 {
-  setMaximumWorkers( 2 );  
+  setMaximumWorkers( 2 );
   _ground().append( "ground", 2 );
 }
 
@@ -307,8 +309,8 @@ BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
 unsigned int BigTemple::currentVisitors() const { return 1500; }
 
 bool BigTemple::build( const city::AreaInfo& info )
-{  
-  if( info.city->getOption( PlayerCity::forceBuild ) > 0 )  //load from savefiles
+{
+  if(info.onload)  //load from savefiles
   {
     Temple::build( info );
     return true;

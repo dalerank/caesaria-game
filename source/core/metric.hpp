@@ -19,6 +19,7 @@
 #define __CAESARIA_METRIC_H_INCLUDED__
 
 #include "core/singleton.hpp"
+#include "core/platform_types.hpp"
 
 namespace metric
 {
@@ -44,9 +45,9 @@ class Unit
 public:
   Unit( const Qty& qty ) { _value = (unsigned int)qty / unit2QtyLimiter; }
   Unit( const Unit& unit ) { *this = unit; }
-  static Unit fromQty( unsigned int value ) { return Unit( value / unit2QtyLimiter ); }
-  static Unit fromValue( unsigned int value ) { return Unit( value ); }
-  unsigned int toQty() { return _value * unit2QtyLimiter; }
+  static Unit fromQty(unsigned int value) { return Unit( (unsigned int)(value / unit2QtyLimiter)); }
+  static Unit fromValue(unsigned int value) { return Unit(value); }
+  unsigned int toQty() { return (int)(_value * unit2QtyLimiter); }
   float value() const { return _value; }
   int ivalue() const { return (int)_value; }
   bool operator>( float v ) const { return _value > v; }
@@ -54,8 +55,7 @@ public:
   inline bool operator>=( const Unit& v ) const { return _value >= v._value; }
 
 private:
-  explicit Unit( unsigned int value) : _value( value ) {}
-
+  explicit Unit(unsigned int value) : _value( (float)value ) {}
 };
 
 class Measure : public StaticSingleton<Measure>

@@ -1,0 +1,8 @@
+{
+ title : "##docks##"
+ sound : "fanfare"
+ text  : "Die gewöhnlichen römischen Häfen waren kaum mehr als geschützte Strände. Kleine Handelsschiffe liefen entweder einfach auf Grund oder legten etwas abseits im Fahrwasser an. Sie liefen normalerwiese bei Flut in den Hafen ein und wurden bei Ebbe auf Karren oder breite, flache Barken, Handelsgaleere genannt, entladen. Einige Häfen setzten Winden ein, um die Schiffe an Land zu ziehen.\nGeschäftigere Häfen waren besser ausgestattet. 'Molen' waren längliche Landzungen, die ins Meer gebaut wurden, um die Wellen zu brechen. Teilweise standen Leuchttürme an den Enden der Molen, und es gab gewöhnliche Docks, an denen Schiffe festmachen konnten. Diese künstlichen Häfen waren sehr beengt, und die Segelschiffe benötigen Schleppschiffe, die sie zu ihren Kais geleiteten. Die Schlepper befestigten Leinen am Bug der Lastkähne und ruderten sie dann zu den zugewiesenen Liegeplätzen. Die Händler feilschten um nicht vorbestellte Waren direkt am Dock, jedoch waren die meisten Waren im Vorfeld verkauft worden und gingen geradewegs in die @Lagerhäuser&."
+ uri : {
+  "Lagerhäuser" : "warehouse_history"
+ }
+}

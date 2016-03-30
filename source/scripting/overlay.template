@@ -1,0 +1,41 @@
+#define TEMPLATE_OVERLAY_BEGIN(OverlayType) \
+SCRIPT_OBJECT_BEGIN(OverlayType) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,type,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,size,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,state,1) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,setState,2) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,updateState,2) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,getProperty,1)
+
+#define SCRIPT_WORKINGBUILDING_FUNCTIONS(OverlayType) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,maximumWorkers,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,numberWorkers,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,workersProblemDesc,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,isActive,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,mayWork,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,setActive,0)
+
+#define SCRIPT_SERVICEBUILDING_FUNCTIONS(OverlayType)
+
+#define TEMPLATE_OVERLAY_END(OverlayType) \
+  SCRIPT_OBJECT_CONSTRUCTOR(OverlayType) \
+SCRIPT_OBJECT_END(OverlayType)
+
+#define TEMPLATE_OVERLAY_IMPLEMENTATION(OverlayType) \
+DEFINE_OBJECT_GETTER_0(OverlayType,object::Type,type) \
+DEFINE_OBJECT_GETTER_0(OverlayType,const Size&,size) \
+DEFINE_OBJECT_GETTER_1(OverlayType,float,state,int,0) \
+DEFINE_OBJECT_GETTER_1(OverlayType,Variant,getProperty,const std::string&,std::string()) \
+DEFINE_OBJECT_FUNCTION_2(OverlayType,setState,int,float) \
+DEFINE_OBJECT_FUNCTION_2(OverlayType,updateState,int,float) \
+DEFINE_OVERLAY_CONSTRUCTOR(OverlayType)
+
+#define TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(OverlayType) \
+DEFINE_OBJECT_GETTER_0(OverlayType,bool,isActive) \
+DEFINE_OBJECT_GETTER_0(OverlayType,bool,mayWork) \
+DEFINE_OBJECT_FUNCTION_1(OverlayType,setActive,bool) \
+DEFINE_OBJECT_GETTER_0(OverlayType,std::string,workersProblemDesc) \
+DEFINE_OBJECT_GETTER_0(OverlayType,unsigned int,maximumWorkers) \
+DEFINE_OBJECT_GETTER_0(OverlayType,unsigned int,numberWorkers)
+
+#define TEMPLATE_SERVICEBUILDING_IMPLEMENTATION(OverlayType)

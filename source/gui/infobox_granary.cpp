@@ -40,7 +40,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_BASEINFOBOX(granery,AboutGranary)
+REGISTER_OBJECT_BASEINFOBOX(granary,AboutGranary)
 
 AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
@@ -114,7 +114,7 @@ void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
   // pictures of goods
   Label& lb = add<Label>( Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
   lb.setIcon( info.picture() );
-  lb.setFont( FONT_2 );
+  lb.setFont( "FONT_2" );
   lb.setText( outText );
   lb.setTextOffset( Point( 30, 0 ) );
 }

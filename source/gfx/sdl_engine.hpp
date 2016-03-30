@@ -53,6 +53,7 @@ public:
   virtual void unloadBatch( const Batch& batch );
 
   virtual void loadPicture(Picture& ioPicture, bool streaming);
+  virtual void updateBatch(Batch &batch, const Point &newpos);
   virtual void unloadPicture(Picture& ioPicture);
 
   virtual void draw(const Picture& picture, const int dx, const int dy, Rect* clipRect);

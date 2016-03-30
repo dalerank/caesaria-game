@@ -213,7 +213,7 @@ void Religion::timeStep( const unsigned int time )
       }      
       else if( god->relation() < relation::minimum4wrath )
       {
-        godsUnhappy[ god->relation() ].push_back( god );
+        godsUnhappy[ (int)god->relation() ].push_back( god );
         _d->reasons << fmt::format( "##{0}_god_unhappy##", god->internalName() );
       }
     }       
@@ -277,7 +277,7 @@ void Religion::_updateRelation( DivinityPtr divinity )
   }
 
   LOG.info( "Faith income for {0} is {1} [r={2:.2f}]", divinity->name(), faithValue, divinity->relation());
-  divinity->updateRelation( faithValue, _city() );
+  divinity->updateRelation( (float)faithValue, _city() );
 
   bool unhappy = divinity->relation() < relation::negative;
   bool maySendNotification = _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2;

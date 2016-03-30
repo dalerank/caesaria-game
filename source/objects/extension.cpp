@@ -69,7 +69,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   else
   {
     crashhandler::printstack(false);
-    Logger::warning( "WARNING!!! Factory not initialized" );
+    Logger::warning( "!!! Factory not initialized" );
   }
 
   return ret;
@@ -79,14 +79,14 @@ ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, fl
 {
   if( !factory.isValid() )
   {
-    Logger::warning( "WARNING!!! Factory not initialized" );
+    Logger::warning( "!!! Factory not initialized" );
     crashhandler::printstack(false);
     return ConstructionExtensionPtr();
   }
 
   if( name.empty() )
   {
-    Logger::warning( "WARNING!!! Cant assigned named extension without name" );
+    Logger::warning( "!!! Cant assigned named extension without name" );
     return ConstructionExtensionPtr();
   }
 

@@ -14,4 +14,3 @@
 #include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "gfx/pictureconverter.hpp"
-

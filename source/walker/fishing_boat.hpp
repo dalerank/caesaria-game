@@ -27,7 +27,7 @@ class FishingBoat : public Ship
 public:
   typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } State;
 
-  void send2city( CoastalFactoryPtr base, TilePos start);
+  void send2city(CoastalFactoryPtr base, TilePos start);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -36,20 +36,20 @@ public:
   void startCatch();
   void return2base();
 
-  void setBase( CoastalFactoryPtr base );
+  void setBase(CoastalFactoryPtr base);
   State state() const;
 
   bool isBusy() const;
   int fishQty() const;
   int fishMax() const;
-  void addFish( int qty );
+  void addFish(int qty);
 
   virtual bool die();
 protected:
   virtual void _reachedPathway();
 
 private:
-  FishingBoat( PlayerCityPtr city );
+  FishingBoat(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

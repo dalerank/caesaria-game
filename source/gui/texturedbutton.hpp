@@ -60,11 +60,11 @@ public:
   HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId);
 
   virtual void setupUI(const VariantMap& ui);
-  void setHelpId(const std::string& id);
+  virtual void setupUI(const vfs::Path& ui);
+  void setHelpUri(const std::string& uri);
 
 protected:
   virtual void _btnClicked();
-  std::string _helpid;
 };
 
 class ExitButton : public TexturedButton

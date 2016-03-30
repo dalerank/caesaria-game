@@ -55,7 +55,7 @@ void WidgetAnimator::setFlag(const std::string& flagname, bool enabled)
   if (it != flags.end())
     FlagHolder::setFlag(it->second, enabled);
   else
-    Logger::warning("WARNING !!! WidgetAnimator cant find flag with name " + flagname);
+    Logger::warning("!!! WidgetAnimator cant find flag with name " + flagname);
 }
 
 void WidgetAnimator::_afterFinished()

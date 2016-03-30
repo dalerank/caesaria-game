@@ -48,8 +48,8 @@ public:
     int override;
   } height;
 
-	Rect clientClip;
-	Rect margin;
+  Rect clientClip;
+  Rect margin;
 
   struct {
     int selected;
@@ -57,10 +57,10 @@ public:
   } index;
 
   bool dragEventSended;
-	Font font;
-	int itemsIconWidth;
-	//SpriteBank* iconBank;
-	ScrollBar* scrollBar;
+  Font font;
+  int itemsIconWidth;
+  //SpriteBank* iconBank;
+  ScrollBar* scrollBar;
 
   struct {
     unsigned int select;
@@ -68,7 +68,7 @@ public:
   } time;
 
   std::string keyBuffer;
-	bool selecting;
+  bool selecting;
   Point itemTextOffset;
   bool needItemsRepackTextures;
 
@@ -79,8 +79,9 @@ public:
     Signal1<std::string> onTextSelected;
 
     Signal1<const ListBoxItem&> onItemSelectedAgain;
-    Signal2<Widget*,int> onIndexSelectedEx;
     Signal1<const ListBoxItem&> onItemSelected;
+    Signal2<Widget*,int> onIndexSelectedEx;
+    Signal2<Widget*,int> onIndexSelectedAgainEx;
   } signal;
 };
 

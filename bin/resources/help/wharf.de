@@ -1,0 +1,8 @@
+{
+ title : "##wharf##"
+ sound : "fanfare"
+ text  : "Wenn Sie Möwen über einer Wasserfläche kreisen sehen, kann Ihre Provinz kommerziellen Fischfang betreiben. Fisch kann eine sehr wichtige Nahrungsquelle sein.\nFischerboote bauen Sie in einer @Werft&. Die fertigen Boote fahren dann zum Kai, wo sie ihre Mannschaft aufnehmen. Sobald ein Boot bemannt ist, segelt es zu den Fischgründen und fischt solange, bis die Lagerräume gefüllt sind. Dann kehrt es zum Kai zurück, um seinen Fang zu entladen. Die Kaiarbeiter bringen den gefangenen Fisch zu einem Silo oder Lagerhaus.\nJeder Kai kann immer nur ein Fischerboot bedienen.\n\nWie die meisten Gebäude brauchen Kais Straßenanbindung und Arbeitskräfte, um zu funktionieren. Sie wirken sich außerdem negativ auf die Attraktivität der Umgebung aus."
+ uri : {
+  "Werft" : "shipyard"
+ }
+}

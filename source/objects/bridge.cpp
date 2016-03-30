@@ -51,7 +51,7 @@ public:
       break;
 
       default:
-        Logger::warning( "!!! WARNING: Cant parse IdxSet from type {0}", item.type() );
+        Logger::warning( "!!!: Cant parse IdxSet from type {0}", item.type() );
       break;
       }
     }
@@ -97,7 +97,7 @@ BridgeConfig& BridgeConfig::find( object::Type type )
     }
     else
     {
-      Logger::warning( "!!! WARNING: Cant find bridge config for {0}:{1}", type, configName );
+      Logger::warning( "!!!: Cant find bridge config for {0}:{1}", type, configName );
     }
   }
 

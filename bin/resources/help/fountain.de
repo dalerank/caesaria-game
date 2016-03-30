@@ -1,0 +1,11 @@
+{
+ title : "##fountain##"
+ sound : "fanfare"
+ text  : "Häuser brauchen die Versorgung durch Brunnen, wenn Sie sich über den Status von Zelten hinaus entwickeln sollen. Wenn Sie einen neuen Brunnen bauen, zeigt Ihnen der Mauszeiger einen grünen wasserspeisenden Brunnen, wenn er sich über eiben Gebiet mit Rohleitungen befindet, und einen leeren Brunnen, wenn keine Wasserversorgung besteht.\nBrunnen mit Rohranschluss zu einem @Reservoir& verteilen Wasser ein einem Bereich von mittelgroßem Radius. Wenn Sie sich den Versorgungsbereich eines Brunnens ansehen möchten, wählen Sie die @Spezialkarte Wasser& aus und suchen nach den dunkelblauen Feldern. Nur Wohnhäuser benötigen Zugang zu Brunnen. Die gleichzeitige Versorgung eines Hauses durch mehrere Brunnen bietet keinen zusätzlichen Nutzen. Es gibt daher keinen Grund zur Überlappung der Versorgungsgebiete.\nBrunnen brauchen keine Anbindung an Straßen oder den Arbeitsmarkt, steigern jedoch im allgemeine Arbeitskräfteanforderung Ihrer @Wasserversorgung&.\n\nKlicken Sie @hier&, wenn Sie mehr über die Geschichte der Brunnen im römischen Imperium erfahren möchten."
+ uri : {
+  "Reservoir" : "reservoir"
+  "Wasserversorgung" : "water_supply"
+  "Spezialkarte Wasser" : "special_card_selection"
+  "hier" : "fountain_history"
+ }
+}

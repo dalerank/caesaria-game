@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "color_list.hpp"
+#include "utils.hpp"
 #include "hash.hpp"
 
 #define __ASSIGN_COLOR(a,b) const NColor ColorList::a = NColor(b);
@@ -25,11 +26,21 @@ static std::map<unsigned int, const NColor*> _colors;
 
 const NColor& ColorList::find(const std::string& name)
 {
-  if( _colors.empty() )
+  if (_colors.empty())
     _createColors();
 
-  auto it = _colors.find( Hash(name) );
-  return it != _colors.end() ? *it->second : ColorList::clear;
+  auto it = _colors.find(Hash(name));
+  if( it != _colors.end() )
+    return *it->second;
+  else if (name.size()>2&&name[0]=='0'&&name[1]=='x')
+  {
+    int value = utils::toInt(name.substr(2),16);
+    unsigned int hash = Hash(name);
+    _colors[hash] = (new NColor(value));
+    return *_colors[hash];
+  }
+
+  return ColorList::clear;
 }
 
 void ColorList::_createColors()

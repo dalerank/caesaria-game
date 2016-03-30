@@ -42,6 +42,17 @@ public:
 };
 
 template< class T >
+class FreeInfoboxCreator : public InfoboxCreator
+{
+public:
+  Infobox* create(PlayerCityPtr city, gui::Widget* parent, TilePos pos)
+  {
+    new T(parent, city, city->tilemap().at(pos));
+    return nullptr;
+  }
+};
+
+template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
@@ -49,34 +60,6 @@ public:
   {
     return new T( parent, city, city->tilemap().at( pos ) );
   }
-};
-
-class StaticInfoboxCreator : public InfoboxCreator
-{
-public:
-  StaticInfoboxCreator( const std::string& caption,
-                       const std::string& desc );
-
-  virtual ~StaticInfoboxCreator() {}
-
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
-
-  std::string title, text;
-};
-
-class ServiceInfoboxCreator : public InfoboxCreator
-{
-public:
-  ServiceInfoboxCreator( const std::string& caption,
-                             const std::string& descr,
-                             bool drawWorkers=false );
-
-  virtual ~ServiceInfoboxCreator() {}
-
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
-
-  std::string title, text;
-  bool isDrawWorkers;
 };
 
 class Manager : public StaticSingleton<Manager>
@@ -87,9 +70,9 @@ public:
   void setShowDebugInfo( const bool showInfo );
 
   void addInfobox(const object::Type& type, InfoboxCreator* ctor );
-  bool canCreate( const object::Type type ) const;
+  bool canCreate(const object::Type type ) const;
 
-  void setBoxLock( bool lock );
+  void setBoxLock(bool lock);
 private:
   Manager();
   virtual ~Manager();
@@ -108,21 +91,15 @@ struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobo
 static Registrator_##name rtor_##name; \
 }
 
+#define REGISTER_OBJECT_FREEINFOBOX(name,a) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new FreeInfoboxCreator<a>() ); }}; \
+static Registrator_##name rtor_##name; \
+}
+
 #define REGISTER_OBJECT_BASEINFOBOX(name,a) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new BaseInfoboxCreator<a>() ); }}; \
-static Registrator_##name rtor_##name; \
-}
-
-#define REGISTER_OBJECT_STATICINFOBOX(name,a,b) \
-namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new StaticInfoboxCreator(a,b) ); }}; \
-static Registrator_##name rtor_##name; \
-}
-
-#define REGISTER_OBJECT_SERVICEINFOBOX(name,a,b) \
-namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new ServiceInfoboxCreator(a,b) ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

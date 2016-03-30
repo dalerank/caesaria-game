@@ -11,7 +11,7 @@ find_program(_GIT_EXEC
 )
 
 if(_GIT_EXEC)
-  message( "Git test\n" )
+  message( "Git found in ${_GIT_EXEC}\n" )
   execute_process(
     COMMAND "${_GIT_EXEC}" --version
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
@@ -24,7 +24,7 @@ if(_GIT_EXEC)
 endif()
 
 if(_GIT_VERSION_OK)
-  execute_process(
+  execute_process(    
     COMMAND "${_GIT_EXEC}" rev-list HEAD --count
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     OUTPUT_VARIABLE rev_number

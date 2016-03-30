@@ -109,7 +109,7 @@ void RomeChastenerArmy::attack(ObjectPtr obj)
   }
   else
   {
-    Logger::warning( "WARNING!!! RomeChastenerArmy::attack cant attack unexist object" );
+    Logger::warning( "!!! RomeChastenerArmy::attack cant attack unexist object" );
     deleteLater();
   }
 }

@@ -98,7 +98,7 @@ public:
       }
       catch(...)
       {
-        Logger::warning( "!!! WARNING: Cant save information for city " + cityName );
+        Logger::warning( "!!! Cant save information for city " + cityName );
       }
     }
 
@@ -122,7 +122,7 @@ public:
       }
       else
       {
-        Logger::warning( "!!! WARNING: Cant find city {} on load", item.first );
+        Logger::warning( "!!! Cant find city {} on load", item.first );
       }
     }
   }
@@ -296,7 +296,7 @@ void Empire::addObject(ObjectPtr obj)
   {
     if( object == obj )
     {
-      Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
+      Logger::warning( "!!! Empire:addObject also have object with name " + obj->name() );
       return;
     }
   }
@@ -417,7 +417,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
     bool haveLandOrSeaRoute = (!lpnts.empty() || !spnts.empty());
     if( !haveLandOrSeaRoute )
     {
-      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}, because it inaccessible",
+      Logger::warning( "!!! Trading::load cant create route from {0} to {1}, because it inaccessible",
                        start, stop );
       return TraderoutePtr();
     }
@@ -425,7 +425,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
     TraderoutePtr route = _d->troutes.create( start, stop );
     if( !route.isValid() )
     {
-      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+      Logger::warning( "!!! Trading::load cant create route from {0} to {1}",
                        start, stop );
       return TraderoutePtr();
     }
@@ -458,7 +458,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   }
   else
   {
-    Logger::warning( "!!! WARNING: Cant create road from {0} to {1}", start, stop );
+    Logger::warning( "!!! Cant create road from {0} to {1}", start, stop );
   }
 
   return TraderoutePtr();
@@ -574,29 +574,17 @@ float EmpireHelper::governorSalaryKoeff(CityPtr city)
   return result;
 }
 
-GovernorRanks EmpireHelper::ranks()
+GovernorRanks& EmpireHelper::ranks()
 {
-  std::map<unsigned int, GovernorRank> sortRanks;
-
-  VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
-  for( auto& item : vm )
-  {
-    GovernorRank rank;
-    rank.load( item.first, item.second.toMap() );
-    sortRanks[ rank.level ] = rank;
-  }
-
-  GovernorRanks ret;
-  for( auto& rank : sortRanks )
-    ret.push_back( rank.second );
-
-  return ret;
+  static std::vector<GovernorRank> instRanks;
+  return instRanks;
 }
 
-GovernorRank EmpireHelper::getRank(GovernorRank::Level level)
+const GovernorRank& EmpireHelper::getRank(GovernorRank::Level level)
 {
-  GovernorRanks ranks = world::EmpireHelper::ranks();
-  return ranks[ math::clamp<int>( level, 0, ranks.size() ) ];
+  const GovernorRanks& ranks = EmpireHelper::ranks();
+  int l = math::clamp<int>(level, GovernorRank::citizen, ranks.size());
+  return ranks[l];
 }
 
 void Empire::Impl::checkLoans()

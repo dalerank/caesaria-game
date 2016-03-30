@@ -18,11 +18,13 @@
 #ifndef __CAESARIA_ECONOMY_ISSUE_H_INCLUDED__
 #define __CAESARIA_ECONOMY_ISSUE_H_INCLUDED__
 
+#include <string>
+
 namespace econ
 {
 
 struct Issue
-{ 
+{
   enum Type { unknown=0, taxIncome=1,
               exportGoods, donation,
               importGoods, workersWages,
@@ -37,6 +39,8 @@ struct Issue
 
   Issue( Type t, int m ) : type( t ), money( m ) {}
 };
+
+Issue::Type findType(const std::string& name);
 
 inline unsigned int calcTaxValue( unsigned int population, int koeff )
 {

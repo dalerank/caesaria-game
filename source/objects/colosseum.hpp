@@ -33,6 +33,7 @@ public:
   bool isShowGladiatorBattles() const;
   bool isShowLionBattles() const;
   virtual int maxVisitors() const;
+  virtual Variant getProperty(const std::string& name) const;
 
   DateTime lastAnimalBoutDate() const;
   DateTime lastGladiatorBoutDate() const;

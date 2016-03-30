@@ -26,7 +26,7 @@ namespace gui
 class GameAutoPauseWidget : public Widget
 {
 public:
-  GameAutoPauseWidget( Widget* parent );
+  GameAutoPauseWidget(Widget* parent);
   ~GameAutoPauseWidget();
   static void insertTo(Widget* parent);
 

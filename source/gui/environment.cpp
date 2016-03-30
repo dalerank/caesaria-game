@@ -63,6 +63,7 @@ class Ui::Impl
 public:  
   TooltipWorker tooltip;
   FocusedWorker focused;
+  SmartPtr<WidgetFinalizer> finalizer;
   bool preRenderFunctionCalled;
 
   struct {
@@ -109,8 +110,8 @@ Ui::Ui(Engine& painter )
   _d->console = &add<Console>(-1,Rect(30,0,width()-30,300));;
   _children().remove(_d->console);
 
-  setFlag( drawDebugArea, 0 );
-  setFlag( showTooltips, 1 );
+  setFlag(drawDebugArea, 0);
+  setFlag(showTooltips, 1);
 }
 
 //! Returns if the element has focus
@@ -145,6 +146,19 @@ void Ui::clear()
     deleteLater( widget );
 }
 
+void Ui::elementDestroyed(Widget* w)
+{
+  if (w && _d->finalizer.isValid())
+  {
+    _d->finalizer->destroyed(w);
+  }
+}
+
+void Ui::installWidgetFinalizer(SmartPtr<WidgetFinalizer> finalizer)
+{
+  _d->finalizer = finalizer;
+}
+
 void Ui::setFocus() {}
 void Ui::removeFocus() {}
 void Ui::draw(Engine& painter) {}
@@ -155,7 +169,7 @@ void Ui::draw()
 {
   if (!_d->preRenderFunctionCalled)
   {
-    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
+    Logger::warning( "!!! Call beforeDraw() function needed" );
     return;
   }
 
@@ -230,9 +244,9 @@ Widget* Ui::findWidget(int id)
 
 Widget* Ui::findWidget(const Point &p)
 {
-  for( auto widget : children() )
+  for (auto widget : children())
   {
-    if( widget->visible() && widget->isPointInside( p ) )
+    if (widget->visible() && widget->isPointInside(p))
       return widget;
   }
 

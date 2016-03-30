@@ -48,6 +48,7 @@ public:
 signals public:
 	Signal1<bool> onCheckedSignal;
 	Signal1<int> onActionSignal;
+  Signal2<Widget*, bool> onCheckedExSignal;
 };
 
 }//end namespace gui

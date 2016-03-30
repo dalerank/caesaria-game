@@ -19,11 +19,10 @@
 #define __CAESARIA_GOODHELPER_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "gfx/picture.hpp"
-#include "good.hpp"
-#include "city/predefinitions.hpp"
 #include "core/direction.hpp"
-#include "gfx/animation.hpp"
+#include "gfx/predefinitions.hpp"
+#include "city/predefinitions.hpp"
+#include "good.hpp"
 
 namespace good
 {

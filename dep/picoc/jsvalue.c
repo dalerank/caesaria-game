@@ -450,6 +450,11 @@ void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty ha
 	js_pushobject(J, obj);
 }
 
+void finalizeObject(js_State *J, void *p)
+{
+  int i=0;
+}
+
 void js_newuserdata(js_State *J, const char *tag, void *data, js_Finalize finalize)
 {
 	js_newuserdatax(J, tag, data, NULL, NULL, finalize);

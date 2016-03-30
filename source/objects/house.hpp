@@ -54,7 +54,7 @@ public:
   virtual bool getMinimapColor(int& color1, int& color2) const;
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
-  virtual double state( Param param) const;
+  virtual float state(int param) const;
 
   unsigned int hired() const;
   unsigned int unemployed() const;
@@ -69,7 +69,6 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
-  virtual void debugLoadOld(int saveFormat, const VariantMap &stream);
 
   virtual void collapse();
   virtual void burn();
