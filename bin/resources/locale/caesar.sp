@@ -232,7 +232,6 @@
 "##your_favour_increased_from_last_year##":"Tu reputación en Roma ha mejorado desde el año pasado.",
 "##your_favour_unchanged_from_last_year##":"Tu reputación permanece igual que el año pasado.",
 "##lugdunum_win_text##":"La manera de tratar a los nativos galos en Lugdunum y el esplendor de esa bella ciudad traen buenos presagios para la expansión de Roma en las salvajes tierras del norte. ¡Bien hecho!",
-"##capua_win_text##":"Tu habilidad en la gestión me tiene impresionado. Las carreras de muchos gobernadores terminan en cuanto les solicito que construyan la primera colonia verdadera. Líderes como tú aseguran el destino de Roma. Y ahora, ¿puedes repetir ese éxito o simplemente has tenido suerte?",
 "##city_need_workers_text##":"Din stad kräver fler arbetare",
 "##city_need_more_workers##":"La ciudad necesita más trabajadores.",
 "##more_0_month_from_festival##":"Tus ciudadanos, algunos aún borrachos desde la última juerga, agradecen tu generosidad.",
