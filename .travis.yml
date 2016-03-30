@@ -1,5 +1,6 @@
 language: cpp
 compiler:
+- clang
 - gcc
 before_install:
 # Get build dependencies
@@ -9,7 +10,6 @@ before_install:
 - sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
-- cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
 - mkdir build
 - cd build

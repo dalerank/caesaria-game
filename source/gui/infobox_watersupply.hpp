@@ -27,16 +27,6 @@ namespace gui
 namespace infobox
 {
 
-// info box about a fontain
-class AboutFontain : public AboutConstruction
-{
-public:
-   AboutFontain( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-   virtual ~AboutFontain();
-
-   virtual void _showHelp();
-};
-
 class AboutWell : public AboutConstruction
 {
 public:

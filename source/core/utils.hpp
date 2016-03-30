@@ -48,6 +48,7 @@ namespace utils
   unsigned int toUint(const std::string& in);
 
   int toInt(const char* in, const char** out=0);
+
   int toInt(const std::string& number, int base=10);
 
   //! Converts a sequence of digits into a whole positive floating point value.

@@ -1,11 +1,46 @@
 {"##some_food_on_next_month##":"- trochę żywności w nadchodzącym miesiącu",
 "##have_no_food_on_next_month##":"- brak żywności w nadchodzącym miesiącu",
 "##small_food_on_next_month##":"- bardzo mało żywności w nadchodzącym miesiącu",
+"##build_your_rom##":"Losowy region
+",
 "##city_barbarian_off_tlp##":"Barbarzyńcy nie zaatakują twojego miasta",
+"##enter_dinasty_name_here##":"Wpisz tu nazwisko swojej rodziny
+",
 "##city_barbarian_off##":"Barbarzyńcy: Wył",
+"##city_roadblock_off##":"Blokady drogowe: wył.
+",
+"##city_warf_timber_on##":"Stocznia potrzebuje drewna.
+",
+"##city_warf_timber_off##":"Stocznia nie potrzebuje drewna.
+",
+"##city_warf_timber_on_tlp##":"Stocznia używa drewna przy budowie łodzi
+",
+"##city_warf_timber_off_tlp##":"Stocznia buduje łódź bez zużycia drewna
+",
+"##window_changes_title##":"Zmiany w tej wersji
+",
+"##sldr_wages_on##":"Żołnierze potrzebują żołdu
+",
+"##sldr_wages_off##":"Żołnierze nie potrzebują żołdu
+",
+"##city_mines_collapse_on##":"Kopalnie mogą się zawalić
+",
+"##city_mines_collapse_off##":"Kopalnie się nie zawalą
+",
 "##city_barbarian_on##":"Barbarzyńcy: Wł.",
 "##city_barbarian_on_tlp##":"Barbarzyńcy mogą zaatakować twoje miasto",
+"##city_c3rules_off_tlp##":"Gra będzie korzystać z zasad Caesara III oraz z nowych
+",
+"##city_c3rules_on_tlp##":"Gra będzie korzystać tylko z zasad Caesara III
+",
+"##city_c3rules_off##":"Zasady C3 i nowe
+",
+"##city_c3rules_on##":"Tylko zasady C3
+",
 "##mainmenu_constructor##":"Edytor map",
+"##tax_and_industry##":"Podatki i produkcja
+",
+"##trade_title##":"Handel",
 "##city_df_usual##":"Normalny",
 "##city_df_hard##":"Trudny",
 "##city_df_nicety##":"Bardzo trudny",
@@ -27,10 +62,19 @@
 "##city_debug_off_tlp##":"Menu debugowania jest ukryte",
 "##city_debug_on##":"Menu debugowania: POKAŻ",
 "##city_debug_off##":"Menu debugowania: UKRYJ",
+"##draw_svk_border_off##":"Ukryj granicę miasta
+",
+"##city_forest_fire_on_tlp##":"Las może się zająć ogniem od budynków
+",
+"##city_forest_fire_off_tlp##":"Las nie zajmie się ogniem od budynków
+",
 "##city_forest_grow_off_tlp##":"Las nie będzie się rozrastać",
 "##city_forest_grow_on_tlp##":"Las będzie się rozrastać",
 "##city_highlight_bld_off_tlp##":"Zaznaczony budynek nie będzie podświetlony",
 "##city_highlight_bld_on_tlp##":"Zaznaczony budynek będzie podświetlony",
+"##city_destroy_epdh_off##":"Zaawansowane zasady epidemii
+",
+"##city_destroy_epdh_on##":"Proste zasady epidemii",
 "##city_forest_fire_on##":"Las - podpalenie wł.",
 "##city_forest_fire_off##":"Las - podpalenie wył.",
 "##city_forest_grow_off##":"Las: rozrost wył.",
@@ -43,6 +87,8 @@
 "##city_lockinfo_off_tlp##":"Okienka mogą być przesuwane",
 "##city_tooltips_on_tlp##":"Pokaż wskazówki w mieście",
 "##city_tooltips_off_tlp##":"Nie pokazuj wskazówek w mieście",
+"##city_batching_off_tlp##":"Rysowanie tekstur jak w Caesarze III",
+"##aware_black_objects##":"Czarne obiekty nie zostały jeszcze stworzone i będą dodawane jak tylko zostaną ukończone.",
 "##city_lockinfo_on##":"Okienka: ZABLOKOWANE",
 "##city_lockinfo_off##":"Okienka: PRZESUWALNE",
 "##city_mapmoving_lmb##":"Przesuwanie mapy: lewy przycisk myszy",
@@ -63,6 +109,7 @@
 "##colleges##":"Akademie",
 "##academy##":"Akademia",
 "##aqueduct##":"Akwedukt",
+"##aqueduct_info##":"Akwedukty transportują wodę między zbiornikami, pozwalając na budowę fontann w głębi miasta, daleko od źródeł.",
 "##actor##":"Aktor",
 "##advchief_haveprofit##
 ":"W tym roku majątek wzrósł o",
@@ -111,6 +158,7 @@
 "##srt_by_user##":"Zapisy gracza",
 "##srt_by_name##":"Według nazwy",
 "##rioter_in_city_title##":"Zamieszki w mieście",
+"##ovrm_products##":"Produkty",
 "##rioter_in_city_text##":"Zamieszki w mieście",
 "##library##":"Biblioteka",
 "##wt_librarian##":"Bibliotekarz",
@@ -132,6 +180,7 @@
 "##doctor_gods_angry##":"Jeśli nie okażemy bogom więcej szacunku, poczujemy ich gniew na sobie!",
 "##lionTamer_gods_angry##":"Bogowie są tak źli, że wpłynęło to na mojego lwa! Ryczy jak szalony!",
 "##legion_morale##":"Morale",
+"##legion_morale_is_too_low##":"Morale legionu jest zbyt niskie, aby usłuchał rozkazu!",
 "##rladv_mood##":"Bogowie są",
 "##hospital##":"Szpital",
 "##hospitals##":"Szpitale",
@@ -165,6 +214,7 @@
 "##education_awesome##":"Miasto ma wszystkie edukacyjne udogodnienia, które są w idealnym stanie.",
 "##no_people_in_city##":"Brak ludzi w mieście!",
 "##advchief_employers_ok##":"Miasto nie ma problemów z zatrudnieniem",
+"##no_industries_in_city##":"W mieście nie ma przemysłu.",
 "##advchief_health_awesome##":"Wskaźnik zdrowia w mieście jest doskonały.",
 "##to_empire_road##":"Do Imperium",
 "##to_rome_road##":"Do Rzymu",

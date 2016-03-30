@@ -49,6 +49,7 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual void initialize(const object::Info& mdata);
+  virtual Variant getProperty(const std::string& name) const;
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
