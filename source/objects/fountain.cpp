@@ -64,7 +64,7 @@ public:
 Fountain::Fountain()
   : ServiceBuilding(Service::fountain, object::fountain, Size(1,1)),
     _d(new Impl)
-{  
+{
   _picture().load( ResourceGroup::utilitya, 10 );
   _d->haveReservoirWater = false;
   _d->lastPicId = simpleFountain;
@@ -111,7 +111,7 @@ void Fountain::timeStep(const unsigned long time)
       auto recruter = Walker::create<Recruter>( _city() );
       recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
-  }  
+  }
 
   ServiceBuilding::timeStep( time );
 }
@@ -176,6 +176,14 @@ void Fountain::destroy()
 bool Fountain::mayWork() const {  return ServiceBuilding::mayWork() && ServiceBuilding::isActive() && _d->haveReservoirWater; }
 
 unsigned int Fountain::fillRange() const { return _d->fillDistance; }
+
+Variant Fountain::getProperty(const std::string& name) const
+{
+  if (name=="reservoirAccess") return haveReservoirAccess();
+  if (name=="reservoirWater") return tile().param(Tile::pReservoirWater);
+
+  return 0;
+}
 
 void Fountain::load(const VariantMap& stream)
 {

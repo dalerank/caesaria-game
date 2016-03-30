@@ -125,6 +125,13 @@ void ServiceBuilding::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, serviceRange, servicebld::defaultRange, stream )
 }
 
+Variant ServiceBuilding::getProperty(const std::string & name) const
+{
+  if (name == "lastServiceDate") return lastSendService();
+
+  return WorkingBuilding::getProperty(name);
+}
+
 void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}

@@ -22,6 +22,7 @@
 #include <GameObjects>
 #include <GameVfs>
 #include <GameGui>
+#include <GameGood>
 #include <GameLogger>
 #include <GameScene>
 #include <GameCore>
@@ -38,6 +39,7 @@ using namespace gui;
 using namespace gui::dialog;
 using namespace city;
 using namespace world;
+using namespace good;
 using namespace gfx;
 using namespace vfs;
 using namespace religion;
@@ -160,7 +162,7 @@ int engine_js_push(js_State* J,const Variant& param)
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
-    js_pushnumber(J, param.toDateTime().hashdate());
+    engine_js_push(J, param.toDateTime());
     return 0;
   break;
 
@@ -208,6 +210,11 @@ void engine_js_push(js_State *J, const StringArray& items)
   }
 }
 
+void engine_js_push(js_State *J, const good::Stock& stock)
+{
+  engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
+}
+
 void engine_js_push(js_State *J, const VariantMap& items)
 {
   js_newobject(J);
@@ -238,6 +245,7 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 
 PUSH_SAVEDDATA(States)
 PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Stock)
 
 PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
@@ -668,7 +676,7 @@ void reg_divinity_constructor(js_State *J)
   }
   else if (js_isuserdata(J, 1, "userdata"))
   {
-    //ov = (T*)js_touserdata(J, 1, "userdata");
+    //divn. = (T*)js_touserdata(J, 1, "userdata");
   }
 
   js_currentfunction(J);

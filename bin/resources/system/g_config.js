@@ -11,7 +11,8 @@ g_config.lobby = {
 
 g_config.audio = {
     theme: 2,
-    speech: 4
+    speech: 4,
+    infobox : 6
 }
 
 g_config.climate = {

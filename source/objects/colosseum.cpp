@@ -143,6 +143,17 @@ Service::Type Colosseum::_getServiceManType() const
   return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
 
+Variant Colosseum::getProperty(const std::string & name) const
+{
+  if (name == "isNeedGladiators") return isNeedGladiators();
+  if (name == "isShowLionBattles") return isShowLionBattles();
+  if (name == "lastAnimalBoutDate") return lastAnimalBoutDate();
+  if (name == "isShowGladiatorBattles") return isShowGladiatorBattles();
+  if (name == "lastGladiatorBoutDate") return lastGladiatorBoutDate();
+
+  return EntertainmentBuilding::getProperty(name);
+}
+
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }
 bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colosseum; }
 int Colosseum::maxVisitors() const{ return 1500; }

@@ -33,7 +33,7 @@ namespace gui
 namespace infobox
 {
 
-REGISTER_OBJECT_BASEINFOBOX(colosseum,AboutColosseum)
+REGISTER_OBJECT_BASEINFOBOX(,AboutColosseum)
 
 AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
