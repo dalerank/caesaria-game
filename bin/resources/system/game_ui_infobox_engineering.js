@@ -7,11 +7,7 @@ game.ui.infobox.aboutObject = function(typename,info) {
     info = _u(typename + "_info")
 
   ibox.setInfoText(info)
-  ibox.setAutoPosition()
-  ibox.setModal()
-  ibox.setFocus()
-
-  return ibox
+  ibox.show();
 }
 
 game.ui.infobox.aboutRuins = function(location) {
@@ -22,11 +18,13 @@ game.ui.infobox.aboutRuins = function(location) {
 
   ibox.title = _u(ruins.typename)
   ibox.setInfoText(ruins.getProperty("pinfo"))
+
+  ibox.show();
 }
 
 game.ui.infobox.aboutBarracks = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
-  ibox.blackFrame.geometry = {x:16, y:80, w:ibox.w-32, h:56};
+  ibox.initBlackframe(16, 80, ibox.w-32, 56);
 
   var barracks = g_session.city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
@@ -43,10 +41,7 @@ game.ui.infobox.aboutBarracks = function(location) {
   ibox.setWorkingStatus(barracks.active);
   ibox.setAutoPosition();
 
-  ibox.btnHelp.uri = barracks.typename;
-  ibox.setAutoPosition();
-  ibox.setModal();
-  ibox.setFocus();
+  ibox.show();
 }
 
 game.ui.infobox.aboutFountain = function(location) {
@@ -69,6 +64,8 @@ game.ui.infobox.aboutFountain = function(location) {
   }
 
   ibox.setInfoText(_u(text));
+
+  ibox.show();
 }
 
 game.ui.infobox.aboutWharf = function(location) {
@@ -99,7 +96,7 @@ game.ui.infobox.aboutShipyard = function(location) {
 
 game.ui.infobox.aboutFactory = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256);
-  ibox.blackFrame.geometry = {x:16, y:160, w:ibox.w-32, h:52}
+  ibox.initBlackFrame(16, 160, ibox.w-32, 52);
 
   var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.overlay = factory;
@@ -144,21 +141,18 @@ game.ui.infobox.aboutFactory = function(location) {
   ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers());
   ibox.setWorkingStatus(factory.active);
 
-  ibox.setAutoPosition();
-  ibox.setModal();
-  ibox.setFocus();
+  ibox.show();
 
   return ibox;
 }
 
 game.ui.infobox.aboutRaw = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
-  ibox.blackFrame.geometry = {x:16, y:170, w:ibox.w-32, h:64};
+  ibox.initBlackframe(16, 170, ibox.w-32, 64);
 
   var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.title = _u(factory.typename);
   ibox.overlay = factory;
-  ibox.btnHelp.uri = factory.typename;
 
   var lbProgress = ibox.addLabel(20, 45, ibox.w-32,24);
   lbProgress.text = _format("{0} {1}%", _ut("rawm_production_complete_m"), factory.progress());
@@ -178,17 +172,15 @@ game.ui.infobox.aboutRaw = function(location) {
   var ginfo = factory.produce;
   ibox.addImage(10, 10, factory.produce.picture.local);
 
-  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers())
-  ibox.setWorkingStatus(factory.active)
+  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers());
+  ibox.setWorkingStatus(factory.active);
 
-  ibox.setAutoPosition()
-  ibox.setModal()
-  ibox.setFocus()
+  ibox.show();
 }
 
 game.ui.infobox.aboutSenate = function(location) {
   var ibox = this.simple(0, 0, 510, 290)
-  ibox.blackFrame.geometry = {x:16, y:126, w:ibox.w-32, h:62}
+  ibox.initBlackframe( 16, 126, ibox.w-32, 62);
 
   var senate = g_session.city.getOverlay(location).as(Senate);
   ibox.overlay = senate;
@@ -217,7 +209,68 @@ game.ui.infobox.aboutSenate = function(location) {
     ibox.deleteLater();
   }
 
-  ibox.setAutoPosition()
-  ibox.setModal()
-  ibox.setFocus()
+  ibox.show();
+}
+
+game.ui.infobox.aboutWorkingBuilding = function(location) {
+  var ibox = this.aboutConstruction(0,0,510,256);
+
+  ibox.initInfoLabel(16,50,ibox.w-32,64);
+  ibox.initBlackframe(16, 136, ibox.w-32, 62);
+
+  var working = g_session.city.getOverlay(location).as(WorkingBuilding);
+  ibox.overlay = working;
+  ibox.title = _u(working.typename)
+
+  ibox.setWorkersStatus(32, 150, 542, working.maximumWorkers(), working.numberWorkers());
+  ibox.setWorkingStatus(working.active);
+
+  ibox.setInfoText(working.workersProblemDesc());
+
+  ibox.show();
+
+  return ibox;
+}
+
+game.ui.infobox.aboutServiceBuilding = function(location, text) {
+  var ibox = this.aboutWorkingBuilding(location);
+
+  if (text != undefined)
+    ibox.setInfoText(text);
+
+  ibox.showAdvInfo = function() {
+    var lastServiceDate = ibox.overlay.getProperty("lastServiceDate");
+    var state = _format( "Damage={0}\nFire={1}\nService={2}",
+                         ibox.overlay.state(g_config.overlay.params.damage),
+                         ibox.overlay.state(g_config.overlay.params.fire),
+                         lastServiceDate.format(g_session.metric) );
+
+    g_ui.addInformationDialog(_u("overlay_status"), state);
+  }
+}
+
+game.ui.infobox.aboutTheater = function(location) {
+  var theater = g_session.city.getOverlay(location);
+
+  ibox.title = _u(theater.typename);
+  ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers(), theater.numberWorkers());
+  ibox.setWorkingStatus(working.active);
+
+  var shows = g_config.entertainment.shows;
+  var showsCount = theater.getProperty("showsCount");
+  var isShow = theater.getProperty("isShow");
+
+  if (showsCount == 0) {
+    ibox.setInfoText( "##theater_no_have_any_shows##" );
+  } else if (isShow) {
+    var currentShow = showsCount%shows.length;
+    var text = shows[currentShow];
+
+    if (text.length==0)
+      text = "##theater_now_local_show##";
+
+    ibox.setInfoText( _(text) );
+  } else {
+    ibox.setInfoText( "##theater_need_actors##" );
+  }
 }

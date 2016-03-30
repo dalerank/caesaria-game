@@ -162,7 +162,7 @@ int engine_js_push(js_State* J,const Variant& param)
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
-    js_pushnumber(J, param.toDateTime().hashdate());
+    engine_js_push(J, param.toDateTime());
     return 0;
   break;
 

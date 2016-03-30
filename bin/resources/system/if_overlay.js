@@ -59,3 +59,4 @@ UpdateOverlayPrototype(Reservoir.prototype);
 UpdateServiceBuildingPrototype(Fountain.prototype);
 UpdateFactoryPrototype(Factory.prototype);
 UpdateWorkingBuildingPrototype(Senate.prototype);
+UpdateWorkingBuildingPrototype(WorkingBuilding.prototype);

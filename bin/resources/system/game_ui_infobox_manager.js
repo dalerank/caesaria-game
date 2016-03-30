@@ -24,8 +24,25 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutRaw(location);
   break;
 
+  case "prefecture": case "engineering_post": case "clinic":
+  case "baths": case "barber": case "hospital": case "missionaryPost":
+  case "school": case "academy": case "library": case "actorColony":
+  case "gladiatorSchool": case "lionsNursery": case "hippodrome":
+  case "chariotSchool": case "forum":
+    game.ui.infobox.aboutServiceBuilding(location);
+  break;
+
+  case "governorHouse": case "governorVilla": case "governorPalace":
+    var text = _u(typename + "_info")
+    game.ui.infobox.aboutServiceBuilding(location, text);
+  break;
+
   case "shipyard":
     game.ui.infobox.aboutShipyard(location);
+  break;
+
+  case "theater":
+    game.ui.infobox.aboutTheater(location);
   break;
 
   case "wharf":
