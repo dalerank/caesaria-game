@@ -270,10 +270,6 @@ if(UNIX AND NOT APPLE)
      )
     endif()
   endif()
-
-  if(CMAKE_COMPILER_IS_CLANG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-  endif()
 endif(UNIX AND NOT APPLE)
 
 if(COMPILER_SUPPORTS_CXX11)

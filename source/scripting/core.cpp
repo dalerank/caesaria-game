@@ -56,6 +56,8 @@ namespace internal
   js_State *J = nullptr;
 } //end namespace internal
 
+int engine_js_push(js_State* J,const Variant& param);
+
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
@@ -147,39 +149,15 @@ void engine_js_push(js_State *J, const good::Stock& stock)
   engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
 }
 
-template<class Type>
-void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
+void engine_js_push(js_State *J, const VariantMap& items)
 {
-  auto pd = new Type(p);
-  engine_js_pushud(J, tname, pd,  destructor);
+  js_newobject(J);
+  for (const auto& item : items)
+  {
+    engine_js_push(J, item.second);
+    js_setproperty(J, -2, item.first.c_str());
+  }
 }
-
-#define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
-
-PREDEFINE_TYPE_DESTRUCTOR(Path)
-PREDEFINE_TYPE_DESTRUCTOR(DateTime)
-PREDEFINE_TYPE_DESTRUCTOR(Picture)
-
-#define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
-#define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
-#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
-#define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
-
-PUSH_USERDATA(ContextMenuItem)
-PUSH_USERDATA(Stock)
-
-PUSH_USERDATA_SMARTPTR(PlayerCity)
-PUSH_USERDATA_SMARTPTR(Player)
-PUSH_USERDATA_SMARTPTR(Overlay)
-PUSH_USERDATA_SMARTPTR(Empire)
-PUSH_USERDATA_SMARTPTR(Ruins)
-PUSH_USERDATA_SMARTPTR(Factory)
-PUSH_USERDATA_SMARTPTR(Divinity)
-PUSH_USERDATA(Emperor)
-
-PUSH_USERDATA_WITHNEW(Path)
-PUSH_USERDATA_WITHNEW(DateTime)
-PUSH_USERDATA_WITHNEW(Picture)
 
 int engine_js_push(js_State* J,const Variant& param)
 {
@@ -249,16 +227,39 @@ int engine_js_push(js_State* J,const Variant& param)
   return 1;
 }
 
-void engine_js_push(js_State *J, const VariantMap& items)
+template<class Type>
+void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
 {
-  js_newobject(J);
-  for (const auto& item : items)
-  {
-    engine_js_push(J, item.second);
-    js_setproperty(J, -2, item.first.c_str());
-  }
+  auto pd = new Type(p);
+  engine_js_pushud(J, tname, pd,  destructor);
 }
 
+#define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
+
+PREDEFINE_TYPE_DESTRUCTOR(Path)
+PREDEFINE_TYPE_DESTRUCTOR(DateTime)
+PREDEFINE_TYPE_DESTRUCTOR(Picture)
+
+#define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
+#define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
+#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
+#define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
+
+PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Stock)
+
+PUSH_USERDATA_SMARTPTR(PlayerCity)
+PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Overlay)
+PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Ruins)
+PUSH_USERDATA_SMARTPTR(Factory)
+PUSH_USERDATA_SMARTPTR(Divinity)
+PUSH_USERDATA(Emperor)
+
+PUSH_USERDATA_WITHNEW(Path)
+PUSH_USERDATA_WITHNEW(DateTime)
+PUSH_USERDATA_WITHNEW(Picture)
 PUSH_SAVEDDATA(States)
 
 inline DateTime engine_js_to(js_State *J, int n, DateTime)
