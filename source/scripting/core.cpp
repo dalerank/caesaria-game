@@ -210,9 +210,9 @@ void engine_js_push(js_State *J, const StringArray& items)
   }
 }
 
-void engine_js_push(js_State *J, good::Stock& stock)
+void engine_js_push(js_State *J, const good::Stock& stock)
 {
-  engine_js_pushud(J, TEXT(Stock), &stock, nullptr);
+  engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
 }
 
 void engine_js_push(js_State *J, const VariantMap& items)

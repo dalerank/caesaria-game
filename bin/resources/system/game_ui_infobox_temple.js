@@ -75,10 +75,10 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
   ibox.btnInfo.style = "whiteBorderUp";
   ibox.btnInfo.callback = function() {
     var state = _format( "Damage={0}\nFire={1}\n",
-                         this.building.state(g_config.overlay.params.damage),
-                         this.building.state(g_config.overlay.params.fire) );
+                         this.overlay.state(g_config.overlay.params.damage),
+                         this.overlay.state(g_config.overlay.params.fire) );
 
-    g_ui.addInformationDialog("Building status", state);
+    g_ui.addInformationDialog(_u("overlay_status"), state);
   }
 
   ibox.setWorkingStatus = function(active) {

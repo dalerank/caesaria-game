@@ -128,9 +128,9 @@ game.ui.infobox.aboutFactory = function(location) {
     var whatStock = _format( "{0}_factory_stock", cinfo.name );
     var typeOut = _format( "{0}_factory_stock", pinfo.name );
     var text = _format( "{0} {1} {2} {3}",
-                        0,//factory.inStock().qty() / 100,
+                        factory.inStock().qty() / 100,
                         _ut(whatStock),
-                        0, //factory.outStock().qty() / 100,
+                        factory.outStock().qty() / 100,
                         _ut(typeOut) );
 
     lbStockInfo.text = text;
