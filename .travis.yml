@@ -9,29 +9,28 @@ before_install:
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
-- cd $TRAVIS_BUILD_DIR
+- mkdir $TRAVIS_BUILD_DIR/build
+- cd $TRAVIS_BUILD_DIR/build
 # Create unix makefiles
-- cmake -DUSE_STEAM=1 -DCMAKE_BUILD_TYPE=Release
+- cmake -DUSE_STEAM=1 -DCMAKE_BUILD_TYPE=Release ../
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
-- mkdir $TRAVIS_BUILD_DIR/../caesaria-test
-- unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
 script: 
 # Build CaesarIA
+- cd $TRAVIS_BUILD_DIR/build
 - make -j4
 after_success:
-- cd $TRAVIS_BUILD_DIR/../caesaria-test
-- cp $TRAVIS_BUILD_DIR/xcompile/mac_install_libs.sh install_libs.sh
+- cd $TRAVIS_BUILD_DIR/bin
 # Prepare ZIP archive
 - ZIPNAME=caesaria-0.5-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
 # Upload to server
+- mv caesaria.macos caesaria-steam.macos
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
-- sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
+- sshpass -p "$SCP_PASS" scp -v caesaria-steam.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
 notifications:
     slack:
@@ -39,4 +38,4 @@ notifications:
     irc:
         - "irc.quakenet.org#caesaria"
     on_failure: always
-    on_success: never
+    on_success: always
