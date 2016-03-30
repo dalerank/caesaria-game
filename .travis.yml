@@ -1,6 +1,12 @@
 language: cpp
-compiler: 
-- gcc-4.8
+compiler: gcc
+  addons:
+    apt:
+      sources:
+        - ubuntu-toolchain-r-test
+      packages:
+        - g++-4.9
+  env: COMPILER=g++-4.9
 branches:
 - windows-build
 before_install:
