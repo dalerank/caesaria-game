@@ -242,9 +242,11 @@ ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
 function Groupbox(parent) { return new GroupBox(parent) }
 UpdateWidgetPrototype(GroupBox.prototype)
 
-GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
+GroupBox.prototype.addLabel = function(rx,ry,rw,rh,text) {
     var label = new Label(this);
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
+    if (text != undefined)
+      label.text = text;
     return label;
   }
 //*************************** Groupbox class end ***************************************//

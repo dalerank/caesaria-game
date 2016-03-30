@@ -21,9 +21,11 @@ Window.prototype.closeAfterKey = function(obj) {
     this.addCloseCode(0x4);
 }
 
-Window.prototype.addLabel = function(rx,ry,rw,rh) {
+Window.prototype.addLabel = function(rx,ry,rw,rh,text) {
   var label = new Label(this);
   label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  if (text != undefined)
+    label.text = text;
   return label;
 }
 
