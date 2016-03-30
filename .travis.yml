@@ -53,7 +53,7 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -qq cmake build-essential libasound2-dev libxxf86vm-dev
 - export CXX=$CXX_COMPILER
-- expoty CC=$C_COMPILER
+- export CC=$C_COMPILER
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 # Create unix makefiles
