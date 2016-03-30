@@ -56,7 +56,8 @@ namespace internal
   js_State *J = nullptr;
 } //end namespace internal
 
-int engine_js_push(js_State* J,const Variant& param);
+void engine_js_push(js_State* J,const Variant& param);
+void engine_js_push(js_State* J,const DateTime& param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
@@ -159,13 +160,12 @@ void engine_js_push(js_State *J, const VariantMap& items)
   }
 }
 
-int engine_js_push(js_State* J,const Variant& param)
+void engine_js_push(js_State* J,const Variant& param)
 {
   switch( param.type() )
   {
   case Variant::Bool:
     js_pushboolean(J, param.toBool() );
-    return 0;
   break;
 
   case Variant::Int:
@@ -180,25 +180,21 @@ int engine_js_push(js_State* J,const Variant& param)
   case Variant::Uchar:
   case Variant::Short:
     js_pushnumber(J, param.toDouble());
-    return 0;
   break;
 
   case Variant::NPoint:
   case Variant::NPointF:
     engine_js_push(J, param.toPoint());
-    return 0;
   break;
 
   case Variant::NTilePos:
     engine_js_push(J, param.toTilePos());
-    return 0;
   break;
 
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
     engine_js_push(J, param.toDateTime());
-    return 0;
   break;
 
   case Variant::NStringArray:
@@ -210,21 +206,19 @@ int engine_js_push(js_State* J,const Variant& param)
       js_pushstring(J, items[i].c_str());
       js_setindex(J, -2, i);
     }
-    return 0;
   }
   break;
 
   case Variant::Char:
   case Variant::String:
     js_pushstring(J, param.toString().c_str());
-    return 0;
   break;
 
   default:
     js_pushnull(J);
+    Logger::warning( "!!! Undefined value for js.pcall engine_js_push when find " + param.typeName() );
   break;
   }
-  return 1;
 }
 
 template<class Type>
@@ -261,6 +255,7 @@ PUSH_USERDATA_WITHNEW(Path)
 PUSH_USERDATA_WITHNEW(DateTime)
 PUSH_USERDATA_WITHNEW(Picture)
 PUSH_SAVEDDATA(States)
+PUSH_SAVEDDATA(VictoryConditions)
 
 inline DateTime engine_js_to(js_State *J, int n, DateTime)
 {
@@ -411,9 +406,7 @@ void engine_js_GetOption(js_State *J)
 {
   std::string name = js_tostring(J, 1);
   Variant value = game::Settings::get(name);
-  int error = engine_js_push(J, value);
-  if (error)
-    Logger::warning( "!!! Undefined value for js.pcall engineGetOption when find " + name );
+  engine_js_push(J, value);
 }
 
 void engine_js_SetOption(js_State *J)
@@ -505,9 +498,9 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
   js_pushnull(internal::J);
   for (const auto& param : params)
   {
-    int error = engine_js_push(internal::J,param);
-    if (error)
-      Logger::warning("!!! Undefined value for js.pcall " + funcname);
+    engine_js_push(internal::J,param);
+    //if (error)
+    //  Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
 
   bool error = engine_js_tryPCall(internal::J,params.size());
