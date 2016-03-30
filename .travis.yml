@@ -13,7 +13,7 @@ matrix:
             - g++-4.9
       env: 
         CXX_COMPILER=g++-4.9
-        C_COMPILER=gcc=4.9
+        C_COMPILER=gcc-4.9
     - compiler: gcc
       addons:
         apt:
@@ -45,7 +45,7 @@ matrix:
             - clang-3.7
       env: 
         CXX_COMPILER=clang++-3.7
-        C_COMPILER=
+        C_COMPILER=clang-3.7
       
 before_install:
 # Get build dependencies
