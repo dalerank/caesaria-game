@@ -1,0 +1,11 @@
+{
+  "##tingis_preview_title##" : "Le bord du monde"
+  "##tingis_overview##" : "Notre expansion vers l'Ouest s'est arrêtée au bord du monde. Je désire qu'une cité Romaine majeure soit bâtie à Tingis, afin d'ancrer notre frontière à l'Ouest et de garder les côtes d'Hispania. \n
+De nombreuses forces en Afrique ne voient pas d'un bon œil notre présence, et protesteront vivement lorsqu'elles réaliseront que vous bloquez leur passage vers le Nord. Attendez-vous à des raids de tribus nomades, ainsi qu'à des attaques plus organisées des sauvages Numides. \n
+Tingis n'est pas une province riche en fer. Il vous faudra acheter des armes. J'ai ordonné à Carthago Nova de vous en vendre autant que possible. Ouvrez une route de commerce avec elle dès que vous serez prêt à établir vos légions, ce que je vous avise de faire rapidement. \n
+Comme je m'attends à ce que votre attention soit grandement monopolisée par la construction d'une grande cité et par sa défense contre les attaques fréquentes, les objectifs que je vous ai fixés sont plutôt modestes."
+  
+  "##tingis_preview_mission##" : "Notre expansion vers l'Ouest s'est arrêtée au bord du monde. Je désire qu'une cité Romaine majeure soit bâtie à Tingis, afin d'ancrer notre frontière à l'Ouest et de garder les côtes d'Hispania. \n
+De nombreuses forces en Afrique ne voient pas d'un bon œil notre présence, et protesteront vivement lorsqu'elles réaliseront que vous bloquez leur passage vers le Nord. Attendez-vous à des raids de tribus nomades, ainsi qu'à des attaques plus organisées des sauvages Numides."
+}
+  
