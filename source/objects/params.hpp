@@ -24,11 +24,11 @@
 namespace pr
 {
 
-class Array : public std::map<Param, double>
+class Array : public std::map<int, float>
 {
 public:
   VariantList save() const;
-  void load( const VariantList& stream );
+  void load(const VariantList& stream);
 };
 
 }

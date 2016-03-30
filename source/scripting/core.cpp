@@ -22,6 +22,7 @@
 #include <GameObjects>
 #include <GameVfs>
 #include <GameGui>
+#include <GameGood>
 #include <GameLogger>
 #include <GameScene>
 #include <GameCore>
@@ -38,6 +39,7 @@ using namespace gui;
 using namespace gui::dialog;
 using namespace city;
 using namespace world;
+using namespace good;
 using namespace gfx;
 using namespace vfs;
 using namespace religion;
@@ -122,6 +124,63 @@ void engine_js_push(js_State* J, float value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, uint32_t value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
+void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
+{
+  js_newobject(J);
+  js_getglobal(J, name.c_str());
+  js_getproperty( J, -1, "prototype");
+  js_newuserdata(J, "userdata", v, destructor);
+}
+
+void engine_js_push(js_State *J, const StringArray& items)
+{
+  js_newarray(J);
+  for (uint32_t i = 0; i<items.size(); i++)
+  {
+    js_pushstring(J, items[i].c_str());
+    js_setindex(J, -2, i);
+  }
+}
+
+void engine_js_push(js_State *J, const good::Stock& stock)
+{
+  engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
+}
+
+template<class Type>
+void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
+{
+  auto pd = new Type(p);
+  engine_js_pushud(J, tname, pd,  destructor);
+}
+
+#define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
+
+PREDEFINE_TYPE_DESTRUCTOR(Path)
+PREDEFINE_TYPE_DESTRUCTOR(DateTime)
+PREDEFINE_TYPE_DESTRUCTOR(Picture)
+
+#define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
+#define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
+#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
+#define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
+
+PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Stock)
+
+PUSH_USERDATA_SMARTPTR(PlayerCity)
+PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Overlay)
+PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Ruins)
+PUSH_USERDATA_SMARTPTR(Factory)
+PUSH_USERDATA_SMARTPTR(Divinity)
+PUSH_USERDATA(Emperor)
+
+PUSH_USERDATA_WITHNEW(Path)
+PUSH_USERDATA_WITHNEW(DateTime)
+PUSH_USERDATA_WITHNEW(Picture)
+
 int engine_js_push(js_State* J,const Variant& param)
 {
   switch( param.type() )
@@ -160,7 +219,7 @@ int engine_js_push(js_State* J,const Variant& param)
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
-    js_pushnumber(J, param.toDateTime().hashdate());
+    engine_js_push(J, param.toDateTime());
     return 0;
   break;
 
@@ -190,24 +249,6 @@ int engine_js_push(js_State* J,const Variant& param)
   return 1;
 }
 
-void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
-{
-  js_newobject(J);
-  js_getglobal(J, name.c_str());
-  js_getproperty( J, -1, "prototype");
-  js_newuserdata(J, "userdata", v, destructor);
-}
-
-void engine_js_push(js_State *J, const StringArray& items)
-{
-  js_newarray(J);
-  for (uint32_t i = 0; i<items.size(); i++)
-  {
-    js_pushstring(J, items[i].c_str());
-    js_setindex(J, -2, i);
-  }
-}
-
 void engine_js_push(js_State *J, const VariantMap& items)
 {
   js_newobject(J);
@@ -218,37 +259,7 @@ void engine_js_push(js_State *J, const VariantMap& items)
   }
 }
 
-template<class Type>
-void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
-{
-  auto pd = new Type(p);
-  engine_js_pushud(J, tname, pd,  destructor);
-}
-
-#define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
-
-PREDEFINE_TYPE_DESTRUCTOR(Path)
-PREDEFINE_TYPE_DESTRUCTOR(DateTime)
-PREDEFINE_TYPE_DESTRUCTOR(Picture)
-
-#define PUSH_SAVEDDATA(type) void engine_js_push(js_State* J, const type& p) { engine_js_push(J, p.save()); }
-#define PUSH_USERDATA(type) void engine_js_push(js_State* J, type* p) { engine_js_pushud(J, #type, p, nullptr); }
-#define PUSH_USERDATA_SMARTPTR(type) void engine_js_push(js_State* J, const SmartPtr<type>& p) { engine_js_pushud(J, #type, p.object(), nullptr); }
-#define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
-
 PUSH_SAVEDDATA(States)
-PUSH_USERDATA(ContextMenuItem)
-
-PUSH_USERDATA_SMARTPTR(PlayerCity)
-PUSH_USERDATA_SMARTPTR(Player)
-PUSH_USERDATA_SMARTPTR(Overlay)
-PUSH_USERDATA_SMARTPTR(Empire)
-PUSH_USERDATA_SMARTPTR(Divinity)
-PUSH_USERDATA(Emperor)
-
-PUSH_USERDATA_WITHNEW(Path)
-PUSH_USERDATA_WITHNEW(DateTime)
-PUSH_USERDATA_WITHNEW(Picture)
 
 inline DateTime engine_js_to(js_State *J, int n, DateTime)
 {
@@ -299,14 +310,14 @@ inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)j
 
 inline Path engine_js_to(js_State *J, int n, Path) { return vfs::Path( js_tostring(J, n)); }
 
-inline Point engine_js_to(js_State *J, int n, Point) 
-{ 
+inline Point engine_js_to(js_State *J, int n, Point)
+{
   if (js_isobject(J, n))
   {
     js_getproperty(J, n, "x");
     int x = js_toint32(J, -1);
     js_getproperty(J, n, "y");
-    int y = js_toint32(J, -1);  
+    int y = js_toint32(J, -1);
     return Point(x, y);
   }
   return Point(js_toint32(J, n), js_toint32(J, n + 1));
@@ -666,7 +677,7 @@ void reg_divinity_constructor(js_State *J)
   }
   else if (js_isuserdata(J, 1, "userdata"))
   {
-    //ov = (T*)js_touserdata(J, 1, "userdata");
+    //divn. = (T*)js_touserdata(J, 1, "userdata");
   }
 
   js_currentfunction(J);

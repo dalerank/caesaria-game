@@ -15,7 +15,59 @@ game.ui.infobox.show = function(typename,location)
   case "statue_big": case "native_hut": case "native_field":
   case "native_center": case "high_bridge": case "fortification":
   case "wall":
-    game.ui.infobox.aboutObject(typename)
+    game.ui.infobox.aboutObject(typename);
+  break;
+
+  case "iron_mine": case "quarry": case "lumber_mill": case "clay_pit":
+  case "meat_farm": case "fig_farm": case "olive_farm": case "vegetable_farm":
+  case "wheat_farm": case "vinard":
+    game.ui.infobox.aboutRaw(location);
+  break;
+
+  case "prefecture": case "engineering_post": case "clinic":
+  case "baths": case "barber": case "hospital": case "missionaryPost":
+  case "school": case "academy": case "library": case "actorColony":
+  case "gladiatorSchool": case "lionsNursery": case "hippodrome":
+  case "chariotSchool": case "forum":
+    game.ui.infobox.aboutServiceBuilding(location);
+  break;
+
+  case "governorHouse": case "governorVilla": case "governorPalace":
+    var text = _u(typename + "_info")
+    game.ui.infobox.aboutServiceBuilding(location, text);
+  break;
+
+  case "colosseum":
+    game.ui.infobox.aboutColosseum(location);
+  break;
+
+  case "shipyard":
+    game.ui.infobox.aboutShipyard(location);
+  break;
+
+  case "theater":
+    game.ui.infobox.aboutTheater(location);
+  break;
+
+  case "wharf":
+    game.ui.infobox.aboutWharf(location);
+  break;
+
+  case "pottery_workshop": case "weapons_workshop": case "furniture_workshop":
+  case "wine_workshop": case "oil_workshop":
+    game.ui.infobox.aboutFactory(location);
+  break;
+
+  case "senate":
+    game.ui.infobox.aboutSenate(location);
+  break;
+
+  case "fountain":
+    game.ui.infobox.aboutFountain(location);
+  break;
+
+  case "reservoir":
+    game.ui.infobox.aboutReservoir(location);
   break;
 
   case "low_bridge":
@@ -42,5 +94,6 @@ game.ui.infobox.show = function(typename,location)
 
 function OnShowOverlayInfobox(location) {
   var overlay = g_session.city.getOverlay(location)
+  engine.log(overlay.typename);
   game.ui.infobox.show(overlay.typename, location)
 }

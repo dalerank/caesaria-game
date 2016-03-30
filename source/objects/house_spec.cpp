@@ -46,7 +46,7 @@ public:
   std::string levelName;
   std::string internalName;
   unsigned int srvcInterval, goodInterval, foodInterval;
- 
+
   int taxRate;
 
   // required services
@@ -121,7 +121,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
       case 0: ref = "##missing_entertainment_theater##"; needBuilding = object::theater; break;
       case 1: ref = "##missing_entertainment_amph##"; needBuilding = object::amphitheater; break;
       case 2: ref = "##missing_entertainment_also##"; needBuilding = object::amphitheater; break;
-      case 3: ref = "##missing_entertainment_colloseum##"; needBuilding = object::colloseum; break;
+      case 3: ref = "##missing_entertainment_colosseum##"; needBuilding = object::colosseum; break;
       case 4: ref = "##missing_entertainment_hippodrome##"; needBuilding = object::hippodrome; break;
         //##missing_entertainment_patrician##
       }
@@ -340,7 +340,7 @@ int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
    int res = 0;
    res += house->hasServiceAccess(Service::theater) ? 10 : 0;
    res += house->hasServiceAccess(Service::amphitheater) ? 20 : 0;
-   res += house->hasServiceAccess(Service::colloseum) ? 30 : 0;
+   res += house->hasServiceAccess(Service::colosseum) ? 30 : 0;
    res += house->hasServiceAccess(Service::hippodrome) ? 40 : 0;
    return res;
 }
@@ -404,10 +404,10 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   bool haveLibrary = house->hasServiceAccess(Service::library);
   if( haveSchool )
   {
-    res = 1;   
+    res = 1;
     if( haveAcademy )
     {
-      res = 2;      
+      res = 2;
       if( haveLibrary )
       {
         res = 3;
@@ -458,7 +458,7 @@ float HouseSpecification::evaluateServiceNeed(HousePtr house, const Service::Typ
       break;
    case Service::theater:
    case Service::amphitheater:
-   case Service::colloseum:
+   case Service::colosseum:
    case Service::hippodrome:
       res = evaluateEntertainmentNeed(house, service);
       break;
@@ -739,7 +739,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->minEducationLevel = hSpec.get( "education" ).toInt();
     spec._d->minHealthLevel = hSpec.get( "health" ).toInt();
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
-    
+
     spec._d->requiredGoods[good::wheat] = 1;  // hard coded ... to be changed!
     spec._d->requiredGoods[good::fish] = 1;
     spec._d->requiredGoods[good::meat] = 1;

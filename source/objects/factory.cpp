@@ -130,7 +130,7 @@ const good::Stock& Factory::inStock() const { return _d->goodStore.getStock(_d->
 good::Stock& Factory::outStock() { return _d->goodStore.getStock(_d->goods.out.type());}
 const good::Stock& Factory::outStock() const { return _d->goodStore.getStock(_d->goods.out.type()); }
 const good::Info& Factory::consume() const{  return _d->goods.in; }
-int Factory::progress(){ return math::clamp<int>( (int)_d->production.progress, 0, 100 );}
+int Factory::progress() const{ return math::clamp<int>( (int)_d->production.progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->production.progress = math::clamp<float>( _d->production.progress += value, 0.f, 101.f );}
 
 bool Factory::mayWork() const
@@ -353,7 +353,7 @@ void Factory::initialize(const object::Info& mdata)
   }
 
   VariantMap vStockImages = mdata.getOption( "stock.image" ).toMap();
-  for( const auto& item : vStockImages )
+  for (const auto& item : vStockImages)
   {
     VariantMap stageVm = item.second.toMap();
     int index = stageVm.get( "qty" ).toInt();
@@ -364,6 +364,15 @@ void Factory::initialize(const object::Info& mdata)
 }
 
 const good::Info& Factory::produce() const{  return _d->goods.out;}
+
+Variant Factory::getProperty(const std::string& name) const
+{
+  if (name == "produce") return (int)_d->goods.out.type();
+  if (name == "consume") return (int)_d->goods.in.type();
+  if (name == "effiency") return (int)effciency();
+
+  return WorkingBuilding::getProperty(name);
+}
 
 void Factory::receiveGood()
 {

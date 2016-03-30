@@ -136,7 +136,7 @@ sim.ui.dialogs.showCitySettings = function() {
   {    base: "city_border",    states: ["off", "on"],    group: "game",    flag: "borderMoving"  },
   {    base: "city_forest_fire",    states: ["off", "on"],    group: "city",    flag: "forestFire"  },
   {    base: "city_forest_grow",    states: ["off", "on"],    group: "city",    flag: "forestGrow"  },
-  {    base: "city_claypit_collapse",    states: ["off", "on"],    group: "city",    flag: "claypitMayCollapse"  },
+  {    base: "city_claypit_collapse",    states: ["off", "on"],    group: "city",    flag: "claypitMayFloods"  },
   {    base: "city_mines_collapse",    states: ["off", "on"],    group: "city",    flag: "minesMayCollapse"  },
   {    base: "draw_svk_border",    states: ["off", "on"],    group: "city",    flag: "svkBorderEnabled"  },
   {    base: "city_farm_use_meadow",    states: ["off", "on"],    group: "city",    flag: "farmUseMeadows"  },

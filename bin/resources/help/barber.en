@@ -1,7 +1,7 @@
 {
  title : "##barbers##"
  sound : "fanfare"
- text  : "Wealthier neighborhoods expect a barber to pass their homes regularly. Barbers increase the desirability of nearby housing.\n Use the @Health Overlay& to see housing's access to barber services, and watch the barber walk his route. Right-click on the barber's shop to view its status.\n Click @here& to read about ancient Roman hairstyles."
+ text  : "Wealthier neighborhoods expect a barber to pass their homes regularly. Barbers increase the desirability of nearby housing.\nUse the @Health Overlay& to see housing's access to barber services, and watch the barber walk his route. Right-click on the barber's shop to view its status.\n\nClick @here& to read about ancient Roman hairstyles."
  uri : {
   "Health Overlay" : "special_card_selection"
   "here" : "barber_history"

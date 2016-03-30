@@ -1,11 +1,46 @@
 {"##some_food_on_next_month##":"- trochę żywności w nadchodzącym miesiącu",
 "##have_no_food_on_next_month##":"- brak żywności w nadchodzącym miesiącu",
 "##small_food_on_next_month##":"- bardzo mało żywności w nadchodzącym miesiącu",
+"##build_your_rom##":"Losowy region
+",
 "##city_barbarian_off_tlp##":"Barbarzyńcy nie zaatakują twojego miasta",
+"##enter_dinasty_name_here##":"Wpisz tu nazwisko swojej rodziny
+",
 "##city_barbarian_off##":"Barbarzyńcy: Wył",
+"##city_roadblock_off##":"Blokady drogowe: wył.
+",
+"##city_warf_timber_on##":"Stocznia potrzebuje drewna.
+",
+"##city_warf_timber_off##":"Stocznia nie potrzebuje drewna.
+",
+"##city_warf_timber_on_tlp##":"Stocznia używa drewna przy budowie łodzi
+",
+"##city_warf_timber_off_tlp##":"Stocznia buduje łódź bez zużycia drewna
+",
+"##window_changes_title##":"Zmiany w tej wersji
+",
+"##sldr_wages_on##":"Żołnierze potrzebują żołdu
+",
+"##sldr_wages_off##":"Żołnierze nie potrzebują żołdu
+",
+"##city_mines_collapse_on##":"Kopalnie mogą się zawalić
+",
+"##city_mines_collapse_off##":"Kopalnie się nie zawalą
+",
 "##city_barbarian_on##":"Barbarzyńcy: Wł.",
 "##city_barbarian_on_tlp##":"Barbarzyńcy mogą zaatakować twoje miasto",
+"##city_c3rules_off_tlp##":"Gra będzie korzystać z zasad Caesara III oraz z nowych
+",
+"##city_c3rules_on_tlp##":"Gra będzie korzystać tylko z zasad Caesara III
+",
+"##city_c3rules_off##":"Zasady C3 i nowe
+",
+"##city_c3rules_on##":"Tylko zasady C3
+",
 "##mainmenu_constructor##":"Edytor map",
+"##tax_and_industry##":"Podatki i produkcja
+",
+"##trade_title##":"Handel",
 "##city_df_usual##":"Normalny",
 "##city_df_hard##":"Trudny",
 "##city_df_nicety##":"Bardzo trudny",
@@ -27,10 +62,19 @@
 "##city_debug_off_tlp##":"Menu debugowania jest ukryte",
 "##city_debug_on##":"Menu debugowania: POKAŻ",
 "##city_debug_off##":"Menu debugowania: UKRYJ",
+"##draw_svk_border_off##":"Ukryj granicę miasta
+",
+"##city_forest_fire_on_tlp##":"Las może się zająć ogniem od budynków
+",
+"##city_forest_fire_off_tlp##":"Las nie zajmie się ogniem od budynków
+",
 "##city_forest_grow_off_tlp##":"Las nie będzie się rozrastać",
 "##city_forest_grow_on_tlp##":"Las będzie się rozrastać",
 "##city_highlight_bld_off_tlp##":"Zaznaczony budynek nie będzie podświetlony",
 "##city_highlight_bld_on_tlp##":"Zaznaczony budynek będzie podświetlony",
+"##city_destroy_epdh_off##":"Zaawansowane zasady epidemii
+",
+"##city_destroy_epdh_on##":"Proste zasady epidemii",
 "##city_forest_fire_on##":"Las - podpalenie wł.",
 "##city_forest_fire_off##":"Las - podpalenie wył.",
 "##city_forest_grow_off##":"Las: rozrost wył.",
@@ -43,6 +87,8 @@
 "##city_lockinfo_off_tlp##":"Okienka mogą być przesuwane",
 "##city_tooltips_on_tlp##":"Pokaż wskazówki w mieście",
 "##city_tooltips_off_tlp##":"Nie pokazuj wskazówek w mieście",
+"##city_batching_off_tlp##":"Rysowanie tekstur jak w Caesarze III",
+"##aware_black_objects##":"Czarne obiekty nie zostały jeszcze stworzone i będą dodawane jak tylko zostaną ukończone.",
 "##city_lockinfo_on##":"Okienka: ZABLOKOWANE",
 "##city_lockinfo_off##":"Okienka: PRZESUWALNE",
 "##city_mapmoving_lmb##":"Przesuwanie mapy: lewy przycisk myszy",
@@ -63,6 +109,7 @@
 "##colleges##":"Akademie",
 "##academy##":"Akademia",
 "##aqueduct##":"Akwedukt",
+"##aqueduct_info##":"Akwedukty transportują wodę między zbiornikami, pozwalając na budowę fontann w głębi miasta, daleko od źródeł.",
 "##actor##":"Aktor",
 "##advchief_haveprofit##
 ":"W tym roku majątek wzrósł o",
@@ -111,6 +158,7 @@
 "##srt_by_user##":"Zapisy gracza",
 "##srt_by_name##":"Według nazwy",
 "##rioter_in_city_title##":"Zamieszki w mieście",
+"##ovrm_products##":"Produkty",
 "##rioter_in_city_text##":"Zamieszki w mieście",
 "##library##":"Biblioteka",
 "##wt_librarian##":"Bibliotekarz",
@@ -132,6 +180,7 @@
 "##doctor_gods_angry##":"Jeśli nie okażemy bogom więcej szacunku, poczujemy ich gniew na sobie!",
 "##lionTamer_gods_angry##":"Bogowie są tak źli, że wpłynęło to na mojego lwa! Ryczy jak szalony!",
 "##legion_morale##":"Morale",
+"##legion_morale_is_too_low##":"Morale legionu jest zbyt niskie, aby usłuchał rozkazu!",
 "##rladv_mood##":"Bogowie są",
 "##hospital##":"Szpital",
 "##hospitals##":"Szpitale",
@@ -165,6 +214,7 @@
 "##education_awesome##":"Miasto ma wszystkie edukacyjne udogodnienia, które są w idealnym stanie.",
 "##no_people_in_city##":"Brak ludzi w mieście!",
 "##advchief_employers_ok##":"Miasto nie ma problemów z zatrudnieniem",
+"##no_industries_in_city##":"W mieście nie ma przemysłu.",
 "##advchief_health_awesome##":"Wskaźnik zdrowia w mieście jest doskonały.",
 "##to_empire_road##":"Do Imperium",
 "##to_rome_road##":"Do Rzymu",
@@ -527,4 +577,24 @@
 "##scholar_so_hungry##":"Umieram z głodu!",
 "##month_1_short##":"Sty",
 "##build_senate_for_advisors##":"Najpierw wybuduj senat",
+"##new_village##":"Nowa wioska",
+"##build_some_houses##":"Cel: Wybuduj trochę domów",
+"##tutorial_text##":"Zacznijmy twoją naukę rządzenia!\n\nNa początku powinieneś poznać podstawy budowania Rzymskich osad.\n\nWyznacz strefy osiedli budynków mieszkalnych, a wkrótce zobaczysz ludzi przybywających do twojego miasta.",
+"##right_mouse_btn_tutorial##":"\n\nIf you clicks these people with the right mouse button, you will tell you important information about your city. You can also right-click on the building. In buildings you see a description of the building, and a help button, where you will see how this building works.\n\n
+",
+"##tutorial_text_roads##":"Drogi\nMożesz budować drogi, po prostu trzymaj wciśnięty przycisk myszy.",
+"##tutorial_text_roads2##":"\n\nOstrożnie planuj ułożenie dróg, tworząc jak najmniejszą liczbę skrzyżowań dla mieszkańców, którzy  swobobne poruszają się gdziekolwiek chcą. Na każdym skrzyżowaniu ludzie muszą zdecydować, gdzie pójść dalej. Ogranicza to twoją kontrolę nad ich ruchami.",
+"##tutorial_fire##":"Pożary w mieście",
+"##tutorial_prefecture_info##":"By zapobiegać pożarom, buduj prefektury w pobliżu domów.\n\nPrefektury wysyłają mieszkańców do poszukiwania pracowników w pobliżu. W czasie gdy przechodzą oni obok domów, prefektura ma dostęp do siły roboczej. Po tym może ona wysłać prefektów na patrol.\n",
+"##tutorial_prefect_detect_fire##":"\n\nGdy prefekci zobaczą ogień, próbują oni go zgasić wodą z najbliżej studni",
+"##tutorial_ruins_info##":"\n\nKliknij prawy przycik myszy na ruinach budynku, by dowiedzieć się jaki budynek stał w tym miejscu przed pożarem. W czasie patroli prefektów, sprawdzają oni każdy budynek, obok którego przechodzą i sprawdzają jakie jest dla niego niebezpieczeństwo pożaru zmiejszając, przy tym, ryzyko przyszłych pożarów.\n\nPrefekci mogą obsługiwać budynki leżące do dróch pól od drogi.\n\nWiadomość \n Jeśli słyszysz dźwięk fanfary, znaczy to, że właśnie otrzymałeś wiadomość. Aby ją przeczytać, kliknij w przycisk ze zwojem.",
+"##tutorial_text_mgs2##":"\n\nSzczególnie ważne wiadomości (jak ta) będą się tobie ukazywać automatycznie i są one przechowywane razem z innymi wiadomościami. Jeśli popełnisz jakiś błąd, na dole panelu znajduje się przycisk 'Anuluj'.\n",
+"##tutorial_first_collapse##":"Uszkodzone budynki",
+"##tutorial_engineer_info##":"Pomimo że rzymska architektura była na bardzo zaawansowanym poziomie jak na swoje czasy, budynki w imperium zawalały się dość często.\n\nAby uniknąć tego, buduj posterunki inżynierów w swoim mieście. Działają one w podobny sposób do prefektur, wysyłając inżynierów do patrolu ulic i napraw jakichkolwiek uszkodzeń jakie udało im się odkryć.",
+"##tutorial_engineer_senate##":"\n\nTeraz możesz również wybudować Senat. Może być tylko jeden w każdym mieście. Senat zatrudnia poborców podatkowych, którzy będą wędrować ulicami i zbierać podatki ze wszystkich domów, obok których przejdą.",
+"##tutorial_collapse_building##":"\n\nNa stopniach Senatu, możesz zobaczyć bezrobotnych z twojego miasta. Im więcej ludzi widzisz, tym wyższy poziom bezrobocia panuje w mieście.\n\nZwróć uwagę, jak piaszczyste drogi wokół Senatu zmieniają się w wybrukowane ulice.  Jako, że obszar staje się bardziej atrakcyjny, mieszkańcy będą automatycznie, podnosić status piaszczystych dróch do wybrukowanych.",
+"##tutorial_religion_title##":"Zaspokajanie bogów",
+"##tutorial_religion##":"Świątynie.\nTwoi mieszkańcy są bardzo religijni i lubią mieć świątynie w pobliżu swoich domostw. Musisz poświęcić każdą świątynię dla jednego z pięciu bogów: Wenus, bogini miłości; Merkurego, boga transportu i handlu; Marsa, boga wojny; Ceres, bogini urodzaju; lub Neptuna, boga mórz.",
+"##tutorial_religion2##":"\n\nStaraj się budować równą ilość świątyń każdego z bogów. Są oni zazdrośni i mogą się zdenerwować, jeśli poczują, że nie są oni czczeni tak bardzo, jak inni bogowie. Mogą również zdenerwować się, gdy będą uważać, że twoje miasto rozrosło się na tyle, że powinno być więcej świątyń im poświęconym, więc działaj ostrożnie. Konsultuj się z twoim Doradcą ds. Religii, by dowiedzieć się więcej o tym, jaką sympatią darzy cię każdy z bogów. Pioruny wskazują na to, że bóg jest zły i pragnie ukarać twoje miasto. Im więcej piorunów, tym bardziej zły jest bóg lub bogini.",
+"##tutorial_preview_mission##":"Naucz się zasad gry",
 }

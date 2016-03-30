@@ -62,21 +62,6 @@ public:
   }
 };
 
-class ServiceInfoboxCreator : public InfoboxCreator
-{
-public:
-  ServiceInfoboxCreator( const std::string& caption,
-                             const std::string& descr,
-                             bool drawWorkers=false );
-
-  virtual ~ServiceInfoboxCreator() {}
-
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos );
-
-  std::string title, text;
-  bool isDrawWorkers;
-};
-
 class Manager : public StaticSingleton<Manager>
 {
   SET_STATICSINGLETON_FRIEND_FOR(Manager)
@@ -115,12 +100,6 @@ static Registrator_##name rtor_##name; \
 #define REGISTER_OBJECT_BASEINFOBOX(name,a) \
 namespace { \
 struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new BaseInfoboxCreator<a>() ); }}; \
-static Registrator_##name rtor_##name; \
-}
-
-#define REGISTER_OBJECT_SERVICEINFOBOX(name,a,b) \
-namespace { \
-struct Registrator_##name { Registrator_##name() { Manager::instance().addInfobox( object::name, new ServiceInfoboxCreator(a,b) ); }}; \
 static Registrator_##name rtor_##name; \
 }
 

@@ -57,7 +57,7 @@ static const float minBalanceKoeff=.5f;
 }
 
 float Statistic::_Balance::koeff() const
-{ 
+{
   float result = atan( _parent.rcity.states().population / popBalanceKoeff );
   return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
@@ -432,7 +432,7 @@ size_t Statistic::_Food::inGranaries() const
 {
   int foodSum = 0;
 
-  GranaryList granaries = _parent.objects.find<Granary>( object::granery );
+  GranaryList granaries = _parent.objects.find<Granary>( object::granary );
   for( auto gr : granaries ) { foodSum += gr->store().qty(); }
 
   return foodSum;

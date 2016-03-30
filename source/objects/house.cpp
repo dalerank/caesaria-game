@@ -994,7 +994,7 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::academy:
   case Service::theater:
   case Service::amphitheater:
-  case Service::colloseum:
+  case Service::colosseum:
   case Service::hippodrome:
     setServiceValue(service, 100);
   break;
@@ -1137,7 +1137,7 @@ const Pictures& House::pictures(Renderer::Pass pass) const
   return Building::pictures( pass );
 }
 
-double House::state(Param param) const
+float House::state(int param) const
 {
   if( param == pr::food ) { return _d->getFoodLevel(); }
   else if( param == pr::health ) { return Building::state( pr::health ) + Building::state( pr::healthBuff ); }
@@ -1417,7 +1417,7 @@ bool House::isEntertainmentNeed(Service::Type type) const
   {
   case Service::theater: return (lvl>=10);
   case Service::amphitheater: return (lvl>=30);
-  case Service::colloseum: return (lvl>=60);
+  case Service::colosseum: return (lvl>=60);
   case Service::hippodrome: return (lvl>=80);
   default: break;
   }

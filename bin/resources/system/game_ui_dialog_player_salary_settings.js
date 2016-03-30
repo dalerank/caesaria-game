@@ -1,8 +1,8 @@
+game.ui.dialogs.playerSalarySettings = {}
+
 function ShowPlayerSalarySettings() {
   game.ui.dialogs.playerSalarySettings.show()
 }
-
-game.ui.dialogs.playerSalarySettings = {}
 
 game.ui.dialogs.playerSalarySettings.show = function()
 {
@@ -16,6 +16,7 @@ game.ui.dialogs.playerSalarySettings.show = function()
   var w = g_ui.addWindow(0, 0, 510, 400)
   w.title = "##governor_salary_title##"
   w.font = "FONT_5"
+  w.closeAfterKey( {escape:true, rmb:true} );
 
   var playerSalary = g_session.player.salary();
   var wantSalary = playerSalary

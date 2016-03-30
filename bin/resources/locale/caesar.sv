@@ -2161,4 +2161,6 @@
 "##month_1_short##":"Jan",
 "##build_senate_for_advisors##":"Bygg senatorbyggnad",
 "##click_on_city_for_info_tlp##":"Tryck på stad för information",
+"##capua_title##":"Capoue: une province pacifique",
+"##capua_win_text##":"Din förmåga att styra imponerar på mig. Många ståthållares karriärer gäckas när jag ber dem bygga den första kolonin. Ledare som du garanterar Rom en framtid. Kan du upprepa dina framgångar eller var det bara tur?",
 }

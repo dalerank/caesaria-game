@@ -27,16 +27,6 @@ namespace gui
 namespace infobox
 {
 
-// info box about a fontain
-class AboutFontain : public AboutConstruction
-{
-public:
-   AboutFontain( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-   virtual ~AboutFontain();
-
-   virtual void _showHelp();
-};
-
 class AboutWell : public AboutConstruction
 {
 public:
@@ -46,16 +36,7 @@ public:
   virtual void _showHelp();
 };
 
-class AboutReservoir : public AboutConstruction
-{
-public:
-  AboutReservoir( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual ~AboutReservoir();
-
-  virtual void _showHelp();
-};
-
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_

@@ -1,7 +1,7 @@
 {
  title : "##wine##"
  sound : "fanfare"
- text  : "Wine's origins are prehistoric. Many species of animals have been observed preferentially eating fermented berries, and some anthropologists assert that humans adopted agriculture to ensure a reliable supply of alcoholic beverages. Some of the earliest known @pottery& shards contain evidence of having held grape juice. Wine was already an ancient beverage by the time of the Romans.\n No orgy was complete without copiously flowing wine, which was drunk with every meal and at any hour of the day or night. Romans seeking merely to slake their thirst mixed water with their wine. Wine was produced locally throughout the Roman Empire. Then, as now, connoisseurs had their favorite vintages, and despite being a local product wine was heavily traded and shipped long distances."
+ text  : "Wine's origins are prehistoric. Many species of animals have been observed preferentially eating fermented berries, and some anthropologists assert that humans adopted agriculture to ensure a reliable supply of alcoholic beverages. Some of the earliest known @pottery& shards contain evidence of having held grape juice. Wine was already an ancient beverage by the time of the Romans.\nNo orgy was complete without copiously flowing wine, which was drunk with every meal and at any hour of the day or night. Romans seeking merely to slake their thirst mixed water with their wine. Wine was produced locally throughout the Roman Empire. Then, as now, connoisseurs had their favorite vintages, and despite being a local product wine was heavily traded and shipped long distances."
  uri : {
   "pottery" : "pottery_history"
  }

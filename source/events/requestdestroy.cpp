@@ -67,7 +67,7 @@ void RequestDestroy::_applyDestroy()
 {
   if( _overlay.isValid() )
   {
-    _overlay->setState( pr::destroyable, 1. );
+    _overlay->setState( pr::destroyable, 1.f );
     events::dispatch<ClearTile>( _overlay->pos() );
     _mayDelete = true;
   }

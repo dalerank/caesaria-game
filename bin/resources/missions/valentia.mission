@@ -524,7 +524,7 @@
       shipyard : true
       wharf : true
       dock : true
-      granery : true
+      granary : true
       warehouse : true
       senate : true
       garden : true

@@ -28,12 +28,27 @@ UpdateWidgetPrototype(Widget.prototype)
 UpdateWidgetPrototype(Label.prototype)
 Object.defineProperty( Label.prototype, "style", { set: function(s) { this.setBackgroundStyle(s) }} )
 Object.defineProperty( Label.prototype, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p.x, p.y) }})
-Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, 'iconOffset',{ get: function () {}, set: function (p) { this.setIconOffset(p.x, p.y) }})
 Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.right,rect.bottom) }})
+
+Object.defineProperty( Label.prototype, "icon", { set: function(value) {
+    if (!value)
+      return;
+
+    if ( typeof value == "string") {
+      this.setIcon_str(value)
+    }  else if (value instanceof Picture) {
+      this.setIcon_pic(value)
+    } else if (value.rc && value.index) {
+      this.setIcon_rcIndex(value.rc,value.index)
+    } else {
+      engine.log("Image set picture no case found")
+    }
+  }
+} )
 /************************************* label class end ******************************/
 
 //*************************** button class ***************************************/
@@ -44,17 +59,16 @@ function UpdateButtonPrototype(objProto) {
    Object.defineProperty(objProto, "style", {  set: function(sname) { this.setBackgroundStyle(sname) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
  }
-
-UpdateButtonPrototype(PushButton.prototype)
 //*************************** button class end***************************************//
 
-//*************************** TexturedButton class ***************************************//
+//*************************** Buttons classes begin***************************************//
+UpdateButtonPrototype(PushButton.prototype)
 UpdateButtonPrototype(TexturedButton.prototype)
-//*************************** TexturedButton class end***************************************//
-
-//*************************** ExitButton class ***************************************//
 UpdateButtonPrototype(ExitButton.prototype)
-//*************************** ExitButton class end***************************************//
+
+UpdateButtonPrototype(HelpButton.prototype)
+Object.defineProperty(HelpButton.prototype, "uri", { set: function(uri) { this.setProperty("uri", uri) }} )
+//*************************** Buttons classes end***************************************//
 
 //*************************** Spinbox class ***************************************//
 function Spinbox(parent) { return new SpinBox(parent); }
@@ -147,7 +161,7 @@ Object.defineProperty( Image.prototype, "picture", {
     }  else if (value instanceof Picture) {
       this.setPicture_pic(value)
     } else if (value.rc && value.index) {
-      this.setPictures_rcIndex(value.rc,value.index)
+      this.setPicture_rcIndex(value.rc,value.index)
     } else {
       engine.log("Image set picture no case found")
     }
@@ -228,9 +242,11 @@ ContextMenuItem.prototype.addItemWithCallback = function(caption,func) {
 function Groupbox(parent) { return new GroupBox(parent) }
 UpdateWidgetPrototype(GroupBox.prototype)
 
-GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
+GroupBox.prototype.addLabel = function(rx,ry,rw,rh,text) {
     var label = new Label(this);
     label.geometry = { x:rx, y:ry, w:rw, h:rh };
+    if (text != undefined)
+      label.text = text;
     return label;
   }
 //*************************** Groupbox class end ***************************************//
