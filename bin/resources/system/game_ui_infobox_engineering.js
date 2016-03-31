@@ -96,7 +96,7 @@ game.ui.infobox.aboutShipyard = function(location) {
 
 game.ui.infobox.aboutFactory = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256);
-  ibox.initBlackFrame(16, 160, ibox.w-32, 52);
+  ibox.initBlackframe(16, 160, ibox.w-32, 52);
 
   var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.overlay = factory;
@@ -116,6 +116,7 @@ game.ui.infobox.aboutFactory = function(location) {
   ibox.addImage(10, 10, pinfo.picture.local);
 
   var cinfo = factory.consume;
+  var pinfo = factory.produce;
   // paint picture of in good
   if (cinfo.type != g_config.good.none)
   {
@@ -123,15 +124,21 @@ game.ui.infobox.aboutFactory = function(location) {
     lbStockInfo.icon = cinfo.picture.local;
 
     var whatStock = _format( "{0}_factory_stock", cinfo.name );
-    var typeOut = _format( "{0}_factory_stock", pinfo.name );
-    var text = _format( "{0} {1} {2} {3}",
+    var text = _format( "{0} {1}",
                         factory.inStock().qty() / 100,
-                        _ut(whatStock),
+                        _ut(whatStock));
+    if (pinfo.type != g_config.good.none)
+    {
+      var textOut = _format("{0} {1}",
                         factory.outStock().qty() / 100,
                         _ut(typeOut) );
+      text += textOut;
+    }
 
     lbStockInfo.text = text;
     lbStockInfo.textOffset = { x:30, y:0 };
+
+    ibox.initInfoLabel(30, lbStockInfo.bottom(), ibox.w-30, ibox.blackFrame.top() - lbStockInfo.bottom());
   }
 
   var workInfo = factory.workersProblemDesc();
@@ -335,7 +342,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
 
   var needGlagiators = amphitheater.getProperty("needGlagiators");
   if( needGlagiators ) {
-    ibox.addLabel(35, 190, ibox.w-70, 20, _u("amphitheater_haveno_gladiatorpit");
+    ibox.addLabel(35, 190, ibox.w-70, 20, _u("amphitheater_haveno_gladiatorpit"));
   } else {
     var text = _u("amphitheater_haveno_gladiator_bouts");
     var showGladiatorBouts = amphitheater.getProperty( "showGladiatorBouts");
