@@ -32,6 +32,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutServiceBuilding(location);
   break;
 
+  case "amphitheater":
+    game.ui.infobox.aboutAmphitheater(location);
+  break;
+
   case "governorHouse": case "governorVilla": case "governorPalace":
     var text = _u(typename + "_info")
     game.ui.infobox.aboutServiceBuilding(location, text);

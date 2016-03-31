@@ -96,7 +96,7 @@ game.ui.infobox.aboutShipyard = function(location) {
 
 game.ui.infobox.aboutFactory = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256);
-  ibox.initBlackFrame(16, 160, ibox.w-32, 52);
+  ibox.initBlackframe(16, 160, ibox.w-32, 52);
 
   var factory = g_session.city.getOverlay(location).as(Factory);
   ibox.overlay = factory;
@@ -116,6 +116,7 @@ game.ui.infobox.aboutFactory = function(location) {
   ibox.addImage(10, 10, pinfo.picture.local);
 
   var cinfo = factory.consume;
+  var pinfo = factory.produce;
   // paint picture of in good
   if (cinfo.type != g_config.good.none)
   {
@@ -123,15 +124,21 @@ game.ui.infobox.aboutFactory = function(location) {
     lbStockInfo.icon = cinfo.picture.local;
 
     var whatStock = _format( "{0}_factory_stock", cinfo.name );
-    var typeOut = _format( "{0}_factory_stock", pinfo.name );
-    var text = _format( "{0} {1} {2} {3}",
+    var text = _format( "{0} {1}",
                         factory.inStock().qty() / 100,
-                        _ut(whatStock),
+                        _ut(whatStock));
+    if (pinfo.type != g_config.good.none)
+    {
+      var textOut = _format("{0} {1}",
                         factory.outStock().qty() / 100,
                         _ut(typeOut) );
+      text += textOut;
+    }
 
     lbStockInfo.text = text;
     lbStockInfo.textOffset = { x:30, y:0 };
+
+    ibox.initInfoLabel(30, lbStockInfo.bottom(), ibox.w-30, ibox.blackFrame.top() - lbStockInfo.bottom());
   }
 
   var workInfo = factory.workersProblemDesc();
@@ -251,7 +258,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var coloseum = g_session.getOverlay(location);
+  var coloseum = g_session.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
   ibox.initBlackFrame(16, 145, ibox.w - 16,100);
@@ -293,7 +300,10 @@ game.ui.infobox.aboutColosseum = function(location) {
 }
 
 game.ui.infobox.aboutTheater = function(location) {
-  var theater = g_session.city.getOverlay(location);
+  var ibox = this.aboutConstruction(0, 0, 470, 300);
+  ibox.initBlackframe(16, 145, ibox.w-32,100);
+
+  var theater = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.title = _u(theater.typename);
   ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers(), theater.numberWorkers());
@@ -315,5 +325,42 @@ game.ui.infobox.aboutTheater = function(location) {
     ibox.setInfoText( _(text) );
   } else {
     ibox.setInfoText( "##theater_need_actors##" );
+  }
+
+  ibox.show();
+}
+
+game.ui.infobox.aboutAmphitheater = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 470, 300);
+  ibox.initBlackframe(16, 145, ibox.w-32,100);
+
+  var amphitheater = g_session.city.getOverlay(location).as(WorkingBuilding);
+  ibox.title = _u(amphitheater.typename);
+
+  ibox.setWorkersStatus(32, 150, 542, amphitheater.maximumWorkers(), amphitheater.numberWorkers());
+  ibox.setWorkingStatus(amphitheater.active);
+
+  var needGlagiators = amphitheater.getProperty("needGlagiators");
+  if( needGlagiators ) {
+    ibox.addLabel(35, 190, ibox.w-70, 20, _u("amphitheater_haveno_gladiatorpit"));
+  } else {
+    var text = _u("amphitheater_haveno_gladiator_bouts");
+    var showGladiatorBouts = amphitheater.getProperty( "showGladiatorBouts");
+    if (showGladiatorBouts)
+    {
+        var lastBoutDate = amphitheater.getProperty("lastShowGladiatorBouts");
+        text = _format( "{0} {1} {2}", _ut("amphitheater_gladiator_contest_runs"), lastGlBoutDate.daysTo(g_session.date), _ut("days") );
+    }
+    ibox.addLabel(35, 200, ibox.w-70, 20, text);
+
+    text = _u("amphitheater_haveno_shows");
+    var showTheatrical = amphitheater.getProperty("showTheatrical");
+    if (showTheatrical)
+    {
+      var lastShowDate = amphitheater.getProperty("lastShowTheatrical");
+      text = _format( "{0} {1} {2}", _ut("amphitheater_show_runs"), lastShowDate.daysTo(g_session.date), _ut("days") );
+    }
+
+    ibox.addLabel(35, 220, ibox.w - 70, 20, text);
   }
 }

@@ -19,7 +19,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   ibox.btnHelp.tooltip = _u("infobox_tooltip_help");
 
   ibox.initInfoLabel = function(rx,ry,rw,rh) {
-    if (!ibox.lbText)
+    if (ibox.lbText == undefined)
     {
       ibox.lbText = ibox.addLabel(rx,ry,rw,rh);
       ibox.lbText.multiline = true;

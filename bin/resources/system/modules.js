@@ -27,6 +27,7 @@ var modules = [
                   "game_pantheon",
                   "game_ui_dialogs",
                   "game_sound_player",
+                  "game_event_manager",
                   "game_ui_dialogs_audio_opts",
                   "game_ui_dialogs_video_options",
                   "game_ui_dialog_player_salary_settings",

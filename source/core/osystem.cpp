@@ -152,23 +152,25 @@ void OSystem::openUrl(const std::string& url, const std::string& prefix)
 #elif defined(GAME_PLATFORM_WIN)
   ShellExecuteA(0, "Open", url.c_str(), 0, 0 , SW_SHOW );
 #elif defined(GAME_PLATFORM_MACOSX)
-  std::string result = "open \"" + url + "\" &";
-  auto result = ::system( result.c_str() );
+  std::string command = "open \"" + url + "\" &";
+  auto result = ::system(command.c_str());
   result;
 #endif
 }
 
 void OSystem::openDir(const std::string& path, const std::string& prefix)
 {
-  std::string result;
+  std::string command;
 #ifdef GAME_PLATFORM_LINUX
-  result = prefix + "nautilus '" + path + "' &";
-  ::system( result.c_str() );
+  command = prefix + "nautilus '" + path + "' &";
+  auto result = ::system(command.c_str() );
+  result;
 #elif defined(GAME_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 #elif defined(GAME_PLATFORM_MACOSX)
-  result = "open \"" + path + "\" &";
-  ::system( result.c_str() );
+  command = "open \"" + path + "\" &";
+  auto result = ::system(command.c_str());
+  result;
 #endif
 }
 

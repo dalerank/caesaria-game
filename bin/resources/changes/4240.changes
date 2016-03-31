@@ -1,5 +1,5 @@
 {
-  revision : 4199
+  revision : 4240
 
   lbTitle#Label : {
     geometry : [ 15, 15, "100%-15", 40 ]
@@ -16,6 +16,19 @@
     items : [
       "1. batch system changes"
       "2. fixed grafic artifacts after switch layers"
+	  "3. fixes for OSX build"
+	  "4. fixed crahes/stack overflow in js engine"
+	  "5. amphitheater/theater/colosseum and other infobox logic moved to js"
+      "6. fixed factory stupid on empty cart unload"
+      "7. GandjX added some localizations for missions with French"
+      "8. city settings now correct change option for clay piy flooding"
+      "9. fixed crash on loading custom mission/open play"
+	  "10. Lars Gusowski improved german localization and rework help files"
+      "11. fixed saved game with custom name"
+      "12. added information for roads and walls" 
+      "13. fixed background for Oracle building"
+      "14. improves textures for wine workshop and Oracle"
+      "15. steam api now available in js"
     ]
   }
 }
