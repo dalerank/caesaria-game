@@ -422,7 +422,6 @@
 "##city_zoominv_off##":"
 ",
 "##mainmenu_dlc_main##":"Kuinka rakentaa Rooma",
-"##capua_title##":"Capua: rauhallinen provinssi",
 "##carthago_title##":"Carthago: vaarallinen provinssi",
 "##quaestor##":"Kvestori",
 "##caesarea_title##":"Caesarea: ihan rauhallinen provinssi",
@@ -615,4 +614,5 @@ Tämä rakennus tarvitsee viinirypäleitä",
 "##gladiator_so_hungry##":"Olen niin nälkäinen että voisin syödä leijjonan!",
 "##scholar_so_hungry##":"Näännyn nälkään!",
 "##month_1_short##":"Tam",
+"##capua_title##":"Capua: rauhallinen provinssi",
 }

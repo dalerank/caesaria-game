@@ -338,7 +338,6 @@
 "##your_favour_increased_from_last_year##":"La tua posizione con Roma è aumentata dall'ultimo anno.",
 "##your_favour_unchanged_from_last_year##":"La tua posizione con Roma non è cambiata dall'ultimo anno.",
 "##lugdunum_win_text##":"Il tuo trattamento con i nativi di Lugdunum e lo splendore di questa bellissima città, preannunciano un espansione romana nel selvaggio nord. Ben fatto!",
-"##capua_win_text##":"Le tue abilità gestionali mi impressionano. Le carriere di molti governatori sono terminate quando sono stati chiamati nell'incarico di fondare la loro prima colonia. Leader come te assicurano il destino di Roma. Adesso, puoi ripere il tuo successo, o è stata solo fortuna?",
 "##city_need_workers_text##":"La tua città necesita di lavoratori.",
 "##city_need_more_workers##":"La tua città necesita di più lavoratori.",
 "##more_0_month_from_festival##":"I tuoi cittadini, alcuni dei quali ancora ubriachi dalle recenti festività, acclamano la tua generosità.",
@@ -845,7 +844,6 @@
 "##romeGuard_so_hungry##":"Come può un soldato combattere senza cibo?",
 "##miletus_win_text##":"Come previsto, l'esempio di Mileto ha già ispirato altre città dell'est a negoziare i termini per l'unione al nostro Impero. E la tua esperienza con la pesca è stata una lezione per tutti i miei governatori!",
 "##patrician_high_workless##":"Questa è una disgrazia! Non ho mai visto così tanta plebe disoccupata!",
-"##capua_title##":"Capua: una provincia pacifica",
 "##extm_empire_tlp##":"Mappa dell'Impero",
 "##empire_map##":"Vai all'Impero",
 "##carthago_title##":"Cartagine: una provincia pericolosa",
@@ -2278,4 +2276,6 @@
 "##wild_animals##":"Animali selvatici",
 "##need_restart_mission_for_apply_changes##":"La missione deve essere ricaricata prima che i cambiamenti abbiano effetto",
 "##gmenu_basicstrategy##":"Strategia di base",
+"##capua_title##":"Capua: una provincia pacifica",
+"##capua_win_text##":"Le tue abilità gestionali mi impressionano. Le carriere di molti governatori sono terminate quando sono stati chiamati nell'incarico di fondare la loro prima colonia. Leader come te assicurano il destino di Roma. Adesso, puoi ripere il tuo successo, o è stata solo fortuna?",
 }
