@@ -247,6 +247,7 @@ if(UNIX AND NOT APPLE)
 
   if(X32_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
   endif()
 
   # Enforce C++11
