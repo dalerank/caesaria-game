@@ -103,7 +103,7 @@ struct SDL_Renderer
     int (*RenderClear) (SDL_Renderer * renderer);
     int (*RenderBatch) (SDL_Renderer * renderer, SDL_Batch * batch);
     int (*GetBatchDstRects) (SDL_Renderer * renderer, SDL_Batch * batch, SDL_Rect* rects, unsigned int size);
-    int (*SetBatchDstRects) (SDL_Renderer * renderer, SDL_Batch * batch, SDL_Rect* rects, unsigned int size);
+    int (*SetBatchDstRects) (SDL_Renderer * renderer, SDL_Batch * batch, const SDL_Rect* rects, unsigned int size);
     int (*CreateBatch) (SDL_Renderer * renderer, SDL_Batch*,  SDL_Texture * texture,
                         const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size);
     int (*DestroyBatch) (SDL_Renderer * renderer, SDL_Batch* batch);

@@ -54,6 +54,7 @@ public:
   {
     image = a.image;
     name = a.name;
+    return *this;
   }
 
   ImageName(const ImageName& a)

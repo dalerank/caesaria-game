@@ -239,7 +239,8 @@ Directory Directory::applicationDir()
 #elif defined(GAME_PLATFORM_LINUX)
   char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", ::getpid());
-  readlink(exe_path, exe_path, sizeof(exe_path));
+  auto result = readlink(exe_path, exe_path, sizeof(exe_path));
+  result;
   vfs::Directory wdir = vfs::Path( exe_path ).directory();
   //dir_path = dirname(exe_path);
   return wdir;

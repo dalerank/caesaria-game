@@ -299,7 +299,6 @@
 "##your_favour_increased_from_last_year##":"Din ställning i Rom har förbättrats sedan förra året.",
 "##your_favour_unchanged_from_last_year##":"Din ställning är oförändrad sedan förra året.",
 "##lugdunum_win_text##":"Din behandling av gallerna i Lugdunum och den sköna stadens prakt bådar väl för Roms expansion i den norra vildmarken. Bra gjort!",
-"##capua_win_text##":"Din förmåga att styra imponerar på mig. Många ståthållares karriärer gäckas när jag ber dem bygga den första kolonin. Ledare som du garanterar Rom en framtid. Kan du upprepa dina framgångar eller var det bara tur?",
 "##city_need_workers_text##":"Din stad behöver fler arbetare
 ",
 "##city_need_more_workers##":"Din stad kräver fler arbetare",
@@ -798,7 +797,6 @@
 "##romeGuard_so_hungry##":"Hur ska en soldat kunna slåss utan mat?",
 "##miletus_win_text##":"Precis som jag förväntade mig har exemplet Miletus redan inspirerat andra östliga städer att inleda förhandlingar om att ingå i imperiet. Din erfarenhet av fisket har blivit en läxa för alla mina ståthållare!",
 "##patrician_high_workless##":"Detta är skandalöst. Jag har aldrig sett så många arbetslösa plebejer.",
-"##capua_title##":"Capoue: une province pacifique",
 "##extm_empire_tlp##":"Global karta",
 "##empire_map##":"Gå till imperiet",
 "##carthago_title##":"Carthago: une province dangereuse",
@@ -2161,4 +2159,6 @@
 "##month_1_short##":"Jan",
 "##build_senate_for_advisors##":"Bygg senatorbyggnad",
 "##click_on_city_for_info_tlp##":"Tryck på stad för information",
+"##capua_title##":"Capoue: une province pacifique",
+"##capua_win_text##":"Din förmåga att styra imponerar på mig. Många ståthållares karriärer gäckas när jag ber dem bygga den första kolonin. Ledare som du garanterar Rom en framtid. Kan du upprepa dina framgångar eller var det bara tur?",
 }
