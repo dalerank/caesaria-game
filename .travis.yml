@@ -31,10 +31,12 @@ after_success:
 # Prepare ZIP archive
 - rm resources/settings.model
 - echo "{ oldgfx:1 } >> resources/settings.model
-- ZIPNAME=caesaria-0.5-linux64-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- ZIPNAME=caesaria-0.5-linux32-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
 - chmod 666 $ZIPNAME
+- mv caesaria.linux caesaria-x86.linux
+- mv updater.linux updater-x86.linux
 # Upload to server
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 - sshpass -p "$SCP_PASS" scp -v *.linux dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
