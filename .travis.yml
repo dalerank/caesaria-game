@@ -1,72 +1,47 @@
-sudo: required
-dist: precise
 language: cpp
-
-matrix:
-  include:
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-      env: 
-        CXX_COMPILER=g++-4.9
-        C_COMPILER=gcc-4.9
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: 
-          CXX_COMPILER=g++-5
-          C_COMPILER=gcc-5
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: 
-          CXX_COMPILER=clang++-3.6
-          C_COMPILER=clang-3.6
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: 
-        CXX_COMPILER=clang++-3.7
-        C_COMPILER=clang-3.7
-      
+compiler:
+- clang
+- gcc
 before_install:
 # Get build dependencies
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
-- sudo apt-get install -qq cmake build-essential libasound2-dev libxxf86vm-dev
-- export CXX=$CXX_COMPILER
-- export CC=$C_COMPILER
-#- sudo apt-get install -qq gcc-multilib g++-multilib
+- sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget libasound2-dev libxxf86vm-dev
+- sudo apt-get -qq install g++-4.8
+- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
 # Create unix makefiles
 - mkdir build
 - cd build
-- cmake -DCMAKE_BUILD_TYPE=Release ../
+- cmake -DCMAKE_BUILD_TYPE=Release -DX32_BUILD=1 ../
+before_script:
+# Don't ask for confirmation when using scp
+- echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
+- PACK_DIR=$TRAVIS_BUILD_DIR/../caesaria-r
+- mkdir $PACK_DIR
+- unzip -n caesaria_latest_resources.zip -d $PACK_DIR
+- cp $PACK_DIR/resources/gfx/* $TRAVIS_BUILD_DIR/bin/resources/gfx  
 script:
-# Build CaesarIA
+- cd $TRAVIS_BUILD_DIR/build
 - make -j4
+after_success:
+- cd $TRAVIS_BUILD_DIR/bin
+# Prepare ZIP archive
+- rm resources/settings.model
+- echo "{ oldgfx:1 } >> resources/settings.model
+- ZIPNAME=caesaria-0.5-linux64-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
+- echo Compress to $ZIPNAME
+- zip -r $ZIPNAME *
+- chmod 666 $ZIPNAME
+# Upload to server
+- sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
+- sshpass -p "$SCP_PASS" scp -v *.linux dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
+env:
 notifications:
     slack:
         - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
     irc:
         - "irc.quakenet.org#caesaria"
     on_failure: always
-    on_success: never
+    on_success: always
