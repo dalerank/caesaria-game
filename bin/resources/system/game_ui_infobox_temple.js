@@ -133,9 +133,10 @@ game.ui.infobox.aboutReservoir = function(location) {
 
 game.ui.infobox.aboutTemple = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256)
-  ibox.iniBlackFrame(16, 56, ibox.w-32, 56);
+  ibox.initBlackframe(16, 56, ibox.w-32, 56);
 
-  var temple = g_session.city.getOverlay(location).as(Temple)
+  var temple = g_session.city.getOverlay(location).as(Temple);
+  ibox.overlay = temple;
   if (temple.typename == "oracle") {
     ibox.title = _u("oracle")
     ibox.setInfoText( _u("oracle_info") )
