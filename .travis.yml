@@ -8,7 +8,7 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget libasound2-dev libxxf86vm-dev
 - sudo apt-get -qq install gcc-multilib g++-multilib ia32-libs libglu1-mesa-dev:i386
-#- sudo apt-get -qq install libasound2-dev:i386
+#- sudo apt-get -qq install libasound2-dev:i386 freeglut3-dev:i386
 - sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
