@@ -5,7 +5,7 @@ before_install:
 # Get build dependencies
 - brew install cmake
 - brew install wget
-- https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+- brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
