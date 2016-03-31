@@ -152,7 +152,7 @@ void OSystem::openUrl(const std::string& url, const std::string& prefix)
 #elif defined(GAME_PLATFORM_WIN)
   ShellExecuteA(0, "Open", url.c_str(), 0, 0 , SW_SHOW );
 #elif defined(GAME_PLATFORM_MACOSX)
-  std::string result = "open \"" + url + "\" &";
+  std::string command = "open \"" + url + "\" &";
   auto result = ::system( result.c_str() );
   result;
 #endif
