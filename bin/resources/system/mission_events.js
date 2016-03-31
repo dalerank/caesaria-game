@@ -26,7 +26,7 @@ sim.ui.missionLose = function()
 
 sim.ui.missionWin = function()
 {
-  var minfo = g_session.city.winConditions();
+  var minfo = g_session.city.victoryConditions();
   var newTitle = minfo.title;
   var winSpeech = minfo.winSound;
   var mayContinue = minfo.winContinue;
