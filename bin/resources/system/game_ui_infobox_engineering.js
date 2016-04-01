@@ -364,3 +364,34 @@ game.ui.infobox.aboutAmphitheater = function(location) {
     ibox.addLabel(35, 220, ibox.w - 70, 20, text);
   }
 }
+
+game.ui.infobox.aboutWell = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 480, 320);
+
+  var well = g_session.city.getOverlay(location);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
+  ibox.overlay = well;
+  ibox.title = _u(well.typename);
+
+  var haveHouseInArea = well.getProperty("coverageHouse");
+  var text;
+  if (!haveHouseInArea) {
+      text = _u("well_haveno_houses_inarea");
+  }
+  else
+  {
+    var houseNeedWell = well.getProperty("housesNeedWell");
+    if (!houseNeedWell) {
+      text = _u("also_fountain_in_well_area");
+    } else {
+      var houseNum = well.getProperty("lowHealthHouseNumber");
+
+      text = houseNum > 0
+              ? _u("well_infected_info")
+              : _u("well_info");
+    }
+  }
+
+  ibox.setInfoText(text);
+  ibox.show();
+}

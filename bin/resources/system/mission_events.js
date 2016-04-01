@@ -22,7 +22,7 @@ sim.ui.missionLose = function()
 
    window.moveToCenter();
    window.setModal();
-}
+} 
 
 sim.ui.missionWin = function()
 {

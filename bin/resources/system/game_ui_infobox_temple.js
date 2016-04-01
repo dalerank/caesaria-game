@@ -36,7 +36,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   }
 
   ibox.setInfoText = function(text) {
-      ibox.lbText.text = text;
+    ibox.lbText.text = text;
   }
 
   ibox.show = function() {

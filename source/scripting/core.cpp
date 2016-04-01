@@ -492,23 +492,21 @@ void Core::execFunction(const std::string& funcname, const VariantList& params)
 {
   if (internal::J == nullptr)
     return;
-
+  Logger::info("script-if:// exec function " + funcname);
   int savetop = js_gettop(internal::J);
   js_getglobal(internal::J, funcname.c_str());
   js_pushnull(internal::J);
-  for (const auto& param : params)
-  {
+  for (const auto& param : params) {
     engine_js_push(internal::J,param);
-    //if (error)
-    //  Logger::warning("!!! Undefined value for js.pcall " + funcname);
   }
 
   bool error = engine_js_tryPCall(internal::J,params.size());
-  if (error)
+  if (error) {
     Logger::fatal("Fatal error on call function " + funcname);
+  }
+
   js_pop(internal::J,2);
-  if( savetop - js_gettop(internal::J) != 0 )
-  {
+  if( savetop - js_gettop(internal::J) != 0 ) {
     Logger::warning( "STACK grow for {} in {}", js_gettop(internal::J), funcname );
   }
 }
