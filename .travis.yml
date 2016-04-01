@@ -6,7 +6,7 @@ before_install:
 - sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget 
 - sudo apt-get -qq install binutils:i386 --force-yes; 
 - sudo apt-get -qq install gcc-4.8:i386 g++-4.8:i386 zlib1g-dev:i386  
-- sudo apt-get -qq install libasound2-dev:i386 
+- sudo apt-get -qq install libasound2-dev:i386 libxxf86vm-dev:i386
 #- sudo apt-get -qq install freeglut3-dev:i386
 #- sudo apt-get -qq install ia32-libs 
 #- sudo apt-get -qq install libglu1-mesa-dev:i386
