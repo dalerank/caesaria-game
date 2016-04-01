@@ -425,10 +425,12 @@ void Settings::loadLastConfig()
 {
   VariantMap settings = config::load(SETTINGS_RC_PATH(settingsPath));
 
-  if (!settings.empty())
-  {
-    for (auto& v : settings) { set(v.first, v.second); }
+  if (!settings.empty()) {
+    for (const auto& v : settings) {
+      set(v.first, v.second);
+    }
   }
+  SETTINGS_SET_VALUE(buildNumber, GAME_BUILD_NUMBER);
 }
 
 void Settings::save()

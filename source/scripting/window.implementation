@@ -4,6 +4,7 @@ DEFINE_OBJECT_FUNCTION_0(Window,setModal)
 DEFINE_OBJECT_FUNCTION_1(Window,addCloseCode,int)
 DEFINE_OBJECT_FUNCTION_2(Window,setWindowFlag,std::string,bool)
 DEFINE_WIDGET_CALLBACK_0(Window,onCloseEx)
+DEFINE_WIDGET_CALLBACK_1(Window,onKeyPressedEx,NEvent)
 
 DEFINE_OBJECT_FUNCTION_0(LoadGame,deleteLater)
 DEFINE_OBJECT_FUNCTION_1(LoadGame,setDirectory,std::string)

@@ -55,8 +55,8 @@ public:
 
   unsigned int consumptionInterval( IntervalName name ) const;
 
-  int findLowLevelHouseNearby(HousePtr house, TilePos &refPos) const;
-  int findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos &refPos) const;
+  int findLowLevelHouseNearby(const House& house, TilePos &refPos) const;
+  int findUnwishedBuildingNearby(const House& house, object::Type& rType, TilePos &refPos) const;
 
   HouseSpecification next() const;
 

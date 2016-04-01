@@ -79,6 +79,12 @@ if(UNIX AND NOT APPLE)
                         PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
   target_link_libraries( ${PROJECT_NAME} pthread Xxf86vm Xext X11 GL GLU asound)
+
+  if(X32_BUILD)
+    message("WARNING! LibSDL2 mini build with x86 arch")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+  endif()
 endif()
 
 if(APPLE)

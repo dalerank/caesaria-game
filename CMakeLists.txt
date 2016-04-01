@@ -37,6 +37,10 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_COMPILER_IS_CLANG 1)
 endif()
 
+if(X32_BUILD)
+  message("WARNING! 32bit application will be deprecated")
+endif()
+
 set(CMAKE_BUILD_TYPE_RELEASE 0)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   set(CMAKE_BUILD_TYPE_RELEASE 1)

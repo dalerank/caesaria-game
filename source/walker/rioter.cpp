@@ -227,7 +227,7 @@ void Rioter::send2City( BuildingPtr bld )
   _d->houseLevel = HouseLevel::vacantLot;
 
   if( bld.is<House>() )
-    _d->houseLevel = bld.as<House>()->level();
+    _d->houseLevel = (HouseLevel::ID)bld.as<House>()->level();
 
   _d->state = Impl::searchHouse;
 

@@ -36,10 +36,11 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual good::Store& store();
+  virtual const good::Store& store() const;
 
   // return the current house level
   const HouseSpecification& spec() const;
-  HouseLevel::ID level() const;
+  int level() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);
@@ -53,6 +54,7 @@ public:
   virtual bool build( const city::AreaInfo& info );
   virtual bool getMinimapColor(int& color1, int& color2) const;
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
+  virtual Variant getProperty(const std::string& name) const;
 
   virtual float state(int param) const;
 
@@ -73,7 +75,7 @@ public:
   virtual void collapse();
   virtual void burn();
 
-  unsigned int capacity();
+  unsigned int capacity() const;
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup removeHabitants( int paramCount );
   void removeHabitants( CitizenGroup& group );

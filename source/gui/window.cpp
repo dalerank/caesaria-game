@@ -109,6 +109,7 @@ public:
 
   struct {
     Signal1<Widget*> onCloseEx;
+    Signal2<Widget*, NEvent> onKeyPressed;
   } signal;
 
   FlagHolder<Window::FlagName> flags;
@@ -177,6 +178,11 @@ void Window::addCloseCode(int code)
     if (modalScreen)
       modalScreen->installEventHandler(closers);
   }
+}
+
+Signal2<Widget*, NEvent>& Window::onKeyPressedEx()
+{
+  return _d->signal.onKeyPressed;
 }
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
@@ -329,6 +335,7 @@ bool Window::onEvent(const NEvent& event)
     break;
 
     case sEventKeyboard:
+      emit _d->signal.onKeyPressed(this, event);
     break;
 
     default:
