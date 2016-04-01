@@ -6,6 +6,7 @@ game.ui.infobox.aboutObject = function(typename,info) {
   if (!info)
     info = _u(typename + "_info")
 
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
   ibox.setInfoText(info)
   ibox.show();
 }
