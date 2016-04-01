@@ -7,9 +7,10 @@ before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
 - sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget libasound2-dev libxxf86vm-dev
-- sudo apt-get -qq install gcc-multilib g++-multilib  libglu1-mesa-dev:i386
+- sudo apt-get -qq install gcc-multilib g++-multilib
 - sudo apt-get -qq install libasound2-dev:i386 freeglut3-dev:i386
 - sudo apt-get -qq install ia32-libs 
+- sudo apt-get -qq install libglu1-mesa-dev:i386
 - sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
