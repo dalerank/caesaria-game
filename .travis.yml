@@ -12,7 +12,7 @@ before_install:
 #- sudo apt-get -qq install libasound2-dev:i386 freeglut3-dev:i386
 #- sudo apt-get -qq install ia32-libs 
 #- sudo apt-get -qq install libglu1-mesa-dev:i386
-- sudo apt-get -qq install gcc:i386 g++-4.8:i386
+#- sudo apt-get -qq install gcc:i386 g++-4.8:i386
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
 # Create unix makefiles
