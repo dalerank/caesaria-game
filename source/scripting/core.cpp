@@ -56,11 +56,14 @@ namespace internal
   js_State *J = nullptr;
 } //end namespace internal
 
-void engine_js_push(js_State* J,const Variant& param);
-void engine_js_push(js_State* J,const DateTime& param);
+void engine_js_push(js_State* J, const Variant& param);
+void engine_js_push(js_State* J, const DateTime& param);
+void engine_js_push(js_State* J, const NEvent& param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
+inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_toint32(J, n); }
+inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
@@ -101,6 +104,20 @@ bool engine_js_tryPCall(js_State *J, int params)
   js_pop(internal::J, -1);
 }
 
+void engine_js_push(js_State* J, const NEvent& event)
+{
+  if (event.EventType == sEventKeyboard) {
+    auto kb = event.keyboard;
+    js_newobject(J);
+    js_pushnumber(J, kb.alt);  js_setproperty(J, -2, "alt");
+    js_pushnumber(J, kb.control); js_setproperty(J, -2, "control");
+    js_pushnumber(J, kb.key); js_setproperty(J, -2, "key");
+    js_pushnumber(J, kb.pressed); js_setproperty(J, -2, "pressed");
+    js_pushnumber(J, kb.shift); js_setproperty(J, -2, "shift");
+  }
+  else js_pushundefined(J);
+}
+
 void engine_js_push(js_State* J,const Size& size)
 {
   js_newobject(J);
@@ -123,6 +140,7 @@ void engine_js_push(js_State* J, const TilePos& pos)
 }
 
 void engine_js_push(js_State* J, int32_t value) { js_pushnumber(J,value); }
+void engine_js_push(js_State* J, const good::Product& value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, float value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, uint32_t value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
@@ -148,6 +166,11 @@ void engine_js_push(js_State *J, const StringArray& items)
 void engine_js_push(js_State *J, const good::Stock& stock)
 {
   engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
+}
+
+void engine_js_push(js_State *J, const good::Store& store)
+{
+  engine_js_pushud(J, TEXT(Store), &const_cast<good::Store&>(store), nullptr);
 }
 
 void engine_js_push(js_State *J, const VariantMap& items)
@@ -241,6 +264,7 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 
 PUSH_USERDATA(ContextMenuItem)
 PUSH_USERDATA(Stock)
+PUSH_USERDATA(Store)
 
 PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
@@ -678,6 +702,19 @@ void reg_divinity_constructor(js_State *J)
 }
 
 template<class T>
+void constructor_go_jsobject(js_State *J, const std::string& tname)
+{
+  T* udata = nullptr;
+  if (js_isuserdata(J, 1, "userdata")) {
+    udata = (T*)js_touserdata(J, 1, "userdata");
+  }
+
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", udata, nullptr);
+}
+
+template<class T>
 void reg_overlay_constructor(js_State *J, const std::string& tname)
 {
   T* ov = nullptr;
@@ -730,6 +767,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 
 #define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { destructor_jsobject<name>(J,p); }
 #define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
+#define DEFINE_GAMEOBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_go_jsobject<name>(J, #name); }
 #define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) { auto p=&name::funcname; object_call_func_0<name>(J,p); }
 
 #define DEFINE_WIDGET_CALLBACK_0(name,callback) void name##_handle_##callback(Widget* widget) { widget_handle_callback_0<name>(widget, "js_"#callback, #name); } \
@@ -796,6 +834,10 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   if( parent ) parent->funcname( paramValue ); \
                                   js_pushundefined(J); \
                                 }
+
+#define DEFINE_OBJECT_OVERRIDE_GETTER_0(name,rtype,funcname,ov) void name##_##funcname##_##ov(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
+#define DEFINE_OBJECT_OVERRIDE_GETTER_1(name,rtype,funcname,ov,p1type,def) void name##_##funcname##_##ov(js_State* J) { rtype (name::*p)(p1type) const=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
+
 
 #define DEFINE_OBJECT_FUNCTION_2(name,funcname,paramType1,paramType2) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \

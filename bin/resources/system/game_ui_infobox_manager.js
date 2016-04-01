@@ -45,6 +45,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWell(location);
   break;
 
+  case "house":
+    game.ui.infobox.aboutHouse(location);
+  break;
+
   case "colosseum":
     game.ui.infobox.aboutColosseum(location);
   break;

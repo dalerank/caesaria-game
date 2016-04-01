@@ -39,13 +39,6 @@ private:
   std::string _helpUri;
 };
 
-class AboutFreeHouse : public AboutLand
-{
-public:
-  AboutFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual void _showHelp();
-};
-
 }
 
 }//end namespace gui

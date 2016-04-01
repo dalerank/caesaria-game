@@ -26,3 +26,14 @@ TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Senate)
 
 TEMPLATE_OVERLAY_IMPLEMENTATION(WorkingBuilding)
 TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(WorkingBuilding)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(House)
+DEFINE_OBJECT_FUNCTION_1(House,__debugChangeLevel,int)
+DEFINE_OBJECT_GETTER_0(House,const Store&,store)
+DEFINE_OBJECT_GETTER_0(House,std::string,levelName)
+DEFINE_OBJECT_GETTER_0(House,int,level)
+DEFINE_OBJECT_GETTER_0(House,unsigned int,capacity)
+DEFINE_OBJECT_GETTER_0(House,std::string,evolveInfo)
+DEFINE_OBJECT_GETTER_0(House,DateTime,lastTaxationDate)
+DEFINE_OBJECT_GETTER_1(House,float,getServiceValue,Service::Type,Service::srvCount)
+

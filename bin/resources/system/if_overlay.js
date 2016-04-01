@@ -56,6 +56,7 @@ UpdateOverlayPrototype(Overlay.prototype);
 UpdateOverlayPrototype(Ruins.prototype);
 UpdateTemplePrototype(Temple.prototype);
 UpdateOverlayPrototype(Reservoir.prototype);
+UpdateOverlayPrototype(House.prototype);
 UpdateServiceBuildingPrototype(Fountain.prototype);
 UpdateFactoryPrototype(Factory.prototype);
 UpdateWorkingBuildingPrototype(Senate.prototype);

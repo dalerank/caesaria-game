@@ -86,8 +86,8 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
   ibox.btnPrev.style = "whiteBorderUp"
   ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
 
-  ibox.btnInfo = ibox.addButton(38, ibox.h-36,100,24);
-  ibox.btnInfo.text = _u("about_ctr_info");
+  ibox.btnInfo = ibox.addButton(38, ibox.h-36,24,24);
+  ibox.btnInfo.text = "i";
   ibox.btnInfo.style = "whiteBorderUp";
   ibox.btnInfo.callback = function() { ibox.showAdvInfo(); }
 
