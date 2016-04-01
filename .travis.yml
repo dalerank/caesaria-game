@@ -1,7 +1,4 @@
 language: cpp
-compiler:
-- clang
-- gcc
 before_install:
 # Get build dependencies
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
