@@ -15,10 +15,68 @@ game.ui.infobox.aboutRuins = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350)
 
   var ruins = g_session.city.getOverlay(location).as(Ruins)
+  ibox.overlay = ruins;
   engine.log(ruins.typename)
 
   ibox.title = _u(ruins.typename)
   ibox.setInfoText(ruins.getProperty("pinfo"))
+
+  ibox.show();
+}
+
+game.ui.infobox.aboutDock = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 286);
+
+  var dock = g_session.city.getOverlay(location).as(Dock);
+  ibox.initBlackframe(16, 185, ibox.w-32, 50);
+  ibox.overlay = dock;
+  ibox.title = _u(dock.typename);
+
+  var lbAbout = ibox.addLabel(15, 30, ibox.w-30, 20);
+  lbAbout.multiline = true;
+  lbAbout.font = "FONT_1";
+  lbAbout.textAlignment= { v:"upperLeft", h:"upperLeft"};
+  ibox.setInfoText( dock.numberWorkers() > 0 ? _u("dock_about") : _u("dock_no_workers") );
+
+  ibox.setWorkersStatus(32, 8, 542, dock.maximumWorkers(), dock.numberWorkers());
+  ibox.setWorkingStatus(dock.active);
+
+  ibox.drawGood = function(dock,goodType,index,paintY)
+  {
+    var startOffset = 28;
+
+    var offset = ( ibox.w - startOffset * 2 ) / 6;
+    var qty = dock.exportStore().qty(goodType);
+    var outText = g_config.metric.convQty(qty);
+
+    var lb = ibox.addLabel(index * offset + startOffset, paintY, 100, 24);
+    lb.font = "FONT_2";
+    lb.icon =  g_config.good.getInfo(goodType).picture.local;
+    lb.text = outText;
+    lb.textOffset = {x:30, y:0};
+  }
+
+  var paintY = 115;
+  ibox.drawGood( dock, g_config.good.wheat,     0, paintY);
+  ibox.drawGood( dock, g_config.good.meat,      1, paintY);
+  ibox.drawGood( dock, g_config.good.fruit,     2, paintY);
+  ibox.drawGood( dock, g_config.good.vegetable, 3, paintY);
+
+  paintY += 21;
+  ibox.drawGood( dock, g_config.good.olive,  0, paintY);
+  ibox.drawGood( dock, g_config.good.grape,  1, paintY);
+  ibox.drawGood( dock, g_config.good.timber, 2, paintY);
+  ibox.drawGood( dock, g_config.good.clay,   3, paintY);
+  ibox.drawGood( dock, g_config.good.iron,   4, paintY);
+  ibox.drawGood( dock, g_config.good.marble, 5, paintY);
+
+  paintY += 21;
+  ibox.drawGood( dock, g_config.good.pottery,    0, paintY);
+  ibox.drawGood( dock, g_config.good.furniture,  1, paintY);
+  ibox.drawGood( dock, g_config.good.oil,        2, paintY);
+  ibox.drawGood( dock, g_config.good.wine,       3, paintY);
+  ibox.drawGood( dock, g_config.good.weapon,     4, paintY);
+  ibox.drawGood( dock, g_config.good.prettyWine, 5, paintY);
 
   ibox.show();
 }

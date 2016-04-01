@@ -24,6 +24,7 @@ var modules = [
                   "g_config_minimap",
                   "g_config_climate",
                   "g_config_house",
+                  "g_config_metric",
                   "g_config_service",
                   "g_config_key",
                   "init_render",

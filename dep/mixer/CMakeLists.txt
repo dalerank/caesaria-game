@@ -27,26 +27,32 @@ if(WIN32 OR APPLE)
 include_directories(${DEP_SOURCE_DIR}/xcompile)
 endif()
 
+if(UNIX AND NOT APPLE AND X32_BUILD)
+  message("WARNING! LibMixer mini build with x86 arch")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+endif()
+
 file(GLOB VORBIS_SOURCES_LIST ${VORBIS_LIBRARY_PATH}/*.c)
 
 add_definitions(-DOGG_MUSIC)
 add_definitions(-DOGG_USE_TREMOR)
 
 set( VORBIS_SRC
-        ${VORBIS_LIBRARY_PATH}/mdct.c 
-        ${VORBIS_LIBRARY_PATH}/block.c 
-        ${VORBIS_LIBRARY_PATH}/window.c 
-        ${VORBIS_LIBRARY_PATH}/synthesis.c 
+        ${VORBIS_LIBRARY_PATH}/mdct.c
+        ${VORBIS_LIBRARY_PATH}/block.c
+        ${VORBIS_LIBRARY_PATH}/window.c
+        ${VORBIS_LIBRARY_PATH}/synthesis.c
         ${VORBIS_LIBRARY_PATH}/info.c
-        ${VORBIS_LIBRARY_PATH}/floor1.c 
-        ${VORBIS_LIBRARY_PATH}/floor0.c 
-        ${VORBIS_LIBRARY_PATH}/vorbisfile.c 
-        ${VORBIS_LIBRARY_PATH}/res012.c 
-        ${VORBIS_LIBRARY_PATH}/mapping0.c 
-        ${VORBIS_LIBRARY_PATH}/registry.c 
-        ${VORBIS_LIBRARY_PATH}/codebook.c 
-        ${VORBIS_LIBRARY_PATH}/sharedbook.c 
-        ${OGG_LIBRARY_PATH}/src/framing.c 
+        ${VORBIS_LIBRARY_PATH}/floor1.c
+        ${VORBIS_LIBRARY_PATH}/floor0.c
+        ${VORBIS_LIBRARY_PATH}/vorbisfile.c
+        ${VORBIS_LIBRARY_PATH}/res012.c
+        ${VORBIS_LIBRARY_PATH}/mapping0.c
+        ${VORBIS_LIBRARY_PATH}/registry.c
+        ${VORBIS_LIBRARY_PATH}/codebook.c
+        ${VORBIS_LIBRARY_PATH}/sharedbook.c
+        ${OGG_LIBRARY_PATH}/src/framing.c
         ${OGG_LIBRARY_PATH}/src/bitwise.c
 )
 

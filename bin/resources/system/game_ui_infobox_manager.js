@@ -32,6 +32,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutServiceBuilding(location);
   break;
 
+  case "dock":
+    game.ui.infobox.aboutDock(location);
+  break;
+
   case "amphitheater":
     game.ui.infobox.aboutAmphitheater(location);
   break;
