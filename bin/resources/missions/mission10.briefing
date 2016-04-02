@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe02_00002"
-  title : "50 AD - Expanding north"
-	
+  title : "##briefing_tenth_title##"
+
   items : {
     londinium : {
       title : "##londinium_title##"

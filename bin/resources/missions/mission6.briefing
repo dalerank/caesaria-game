@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe01_00004"
-  title : "170 BC - Fifth assignment"
-	
+  title : "##briefing_sixth_title##"
+
   items : {
     lugdunum : {
       title : "##lugdunum_title##"
