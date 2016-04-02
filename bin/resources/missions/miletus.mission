@@ -4,6 +4,7 @@
   funds : 8000
   city.name : "Miletus"
   player.rank : 4
+  climate : 2
   date : "-220.01.01"
   adviserEnabled : true
   fishPlaceEnabled : true
@@ -20,20 +21,20 @@
     prosperity : 35
     peace : 40
     favour : 40
-	finishDate : "-100.01.01"
+    finishDate : "-100.01.01"
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
     maxHouseLevel : "big_villa"
-	winContinue : false
+    winContinue : false
     caption : "##miletus_preview_title##"
-	winText : "##miletus_win_text##"
-    startSound : "miletus_speech" 
-	winSound : "miletus_win_speech"
+    winText : "##miletus_win_text##"
+    startSound : "miletus_speech"
+    winSound : "miletus_win_speech"
     overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
                   "##miletus_overview2##",
-				  "##miletus_overview3##",
-				  "##miletus_overview4##" ]
+                  "##miletus_overview3##",
+                  "##miletus_overview4##" ]
   }
 
   empire : {

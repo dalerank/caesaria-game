@@ -37,6 +37,7 @@ public:
   virtual void destroy();
   virtual void burn();
   virtual void appendPaved( int value );
+  virtual Variant getProperty(const std::string &name) const;
   virtual void computeRoadside();
   virtual void changeDirection( gfx::Tile* masterTile, Direction direction);
   int pavedValue() const;

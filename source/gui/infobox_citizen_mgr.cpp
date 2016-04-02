@@ -23,7 +23,6 @@
 #include "infobox_citizen.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
-#include "infobox_land.hpp"
 #include <vector>
 
 namespace gui
@@ -33,7 +32,7 @@ namespace infobox
 {
 
 namespace citizen
-{ 
+{
 
 class PManager::Impl
 {
@@ -49,7 +48,7 @@ public:
   Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     WalkerList walkers = city->walkers( pos );
-    
+
     if( walkers.empty() )
     {
       return new T( parent, city, city->tilemap().at( pos ) );
@@ -60,10 +59,6 @@ public:
     }
   }
 };
-
-REGISTER_OBJECT_INFOBOX(road, new CitizenInfoboxParser<AboutLand>() )
-REGISTER_OBJECT_INFOBOX(plaza, new CitizenInfoboxParser<AboutLand>() )
-REGISTER_OBJECT_INFOBOX(unknown, new CitizenInfoboxParser<AboutLand>() )
 
 template< class T >
 class SpecificCitizenInfoboxCreator : public CzInfoboxCreator

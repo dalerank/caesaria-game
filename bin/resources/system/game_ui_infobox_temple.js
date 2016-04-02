@@ -40,7 +40,9 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   }
 
   ibox.show = function() {
-    ibox.btnHelp.uri = ibox.overlay.typename;
+    if (ibox.overlay)
+      ibox.btnHelp.uri = ibox.overlay.typename;
+      
     ibox.setAutoPosition();
     ibox.setFocus();
     ibox.setModal();

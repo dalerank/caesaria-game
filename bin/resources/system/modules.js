@@ -27,6 +27,7 @@ var modules = [
                   "g_config_metric",
                   "g_config_service",
                   "g_config_key",
+                  "g_config_tile",
                   "init_render",
                   "game_pantheon",
                   "game_ui_dialogs",

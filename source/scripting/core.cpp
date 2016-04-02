@@ -59,11 +59,13 @@ namespace internal
 void engine_js_push(js_State* J, const Variant& param);
 void engine_js_push(js_State* J, const DateTime& param);
 void engine_js_push(js_State* J, const NEvent& param);
+void engine_js_push(js_State* J, const Tile& param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
 inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_toint32(J, n); }
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
+inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
@@ -163,15 +165,9 @@ void engine_js_push(js_State *J, const StringArray& items)
   }
 }
 
-void engine_js_push(js_State *J, const good::Stock& stock)
-{
-  engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr);
-}
-
-void engine_js_push(js_State *J, const good::Store& store)
-{
-  engine_js_pushud(J, TEXT(Store), &const_cast<good::Store&>(store), nullptr);
-}
+void engine_js_push(js_State *J, const good::Stock& stock) { engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr); }
+void engine_js_push(js_State *J, const gfx::Tile& tile) { engine_js_pushud(J, TEXT(Tile), &const_cast<Tile&>(tile), nullptr); }
+void engine_js_push(js_State *J, const good::Store& store) { engine_js_pushud(J, TEXT(Store), &const_cast<good::Store&>(store), nullptr); }
 
 void engine_js_push(js_State *J, const VariantMap& items)
 {
@@ -620,6 +616,13 @@ void widget_set_callback_0(js_State *J,Signal1<Widget*>& (T::*f)(),
   js_pushundefined(J);
 }
 
+void constructor_Tile(js_State *J)
+{
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  Tile* t = new Tile(TilePos());
+  js_newuserdata(J, "userdata", t, &destructor_jsobject<Tile>);
+}
 
 template<typename T>
 void object_call_func_0(js_State *J, void (T::*f)())
