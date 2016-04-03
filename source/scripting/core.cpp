@@ -66,6 +66,7 @@ inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, 
 inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_toint32(J, n); }
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_toint32(J, n); }
+inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)

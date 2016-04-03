@@ -17,8 +17,17 @@ g_config.good = {
   weapon :     15,
   marble :     16,
   denaries :   17,
-  prettyWine : 18
+  prettyWine : 18,
 };
+
+g_config.order = {
+  accept : 0,
+  reject : 1,
+  deliver : 2,
+  none : 3
+}
+
+g_config.good.basicfood = [ g_config.good.wheat, g_config.good.fish, g_config.good.meat, g_config.good.fruit, g_config.good.vegetable ]
 
 g_config.good.cache = {}
 

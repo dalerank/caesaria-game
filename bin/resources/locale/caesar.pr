@@ -851,7 +851,6 @@ Está casa não tem acesso a bibliotecas. É preciso que ela tenha acesso a bibl
 "##bldm_factory##":"Fábricas",
 "##furniture##":"Móveis",
 "##furniture_workshop##":"Fábrica de móveis",
-"##mediolanum_title##":"Mediolanum: província muito perigosa",
 "##balance_between_migration##":"Há um equilíbrio entre as pessoas que chegam e que saem da cidade.",
 "##gmenu_file##":"Arquivo
 ",
@@ -1212,6 +1211,7 @@ Mercúrio, mensageiro dos deuses e padroeiro dos comerciantes, está infeliz. Se
 "##syracusae_title##":"Siracusa: província pouco perigosa",
 "##miletus_title##":"Mileto: província pouco pacifica",
 "##miletus_win_text##":"Como eu esperava, o exemplo de Mileto já inspirou outras cidades do Oriente para negociar os termos para se juntar ao nosso Império. E a sua experiência com a pesca tem sido uma lição para todos os meus governadores!",
+"##mediolanum_title##":"Mediolanum: província muito perigosa",
 "##barbarian_attack_title##":"Ataque Barbáro!",
 "##barbarian_attack_text##":"Os inimigos de Roma estão na sua cidade. Espereos com uma ou duas urnas de vinho - e tudo mais o que quiserem!",
 "##a_price_rise_title##":"Mudanças no preço",
