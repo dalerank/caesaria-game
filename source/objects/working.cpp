@@ -188,12 +188,12 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
       if (_animation().isStopped())
       {
         _changeAnimationState( true );
-      }      
+      }
     }
     else
     {
       if (_animation().isRunning())
-      {      
+      {
         _changeAnimationState( false );
       }
     }

@@ -22,11 +22,11 @@ sim.ui.missionLose = function()
 
    window.moveToCenter();
    window.setModal();
-}
+} 
 
 sim.ui.missionWin = function()
 {
-  var minfo = g_session.winConditions();
+  var minfo = g_session.city.victoryConditions();
   var newTitle = minfo.title;
   var winSpeech = minfo.winSound;
   var mayContinue = minfo.winContinue;

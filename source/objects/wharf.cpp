@@ -152,6 +152,15 @@ std::string Wharf::troubleDesc() const
   return CoastalFactory::troubleDesc();
 }
 
+Variant Wharf::getProperty(const std::string & name) const
+{
+  if (name == "waitBoat") {
+    return _d->boat.isNull();
+  }
+
+  return CoastalFactory::getProperty(name);
+}
+
 void Wharf::_updatePicture(Direction direction)
 {
   switch( direction )

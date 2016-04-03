@@ -197,7 +197,7 @@ void Protestor::send2City( BuildingPtr bld )
 
   if( bld.is<House>() )
   {
-    _d->houseLevel = bld.as<House>()->level();
+    _d->houseLevel = (HouseLevel::ID)bld.as<House>()->level();
   }
 
   _d->state = Impl::searchHouse;

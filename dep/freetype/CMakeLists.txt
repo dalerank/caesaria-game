@@ -25,27 +25,27 @@ set( freetype_SRC
     src/psnames/psmodule.c
 )
 
-include_directories( 
+include_directories(
     builds/unix
-    src/base 
-    src/truetype 
-    src/type1 
-    src/cff 
-    src/cid 
-    src/pfr 
-    src/type42 
-    src/winfonts 
-    src/pcf 
-    src/bdf 
-    src/sfnt 
-    src/autofit 
-    src/pshinter 
-    src/raster 
-    src/smooth 
-    src/cache 
-    src/gzip 
-    src/lzw 
-    src/psaux 
+    src/base
+    src/truetype
+    src/type1
+    src/cff
+    src/cid
+    src/pfr
+    src/type42
+    src/winfonts
+    src/pcf
+    src/bdf
+    src/sfnt
+    src/autofit
+    src/pshinter
+    src/raster
+    src/smooth
+    src/cache
+    src/gzip
+    src/lzw
+    src/psaux
     src/psnames
     include
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -53,12 +53,16 @@ include_directories(
 )
 
 add_library(${FREETYPELIB_NAME} STATIC ${CFF_SOURCES} ${freetype_SRC} ${TYPE1_SOURCES}
-				       ${AF_SOURCES} ${CID_SOURCES} ${PFR_SOURCES} ${T42_SOURCES}
-				       ${PCF_SOURCES} ${PSAUX_SOURCES} ${BASE_SOURCES}
-				       ${PSHINTER_SOURCES} ${RASTER_SOURCES} ${SMOOTH_SOURCES}
-				       ${SFNT_SOURCES} ${TTF_SOURCES} ${BDF_SOURCES} )
+               ${AF_SOURCES} ${CID_SOURCES} ${PFR_SOURCES} ${T42_SOURCES}
+               ${PCF_SOURCES} ${PSAUX_SOURCES} ${BASE_SOURCES}
+               ${PSHINTER_SOURCES} ${RASTER_SOURCES} ${SMOOTH_SOURCES}
+               ${SFNT_SOURCES} ${TTF_SOURCES} ${BDF_SOURCES} )
 #target_link_libraries(${FREETYPELIB_NAME} ${ZLIB_NAME})
-
+if(X32_BUILD)
+  message("WARNING! LibSDL2 mini build with x86 arch")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+endif()
 
 # Expose public includes to other through cache variable.
 set(FREETYPE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include

@@ -137,6 +137,17 @@ void Amphitheater::load(const VariantMap& stream)
 
 int Amphitheater::maxVisitors() const { return 800; }
 
+Variant Amphitheater::getProperty(const std::string & name) const
+{
+  if (name == "needGladiators") return isNeed(walker::gladiator);
+  if (name == "showTheatrical") return isShow(Amphitheater::theatrical);
+  if (name == "showGladiatorBouts") return isShow(Amphitheater::gladiatorBouts);
+  if (name == "lastShowTheatrical") return lastShow(Amphitheater::theatrical);
+  if (name == "lastShowGladiatorBouts") return lastShow(Amphitheater::gladiatorBouts);
+
+  return EntertainmentBuilding::getProperty(name);
+}
+
 bool Amphitheater::isShow(Amphitheater::PlayType type) const
 {
   switch( type )
@@ -167,7 +178,7 @@ Service::Type Amphitheater::_getServiceManType() const
                 : Service::srvCount);
 }
 
-bool Amphitheater::isNeed(walker::Type type)
+bool Amphitheater::isNeed(walker::Type type) const
 {
   switch( type )
   {

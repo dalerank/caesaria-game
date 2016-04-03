@@ -69,3 +69,11 @@ g_config.good.initInfo = function(type)
 
   return info;
 }
+
+Store.prototype.qty = function(gtype) {
+    if (typeof gtype == "undefined") {
+      return this.qty_void();
+    } else {
+      return this.qty_product(gtype);
+    }
+}

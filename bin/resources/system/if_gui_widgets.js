@@ -28,12 +28,27 @@ UpdateWidgetPrototype(Widget.prototype)
 UpdateWidgetPrototype(Label.prototype)
 Object.defineProperty( Label.prototype, "style", { set: function(s) { this.setBackgroundStyle(s) }} )
 Object.defineProperty( Label.prototype, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p.x, p.y) }})
-Object.defineProperty( Label.prototype, "icon", { set: function(obj) { this.setIcon(obj.rc, obj.index) }} )
 Object.defineProperty( Label.prototype, 'iconOffset',{ get: function () {}, set: function (p) { this.setIconOffset(p.x, p.y) }})
 Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this.setWordwrap(en) }} )
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.right,rect.bottom) }})
+
+Object.defineProperty( Label.prototype, "icon", { set: function(value) {
+    if (!value)
+      return;
+
+    if ( typeof value == "string") {
+      this.setIcon_str(value)
+    }  else if (value instanceof Picture) {
+      this.setIcon_pic(value)
+    } else if (value.rc && value.index) {
+      this.setIcon_rcIndex(value.rc,value.index)
+    } else {
+      engine.log("Label set picture no case found")
+    }
+  }
+} )
 /************************************* label class end ******************************/
 
 //*************************** button class ***************************************/
@@ -146,7 +161,7 @@ Object.defineProperty( Image.prototype, "picture", {
     }  else if (value instanceof Picture) {
       this.setPicture_pic(value)
     } else if (value.rc && value.index) {
-      this.setPictures_rcIndex(value.rc,value.index)
+      this.setPicture_rcIndex(value.rc,value.index)
     } else {
       engine.log("Image set picture no case found")
     }

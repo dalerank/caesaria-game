@@ -36,10 +36,11 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual int maxVisitors() const;
+  virtual Variant getProperty(const std::string& name) const;
 
   bool isShow( PlayType type ) const;
   DateTime lastShow( PlayType type ) const;
-  bool isNeed( walker::Type type );
+  bool isNeed( walker::Type type ) const;
 
 protected:
   virtual WalkerList _specificWorkers() const;

@@ -144,22 +144,6 @@ void AboutLand::setText( const std::string& text )
 }
 
 void AboutLand::_showHelp() { ui()->add<DictionaryWindow>( _helpUri ); }
-void AboutFreeHouse::_showHelp() { ui()->add<DictionaryWindow>( "vacant_lot" ); }
-
-AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
-    : AboutLand( parent, city, tile )
-{
-  setTitle( _("##freehouse_caption##") );
-
-  auto cnst = tile.overlay<Construction>();
-  if( cnst.isValid() )
-  {
-      setText( cnst->roadside().empty()
-                  ? _("##freehouse_text_noroad##")
-                  : _("##freehouse_text##") );
-  }
-}
-
 
 }//end namespace infobox
 
