@@ -127,6 +127,95 @@ game.ui.infobox.aboutFountain = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutLand = function(location) {
+  var ibox = game.ui.infobox.simple(0,0,510,300)
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
+
+  ibox.update = function(title, text, uri) {
+    ibox.title = _u(title);
+    ibox.btnHelp.uri = uri;
+    ibox.setInfoText( _u(text) );
+    ibox.show();
+  }
+
+  var tile = g_session.city.getTile(location);
+  var tilepos = tile.pos();
+  var cityexit = g_session.city.getProperty("roadExit");
+
+  engine.log(_format("Show help for land at [{0},{1}]", tilepos.i, tilepos.j));
+  if(tilepos.i == cityexit.i && tilepos.j == cityexit.j)
+  {
+    ibox.update("to_empire_road", "", "road_to_empire");
+    return;
+  }
+
+  var cityenter = g_session.city.getProperty("roadEntry");
+  if(tilepos.i == cityenter.i && tilepos.j == cityenter.j)
+  {
+    ibox.update("to_rome_road", "", "");
+    return;
+  }
+
+  if (tile.getFlag(g_config.tile.tlTree))
+  {
+    ibox.update("trees_and_forest_caption", "trees_and_forest_text", "trees");
+    return;
+  }
+
+  var waterexit = g_session.city.getProperty("boatEntry");
+  if(tilepos.i == waterexit.i && tilepos.j == waterexit.j)
+  {
+    ibox.update("to_ocean_way", "", "water");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlCoast)) {
+    ibox.update("coast_caption", "coast_text", "coast");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlWater)) {
+    ibox.update("water_caption", "water_text", "water");
+    return;
+    /*Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
+
+    text = way.isValid()
+             ? (typeStr + "_text##")
+             : "##inland_lake_text##";
+    _helpUri = "water";*/
+  }
+
+  if(tile.getFlag(g_config.tile.tlRock)) {
+    ibox.update("rock_caption", "rock_text", "rock");
+    return;
+  } 
+
+  if(tile.getFlag(g_config.tile.tlRoad)) {
+    var ovType = tile.overlay().typename;
+    if(ovType=="plaza") {
+      ibox.update("plaza_caption", "plaza_text", "plaza");
+      return;
+    } else if(ovType == "road") {
+      var paved = tile.overlay().getProperty("pavedValue");
+      if (paved > 0) {
+        ibox.update( "road_paved_caption", "road_paved_text", "paved_road");
+      } else {
+        ibox.update( "road_caption", "road_text", "road");
+      }
+    } else {
+      ibox.update( "road_caption", "road_text", "road");
+    }
+    return;
+  }
+
+  if( tile.getFlag(g_config.tile.tlMeadow)) {
+    ibox.update( "meadow_caption", "meadow_text", "meadow");
+    return;
+  }
+
+  ibox.update( "clear_land_caption", "clear_land_text", "clear_land");
+}
+
 game.ui.infobox.aboutWharf = function(location) {
   var ibox = game.ui.infobox.aboutFactory(location);
 

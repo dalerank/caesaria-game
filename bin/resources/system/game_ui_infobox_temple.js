@@ -9,6 +9,7 @@ function InfoboxWindow (rx,ry,rw,rh) {
 game.ui.infobox.simple = function(rx,ry,rw,rh) {
   var ibox = new InfoboxWindow(rx,ry,rw,rh)
   ibox.title = _u("unknown");
+  ibox.pauseGame = true;
 
   ibox.autoPosition = true
   ibox.blackFrame = ibox.addLabel(0, 0, 0, 0)
@@ -40,7 +41,9 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   }
 
   ibox.show = function() {
-    ibox.btnHelp.uri = ibox.overlay.typename;
+    if (ibox.overlay)
+      ibox.btnHelp.uri = ibox.overlay.typename;
+
     ibox.setAutoPosition();
     ibox.setFocus();
     ibox.setModal();

@@ -1,5 +1,6 @@
 game.ui.infobox.show = function(typename,location)
 {
+  engine.log(typename);
   switch(typename) {
   case "small_ceres_temple": case "small_mars_temple":
   case "small_neptune_temple": case "small_venus_temple":
@@ -69,6 +70,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWharf(location);
   break;
 
+  case "market":
+    game.ui.infobox.aboutMarket(location);
+  break;
+
   case "pottery_workshop": case "weapons_workshop": case "furniture_workshop":
   case "wine_workshop": case "oil_workshop":
     game.ui.infobox.aboutFactory(location);
@@ -105,11 +110,14 @@ game.ui.infobox.show = function(typename,location)
   case "barracks":
     game.ui.infobox.aboutBarracks(location);
   break;
+
+  default:
+    game.ui.infobox.aboutLand(location);
+  break;
   }
 }
 
 function OnShowOverlayInfobox(location) {
   var overlay = g_session.city.getOverlay(location)
-  engine.log(overlay.typename);
   game.ui.infobox.show(overlay.typename, location)
 }

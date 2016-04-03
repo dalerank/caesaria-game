@@ -106,6 +106,7 @@ public:
 
   /** Get static object from current position */
   OverlayPtr getOverlay(const TilePos& pos) const;
+  gfx::Tile& getTile(const TilePos& pos) const;
 
   /** Get all static objects in city */
   const OverlayList& overlays() const;
@@ -149,6 +150,7 @@ public:
   /** Return dynamic property by name */
   int getOption(OptionType opt) const;
   int getOption(const std::string& optname,bool) const;
+  Variant getProperty(const std::string& name) const;
 
   void clean();
 

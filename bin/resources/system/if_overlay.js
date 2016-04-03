@@ -52,13 +52,21 @@ function UpdateServiceBuildingPrototype(ObjectPrototype) {
   UpdateWorkingBuildingPrototype(ObjectPrototype);
 }
 
+/***************** Overlays ******************/
 UpdateOverlayPrototype(Overlay.prototype);
 UpdateOverlayPrototype(Ruins.prototype);
-UpdateTemplePrototype(Temple.prototype);
-UpdateOverlayPrototype(Reservoir.prototype);
 UpdateOverlayPrototype(House.prototype);
-UpdateServiceBuildingPrototype(Fountain.prototype);
-UpdateFactoryPrototype(Factory.prototype);
+UpdateOverlayPrototype(Reservoir.prototype);
+
+/**************** Working buildings **********/
 UpdateWorkingBuildingPrototype(Senate.prototype);
 UpdateWorkingBuildingPrototype(WorkingBuilding.prototype);
 UpdateWorkingBuildingPrototype(Dock.prototype);
+
+/*************** Service buildings ************/
+UpdateServiceBuildingPrototype(Fountain.prototype);
+UpdateServiceBuildingPrototype(Market.prototype);
+
+/*************** Other buildings **************/
+UpdateTemplePrototype(Temple.prototype);
+UpdateFactoryPrototype(Factory.prototype);
