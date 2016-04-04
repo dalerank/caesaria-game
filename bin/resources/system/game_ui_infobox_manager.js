@@ -111,6 +111,11 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutGatehouse(location);
   break;
 
+  case "fort_legionaries": case "fort_javelin": case "fort_horse":
+  case "fortArea":
+    game.ui.infobox.aboutFort(location);
+  break;
+
   case "granary":
     game.ui.infobox.aboutGranary(location);
   break;

@@ -51,6 +51,29 @@ game.ui.infobox.aboutGatehouse = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutFort = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var overlay = g_session.city.getOverlay(location);
+  var fort = null;
+  if (overlay.typename == "fortArea")
+    fort = overlay.as(FortArea).base();
+  else
+    fort = overlay.as(Fort);
+
+  ibox.overlay = fort;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(fort.typename);
+
+  var text = "fort_info";
+
+  var fortCursed = fort.getProperty("fortCursed");
+  if (fortCursed > 0)
+       text = "fort_has_been_cursed_by_mars";
+
+  ibox.update( this );
+}
+
 game.ui.infobox.aboutDock = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 286);
 
