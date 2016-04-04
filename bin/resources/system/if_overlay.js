@@ -56,6 +56,7 @@ function UpdateServiceBuildingPrototype(ObjectPrototype) {
 UpdateOverlayPrototype(Overlay.prototype);
 UpdateOverlayPrototype(Ruins.prototype);
 UpdateOverlayPrototype(House.prototype);
+UpdateOverlayPrototype(Gatehouse.prototype);
 UpdateOverlayPrototype(Reservoir.prototype);
 
 /**************** Working buildings **********/

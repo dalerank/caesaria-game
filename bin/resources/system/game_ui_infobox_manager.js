@@ -107,6 +107,14 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWarehouse(location);
   break;
 
+  case "gatehouse":
+    game.ui.infobox.aboutGatehouse(location);
+  break;
+
+  case "granary":
+    game.ui.infobox.aboutGranary(location);
+  break;
+
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;

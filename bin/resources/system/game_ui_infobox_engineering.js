@@ -24,6 +24,33 @@ game.ui.infobox.aboutRuins = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutGatehouse = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var gates = g_session.city.getOverlay(location);
+  ibox.overlay = gates;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(gates.typename);
+
+  ibox.update = function() {
+    var modeDesc = [ "gh_auto", "gh_closed", "gh_opened", "gh_unknown" ];
+    ibox.btnToggleWorks.text = _u(modeDesc[gates.getProperty("mode")]);
+  }
+
+  ibox.changeOverlayActive = function() {
+    gates.nextMode();
+    ibox.update();
+  }
+
+  ibox.text = _u("walls_need_a_gatehouse");
+
+  ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
+  ibox.setWorkingStatus(gates.active);
+
+  ibox.update();
+  ibox.show();
+}
+
 game.ui.infobox.aboutDock = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 286);
 
@@ -188,7 +215,7 @@ game.ui.infobox.aboutLand = function(location) {
   if(tile.getFlag(g_config.tile.tlRock)) {
     ibox.update("rock_caption", "rock_text", "rock");
     return;
-  } 
+  }
 
   if(tile.getFlag(g_config.tile.tlRoad)) {
     var ovType = tile.overlay().typename;

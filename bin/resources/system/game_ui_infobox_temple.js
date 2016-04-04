@@ -102,6 +102,11 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
     g_ui.addInformationDialog(_u("overlay_status"), state);
   }
 
+  ibox.changeOverlayActive = function()  {
+    ibox.overlay.active = !ibox.overlay.active
+    ibox.setWorkingStatus(ibox.overlay.active)
+  }
+
   ibox.setWorkingStatus = function(active) {
     if (!ibox.btnToggleWorks)
     {
@@ -110,10 +115,7 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
       ibox.btnToggleWorks.style = "blackBorderUp"
       ibox.btnToggleWorks.font = "FONT_1"
 
-      ibox.btnToggleWorks.callback = function() {
-        ibox.overlay.active = !ibox.overlay.active
-        ibox.setWorkingStatus(ibox.overlay.active)
-      }
+      ibox.btnToggleWorks.callback = function() { ibox.changeOverlayActive() }
     }
 
     ibox.btnToggleWorks.text = active ? _u("abwrk_working") : _u("abwrk_not_working")
