@@ -63,6 +63,7 @@ UpdateWorkingBuildingPrototype(Senate.prototype);
 UpdateWorkingBuildingPrototype(WorkingBuilding.prototype);
 UpdateWorkingBuildingPrototype(Dock.prototype);
 UpdateWorkingBuildingPrototype(Warehouse.prototype);
+UpdateWorkingBuildingPrototype(Granary.prototype);
 
 /*************** Service buildings ************/
 UpdateServiceBuildingPrototype(Fountain.prototype);
