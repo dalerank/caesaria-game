@@ -1,5 +1,6 @@
 language: cpp
 compiler:
+- clang
 - gcc
 before_install:
 # Get build dependencies
@@ -9,21 +10,26 @@ before_install:
 - sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
-- cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release .
+- mkdir build
+- cd build
+- cmake -DCMAKE_BUILD_TYPE=Release ../
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
-- mkdir $TRAVIS_BUILD_DIR/../caesaria-test
-- unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
+- PACK_DIR=$TRAVIS_BUILD_DIR/../caesaria-r
+- mkdir $PACK_DIR
+- unzip -n caesaria_latest_resources.zip -d $PACK_DIR
+- cp $PACK_DIR/resources/gfx/* $TRAVIS_BUILD_DIR/bin/resources/gfx  
 script:
-- cd $TRAVIS_BUILD_DIR
+- cd $TRAVIS_BUILD_DIR/build
 - make -j4
 after_success:
-- cd $TRAVIS_BUILD_DIR/../caesaria-test
+- cd $TRAVIS_BUILD_DIR/bin
 # Prepare ZIP archive
+- rm resources/settings.model
+- echo "{ oldgfx:1 } >> resources/settings.model
 - ZIPNAME=caesaria-0.5-linux64-$TRAVIS_BRANCH-`date +"%Y%m%d"`.zip
 - echo Compress to $ZIPNAME
 - zip -r $ZIPNAME *
@@ -38,4 +44,4 @@ notifications:
     irc:
         - "irc.quakenet.org#caesaria"
     on_failure: always
-    on_success: never
+    on_success: always

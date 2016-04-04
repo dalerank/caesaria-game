@@ -39,10 +39,6 @@
 #include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 #ifndef GAME_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
