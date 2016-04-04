@@ -25,7 +25,6 @@
 #include <GameLogger>
 
 #include "game/resourcegroup.hpp"
-#include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "layers/constants.hpp"
 #include "game/alarm_event_holder.hpp"

@@ -56,7 +56,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
                   : 30;
 
       ibox.position = {x:(resolution.w-ibox.w)/2, y:ry}
-      ibox.mayMove = g_session.getAdvflag("lockwindow")
+      ibox.mayMove = engine.getOption("lockInfobox")
   }
 
   ibox.setWorkersStatus = function(x, y, picId, need, have) {

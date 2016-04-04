@@ -62,3 +62,8 @@ DEFINE_OBJECT_GETTER_0(Granary,const Store&,store)
 /************ Gatehouse ********************************/
 TEMPLATE_OVERLAY_IMPLEMENTATION(Gatehouse)
 DEFINE_OBJECT_FUNCTION_0(Gatehouse,nextMode)
+
+/************ Fort ********************************/
+TEMPLATE_OVERLAY_IMPLEMENTATION(Fort)
+TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Fort)
+DEFINE_OBJECT_GETTER_1(Fort,SoldierPtr,getSoldier,int,0)
