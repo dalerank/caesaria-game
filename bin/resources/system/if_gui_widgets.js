@@ -57,6 +57,7 @@ function UpdateButtonPrototype(objProto) {
    UpdateWidgetPrototype(objProto)
    Object.defineProperty(objProto, "callback", { set: function(func) { this.onClickedEx(func) }})
    Object.defineProperty(objProto, "style", {  set: function(sname) { this.setBackgroundStyle(sname) }})
+   Object.defineProperty(objProto, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
    Object.defineProperty(objProto, "iconMask", {  set: function(value) { this.setIconMask(value) }})
 
@@ -261,8 +262,14 @@ function Groupbox(parent) { return new GroupBox(parent) }
 UpdateWidgetPrototype(GroupBox.prototype)
 
 GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(this);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(this);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
+
+GroupBox.prototype.addButton = function(rx,ry,rw,rh) {
+  var btn = new Button(this);
+  btn.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return btn;
+}
 //*************************** Groupbox class end ***************************************//

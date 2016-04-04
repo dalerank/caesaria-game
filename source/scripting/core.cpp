@@ -323,31 +323,31 @@ inline StringArray engine_js_to(js_State *J, int n, StringArray)
 
 inline bool engine_js_to(js_State *J, int n, bool) { return js_toboolean(J, n)>0; }
 inline Size engine_js_to(js_State *J, int n, Size) { return Size( js_toint32(J, n), js_toint32(J, n+1) ); }
-inline PointF engine_js_to(js_State *J, int n, PointF) { return PointF( (float)js_tonumber(J, n), (float)js_tonumber(J, n+1) );}
-
 inline Path engine_js_to(js_State *J, int n, Path) { return vfs::Path( js_tostring(J, n)); }
 
-inline Point engine_js_to(js_State *J, int n, Point)
+inline PointF engine_js_to(js_State *J, int n, PointF)
 {
   if (js_isobject(J, n))
   {
-    js_getproperty(J, n, "x");
-    int x = js_toint32(J, -1);
-    js_getproperty(J, n, "y");
-    int y = js_toint32(J, -1);
-    return Point(x, y);
+    js_getproperty(J, n, "x"); float x = js_tonumber(J, -1);
+    js_getproperty(J, n, "y"); float y = js_tonumber(J, -1);
+    return PointF(x, y);
   }
-  return Point(js_toint32(J, n), js_toint32(J, n + 1));
+  return PointF(js_tonumber(J, n), js_tonumber(J, n + 1));
+}
+
+inline Point engine_js_to(js_State *J, int n, Point)
+{
+  PointF p = engine_js_to(J, n, PointF());
+  return p.toPoint();
 }
 
 inline TilePos engine_js_to(js_State *J, int n, TilePos)
 {
   if (js_isobject(J, n))
   {
-    js_getproperty(J, n, "i");
-    int i = js_toint32(J, -1);
-    js_getproperty(J, n, "j");
-    int j = js_toint32(J, -1);
+    js_getproperty(J, n, "i"); int i = js_toint32(J, -1);
+    js_getproperty(J, n, "j"); int j = js_toint32(J, -1);
 
     return TilePos(i, j);
   }

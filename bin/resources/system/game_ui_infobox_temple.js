@@ -161,12 +161,12 @@ game.ui.infobox.aboutTemple = function(location) {
     img.tooltip = _u(longDescr);
   }
 
-  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers())
-  ibox.setWorkingStatus(temple.active)
+  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers());
+  ibox.setWorkingStatus(temple.active);
 
   ibox.btnToggleWorks.callback = function() {
-    temple.active = !temple.active
-    ibox.setWorkingStatus(temple.active)
+    temple.active = !temple.active;
+    ibox.setWorkingStatus(temple.active);
   }
 
   ibox.show();

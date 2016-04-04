@@ -103,6 +103,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
   break;
 
+  case "warehouse":
+    game.ui.infobox.aboutWarehouse(location);
+  break;
+
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;
