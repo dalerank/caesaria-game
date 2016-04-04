@@ -6,6 +6,7 @@ game.ui.infobox.aboutObject = function(typename,info) {
   if (!info)
     info = _u(typename + "_info")
 
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
   ibox.setInfoText(info)
   ibox.show();
 }
@@ -14,10 +15,68 @@ game.ui.infobox.aboutRuins = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350)
 
   var ruins = g_session.city.getOverlay(location).as(Ruins)
+  ibox.overlay = ruins;
   engine.log(ruins.typename)
 
   ibox.title = _u(ruins.typename)
   ibox.setInfoText(ruins.getProperty("pinfo"))
+
+  ibox.show();
+}
+
+game.ui.infobox.aboutDock = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 286);
+
+  var dock = g_session.city.getOverlay(location).as(Dock);
+  ibox.initBlackframe(16, 185, ibox.w-32, 50);
+  ibox.overlay = dock;
+  ibox.title = _u(dock.typename);
+
+  var lbAbout = ibox.addLabel(15, 30, ibox.w-30, 20);
+  lbAbout.multiline = true;
+  lbAbout.font = "FONT_1";
+  lbAbout.textAlignment= { v:"upperLeft", h:"upperLeft"};
+  ibox.setInfoText( dock.numberWorkers() > 0 ? _u("dock_about") : _u("dock_no_workers") );
+
+  ibox.setWorkersStatus(32, 8, 542, dock.maximumWorkers(), dock.numberWorkers());
+  ibox.setWorkingStatus(dock.active);
+
+  ibox.drawGood = function(dock,goodType,index,paintY)
+  {
+    var startOffset = 28;
+
+    var offset = ( ibox.w - startOffset * 2 ) / 6;
+    var qty = dock.exportStore().qty(goodType);
+    var outText = g_config.metric.convQty(qty);
+
+    var lb = ibox.addLabel(index * offset + startOffset, paintY, 100, 24);
+    lb.font = "FONT_2";
+    lb.icon =  g_config.good.getInfo(goodType).picture.local;
+    lb.text = outText;
+    lb.textOffset = {x:30, y:0};
+  }
+
+  var paintY = 115;
+  ibox.drawGood( dock, g_config.good.wheat,     0, paintY);
+  ibox.drawGood( dock, g_config.good.meat,      1, paintY);
+  ibox.drawGood( dock, g_config.good.fruit,     2, paintY);
+  ibox.drawGood( dock, g_config.good.vegetable, 3, paintY);
+
+  paintY += 21;
+  ibox.drawGood( dock, g_config.good.olive,  0, paintY);
+  ibox.drawGood( dock, g_config.good.grape,  1, paintY);
+  ibox.drawGood( dock, g_config.good.timber, 2, paintY);
+  ibox.drawGood( dock, g_config.good.clay,   3, paintY);
+  ibox.drawGood( dock, g_config.good.iron,   4, paintY);
+  ibox.drawGood( dock, g_config.good.marble, 5, paintY);
+
+  paintY += 21;
+  ibox.drawGood( dock, g_config.good.pottery,    0, paintY);
+  ibox.drawGood( dock, g_config.good.furniture,  1, paintY);
+  ibox.drawGood( dock, g_config.good.oil,        2, paintY);
+  ibox.drawGood( dock, g_config.good.wine,       3, paintY);
+  ibox.drawGood( dock, g_config.good.weapon,     4, paintY);
+  ibox.drawGood( dock, g_config.good.prettyWine, 5, paintY);
 
   ibox.show();
 }
@@ -66,6 +125,95 @@ game.ui.infobox.aboutFountain = function(location) {
   ibox.setInfoText(_u(text));
 
   ibox.show();
+}
+
+game.ui.infobox.aboutLand = function(location) {
+  var ibox = game.ui.infobox.simple(0,0,510,300)
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
+
+  ibox.update = function(title, text, uri) {
+    ibox.title = _u(title);
+    ibox.btnHelp.uri = uri;
+    ibox.setInfoText( _u(text) );
+    ibox.show();
+  }
+
+  var tile = g_session.city.getTile(location);
+  var tilepos = tile.pos();
+  var cityexit = g_session.city.getProperty("roadExit");
+
+  engine.log(_format("Show help for land at [{0},{1}]", tilepos.i, tilepos.j));
+  if(tilepos.i == cityexit.i && tilepos.j == cityexit.j)
+  {
+    ibox.update("to_empire_road", "", "road_to_empire");
+    return;
+  }
+
+  var cityenter = g_session.city.getProperty("roadEntry");
+  if(tilepos.i == cityenter.i && tilepos.j == cityenter.j)
+  {
+    ibox.update("to_rome_road", "", "");
+    return;
+  }
+
+  if (tile.getFlag(g_config.tile.tlTree))
+  {
+    ibox.update("trees_and_forest_caption", "trees_and_forest_text", "trees");
+    return;
+  }
+
+  var waterexit = g_session.city.getProperty("boatEntry");
+  if(tilepos.i == waterexit.i && tilepos.j == waterexit.j)
+  {
+    ibox.update("to_ocean_way", "", "water");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlCoast)) {
+    ibox.update("coast_caption", "coast_text", "coast");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlWater)) {
+    ibox.update("water_caption", "water_text", "water");
+    return;
+    /*Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
+
+    text = way.isValid()
+             ? (typeStr + "_text##")
+             : "##inland_lake_text##";
+    _helpUri = "water";*/
+  }
+
+  if(tile.getFlag(g_config.tile.tlRock)) {
+    ibox.update("rock_caption", "rock_text", "rock");
+    return;
+  } 
+
+  if(tile.getFlag(g_config.tile.tlRoad)) {
+    var ovType = tile.overlay().typename;
+    if(ovType=="plaza") {
+      ibox.update("plaza_caption", "plaza_text", "plaza");
+      return;
+    } else if(ovType == "road") {
+      var paved = tile.overlay().getProperty("pavedValue");
+      if (paved > 0) {
+        ibox.update( "road_paved_caption", "road_paved_text", "paved_road");
+      } else {
+        ibox.update( "road_caption", "road_text", "road");
+      }
+    } else {
+      ibox.update( "road_caption", "road_text", "road");
+    }
+    return;
+  }
+
+  if( tile.getFlag(g_config.tile.tlMeadow)) {
+    ibox.update( "meadow_caption", "meadow_text", "meadow");
+    return;
+  }
+
+  ibox.update( "clear_land_caption", "clear_land_text", "clear_land");
 }
 
 game.ui.infobox.aboutWharf = function(location) {
@@ -363,4 +511,35 @@ game.ui.infobox.aboutAmphitheater = function(location) {
 
     ibox.addLabel(35, 220, ibox.w - 70, 20, text);
   }
+}
+
+game.ui.infobox.aboutWell = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 480, 320);
+
+  var well = g_session.city.getOverlay(location);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
+  ibox.overlay = well;
+  ibox.title = _u(well.typename);
+
+  var haveHouseInArea = well.getProperty("coverageHouse");
+  var text;
+  if (!haveHouseInArea) {
+      text = _u("well_haveno_houses_inarea");
+  }
+  else
+  {
+    var houseNeedWell = well.getProperty("housesNeedWell");
+    if (!houseNeedWell) {
+      text = _u("also_fountain_in_well_area");
+    } else {
+      var houseNum = well.getProperty("lowHealthHouseNumber");
+
+      text = houseNum > 0
+              ? _u("well_infected_info")
+              : _u("well_info");
+    }
+  }
+
+  ibox.setInfoText(text);
+  ibox.show();
 }

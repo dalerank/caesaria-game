@@ -47,7 +47,7 @@ public:
   void computePictures();
   good::Store& store();
   const good::Store& store() const;
-  
+
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
@@ -57,6 +57,7 @@ public:
 
   bool isTradeCenter() const;
   void setTradeCenter( bool enabled );
+  virtual Variant getProperty(const std::string &name) const;
   Rooms& rooms();
 
   virtual std::string troubleDesc() const;

@@ -12,4 +12,6 @@
 #include "objects/factory.hpp"
 #include "objects/objects_factory.hpp"
 #include "objects/fountain.hpp"
+#include "objects/market.hpp"
+#include "objects/warehouse.hpp"
 #include "objects/watersupply.hpp"

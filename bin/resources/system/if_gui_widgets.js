@@ -9,8 +9,8 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "subElement", { set: function (value) { this.setSubElement(value); } })
   Object.defineProperty(objProto, "name", { set: function (str) { this.setInternalName(str); } });
 
-  Object.defineProperty(objProto, "w", { get: function() { return this.width(); }} );
-  Object.defineProperty(objProto, "h", { get: function() { return this.height(); }} );
+  Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
+  Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
 
   Object.defineProperty(objProto, "position", { set: function (point) {
     if (arguments.length==1) {
@@ -57,8 +57,27 @@ function UpdateButtonPrototype(objProto) {
    UpdateWidgetPrototype(objProto)
    Object.defineProperty(objProto, "callback", { set: function(func) { this.onClickedEx(func) }})
    Object.defineProperty(objProto, "style", {  set: function(sname) { this.setBackgroundStyle(sname) }})
+   Object.defineProperty(objProto, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
+   Object.defineProperty(objProto, "iconMask", {  set: function(value) { this.setIconMask(value) }})
+
+   Object.defineProperty(objProto, "icon", { set: function(value) {
+        if (!value)
+          return;
+
+        if ( typeof value == "string") {
+          this.setIcon_str(value)
+        }  else if (value instanceof Picture) {
+          this.setIcon_pic(value)
+        } else if (value.rc && value.index) {
+          this.setIcon_rcIndex(value.rc,value.index)
+        } else {
+          engine.log("Label set picture no case found")
+        }
+      }
+    } )
  }
+
 //*************************** button class end***************************************//
 
 //*************************** Buttons classes begin***************************************//
@@ -243,8 +262,14 @@ function Groupbox(parent) { return new GroupBox(parent) }
 UpdateWidgetPrototype(GroupBox.prototype)
 
 GroupBox.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(this);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(this);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
+
+GroupBox.prototype.addButton = function(rx,ry,rw,rh) {
+  var btn = new Button(this);
+  btn.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return btn;
+}
 //*************************** Groupbox class end ***************************************//

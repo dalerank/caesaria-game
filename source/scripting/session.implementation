@@ -63,3 +63,15 @@ DEFINE_OBJECT_CONSTRUCTOR(DateTime)
 
 DEFINE_OBJECT_CONSTRUCTOR(Stock)
 DEFINE_OBJECT_GETTER_0(Stock,int,qty)
+
+DEFINE_GAMEOBJECT_CONSTRUCTOR(Store)
+DEFINE_OBJECT_FUNCTION_1(Store,setDevastation,bool)
+DEFINE_OBJECT_GETTER_1(Store,good::Orders::Order,getOrder,Product,good::none)
+DEFINE_OBJECT_FUNCTION_2(Store,setOrder,Product,good::Orders::Order)
+DEFINE_OBJECT_GETTER_0(Store,bool,isDevastation)
+DEFINE_OBJECT_OVERRIDE_GETTER_0(Store,int,qty,void)
+DEFINE_OBJECT_OVERRIDE_GETTER_1(Store,int,qty,product,const Product&,good::none)
+DEFINE_OBJECT_OVERRIDE_GETTER_0(Store,int,capacity,void)
+DEFINE_OBJECT_OVERRIDE_GETTER_1(Store,int,capacity,product,const Product&,good::none)
+DEFINE_OBJECT_FUNCTION_2(Store,setCapacity,Product,int)
+

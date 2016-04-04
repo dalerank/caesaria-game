@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe01_00002"
-  title : "270 BC - Fourth assignment"
-	
+  title : "##briefing_fourth_title##"
+
   items : {
     tarraco : {
       title : "##tarraco_title##"

@@ -69,6 +69,33 @@ std::string Well::sound() const
   return ServiceBuilding::sound();
 }
 
+Variant Well::getProperty(const std::string & name) const
+{
+  if (name == "coverageHouse") {
+    auto area = coverageArea();
+    bool haveHouseInArea = false;
+    for (auto tile : area) {
+      haveHouseInArea |= tile->overlay().is<House>();
+    }
+    return haveHouseInArea;
+  }
+  if (name == "housesNeedWell") {
+    bool housesNeedWell = false;
+    auto houses = coverageArea().overlays().select<House>();
+    for (auto& house : houses) {
+      housesNeedWell |= (house->getServiceValue(Service::fountain) == 0);
+    }
+    return housesNeedWell;
+  }
+  if (name == "lowHealthHouseNumber") {
+    auto houses = coverageArea().overlays<House>();
+    int lowHealthHouse = houses.count([](HousePtr h) { return h->state(pr::health) < 10; });
+    return lowHealthHouse;
+  }
+
+  return ServiceBuilding::getProperty(name);
+}
+
 bool Well::build( const city::AreaInfo& areainfo )
 {
   ServiceBuilding::build( areainfo );
