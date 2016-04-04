@@ -322,7 +322,7 @@ bool Game::load(std::string filename)
 
   screen.initialize();
   bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  screen.setBackground( usingOldgfx ? "load4" : "freska", 1 );
+  screen.setBackground( usingOldgfx ? "load4" : "freska", 1+math::random(2) );
   screen.update( *_dfunc()->engine );
 
   vfs::Path fPath( filename );

@@ -25,13 +25,6 @@
           files : [ "housng1*" ]
         }
 
-        ground :
-        {
-          type : "atlas"
-          folder : "/resources/houses"
-          files : [ "housng1g_*" ]
-        }
-
         smoke :
         {
           type : "atlas"
@@ -270,7 +263,10 @@
           type : "file"
           folder : "/resources/gui"
           files : [ "senate_00001.png"
-                    "ckit_00001.png" ]
+                    "ckit_00001.png"
+                    "freska_00001.png"
+                    "freska_00002.png"
+                    "freska_00003.png" ]
         }
       }
     }

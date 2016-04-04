@@ -30,10 +30,10 @@ var ctsettings = {
         break;
       case "gui":
         this.setguiv(obj.flag, value);
-        break;
+      break;
       case "risks":
         g_session.city.setOption(obj.flag, value);
-        break;
+      break;
     }
   },
 
@@ -45,9 +45,8 @@ var ctsettings = {
       var dm = new Widget("AndroidActionsBar")
       return dm.visible()
     } else if (name=="rightMenu") {
-      return engine.getOption("rightMenu");
+      return engine.getOption("rightMenu")
     }
-
   },
 
   setguiv: function(name, value) {
@@ -72,7 +71,8 @@ var ctsettings = {
       if (value > 100)
         value = 0;
     } else if (obj.group === "gui") {
-      return obj.value ? 0 : 1;
+      value = this.getop(obj)
+      return value ? 0 : 1;
     } else {
       value = this.getop(obj)
       value += 1;
@@ -136,7 +136,7 @@ sim.ui.dialogs.showCitySettings = function() {
   {    base: "city_border",    states: ["off", "on"],    group: "game",    flag: "borderMoving"  },
   {    base: "city_forest_fire",    states: ["off", "on"],    group: "city",    flag: "forestFire"  },
   {    base: "city_forest_grow",    states: ["off", "on"],    group: "city",    flag: "forestGrow"  },
-  {    base: "city_claypit_collapse",    states: ["off", "on"],    group: "city",    flag: "claypitMayCollapse"  },
+  {    base: "city_claypit_collapse",    states: ["off", "on"],    group: "city",    flag: "claypitMayFloods"  },
   {    base: "city_mines_collapse",    states: ["off", "on"],    group: "city",    flag: "minesMayCollapse"  },
   {    base: "draw_svk_border",    states: ["off", "on"],    group: "city",    flag: "svkBorderEnabled"  },
   {    base: "city_farm_use_meadow",    states: ["off", "on"],    group: "city",    flag: "farmUseMeadows"  },

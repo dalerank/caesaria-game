@@ -3,8 +3,8 @@
   map : ":/maps/Syracusae.sav"
   funds : 8000
   city.name : "Syracusae"
-  date : "-270.01.01"
   player.rank : 3
+  date : "-270.01.01"  
   adviserEnabled : true
   fishPlaceEnabled : false
   preview.text : "##syracusae_preview_mission##"
@@ -13,8 +13,8 @@
 
   win :
   {
-    population : 4000
     name : "n2_syracusae"
+	population : 4000
     culture : 40
     prosperity : 20
     peace : 25
@@ -23,12 +23,12 @@
     next : ":/missions/mission5.briefing"
     title : ""##quaestor##""
     maxHouseLevel : "big_villa"
-    caption : "##syracusae_4_title##"
+	winContinue : false
+    caption : "##syracusae_title##"
+	winText : "##win_syracusae_text##"
     startSound : "syracusae_speech"
-    overview :  [ "##syracusae_4_overview##" ]
-    winText : "##win_syracusae_text##"
-    winContinue : false
-    winSound      : "syracusae_win_speech"
+	winSound : "syracusae_win_speech"
+    overview :  [ "##syracusae_overview##" ]
   }
 
   empire : {
@@ -38,22 +38,18 @@
     {
       Tarentum : {
         nation : "roman"
-
         land : true
         sea : true
         available : true
-
         sells : { meat : 15, timber : 25 }
         buys : { olive: 15, oil: 15 }
       }
 
       Capua : {
         nation : "roman"
-
         sea : true
         available : true
         land : true
-
         sells : { furniture : 25 }
         buys : { weapon : 25 }
       }
@@ -75,39 +71,39 @@
       date : "-350.01.01"
       population : 1000
       send2scribe : true
-      video : "population1"
+      video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
       send2scribe : true
-      video : "population1"
+      video : "population3"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
       date : "-350.01.01"
       population : 3000
       send2scribe : true
-      video : "population2"
+      video : "population4"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
-      building : [ "colloseum" ]
+      building : [ "colosseum" ]
       no_troubles : true
       type : "start_work"
       action : {
         message#messagebox : {
           send2scribe : true
           video : "1st_glad"
-          title : "##working_colloseum_title##"
-          text : "##working_colloseum_text##"
+          title : "##working_colosseum_title##"
+          text : "##working_colosseum_text##"
         }
       }
     }
@@ -336,15 +332,15 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "spy_barbarian"
+          send2scribe : true
+        }
+      }
     }
 
-  greek_invasion_3#enemy_attack : {
+    greek_invasion_3#enemy_attack : {
       date : "-261.04.01"
       type : "enemy_attack"
       target : "best_building"
@@ -392,15 +388,15 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "spy_barbarian"
+          send2scribe : true
+        }
+      }
     }
 
-  greek_invasion_5#enemy_attack : {
+    greek_invasion_5#enemy_attack : {
       date : "-255.08.01"
       type : "enemy_attack"
       target : "best_building"
@@ -420,12 +416,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "spy_barbarian"
+          send2scribe : true
+        }
+      }
     }
 
     greek_invasion_6#enemy_attack : {
@@ -448,12 +444,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "spy_barbarian"
+          send2scribe : true
+        }
+      }
     }
 
     greek_invasion_7#enemy_attack : {
@@ -476,12 +472,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "spy_barbarian"
+		  send2scribe : true
+		}
+      }
     }
 
     greek_invasion_8#enemy_attack : {
@@ -504,12 +500,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "spy_barbarian"
+		  send2scribe : true
+		}
+	  }
     }
 
     greek_invasion_9#enemy_attack : {
@@ -532,12 +528,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "spy_barbarian"
+		  send2scribe : true
+		}
+      }
     }
 
     greek_invasion_10#enemy_attack : {
@@ -560,12 +556,12 @@
 
       exec : {
         greeck_attack_2#messagebox : {
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "spy_barbarian"
-      send2scribe : true
-    }
-    }
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "spy_barbarian"
+		  send2scribe : true
+		}
+      }
     }
 
     tarentum_increase_oil_trading#trading_options : {
@@ -623,7 +619,7 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-      granery : true
+      granary : true
       warehouse : true
       school : true
       academy : true

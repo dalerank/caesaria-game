@@ -82,7 +82,7 @@ public:
   {
     auto btn = helpButton();
     if( btn )
-      btn->setHelpId( id );
+      btn->setHelpUri( id );
   }
 
   void _updateTexture()

@@ -167,11 +167,6 @@ StringArray Session::getFiles(const std::string& dir, const std::string& ext)
   return names;
 }
 
-VariantMap Session::winConditions() const
-{
-  return _game->city()->victoryConditions().save();
-}
-
 StringArray Session::getFolders(const std::string& dir, bool full)
 {
   vfs::Directory fdir(dir);
@@ -229,6 +224,11 @@ StringArray Session::tradableGoods() const
 Point Session::getCursorPos() const
 {
   return _game->gui()->cursorPos();
+}
+
+religion::DivinityPtr Session::addGod(const std::string & name)
+{
+  return religion::rome::Pantheon::add(name);
 }
 
 std::string Session::getOverlayType(int i) const

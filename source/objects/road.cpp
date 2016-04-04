@@ -277,6 +277,13 @@ void Road::appendPaved( int value )
   }
 }
 
+Variant Road::getProperty(const std::string& name) const
+{
+  if (name == "pavedValue") return pavedValue();
+
+  return Construction::getProperty(name);
+}
+
 void Road::computeRoadside()
 {
   Construction::computeRoadside();

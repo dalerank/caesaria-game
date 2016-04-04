@@ -27,6 +27,7 @@ class Market: public ServiceBuilding
 public:
   Market();
 
+  const good::Store& goodStore() const;
   good::Store& goodStore();
   good::Products mostNeededGoods();  // used by the market buyer
 

@@ -260,8 +260,8 @@ void House::_checkEvolve()
     object::Type needBuilding;
     TilePos rPos;
 
-    bool haveUnwishBuildingsNearMe = nextSpec.findUnwishedBuildingNearby( this, needBuilding, rPos ) > 0;
-    bool haveLowHouseNearMe = nextSpec.findLowLevelHouseNearby( this, rPos ) > 0;
+    bool haveUnwishBuildingsNearMe = nextSpec.findUnwishedBuildingNearby(*this, needBuilding, rPos ) > 0;
+    bool haveLowHouseNearMe = nextSpec.findLowLevelHouseNearby(*this, rPos ) > 0;
     if( haveUnwishBuildingsNearMe || haveLowHouseNearMe )
     {
       _d->evolveInfo = "##nearby_building_negative_effect##";
@@ -994,7 +994,7 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::academy:
   case Service::theater:
   case Service::amphitheater:
-  case Service::colloseum:
+  case Service::colosseum:
   case Service::hippodrome:
     setServiceValue(service, 100);
   break;
@@ -1137,7 +1137,28 @@ const Pictures& House::pictures(Renderer::Pass pass) const
   return Building::pictures( pass );
 }
 
-double House::state(Param param) const
+Variant House::getProperty(const std::string & name) const
+{
+  if (name == "habitantsCount") return habitants().count();
+  if (name == "unwishedBuildingPos") {
+    object::Type needBuilding;
+    TilePos rPos;
+    HouseSpecification s = spec().next();
+
+    int unwish = s.findUnwishedBuildingNearby(*this, needBuilding, rPos);
+
+    if (!unwish)
+      s.findLowLevelHouseNearby(*this, rPos);
+
+    return rPos;
+  }
+  if (name == "isPatrician") return spec().isPatrician();
+  if (name == "taxRate") return spec().taxRate();
+
+  return Building::getProperty(name);
+}
+
+float House::state(int param) const
 {
   if( param == pr::food ) { return _d->getFoodLevel(); }
   else if( param == pr::health ) { return Building::state( pr::health ) + Building::state( pr::healthBuff ); }
@@ -1417,7 +1438,7 @@ bool House::isEntertainmentNeed(Service::Type type) const
   {
   case Service::theater: return (lvl>=10);
   case Service::amphitheater: return (lvl>=30);
-  case Service::colloseum: return (lvl>=60);
+  case Service::colosseum: return (lvl>=60);
   case Service::hippodrome: return (lvl>=80);
   default: break;
   }
@@ -1457,12 +1478,13 @@ bool House::isWalkable() const                                   { return size()
 bool House::isFlat() const                                       { return _d->isFlat; }
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
 good::Store& House::store()                                      { return _d->goodstore; }
+const good::Store& House::store() const                          { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
-HouseLevel::ID House::level() const                              { return spec().level(); }
+int House::level() const                                         { return spec().level(); }
 bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }
 float House::getServiceValue( Service::Type service)             { return _d->services.at(service)->value(); }
 void House::setServiceValue( Service::Type service, float value) { _d->services.at(service)->set( value ); }
-unsigned int House::capacity()                                   { return _d->habitants.capacity; }
+unsigned int House::capacity() const                             { return _d->habitants.capacity; }
 void House::appendServiceValue( Service::Type srvc, float value) { setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
 const Desirability& House::desirability() const

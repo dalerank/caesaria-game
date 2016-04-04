@@ -61,11 +61,10 @@ public:
 
   virtual void setupUI(const VariantMap& ui);
   virtual void setupUI(const vfs::Path& ui);
-  void setHelpId(const std::string& id);
+  void setHelpUri(const std::string& uri);
 
 protected:
   virtual void _btnClicked();
-  std::string _helpid;
 };
 
 class ExitButton : public TexturedButton

@@ -83,6 +83,7 @@ public:
   virtual void setIcon( const std::string& rcname, int index, ElementState state );
   virtual void setIcon( const std::string& rcname, int index );
   virtual void setIcon( gfx::Picture pic );
+  virtual void setIconMask(int mask);
   virtual void setIconOffset( Point offset );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );

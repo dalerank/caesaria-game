@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe01_00001"
-  title : "350 BC - Third assignment"
-	
+  title : "##briefing_third_title##"
+
   items : {
     capua : {
       title : "##capua_title##"

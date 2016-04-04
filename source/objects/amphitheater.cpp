@@ -91,7 +91,7 @@ bool Amphitheater::build( const city::AreaInfo& info)
   GladiatorSchoolList gladiators = info.city->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
   if( gladiators.empty() )
   {
-    _setError( "##colloseum_haveno_gladiatorpit##" );
+    _setError( "##colosseum_haveno_gladiatorpit##" );
   }
 
   return true;
@@ -110,7 +110,7 @@ void Amphitheater::deliverService()
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
-      (lastSrvc == Service::colloseum
+      (lastSrvc == Service::colosseum
         ? _d->lastshow.glads : _d->lastshow.arts ) = game::Date::current();
     }
   }
@@ -136,6 +136,17 @@ void Amphitheater::load(const VariantMap& stream)
 }
 
 int Amphitheater::maxVisitors() const { return 800; }
+
+Variant Amphitheater::getProperty(const std::string & name) const
+{
+  if (name == "needGladiators") return isNeed(walker::gladiator);
+  if (name == "showTheatrical") return isShow(Amphitheater::theatrical);
+  if (name == "showGladiatorBouts") return isShow(Amphitheater::gladiatorBouts);
+  if (name == "lastShowTheatrical") return lastShow(Amphitheater::theatrical);
+  if (name == "lastShowGladiatorBouts") return lastShow(Amphitheater::gladiatorBouts);
+
+  return EntertainmentBuilding::getProperty(name);
+}
 
 bool Amphitheater::isShow(Amphitheater::PlayType type) const
 {
@@ -167,7 +178,7 @@ Service::Type Amphitheater::_getServiceManType() const
                 : Service::srvCount);
 }
 
-bool Amphitheater::isNeed(walker::Type type)
+bool Amphitheater::isNeed(walker::Type type) const
 {
   switch( type )
   {

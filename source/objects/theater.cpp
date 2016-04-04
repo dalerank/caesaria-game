@@ -65,6 +65,14 @@ void Theater::deliverService()
   }
 }
 
+Variant Theater::getProperty(const std::string & name) const
+{
+  if (name == "showsCount") return showsCount();
+  if (name == "isShow") return isShow();
+
+  return EntertainmentBuilding::getProperty(name);
+}
+
 bool Theater::mayWork() const {  return (numberWorkers() > 0 && traineeValue(walker::actor) > 0); }
 int Theater::maxVisitors() const { return 500; }
 WalkerList Theater::_specificWorkers() const { return utils::selectByType( walkers(), walker::actor ); }

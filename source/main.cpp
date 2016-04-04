@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   Logger::info("Setting workdir to " + SETTINGS_STR(workDir));
 
   Logger::info("Loading game settings");
-  if( options.haveLastConfig() )
+  if (options.haveLastConfig())
     options.loadLastConfig();
 
   options.checkCmdOptions(argv, argc);

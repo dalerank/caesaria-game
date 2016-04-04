@@ -1,0 +1,9 @@
+{
+ title : "##statues_and_triumphal_arches##"
+ sound : "fanfare"
+ text  : "Genau wie @Gärten& erhöhen Statuen die Attraktivität eines Viertels. Denkmäler für prominente Mitbürger und bemerkenswerte Ereignisse strahlen Autorität aus und künden von der römischen Kultur. Statuen demonstrieren den Anwohnern, dass ihr Gouverneur sich um den Wert ihrer Grundstücke kümmert, und stellen einen angenehmen Treff- oder Bezugspunkt für die Nachbarschaft dar.\nZwischen der Errichtung einer kleinen Statue oder eines Gartens an gleicher Stelle gibt es kaum Unterschiede. Größere Statuen jedoch sind attraktiver als Gärten entsprechender Grundfläche. Statuen benötigen keine Straßenanbindung.\n\nEinen Triumphbogen können Sie erst errichten, wenn Sie einen Triumph errungen haben. Wenn Caesar Sie um die Entsendung von Legionen für die Verteidigung einer Stadt irgendwo im Imperium bittet und Ihre Streitkräfte das Gefecht gewinnen, belohnt Sie Rom in Form von Männern und Materialien, die für den Bau eines Bogens erforderlich sind. Dies ist ein Geschenk des dankbaren römischen Senats und belastet Ihre Stadtkasse daher auch nicht. Der Button, mit dem Sie Ihren neuen Bogen bauen können, erscheint unter Rubrik 'Regierungsgebäude'.\nDer Triumphbogen bedeutet eine enorme Steigerung der Attraktivität des umliegenden Landes, und seine Wirkung entfaltet sich in einem relativ großen Bereich um das Gebäude herum. Triumphbögen überspannen traditionell eine Straße, so dass der Verkehr unter ihnen hindurchlaufen kann.\n\nWenn Sie mehr über die Geschichte der Bildhauerei im antiken Rom erfahren möchten, klicken Sie @hier&."
+ uri : {
+  "Gärten" : "garden_plaza"
+  "hier" : "statuary"
+ }
+}

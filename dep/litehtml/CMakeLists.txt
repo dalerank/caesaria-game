@@ -10,8 +10,14 @@ endif()
 
 if(CMAKE_BUILD_TYPE_RELEASE)
   set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_RELEASE})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
 else()
   set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_DEBUG})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
+endif()
+
+if(APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
 endif()
 
 set(SOURCE_LITEHTML src/background.cpp
@@ -67,7 +73,7 @@ set(SOURCE_GUMBO    src/gumbo/attribute.c
 
 add_library(litehtml STATIC ${SOURCE_LITEHTML} ${SOURCE_GUMBO})
 
-if(WIN32)
+if(WIN32 AND MSVC)
   target_include_directories(litehtml PUBLIC src/gumbo)
 endif()
 

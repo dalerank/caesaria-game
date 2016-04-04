@@ -90,7 +90,7 @@ public:
 
 class Sentiment::Impl
 {
-public:  
+public:
   struct {
     int current;
     int finish;
@@ -145,7 +145,7 @@ void Sentiment::timeStep(const unsigned int time )
     _d->value.finish = 0;
     for (auto house : houses)
     {
-      house->setState( pr::happinessBuff, _d->buffValue );
+      house->setState(pr::happinessBuff, _d->buffValue);
       _d->value.finish += house->state(pr::happiness);
    }
 

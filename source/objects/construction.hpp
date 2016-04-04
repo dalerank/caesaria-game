@@ -49,17 +49,17 @@ public:
 
   virtual void destroy();
 
-  virtual void updateState( Param name, double value );
-  virtual void setState( Param name, double value );
-  virtual double state( Param name ) const;
+  virtual void setState(int name, float value);
+  virtual float state(int name) const;
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual Variant getProperty(const std::string& name) const;
 
   virtual void addExtension( ConstructionExtensionPtr ext );
   ConstructionExtensionPtr getExtension( const std::string& name );
-  virtual const ConstructionExtensionList& extensions() const;  
+  virtual const ConstructionExtensionList& extensions() const;
 
   virtual void initialize(const object::Info& mdata);
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;

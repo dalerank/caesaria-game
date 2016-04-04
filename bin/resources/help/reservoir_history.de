@@ -5,6 +5,6 @@
  uri : {
   "Aquädukte" : "aqueduct_history"
   "Brunnen" : "fountain_history"
-  "Bäder" : "bathhouse_history"
+  "Bäder" : "baths_history"
  }
 }

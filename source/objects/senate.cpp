@@ -187,6 +187,14 @@ void Senate::initialize(const object::Info& mdata)
   _d->flags.set( favour,     ratings.get( TEXT(favour    ) ).toMap() );
 }
 
+Variant Senate::getProperty(const std::string & name) const
+{
+  if (name == "funds") return funds();
+  if (name == "thisYearTax") return thisYearTax();
+
+  return ServiceBuilding::getProperty(name);
+}
+
 void Senate::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );

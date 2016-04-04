@@ -1,15 +1,15 @@
 {
-	/* 0;Terrain vague;0;;;;;;;;;;;;;;; */
-	terrain_vacant : 
-		{
-			level : 0,
+  /* 0;Terrain vague;0;;;;;;;;;;;;;;; */
+  terrain_vacant :
+    {
+      level : 0,
       title : "##freehouse_caption##",
       habitants : 5,
-			minDesirability : 0,
-		  maxDesirability : 0,
-			entertainment : 0,
-			water : 0,
-			religion : 0,
+      minDesirability : 0,
+      maxDesirability : 0,
+      entertainment : 0,
+      water : 0,
+      religion : 0,
       education : 0,
       health : 0,
       food : 0,
@@ -259,8 +259,8 @@
       prosperity : 45,
       tax : 2
       txs : {
-        s1: [ "housng1a_00021", "housng1a_00022", "housng1b_00021", "housng1b_00022" ]
-        s2: [ "housng1a_00024", "housng1b_00024" ]
+        s1: [ "housng1a_00021", "housng1b_00021", "housng1c_00021", "housng1d_00021" ]
+        s2: [ "housng1a_00026", "housng1b_00026", "housng1c_00026", "housng1d_00026" ]
       }
     },
 
@@ -289,8 +289,8 @@
       prosperity : 50,
       tax : 3
       txs : {
-        s1: [ "housng1a_00025", "housng1a_00026", "housng1b_00025", "housng1b_00026" ]
-        s2: [ "housng1a_00029", "housng1b_00029" ]
+        s1: [ "housng1a_00025", "housng1b_00025", "housng1c_00025", "housng1d_00025" ]
+        s2: [ "housng1a_00029", "housng1b_00029", "housng1c_00029", "housng1d_00029" ]
       }
     },
 

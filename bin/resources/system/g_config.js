@@ -11,7 +11,8 @@ g_config.lobby = {
 
 g_config.audio = {
     theme: 2,
-    speech: 4
+    speech: 4,
+    infobox : 6
 }
 
 g_config.climate = {
@@ -26,14 +27,9 @@ g_config.gift = {
     lavish: 3
 }
 
-g_config.metric = {
-    none: 0,
-    modern: 1,
-    roman: 2
-}
-
 g_config.rc = {
-    panel : "paneling"
+    panel : "paneling",
+    invalidIndex : 567
 }
 
 g_config.advisor = {
@@ -63,7 +59,7 @@ g_config.layer = {
     entertainment : 6,
     theater : 7,
     amphitheater : 8,
-    colloseum : 9,
+    colosseum : 9,
     hippodrome : 10,
     health : 11,
     healthAll : 12,
@@ -78,6 +74,14 @@ g_config.layer = {
     commerce : 29, tax : 30, market : 31, sentiment : 32, unemployed : 33, comturnover : 34,
     build : 35, destroyd : 36, constructor : 37,
     products : 38
+}
+
+g_config.gods = {
+  ceres : "ceres",
+  mars : "mars",
+  neptune : "neptune",
+  venus : "venus",
+  mercury : "mercury"
 }
 
 g_config.saves = {
