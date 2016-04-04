@@ -31,7 +31,7 @@ after_success:
 - mv caesaria.macos caesaria-steam.macos
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 - sshpass -p "$SCP_PASS" scp -v caesaria-steam.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
-- cd $TRAVIS_BUILD_DIR/bin
+- cd $TRAVIS_BUILD_DIR
 - ARCH=x32 ./xcompile/deploy-release.sh
 env:
 notifications:
