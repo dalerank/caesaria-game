@@ -27,12 +27,6 @@ g_config.gift = {
     lavish: 3
 }
 
-g_config.metric = {
-    none: 0,
-    modern: 1,
-    roman: 2
-}
-
 g_config.rc = {
     panel : "paneling",
     invalidIndex : 567

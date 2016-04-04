@@ -7,6 +7,10 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(X64_BUILD 1)
 endif()
 
+if(X32_BUILD)
+  set(X64_BUILD 0)
+endif()
+
 #select compiler
 if (CMAKE_COMPILER_IS_CLANG)
   # using Clang
@@ -239,6 +243,11 @@ if(UNIX AND NOT APPLE)
     #release options strip bin
     message("CaesarIA-game: building in release mode")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+  endif()
+
+  if(X32_BUILD)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
   endif()
 
   # Enforce C++11

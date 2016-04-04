@@ -1,5 +1,6 @@
 game.ui.infobox.show = function(typename,location)
 {
+  engine.log(typename);
   switch(typename) {
   case "small_ceres_temple": case "small_mars_temple":
   case "small_neptune_temple": case "small_venus_temple":
@@ -32,9 +33,25 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutServiceBuilding(location);
   break;
 
+  case "dock":
+    game.ui.infobox.aboutDock(location);
+  break;
+
+  case "amphitheater":
+    game.ui.infobox.aboutAmphitheater(location);
+  break;
+
   case "governorHouse": case "governorVilla": case "governorPalace":
     var text = _u(typename + "_info")
     game.ui.infobox.aboutServiceBuilding(location, text);
+  break;
+
+  case "well":
+    game.ui.infobox.aboutWell(location);
+  break;
+
+  case "house":
+    game.ui.infobox.aboutHouse(location);
   break;
 
   case "colosseum":
@@ -51,6 +68,10 @@ game.ui.infobox.show = function(typename,location)
 
   case "wharf":
     game.ui.infobox.aboutWharf(location);
+  break;
+
+  case "market":
+    game.ui.infobox.aboutMarket(location);
   break;
 
   case "pottery_workshop": case "weapons_workshop": case "furniture_workshop":
@@ -82,6 +103,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
   break;
 
+  case "warehouse":
+    game.ui.infobox.aboutWarehouse(location);
+  break;
+
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;
@@ -89,11 +114,14 @@ game.ui.infobox.show = function(typename,location)
   case "barracks":
     game.ui.infobox.aboutBarracks(location);
   break;
+
+  default:
+    game.ui.infobox.aboutLand(location);
+  break;
   }
 }
 
 function OnShowOverlayInfobox(location) {
   var overlay = g_session.city.getOverlay(location)
-  engine.log(overlay.typename);
   game.ui.infobox.show(overlay.typename, location)
 }

@@ -1,14 +1,8 @@
-{"##warning##":"
-",
-"##no_working_dock##":"
-",
-"##build_some_houses##":"Onmiddellijke Doel: Bouw een aantal huizen",
+{"##build_some_houses##":"Onmiddellijke Doel: Bouw een aantal huizen",
 "##tutorial_text##":"Laat uw governorial trainning beginnen!\n\nOm te beginnen moet je bases van het bouwen van de Romeinse nederzettingen kennen te bestuderen.\n\nMaak huisvesting zones, en je zult zien hoe mensen je stad zullen bewonen.",
-"##right_mouse_btn_tutorial##":"\n\nIf you clicks these people with the right mouse button, you will tell you important information about your city. You can also right-click on the building. In buildings you see a description of the building, and a help button, where you will see how this building works.\n\n
-",
+"##right_mouse_btn_tutorial##":"\n\nIf you clicks these people with the right mouse button, you will tell you important information about your city. You can also right-click on the building. In buildings you see a description of the building, and a help button, where you will see how this building works.\n\n",
 "##tutorial_text_roads##":"Roads\nYou can build roads, just hold down the mouse button.",
-"##tutorial_text_roads2##":"\n\nCarefully plan construction of roads, creating as little as possible crossroads to your residents traveled freely wherever you want. On every crossroad people have to decide where to go next. It limits your control over their movements."
-",
+"##tutorial_text_roads2##":"\n\nCarefully plan construction of roads, creating as little as possible crossroads to your residents traveled freely wherever you want. On every crossroad people have to decide where to go next. It limits your control over their movements.",
 "##tutorial_fire##":"Vuur in de stad",
 "##tutorial_prefecture_info##":"Voor bescherming tegen brand, bouw een prefectuur over huisvesting.\n\nDe prefectuur stuurt de burger te zoeken in het district van de werknemers. Bij het passeren van enige behuizing, heeft de prefectuur toegang tot arbeid. Daarna kan het de prefecten op patrouille sturen.\n",
 "##tutorial_prefect_detect_fire##":"\n\nWanneer de prefect brand ontdekt, begint het te blussen door middel van water uit de dichtstbijzijnde waterput.",

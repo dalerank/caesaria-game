@@ -26,3 +26,30 @@ TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Senate)
 
 TEMPLATE_OVERLAY_IMPLEMENTATION(WorkingBuilding)
 TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(WorkingBuilding)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(House)
+DEFINE_OBJECT_FUNCTION_1(House,__debugChangeLevel,int)
+DEFINE_OBJECT_GETTER_0(House,const Store&,store)
+DEFINE_OBJECT_GETTER_0(House,std::string,levelName)
+DEFINE_OBJECT_GETTER_0(House,int,level)
+DEFINE_OBJECT_GETTER_0(House,unsigned int,capacity)
+DEFINE_OBJECT_GETTER_0(House,std::string,evolveInfo)
+DEFINE_OBJECT_GETTER_0(House,DateTime,lastTaxationDate)
+DEFINE_OBJECT_GETTER_1(House,float,getServiceValue,Service::Type,Service::srvCount)
+
+TEMPLATE_OVERLAY_IMPLEMENTATION(Dock)
+DEFINE_OBJECT_GETTER_0(Dock,const Store&,exportStore)
+TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Dock)
+
+/************ Market ********************************/
+TEMPLATE_OVERLAY_IMPLEMENTATION(Market)
+DEFINE_OBJECT_GETTER_0(Market,const Store&,goodStore)
+TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Market)
+TEMPLATE_SERVICEBUILDING_IMPLEMENTATION(Market)
+
+/************ Warehouse ********************************/
+TEMPLATE_OVERLAY_IMPLEMENTATION(Warehouse)
+TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Warehouse)
+DEFINE_OBJECT_GETTER_0(Warehouse,const Store&,store)
+DEFINE_OBJECT_GETTER_0(Warehouse,bool,isTradeCenter)
+DEFINE_OBJECT_FUNCTION_1(Warehouse,setTradeCenter,bool)

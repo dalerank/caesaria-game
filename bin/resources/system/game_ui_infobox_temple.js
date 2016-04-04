@@ -9,6 +9,7 @@ function InfoboxWindow (rx,ry,rw,rh) {
 game.ui.infobox.simple = function(rx,ry,rw,rh) {
   var ibox = new InfoboxWindow(rx,ry,rw,rh)
   ibox.title = _u("unknown");
+  ibox.pauseGame = true;
 
   ibox.autoPosition = true
   ibox.blackFrame = ibox.addLabel(0, 0, 0, 0)
@@ -19,7 +20,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   ibox.btnHelp.tooltip = _u("infobox_tooltip_help");
 
   ibox.initInfoLabel = function(rx,ry,rw,rh) {
-    if (!ibox.lbText)
+    if (ibox.lbText == undefined)
     {
       ibox.lbText = ibox.addLabel(rx,ry,rw,rh);
       ibox.lbText.multiline = true;
@@ -36,11 +37,13 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   }
 
   ibox.setInfoText = function(text) {
-      ibox.lbText.text = text;
+    ibox.lbText.text = text;
   }
 
   ibox.show = function() {
-    ibox.btnHelp.uri = ibox.overlay.typename;
+    if (ibox.overlay)
+      ibox.btnHelp.uri = ibox.overlay.typename;
+
     ibox.setAutoPosition();
     ibox.setFocus();
     ibox.setModal();
@@ -86,8 +89,8 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
   ibox.btnPrev.style = "whiteBorderUp"
   ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
 
-  ibox.btnInfo = ibox.addButton(38, ibox.h-36,100,24);
-  ibox.btnInfo.text = _u("about_ctr_info");
+  ibox.btnInfo = ibox.addButton(38, ibox.h-36,24,24);
+  ibox.btnInfo.text = "i";
   ibox.btnInfo.style = "whiteBorderUp";
   ibox.btnInfo.callback = function() { ibox.showAdvInfo(); }
 
@@ -133,9 +136,10 @@ game.ui.infobox.aboutReservoir = function(location) {
 
 game.ui.infobox.aboutTemple = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256)
-  ibox.iniBlackFrame(16, 56, ibox.w-32, 56);
+  ibox.initBlackframe(16, 56, ibox.w-32, 56);
 
-  var temple = g_session.city.getOverlay(location).as(Temple)
+  var temple = g_session.city.getOverlay(location).as(Temple);
+  ibox.overlay = temple;
   if (temple.typename == "oracle") {
     ibox.title = _u("oracle")
     ibox.setInfoText( _u("oracle_info") )
@@ -157,12 +161,12 @@ game.ui.infobox.aboutTemple = function(location) {
     img.tooltip = _u(longDescr);
   }
 
-  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers())
-  ibox.setWorkingStatus(temple.active)
+  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers());
+  ibox.setWorkingStatus(temple.active);
 
   ibox.btnToggleWorks.callback = function() {
-    temple.active = !temple.active
-    ibox.setWorkingStatus(temple.active)
+    temple.active = !temple.active;
+    ibox.setWorkingStatus(temple.active);
   }
 
   ibox.show();

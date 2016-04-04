@@ -79,7 +79,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
   Infobox* infoBox = findConstructor != _d->constructors.end()
                                   ? findConstructor->second->create( city, gui->rootWidget(), pos )
                                   : 0;
-  
+
   if( infoBox && infoBox->isAutoPosition() )
   {
     Size rSize = gui->rootWidget()->size();
@@ -93,7 +93,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
     infoBox->setWindowFlag( Window::fdraggable, !_d->boxLocked );
   }
 
-  if (!infoBox && type != object::unknown)
+  if (!infoBox)
   {
     VariantList vl; vl << pos;
     events::dispatch<events::ScriptFunc>("OnShowOverlayInfobox", vl);

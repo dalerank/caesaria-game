@@ -55,6 +55,7 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual Variant getProperty(const std::string& name) const;
 
   virtual void addExtension( ConstructionExtensionPtr ext );
   ConstructionExtensionPtr getExtension( const std::string& name );

@@ -30,7 +30,7 @@ class VolumeButton;
 class OrderGoodWidget : public Label
 {
 public:
-  OrderGoodWidget( Widget* parent, int index, good::Product good, good::Store& storage );
+  OrderGoodWidget(Widget* parent, int index, good::Product good, good::Store& storage );
 
   void changeCapacity( float fillingPercentage );
   void updateBtnText();

@@ -11,7 +11,13 @@ set_target_properties(${PROJECT_NAME}
 
 if(NOT CMAKE_BUILD_TYPE_RELEASE AND NOT MSVC)
   message ("mujs built in debug mode")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+endif()
+
+if(X32_BUILD)
+  message("WARNING! LibSDL2 mini build with x86 arch")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
 endif()
 
 # Expose public includes to other through cache variable.

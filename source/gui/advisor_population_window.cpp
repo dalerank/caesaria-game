@@ -293,8 +293,7 @@ void Population::Impl::updateStates()
     int lowLevelHouses = 0;
     for( auto house : houses )
     {
-      HouseLevel::ID level = house->level();
-
+      int level = house->level();
       if( level < HouseLevel::mansion )
       {
         plebsHabitants += house->habitants().count();

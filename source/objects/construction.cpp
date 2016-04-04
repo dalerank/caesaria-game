@@ -237,6 +237,13 @@ void Construction::load( const VariantMap& stream )
   VARIANT_LOAD_CLASS_D( _d, extensions, stream )
 }
 
+Variant Construction::getProperty(const std::string & name) const
+{
+  if (name == "haveRoadAccess") return !roadside().empty();
+
+  return Overlay::getProperty(name);
+}
+
 void Construction::addExtension(ConstructionExtensionPtr ext) { _d->extensions.postpone( ext ); }
 
 ConstructionExtensionPtr Construction::getExtension(const std::string& name)

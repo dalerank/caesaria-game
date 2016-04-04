@@ -32,6 +32,7 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual bool isDestructible() const;
   virtual std::string sound() const;
+  virtual Variant getProperty(const std::string& name) const;
   gfx::TilesArea coverageArea() const;
 };
 

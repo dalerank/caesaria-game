@@ -90,6 +90,7 @@ public:
 
 public signals:
   Signal1<Widget*>& onCloseEx();
+  Signal2<Widget*,NEvent>& onKeyPressedEx();
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
