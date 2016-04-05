@@ -115,6 +115,8 @@ public:
   virtual std::string thoughts( Thought about ) const;
   virtual void setThinks( std::string newThinks );
 
+  virtual Variant getProperty(const std::string&) const;
+
   virtual TilePos places( Place type ) const;
 
   virtual void save( VariantMap& stream) const;

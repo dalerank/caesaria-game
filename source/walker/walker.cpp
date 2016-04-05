@@ -389,6 +389,15 @@ void Walker::_setHealth(double value){  _d->state.health = value;}
 bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
 const Tile& Walker::tile() const {  return _d->map.tile ? *_d->map.tile : invalidTile; }
 
+Variant Walker::getProperty(const std::string &name) const
+{
+  if (name == "current_thoughts") return thoughts(thCurrent);
+  if (name == "current_action") return thoughts(thAction);
+  if (name == "nation") return nation();
+
+  return Variant();
+}
+
 Tilemap& Walker::_map() const
 {
   if( _city().isValid() )

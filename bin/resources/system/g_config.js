@@ -49,6 +49,8 @@ g_config.advisor = {
     unknown: 13
 }
 
+g_config.walker = {}
+
 g_config.layer = {
     simple : 0,
     water : 1,

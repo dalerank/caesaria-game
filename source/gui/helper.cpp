@@ -17,6 +17,8 @@
 
 #include "helper.hpp"
 #include "sound/engine.hpp"
+#include "gfx/engine.hpp"
+#include "walker/walker.hpp"
 #include "widget_factory.hpp"
 
 using namespace audio;
@@ -26,6 +28,7 @@ namespace gui
 
 REGISTER_CLASS_IN_WIDGETFACTORY(SoundMuter)
 REGISTER_CLASS_IN_WIDGETFACTORY(SoundEmitter)
+REGISTER_CLASS_IN_WIDGETFACTORY(WalkerImage)
 
 SoundMuter::SoundMuter(Widget* parent, int value)
   : Widget(parent,-1,Rect())
@@ -77,6 +80,38 @@ void SoundEmitter::assign(const std::string& sampleName, int volume, int type)
   {
     _sample = sampleName;
     Engine::instance().play(_sample, volume, (SoundType)type);
+  }
+}
+
+WalkerImage::WalkerImage(Widget* parent, Rect rectangle, SmartPtr<Walker> wlk)
+  : Label(parent, rectangle, "", false, Label::bgBlackFrame)
+{
+  _wlkPicture = gfx::Picture(rectangle.size() - Size(6, 6), 0, true);
+  _wlkPicture.fill(ColorList::clear, Rect());
+  _walker = wlk;
+}
+
+void WalkerImage::_handleClick()
+{
+  emit _onClickedSignal(_walker);
+}
+
+void WalkerImage::draw(gfx::Engine &painter)
+{
+  if (!visible())
+    return;
+
+  Label::draw(painter);
+
+  if (_wlkPicture.isValid())
+  {
+    Rect clipRect = absoluteClippingRect();
+    clipRect._lefttop += Point(3, 3);
+    clipRect._bottomright -= Point(3, 3);
+    painter.draw(_wlkPicture, absoluteRect().lefttop() + Point(3, 3), &clipRect);
+    gfx::Pictures pics;
+    _walker->getPictures(pics);
+    painter.draw(pics, absoluteRect().lefttop() + Point(30, 30), &clipRect);
   }
 }
 

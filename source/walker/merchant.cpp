@@ -32,6 +32,13 @@ std::string Merchant::parentCity() const
   return "";
 }
 
+Variant Merchant::getProperty(const std::string & name) const
+{
+  if (name == "parentCity") return parentCity();
+
+  return Human::getProperty(name);
+}
+
 Merchant::Merchant(PlayerCityPtr city, walker::Type type)
  : Human( city, type )
 {

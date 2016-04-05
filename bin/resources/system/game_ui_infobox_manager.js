@@ -1,10 +1,5 @@
 game.ui.infobox.show = function(typename,location)
 {
-  var walkers = g_session.city.getWalkers(location);
-  if (walkers.length > 0) {
-    game.ui.infobox.aboutWalker(walkers);    
-  }
-
   engine.log(typename);
   switch(typename) {
   case "small_ceres_temple": case "small_mars_temple":
@@ -140,6 +135,12 @@ game.ui.infobox.show = function(typename,location)
 }
 
 function OnShowOverlayInfobox(location) {
-  var overlay = g_session.city.getOverlay(location)
-  game.ui.infobox.show(overlay.typename, location)
+  var walkers = g_session.city.getWalkers(location);
+  if (walkers.length > 0) {
+    var walker = walkers[0];
+    game.ui.infobox.wshow(walker.typename, location);
+  } else {
+    var overlay = g_session.city.getOverlay(location)
+    game.ui.infobox.show(overlay.typename, location)
+  }
 }
