@@ -5,31 +5,33 @@
   city.name : "Carthago"
   player.rank : 5
   date : "-170.01.01"
-  climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true
+  climate : 2
   preview.text : "##carthago_preview_mission##"
   preview.title : "##carthago_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 6000
     name : "n2_carthago"
-    culture : 45
+    population : 6000
+	culture : 45
     prosperity : 30
     peace : 40
     favour : 30
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
     title : "##aedile##"
+	maxHouseLevel : "big_villa"
+	winContinue : false
+	caption : "##carthago_preview_title##"
     winText : "##carthago_win_text##"
-    winContinue : false
-    maxHouseLevel : "big_villa"
-    caption : "##carthago_preview_title##"
     startSound : "carthago_speech"
-    winSound      : "carthago_win_speech"
-    overview :  [ "##carthago_overview##" ]
+    winSound : "carthago_win_speech"
+    overview :  [ "##carthago_overview##",
+				  "##carthago_overview2##",
+				  "##carthago_overview3##" ]
   }
 
   empire : {
@@ -42,7 +44,6 @@
         sea : true
         available : true
         nation : "roman"
-
         buys : { olive : 25, wine : 25, oil : 15 }
         sells : { clay: 15, timber : 10, furniture: 25 }
       }
@@ -52,7 +53,6 @@
         land : true
         nation : "roman"
         available : true
-
         sells : { wheat : 25 }
         buys : { marble : 15 }
       }
@@ -62,7 +62,6 @@
         land : true
         available : true
         nation : "roman"
-
         sells : { iron : 25, weapon : 15 }
         buys : { fruit : 25, meat : 15, wine : 15 }
       }
@@ -86,7 +85,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -95,7 +94,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -104,7 +103,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -127,7 +126,7 @@
       emperorMoney : [ 8000, 5000, 0 ]
       video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
-      text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
+      text : [ "##city_has_runout_money##", "##city_has_runout_debt##", "##city_still_in_debt_text##" ]
     }
 
     price_change#trading_options : {
@@ -782,12 +781,10 @@
       quarry : true
       clay_pit : true
       iron_mine : true
-
       wine_workshop : true
       pottery_workshop : true
       weapons_workshop : true
       furniture_workshop : true
-
       garden : true
       low_bridge : true
       high_bridge : true
@@ -795,12 +792,10 @@
       wharf : true
       engineering_post : true
       plaza : true
-
       shipyard : true
       market : true
       granary : true
       warehouse : true
-
       fig_farm : true
       olive_farm : true
       vinard : true
