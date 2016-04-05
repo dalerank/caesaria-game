@@ -31,7 +31,7 @@ public:
                  frmNorthDblLine, frmWestDblLine,
                  frmOpen, frmSquad,
                  frmParade } TroopsFormation;
-  typedef std::vector<TroopsFormation> TroopsFormations;  
+  typedef std::vector<TroopsFormation> TroopsFormations;
 
   Fort( object::Type type, int picIdLogo );
   virtual ~Fort();
@@ -67,11 +67,13 @@ public:
 
   virtual SoldierList soldiers() const;
   virtual int soldiers_n() const;
+  virtual SoldierPtr getSoldier(int i) const;
   virtual void returnSoldiers();
 
   virtual world::PlayerArmyPtr expedition() const;
   virtual void sendExpedition( Point location );
-  virtual void resetExpedition();  
+  virtual void resetExpedition();
+  virtual Variant getProperty(const std::string &name) const;
 
   bool isAttackAnimals() const;
   void setAttackAnimals( bool value );
@@ -85,7 +87,7 @@ protected:
   virtual int  _setFlagIndex( int index );
   virtual void _addFormation( TroopsFormation formation );
 
-private:  
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

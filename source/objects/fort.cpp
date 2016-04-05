@@ -35,6 +35,7 @@
 #include "world/playerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/variant_map.hpp"
+#include "extension.hpp"
 #include "events/clearland.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
@@ -523,6 +524,7 @@ void Fort::load(const VariantMap& stream)
 
 SoldierList Fort::soldiers() const {  return walkers().select<Soldier>(); }
 int Fort::soldiers_n() const { return walkers().count<Soldier>(); }
+SoldierPtr Fort::getSoldier(int i) const {  return soldiers().valueOrEmpty(i); }
 
 void Fort::returnSoldiers()
 {
@@ -561,6 +563,14 @@ void Fort::sendExpedition(Point location)
 
 void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
 void Fort::resetExpedition() { _d->expeditionName.clear(); }
+
+Variant Fort::getProperty(const std::string& name) const
+{
+  if (name == "fortCursed") return extensions().count<FortCurseByMars>();
+  if (name == "soldiersCount") return (int)soldiers().size();
+
+  return WorkingBuilding::getProperty(name);
+}
 
 bool Fort::isAttackAnimals() const { return _d->attackAnimals; }
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }

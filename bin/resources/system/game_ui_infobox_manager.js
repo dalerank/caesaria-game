@@ -1,5 +1,10 @@
 game.ui.infobox.show = function(typename,location)
 {
+  var walkers = g_session.city.getWalkers(location);
+  if (walkers.length > 0) {
+    game.ui.infobox.aboutWalker(walkers);    
+  }
+
   engine.log(typename);
   switch(typename) {
   case "small_ceres_temple": case "small_mars_temple":
@@ -101,6 +106,23 @@ game.ui.infobox.show = function(typename,location)
 
   case "burning_ruins":
     game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
+  break;
+
+  case "warehouse":
+    game.ui.infobox.aboutWarehouse(location);
+  break;
+
+  case "gatehouse":
+    game.ui.infobox.aboutGatehouse(location);
+  break;
+
+  case "fort_legionaries": case "fort_javelin": case "fort_horse":
+  case "fortArea":
+    game.ui.infobox.aboutFort(location);
+  break;
+
+  case "granary":
+    game.ui.infobox.aboutGranary(location);
   break;
 
   case "rift":

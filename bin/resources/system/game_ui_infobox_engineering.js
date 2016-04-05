@@ -24,6 +24,64 @@ game.ui.infobox.aboutRuins = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutGatehouse = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var gates = g_session.city.getOverlay(location);
+  ibox.overlay = gates;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(gates.typename);
+
+  ibox.update = function() {
+    var modeDesc = [ "gh_auto", "gh_closed", "gh_opened", "gh_unknown" ];
+    ibox.btnToggleWorks.text = _u(modeDesc[gates.getProperty("mode")]);
+  }
+
+  ibox.changeOverlayActive = function() {
+    gates.nextMode();
+    ibox.update();
+  }
+
+  ibox.text = _u("walls_need_a_gatehouse");
+
+  ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
+  ibox.setWorkingStatus(gates.active);
+
+  ibox.update();
+  ibox.show();
+}
+
+game.ui.infobox.aboutFort = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var overlay = g_session.city.getOverlay(location);
+  var fort = null;
+  if (overlay.typename == "fortArea")
+    fort = overlay.as(FortArea).base();
+  else
+    fort = overlay.as(Fort);
+
+  ibox.overlay = fort;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(fort.typename);
+
+  var text = "fort_info";
+
+  var fortCursed = fort.getProperty("fortCursed");
+  if (fortCursed > 0)
+       text = "fort_has_been_cursed_by_mars";
+
+  var startPos = { x:ibox.lbText.left(), y:ibox.lbText.bottom() };
+  var soldiersCount = fort.getProperty( "soldiersCount" );
+  var lbWidth = (ibox.w-40) / 2;
+  for (var i=0; i < soldiersCount; i++ )
+  {
+    var soldier = fort.getSoldier(i);
+    var lbSoldierName = ibox.addLabel(i < 8 ? 0 : lbWidth, startPos.x + 25 * i, lbWidth, 24);
+    lb.text = soldier.name();
+  }
+}
+
 game.ui.infobox.aboutDock = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 286);
 
@@ -188,7 +246,7 @@ game.ui.infobox.aboutLand = function(location) {
   if(tile.getFlag(g_config.tile.tlRock)) {
     ibox.update("rock_caption", "rock_text", "rock");
     return;
-  } 
+  }
 
   if(tile.getFlag(g_config.tile.tlRoad)) {
     var ovType = tile.overlay().typename;

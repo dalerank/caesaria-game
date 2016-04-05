@@ -18,7 +18,6 @@
 #include "infobox_legion.hpp"
 #include "walker/patrolpoint.hpp"
 #include "infobox_citizen_mgr.hpp"
-#include "game/infoboxmanager.hpp"
 #include "gfx/tilemap.hpp"
 #include "infobox_citizen.hpp"
 #include "core/logger.hpp"
@@ -39,25 +38,6 @@ class PManager::Impl
 public:
   typedef std::map< walker::Type, CzInfoboxCreatorPtr> Creators;
   Creators creators;
-};
-
-template< class T >
-class CitizenInfoboxParser : public InfoboxCreator
-{
-public:
-  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
-  {
-    WalkerList walkers = city->walkers( pos );
-
-    if( walkers.empty() )
-    {
-      return new T( parent, city, city->tilemap().at( pos ) );
-    }
-    else
-    {
-      return PManager::instance().show( parent, city, pos );
-    }
-  }
 };
 
 template< class T >

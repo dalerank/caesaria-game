@@ -6,6 +6,8 @@ var ctsettings = {
         return g_session.city.getOption(obj.flag);
       case 'game':
         return g_session.getAdvflag(obj.flag);
+      case 'engine'
+        return engine.getOption(obj.flag);
       case 'build':
         return g_session.city.getBuildOption(obj.flag);
       case 'gui':
@@ -21,6 +23,9 @@ var ctsettings = {
     switch (obj.group) {
       case "city":
         g_session.city.setOption(obj.flag, value);
+        break;
+      case "engine":
+        engine.setOption(obj.flag, value);
         break;
       case "game":
         g_session.setAdvflag(obj.flag, value);
@@ -144,7 +149,7 @@ sim.ui.dialogs.showCitySettings = function() {
   {    base: "city_collapse_risk",    group: "risks",    flag: "collapseKoeff"  },
   {    base: "city_df",    states: ["fun", "easy", "simple", "usual", "nicety", "hard", "impossible"],    group: "city",    flag: "difficulty"  },
   {    base: "city_batching",    states: ["off", "on"],    group: "game",    flag: "batching"  },
-  {    base: "city_lockinfo",    states: ["off", "on"],    group: "game",    flag: "lockwindow"  },
+  {    base: "city_lockinfo",    states: ["off", "on"],    group: "engine",    flag: "lockInfobox"  },
   {    base: "city_roadblock",    states: ["off", "on"],    group: "build",    flag: "roadBlock"  },
   {    base: "city_debug",    states: ["off", "on"],    group: "gui",    flag: "debug_menu"  },
   {    base: "city_metric",    states: ["quantity", "kilogram", "modius"],    group: "game",    flag: "metric"  }
