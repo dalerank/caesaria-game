@@ -1,5 +1,7 @@
 var g_config = {}
 
+g_config.widget = {}
+
 g_config.level = {
     res_menu: 0,
     res_restart: 2

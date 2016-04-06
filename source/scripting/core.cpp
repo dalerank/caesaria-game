@@ -69,6 +69,7 @@ inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (g
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_toint32(J, n); }
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
+inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
@@ -87,6 +88,41 @@ Variant engine_js_to(js_State *J, int n, Variant)
 
   Logger::warning("!!! Cant convert jValue to Variant");
   return Variant();
+}
+
+Font engine_js_to(js_State *J, int n, Font) 
+{ 
+  Font f;
+  if (js_isobject(J, n)) {
+    std::string family = Font::defname;
+    if (js_hasproperty(J, n, "family")) {
+      js_getproperty(J, n, "family"); 
+      family = js_tostring(J, -1);
+    }
+
+    int size = 12;
+    if (js_hasproperty(J, n, "size")) {
+      js_getproperty(J, n, "size"); 
+      size = js_toint32(J, -1);
+    }
+
+    int color = ColorList::pink.color;
+    if (js_hasproperty(J, n, "color")) {
+      js_getproperty(J, n, "color"); 
+      color = js_toint32(J, -1);
+    }
+
+    js_getproperty(J, n, "bold"); bool bold = js_toboolean(J, -1);
+    js_getproperty(J, n, "italic"); bool italic = js_toboolean(J, -1);
+    f = Font::create(family, size, bold, italic, NColor(color));
+  }
+  else if (js_isstring(J, n)) {
+    std::string alias = js_tostring(J, n);
+    f = Font::create(alias);
+  }
+
+  f.fallback(16, false, false, ColorList::pink);
+  return f;
 }
 
 bool engine_js_tryPCall(js_State *J, int params)

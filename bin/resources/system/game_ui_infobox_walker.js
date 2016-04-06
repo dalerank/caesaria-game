@@ -267,13 +267,13 @@ game.ui.infobox.aboutMerchant = function(location) {
   ibox.drawGood = function(goodType, qty, index, paintY)
   {
     var startOffset = 100;
-    var offset = ( this.w - startOffset * 2 ) / 4;
+    var offset = ( ibox.w - startOffset * 2 ) / 4;
     var outText = g_config.metric.convQty(qty);
 
     // pictures of goods
     var pos = {x:index * offset + startOffset, y:paintY};
 
-    var label = this.addLabel(pos.x, pos.y, 100, 24);
+    var label = ibox.addLabel(pos.x, pos.y, 100, 24);
     label.font = "FONT_2";
     label.icon = g_config.good.getInfo(goodType).picture.local;
     label.text = outText;

@@ -1,5 +1,6 @@
 TEMPLATE_WIDGET_IMPLEMENTATION(ContextMenu)
 DEFINE_OBJECT_GETTER_1(ContextMenu,bool,itemExist,const std::string&,"")
+DEFINE_OBJECT_FUNCTION_2(ContextMenu,setDefaultStateFont,ElementState,Font)
 DEFINE_OBJECT_GETTER_1(ContextMenu,ContextMenuItem*,findItem,const std::string&,"unknown")
 DEFINE_OBJECT_GETTER_2(ContextMenu,addItem,std::string,std::string)
 

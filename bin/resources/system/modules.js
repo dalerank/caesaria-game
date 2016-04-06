@@ -30,6 +30,7 @@ var modules = [
                   "g_config_tile",
                   "g_config_walker",
                   "g_config_tilemap",
+                  "g_config_widget",
                   "init_render",
                   "game_pantheon",
                   "game_ui_dialogs",

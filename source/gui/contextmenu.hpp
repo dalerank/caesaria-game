@@ -55,7 +55,7 @@ public:
   virtual ~ContextMenu();
 
   //! set behaviour when menus are closed
-  virtual void setCloseHandling( CloseMode onClose );
+  virtual void setCloseHandling(CloseMode onClose);
 
   //! get current behaviour when the menue will be closed
   virtual CloseMode getCloseHandling() const;
@@ -85,6 +85,8 @@ public:
 
   //!
   bool itemExist(const std::string& name) const;
+
+  void setDefaultStateFont(ElementState state, Font f);
 
   //! Adds a separator item to the menu
   virtual void addSeparator();

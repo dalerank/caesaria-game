@@ -101,7 +101,7 @@ public:
 
   void moveToIndex(int index);
 
-  void setFont(ElementState state, const Font& f);
+  void setStateFont(ElementState state, Font f);
 
   virtual void setVisible(bool visible);
 

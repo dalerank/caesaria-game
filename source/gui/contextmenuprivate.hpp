@@ -50,6 +50,12 @@ public:
     bool allowFocus;
   } flags;
 
+  struct ItemState {
+    Font font;
+  };
+
+  ItemState states[stCount];
+
 signals public:
   Signal1<int> onItemActionSignal;
 };

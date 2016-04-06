@@ -120,8 +120,10 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
   _d->initBackground( size() );
   setInternalName(TEXT(TopMenu));
+
+  setDefaultStateFont(stHovered, Font::create("FONT_2_RED"));
 }
 
-Signal1<int> &TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
+Signal1<int>& TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
 
 }//end namespace gui
