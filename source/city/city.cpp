@@ -218,6 +218,7 @@ Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
+const gfx::Tilemap & PlayerCity::tilemap() const { return _d->tilemap; }
 econ::Treasury& PlayerCity::treasury()           { return _d->funds; }
 
 int PlayerCity::strength() const
@@ -579,9 +580,9 @@ int PlayerCity::sentiment() const {  return _d->sentiment; }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( object.is<world::Merchant>() )
+  if( object.is<world::WMerchant>() )
   {
-    world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
+    world::WMerchantPtr merchant = ptr_cast<world::WMerchant>( object );
     if( merchant->isSeaRoute() )
     {
       SeaMerchantPtr cityMerchant = Walker::create<SeaMerchant>( this, merchant );

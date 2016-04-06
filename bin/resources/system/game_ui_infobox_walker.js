@@ -1,27 +1,29 @@
-game.ui.infobox.wshow = function(typename, walkers) {
+game.ui.infobox.wshow = function(walkers, location) {
+  var typename = walkers[0].typename;
   engine.log(typename);
   switch(typename) {
     case "merchant": case "seaMerchant":
-      game.ui.infobox.aboutMerchant(location);
+      game.ui.infobox.aboutMerchant(walkers);
     break;
 
     case "patrolPoint":
-      game.ui.infobox.aboutLegion(location);
+      game.ui.infobox.aboutLegion(walkers);
     break;
 
     default:
-      game.ui.infobox.aboutWalker(location);
+      game.ui.infobox.aboutWalker(walkers);
     break;
   }
 }
 
-game.ui.infobox.wsimple = function(location, x,y,w,h) {
+game.ui.infobox.wsimple = function(walkers, x,y,w,h) {
   var ibox = game.ui.infobox.simple(x,y,w,h);
 
   ibox.lbCurrentAction = ibox.addLabel(40, ibox.h-80, ibox.w-60, 20);
   ibox.lbBaseBuilding = ibox.addLabel(40, ibox.h-60, ibox.w-60, 20);
 
-  ibox.walker = g_session.city.walkers(location);
+  ibox.walkers = walkers;
+  ibox.walker = walkers[0];
 
   ibox.lbName = ibox.addLabel(90, 108, ibox.w-120, 20);
   ibox.lbType = ibox.addLabel(90, 128, ibox.w-120, 20);
@@ -63,7 +65,7 @@ game.ui.infobox.wsimple = function(location, x,y,w,h) {
     var a = ibox.walker.as(EnemySoldier);
     if (a != null) {
       var nation = a.getProperty("nation")
-      ibox.title = _u( nation.sustr(0,nation.length-2) + "_soldier##" );
+      ibox.title = _u( nation.substring(0,nation.length-2) + "_soldier##" );
       return;
     }
 
@@ -85,8 +87,8 @@ game.ui.infobox.wsimple = function(location, x,y,w,h) {
   return ibox;
 }
 
-game.ui.infobox.aboutLegion = function(location) {
-  var ibox = game.ui.infobox.wsimple(location, 0, 0, 460, 350);
+game.ui.infobox.aboutLegion = function(walkers) {
+  var ibox = game.ui.infobox.wsimple(walkers, 0, 0, 460, 350);
 
   var gbox = ibox.addGroupbox(0, 50, 445, 240);
   var lbNumberTitle = gbox.addLabel(90, 0, 200, 20);
@@ -251,7 +253,7 @@ game.ui.infobox.aboutLegion = function(location) {
     btn.style = "whiteBorderUp";
     btn.icon = {rc:"panelwindows", index:formationPicId[formation]};
     btn.iconOffset = {x:1, y:1};
-    btn.tooltipText = _u("legion_formation_tooltip";
+    btn.tooltipText = _u("legion_formation_tooltip");
     btn.callback = function() {
       ibox.lbFormationTitle.text = _u(texts[i] + "_title");
       ibox.lbFormation.text = _u(texts[i] + "_text");
@@ -260,8 +262,8 @@ game.ui.infobox.aboutLegion = function(location) {
   }
 }
 
-game.ui.infobox.aboutMerchant = function(location) {
-  var ibox = game.ui.infobox.wsimple(location, 0, 0, 460, 380);
+game.ui.infobox.aboutMerchant = function(walkers) {
+  var ibox = game.ui.infobox.wsimple(walkers, 0, 0, 460, 380);
   ibox.initBlackframe(18, 40, ibox.w-36, 120);
 
   ibox.drawGood = function(goodType, qty, index, paintY)
@@ -277,7 +279,7 @@ game.ui.infobox.aboutMerchant = function(location) {
     label.font = "FONT_2";
     label.icon = g_config.good.getInfo(goodType).picture.local;
     label.text = outText;
-    label.textOffset = {x:30, y:0);
+    label.textOffset = {x:30, y:0};
   }
 
   var merchant = ibox.walker.as(Merchant);
@@ -301,7 +303,7 @@ game.ui.infobox.aboutMerchant = function(location) {
   }
 
   index=0;
-  var mmap = merchant->sold();
+  var mmap = merchant.sold();
   ibox.addLabel(16, ibox.blackFrame.bottom() + 26, 84, 24, _u("sold"));
   for (var i in mmap) {
     if (mmap[i] > 0)
@@ -309,8 +311,8 @@ game.ui.infobox.aboutMerchant = function(location) {
   }
 }
 
-game.ui.infobox.aboutWalker = function(location) {
-  var ibox = game.ui.infobox.wsimple(location, 0, 0, 460, 350);
+game.ui.infobox.aboutWalker = function(walkers) {
+  var ibox = game.ui.infobox.wsimple(walkers, 0, 0, 460, 350);
   ibox.initBlackframe(25, 100, ibox.w-50, 120);
   //ibox.blackFrame.style = "whiteBorder";
 
@@ -323,7 +325,7 @@ game.ui.infobox.aboutWalker = function(location) {
       ibox.screenshots[i].deleteLater();
 
     ibox.screenshots = [];
-    var tiles = g_session.city.tilemap.getNeighbors(walker.pos(), g_config.tilemap.AllNeighbors);
+    var tiles = g_session.city.map.getNeighbors(walker.pos(), g_config.tilemap.AllNeighbors);
     var lbRect = {x:25, y:45, w:52, h:52};
     for (var i in tiles)
     {
@@ -346,7 +348,7 @@ game.ui.infobox.aboutWalker = function(location) {
     }
   }
 
-  ibox.updateCurrentAction() {
+  ibox.updateCurrentAction = function() {
     ibox.destinationPos = ibox.walker.places( g_config.walker.places.plDestination );
     var ov = g_Session.city.getOverlay(pos);
     ibox.btnMove2dst.setVisible(ov != null);
@@ -355,7 +357,7 @@ game.ui.infobox.aboutWalker = function(location) {
     {
       ibox.lbCurrentAction.prefixText = _u("wlk_state");
       var action = ibox.walker.getProperty( "thoughts_action" );
-      ibox.lbCurrentAction.text = _t(action) + "(" + _t(text) + ")" );
+      ibox.lbCurrentAction.text = _t(action) + "(" + _t(text) + ")";
     }
   }
 
@@ -387,7 +389,7 @@ game.ui.infobox.aboutWalker = function(location) {
     ibox.lbThinks = _u(thinks);
 
     if (thinks.length>0) {
-      var sound = thinks.substr(2, thinks.length - 4);
+      var sound = thinks.substring(2, thinks.length - 4);
       g_session.playAudio(sound, 100, g_config.audio.infobox);
     }
 

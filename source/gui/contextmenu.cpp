@@ -600,12 +600,34 @@ ContextMenuItem *ContextMenu::selectedItem() const
   return item( _d->highlihted.index );
 }
 
+void ContextMenu::resetToDefaultFonts()
+{
+  for (auto& item : _d->items)
+  {
+    item->setStateFont(stHovered, _d->states[stHovered].font);
+    item->setStateFont(stNormal, _d->states[stNormal].font);
+    if (item->submenu())
+    {
+      item->submenu()->setDefaultStateFont(stHovered, _d->states[stHovered].font);
+      item->submenu()->setDefaultStateFont(stNormal, _d->states[stNormal].font);
+      item->submenu()->resetToDefaultFonts();
+    }
+  }
+}
+
+void ContextMenu::setProperty(const std::string& name, const Variant &value)
+{
+  if (name == "resetToDefaultFonts") { resetToDefaultFonts(); }
+
+  Widget::setProperty(name, value);
+}
+
 // because sometimes the element has no parent at click time
 void ContextMenu::setEventParent( Widget *parent )
 {
   _d->eventParent = parent;
 
-  for( auto item : _d->items )
+  for( auto& item : _d->items )
     if( item->submenu() )
       item->submenu()->setEventParent(parent);
 }

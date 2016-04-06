@@ -97,6 +97,7 @@ public:
 
   /** Return city's objects map */
   gfx::Tilemap& tilemap();
+  const gfx::Tilemap& tilemap() const;
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
