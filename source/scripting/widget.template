@@ -8,6 +8,7 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,left,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,right,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,top,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,relativeRect,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,deleteLater,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setText,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setTooltipText,1) \
@@ -37,6 +38,7 @@ DEFINE_OBJECT_GETTER_0(WidgetType,int,top) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,left) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
+DEFINE_OBJECT_GETTER_0(WidgetType,const Rect&,relativeRect) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,setFocus) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setWidth,int) \

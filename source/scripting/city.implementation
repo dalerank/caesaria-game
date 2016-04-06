@@ -11,6 +11,8 @@ DEFINE_OBJECT_GETTER_1(PlayerCity,Variant,getProperty,const std::string&,"")
 DEFINE_OBJECT_OVERRIDE_GETTER_1(PlayerCity,const WalkerList&,walkers,tilepos,const TilePos&,TilePos())
 DEFINE_OBJECT_GETTER_0(PlayerCity,std::string,name)
 
+DEFINE_OBJECT_GETTER_2(Tilemap,getNeighbors,TilePos,int)
+
 DEFINE_OBJECT_GETTER_0(Tile,const TilePos&,pos)
 DEFINE_OBJECT_GETTER_1(Tile,bool,getFlag,Tile::Type,Tile::tlUnknown)
 DEFINE_OBJECT_GETTER_0(Tile,OverlayPtr,overlay)

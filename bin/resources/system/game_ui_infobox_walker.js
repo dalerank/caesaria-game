@@ -36,10 +36,10 @@ game.ui.infobox.wsimple = function(walkers, x,y,w,h) {
   ibox.lbCitizenPic = ibox.addLabel(30, 112, 55, 80);
   ibox.screenshots = [];
 
-  var btnMove2dst = ibox.addButton(16, ibox.h-80, 20, 20);
-  btnMove2dst.style = "whiteBorderUp";
-  btnMove2dst.text = ">";
-  btnMove2dst.callback = function() {
+  ibox.btnMove2dst = ibox.addButton(16, ibox.h-80, 20, 20);
+  ibox.btnMove2dst.style = "whiteBorderUp";
+  ibox.btnMove2dst.text = ">";
+  ibox.btnMove2dst.callback = function() {
     if (ibox.destinationPos != null) {
       g_session.moveCamerae(ibox.destinationPos);
     }
@@ -49,10 +49,10 @@ game.ui.infobox.wsimple = function(walkers, x,y,w,h) {
     }
   }
 
-  var btnMove2base = ibox.addButton(16, ibox.h-60, 20, 20);
-  btnMove2base.style = "whiteBorderUp";
-  btnMove2base.text = ">";
-  btnMove2base.callback = function() {
+  ibox.btnMove2base = ibox.addButton(16, ibox.h-60, 20, 20);
+  ibox.btnMove2base.style = "whiteBorderUp";
+  ibox.btnMove2base.text = ">";
+  ibox.btnMove2base.callback = function() {
     if (ibox.baseBuildingPos != null) {
        g_session.moveCamera(ibox.baseBuildingPos);
     }
@@ -71,13 +71,21 @@ game.ui.infobox.wsimple = function(walkers, x,y,w,h) {
 
     a = ibox.walker.getProperty("vividly");
     if (!a) {
-      ibox.title = _u("object");
+      ibox.title = _u(ibox.walker.typename);
+      ibox.lbName.visible = false;
+      ibox.lbType.visible = false;
+      ibox.lbCitizenPic.visible = false;
+
+      ibox.lbThinks.geometry = ibox.blackFrame.geometry;
+      ibox.lbThinks.text = _u(ibox.walker.typename + "_info");
+      ibox.btnMove2base.visible = false;
+      ibox.btnMove2dst.visible = false;
       return;
     }
 
     a = ibox.walker.as(Animal);
     if (a != null) {
-      ibox.title = _u("animal");
+      ibox.title = _u(ibox.walker.typename);
       return;
     }
 
@@ -325,7 +333,8 @@ game.ui.infobox.aboutWalker = function(walkers) {
       ibox.screenshots[i].deleteLater();
 
     ibox.screenshots = [];
-    var tiles = g_session.city.map.getNeighbors(walker.pos(), g_config.tilemap.AllNeighbors);
+    var tiles = g_session.city.map.getNeighbors(ibox.walker.pos(), g_config.tilemap.AllNeighbors);
+    engine.log( "g_session.city.map.tiles.length is " + tiles.length);
     var lbRect = {x:25, y:45, w:52, h:52};
     for (var i in tiles)
     {
@@ -349,20 +358,19 @@ game.ui.infobox.aboutWalker = function(walkers) {
   }
 
   ibox.updateCurrentAction = function() {
-    ibox.destinationPos = ibox.walker.places( g_config.walker.places.plDestination );
-    var ov = g_Session.city.getOverlay(pos);
-    ibox.btnMove2dst.setVisible(ov != null);
-    var text = _u(ov.typename);
-    if (!action.empty() || !text.empty() )
+    ibox.destinationPos = ibox.walker.getProperty("plDestination");
+    var ov = g_session.city.getOverlay(ibox.destinationPos);
+    var action = ibox.walker.getProperty( "thoughts_action" );
+    ibox.btnMove2dst.visible = (ov != null);
+    if (action)
     {
       ibox.lbCurrentAction.prefixText = _u("wlk_state");
-      var action = ibox.walker.getProperty( "thoughts_action" );
-      ibox.lbCurrentAction.text = _t(action) + "(" + _t(text) + ")";
+      ibox.lbCurrentAction.text = _t(action) + "(" + _ut(text) + ")";
     }
   }
 
   ibox.updateBaseBuilding = function() {
-    var pos = ibox.walker.places( g_config.walker.places.plOrigin );
+    var pos = ibox.walker.getProperty("plOrigin");
 
     ibox.baseBuildingPos = pos;
     var ov = g_session.city.getOverlay(pos);
@@ -400,4 +408,5 @@ game.ui.infobox.aboutWalker = function(walkers) {
   }
 
   ibox.setWalker(ibox.walker);
+  ibox.show();
 }

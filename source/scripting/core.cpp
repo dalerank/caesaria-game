@@ -92,25 +92,25 @@ Variant engine_js_to(js_State *J, int n, Variant)
   return Variant();
 }
 
-Font engine_js_to(js_State *J, int n, Font) 
-{ 
+Font engine_js_to(js_State *J, int n, Font)
+{
   Font f;
   if (js_isobject(J, n)) {
     std::string family = Font::defname;
     if (js_hasproperty(J, n, "family")) {
-      js_getproperty(J, n, "family"); 
+      js_getproperty(J, n, "family");
       family = js_tostring(J, -1);
     }
 
     int size = 12;
     if (js_hasproperty(J, n, "size")) {
-      js_getproperty(J, n, "size"); 
+      js_getproperty(J, n, "size");
       size = js_toint32(J, -1);
     }
 
     int color = ColorList::pink.color;
     if (js_hasproperty(J, n, "color")) {
-      js_getproperty(J, n, "color"); 
+      js_getproperty(J, n, "color");
       color = js_toint32(J, -1);
     }
 
@@ -189,6 +189,15 @@ void engine_js_push(js_State* J, float value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, uint32_t value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
 
+void engine_js_push(js_State* J, const Rect& p)
+{
+  js_newobject(J);
+  js_pushnumber(J, p.left()); js_setproperty(J, -2, "x");
+  js_pushnumber(J, p.top()); js_setproperty(J, -2, "y");
+  js_pushnumber(J, p.width()); js_setproperty(J, -2, "w");
+  js_pushnumber(J, p.height()); js_setproperty(J, -2, "h");
+}
+
 void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
 {
   js_newobject(J);
@@ -219,6 +228,16 @@ void engine_js_push(js_State *J, const VariantMap& items)
   {
     engine_js_push(J, item.second);
     js_setproperty(J, -2, item.first.c_str());
+  }
+}
+
+void engine_js_push(js_State *J, const TilesArray& items)
+{
+  js_newobject(J);
+  for (uint32_t i=0; i < items.size(); i++)
+  {
+    engine_js_push(J, *items[i]);
+    js_setproperty(J, -2, utils::i2str(i).c_str());
   }
 }
 
@@ -411,6 +430,15 @@ inline TilePos engine_js_to(js_State *J, int n, TilePos)
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
 {
+  if (js_isobject(J, n))
+  {
+    js_getproperty(J, n, "x"); int x = js_toint32(J, -1);
+    js_getproperty(J, n, "y"); int y = js_toint32(J, -1);
+    js_getproperty(J, n, "w"); int w = js_toint32(J, -1);
+    js_getproperty(J, n, "h"); int h = js_toint32(J, -1);
+
+    return Rect(x, y, x+w, y+h);
+  }
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
                js_toint32(J, n+2), js_toint32(J, n+3) );
 }

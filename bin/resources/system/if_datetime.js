@@ -5,4 +5,6 @@ DateTime.prototype.format = function(metric) {
 
   return g_session.formatDate(this, false);
 }
+
+Object.defineProperty( DateTime.prototype, "romanStr", { get: function () { g_session.formatDate(this, true); }} );
 /**************************************** DateTime class end **************************************************************/

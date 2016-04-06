@@ -97,7 +97,7 @@ public:
     bool enabled = true;
   } svk;
 
-  int size;  
+  int size;
   Direction direction;
   int virtWidth;
 
@@ -120,7 +120,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = direction::north;
-  _d->virtWidth = config::tilemap.cell.size().width() * 2;  
+  _d->virtWidth = config::tilemap.cell.size().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -248,7 +248,7 @@ TilesArray Tilemap::svkTiles() const
 
 int Tilemap::size() const { return _d->size; }
 
-TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
+TilesArray Tilemap::getNeighbors(const TilePos& pos, int type)
 {
   TilePos offset(1,1);
   switch (type)
@@ -496,11 +496,11 @@ void Tilemap::turnRight()
       _d->set( msize-i-1, msize-j-1, _d->ate( j, msize-i-1 ) );
       _d->set( j, msize-i-1, mTile );
     }
-  }  
+  }
 
   TilePos mTilePos;
   for( auto&& it : masterTiles )
-  {    
+  {
     const Impl::TurnInfo& ti = it.second;
 
     int pSize=0;
@@ -665,7 +665,7 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
       Tile* masterTile = tmp->master();
 
       if( masterTile )
-      {        
+      {
         Impl::MasterTiles::iterator mtFound = mtiles.find( masterTile );
 
         if( mtFound == mtiles.end() )
