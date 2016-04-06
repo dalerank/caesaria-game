@@ -5,7 +5,7 @@ before_install:
 # Get build dependencies
 - brew install cmake
 - brew install wget
-- brew install https://raw.github.com/eugeneoden/homebrew/eca9de1/Library/Formula/sshpass.rb
+- brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
@@ -31,6 +31,8 @@ after_success:
 - mv caesaria.macos caesaria-steam.macos
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 - sshpass -p "$SCP_PASS" scp -v caesaria-steam.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
+- cd $TRAVIS_BUILD_DIR
+- ARCH=x32 ./xcompile/deploy-release.sh
 env:
 notifications:
     slack:
