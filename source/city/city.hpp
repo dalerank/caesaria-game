@@ -56,7 +56,7 @@ public:
   virtual void timeStep(const unsigned int time);  // performs one simulation step
 
   /** Return array of walkers in current tile */
-  const WalkerList& walkers(const TilePos& pos);
+  const WalkerList& walkers(const TilePos& pos) const;
 
   /** Return all walkers in city */
   const WalkerList& walkers() const;

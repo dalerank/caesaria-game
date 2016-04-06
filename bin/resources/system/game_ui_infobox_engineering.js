@@ -71,7 +71,15 @@ game.ui.infobox.aboutFort = function(location) {
   if (fortCursed > 0)
        text = "fort_has_been_cursed_by_mars";
 
-  ibox.update();
+  var startPos = { x:ibox.lbText.left(), y:ibox.lbText.bottom() };
+  var soldiersCount = fort.getProperty( "soldiersCount" );
+  var lbWidth = (ibox.w-40) / 2;
+  for (var i=0; i < soldiersCount; i++)
+  {
+    var soldier = fort.getSoldier(i);
+    var lbSoldierName = ibox.addLabel(i < 8 ? 0 : lbWidth, startPos.y + (25 * i)%8, lbWidth, 24);
+    lb.text = soldier.name();
+  }
 }
 
 game.ui.infobox.aboutDock = function(location) {

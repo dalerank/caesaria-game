@@ -169,8 +169,6 @@ Vysoké riziko povstání , nízké daně ve městě, mstiví bohové",
 "##thanks_to##":"PODĚKOVÁNÍ PRO:
 ",
 "##rome_gratitude_request_title##":"Císařova vděčnost.",
-"##carthago_win_text##":"Děkuji ti za tvé brilantní schopnosti, Kartáginská hrozba je konečně navždy za námi. Naši staří nepřátelé jsou nyní římskými občany.
-",
 "##advemp_emperor_favour##":"Císařova přízeň",
 "##blessing_of_venus_title##":"Venušino požehnání
 ",
@@ -770,6 +768,8 @@ Vysoké riziko povstání , nízké daně ve městě, mstiví bohové",
 "##month_1_short##":"Led",
 "##build_senate_for_advisors##":"Postavte nejdříve senát",
 "##miletus_overview4##":"\n\nAh, au fait, bien que cette province soit plutôt paisible, 'paisible' devient un terme assez relatif lorsque vous vous éloignez autant de Rome. Tenez-vous donc sur vos gardes. Faites attention aux rapports vous signalant une activité ennemie, et soyez prêt à défendre votre cité. Des murs et des tours gardés par une ou deux légions devraient cependant être amplement suffisants.",
+"##carthago_win_text##":"Děkuji ti za tvé brilantní schopnosti, Kartáginská hrozba je konečně navždy za námi. Naši staří nepřátelé jsou nyní římskými občany.
+",
 "##barbarian_attack_title##":"Brabaři útočí!",
 "##city_in_debt##":"Město je zadluženo",
 "##city_in_debt_again##":"Město je znovu zadluženo",

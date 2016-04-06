@@ -45,6 +45,7 @@ var modules = [
                   "game_ui_infobox_market",
                   "game_ui_infobox_warehouse",
                   "game_ui_infobox_walker",
+                  "game_ui_infobox_event",
                   "mission_events",
                   "mission_timescale",
                   "splash_common",

@@ -251,7 +251,7 @@ void Walker::_walk()
       _d->world.lastDst = crntDst;
     }
     else
-    {      
+    {
       _d->map.path.next();
       _centerTile();
     }
@@ -372,7 +372,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : TilePos::invalid() ;}
+const TilePos& Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : TilePos::invalid() ;}
 void Walker::deleteLater(){ _d->state.deleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -553,7 +553,7 @@ void Walker::load( const VariantMap& stream)
                      WalkerHelper::getTypename( _d->type ), _d->name,
                      _d->map.tile->i(), _d->map.tile->j() );
   }
-  
+
   if( _d->speed.multiplier < 0.1 ) //Sometime this have this error in save file
   {
     Logger::warning( " Walker: Wrong speed multiplier for {0}", _d->uid );

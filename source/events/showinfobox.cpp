@@ -16,13 +16,11 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "showinfobox.hpp"
-#include "gui/info_box.hpp"
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
-#include "gui/event_messagebox.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "factory.hpp"
@@ -40,10 +38,9 @@ public:
   bool send2scribe;
   std::string video;
   Point position;
+  DateTime time;
   good::Product gtype;
   bool hidden;
-
-  std::map<std::string, Callback> callbacks;
 };
 
 GameEventPtr ShowInfobox::create()
@@ -58,6 +55,7 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
   auto ev = new ShowInfobox();
   ev->_d->title = title;
   ev->_d->text = text;
+  ev->_d->time = game::Date::current();
   ev->_d->gtype = type;
   ev->_d->send2scribe = send2scribe;
 
@@ -73,8 +71,24 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
   ev->_d->title = title;
   ev->_d->text = text;
   ev->_d->video = video;
+  ev->_d->time = game::Date::current();
   ev->_d->gtype = good::none;
   ev->_d->send2scribe = send2scribe;
+
+  GameEventPtr ret( ev );
+  ret->drop();
+
+  return ret;
+}
+
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, const DateTime& time, good::Product type)
+{
+  auto ev = new ShowInfobox();
+  ev->_d->title = title;
+  ev->_d->text = text;;
+  ev->_d->time = time;
+  ev->_d->gtype = type;
+  ev->_d->send2scribe = false;
 
   GameEventPtr ret( ev );
   ret->drop();
@@ -101,12 +115,6 @@ VariantMap ShowInfobox::save() const
 }
 
 void ShowInfobox::setDialogVisible( bool visible ) { _d->hidden = visible; }
-
-void ShowInfobox::addCallback(const std::string& text, Callback callback)
-{
-  _d->callbacks[ text] = callback;
-}
-
 bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 ShowInfobox::ShowInfobox() : _d( new Impl )
@@ -120,13 +128,9 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   {
     if( _d->video.empty() )
     {
-      auto& wnd = game.gui()->add<gui::infobox::AboutEvent>( _(_d->title), _(_d->text),
-                                                            game::Date::current(), _d->gtype, _d->tip );
-
-      for( auto& callback : _d->callbacks )
-        wnd.addCallback( callback.first, callback.second );
-
-      wnd.show();
+      VariantList vl;
+      vl << _d->title << _d->text << _d->time << _d->gtype <<_d->tip;
+      events::dispatch<ScriptFunc>("OnShowAboutEvent", vl);
     }
     else
     {

@@ -76,7 +76,7 @@ public:
 
   // position and movement
 
-  TilePos pos() const;
+  const TilePos& pos() const;
   void setPos( const TilePos& pos );
 
   virtual const Point& mappos() const;

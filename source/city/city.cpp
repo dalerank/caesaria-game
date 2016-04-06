@@ -196,7 +196,7 @@ void PlayerCity::Impl::calculatePopulation()
   states.population = statistic->population.current();
 }
 
-const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) const { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)

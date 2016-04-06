@@ -98,10 +98,10 @@ public:
 
   struct {
     ElementState current = stNormal;
-    ElementState last = StateCount;
+    ElementState last = stCount;
   } state;
 
-  ButtonState buttonStates[ StateCount ];
+  ButtonState buttonStates[ stCount ];
 
   struct {
     Signal0<> onClicked;
@@ -112,7 +112,7 @@ public:
 
   Impl() : iconMask(ColorList::clear), clickTime(0)
   {
-    for( int i=0; i < StateCount; i++)
+    for( int i=0; i < stCount; i++)
     {
       auto& state = buttonStates[ ElementState(i) ];
       state.batch.body.destroy();
@@ -283,7 +283,7 @@ void PushButton::_updateBackground( ElementState state )
 
 void PushButton::_updateStyle()
 {
-  for( int i=0; i != StateCount; i++ )
+  for( int i=0; i != stCount; i++ )
   {
     _updateBackground( ElementState(i) );
   }
@@ -395,7 +395,7 @@ void PushButton::setIconMask(int mask)
 void PushButton::setPicture( const std::string& rcname, int index )
 {
   Picture pic( rcname, index );
-  for( int i=stNormal; i < StateCount; i++ )
+  for( int i=stNormal; i < stCount; i++ )
   {
     setPicture( pic, (ElementState)i );
   }
@@ -643,7 +643,7 @@ void PushButton::setFont( const Font& font, ElementState state )
 void PushButton::setFont( const Font& font )
 {
   __D_REF(d,PushButton)
-  for( int i=0; i != StateCount; i++ )
+  for( int i=0; i != stCount; i++ )
     d.buttonStates[ ElementState(i) ].font = font;
 
   d.bg.dirty = true;

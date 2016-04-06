@@ -159,7 +159,7 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
 
 ContextMenuItem* ContextMenu::findItem(const std::string& name) const
 {
-  for( auto it : _d->items )
+  for( const auto& it : _d->items )
   {
     if ( it->text() == name )
       return it;
@@ -412,7 +412,7 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
     }
   }
 
-  for( auto it : _d->items )
+  for( auto& it : _d->items )
   {
     it->setHovered( false );
   }

@@ -28,7 +28,7 @@ game.ui.infobox.wsimple = function(location, x,y,w,h) {
   ibox.lbType.font = "FONT_1";
 
   ibox.lbThinks = ibox.addLabel(90, 148, ibox.w-120, ibox.h-250);
-  ibox.lbThinks.text = _u("citizen_thoughts_will_be_placed_here";
+  ibox.lbThinks.text = _u("citizen_thoughts_will_be_placed_here");
   ibox.lbThinks.multiline = true
 
   ibox.lbCitizenPic = ibox.addLabel(30, 112, 55, 80);
@@ -163,14 +163,14 @@ game.ui.infobox.aboutLegion = function(location) {
   for(var i in walkers)
   {
     var walker = walkers[i];
-    var rs = walker.as<RomeSoldier>();
+    var rs = walker.as(RomeSoldier);
     if (rs != null)
     {
       ibox.fort = rs.base();
       break;
     }
 
-    var pp = walker.as<PatrolPoint>();
+    var pp = walker.as(PatrolPoint);
     if (pp != null)
     {
       ibox.fort = pp.base();
@@ -242,15 +242,21 @@ game.ui.infobox.aboutLegion = function(location) {
 
   var index = 0;
   var formationPicId = [ 33, 34, 30, 31, 29, 28 ];
+  var texts = [ "line_formation", "line_formation", "mopup_formation", "mopup_formation", "open_formation" ];
   for (var i in formations) {
     var formation = formations[i];
     var offset = {x:83, y:0};
-    var rect = {16+offset.x* index, 140, 83,83);
+    var rect = {x:16+offset.x*index, y:140, w:83, h:83};
     var btn = ibox.addButton(rect.x, rect.y, rect.w, rect.h);
     btn.style = "whiteBorderUp";
-    btn.icon = {"panelwindows", formationPicId[formation] );
+    btn.icon = {rc:"panelwindows", index:formationPicId[formation]};
     btn.iconOffset = {x:1, y:1};
     btn.tooltipText = _u("legion_formation_tooltip";
+    btn.callback = function() {
+      ibox.lbFormationTitle.text = _u(texts[i] + "_title");
+      ibox.lbFormation.text = _u(texts[i] + "_text");
+      ibox.fort.formation = i;
+    }
   }
 }
 

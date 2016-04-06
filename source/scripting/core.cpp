@@ -29,6 +29,7 @@
 #include <GameGfx>
 #include <GameCity>
 #include <GameWorld>
+#include <GameWalkers>
 
 #include "religion/divinities.hpp"
 #include "religion/pantheon.hpp"
@@ -59,6 +60,7 @@ namespace internal
 void engine_js_push(js_State* J, const Variant& param);
 void engine_js_push(js_State* J, const DateTime& param);
 void engine_js_push(js_State* J, const NEvent& param);
+void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
@@ -180,6 +182,17 @@ void engine_js_push(js_State *J, const VariantMap& items)
   }
 }
 
+void engine_js_push(js_State *J, const SmartList<Walker>& items)
+{
+  js_newobject(J);
+  for (uint32_t i=0; i < items.size(); i++)
+  {
+    engine_js_push(J, items[i]);
+    js_setproperty(J, -2, utils::i2str(i).c_str());
+  }
+}
+
+
 void engine_js_push(js_State* J,const Variant& param)
 {
   switch( param.type() )
@@ -268,6 +281,7 @@ PUSH_USERDATA_SMARTPTR(Player)
 PUSH_USERDATA_SMARTPTR(Soldier)
 PUSH_USERDATA_SMARTPTR(Overlay)
 PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Walker)
 PUSH_USERDATA_SMARTPTR(Ruins)
 PUSH_USERDATA_SMARTPTR(Factory)
 PUSH_USERDATA_SMARTPTR(Divinity)
@@ -643,19 +657,15 @@ void object_call_func_0(js_State *J, void (T::*f)())
 template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
-  try
-  {
+  try {
     T* parent = (T*)js_touserdata(J, 0, "userdata");
-    if (parent)
-    {
+    if (parent) {
       Rtype value = (parent->*f)();
       engine_js_push(J,value);
-    }
-    else
+    } else {
       js_pushundefined(J);
-  }
-  catch(...)
-  {
+    }
+  } catch(...) {
     //something bad happens
   }
 }
@@ -664,14 +674,13 @@ template<typename T,typename Rtype, typename P1Type>
 void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type) const, P1Type def)
 {
   T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
-  {
+  if (parent) {
     auto paramValue1 = engine_js_to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     engine_js_push(J,value);
-  }
-  else
+  } else {
     js_pushundefined(J);
+  }
 }
 
 template<typename T,typename Rtype, typename P1Type>
@@ -740,6 +749,30 @@ void reg_overlay_constructor(js_State *J, const std::string& tname)
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", safety_cast<T*>(ov), nullptr);
+}
+
+template<class T>
+void reg_walker_constructor(js_State *J, const std::string& tname)
+{
+  T* wlk = nullptr;
+  if (js_isstring(J,1))
+  {
+    std::string name = js_tostring(J, 1);
+    walker::Type type = walker::toType(name);
+    wlk = safety_cast<T*>(WalkerManager::instance().create(type, internal::game->city()).object());
+  }
+  else if(js_isuserdata(J, 1, "userdata"))
+  {
+    auto ptr = (Walker*)js_touserdata(J, 1, "userdata");
+    wlk = safety_cast<T*>(ptr);
+
+    if (!wlk && ptr)
+      Logger::warning("Cant convert {} to {}", ptr->info().typeName(), tname);
+  }
+
+  js_currentfunction(J);
+  js_getproperty(J, -1, "prototype");
+  js_newuserdata(J, "userdata", safety_cast<T*>(wlk), nullptr);
 }
 
 void reg_widget_constructor(js_State *J, const std::string& name)
@@ -898,6 +931,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 #define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
+#define DEFINE_WALKER_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_walker_constructor<name>(J, #name); }
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.template"
@@ -922,6 +956,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "city.implementation"
 #include "overlay.implementation"
 #include "religion.implementation"
+#include "walker.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
@@ -960,6 +995,7 @@ void Core::registerFunctions(Game& game)
 #include "city.interface"
 #include "overlay.interface"
 #include "religion.interface"
+#include "walker.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function

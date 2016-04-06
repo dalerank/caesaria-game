@@ -6,7 +6,7 @@ var ctsettings = {
         return g_session.city.getOption(obj.flag);
       case 'game':
         return g_session.getAdvflag(obj.flag);
-      case 'engine'
+      case 'engine':
         return engine.getOption(obj.flag);
       case 'build':
         return g_session.city.getBuildOption(obj.flag);

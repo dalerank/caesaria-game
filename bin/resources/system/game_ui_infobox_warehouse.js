@@ -188,7 +188,7 @@ game.ui.infobox.aboutGranary = function(location) {
 
   ibox.title = _u(granary.typename);
 
-  ibox.drawGrGood(goodType, col, paintY) {
+  ibox.drawGrGood = function(goodType, col, paintY) {
     var qty = granary.store().qty(goodType);
     var btn = ibox.addProductButton(goodType, col, paintY, 250, qty);
   }
@@ -243,7 +243,7 @@ game.ui.infobox.aboutWarehouse = function(location) {
   if (isTradeCenter)
       ibox.title = _u("trade_center");
 
-  ibox.drawWhGood(goodType, col, paintY) {
+  ibox.drawWhGood = function(goodType, col, paintY) {
     var qty = wh.store().qty(goodType);
     var btn = ibox.addProductButton(goodType, col, paintY, 150, qty);
   }

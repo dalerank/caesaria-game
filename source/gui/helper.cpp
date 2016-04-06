@@ -83,7 +83,7 @@ void SoundEmitter::assign(const std::string& sampleName, int volume, int type)
   }
 }
 
-WalkerImage::WalkerImage(Widget* parent, Rect rectangle, SmartPtr<Walker> wlk)
+WalkerImage::WalkerImage(Widget* parent, const Rect& rectangle, SmartPtr<Walker> wlk)
   : Label(parent, rectangle, "", false, Label::bgBlackFrame)
 {
   _wlkPicture = gfx::Picture(rectangle.size() - Size(6, 6), 0, true);

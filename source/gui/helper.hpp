@@ -49,8 +49,8 @@ private:
 class WalkerImage : public Label
 {
 public:
-  WalkerImage(Widget* parent, Rect rectangle, SmartPtr<Walker> wlk);
-  
+  WalkerImage(Widget* parent, const Rect& rectangle=Rect(), SmartPtr<Walker> wlk=nullptr);
+
   virtual void _handleClick();
 
   virtual void draw(gfx::Engine &painter);
