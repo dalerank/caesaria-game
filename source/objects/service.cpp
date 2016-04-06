@@ -23,7 +23,6 @@
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
@@ -109,7 +108,7 @@ void ServiceBuilding::deliverService()
 
 int ServiceBuilding::serviceRange() const { return _d->serviceRange;}
 
-void ServiceBuilding::save( VariantMap& stream ) const 
+void ServiceBuilding::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, lastSend )
@@ -123,6 +122,13 @@ void ServiceBuilding::load( const VariantMap& stream )
   VARIANT_LOAD_TIME_D( _d, lastSend, stream )
   VARIANT_LOAD_ANYDEF_D( _d, serviceDelay, 80, stream )
   VARIANT_LOAD_ANYDEF_D( _d, serviceRange, servicebld::defaultRange, stream )
+}
+
+Variant ServiceBuilding::getProperty(const std::string & name) const
+{
+  if (name == "lastServiceDate") return lastSendService();
+
+  return WorkingBuilding::getProperty(name);
 }
 
 void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}

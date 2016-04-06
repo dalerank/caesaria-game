@@ -76,12 +76,16 @@ public:
   virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
 
   virtual int capacity() const = 0;
-  virtual ProductMap details() const;
   virtual int capacity(const good::Product& goodType ) const = 0;
+
+  // store/retrieve
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
 
   virtual int freeQty( const good::Product& goodType ) const;
   virtual int freeQty() const;
 
+  virtual ProductMap details() const;
   virtual bool empty() const;
 
   // returns the max quantity that can be stored now
@@ -91,8 +95,8 @@ public:
   virtual int getMaxRetrieve(const good::Product goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual int reserveStorage( good::Stock& stock, DateTime time );
-  virtual int reserveStorage( good::Product what, unsigned int qty, DateTime time);
+  virtual int reserveStorage(good::Stock& stock, DateTime time );
+  virtual int reserveStorage(good::Product what, unsigned int qty, DateTime time);
 
   // returns the reservationID if stock can be retrieved (else 0)
   virtual int reserveRetrieval(good::Stock& stock, DateTime time);
@@ -102,11 +106,7 @@ public:
   good::Stock getStorageReservation(const int reservationID, const bool pop=false);
   good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
 
-  // store/retrieve
-  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
-  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
-
-  virtual void confirmDeliver( good::Product type, int qty, unsigned int tag, const DateTime& time );
+  virtual void confirmDeliver(good::Product type, int qty, unsigned int tag, const DateTime& time );
 
   virtual const ConsumerDetails& consumers() const;
   virtual const ProviderDetails& providers() const;
@@ -122,7 +122,7 @@ public:
   virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
-  virtual void storeAll( Store& goodStore);
+  virtual void storeAll(Store& goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );

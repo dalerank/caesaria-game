@@ -5,17 +5,17 @@
   city.name : "Brundisium"
   player.rank : 1
   date : "-350.01.01"
-  climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
+  climate : 0
   preview.text : "##tutorial2_preview_mission##"
   preview.title : "##tutorial2_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 650
     name : "n2_nexthope"
+    population : 650
     culture : 0
     prosperity : 0
     peace : 0
@@ -24,11 +24,11 @@
     next : ":/missions/mission3.briefing"
     title : "##engineer##"
     winContinue : false
+	caption : "##tt2_caption##"
     shortDesc : "##tt2_short##"
-    winText : "##tt2_win_text##"
+    winText : "##tutorial2_win_text##"
     startSound : "tutorial2_speech"
-    winSound     : "tutorial2_win_speech"
-    caption : "##tt2_caption##"
+    winSound : "tutorial2_win_speech"
     overview :  [ "##tutorial_priority##",
                   "@img=picture3_00004",
                   "##tutorial_granary_text##",
@@ -52,12 +52,12 @@
     }
 
     "reservoir#tutorial_window" : {
-      population : 200
+      population : 150
       tutorial : ":/tutorial/reservoir.tutorial"
     }
 
     "enable_reservoir#building_options" : {
-      population : 200
+      population : 150
       buildings : { reservoir : true, fountain : true, aqueduct : true }
     }
 
@@ -85,9 +85,14 @@
       population : 450
       adviser : { enabled : true }
     }
-
+	
+	"empire_trade#tutorial_window" : {
+      population : 550
+      tutorial : ":/tutorial/tt2_trade.tutorial"
+    }
+	
     "enable_empire#empire_options" : {
-      population : 600
+      population : 550
       empire : {
        enabled : true
        cities : {
@@ -95,9 +100,7 @@
             land : true
             sea : true
             available : true
-
             nation : "roman"
-
             sells : { iron : 25 }
             buys : { wheat: 25, weapon: 15, pottery : 15 }
           }
@@ -110,15 +113,7 @@
           }
         }
       }
-
     }
-
-    "empire_trade#tutorial_window" : {
-      population : 600
-      tutorial : ":/tutorial/tt2_trade.tutorial"
-    }
-
-
   }
 
   buildoptions :

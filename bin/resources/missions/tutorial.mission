@@ -16,19 +16,19 @@
 
   win :
   {
-    population : 150
     name : "n2_nvillage"
+    population : 150
     culture : 0
     prosperity : 0
     peace : 0
     favour : 0
+	finishDate : "-300.01.01"
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
+	maxHouseLevel : "hut"
     winContinue : false
+	caption : "##new_village##"
     shortDesc : "##build_some_houses##"
-    finishDate : "-300.01.01"
-    maxHouseLevel : "hut"
-    caption : "##new_village##"
     winText : "##tutorial_win_text##"
     startSound : "tutorial_speech"
     winSound : "tutorial_win_speech"

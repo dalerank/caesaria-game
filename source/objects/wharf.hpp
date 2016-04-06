@@ -35,6 +35,7 @@ public:
   virtual bool mayWork() const;
   virtual std::string workersProblemDesc() const;
   virtual std::string troubleDesc() const;
+  virtual Variant getProperty(const std::string& name) const;
 
 private:
   virtual void _updatePicture( Direction direction );

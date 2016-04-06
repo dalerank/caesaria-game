@@ -25,6 +25,7 @@
 #include "core/color_list.hpp"
 #include "gfx/drawstate.hpp"
 #include "core/logger.hpp"
+#include "gfx/maskstate.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
 #include "widget_factory.hpp"
@@ -85,6 +86,7 @@ public:
   } bg;
 
   Rect iconRect;
+  NColor iconMask;
   int clickTime;
 
   struct {
@@ -96,10 +98,10 @@ public:
 
   struct {
     ElementState current = stNormal;
-    ElementState last = StateCount;
+    ElementState last = stCount;
   } state;
 
-  ButtonState buttonStates[ StateCount ];
+  ButtonState buttonStates[ stCount ];
 
   struct {
     Signal0<> onClicked;
@@ -108,9 +110,9 @@ public:
 
 public:
 
-  Impl() : clickTime(0)
+  Impl() : iconMask(ColorList::clear), clickTime(0)
   {
-    for( int i=0; i < StateCount; i++)
+    for( int i=0; i < stCount; i++)
     {
       auto& state = buttonStates[ ElementState(i) ];
       state.batch.body.destroy();
@@ -281,7 +283,7 @@ void PushButton::_updateBackground( ElementState state )
 
 void PushButton::_updateStyle()
 {
-  for( int i=0; i != StateCount; i++ )
+  for( int i=0; i != stCount; i++ )
   {
     _updateBackground( ElementState(i) );
   }
@@ -385,10 +387,15 @@ void PushButton::setIcon(Picture pic)
     state.icon.picture = pic;
 }
 
+void PushButton::setIconMask(int mask)
+{
+  _dfunc()->iconMask = NColor(mask);
+}
+
 void PushButton::setPicture( const std::string& rcname, int index )
 {
   Picture pic( rcname, index );
-  for( int i=stNormal; i < StateCount; i++ )
+  for( int i=stNormal; i < stCount; i++ )
   {
     setPicture( pic, (ElementState)i );
   }
@@ -549,19 +556,17 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   __D_REF(_d,PushButton);
 
   _d.state.current = _state();
-  if( _d.bg.dirty )
-  {
+  if (_d.bg.dirty) {
     _updateStyle();
     _d.bg.dirty = false;
   }
 
-  if( _d.bg.textChanged )
-  {
+  if (_d.bg.textChanged) {
     _updateTexture();
     _d.bg.textChanged = false;
   }
 
-  Widget::beforeDraw( painter  );
+  Widget::beforeDraw(painter);
 }
 
 bool PushButton::isBodyVisible() const { return _dfunc()->bg.visible; }
@@ -571,30 +576,28 @@ void gui::PushButton::setTextVisible(bool value) { _dfunc()->text.visible = valu
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
 {
-  if( !visible() )
+  if (!visible())
     return;
 
   __D_REF(_d,PushButton);
   // todo:	move sprite up and text down if the pressed state has a sprite
   //			  draw sprites for focused and mouse-over
-  const ButtonState& state = _d.buttonStates[ _d.state.current ];
+  const ButtonState& state = _d.buttonStates[_d.state.current];
 
-  if( isBodyVisible() )
-  {
-    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    pipe.draw( state.background )
-        .fallback( state.batch.body )
-        .fallback( state.batch.fallback );
+  if (isBodyVisible()) {
+    DrawState pipe(painter, absoluteRect().lefttop(), &absoluteClippingRectRef());
+    pipe.draw(state.background)
+        .fallback(state.batch.body)
+        .fallback(state.batch.fallback);
   }
 
-  if( _d.text.visible && _d.text.picture.isValid() )
-  {
-    painter.draw( _d.text.picture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+  if (_d.text.visible && _d.text.picture.isValid()) {
+    painter.draw(_d.text.picture, screenLeft(), screenTop(), &absoluteClippingRectRef());
   }
 
-  drawIcon( painter );
+  drawIcon(painter);
 
-  Widget::draw( painter );
+  Widget::draw(painter);
 }
 
 void PushButton::debugDraw(Engine& painter)
@@ -605,23 +608,23 @@ void PushButton::debugDraw(Engine& painter)
   painter.drawLine( ColorList::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
   painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
 
-  if( _d.state.current == stPressed )
-  {
+  if (_d.state.current == stPressed) {
     painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
     painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
   }
 }
 
-void PushButton::drawIcon( gfx::Engine& painter )
+void PushButton::drawIcon(gfx::Engine& painter)
 {
   __D_REF(_d,PushButton);
   const ButtonState& bstate = _d.buttonStates[ _d.state.current ];
 
-  if( !bstate.icon.picture.isValid() )
+  if (!bstate.icon.picture.isValid())
       return;
 
-  Point pos = localToScreen( _d.iconRect ).lefttop();
-  painter.draw( bstate.icon.picture, pos + bstate.icon.offset );
+  Point pos = localToScreen(_d.iconRect).lefttop();
+  MaskState lock(painter, _d.iconMask);
+  painter.draw(bstate.icon.picture, pos + bstate.icon.offset);
 }
 
 void PushButton::setText( const std::string& text )
@@ -640,7 +643,7 @@ void PushButton::setFont( const Font& font, ElementState state )
 void PushButton::setFont( const Font& font )
 {
   __D_REF(d,PushButton)
-  for( int i=0; i != StateCount; i++ )
+  for( int i=0; i != stCount; i++ )
     d.buttonStates[ ElementState(i) ].font = font;
 
   d.bg.dirty = true;
@@ -667,10 +670,7 @@ void PushButton::setBackgroundStyle(const std::string &strStyle)
 {
   BackgroundStyleHelper helper;
   PushButton::BackgroundStyle style = helper.findType( strStyle );
-  if( style != noBackground )
-  {
-    setBackgroundStyle( style );
-  }
+  setBackgroundStyle( style );
 }
 
 }//end namespace gui

@@ -196,7 +196,7 @@ void PlayerCity::Impl::calculatePopulation()
   states.population = statistic->population.current();
 }
 
-const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) const { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
@@ -466,6 +466,7 @@ const city::development::Options& PlayerCity::buildOptions() const { return _d->
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
+gfx::Tile& PlayerCity::getTile(const TilePos& pos) const { return _d->tilemap.at(pos); }
 PlayerPtr PlayerCity::mayor() const                         { return _d->player; }
 city::trade::Options& PlayerCity::tradeOptions()            { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month)             {  }
@@ -533,6 +534,15 @@ int PlayerCity::getOption(const std::string& optname,bool) const
 {
   OptionType type = city::findOption(optname);
   return getOption(type);
+}
+
+Variant PlayerCity::getProperty(const std::string& name) const
+{
+  if (name == "roadExit") return getBorderInfo(roadExit).pos();
+  if (name == "roadEntry") return getBorderInfo(roadEntry).pos();
+  if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
+
+  return Variant();
 }
 
 void PlayerCity::clean()

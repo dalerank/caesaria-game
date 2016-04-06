@@ -3,20 +3,20 @@
   map : ":/maps/Mediolanum.sav"
   funds : 8000
   city.name : "Mediolanum"
-  date : "-220.01.01"
   player.rank : 4
-  climate : 1
+  date : "-220.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
+  climate : 1
   preview.text : "##mediolanum_preview_mission##"
   preview.title : "##mediolanum_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 7000
-    culture : 40
     name : "n2_mediolanum"
+	population : 7000
+    culture : 40
     prosperity : 25
     peace : 40
     favour : 30
@@ -24,12 +24,12 @@
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
     maxHouseLevel : "big_villa"
-    caption : "##mediolanum_5_title##"
+	winContinue : false
+    caption : "##mediolanum_title##"
+	winText : "##mediolanum_win_text##"
     startSound : "mediolanum_speech"
-    overview :  [ "##mediolanum_5_overview##" ]
-    winText : "##mediolanum_win_text##"
-    winContinue : false
-    winSound      : "mediolanum_win_speech"
+	winSound : "mediolanum_win_speech"
+    overview :  [ "##mediolanum_overview##" ]
   }
 
   empire : {
@@ -39,22 +39,18 @@
     {
       Massilia : {
         nation : "roman"
-
         land : true
         sea : true
         available : true
-
         sells : { oil : 15, wine : 25 }
         buys : { iron: 15, furniture: 15 }
       }
 
       Capua : {
         nation : "roman"
-
         sea : true
         land : true
         available : true
-
         sells : { meat : 25, clay : 25 }
         buys : { weapon : 25 }
       }
@@ -78,7 +74,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -87,7 +83,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -96,7 +92,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -829,23 +825,19 @@
       quarry : true
       clay_pit : true
       iron_mine : true
-
       pottery : true
       weapons_workshop : true
       furniture_workshop : true
-
       garden : true
       low_bridge : true
       high_bridge : true
       dock : true
       wharf : true
-
       small_ceres_temple : true
       small_venus_temple : true
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
-
       shipyard : true
       market : true
       granary : true
@@ -863,12 +855,10 @@
       military_academy : true
       lumber_mill : true
       barracks : true
-
       baths : true
       doctor : true
       hospital : true
       barber : true
-
       wheat_farm : true
       vegetable_farm : true
     }

@@ -1,5 +1,7 @@
 var g_config = {}
 
+g_config.widget = {}
+
 g_config.level = {
     res_menu: 0,
     res_restart: 2
@@ -11,7 +13,8 @@ g_config.lobby = {
 
 g_config.audio = {
     theme: 2,
-    speech: 4
+    speech: 4,
+    infobox : 6
 }
 
 g_config.climate = {
@@ -24,12 +27,6 @@ g_config.gift = {
     modest: 1,
     generous: 2,
     lavish: 3
-}
-
-g_config.metric = {
-    none: 0,
-    modern: 1,
-    roman: 2
 }
 
 g_config.rc = {
@@ -53,6 +50,8 @@ g_config.advisor = {
     main: 12,
     unknown: 13
 }
+
+g_config.walker = {}
 
 g_config.layer = {
     simple : 0,

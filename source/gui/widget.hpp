@@ -104,7 +104,7 @@ public:
   //! Sets another skin independent font.
   /** If this is set to zero, the button uses the font of the skin.
   \param font: New font to set. */
-  virtual void setFont( const Font& font );
+  virtual void setFont(const Font& font);
   virtual void setFont(const std::string& name, NColor color=NColor() );
 
   virtual Font font() const;

@@ -1,0 +1,3 @@
+DEFINE_OBJECT_GETTER_0(Walker,const TilePos&,pos)
+DEFINE_OBJECT_GETTER_0(Walker,const std::string&,name)
+DEFINE_OVERLAY_CONSTRUCTOR(Walker)

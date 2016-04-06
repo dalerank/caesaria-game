@@ -101,6 +101,8 @@ public:
 
   void moveToIndex(int index);
 
+  void setStateFont(ElementState state, Font f);
+
   virtual void setVisible(bool visible);
 
 signals public:

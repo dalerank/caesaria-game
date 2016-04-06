@@ -103,7 +103,7 @@ public:
 
   void _finalizeResize()
   {
-    for( int i=0; i < StateCount; i++ )
+    for( int i=0; i < stCount; i++ )
         _updateBackground( ElementState(i) );
 
     auto btn = helpButton();

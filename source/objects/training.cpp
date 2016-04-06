@@ -20,7 +20,6 @@
 
 #include "walker/trainee.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"

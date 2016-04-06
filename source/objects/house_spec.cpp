@@ -251,12 +251,12 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   return 0;
 }
 
-int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
+int HouseSpecification::findUnwishedBuildingNearby(const House& house, object::Type& rType, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
-  TilePos housePos = house->pos();
-  int houseDesrbl = house->desirability().base;
-  BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
+  int aresOffset = math::clamp<int>( house.level() / 5, 1, 10 );
+  TilePos housePos = house.pos();
+  int houseDesrbl = house.desirability().base;
+  BuildingList buildings = house._city()->statistic().objects.find<Building>( object::any,
                                                                                housePos, aresOffset );
 
   int ret = 0;
@@ -275,23 +275,23 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
   return ret;
 }
 
-int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos ) const
+int HouseSpecification::findLowLevelHouseNearby(const House& house, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
+  int aresOffset = math::clamp<int>( house.level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
-  TilePos housePos = house->pos();
-  HouseList houses = house->_city()->statistic().objects.find<House>( object::house,
-                                                                      housePos - offset, housePos + offset );
+  TilePos housePos = house.pos();
+  HouseList houses = house._city()->statistic().objects.find<House>( object::house,
+                                                                     housePos - offset, housePos + offset );
 
   int ret = 0;
-  for( auto house : houses )
+  for( auto h : houses )
   {
-    int pop = house->habitants().count();
-    HouseLevel::ID bLevel = house->level();
+    int pop = h->habitants().count();
+    int bLevel = h->level();
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      refPos = house->pos();
+      refPos = h->pos();
       break;
     }
   }

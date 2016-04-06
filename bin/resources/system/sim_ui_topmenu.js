@@ -166,6 +166,9 @@ sim.ui.topmenu.advisors.init = function() {
 sim.ui.topmenu.initialize = function () {
     var t = sim.ui.topmenu;
     t.widget = new ContextMenu("TopMenu");
+    t.widget.setDefaultStateFont(g_config.widget.state.stNormal, {size:16, color:0xff000000});
+    t.widget.setDefaultStateFont(g_config.widget.state.stHovered, {size:16, color:0xffff0000});
+
     t.file.init()
     t.options.init()
     t.help.init()

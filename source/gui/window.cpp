@@ -109,6 +109,7 @@ public:
 
   struct {
     Signal1<Widget*> onCloseEx;
+    Signal2<Widget*, NEvent> onKeyPressed;
   } signal;
 
   FlagHolder<Window::FlagName> flags;
@@ -179,6 +180,11 @@ void Window::addCloseCode(int code)
   }
 }
 
+Signal2<Widget*, NEvent>& Window::onKeyPressedEx()
+{
+  return _d->signal.onKeyPressed;
+}
+
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
   PushButton*& btn = _d->buttons[ btnName ];
@@ -201,7 +207,7 @@ void Window::_init()
 
   if( !_d->title )
   {
-    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+24 ), text(), false );
     _d->title->setTextAlignment( align::center, align::center );
     _d->title->setFont( "FONT_4" );
     _d->title->setSubElement( true );
@@ -212,9 +218,9 @@ void Window::_init()
 
 void Window::_setSystemButtonsVisible(bool visible)
 {
-  button( buttonClose )->setVisible(visible);
-  button( buttonMin )->setVisible(visible);
-  button( buttonMax )->setVisible(visible);
+  button(buttonClose)->setVisible(visible);
+  button(buttonMin)->setVisible(visible);
+  button(buttonMax)->setVisible(visible);
 }
 
 void Window::_finalizeResize()
@@ -329,6 +335,7 @@ bool Window::onEvent(const NEvent& event)
     break;
 
     case sEventKeyboard:
+      emit _d->signal.onKeyPressed(this, event);
     break;
 
     default:

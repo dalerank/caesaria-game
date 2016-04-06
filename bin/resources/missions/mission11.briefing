@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe02_00003"
-  title : "100 AD - Final assignment"
-	
+  title : "##briefing_eleventh_title##"
+
   items : {
     lindum : {
       title : "##lindum_title##"

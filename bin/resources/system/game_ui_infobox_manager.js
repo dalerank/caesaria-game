@@ -1,5 +1,6 @@
 game.ui.infobox.show = function(typename,location)
 {
+  engine.log(typename);
   switch(typename) {
   case "small_ceres_temple": case "small_mars_temple":
   case "small_neptune_temple": case "small_venus_temple":
@@ -24,6 +25,68 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutRaw(location);
   break;
 
+  case "prefecture": case "engineering_post": case "clinic":
+  case "baths": case "barber": case "hospital": case "missionaryPost":
+  case "school": case "academy": case "library": case "actorColony":
+  case "gladiatorSchool": case "lionsNursery": case "hippodrome":
+  case "chariotSchool": case "forum":
+    game.ui.infobox.aboutServiceBuilding(location);
+  break;
+
+  case "dock":
+    game.ui.infobox.aboutDock(location);
+  break;
+
+  case "amphitheater":
+    game.ui.infobox.aboutAmphitheater(location);
+  break;
+
+  case "governorHouse": case "governorVilla": case "governorPalace":
+    var text = _u(typename + "_info")
+    game.ui.infobox.aboutServiceBuilding(location, text);
+  break;
+
+  case "well":
+    game.ui.infobox.aboutWell(location);
+  break;
+
+  case "house":
+    game.ui.infobox.aboutHouse(location);
+  break;
+
+  case "colosseum":
+    game.ui.infobox.aboutColosseum(location);
+  break;
+
+  case "shipyard":
+    game.ui.infobox.aboutShipyard(location);
+  break;
+
+  case "theater":
+    game.ui.infobox.aboutTheater(location);
+  break;
+
+  case "wharf":
+    game.ui.infobox.aboutWharf(location);
+  break;
+
+  case "market":
+    game.ui.infobox.aboutMarket(location);
+  break;
+
+  case "pottery_workshop": case "weapons_workshop": case "furniture_workshop":
+  case "wine_workshop": case "oil_workshop":
+    game.ui.infobox.aboutFactory(location);
+  break;
+
+  case "senate":
+    game.ui.infobox.aboutSenate(location);
+  break;
+
+  case "fountain":
+    game.ui.infobox.aboutFountain(location);
+  break;
+
   case "reservoir":
     game.ui.infobox.aboutReservoir(location);
   break;
@@ -40,6 +103,23 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
   break;
 
+  case "warehouse":
+    game.ui.infobox.aboutWarehouse(location);
+  break;
+
+  case "gatehouse":
+    game.ui.infobox.aboutGatehouse(location);
+  break;
+
+  case "fort_legionaries": case "fort_javelin": case "fort_horse":
+  case "fortArea":
+    game.ui.infobox.aboutFort(location);
+  break;
+
+  case "granary":
+    game.ui.infobox.aboutGranary(location);
+  break;
+
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;
@@ -47,10 +127,20 @@ game.ui.infobox.show = function(typename,location)
   case "barracks":
     game.ui.infobox.aboutBarracks(location);
   break;
+
+  default:
+    game.ui.infobox.aboutLand(location);
+  break;
   }
 }
 
 function OnShowOverlayInfobox(location) {
-  var overlay = g_session.city.getOverlay(location)
-  game.ui.infobox.show(overlay.typename, location)
+  var walkers = g_session.city.walkers(location);
+  if (walkers.length > 0) {
+    var walker = walkers[0];
+    game.ui.infobox.wshow(walker.typename, location);
+  } else {
+    var overlay = g_session.city.getOverlay(location)
+    game.ui.infobox.show(overlay.typename, location)
+  }
 }

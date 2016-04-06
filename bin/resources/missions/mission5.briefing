@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe01_00003"
-  title : "220 BC - Fifth assignment"
-	
+  title : "##briefing_fifth_title##"
+
   items : {
     mediolanum : {
       title : "##mediolanum_title##"

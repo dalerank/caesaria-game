@@ -96,9 +96,12 @@ void ContextMenuItem::_updateTexture(Engine& painter)
 
 ContextMenu* ContextMenuItem::addSubmenu(int id)
 {
+  __D_REF(d, ContextMenuItem)
   auto& sub = parent()->add<ContextMenu>(Rect(0,0,100,100), id, false, false);
   setSubmenu(&sub);
   sub.bringToFront();
+  sub.setDefaultStateFont(stHovered, d.states[stHovered].font);
+  sub.setDefaultStateFont(stNormal, d.states[stNormal].font);
   return &sub;
 }
 
@@ -164,8 +167,10 @@ ContextMenuItem::~ContextMenuItem()
 
 void ContextMenuItem::setHovered( bool hover )
 {
-  _dfunc()->is.hovered = hover;
-  setFont( hover ? "FONT_2_RED" : "FONT_2" );
+  __D_REF(d, ContextMenuItem)
+  d.is.hovered = hover;
+  Font font = d.states[hover ? stHovered : stNormal].font;
+  setFont(font);
 }
 
 void ContextMenuItem::setVisible(bool visible)
@@ -181,6 +186,15 @@ void ContextMenuItem::moveToIndex(int index)
   ContextMenu* menu = safety_cast<ContextMenu*>(parent());
   if (menu)
     menu->moveItem(this, index);
+}
+
+void ContextMenuItem::setStateFont(ElementState state, Font f)
+{
+  if (state >= stCount)
+    return;
+
+  __D_REF(d, ContextMenuItem)
+  d.states[state].font = f.fallback(16, false, false, ColorList::black);
 }
 
 bool ContextMenuItem::isAutoChecking() { return _dfunc()->is.autoChecking; }

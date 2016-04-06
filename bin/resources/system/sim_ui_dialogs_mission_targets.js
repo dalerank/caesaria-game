@@ -5,12 +5,13 @@ function OnShowMissionTargetsWindow()
 
 sim.ui.dialogs.showMissionTargets = function()
 {
-    var wint = g_session.winConditions();
+    var wint = g_session.city.victoryConditions();
     for (var i in wint)
       engine.log(i + "  :  " + wint[i]);
 
     var missionTitle = wint.caption;
-    if(missionTitle.lenght===0) missionTitle = "##build_your_rome##";
+    if(missionTitle == undefined || missionTitle.lenght===0)
+      missionTitle = _u("build_your_rome");
 
     var w = g_ui.addWindow(0, 0, 610, 430);
     w.internalName = "MissionTargetsWindow";
@@ -26,7 +27,7 @@ sim.ui.dialogs.showMissionTargets = function()
     var lbToCity = w.addLabel(w.w-300, w.h-40, 290, 30)
     lbToCity.textAlign = { v:"center", h:"center" }
     lbToCity.font = "FONT_2"
-    lbToCity.text = "##mission_wnd_tocity##"
+    lbToCity.text = _u("mission_wnd_tocity")
 
     var btnExit = w.addTexturedButton(w.w-110, w.h-40, 27, 27)
     btnExit.states = { rc:"paneling", normal:179, hover:180, pressed:181, disabled:179 };
@@ -34,12 +35,12 @@ sim.ui.dialogs.showMissionTargets = function()
 
     var gbox = w.addGroupbox(16, 64, w.w-80, 80)
     var lbTargets = gbox.addLabel(15, 0, w.w-30, 28)
-    lbTargets.text = "##mission_wnd_targets_title##"
+    lbTargets.text = _u("mission_wnd_targets_title")
     lbTargets.font = "FONT_1_WHITE"
     lbTargets.textAlign = { h:"upperLeft", v:"center" }
 
     var lbPopulation = gbox.addLabel(16, 32, 240, 26)
-    lbPopulation.text = _format( "{0}:{1}", _t("##mission_wnd_population##"), wint.population )
+    lbPopulation.text = _format( "{0}:{1}", _ut("mission_wnd_population"), wint.population )
     lbPopulation.style = "smallBrown"
     lbPopulation.textOffset = {x:10, y:0}
     lbPopulation.font = "FONT_1_RED"
@@ -47,7 +48,7 @@ sim.ui.dialogs.showMissionTargets = function()
     if (wint.prosperity>0)
     {
         var lbProsperity = gbox.addLabel(16, 54, 240, 20)
-        lbProsperity.text = _format( "{0}:{1}", _t("##senatepp_prsp_rating##"), wint.prosperity )
+        lbProsperity.text = _format( "{0}:{1}", _ut("senatepp_prsp_rating"), wint.prosperity )
         lbProsperity.style = "smallBrown"
         lbProsperity.textOffset = {x:10, y:0}
         lbProsperity.font = "FONT_1_RED"
