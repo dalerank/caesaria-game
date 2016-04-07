@@ -708,6 +708,7 @@
     cost : 20,
     desirability : { base : 8,	range : 7,	step : -1 }
     employers : 6
+    image : [ "security", 55 ]
     class : "religion"
   },
 

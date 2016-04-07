@@ -163,6 +163,7 @@ game.ui.infobox.aboutBarracks = function(location) {
 
 game.ui.infobox.aboutFountain = function(location) {
   var ibox = this.aboutConstruction(0,0,480,320);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
   var fountain = g_session.city.getOverlay(location);
   ibox.title = _u(fountain.typename);
@@ -177,11 +178,10 @@ game.ui.infobox.aboutFountain = function(location) {
   } if (fountain.active) {
     text = fountain.mayWork() ? "fountain_info" : "fountain_not_work";
   } else {
-    text = reservoirAccess ? "need_full_reservoir_for_work" : "need_reservoir_for_work";
+    text = reservoirAccess ? "need_access_to_full_reservoir" : "need_reservoir_for_work";
   }
 
   ibox.setInfoText(_u(text));
-
   ibox.show();
 }
 
@@ -337,7 +337,7 @@ game.ui.infobox.aboutFactory = function(location) {
     {
       var textOut = _format("{0} {1}",
                         factory.outStock().qty() / 100,
-                        _ut(typeOut) );
+                        _ut(pinfo.name) );
       text += textOut;
     }
 
@@ -513,7 +513,8 @@ game.ui.infobox.aboutTheater = function(location) {
 
   ibox.title = _u(theater.typename);
   ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers(), theater.numberWorkers());
-  ibox.setWorkingStatus(working.active);
+  ibox.setWorkingStatus(theater.active);
+  ibox.overlay = theater;
 
   var shows = g_config.entertainment.shows;
   var showsCount = theater.getProperty("showsCount");
