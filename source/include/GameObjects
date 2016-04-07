@@ -14,6 +14,7 @@
 #include "objects/fountain.hpp"
 #include "objects/market.hpp"
 #include "objects/warehouse.hpp"
+#include "objects/barracks.hpp"
 #include "objects/granary.hpp"
 #include "objects/gatehouse.hpp"
 #include "objects/watersupply.hpp"
