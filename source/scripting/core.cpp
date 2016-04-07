@@ -63,6 +63,7 @@ void engine_js_push(js_State* J, const NEvent& param);
 void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
 void engine_js_push(js_State* J, const Tilemap& param);
+void engine_js_push(js_State* J, Widget* param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
@@ -332,6 +333,7 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 #define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
 
 PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Widget)
 PUSH_USERDATA(Stock)
 PUSH_USERDATA(Store)
 
