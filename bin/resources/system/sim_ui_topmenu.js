@@ -176,5 +176,7 @@ sim.ui.topmenu.initialize = function () {
     t.labels.init()
     t.advisors.init()
 
+    t.widget.setProperty("resetToDefaultFonts",1);
+
     OnUpdateTopMenuCityStats()
 }

@@ -11,6 +11,7 @@ var modules = [
                   "if_picture",
                   "if_datetime",
                   "if_overlay",
+                  "if_walker",
                   "if_gui_widgets",
                   "if_gui_window",
                   "g_ui",

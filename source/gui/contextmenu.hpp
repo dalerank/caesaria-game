@@ -113,6 +113,7 @@ public:
   virtual int selected() const;
 
   virtual ContextMenuItem* selectedItem() const;
+  virtual void setProperty(const std::string& name, const Variant &value);
 
   //! Sets the visible state of this element.
   virtual void setVisible( bool visible );
@@ -125,6 +126,7 @@ public:
   virtual void beforeDraw(gfx::Engine& painter);
 
   int hovered() const;
+  void resetToDefaultFonts();
 
   void moveItem(ContextMenuItem* item, unsigned int index);
 

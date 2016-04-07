@@ -393,6 +393,8 @@ Variant Walker::getProperty(const std::string &name) const
 {
   if (name == "current_thoughts") return thoughts(thCurrent);
   if (name == "current_action") return thoughts(thAction);
+  if (name == "plDestination") return places(plDestination);
+  if (name == "plOrigin") return places(plOrigin);
   if (name == "nation") return nation();
 
   return Variant();

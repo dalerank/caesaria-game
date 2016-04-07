@@ -163,7 +163,7 @@ public:
   void setCamelsGo(int delay );
 };
 
-LandMerchant::LandMerchant(PlayerCityPtr city, world::MerchantPtr merchant)
+LandMerchant::LandMerchant(PlayerCityPtr city, world::WMerchantPtr merchant)
   : Merchant( city, walker::merchant ), _d( new Impl )
 {
   _d->maxDistance = 60;

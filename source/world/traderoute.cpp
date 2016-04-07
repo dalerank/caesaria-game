@@ -35,7 +35,7 @@ using namespace gfx;
 namespace world
 {
 
-class Merchants : public FlowList<Merchant>
+class Merchants : public FlowList<WMerchant>
 {
 public:
   Traderoute* route;
@@ -66,7 +66,7 @@ public:
     foreach( it, stream )
     {
       good::Storage sell, buy;
-      MerchantPtr m = route->addMerchant( route->beginCity()->name(), sell, buy );
+      WMerchantPtr m = route->addMerchant( route->beginCity()->name(), sell, buy );
 
       if( m.isValid() )
       {
@@ -92,7 +92,7 @@ public:
 class Traderoute::Impl
 {
 signals public:
-  Signal1<MerchantPtr> onMerchantArrivedSignal;
+  Signal1<WMerchantPtr> onMerchantArrivedSignal;
 
 public:
   std::string begin;
@@ -105,7 +105,7 @@ public:
 
   Merchants merchants;
 
-  void resolveMerchantArrived( MerchantPtr merchant );
+  void resolveMerchantArrived(WMerchantPtr merchant );
   void updateBoundingBox();
   void updatePictures();
 };
@@ -167,15 +167,15 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
 const gfx::Pictures& Traderoute::pictures() const {  return _d->pictures;}
 bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
-MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell, good::Store &buy )
+WMerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell, good::Store &buy )
 {
   if( _d->points.empty() )
   {
     Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [{}<->{}]", _d->begin, _d->end );
-    return MerchantPtr();
+    return WMerchantPtr();
   }
 
-  MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
+  WMerchantPtr merchant = WMerchant::create( _d->empire, this, begin, sell, buy );
   _d->merchants.postpone( merchant );
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
@@ -193,8 +193,8 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
 
 Traderoute::~Traderoute() {}
 
-MerchantPtr Traderoute::merchant( unsigned int index ) { return _d->merchants.valueOrEmpty( index ); }
-const MerchantList& Traderoute::merchants() const{  return _d->merchants; }
+WMerchantPtr Traderoute::merchant( unsigned int index ) { return _d->merchants.valueOrEmpty( index ); }
+const WMerchantList& Traderoute::merchants() const{  return _d->merchants; }
 
 VariantMap Traderoute::save() const
 {  
@@ -222,12 +222,12 @@ unsigned int Traderoute::getId(const std::string& begin, const std::string& end)
   return Hash( begin ) + Hash( end );
 }
 
-Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
+Signal1<WMerchantPtr>& Traderoute::onMerchantArrived()
 {
   return _d->onMerchantArrivedSignal;
 }
 
-void Traderoute::Impl::resolveMerchantArrived(MerchantPtr merchant)
+void Traderoute::Impl::resolveMerchantArrived(WMerchantPtr merchant)
 {
   if( merchants.contain( merchant ) )
     merchant->deleteLater();

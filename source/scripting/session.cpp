@@ -32,6 +32,7 @@
 #include "font/font.hpp"
 #include "font/font_collection.hpp"
 #include "walker/name_generator.hpp"
+#include "walker/helper.hpp"
 #include "steam.hpp"
 #include <string>
 #include "game/hotkey_manager.hpp"
@@ -231,6 +232,11 @@ religion::DivinityPtr Session::addGod(const std::string & name)
 std::string Session::getOverlayType(int i) const
 {
   return object::toString(object::Type(i));
+}
+
+std::string Session::getWalkerType(int i) const
+{
+  return walker::toString(walker::Type(i));
 }
 
 VariantMap Session::getGoodInfo(std::string goodName) const

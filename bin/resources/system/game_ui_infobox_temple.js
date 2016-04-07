@@ -56,7 +56,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
                   : 30;
 
       ibox.position = {x:(resolution.w-ibox.w)/2, y:ry}
-      ibox.mayMove = engine.getOption("lockInfobox")
+      ibox.mayMove = !engine.getOption("lockInfobox")
   }
 
   ibox.setWorkersStatus = function(x, y, picId, need, have) {
@@ -126,12 +126,14 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
 
 game.ui.infobox.aboutReservoir = function(location) {
   var ibox = this.aboutConstruction(0, 0, 480, 320);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
   ibox.title = _u("reservoir");
 
   var reservoir = g_session.city.getOverlay(location).as(Reservoir);
   var text = reservoir.haveWater()
                       ? "reservoir_info"
                       : "reservoir_no_water";
+  ibox.overlay = reservoir;
   ibox.setInfoText( _u(text) );
   ibox.show();
 }

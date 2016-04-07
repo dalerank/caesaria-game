@@ -3,5 +3,7 @@
 #include "walker/merchant_sea.hpp"
 #include "walker/chastener.hpp"
 #include "walker/helper.hpp"
+#include "walker/patrolpoint.hpp"
+#include "walker/animals.hpp"
 #include "walker/chastener_elephant.hpp"
 #include "walker/walkers_factory.hpp"

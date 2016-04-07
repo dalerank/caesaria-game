@@ -1,7 +1,6 @@
 /* ***************************** widget class ********************************** */
 function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, 'text', { get : function () {}, set: function (str) { this.setText(_t(str)) }})
-  Object.defineProperty(objProto, "geometry", { set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); } })
   Object.defineProperty(objProto, "font", { set: function (fname) { this.setFont(fname); } })
   Object.defineProperty(objProto, "enabled", { set: function (e) { this.setEnabled(e); } })
   Object.defineProperty(objProto, "textAlign", { set: function (align) { this.setTextAlignment(align.h, align.v); } })
@@ -11,6 +10,11 @@ function UpdateWidgetPrototype(objProto) {
 
   Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
   Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
+
+  Object.defineProperty(objProto, "geometry", {
+    set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); },
+    get: function () { return this.relativeRect(); }
+  })
 
   Object.defineProperty(objProto, "position", { set: function (point) {
     if (arguments.length==1) {
@@ -230,12 +234,12 @@ Object.defineProperty( FileDialog.prototype, "callback", {set: function (func) {
 //*************************** FileDialog class end ***************************************//
 
 //*************************** ContextMenu class begin ***************************************//
+UpdateWidgetPrototype(ContextMenu.prototype);
 ContextMenu.prototype.addItemWithCallback = function(path,caption,func) {
     var item = this.addItem(path,_t(caption));
     item.callback = func;
     return item;
 }
-UpdateWidgetPrototype(ContextMenu.prototype)
 //*************************** ContextMenu class end ***************************************//
 
 //*************************** ContextMenuItem class begin ***************************************//
