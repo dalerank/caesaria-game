@@ -52,6 +52,10 @@ function UpdateServiceBuildingPrototype(ObjectPrototype) {
   UpdateWorkingBuildingPrototype(ObjectPrototype);
 }
 
+function UpdateEntertainmentBuildingPrototype(ObjectPrototype) {
+  UpdateServiceBuildingPrototype(ObjectPrototype);
+}
+
 function UpdateTrainingBuildingPrototype(ObjectPrototype) {
   UpdateWorkingBuildingPrototype(ObjectPrototype);
 }
@@ -74,6 +78,7 @@ UpdateWorkingBuildingPrototype(Fort.prototype);
 
 /*************** Training buildings ************/
 UpdateTrainingBuildingPrototype(Barracks.prototype);
+UpdateTrainingBuildingPrototype(WorkshopChariot.ptototype);
 
 /*************** Service buildings ************/
 UpdateServiceBuildingPrototype(Fountain.prototype);
@@ -82,3 +87,8 @@ UpdateServiceBuildingPrototype(Market.prototype);
 /*************** Other buildings **************/
 UpdateTemplePrototype(Temple.prototype);
 UpdateFactoryPrototype(Factory.prototype);
+
+/*************** Entertainment buildings ******************/
+UpdateEntertainmentBuildingPrototype(EntertainmentBuilding.prototype);
+UpdateEntertainmentBuildingPrototype(Therater.prototype);
+UpdateEntertainmentBuildingPrototype(Amphitheater.prototype);
