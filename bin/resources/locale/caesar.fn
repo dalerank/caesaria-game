@@ -46,8 +46,7 @@
 "##mainmenu_mcmxcviii##":"MCMXCVIII",
 "Variable":"FINNISH(v0.1)",
 "##actor_gods_angry##":"Aaagh!! Jumalat ovat hurjistuneet! Olemme tuhoon tuomittuja!",
-"##ovrm_aborigen##":"Aborigine
-",
+"##ovrm_aborigen##":"Aborigine",
 "##month_8_short##":"Elo",
 "##mainmenu_credits##":"Lopputekstit",
 "##extm_administration_tlp##":"Hallinto tai hallitus rakennukset",
@@ -57,8 +56,7 @@
 "##aqueduct##":"Akvedukti",
 "##aqueduct_info##":"Akveduktit mahdollistavat vesivaraston rakentamisen kauas vedestä, täten se mahdollistaa suihkusäiliöiden antaa juomavettä kaupungin sisämaa osissa.",
 "##actor##":"Näyttelijä",
-"##advchief_haveprofit##
-":"Tänä vuonna tulot ovat nousseet",
+"##advchief_haveprofit##":"Tänä vuonna tulot ovat nousseet",
 "##advchief_havedeficit##":"Tänä vuonna tulot ovat laskeneet",
 "##granary##":"Aitta",
 "##granary_holds##":"Aitta sisältää",
@@ -89,15 +87,12 @@
 "##tower_no_workers##":"Ilman työntekijöitä, emme voi miehittää ballistaamme tai palkata vartijoita partioimaan muureilla.",
 "##gladiator_pit_no_workers##":"Ilman harjoittajia, tämä koulu ei voi kouluttaa yhtään uusia gladiaattoreita",
 "##lion_pit_no_workers##":"Ilman käsittelijöitä, tämä leijonakuoppa ei tuota yhtään uusia leijonia taisteluihin",
-"##idle_factory_in_city##":"toimeton teollisuus kaupungissa
-",
-"##idle_factories_in_city##":"toimetonta teollisuutta kaupungissa
-",
+"##idle_factory_in_city##":"toimeton teollisuus kaupungissa",
+"##idle_factories_in_city##":"toimetonta teollisuutta kaupungissa",
 "##wt_homeless##":"Koditon",
 "##extm_security_tlp##":"Turvallisuus",
 "##senatepp_unemployment##":"Työttömyys",
-"##advchief_workless##":"Kaupungin työttömyystaso on
-",
+"##advchief_workless##":"Kaupungin työttömyystaso on",
 "##migration_lack_workless##":"Työttömyys vähentää immigranttiesi määrää",
 "##priest_high_workless##":"Työttömyys on huolestuttavan suurta täällä",
 "##advemployer_panel_workless##":"Työtöntä työvoimaa",
@@ -109,8 +104,7 @@
 "##ovrm_library##":"Kirjasto",
 "##libraries##":"Kirjastot",
 "##favor##":"Suosio",
-"##senatepp_favour_rating##":"Suosio
-",
+"##senatepp_favour_rating##":"Suosio",
 "##wndrt_favour##":"Suosio",
 "##thanks_to##":"KIITOKSET:",
 "##rome_gratitude_request_title##":"Keisarin kiitokset.",
@@ -145,8 +139,7 @@
 "##big_domus##":"Iso insula",
 "##large_temple##":"Iso temppeli",
 "##briton##":"Brittoni",
-"##britons##":"Brittonit
-",
+"##britons##":"Brittonit",
 "##waiting_for_free_dock##":"Ankkuroitu, odottaa vapaata telakkaa",
 "##destroy_bridge_warning##":"Tuhotkaa sillat huolella. Eristäytyneet yhteisöt katoavat nopeasti jos tiet Roomaan on katkaistu heiltä.",
 "##wt_rioter##":"Kapinoitsija",
@@ -162,13 +155,11 @@
 "##no_people_in_city##":"Kaupungissa ei ole ihmisiä!",
 "##advchief_employers_ok##":"Kaupungilla ei ole työttömyys ongelmia",
 "##no_industries_in_city##":"Kaupungissa ei ole teollisuutta",
-"##unhandled_key_value_23##":"Täällä ei ole tilaa näin paljolle missään kaupungissa
-",
+"##unhandled_key_value_23##":"Täällä ei ole tilaa näin paljolle missään kaupungissa",
 "##advchief_health_awesome##":"Kaupungin terveys on täydellinen.",
 "##advchief_health_awesome_clinic##":"Kaupungin terveys on täydellinen, odotus aikoja ei ole yhtään paikallisilla klinikoilla.",
 "##city_have##":"Kaupungilla on varoja",
-"##healthadv_not_need_health_service_now##":"Saniteetti ja terveys rakennuksille ei ole parhaillaan kysyntää. Kaupungin kehittyessä, ihmiset odottavat kylpyhuoneita ja lääkintä laitoksia, myöhemmin ihmiset vaativat jopa partureita, sitten vielä lisää lääkintä laitoksia!
-",
+"##healthadv_not_need_health_service_now##":"Saniteetti ja terveys rakennuksille ei ole parhaillaan kysyntää. Kaupungin kehittyessä, ihmiset odottavat kylpyhuoneita ja lääkintä laitoksia, myöhemmin ihmiset vaativat jopa partureita, sitten vielä lisää lääkintä laitoksia!",
 "##working_have_some_labor_access##":"Tällä rakennuksella on tällä hetkellä jonkilainen pääsy ihmisille antamaan sille työvoimaa.",
 "##working_have_good_labor_access##":"Tällä rakennuksella on tällä hetkellä hyvä pääsy ihmisille antamaan sille työvoimaa.",
 "##working_have_no_labor_access##":"Tällä rakennukselle ei ole tällä hetkellä pääsyä ihmisille antamaan sille työvoimaa.",
@@ -177,18 +168,12 @@
 "##working_have_very_little_labor_access##":"Tällä rakennuksella on tällä hetkellä todella pieni pääsy ihmisille antamaan sille työvoimaa.",
 "##working_have_bad_labor_access##":"Tällä rakennuksella on tällä hetkellä huono pääsy ihmisille antamaan sille työvoimaa.",
 "##its_very_peacefull_province##":"Imperiumi ei ole ikinä nähnyt näin rauhallista kaupunkia!",
-"##to_empire_road##":"Impperiumiin
-",
-"##senate_save##":"kaupungin aarrekammioissa
-",
+"##to_empire_road##":"Impperiumiin",
+"##senate_save##":"kaupungin aarrekammioissa",
 "##senate_thisyear_tax##":"Kaupunkisi kerää tänä vuonna",
 "##some_amphitheaters_no_actors##":"Joillakin amphiteattereissa on pulaa näyttelijöistä tai gladiaattoireista, ja niin ne eivät ole täydessä kapasitiiteissaan. Enemmän supliikkimiehiä auttaisi buustaamaan tiettyjä kaupungin alueita jotka valittavat huonosta viihteen tasosta.",
 "##advchief_high_crime_in_district##":"Joillakin alueilla on korkeat rikollisuus tasot.",
 "##advchief_which_crime_in_district##":"Joillakin alueilla on pieniä ongelmia",
-"##colege_access_perfectly##":"
-",
-"##library_access_perfectrly##":"
-",
 "##none_crime_risk##":"Ei merkkiäkään rikoksista täällä",
 "##lost_money_last_year##":"Viime vuonna kaupunki menetti rahaa - tämä vähentää kaupungin vaurautta.",
 "##no_food_stored_last_month##":"RUOKAA EI VARASTOITU yhtään viime kuussa!",
@@ -204,12 +189,8 @@
 "##actor_need_workers##":"Kaupungissa yksinkertaisesti ei ole tarpeeksi työntekijöitä.",
 "##house_have_not_food##":"Tällä talolla ei ole ruokavarantoja",
 "##legion_haveho_soldiers_and_barracks##":"Legioonassa ei ole sotilaita. Se on olemassa vain nimeltään ja ilman toiminnassa olevia kasarmeja kaupungissa, se ei voi ottaa vastaan uusia sotilaita",
-"##enemy_army_attack_city##":"
-",
 "##wn_barbarian##":"Barbaari",
 "##big_fest_description##":"Kaksi päiväinen festivaali on ohi. Valitsemasi jumala on ylistetty ja kansa tervehtii sinua ja hyväntahtoisuus vallitsee",
-"##governor_palace_1_info##":"
-",
 "##not_enought_place_for_legion##":"Legioonallasi on täysi määrä linnoituksia",
 "##playerarmy_gone_to_home##":"Sinun legioonasi, palaamassa kaupunkiisi",
 "##trade_advisor_blocked_wine_production##":"Kaupan nevonantajasi on määrännyt pysäyttää viinin tuotannon.",
@@ -247,8 +228,7 @@
 "##wt_wolf##":"Susi",
 "##lgn_wolves##":"Sudet",
 "##market_kid_say_1##":"Tuo lihava nainen tuolla käski minun kantaa tätä ja seurata häntä!",
-"##more_8_month_from_festival##
-":"Muistot viime festivaaleista on unohtumassa ihmisten mielistä.",
+"##more_8_month_from_festival##":"Muistot viime festivaaleista on unohtumassa ihmisten mielistä.",
 "##east##":"Itä",
 "##lionTamer_average_life##":"Tässä vähän ulkomaista lihaa sinulle Leo!",
 "##100_citizens_in_city##":"Kaupunkisi asukasmäärä on saavuttanut 100 kansalaisen määrän ensimmäistä kertaa sen historiassa.",
@@ -307,15 +287,13 @@
 "##doctor_good_life##":"Kaupunki näyttää olevan hyvässä hapessa",
 "##patrician_gods_angry##":"Kansalainen! Kaikki ei ole hyvin. Jumalat ovat vihoissaan",
 "##patrician_low_entertainment##":"Kansalainen! Eikö tämä olekkin tylsin kaupunki impperiumissa?",
-"##recruter_need_workers##":"Kansalainen! Tämä paikka tarvitsee lisää työvoimaa!
-",
+"##recruter_need_workers##":"Kansalainen! Tämä paikka tarvitsee lisää työvoimaa!",
 "##gladiator_perfect_life##":"Kansalainen! Olen taistellut monissa kaupungeissa ja tämä on yksi niistä parhaista.",
 "##citizen##":"Kansalainen",
 "##greek_soldier##":"Kreikkalainen sotilas",
 "##gmsndwnd_game_volume##":"Voluumi",
 "##yes##":"Kyllä",
 "##citizen_low_salary##":"Koiranikaan ei tekisi töitä täällä saatavan palkan eteen! Minä lähden!",
-"##damascus_title##":"Damascus: hieman vaarallinen provinssi",
 "##date_tooltip##":"Päiväys",
 "##date##":"Päiväys",
 "##scrw_date##":"Päiväys",
@@ -324,18 +302,13 @@
 "##month_12_short##":"Jou",
 "##dn's##":"Denaaria",
 "##dn_per_month##":"Denaaria kuussa",
-"##dn_collected_this_year##":"denaaria kerätty tähän mennessä tänä vuonna
-",
+"##dn_collected_this_year##":"denaaria kerätty tähän mennessä tänä vuonna",
 "##day##":"Päivä",
 "##children##":"Lapset",
-"##srcw_no_messages##":"Ei viestejä sinulle
-",
-"##need_access_to_full_reservoir##":"
-",
+"##srcw_no_messages##":"Ei viestejä sinulle",
 "##advemployer_panel_denaries##":"dn",
 "##denarii_short##":"dn",
-"##days##":"Päivät
-",
+"##days##":"Päivät",
 "##age_bc##":"eaa.",
 "##bc##":"eaa.",
 "##marketBuyer_good_life##":"Hyvää päivää, kansalainen! Eikö tämä olekkin hieno kaupunki?",
@@ -374,8 +347,6 @@
 "##fileload_load_tlp##":"Lataa tämä tallennettu peli",
 "##initialize_animations##":"Ladataan animaatioita",
 "##initialize_names##":"Ladataan kansalaisten nimiä",
-"##initialize_constructions##":"
-",
 "##initialize_religion##":"Ladataan uskonto vaihtoehtoja",
 "##initialize_house_specification##":"
 ",
@@ -386,8 +357,6 @@
 "##clay_factory_stock##":"Varastoitua savea",
 "##iron_factory_stock##":"Varastoitua rautaa",
 "##olive_factory_stock##":"Varastoituja oliiveja",
-"##advchief_food_stocks##":"
-",
 "##have_food_for##":"Ruoka tarpeita",
 "##mainmenu_dlc_articles##":"Artikkelit",
 "##pay_to_open_trade_route?##":"Maksa avataksesi tämän reitin?",
@@ -406,14 +375,10 @@
 "##angry##":"Vihainen",
 "##lgn_snakes##":"Käärmeet",
 "##wn_iberian_soldier##":"Iberialainen soturi",
-"##developers##":"KEHITTÄJÄT:
-",
+"##developers##":"KEHITTÄJÄT:",
 "##mainmenu_plname##":"Vaihda nimeä",
-"##city_zoominv_off##":"
-",
 "##mainmenu_dlc_main##":"Kuinka rakentaa Rooma",
 "##quaestor##":"Kvestori",
-"##caesarea_title##":"Caesarea: ihan rauhallinen provinssi",
 "##colosseums##":"Colosseumit",
 "##colosseum##":"Colosseum",
 "##colosseum_info##":"Colosseumit ja amphiteatterit tarvitsevat aina uusia gladiaattoreita korvatakseen häviäjät.",
@@ -421,16 +386,12 @@
 "##well##":"Kaivo",
 "##consul##":"Konsuli",
 "##mainmenu_dlc_concepts##":"Konseptit",
-"##spear##":"Keihäs
-",
+"##spear##":"Keihäs",
 "##fort_javelin##":"Heittokeihäs",
 "##high_bridge##":"Laiva silta",
-"##extreme_fire_risk##":"Äärimmäinen tuli riski
-",
-"##sldr_extremely_scared##":"Äärimmäisen peloissaan
-",
-"##sldh_health_strongest##":"Äärimmäisen vahva
-",
+"##extreme_fire_risk##":"Äärimmäinen tuli riski",
+"##sldr_extremely_scared##":"Äärimmäisen peloissaan",
+"##sldh_health_strongest##":"Äärimmäisen vahva",
 "##fortification##":"Vahvistus",
 "##blood_sports_add_spice_to_life##":"Veri urheilu lisää maustetta jokaisen elämään.",
 "##lgn_rabbits##":"Kanit",
@@ -453,26 +414,17 @@
 "##londinium_title##":"Londinium: rauhallinen provinssi",
 "##meadow_caption##":"Niitty",
 "##road_paved_title##":"Paremman luokan tie",
-"##animal_contests_run##":"
-",
 "##lionsNursery##":"Leijona monttu",
 "##lgn_lions##":"Leijonat",
 "##venus_desc##":"Rakkaus",
 "##smallcurse_of_mars_title##":"Mars on pettynyt",
 "##massilia_title##":"Massilia: rauhallinen provinssi",
-"##smcurse_of_mercury_title##":"Merkurius on pettynyt
-",
+"##smcurse_of_mercury_title##":"Merkurius on pettynyt",
 "##road_paved_caption##":"Päällystetty tie",
 "##mainmenu_dlc_soundtrack##":"Musiikkiraita",
 "##music##":"MUSIIKKI:",
-"##we_eat_more_thie_produce##":"
-",
-"##we_eat_some_then_produce##":"
-",
 "##we_produce_some_than_eat##":"Tuotamme ruokaa tarpeeksi kaikkien ruokkimiseen",
 "##we_produce_much_than_eat##":"
-",
-"##we_produce_more_than_eat##":"
 ",
 "##meat##":"Liha",
 "##teacher_high_workless##":"Toivon että en menetä työtäni: työttymyys on niin laajaa että en saisi toista!",
@@ -483,10 +435,7 @@
 "##new_ruler##":"Uusi vallanpitäjä",
 "##mainmenu_dlc_wallpapers##":"Taustakuvat",
 "##original_game##":"ALKUPERÄINEN PELI:",
-"##emp_open_trade_route##":"
-",
-"##localization##":"LOKALISAATIO:
-",
+"##localization##":"LOKALISAATIO:",
 "##need_restart_for_apply_changes##":"Käynnistä peli uudelleen pelataksesi uusilla asetuksilla",
 "##coast_caption##":"Rannikko",
 "##city_warnings_on##":"Varoitukset: Päälle",
@@ -504,13 +453,10 @@
 "##ovrm_build##":"Rakennus",
 "##delete##":"Poista",
 "##delete_game##":"Poista peli",
-"##delete_object##":"Poista objekti
-",
+"##delete_object##":"Poista objekti",
 "##delete_this_message##":"Poista tämä viesti",
 "##wt_lion_tamer##":"Leijonan kesyttäjä",
 "##wt_teacher##":"Opettaja",
-"##wt_surgeon##":"
-",
 "##farm##":"Farmi",
 "##bldm_farm##":"Farmit",
 "##forum##":"Foorumi",
@@ -530,8 +476,6 @@
 "##sell_price##":"Myyjät saavat",
 "##god_ceres_short##":"Ceres",
 "##smallcurse_of_ceres_title##":"Ceres on pettynyt",
-"##person##":"
-",
 "##more_people##":"Enemmän ihmisiä",
 "##school##":"Koulu",
 "##gladiator_pit##":"Gladiaattori koulu",
@@ -546,20 +490,13 @@
 Tämä rakennus tarvitsee viinirypäleitä",
 "##building_need_road_access##":"Tämä rakennus tarvitsee tie pääsyn",
 "##need_clay_pit##":"Tämä rakennus tarvitsee savea",
-"##trouble_need_timber##":"
-",
 "##need_iron_for_work##":"Tämä rakennus tarvitsee rautaa",
 "##trouble_need_olive##":"Tämä rakennus tarvitsee oliiveja",
-"##vinard_patrly_workers##":"
-",
 "##engineer_need_workers##":"Kaupunki olisi paljon parempi jos täällä olisi tarpeeksi työntekijöitä!",
 "##prefect_need_workers##":"Kaupunki tarvitsee epätoivoisesti lisää työntekijöitä!",
-"##teacher_good_life##":"Tämä kaupunki saa täydet pisteet; se on hurmaava!
-",
-"##scholar_good_life##":"Tämä kaupunkihan on fantastinen!
-",
-"##actor_good_life##":"EI tämä kaupunki niin huono ole
-",
+"##teacher_good_life##":"Tämä kaupunki saa täydet pisteet; se on hurmaava!",
+"##scholar_good_life##":"Tämä kaupunkihan on fantastinen!",
+"##actor_good_life##":"EI tämä kaupunki niin huono ole",
 "##teacher_low_entertainment##":"Minun oppituntini ovat viihteellisiä verrattuna tähän kaupunkiin!",
 "##scholar_low_entertainment##":"Tämä kaupunki on tylsä! Haluan nähdä enemmän esityksiä!",
 "##marketBuyer_average_life##":"Tämä kaupunki ei ole niin huono, oikeasti.",
@@ -568,8 +505,7 @@ Tämä rakennus tarvitsee viinirypäleitä",
 "##dangerous_crime_risk##":"Tämä alue on vaarallinen",
 "##enemies_hard_to_me##":"Tämä sotilas on liian vahva minulle!",
 "##wn_etruscan_soldier##":"Etruscalainen sotilas",
-"##gmsndwnd_ambient_sound##":"Ääni efektit
-",
+"##gmsndwnd_ambient_sound##":"Ääni efektit",
 "##south##":"Etelä",
 "##southEast##":"Kaakko",
 "##southWest##":"Lounas",
@@ -608,6 +544,8 @@ Tämä rakennus tarvitsee viinirypäleitä",
 "##tingis_title##":"TIngis: vaarallinen provinssi",
 "##valentia_title##":"Valentia: ihan rauhallinen provinssi",
 "##lutetia_title##":"Lutetia: vaarallinen provinssi",
+"##caesarea_title##":"Caesarea: ihan rauhallinen provinssi",
+"##damascus_title##":"Damascus: hieman vaarallinen provinssi",
 "##barbarian_attack_title##":"Barbaarit hyökkäävät!",
 "##city_in_debt##":"Kaupunki veloissa",
 "##city_in_debt_again##":"Kaupunki velassa taas",

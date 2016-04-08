@@ -148,7 +148,7 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   setHeight( height() + 30 );
 }
 
-void BuildMenu::addBuildButton(const object::Type buildingType )
+void BuildMenu::addBuildButton(const object::Type buildingType)
 {
   __D_IMPL(_d,BuildMenu)
   //int t = DateTime::getElapsedTime();
