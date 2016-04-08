@@ -51,7 +51,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  SeaMerchant( PlayerCityPtr city, world::MerchantPtr merchant=nullptr );
+  SeaMerchant( PlayerCityPtr city, world::WMerchantPtr merchant=nullptr );
 
   class Impl;
   ScopedPtr< Impl > _d;

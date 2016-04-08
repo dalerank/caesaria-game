@@ -1,3 +1,7 @@
 TEMPLATE_WIDGET_IMPLEMENTATION(PushButton)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setBackgroundStyle,std::string)
+DEFINE_OBJECT_FUNCTION_1(PushButton,setIconMask,int)
+DEFINE_OBJECT_FUNCTION_1(PushButton,setTextOffset,Point)
 DEFINE_WIDGET_CALLBACK_0(PushButton,onClickedEx)
+DEFINE_OBJECT_OVERRIDE_FUNCTION_1(PushButton,setIcon,str,std::string)
+DEFINE_OBJECT_OVERRIDE_FUNCTION_1(PushButton,setIcon,pic,Picture)

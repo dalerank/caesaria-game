@@ -207,7 +207,7 @@ void Window::_init()
 
   if( !_d->title )
   {
-    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+24 ), text(), false );
     _d->title->setTextAlignment( align::center, align::center );
     _d->title->setFont( "FONT_4" );
     _d->title->setSubElement( true );
@@ -218,9 +218,9 @@ void Window::_init()
 
 void Window::_setSystemButtonsVisible(bool visible)
 {
-  button( buttonClose )->setVisible(visible);
-  button( buttonMin )->setVisible(visible);
-  button( buttonMax )->setVisible(visible);
+  button(buttonClose)->setVisible(visible);
+  button(buttonMin)->setVisible(visible);
+  button(buttonMax)->setVisible(visible);
 }
 
 void Window::_finalizeResize()

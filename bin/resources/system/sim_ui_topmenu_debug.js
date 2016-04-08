@@ -8,8 +8,8 @@ sim.ui.topmenu.debug.init = function()
 {
   var topmenu = sim.ui.topmenu.widget;
   var d = sim.ui.topmenu.debug;
-  sim.ui.topmenu.debugmenu = topmenu.findItem("Debug");
 
+  sim.ui.topmenu.debugmenu = topmenu.findItem("Debug");
   /*topmenu.addItemWithCallback("Debug/enemies", "add_enemy_archers", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/enemies", "add_enemy_soldiers", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/enemies", "add_chastener_soldiers", function() {engine.log("test")} )

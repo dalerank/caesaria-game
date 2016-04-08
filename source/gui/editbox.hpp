@@ -39,8 +39,8 @@ public:
   virtual ~EditBox();
 
   //! Sets another skin independent font.
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& font );
+  virtual void setFont(const Font& font);
+  virtual void setFont(const std::string& font);
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */

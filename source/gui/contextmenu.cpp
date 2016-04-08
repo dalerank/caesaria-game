@@ -30,8 +30,7 @@ namespace gui
 //! constructor
 ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
                           int id, bool getFocus, bool allowFocus)
-    : Widget( parent, id, rectangle),
-    _d( new Impl )
+    : Widget( parent, id, rectangle), _d( new Impl )
 {
   #ifdef _DEBUG
     setDebugName( "ContextMenu");
@@ -52,6 +51,9 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
   _d->flags.allowFocus = allowFocus;
   _d->changeTime = 0;
   _d->highlihted.index = -1;
+
+  setDefaultStateFont(stNormal, Font::create("FONT_2"));
+  setDefaultStateFont(stHovered, Font::create("FONT_2_WHITE"));
 }
 
 //! destructor
@@ -129,25 +131,27 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
                                          bool hasSubMenu, bool checked, bool autoChecking)
 {
   ContextMenuItem& newItem = add<ContextMenuItem>( text );
-  newItem.setEnabled( enabled );
-  newItem.setSubElement( true );
-  newItem.setChecked( checked );
-  newItem.setAutoChecking( autoChecking );
-  newItem.setText( text );
-  newItem.setFlag( ContextMenuItem::drawSubmenuSprite );
-  newItem.setIsSeparator( text.empty() );
-  newItem.setCommandId( commandId );
+  newItem.setEnabled(enabled);
+  newItem.setSubElement(true);
+  newItem.setChecked(checked);
+  newItem.setAutoChecking(autoChecking);
+  newItem.setText(text);
+  newItem.setFlag(ContextMenuItem::drawSubmenuSprite);
+  newItem.setIsSeparator(text.empty());
+  newItem.setCommandId(commandId);
+  newItem.setStateFont(stHovered, _d->states[stHovered].font);
+  newItem.setStateFont(stNormal, _d->states[stNormal].font);
   newItem.sendToBack();
 
   if (hasSubMenu)
   {
-    ContextMenu* subMenu = newItem.addSubmenu( commandId );
+    ContextMenu* subMenu = newItem.addSubmenu(commandId);
     subMenu->setVisible( false );
   }
 
   if ( idx < _d->items.size() )
   {
-    _d->items.insert( _d->items.begin() + idx, &newItem );
+    _d->items.insert(_d->items.begin() + idx, &newItem);
   }
   else
   {
@@ -159,7 +163,7 @@ ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& te
 
 ContextMenuItem* ContextMenu::findItem(const std::string& name) const
 {
-  for( auto it : _d->items )
+  for( const auto& it : _d->items )
   {
     if ( it->text() == name )
       return it;
@@ -174,6 +178,11 @@ bool ContextMenu::itemExist(const std::string& name) const
     return false;
 
   return findItem(name) != nullptr;
+}
+
+void ContextMenu::setDefaultStateFont(ElementState state, Font f)
+{
+  _d->states[state].font = f.fallback(16,false,false,ColorList::pink);
 }
 
 //! Adds a separator item to the menu
@@ -412,7 +421,7 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
     }
   }
 
-  for( auto it : _d->items )
+  for( auto& it : _d->items )
   {
     it->setHovered( false );
   }
@@ -591,12 +600,34 @@ ContextMenuItem *ContextMenu::selectedItem() const
   return item( _d->highlihted.index );
 }
 
+void ContextMenu::resetToDefaultFonts()
+{
+  for (auto& item : _d->items)
+  {
+    item->setStateFont(stHovered, _d->states[stHovered].font);
+    item->setStateFont(stNormal, _d->states[stNormal].font);
+    if (item->submenu())
+    {
+      item->submenu()->setDefaultStateFont(stHovered, _d->states[stHovered].font);
+      item->submenu()->setDefaultStateFont(stNormal, _d->states[stNormal].font);
+      item->submenu()->resetToDefaultFonts();
+    }
+  }
+}
+
+void ContextMenu::setProperty(const std::string& name, const Variant &value)
+{
+  if (name == "resetToDefaultFonts") { resetToDefaultFonts(); }
+
+  Widget::setProperty(name, value);
+}
+
 // because sometimes the element has no parent at click time
 void ContextMenu::setEventParent( Widget *parent )
 {
   _d->eventParent = parent;
 
-  for( auto item : _d->items )
+  for( auto& item : _d->items )
     if( item->submenu() )
       item->submenu()->setEventParent(parent);
 }

@@ -66,7 +66,7 @@ public:
     if( temple->divinity().isValid()
         && temple->isActive()
         && temple->mayWork() )
-    {      
+    {
       CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
 
       if( temple.is<BigTemple>() ) { info.temples.big_n++; }
@@ -111,9 +111,9 @@ Religion::Religion( PlayerCityPtr city )
 }
 
 void Religion::timeStep( const unsigned int time )
-{  
+{
   if( game::Date::isWeekChanged() )
-  {   
+  {
     _d->reasons.clear();
 
     if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
@@ -210,13 +210,13 @@ void Religion::timeStep( const unsigned int time )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
         _d->reasons << fmt::format( "##{0}_god_wrath##", god->internalName() );
-      }      
+      }
       else if( god->relation() < relation::minimum4wrath )
       {
         godsUnhappy[ (int)god->relation() ].push_back( god );
         _d->reasons << fmt::format( "##{0}_god_unhappy##", god->internalName() );
       }
-    }       
+    }
 
     //find wrath god
     DivinityList someGods = divinities;
@@ -295,7 +295,7 @@ void Religion::_updateRelation( DivinityPtr divinity )
     {
       bool showWarn = _city()->getOption( PlayerCity::showGodsUnhappyWarn ) > 0;
       event->setDialogVisible( showWarn );
-      event->addCallback( "##hide_godunhappy_warn##", makeDelegate( this, &Religion::_hideWarnings ) );
+      //event->addCallback( "##hide_godunhappy_warn##", makeDelegate( this, &Religion::_hideWarnings ) );
     }
 
     event->dispatch();

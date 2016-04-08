@@ -49,7 +49,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  LandMerchant( PlayerCityPtr city, world::MerchantPtr m=nullptr );
+  LandMerchant( PlayerCityPtr city, world::WMerchantPtr m=nullptr );
 
   class Impl;
   ScopedPtr< Impl > _d;

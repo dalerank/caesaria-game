@@ -196,7 +196,7 @@ void PlayerCity::Impl::calculatePopulation()
   states.population = statistic->population.current();
 }
 
-const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) const { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
@@ -218,6 +218,7 @@ Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
+const gfx::Tilemap & PlayerCity::tilemap() const { return _d->tilemap; }
 econ::Treasury& PlayerCity::treasury()           { return _d->funds; }
 
 int PlayerCity::strength() const
@@ -466,6 +467,7 @@ const city::development::Options& PlayerCity::buildOptions() const { return _d->
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
+gfx::Tile& PlayerCity::getTile(const TilePos& pos) const { return _d->tilemap.at(pos); }
 PlayerPtr PlayerCity::mayor() const                         { return _d->player; }
 city::trade::Options& PlayerCity::tradeOptions()            { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month)             {  }
@@ -535,6 +537,15 @@ int PlayerCity::getOption(const std::string& optname,bool) const
   return getOption(type);
 }
 
+Variant PlayerCity::getProperty(const std::string& name) const
+{
+  if (name == "roadExit") return getBorderInfo(roadExit).pos();
+  if (name == "roadEntry") return getBorderInfo(roadEntry).pos();
+  if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
+
+  return Variant();
+}
+
 void PlayerCity::clean()
 {
   _d->services.destroyAll();
@@ -569,9 +580,9 @@ int PlayerCity::sentiment() const {  return _d->sentiment; }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( object.is<world::Merchant>() )
+  if( object.is<world::WMerchant>() )
   {
-    world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
+    world::WMerchantPtr merchant = ptr_cast<world::WMerchant>( object );
     if( merchant->isSeaRoute() )
     {
       SeaMerchantPtr cityMerchant = Walker::create<SeaMerchant>( this, merchant );

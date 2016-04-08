@@ -98,21 +98,14 @@
         {
           type : "atlas"
           folder : "/resources/prefect"
-          files : [ "citizen02_*" ]
+          files : [ "*" ]
         }
 
-        prefectdw :
+        schoolkid :
         {
           type : "atlas"
-          folder : "/resources/prefect"
-          files : [ "prefectdw_*" ]
-        }
-
-        prefectff :
-        {
-          type : "atlas"
-          folder : "/resources/prefect"
-          files : [ "prefectff_*" ]
+          folder : "/resources/schoolkid"
+          files : [ "*" ]
         }
 
         priest :

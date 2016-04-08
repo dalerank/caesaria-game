@@ -22,6 +22,7 @@
 #include "game/resourcegroup.hpp"
 #include "game/datetimehelper.hpp"
 #include "core/utils.hpp"
+#include "events/showinfobox.hpp"
 #include "widgetescapecloser.hpp"
 #include "city/scribes.hpp"
 #include "city/city.hpp"
@@ -33,7 +34,6 @@
 #include "core/color.hpp"
 #include "dictionary.hpp"
 #include "gfx/engine.hpp"
-#include "event_messagebox.hpp"
 #include "core/gettext.hpp"
 #include "gui/label.hpp"
 #include "events/playsound.hpp"
@@ -224,7 +224,7 @@ void ScribesMessages::_showMessage(int index)
 {
   city::Scribes::Message mt = _d->city->scribes().getMessage( index );
   _d->city->scribes().readMessage( index );
-  ui()->add<infobox::AboutEvent>( mt.title, mt.text, mt.date, mt.gtype );
+  events::dispatch<events::ShowInfobox>(mt.title, mt.text, mt.date, mt.gtype);
 
   _fillMessages();
 }

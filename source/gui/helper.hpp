@@ -18,7 +18,8 @@
 #ifndef __CAESARIA_WIDGET_HELPER_H_INCLUDED__
 #define __CAESARIA_WIDGET_HELPER_H_INCLUDED__
 
-#include "widget.hpp"
+#include "label.hpp"
+class Walker;
 
 namespace gui
 {
@@ -43,6 +44,20 @@ public:
 
 private:
   std::string _sample;
+};
+
+class WalkerImage : public Label
+{
+public:
+  WalkerImage(Widget* parent, const Rect& rectangle=Rect(), SmartPtr<Walker> wlk=nullptr);
+
+  virtual void _handleClick();
+
+  virtual void draw(gfx::Engine &painter);
+
+  SmartPtr<Walker> _walker;
+  gfx::Picture _wlkPicture;
+  Signal1<SmartPtr<Walker>> _onClickedSignal;
 };
 
 }//end namesapce gui

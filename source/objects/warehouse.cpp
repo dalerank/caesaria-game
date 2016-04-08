@@ -22,7 +22,6 @@
 
 #include "gfx/picture.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
@@ -239,7 +238,7 @@ void Warehouse::load( const VariantMap& stream )
   WorkingBuilding::load( stream );
 
   _d->goodStore.load( stream.get( literals::goodStore ).toMap() );
-  
+
   VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
   for( const auto& it : vm_tiles )
@@ -261,6 +260,13 @@ void Warehouse::setTradeCenter(bool enabled)
 {
   _d->isTradeCenter = enabled;
   computePictures();
+}
+
+Variant Warehouse::getProperty(const std::string& name) const
+{
+  if (name == "isTradeCenter") return isTradeCenter();
+
+  return WorkingBuilding::getProperty(name);
 }
 
 bool Warehouse::isGettingFull() const
@@ -359,6 +365,6 @@ void Warehouse::_resolveDevastationMode()
           break;
         }
       }
-    }   
+    }
   }
 }

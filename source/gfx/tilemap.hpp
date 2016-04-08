@@ -32,7 +32,7 @@ namespace gfx
 // Square Map of the Tiles.
 class Tilemap : public Serializable
 {
-public:  
+public:
   typedef enum { fSvkGround=0x1 } Flag;
 
   Tilemap();
@@ -50,7 +50,7 @@ public:
   OverlayPtr overlay( const TilePos& ij );
   template<class T>
   SmartPtr<T> overlay(const TilePos &ij) { return ptr_cast<T>( overlay( ij ) ); }
-  
+
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
   TilesArray allTiles() const;
@@ -77,7 +77,7 @@ public:
     AllNeighbors
   };
 
-  TilesArray getNeighbors(const TilePos& pos, TileNeighbors type = AllNeighbors);
+  TilesArray getNeighbors(const TilePos& pos,int type=AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
@@ -103,7 +103,7 @@ public:
   Tile* at(const Point& pos, bool overborder);
   TilePos p2tp( const Point& pos );
 
-private: 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

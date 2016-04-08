@@ -83,7 +83,9 @@ public:
   Point getCursorPos() const;
   religion::DivinityPtr addGod(const std::string& id);
   std::string getOverlayType(int i) const;
+  std::string getWalkerType(int i) const;
   VariantMap getGoodInfo(std::string goodName) const;
+  gui::Widget* findWidget(std::string wname) const;
   Size getResolution() const;
   void setFont(const std::string& fontname);
   void setLanguage(const std::string& lang,const std::string& audio);

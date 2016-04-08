@@ -49,7 +49,6 @@
         sea : true
         land : true
         available : true
-
         sells : { meat : 10, oil : 10 }
         buys : { meat : 15, timber : 25, furniture : 25 }
       }
@@ -59,12 +58,9 @@
         sea : true
         land : true
         available : true
-
         sells : { oil : 5, timber : 25 }
         buys : { wine : 25 }
-
         nation : "other"
-
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
       }
@@ -75,10 +71,8 @@
         land : true
         nation : "carthaginian"
         available : true
-
         sells : { meat : 25, marble : 20 }
         buys : { pottery : 25 }
-
         resources : [ "wheat", "olive", "wine", "fish",
                       "timber", "clay", "marble", "iron" ]
       }
@@ -101,7 +95,6 @@
         sea : true
         nation : "roman"
         available : true
-
         sells : { wine : 25, furniture : 25 }
         buys : { pottery : 25 }
       }

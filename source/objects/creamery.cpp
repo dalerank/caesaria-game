@@ -22,7 +22,6 @@
 #include "good/helper.hpp"
 #include "walker/cart_pusher.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"

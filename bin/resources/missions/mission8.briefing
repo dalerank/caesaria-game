@@ -1,7 +1,7 @@
 {
   version : 1
   image : "europe01_00005"
-  title : "120 BC - Seventh assignment"
+  title : "##briefing_eighth_title##"
 
   items : {
     lutetia : {
