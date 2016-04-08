@@ -35,6 +35,7 @@
 #include "religion/pantheon.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
+#include "core/alignment.hpp"
 
 using namespace gui;
 using namespace gui::dialog;
@@ -73,6 +74,7 @@ inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::T
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
 inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_toint32(J, n); }
 inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_toint32(J, n); }
+inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)

@@ -20,6 +20,7 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,visible,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setVisible,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setEnabled,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setAlignment,4) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setSubElement,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setInternalName,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
@@ -45,6 +46,7 @@ DEFINE_OBJECT_FUNCTION_1(WidgetType,setWidth,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setHeight,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setText,std::string) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setTextAlignment,std::string,std::string) \
+DEFINE_OBJECT_FUNCTION_4(WidgetType,setAlignment,Alignment,Alignment,Alignment,Alignment) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setInternalName,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setGeometry,Rect) \

@@ -6,6 +6,7 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "textAlign", { set: function (align) { this.setTextAlignment(align.h, align.v); } })
   Object.defineProperty(objProto, "tooltip", { set: function (text) { this.setTooltipText(_t(text)); } })
   Object.defineProperty(objProto, "subElement", { set: function (value) { this.setSubElement(value); } })
+  Object.defineProperty(objProto, "align", { set: function (obj) { this.setAlignment(obj.left,obj.right,obj.top,obj.bottom); } })
   Object.defineProperty(objProto, "name", { set: function (str) { this.setInternalName(str); } });
 
   Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );

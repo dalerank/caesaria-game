@@ -127,50 +127,7 @@ BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
 void BuildMenu::initialize()
 {
   // compute the necessary width
-  __D_IMPL(_d,BuildMenu)
-  int max_text_width = 0;
-  int max_cost_width = 0;
-  Size textSize;
-  Font font = Font::create( "FONT_2" );
 
-  VariantMap allItems = config::load( _d->menuModel );
-  VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
-  VariantList submenu = config.get( "submenu" ).toList();
-  VariantList buildings = config.get( "buildings" ).toList();
-
-  for( auto& item : submenu )
-  {
-    development::Branch branch = development::findBranch( item.toString() );
-    if( branch != development::unknown )
-    {
-      std::string title = fmt::format( "##bldm_{}##", item.toString() );
-      addSubmenuButton( branch, title );
-    }
-  }
-
-  for( auto& item : buildings )
-  {
-    object::Type bType = object::findType( item.toString() );
-    if( bType != object::unknown )
-    {
-      addBuildButton( bType );
-    }
-  }
-
-  auto buildButtons = children().select<BuildButton>();
-  for( auto bbutton : buildButtons )
-  {
-    textSize = font.getTextSize( bbutton->text());
-    max_text_width = std::max(max_text_width, textSize.width() );
-    textSize = font.getTextSize( utils::i2str( bbutton->cost() ) );
-    max_cost_width = std::max(max_cost_width, textSize.width());
-  }
-
-  setWidth( std::max(150, max_text_width + max_cost_width + 30 + 27) );
-
-  // set the same size for all buttons
-  for( auto button : buildButtons )
-    button->setWidth( width() );
 }
 
 BuildMenu::~BuildMenu() {}
