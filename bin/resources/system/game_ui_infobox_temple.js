@@ -9,6 +9,7 @@ function InfoboxWindow (rx,ry,rw,rh) {
 game.ui.infobox.simple = function(rx,ry,rw,rh) {
   var ibox = new InfoboxWindow(rx,ry,rw,rh)
   ibox.title = _u("unknown");
+  ibox.pauseGame = true;
 
   ibox.autoPosition = true
   ibox.blackFrame = ibox.addLabel(0, 0, 0, 0)
@@ -40,7 +41,9 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
   }
 
   ibox.show = function() {
-    ibox.btnHelp.uri = ibox.overlay.typename;
+    if (ibox.overlay)
+      ibox.btnHelp.uri = ibox.overlay.typename;
+
     ibox.setAutoPosition();
     ibox.setFocus();
     ibox.setModal();
@@ -53,7 +56,7 @@ game.ui.infobox.simple = function(rx,ry,rw,rh) {
                   : 30;
 
       ibox.position = {x:(resolution.w-ibox.w)/2, y:ry}
-      ibox.mayMove = g_session.getAdvflag("lockwindow")
+      ibox.mayMove = !engine.getOption("lockInfobox")
   }
 
   ibox.setWorkersStatus = function(x, y, picId, need, have) {
@@ -99,6 +102,11 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
     g_ui.addInformationDialog(_u("overlay_status"), state);
   }
 
+  ibox.changeOverlayActive = function()  {
+    ibox.overlay.active = !ibox.overlay.active
+    ibox.setWorkingStatus(ibox.overlay.active)
+  }
+
   ibox.setWorkingStatus = function(active) {
     if (!ibox.btnToggleWorks)
     {
@@ -107,10 +115,7 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
       ibox.btnToggleWorks.style = "blackBorderUp"
       ibox.btnToggleWorks.font = "FONT_1"
 
-      ibox.btnToggleWorks.callback = function() {
-        ibox.overlay.active = !ibox.overlay.active
-        ibox.setWorkingStatus(ibox.overlay.active)
-      }
+      ibox.btnToggleWorks.callback = function() { ibox.changeOverlayActive() }
     }
 
     ibox.btnToggleWorks.text = active ? _u("abwrk_working") : _u("abwrk_not_working")
@@ -121,12 +126,14 @@ game.ui.infobox.aboutConstruction = function(rx,ry,rw,rh) {
 
 game.ui.infobox.aboutReservoir = function(location) {
   var ibox = this.aboutConstruction(0, 0, 480, 320);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
   ibox.title = _u("reservoir");
 
   var reservoir = g_session.city.getOverlay(location).as(Reservoir);
   var text = reservoir.haveWater()
                       ? "reservoir_info"
                       : "reservoir_no_water";
+  ibox.overlay = reservoir;
   ibox.setInfoText( _u(text) );
   ibox.show();
 }
@@ -158,12 +165,12 @@ game.ui.infobox.aboutTemple = function(location) {
     img.tooltip = _u(longDescr);
   }
 
-  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers())
-  ibox.setWorkingStatus(temple.active)
+  ibox.setWorkersStatus(32, 56+12, 542, temple.maximumWorkers(), temple.numberWorkers());
+  ibox.setWorkingStatus(temple.active);
 
   ibox.btnToggleWorks.callback = function() {
-    temple.active = !temple.active
-    ibox.setWorkingStatus(temple.active)
+    temple.active = !temple.active;
+    ibox.setWorkingStatus(temple.active);
   }
 
   ibox.show();

@@ -1,8 +1,8 @@
 {
   version : 1
   image : "europe02_00001"
-  title : "50 AD - Nineth assignment"
-	
+  title : "##briefing_nineth_title##"
+
   items : {
     damascus : {
       title : "##damascus_title##"

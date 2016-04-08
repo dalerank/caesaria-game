@@ -915,7 +915,7 @@ void Widget::setEnabled(bool enabled){  _dfunc()->flag.enabled = enabled;}
 std::string Widget::internalName() const{    return _dfunc()->internalName;}
 void Widget::setInternalName( const std::string& name ){    _dfunc()->internalName = name;}
 Widget* Widget::parent() const {    return _dfunc()->parent;}
-Rect Widget::relativeRect() const{  return _dfunc()->rect.relative;}
+const Rect& Widget::relativeRect() const{  return _dfunc()->rect.relative;}
 bool Widget::isNotClipped() const{  return _dfunc()->noClip;}
 void Widget::setVisible( bool visible ){  _dfunc()->flag.visible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->flag.tabStop;}

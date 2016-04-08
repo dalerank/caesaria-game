@@ -2,10 +2,13 @@
 SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,width,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,height,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setWidth,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setHeight,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,bottom,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,left,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,right,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,top,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,relativeRect,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,deleteLater,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setText,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setTooltipText,1) \
@@ -17,11 +20,12 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,visible,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setVisible,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setEnabled,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setAlignment,4) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setSubElement,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setInternalName,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,getProperty,1) \
-  SCRIPT_OBJECT_FUNCTION(Window,setupUI,1) 
+  SCRIPT_OBJECT_FUNCTION(Window,setupUI,1)
 
 #define TEMPLATE_WIDGET_END(WidgetType) \
   SCRIPT_OBJECT_CONSTRUCTOR(WidgetType) \
@@ -35,10 +39,14 @@ DEFINE_OBJECT_GETTER_0(WidgetType,int,top) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,left) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
+DEFINE_OBJECT_GETTER_0(WidgetType,const Rect&,relativeRect) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,setFocus) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setWidth,int) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setHeight,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setText,std::string) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setTextAlignment,std::string,std::string) \
+DEFINE_OBJECT_FUNCTION_4(WidgetType,setAlignment,Alignment,Alignment,Alignment,Alignment) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setInternalName,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setGeometry,Rect) \

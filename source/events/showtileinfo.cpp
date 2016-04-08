@@ -14,9 +14,10 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "showtileinfo.hpp"
-#include "game/infoboxmanager.hpp"
 #include "game/game.hpp"
 #include "city/statistic.hpp"
+#include "script_event.hpp"
+#include "objects/construction.hpp"
 #include "movecamera.hpp"
 
 namespace events
@@ -62,7 +63,8 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   break;
   }
 
-  gui::infobox::Manager::instance().showHelp( game.city(), game.gui(), _pos );
+  VariantList vl; vl << _pos;
+  events::dispatch<events::ScriptFunc>("OnShowOverlayInfobox", vl);
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

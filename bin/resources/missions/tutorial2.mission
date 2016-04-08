@@ -26,7 +26,7 @@
     winContinue : false
 	caption : "##tt2_caption##"
     shortDesc : "##tt2_short##"
-    winText : "##tt2_win_text##"
+    winText : "##tutorial2_win_text##"
     startSound : "tutorial2_speech"
     winSound : "tutorial2_win_speech"
     overview :  [ "##tutorial_priority##",

@@ -3,36 +3,38 @@
   map : ":/maps/Miletus.sav"
   funds : 8000
   city.name : "Miletus"
-  date : "-220.01.01"
   player.rank : 4
   climate : 2
+  date : "-220.01.01"
   adviserEnabled : true
   fishPlaceEnabled : true
+  climate : 2
   preview.text : "##miletus_preview_mission##"
   preview.title : "##miletus_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 5000
     name : "n2_miletus"
+    population : 5000
     culture : 60
     prosperity : 35
     peace : 40
-    finishDate : "-100.01.01"
     favour : 40
+    finishDate : "-100.01.01"
     next : ":/missions/mission6.briefing"
     title : "##procurator##"
     maxHouseLevel : "big_villa"
+    winContinue : false
     caption : "##miletus_preview_title##"
+    winText : "##miletus_win_text##"
     startSound : "miletus_speech"
+    winSound : "miletus_win_speech"
     overview :  [ "##miletus_overview##",
                   "@img=pictures_00017",
-                  "##miletus_5_overview_2##" ]
-
-    winSound      : "miletus_win_speech"
-    winText : "##miletus_win_text##"
-    winContinue : false
+                  "##miletus_overview2##",
+                  "##miletus_overview3##",
+                  "##miletus_overview4##" ]
   }
 
   empire : {
@@ -42,21 +44,17 @@
     {
       Athenae : {
         nation : "greek"
-
         land : true
         sea : true
         available : true
-
         sells : { wheat : 15, wine : 25, marble : 15 }
         buys : { meat: 15, oil: 15 }
       }
 
       Corinthus : {
         nation : "roman"
-
         sea : true
         land : true
-
         sells : { clay : 15, pottery : 25 }
         buys : { weapon : 15 }
       }
@@ -80,7 +78,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -89,7 +87,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -98,7 +96,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -121,7 +119,7 @@
       emperorMoney : [ 8000, 5000, 0 ]
       video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
-      text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
+      text : [ "##city_has_runout_money##", "##city_has_runout_debt##", "##city_still_in_debt_text##" ]
     }
 
     cursed_water#contaminated_water : {

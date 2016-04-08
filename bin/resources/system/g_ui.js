@@ -76,11 +76,13 @@ Ui.prototype.addImage = function() {
   }
 
 Ui.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(0);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(0);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
 
-Ui.prototype.elog = function(a) { engine.log(a); }
+Ui.prototype.find = function(name) {
+  return g_session.findWidget(name);
+}
 
-var g_ui = new Ui()
+var g_ui = new Ui();

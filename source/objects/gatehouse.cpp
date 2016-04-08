@@ -214,6 +214,12 @@ void Gatehouse::setMode(Gatehouse::Mode mode)
   }
 }
 
+void Gatehouse::nextMode()
+{
+  int m = (mode() + 1) % (Gatehouse::opened + 1);
+  setMode( Mode(m) );
+}
+
 Gatehouse::Mode Gatehouse::mode() const { return _d->mode; }
 
 bool Gatehouse::build( const city::AreaInfo& info )
@@ -226,6 +232,13 @@ bool Gatehouse::build( const city::AreaInfo& info )
     road->setState( pr::lockTerrain, 1 );
 
   return Building::build( info );
+}
+
+Variant Gatehouse::getProperty(const std::string & name) const
+{
+  if (name == "mode") return (int)mode();
+
+  return Building::getProperty(name);
 }
 
 bool Gatehouse::canBuild( const city::AreaInfo& areaInfo ) const

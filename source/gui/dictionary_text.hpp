@@ -74,8 +74,8 @@ public:
   //!
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fontname, NColor color=NColor());
+  virtual void setFont(const Font& font);
+  virtual void setFont(const std::string& fontname, NColor color=NColor());
 
   //!
   virtual void setAlpha( unsigned int value );

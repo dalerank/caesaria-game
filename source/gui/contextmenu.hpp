@@ -55,7 +55,7 @@ public:
   virtual ~ContextMenu();
 
   //! set behaviour when menus are closed
-  virtual void setCloseHandling( CloseMode onClose );
+  virtual void setCloseHandling(CloseMode onClose);
 
   //! get current behaviour when the menue will be closed
   virtual CloseMode getCloseHandling() const;
@@ -86,6 +86,8 @@ public:
   //!
   bool itemExist(const std::string& name) const;
 
+  void setDefaultStateFont(ElementState state, Font f);
+
   //! Adds a separator item to the menu
   virtual void addSeparator();
 
@@ -105,24 +107,26 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! draws the element and its children
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   //! Returns the selected item in the menu
   virtual int selected() const;
 
   virtual ContextMenuItem* selectedItem() const;
+  virtual void setProperty(const std::string& name, const Variant &value);
 
   //! Sets the visible state of this element.
   virtual void setVisible( bool visible );
 
   //! When an eventparent is set it receives events instead of the usual parent element
-  virtual void setEventParent( Widget *parent );
+  virtual void setEventParent(Widget *parent);
 
-  virtual void setAllowFocus( bool enabled );
+  virtual void setAllowFocus(bool enabled);
 
-  virtual void beforeDraw( gfx::Engine& painter );
+  virtual void beforeDraw(gfx::Engine& painter);
 
   int hovered() const;
+  void resetToDefaultFonts();
 
   void moveItem(ContextMenuItem* item, unsigned int index);
 

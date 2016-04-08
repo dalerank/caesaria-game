@@ -210,7 +210,7 @@ void Barbarian::_attackAny()
 
 bool Barbarian::_attackObject(ObjectPtr obj)
 {
-  if( obj.is<Merchant>() )
+  if( obj.is<WMerchant>() )
   {
     obj->deleteLater();
     return true;

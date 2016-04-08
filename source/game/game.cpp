@@ -53,7 +53,6 @@
 #include "objects/overlay.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "gamestate.hpp"
-#include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
 #include "config.hpp"
@@ -220,8 +219,6 @@ void Game::Impl::initUI(bool& isOk, std::string& result)
   auto finalizer = SmartPtr<gui::WidgetFinalizer>(new ScriptWidgetFinalizer());
   finalizer->drop();
   gui->installWidgetFinalizer(finalizer);
-
-  gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
 void Game::Impl::initVfsSettings(bool& isOk, std::string& result)
@@ -322,7 +319,7 @@ bool Game::load(std::string filename)
 
   screen.initialize();
   bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  screen.setBackground( usingOldgfx ? "load4" : "freska", 1 );
+  screen.setBackground( usingOldgfx ? "load4" : "freska", 1+math::random(2) );
   screen.update( *_dfunc()->engine );
 
   vfs::Path fPath( filename );

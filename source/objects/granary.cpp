@@ -154,6 +154,8 @@ void Granary::timeStep(const unsigned long time)
 
 good::Store& Granary::store() {  return _d->store; }
 
+const good::Store & Granary::store() const {  return _d->store; }
+
 bool Granary::onlyDispatchGoods() const {  return numberWorkers() <= maximumWorkers() / 2; }
 void Granary::initTerrain(Tile& terrain)
 {

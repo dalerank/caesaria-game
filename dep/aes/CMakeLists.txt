@@ -11,7 +11,7 @@ set_target_properties(${PROJECT_NAME}
 
 if(X32_BUILD)
   message("WARNING! LibSDL2 mini build with x86 arch")
-  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -m32")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
 endif()
 

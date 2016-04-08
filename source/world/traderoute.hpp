@@ -50,9 +50,9 @@ public:
 
   bool isSeaRoute() const;
 
-  MerchantPtr addMerchant( const std::string& begin, good::Store& sell, good::Store& buy );
-  MerchantPtr merchant( unsigned int index );
-  const MerchantList& merchants() const;
+  WMerchantPtr addMerchant(const std::string& begin, good::Store& sell, good::Store& buy);
+  WMerchantPtr merchant(unsigned int index);
+  const WMerchantList& merchants() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );
@@ -60,7 +60,7 @@ public:
   static unsigned int getId( const std::string& begin, const std::string& end );
 
 signals public:
-  Signal1<MerchantPtr>& onMerchantArrived();
+  Signal1<WMerchantPtr>& onMerchantArrived();
 
 private:
   class Impl;

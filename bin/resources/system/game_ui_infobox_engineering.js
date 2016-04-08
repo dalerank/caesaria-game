@@ -24,6 +24,64 @@ game.ui.infobox.aboutRuins = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutGatehouse = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var gates = g_session.city.getOverlay(location).as(WorkingBuilding);
+  ibox.overlay = gates;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(gates.typename);
+
+  ibox.update = function() {
+    var modeDesc = [ "gh_auto", "gh_closed", "gh_opened", "gh_unknown" ];
+    ibox.btnToggleWorks.text = _u(modeDesc[gates.getProperty("mode")]);
+  }
+
+  ibox.changeOverlayActive = function() {
+    gates.nextMode();
+    ibox.update();
+  }
+
+  ibox.text = _u("walls_need_a_gatehouse");
+
+  //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
+  ibox.setWorkingStatus(gates.active);
+
+  ibox.update();
+  ibox.show();
+}
+
+game.ui.infobox.aboutFort = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var overlay = g_session.city.getOverlay(location);
+  var fort = null;
+  if (overlay.typename == "fortArea")
+    fort = overlay.as(FortArea).base();
+  else
+    fort = overlay.as(Fort);
+
+  ibox.overlay = fort;
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(fort.typename);
+
+  var text = "fort_info";
+
+  var fortCursed = fort.getProperty("fortCursed");
+  if (fortCursed > 0)
+       text = "fort_has_been_cursed_by_mars";
+
+  var startPos = { x:ibox.lbText.left(), y:ibox.lbText.bottom() };
+  var soldiersCount = fort.getProperty( "soldiersCount" );
+  var lbWidth = (ibox.w-40) / 2;
+  for (var i=0; i < soldiersCount; i++)
+  {
+    var soldier = fort.getSoldier(i);
+    var lbSoldierName = ibox.addLabel(i < 8 ? 0 : lbWidth, startPos.y + (25 * i)%8, lbWidth, 24);
+    lb.text = soldier.name();
+  }
+}
+
 game.ui.infobox.aboutDock = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 286);
 
@@ -87,7 +145,7 @@ game.ui.infobox.aboutBarracks = function(location) {
 
   var barracks = g_session.city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
-  ibox.overlay = barracs;
+  ibox.overlay = barracks;
 
   ibox.title = _u(barracks.typename);
   ibox.setInfoText(_u("barracks_info"));
@@ -105,6 +163,7 @@ game.ui.infobox.aboutBarracks = function(location) {
 
 game.ui.infobox.aboutFountain = function(location) {
   var ibox = this.aboutConstruction(0,0,480,320);
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
   var fountain = g_session.city.getOverlay(location);
   ibox.title = _u(fountain.typename);
@@ -119,12 +178,100 @@ game.ui.infobox.aboutFountain = function(location) {
   } if (fountain.active) {
     text = fountain.mayWork() ? "fountain_info" : "fountain_not_work";
   } else {
-    text = reservoirAccess ? "need_full_reservoir_for_work" : "need_reservoir_for_work";
+    text = reservoirAccess ? "need_access_to_full_reservoir" : "need_reservoir_for_work";
   }
 
   ibox.setInfoText(_u(text));
-
   ibox.show();
+}
+
+game.ui.infobox.aboutLand = function(location) {
+  var ibox = game.ui.infobox.simple(0,0,510,300)
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
+
+  ibox.update = function(title, text, uri) {
+    ibox.title = _u(title);
+    ibox.btnHelp.uri = uri;
+    ibox.setInfoText( _u(text) );
+    ibox.show();
+  }
+
+  var tile = g_session.city.getTile(location);
+  var tilepos = tile.pos();
+  var cityexit = g_session.city.getProperty("roadExit");
+
+  engine.log(_format("Show help for land at [{0},{1}]", tilepos.i, tilepos.j));
+  if(tilepos.i == cityexit.i && tilepos.j == cityexit.j)
+  {
+    ibox.update("to_empire_road", "", "road_to_empire");
+    return;
+  }
+
+  var cityenter = g_session.city.getProperty("roadEntry");
+  if(tilepos.i == cityenter.i && tilepos.j == cityenter.j)
+  {
+    ibox.update("to_rome_road", "", "");
+    return;
+  }
+
+  if (tile.getFlag(g_config.tile.tlTree))
+  {
+    ibox.update("trees_and_forest_caption", "trees_and_forest_text", "trees");
+    return;
+  }
+
+  var waterexit = g_session.city.getProperty("boatEntry");
+  if(tilepos.i == waterexit.i && tilepos.j == waterexit.j)
+  {
+    ibox.update("to_ocean_way", "", "water");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlCoast)) {
+    ibox.update("coast_caption", "coast_text", "coast");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlWater)) {
+    ibox.update("water_caption", "water_text", "water");
+    return;
+    /*Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
+
+    text = way.isValid()
+             ? (typeStr + "_text##")
+             : "##inland_lake_text##";
+    _helpUri = "water";*/
+  }
+
+  if(tile.getFlag(g_config.tile.tlRock)) {
+    ibox.update("rock_caption", "rock_text", "rock");
+    return;
+  }
+
+  if(tile.getFlag(g_config.tile.tlRoad)) {
+    var ovType = tile.overlay().typename;
+    if(ovType=="plaza") {
+      ibox.update("plaza_caption", "plaza_text", "plaza");
+      return;
+    } else if(ovType == "road") {
+      var paved = tile.overlay().getProperty("pavedValue");
+      if (paved > 0) {
+        ibox.update( "road_paved_caption", "road_paved_text", "paved_road");
+      } else {
+        ibox.update( "road_caption", "road_text", "road");
+      }
+    } else {
+      ibox.update( "road_caption", "road_text", "road");
+    }
+    return;
+  }
+
+  if( tile.getFlag(g_config.tile.tlMeadow)) {
+    ibox.update( "meadow_caption", "meadow_text", "meadow");
+    return;
+  }
+
+  ibox.update( "clear_land_caption", "clear_land_text", "clear_land");
 }
 
 game.ui.infobox.aboutWharf = function(location) {
@@ -190,7 +337,7 @@ game.ui.infobox.aboutFactory = function(location) {
     {
       var textOut = _format("{0} {1}",
                         factory.outStock().qty() / 100,
-                        _ut(typeOut) );
+                        _ut(pinfo.name) );
       text += textOut;
     }
 
@@ -309,7 +456,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
     var state = _format( "Damage={0}\nFire={1}\nService={2}",
                          ibox.overlay.state(g_config.overlay.params.damage),
                          ibox.overlay.state(g_config.overlay.params.fire),
-                         lastServiceDate.format(g_session.metric) );
+                         lastServiceDate.format(g_session.metric.mode) );
 
     g_ui.addInformationDialog(_u("overlay_status"), state);
   }
@@ -317,7 +464,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var coloseum = g_session.getOverlay(location).as(WorkingBuilding);
+  var coloseum = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
   ibox.initBlackFrame(16, 145, ibox.w - 16,100);
@@ -366,7 +513,8 @@ game.ui.infobox.aboutTheater = function(location) {
 
   ibox.title = _u(theater.typename);
   ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers(), theater.numberWorkers());
-  ibox.setWorkingStatus(working.active);
+  ibox.setWorkingStatus(theater.active);
+  ibox.overlay = theater;
 
   var shows = g_config.entertainment.shows;
   var showsCount = theater.getProperty("showsCount");
@@ -381,7 +529,7 @@ game.ui.infobox.aboutTheater = function(location) {
     if (text.length==0)
       text = "##theater_now_local_show##";
 
-    ibox.setInfoText( _(text) );
+    ibox.setInfoText( _u(text) );
   } else {
     ibox.setInfoText( "##theater_need_actors##" );
   }
@@ -395,6 +543,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
 
   var amphitheater = g_session.city.getOverlay(location).as(WorkingBuilding);
   ibox.title = _u(amphitheater.typename);
+  ibox.overlay = amphitheater;
 
   ibox.setWorkersStatus(32, 150, 542, amphitheater.maximumWorkers(), amphitheater.numberWorkers());
   ibox.setWorkingStatus(amphitheater.active);

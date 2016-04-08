@@ -493,8 +493,8 @@ void ComputerCity::_checkMerchantsDeadline()
     }
 
     good::Storage sellGoods, buyGoods;
-    sellGoods.setCapacity( Merchant::defaultCapacity );
-    buyGoods.setCapacity( Merchant::defaultCapacity );
+    sellGoods.setCapacity( WMerchant::defaultCapacity );
+    buyGoods.setCapacity( WMerchant::defaultCapacity );
 
     for( auto& gtype : good::all() )
     {
@@ -885,9 +885,9 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 
 void ComputerCity::addObject(ObjectPtr object )
 {
-  if( object.is<Merchant>() )
+  if( object.is<WMerchant>() )
   {
-    auto merchant = object.as<Merchant>();
+    auto merchant = object.as<WMerchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 

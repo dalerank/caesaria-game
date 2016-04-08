@@ -73,7 +73,7 @@ public:
   Pathway findRandomRaid(const DockList& docks, TilePos position);
 };
 
-SeaMerchant::SeaMerchant(PlayerCityPtr city, world::MerchantPtr merchant )
+SeaMerchant::SeaMerchant(PlayerCityPtr city, world::WMerchantPtr merchant )
   : Merchant( city, walker::seaMerchant ), _d( new Impl )
 {
   _d->waitInterval = 0;

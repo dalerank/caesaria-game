@@ -48,6 +48,7 @@
 #include "core/osystem.hpp"
 #include "game/settings.hpp"
 #include "events/playsound.hpp"
+#include "events/script_event.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -709,25 +710,10 @@ bool Menu::unselectAll()
   return anyPressed;
 }
 
-void Menu::_createBuildMenu( int type, Widget* parent )
+void Menu::_createBuildMenu(int type, Widget* parent)
 {
-   auto menus = findChildren<BuildMenu*>();
-   for( auto m : menus )
-     m->deleteLater();
-
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,
-                                             _d->city->getOption( PlayerCity::c3gameplay ) );
-
-   if( buildMenu != NULL )
-   {
-     buildMenu->setNotClipped( true );
-     buildMenu->setBuildOptions( _d->city->buildOptions() );
-     buildMenu->setModel( SETTINGS_RC_PATH( buildMenuModel ).toString() );
-     buildMenu->initialize();
-
-     int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );
-     buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
-   }
+  VariantList vl; vl << type << parent->internalName();
+  events::dispatch<events::ScriptFunc>("OnShowBuildMenu", vl); 
 }
 
 Signal0<>& Menu::onHide() { return _d->signal.onHide; }

@@ -28,16 +28,15 @@ class WalkerManager
 public:
   static WalkerManager& instance();
 
-  bool canCreate( walker::Type type ) const;
+  bool canCreate(walker::Type type) const;
 
-  void addCreator( walker::Type type, WalkerCreator* ctor );
-
-  WalkerPtr create( walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
+  void addCreator(walker::Type type, WalkerCreator* ctor);
+  WalkerPtr create(walker::Type walkerType, PlayerCityPtr city);  // get an instance of the given type
 
   template< class T>
-  SmartPtr<T> create( walker::Type walkerType, PlayerCityPtr city )
+  SmartPtr<T> create(walker::Type walkerType, PlayerCityPtr city)
   {
-    return ptr_cast<T>( create(walkerType, city) );
+    return ptr_cast<T>(create(walkerType, city));
   }
 
   ~WalkerManager();
