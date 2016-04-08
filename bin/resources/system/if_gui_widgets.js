@@ -12,6 +12,8 @@ function UpdateWidgetPrototype(objProto) {
 
   Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
   Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
+  Object.defineProperty(objProto, "x", { get: function() { return this.left(); }, set: function(value) { this.setLeft(value)}} );
+  Object.defineProperty(objProto, "y", { get: function() { return this.top(); }, set: function(value) { this.setTop(value)}} );
 
   Object.defineProperty(objProto, "geometry", {
     set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); },

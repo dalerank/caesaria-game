@@ -2204,7 +2204,7 @@
 "##god_mercury_short##":"Les marchands célèbrent Mercure pour qu'il protège leurs boutiques et leurs biens. Mais quand il est en colère, c'est toute l'économie qui est en danger.",
 "##statue_desc##":"Les monuments dédiés aux personnes célèbres ou aux évènements historiques augmentent le prestige des quartiers où ils sont édifiés. Les gens sont fiers de vivre à côté de statues... surtout si elles sont imposantes. ",
 "##ruins_house02_text##":"Gravats",
-"##advisor_chief##":"Conseiller en chef",
+"##advisor_chief##":"Conseiller personnel",
 "##school_and_academy##":"Écoles et académies",
 "##rating_advisor##":"Conseiller financier",
 "##content##":"Sommaire",

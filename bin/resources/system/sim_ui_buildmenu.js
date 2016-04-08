@@ -1,5 +1,5 @@
-function OnShowBuildMenu(type, parentName) {
-  sim.ui.buildmenu.show(type);
+function OnShowBuildMenu(type, top) {
+  sim.ui.buildmenu.show(type, top);
 }
 
 g_config.buildmenu = {
@@ -90,22 +90,29 @@ sim.ui.buildmenu.hide = function() {
     menus.deleteLater();
 }
 
-sim.ui.buildmenu.show = function(type, parentName) {
+sim.ui.buildmenu.show = function(type, top) {
   sim.ui.buildmenu.hide();
+  engine.log(top);
 
   if (type == undefined || type == "")
     return;
 
   var extMenu = g_ui.find("ExtentMenu");
-  var parent = g_ui.find(parentName);
+  //var parent = g_ui.find(parentName);
   var buildMenu = new Widget(0);
 
   if (buildMenu != null) {
     buildMenu.clipped = false;
     buildMenu.name = "BuildMenu";
     buildMenu.buttons = [];
+    buildMenu.htop = top;
+    buildMenu.subElement = true;
     var resolution = g_session.resolution;
     buildMenu.geometry = {x:0, y:0, w:resolution.w - extMenu.w, h:extMenu.h};
+
+    var wcloser = new WidgetClosers(buildMenu);
+    wcloser.addCloseCode(g_config.key.KEY_RBUTTON);
+    wcloser.addCloseCode(g_config.key.KEY_ESCAPE);
     //buildMenu.geometry = { x:extMenu.left()-60, y:parent.top(), w:60, h:60 };
     //buildMenu.geometry = { x:0, y:0, w:80, h:25 };
   }
@@ -189,6 +196,8 @@ sim.ui.buildmenu.show = function(type, parentName) {
     for(var i in buildMenu.buttons) {
       var btn = buildMenu.buttons[i];
       btn.w = appear_width;
+      btn.x = buildMenu.w - btn.w - 35;
+      btn.y = buildMenu.htop + 25 * i;
       if (btn.lbCost)
         btn.lbCost.geometry = { x:btn.w-55, y:0, w:30, h:25 };
     }
