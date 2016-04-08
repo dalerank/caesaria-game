@@ -9,6 +9,12 @@ Ui.prototype.addWindow = function(rx,ry,rw,rh) {
     return window;
   }
 
+Ui.prototype.addGroupbox = function(rx,ry,rw,rh) {
+  var gb = new GroupBox(0);
+  gb.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
+  return gb;
+}
+
 Ui.prototype.addSimpleWindow = function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };

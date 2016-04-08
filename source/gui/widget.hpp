@@ -69,7 +69,7 @@ public:
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
 
-  Widget( Widget* parent, int id, const Rect& rectangle );
+  Widget(Widget* parent, int id=-1, const Rect& rectangle=Rect(0,0,1,1));
 
   std::string internalName() const;
   void setInternalName( const std::string& name );

@@ -8,6 +8,7 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "subElement", { set: function (value) { this.setSubElement(value); } })
   Object.defineProperty(objProto, "align", { set: function (obj) { this.setAlignment(obj.left,obj.right,obj.top,obj.bottom); } })
   Object.defineProperty(objProto, "name", { set: function (str) { this.setInternalName(str); } });
+  Object.defineProperty(objProto, "clipped", { set: function (v) { this.setNotClipped(!v); } });
 
   Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
   Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
@@ -38,6 +39,7 @@ Object.defineProperty( Label.prototype, "multiline", { set: function (en) { this
 Object.defineProperty( Label.prototype, "background", { set: function (picname) { this.setBackgroundPicture(picname) }} )
 Object.defineProperty( Label.prototype, "textColor", {set: function(color) { this.setColor(color) }})
 Object.defineProperty( Label.prototype, "padding", {set: function(rect) { this.setPadding(rect.left,rect.top,rect.right,rect.bottom) }})
+Object.defineProperty( Label.prototype, "textWidth", {get: function() { return this.getTextWidth("")}})
 
 Object.defineProperty( Label.prototype, "icon", { set: function(value) {
     if (!value)
@@ -65,6 +67,7 @@ function UpdateButtonPrototype(objProto) {
    Object.defineProperty(objProto, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
    Object.defineProperty(objProto, "iconMask", {  set: function(value) { this.setIconMask(value) }})
+   Object.defineProperty(objProto, "textWidth", {get: function() { return this.getTextWidth("")}})
 
    Object.defineProperty(objProto, "icon", { set: function(value) {
         if (!value)

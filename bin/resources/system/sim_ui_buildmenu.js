@@ -71,48 +71,78 @@ g_config.buildmenu = {
   },
 }
 
+sim.ui.buildmenu.build = function(type) {
+  var sound = "bmsel_" + type;
+  g_session.playAudio(sound + "_00001", 100, g_config.audio.infobox);
+  g_session.setOption("buildMode", type);
+}
+
+sim.ui.buildmenu.sub = function(type) {
+  var sound = "bmsel_" + type;
+  g_session.playAudio(sound + "_00001", 100, g_config.audio.infobox);
+  sim.ui.buildmenu.show(branch);
+}
+
 sim.ui.buildmenu.show = function(type, parentName) {
   var menus = g_ui.find("BuildMenu");
   if (menus != null)
     menus.deleteLater();
 
+  if (type == undefined || type == "")
+    return;
+
   var extMenu = g_ui.find("ExtentMenu");
   var parent = g_ui.find(parentName);
-  var buildMenu = new Widget("Widget");
-  buildMenu.internalName = "BuildMenu";
+  var buildMenu = new Label(0);
+  buildMenu.geometry = {x:0, y:0, w:extMenu.w, h:extMenu.h};
+  buildMenu.name = "BuildMenu";
 
   if (buildMenu != null) {
-    buildMenu.setNotClipped(true);
-    buildMenu.init(type);
-    buildMenu.internalName = "BuildMenu";
+    buildMenu.clipped = false;
+    buildMenu.name = "BuildMenu";
     buildMenu.buttons = [];
     var resolution = g_session.resolution;
-    buildMenu.geometry = { x:extMenu.left()-60, y:parent.top(), w:60, h:60 ) );
+    //buildMenu.geometry = { x:extMenu.left()-60, y:parent.top(), w:60, h:60 };
+    buildMenu.geometry = { x:0, y:0, w:80, h:25 };
   }
 
-  buildMenu.addButton = functon(branch,type) {
+  buildMenu.addButton = function(branch,type) {
     var ltype = branch.length ? branch : type;
     var title = _format( "bldm_{0}", ltype);
 
+    engine.log(ltype);
+    title = _ut(title);
+    if (title[0] == "#")
+      title = ltype;
+
     var btn = new Button(buildMenu);
-    btn.geometry = { x:0, y:0, w:buildMenu.w, h:20};
+    btn.geometry = { x:0, y:25*buildMenu.buttons.length, w:buildMenu.w, h:24};
     btn.hoverFont = "FONT_2_RED";
+    btn.text = _u(title);
     btn.textAlign = { h:"upperLeft", v:"center" };
     btn.textOffset = { x:15, y:0 };
-    btn.lbCost = new Label(btn);
-    btn.lbCost.geometry = { x:btn.w-60, y:0, w:30, h:0 };
-    btn.lbCost.align = { left:g_config.align.lowerRight, top:g_config.align.lowerRight,
-                         right:g_config.align.lowerRight, bottom:g_config.align.lowerRight };
+
+    if (type != "")  {
+      var  cost = g_config.construction[type].cost;
+      btn.lbCost = new Label(btn);
+      btn.lbCost.font = "FONT_2_RED";
+      btn.lbCost.textAlign = { h:"lowerRight", v:"center" };
+      btn.lbCost.text = cost;
+    }
 
     btn.btnHelp = new HelpButton(btn);
-    btn.position = { x:btn.w -24, y:0 };
+    btn.btnHelp.position = { x:btn.w-24, y:0 };
+    btn.btnHelp.uri = ltype;
     btn.btnHelp.align = { left:g_config.align.lowerRight, top:g_config.align.lowerRight,
                           right:g_config.align.lowerRight, bottom:g_config.align.lowerRight };
 
     btn.sound = _format( "bmsel_{0}", ltype );
     buildMenu.buttons.push(btn);
 
-    buildMenu.h = (buildMenu.h + 30);
+    buildMenu.h = buildMenu.buttons.length * 25;
+
+    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch); }
+    else if (type != "") btn.callback = function() { sim.ui.buildmenu.buid(type); }
   }
 
   buildMenu.update = function(type) {
@@ -125,35 +155,40 @@ sim.ui.buildmenu.show = function(type, parentName) {
     //VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
     //VariantList submenu = config.get( "submenu" ).toList();
     //VariantList buildings = config.get( "buildings" ).toList();
-
-    var config = g_config.buildMenu;
+    engine.log( "Opened buildmenu " + type);
+    var config = g_config.buildmenu[type];
 
     if (config.submenu != undefined) {
       for (var i in config.submenu)
         buildMenu.addButton(config.submenu[i], "");
     }
 
-    if (config.buildings != undefined)
-    {
-      for (var i in config.buildings)
+    if (config.buildings != undefined) {
+      for (var i in config.buildings) {
         buildMenu.addButton("", config.buildings[i]);
+      }
     }
 
-    auto buildButtons = children().select<BuildButton>();
-    for( auto bbutton : buildButtons )
-    {
-      textSize = font.getTextSize( bbutton->text());
-      max_text_width = std::max(max_text_width, textSize.width() );
-      textSize = font.getTextSize( utils::i2str( bbutton->cost() ) );
-      max_cost_width = std::max(max_cost_width, textSize.width());
+    for (var i in buildMenu.buttons) {
+      var bbutton = buildMenu.buttons[i];
+      engine.log(bbutton.textWidth)
+      max_text_width = math.max(max_text_width, bbutton.textWidth );
+      max_cost_width = math.max(max_cost_width, bbutton.lbCost.textWidth);
     }
 
-    setWidth( std::max(150, max_text_width + max_cost_width + 30 + 27) );
+    engine.log(max_text_width);
+    buildMenu.w = math.max(150, max_text_width + max_cost_width + 30 + 27);
 
     // set the same size for all buttons
-    for( auto button : buildButtons )
-      button->setWidth( width() );
+    for(var i in buildMenu.buttons) {
+      var btn = buildMenu.buttons[i];
+      btn.w = buildMenu.w;
+      if (btn.lbCost)
+        btn.lbCost.geometry = { x:btn.w-55, y:0, w:30, h:25 };
+    }
+    //  button->setWidth( width() );
   }
 
-  buildMenu.update(type);
+  if (type != "")
+    buildMenu.update(type);
 }

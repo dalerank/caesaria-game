@@ -543,7 +543,7 @@ bool Menu::onEvent(const NEvent& event)
     if( id == object::house || id == object::road )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit _d->signal.onCreateConstruction( id );
     }
     else if( id == object::terrain || id == object::tree
@@ -552,25 +552,25 @@ bool Menu::onEvent(const NEvent& event)
              || id == object::river )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
-      emit _d->signal.onCreateObject( id );
+      _createBuildMenu("", this );
+      emit _d->signal.onCreateObject(id);
     }
     else if( id == (int)AdvToolMode::removeTool )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onRemoveTool();
     }
     else if( id == (int)AdvToolMode::undoAction )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onUndo();
     }
     else if( id == (int)AdvToolMode::messages )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onMessagesShow();
     }
     else
@@ -583,14 +583,14 @@ bool Menu::onEvent(const NEvent& event)
         if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
         {
           int id = btn->ID();
-          if( id & BuildMenu::subMenuCreateIdHigh )
+          if(id & BuildMenu::subMenuCreateIdHigh)
           {
-            _createBuildMenu( id & 0xff, event.gui.caller );
+            _createBuildMenu(development::toString(development::Branch(id&0xff)), event.gui.caller);
           }
           else
           {
-            emit _d->signal.onCreateConstruction( id );
-            _createBuildMenu( -1, this );
+            emit _d->signal.onCreateConstruction(id);
+            _createBuildMenu("", this );
             setFocus();
           }
         }
@@ -610,7 +610,7 @@ bool Menu::onEvent(const NEvent& event)
     switch( event.mouse.type )
     {
     case NEvent::Mouse::mouseRbtnRelease:
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       cancel();
     return true;
 
@@ -659,7 +659,7 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen 
 void Menu::minimize()
 {
   _d->lastPressed = 0;
-  _createBuildMenu( -1, this );
+  _createBuildMenu("", this );
   Point stopPos = lefttop() + Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
@@ -710,9 +710,9 @@ bool Menu::unselectAll()
   return anyPressed;
 }
 
-void Menu::_createBuildMenu(int type, Widget* parent)
+void Menu::_createBuildMenu(const std::string& type, Widget* parent)
 {
-  VariantList vl; vl << type << parent->internalName();
+  VariantList vl; vl << Variant(type) << parent->internalName();
   events::dispatch<events::ScriptFunc>("OnShowBuildMenu", vl); 
 }
 
@@ -760,7 +760,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
   ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret.setID( Hash( TEXT(ExtentMenu)) );
+  ret.setID( Hash(TEXT(ExtentMenu)) );
+  ret.setInternalName( TEXT(ExtentMenu) );
   ret._setModel( model );
   ret._updateButtons();
   ret._updateBuildOptions();

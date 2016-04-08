@@ -734,7 +734,7 @@ void Layer::_initialize()
   StringArray visibleObjectTypes = vm.get( "visibleObjects" ).toStringArray();
   for( const auto& it : visibleObjectTypes )
   {
-    object::Type ovType = object::findType( it );
+    object::Type ovType = object::toType( it );
     if( ovType != object::unknown )
       _dfunc()->visible.objects.insert( ovType );
   }
