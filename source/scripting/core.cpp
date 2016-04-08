@@ -29,11 +29,13 @@
 #include <GameGfx>
 #include <GameCity>
 #include <GameWorld>
+#include <GameWalkers>
 
 #include "religion/divinities.hpp"
 #include "religion/pantheon.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
+#include "core/alignment.hpp"
 
 using namespace gui;
 using namespace gui::dialog;
@@ -59,7 +61,10 @@ namespace internal
 void engine_js_push(js_State* J, const Variant& param);
 void engine_js_push(js_State* J, const DateTime& param);
 void engine_js_push(js_State* J, const NEvent& param);
+void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
+void engine_js_push(js_State* J, const Tilemap& param);
+void engine_js_push(js_State* J, Widget* param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
@@ -67,6 +72,9 @@ inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (g
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_toint32(J, n); }
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
+inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_toint32(J, n); }
+inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_toint32(J, n); }
+inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
@@ -85,6 +93,41 @@ Variant engine_js_to(js_State *J, int n, Variant)
 
   Logger::warning("!!! Cant convert jValue to Variant");
   return Variant();
+}
+
+Font engine_js_to(js_State *J, int n, Font)
+{
+  Font f;
+  if (js_isobject(J, n)) {
+    std::string family = Font::defname;
+    if (js_hasproperty(J, n, "family")) {
+      js_getproperty(J, n, "family");
+      family = js_tostring(J, -1);
+    }
+
+    int size = 12;
+    if (js_hasproperty(J, n, "size")) {
+      js_getproperty(J, n, "size");
+      size = js_toint32(J, -1);
+    }
+
+    int color = ColorList::pink.color;
+    if (js_hasproperty(J, n, "color")) {
+      js_getproperty(J, n, "color");
+      color = js_toint32(J, -1);
+    }
+
+    js_getproperty(J, n, "bold"); bool bold = js_toboolean(J, -1);
+    js_getproperty(J, n, "italic"); bool italic = js_toboolean(J, -1);
+    f = Font::create(family, size, bold, italic, NColor(color));
+  }
+  else if (js_isstring(J, n)) {
+    std::string alias = js_tostring(J, n);
+    f = Font::create(alias);
+  }
+
+  f.fallback(16, false, false, ColorList::pink);
+  return f;
 }
 
 bool engine_js_tryPCall(js_State *J, int params)
@@ -144,9 +187,19 @@ void engine_js_push(js_State* J, const TilePos& pos)
 
 void engine_js_push(js_State* J, int32_t value) { js_pushnumber(J,value); }
 void engine_js_push(js_State* J, const good::Product& value) { js_pushnumber(J, value); }
+void engine_js_push(js_State* J, const Walker::Flag& value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, float value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, uint32_t value) { js_pushnumber(J, value); }
 void engine_js_push(js_State* J, const std::string& p) { js_pushstring(J,p.c_str()); }
+
+void engine_js_push(js_State* J, const Rect& p)
+{
+  js_newobject(J);
+  js_pushnumber(J, p.left()); js_setproperty(J, -2, "x");
+  js_pushnumber(J, p.top()); js_setproperty(J, -2, "y");
+  js_pushnumber(J, p.width()); js_setproperty(J, -2, "w");
+  js_pushnumber(J, p.height()); js_setproperty(J, -2, "h");
+}
 
 void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
 {
@@ -169,6 +222,7 @@ void engine_js_push(js_State *J, const StringArray& items)
 void engine_js_push(js_State *J, const good::Stock& stock) { engine_js_pushud(J, TEXT(Stock), &const_cast<good::Stock&>(stock), nullptr); }
 void engine_js_push(js_State *J, const gfx::Tile& tile) { engine_js_pushud(J, TEXT(Tile), &const_cast<Tile&>(tile), nullptr); }
 void engine_js_push(js_State *J, const good::Store& store) { engine_js_pushud(J, TEXT(Store), &const_cast<good::Store&>(store), nullptr); }
+void engine_js_push(js_State *J, const gfx::Tilemap& tmap) { engine_js_pushud(J, TEXT(Tilemap), &const_cast<gfx::Tilemap&>(tmap), nullptr); }
 
 void engine_js_push(js_State *J, const VariantMap& items)
 {
@@ -179,6 +233,27 @@ void engine_js_push(js_State *J, const VariantMap& items)
     js_setproperty(J, -2, item.first.c_str());
   }
 }
+
+void engine_js_push(js_State *J, const TilesArray& items)
+{
+  js_newobject(J);
+  for (uint32_t i=0; i < items.size(); i++)
+  {
+    engine_js_push(J, *items[i]);
+    js_setproperty(J, -2, utils::i2str(i).c_str());
+  }
+}
+
+void engine_js_push(js_State *J, const SmartList<Walker>& items)
+{
+  js_newobject(J);
+  for (uint32_t i=0; i < items.size(); i++)
+  {
+    engine_js_push(J, items[i]);
+    js_setproperty(J, -2, utils::i2str(i).c_str());
+  }
+}
+
 
 void engine_js_push(js_State* J,const Variant& param)
 {
@@ -260,13 +335,16 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 #define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
 
 PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Widget)
 PUSH_USERDATA(Stock)
 PUSH_USERDATA(Store)
 
 PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Soldier)
 PUSH_USERDATA_SMARTPTR(Overlay)
 PUSH_USERDATA_SMARTPTR(Empire)
+PUSH_USERDATA_SMARTPTR(Walker)
 PUSH_USERDATA_SMARTPTR(Ruins)
 PUSH_USERDATA_SMARTPTR(Factory)
 PUSH_USERDATA_SMARTPTR(Divinity)
@@ -356,6 +434,15 @@ inline TilePos engine_js_to(js_State *J, int n, TilePos)
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
 {
+  if (js_isobject(J, n))
+  {
+    js_getproperty(J, n, "x"); int x = js_toint32(J, -1);
+    js_getproperty(J, n, "y"); int y = js_toint32(J, -1);
+    js_getproperty(J, n, "w"); int w = js_toint32(J, -1);
+    js_getproperty(J, n, "h"); int h = js_toint32(J, -1);
+
+    return Rect(x, y, x+w, y+h);
+  }
   return Rect( js_toint32(J, n), js_toint32(J, n+1),
                js_toint32(J, n+2), js_toint32(J, n+3) );
 }
@@ -642,19 +729,15 @@ void object_call_func_0(js_State *J, void (T::*f)())
 template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
-  try
-  {
+  try {
     T* parent = (T*)js_touserdata(J, 0, "userdata");
-    if (parent)
-    {
+    if (parent) {
       Rtype value = (parent->*f)();
       engine_js_push(J,value);
-    }
-    else
+    } else {
       js_pushundefined(J);
-  }
-  catch(...)
-  {
+    }
+  } catch(...) {
     //something bad happens
   }
 }
@@ -663,14 +746,13 @@ template<typename T,typename Rtype, typename P1Type>
 void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type) const, P1Type def)
 {
   T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
-  {
+  if (parent) {
     auto paramValue1 = engine_js_to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     engine_js_push(J,value);
-  }
-  else
+  } else {
     js_pushundefined(J);
+  }
 }
 
 template<typename T,typename Rtype, typename P1Type>
@@ -736,9 +818,41 @@ void reg_overlay_constructor(js_State *J, const std::string& tname)
       Logger::warning("Cant convert {} to {}", ptr->info().typeName(), tname);
   }
 
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", safety_cast<T*>(ov), nullptr);
+  if (ov) {
+    js_currentfunction(J);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, "userdata", safety_cast<T*>(ov), nullptr);
+  } else {
+    js_pushnull(J);
+  }
+}
+
+template<class T>
+void reg_walker_constructor(js_State *J, const std::string& tname)
+{
+  T* wlk = nullptr;
+  if (js_isstring(J,1))
+  {
+    std::string name = js_tostring(J, 1);
+    walker::Type type = walker::toType(name);
+    wlk = safety_cast<T*>(WalkerManager::instance().create(type, internal::game->city()).object());
+  }
+  else if(js_isuserdata(J, 1, "userdata"))
+  {
+    auto ptr = (Walker*)js_touserdata(J, 1, "userdata");
+    wlk = safety_cast<T*>(ptr);
+
+    if (!wlk && ptr)
+      Logger::warning("Cant convert {} to {}", ptr->info().typeName(), tname);
+  }
+
+  if (wlk) {
+    js_currentfunction(J);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, "userdata", safety_cast<T*>(wlk), nullptr);
+  } else {
+    js_pushnull(J);
+  }
 }
 
 void reg_widget_constructor(js_State *J, const std::string& name)
@@ -763,9 +877,13 @@ void reg_widget_constructor(js_State *J, const std::string& name)
     widget = internal::game->gui()->createWidget(name, parent);
   }
 
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, "userdata", widget, nullptr);
+  if (widget) {
+    js_currentfunction(J);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, "userdata", widget, nullptr);
+  } else {
+    js_pushnull(J);
+  }
 }
 
 
@@ -897,6 +1015,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define SCRIPT_OBJECT_END(name) script_object_end(#name);
 #define DEFINE_WIDGET_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_widget_constructor(J, #name); }
 #define DEFINE_OVERLAY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_overlay_constructor<name>(J, #name); }
+#define DEFINE_WALKER_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_walker_constructor<name>(J, #name); }
 #define DEFINE_DIVINITY_CONSTRUCTOR(name) void constructor_##name(js_State *J) { reg_divinity_constructor(J); }
 
 #include "widget.template"
@@ -921,9 +1040,11 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "city.implementation"
 #include "overlay.implementation"
 #include "religion.implementation"
+#include "walker.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
+DEFINE_VANILLA_CONSTRUCTOR(Tilemap, &(internal::game)->city()->tilemap());
 DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
 DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
@@ -959,6 +1080,7 @@ void Core::registerFunctions(Game& game)
 #include "city.interface"
 #include "overlay.interface"
 #include "religion.interface"
+#include "walker.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function

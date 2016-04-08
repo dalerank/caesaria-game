@@ -23,12 +23,12 @@ namespace gui
 
 enum ElementState
 {
-  stNormal=0, 
-  stPressed, 
-  stHovered, 
-  stDisabled, 
+  stNormal=0,
+  stPressed,
+  stHovered,
+  stDisabled,
   stChecked,
-  StateCount
+  stCount
 };
 
 }//end namespace gui

@@ -16,9 +16,9 @@ Object.defineProperty( Window.prototype, "pauseGame", { set: function(en) {
 
 Window.prototype.closeAfterKey = function(obj) {
   if(obj.escape)
-    this.addCloseCode(0x1B);
+    this.addCloseCode(g_config.key.KEY_ESCAPE);
   if(obj.rmb)
-    this.addCloseCode(0x4);
+    this.addCloseCode(g_config.key.KEY_RBUTTON);
 }
 
 Window.prototype.addLabel = function(rx,ry,rw,rh,text) {

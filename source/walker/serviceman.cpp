@@ -522,7 +522,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
   for( auto& it : oboletesOvs )
   {
-    object::Type ovType = object::findType( it.toString() );
+    object::Type ovType = object::toType( it.toString() );
     if( ovType != object::unknown )
       _addObsoleteOverlay( ovType );
   }

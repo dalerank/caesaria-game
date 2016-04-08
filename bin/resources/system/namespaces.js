@@ -13,6 +13,7 @@ var sim = {}
 
 sim.climate = {}
 sim.ui = {}
+sim.ui.buildmenu = {}
 sim.ui.topmenu = {}
 sim.ui.topmenu.help = {}
 sim.ui.topmenu.file = {}

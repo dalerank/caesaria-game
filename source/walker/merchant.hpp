@@ -30,6 +30,7 @@ public:
   virtual good::ProductMap bougth() const;
   virtual good::ProductMap mayBuy() const;
   virtual std::string parentCity() const;
+  virtual Variant getProperty(const std::string& name) const;
 
 protected:
   Merchant( PlayerCityPtr city, walker::Type type );

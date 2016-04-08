@@ -69,7 +69,7 @@ public:
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
 
-  Widget( Widget* parent, int id, const Rect& rectangle );
+  Widget(Widget* parent, int id=-1, const Rect& rectangle=Rect(0,0,1,1));
 
   std::string internalName() const;
   void setInternalName( const std::string& name );
@@ -104,7 +104,7 @@ public:
   //! Sets another skin independent font.
   /** If this is set to zero, the button uses the font of the skin.
   \param font: New font to set. */
-  virtual void setFont( const Font& font );
+  virtual void setFont(const Font& font);
   virtual void setFont(const std::string& name, NColor color=NColor() );
 
   virtual Font font() const;
@@ -339,7 +339,7 @@ public:
   void deleteLater();
 
   //! Returns the relative rectangle of this element.
-  Rect relativeRect() const;
+  const Rect& relativeRect() const;
 
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */

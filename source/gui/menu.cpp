@@ -22,9 +22,9 @@
 #include "core/color.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
-#include "buildmenu.hpp"
 #include "environment.hpp"
 #include "gfx/decorator.hpp"
+#include "city/build_options.hpp"
 #include "widgetpositionanimator.hpp"
 #include "label.hpp"
 #include "gfx/drawstate.hpp"
@@ -48,6 +48,7 @@
 #include "core/osystem.hpp"
 #include "game/settings.hpp"
 #include "events/playsound.hpp"
+#include "events/script_event.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -79,7 +80,7 @@ public:
   {
     active = false;
     pic = Picture( gui::rc.panel, 114 );
-    setSubElement( true );    
+    setSubElement( true );
   }
 
   void messagesChanged(int number)
@@ -145,7 +146,7 @@ struct Menu::Model
   int width;
   float scale;
   MenuType mtype;
-  bool fitToScreen;  
+  bool fitToScreen;
   std::map<Link::Name, Menu::Link> actions;
 
   void setEnabled( Link::Name name, bool enabled )
@@ -356,7 +357,7 @@ public:
   PushButton* overlaysButton;
 
   Image* middleLabel;
-  OverlaysMenu* overlaysMenu; 
+  OverlaysMenu* overlaysMenu;
   float koeff;
   Menu::Side side;
   PlayerCityPtr city;
@@ -483,7 +484,7 @@ void Menu::_createLink( Link& link )
   link.button = btn;
 }
 
-PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
+PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
                               int id, bool haveSubmenu, int midPic,
                               const std::string& ident, const Rect& rect )
 {
@@ -491,7 +492,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   int dy = 35;
 
   MenuButton& ret = add<MenuButton>( Point( 0, 0 ), -1, -1, startPic, pushBtn );
-  ret.setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+  ret.setID( id | ( haveSubmenu ? 0x1000 : 0 ) );
   Point temp = offset + Point( 0, dy * yMul );
   if( _d->koeff != 1 )
   {
@@ -520,7 +521,7 @@ void Menu::draw(gfx::Engine& painter)
   DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   pipe.draw( _d->bg.batch )
       .fallback( _d->bg.fallback, _d->bg.rects );
-    
+
   Widget::draw( painter );
 }
 
@@ -542,7 +543,7 @@ bool Menu::onEvent(const NEvent& event)
     if( id == object::house || id == object::road )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit _d->signal.onCreateConstruction( id );
     }
     else if( id == object::terrain || id == object::tree
@@ -551,25 +552,25 @@ bool Menu::onEvent(const NEvent& event)
              || id == object::river )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
-      emit _d->signal.onCreateObject( id );
+      _createBuildMenu("", this );
+      emit _d->signal.onCreateObject(id);
     }
     else if( id == (int)AdvToolMode::removeTool )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onRemoveTool();
     }
     else if( id == (int)AdvToolMode::undoAction )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onUndo();
     }
     else if( id == (int)AdvToolMode::messages )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onMessagesShow();
     }
     else
@@ -582,14 +583,14 @@ bool Menu::onEvent(const NEvent& event)
         if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
         {
           int id = btn->ID();
-          if( id & BuildMenu::subMenuCreateIdHigh )
+          if(id & 0x1000)
           {
-            _createBuildMenu( id & 0xff, event.gui.caller );
+            _createBuildMenu(development::toString(development::Branch(id&0xff)), event.gui.caller);
           }
           else
           {
-            emit _d->signal.onCreateConstruction( id );
-            _createBuildMenu( -1, this );
+            emit _d->signal.onCreateConstruction(id);
+            _createBuildMenu("", this );
             setFocus();
           }
         }
@@ -609,32 +610,12 @@ bool Menu::onEvent(const NEvent& event)
     switch( event.mouse.type )
     {
     case NEvent::Mouse::mouseRbtnRelease:
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       cancel();
     return true;
 
-    case NEvent::Mouse::btnLeftPressed:
-    case NEvent::Mouse::mouseLbtnRelease:
-    {
-      //lock movement for tilemap
-      if( findChildren<BuildMenu*>().size() > 0 )
-        return true;
-    }
-    break;
-
     default: break;
     }
-  }
-
-  if( event.EventType == sEventKeyboard )
-  {
-    if( event.keyboard.key == KEY_ESCAPE )
-    {
-      auto menus = findChildren<BuildMenu*>();
-      for( auto m : menus ) m->deleteLater();
-    }
-
-    return true;
   }
 
   return Widget::onEvent( event );
@@ -658,7 +639,7 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen 
 void Menu::minimize()
 {
   _d->lastPressed = 0;
-  _createBuildMenu( -1, this );
+  _createBuildMenu("", this );
   Point stopPos = lefttop() + Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
@@ -709,25 +690,10 @@ bool Menu::unselectAll()
   return anyPressed;
 }
 
-void Menu::_createBuildMenu( int type, Widget* parent )
+void Menu::_createBuildMenu(const std::string& type, Widget* parent)
 {
-   auto menus = findChildren<BuildMenu*>();
-   for( auto m : menus )
-     m->deleteLater();
-
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,
-                                             _d->city->getOption( PlayerCity::c3gameplay ) );
-
-   if( buildMenu != NULL )
-   {
-     buildMenu->setNotClipped( true );
-     buildMenu->setBuildOptions( _d->city->buildOptions() );
-     buildMenu->setModel( SETTINGS_RC_PATH( buildMenuModel ).toString() );
-     buildMenu->initialize();
-
-     int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );
-     buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
-   }
+  VariantList vl; vl << Variant(type) << parent->screenTop();
+  events::dispatch<events::ScriptFunc>("OnShowBuildMenu", vl);
 }
 
 Signal0<>& Menu::onHide() { return _d->signal.onHide; }
@@ -774,7 +740,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
   ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret.setID( Hash( TEXT(ExtentMenu)) );
+  ret.setID( Hash(TEXT(ExtentMenu)) );
+  ret.setInternalName( TEXT(ExtentMenu) );
   ret._setModel( model );
   ret._updateButtons();
   ret._updateBuildOptions();
@@ -818,7 +785,7 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->rotateLeftButton, Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
 
   _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
-  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );   
+  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
   _d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
   _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );

@@ -1,5 +1,7 @@
 var g_config = {}
 
+g_config.widget = {}
+
 g_config.level = {
     res_menu: 0,
     res_restart: 2
@@ -7,6 +9,14 @@ g_config.level = {
 
 g_config.lobby = {
     res_close:5
+}
+
+g_config.align = {
+  upperLeft:0,
+  lowerRight:1,
+  center:2,
+  scale:3,
+  automatic:4
 }
 
 g_config.audio = {
@@ -48,6 +58,8 @@ g_config.advisor = {
     main: 12,
     unknown: 13
 }
+
+g_config.walker = {}
 
 g_config.layer = {
     simple : 0,

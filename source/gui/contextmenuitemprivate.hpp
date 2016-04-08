@@ -19,6 +19,7 @@
 #include "core/signals.hpp"
 #include "core/size.hpp"
 #include "core/flagholder.hpp"
+#include "element_state.hpp"
 
 namespace gui
 {
@@ -27,10 +28,10 @@ class ContextMenu;
 
 class ContextMenuItem::Impl : public FlagHolder<int>
 {
-public: 
-	Size dim;
-	int offset;
-	int commandId;
+public:
+  Size dim;
+  int offset;
+  int commandId;
 
   struct {
     bool autoChecking;
@@ -45,9 +46,15 @@ public:
     SubMenuAlign align;
   } submenu;
 
+  struct st {
+    Font font;
+  };
+
+  st states[stCount];
+
 signals public:
-	Signal1<bool> onCheckedSignal;
-	Signal1<int> onActionSignal;
+  Signal1<bool> onCheckedSignal;
+  Signal1<int> onActionSignal;
   Signal2<Widget*, bool> onCheckedExSignal;
 };
 

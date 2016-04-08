@@ -35,6 +35,7 @@ public:
   virtual void timeStep(const unsigned long time);
 
   void setMode( Mode mode );
+  void nextMode();
   Mode mode() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
@@ -43,6 +44,7 @@ public:
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool build(const city::AreaInfo &info);
+  virtual Variant getProperty(const std::string& name) const;
 private:
   bool _update( const city::AreaInfo& areaInfo );
 

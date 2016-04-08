@@ -85,6 +85,37 @@ game.ui.infobox.baseSpecialOrdersWindow = function(top, left, height) {
   return ibox;
 }
 
+game.ui.infobox.showGrSpecialOrdersWindow = function(parent, gr) {
+  var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 250, 250);
+  ibox.title = _u("granary_orders");
+
+  var grStore = gr.store();
+  for (var i in g_config.good.storable) {
+    var gtype = g_config.good.storable[i];
+    var rule = grStore.getOrder(gtype);
+    ibox.gbOrders.addProduct(gtype, grStore);
+  }
+
+  ibox.update = function() {
+    ibox.btnToggleDevastation.text = gr.store().isDevastation()
+                                    ? _u("stop_granary_devastation")
+                                    : _u("devastate_granary");
+  }
+
+
+  ibox.btnToggleDevastation = ibox.addButton(80, ibox.h-45, ibox.w-160, 20);
+  ibox.btnToggleDevastation.style = "whiteBorderUp";
+  ibox.btnToggleDevastation.font = "FONT_2"
+  ibox.btnToggleDevastation.text = _u("unknown_text");
+  ibox.btnToggleDevastation.callback = function() {
+      gr.store().setDevastation( !gr.store().isDevastation() );
+      ibox.update();
+  }
+
+  ibox.update();
+  ibox.show();
+}
+
 game.ui.infobox.showWhSpecialOrdersWindow = function(parent, wh) {
   var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 560, 560);
 
@@ -129,10 +160,72 @@ game.ui.infobox.showWhSpecialOrdersWindow = function(parent, wh) {
   ibox.show();
 }
 
+game.ui.infobox.aboutStorage = function(x,y,w,h) {
+  var ibox = this.aboutConstruction(x, y, w, h);
+
+  ibox.addProductButton = function(goodType, col, paintY, offset, qty) {
+    var ginfo = g_config.good.getInfo(goodType);
+
+    var btn = ibox.addButton(col * offset + 15, paintY, 150, 24);
+    btn.font = "FONT_2";
+    btn.style = "noBackground";
+    btn.textAlign = { h:"upperLeft", v:"center" };
+    btn.icon = ginfo.picture.local;
+    btn.iconOffset = {x:0, y:4};
+    btn.text = _format( "{0} {1} {2}", g_config.metric.convQty(qty / 100), _ut(ginfo.name), g_config.metric.modeShort );
+    btn.textOffset = {x:25, y:0};
+
+    return btn;
+  }
+
+  return ibox;
+}
+
+game.ui.infobox.aboutGranary = function(location) {
+  var granary = g_session.city.getOverlay(location).as(Granary);
+
+  var ibox = this.aboutStorage(0, 0, 510, 280);
+
+  ibox.title = _u(granary.typename);
+
+  ibox.drawGrGood = function(goodType, col, paintY) {
+    var qty = granary.store().qty(goodType);
+    var btn = ibox.addProductButton(goodType, col, paintY, 250, qty);
+  }
+
+  var lbUnits = ibox.addLabel(16, 45, ibox.w-32, 25)
+  // summary: total stock, free capacity
+  var capacity = granary.store().qty();
+  var freeQty = granary.store().freeQty();
+  var desc = _format( "{0} {1}, {2} {3} ({4})",
+                      g_config.metric.convQty(capacity),
+                      _ut("units_in_stock"),
+                      _ut("freespace_for"),
+                      g_config.metric.convQty( freeQty ),
+                      g_config.metric.modeShort );
+  lbUnits.text = desc;
+
+  ibox.drawGood(g_config.good.wheat, 0, lbUnits.bottom() );
+  ibox.drawGood(g_config.good.meat, 0, lbUnits.bottom() + 25);
+  ibox.drawGood(g_config.good.fruit, 1, lbUnits.bottom() );
+  ibox.drawGood(g_config.good.vegetable, 1, lbUnits.bottom() + 25);
+
+  var btnOrders = ibox.addButton(65, ibox.h-37, ibox.w-125, 25)
+  btnOrders.text = _u("granary_orders");
+  btnOrders.style = "whiteBorderUp";
+  btnOrders.callback = function() {
+    game.ui.infobox.showGrSpecialOrdersWindow(ibox, wh);
+  }
+
+  ibox.setWorkersStatus(32, 130, 542, granary.maximumWorkers(), granary.numberWorkers());
+  ibox.setWorkingStatus(granary.active);
+  ibox.show();
+}
+
 game.ui.infobox.aboutWarehouse = function(location) {
   var wh = g_session.city.getOverlay(location).as(Warehouse);
 
-  var ibox = this.aboutConstruction(0, 0, 510, 360);
+  var ibox = this.aboutStorage(0, 0, 510, 360);
 
   ibox.initBlackframe(16, 225, ibox.w-32, 58);
   ibox.title = _u(wh.typename);
@@ -150,21 +243,10 @@ game.ui.infobox.aboutWarehouse = function(location) {
   if (isTradeCenter)
       ibox.title = _u("trade_center");
 
-  ibox.drawGood = function(goodType, col, paintY) {
-    var ginfo = g_config.good.getInfo(goodType);
+  ibox.drawWhGood = function(goodType, col, paintY) {
     var qty = wh.store().qty(goodType);
-
-    var btn = ibox.addButton(col * 150 + 15, paintY, 150, 24);
-    btn.font = "FONT_2";
-    btn.style = "noBackground";
-    btn.textAlign = { h:"upperLeft", v:"center" };
-    btn.icon = ginfo.picture.local;
-    btn.iconOffset = {x:0, y:4};
-    btn.text = _format( "{0} {1}", qty / 100, _ut(ginfo.name) );
-    btn.textOffset = {x:24, y:0};
-    btn.callback = function() { ibox.showWhSpecialOrdersWindow(ibox.top(), ibox.left(), wh, goodType) };
+    var btn = ibox.addProductButton(goodType, col, paintY, 150, qty);
   }
-
   /*StringArray warnings;
   if( _warehouse->onlyDispatchGoods() )  { warnings << "##warehouse_low_personal_warning##";  }
   if( _warehouse->getGoodStore().freeQty() == 0 ) { warnings << "##warehouse_full_warning##";  }
@@ -177,24 +259,24 @@ game.ui.infobox.aboutWarehouse = function(location) {
   // summary: total stock, free capacity
   var _paintY = 50;
 
-  ibox.drawGood(g_config.good.wheat,     0, _paintY+0);
-  ibox.drawGood(g_config.good.vegetable, 0, _paintY+25);
-  ibox.drawGood(g_config.good.fruit,     0, _paintY+50);
-  ibox.drawGood(g_config.good.olive,     0, _paintY+75);
-  ibox.drawGood(g_config.good.grape,     0, _paintY+100);
-  ibox.drawGood(g_config.good.fish,      0, _paintY+125);
+  ibox.drawWhGood(g_config.good.wheat,     0, _paintY+0);
+  ibox.drawWhGood(g_config.good.vegetable, 0, _paintY+25);
+  ibox.drawWhGood(g_config.good.fruit,     0, _paintY+50);
+  ibox.drawWhGood(g_config.good.olive,     0, _paintY+75);
+  ibox.drawWhGood(g_config.good.grape,     0, _paintY+100);
+  ibox.drawWhGood(g_config.good.fish,      0, _paintY+125);
 
-  ibox.drawGood(g_config.good.meat,      1, _paintY+0);
-  ibox.drawGood(g_config.good.wine,      1, _paintY+25);
-  ibox.drawGood(g_config.good.oil,       1, _paintY+50);
-  ibox.drawGood(g_config.good.iron,      1, _paintY+75);
-  ibox.drawGood(g_config.good.timber,    1, _paintY+100);
+  ibox.drawWhGood(g_config.good.meat,      1, _paintY+0);
+  ibox.drawWhGood(g_config.good.wine,      1, _paintY+25);
+  ibox.drawWhGood(g_config.good.oil,       1, _paintY+50);
+  ibox.drawWhGood(g_config.good.iron,      1, _paintY+75);
+  ibox.drawWhGood(g_config.good.timber,    1, _paintY+100);
 
-  ibox.drawGood(g_config.good.clay,      2, _paintY+0);
-  ibox.drawGood(g_config.good.marble,    2, _paintY+25);
-  ibox.drawGood(g_config.good.weapon,    2, _paintY+50);
-  ibox.drawGood(g_config.good.furniture, 2, _paintY+75);
-  ibox.drawGood(g_config.good.pottery,   2, _paintY+100);
+  ibox.drawWhGood(g_config.good.clay,      2, _paintY+0);
+  ibox.drawWhGood(g_config.good.marble,    2, _paintY+25);
+  ibox.drawWhGood(g_config.good.weapon,    2, _paintY+50);
+  ibox.drawWhGood(g_config.good.furniture, 2, _paintY+75);
+  ibox.drawWhGood(g_config.good.pottery,   2, _paintY+100);
 
   ibox.setWorkersStatus(32, 56+12, 542, wh.maximumWorkers(), wh.numberWorkers());
   ibox.setWorkingStatus(wh.active);

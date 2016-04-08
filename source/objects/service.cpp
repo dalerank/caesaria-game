@@ -23,7 +23,6 @@
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
@@ -109,7 +108,7 @@ void ServiceBuilding::deliverService()
 
 int ServiceBuilding::serviceRange() const { return _d->serviceRange;}
 
-void ServiceBuilding::save( VariantMap& stream ) const 
+void ServiceBuilding::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, lastSend )

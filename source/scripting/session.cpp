@@ -32,15 +32,13 @@
 #include "font/font.hpp"
 #include "font/font_collection.hpp"
 #include "walker/name_generator.hpp"
+#include "walker/helper.hpp"
 #include "steam.hpp"
 #include <string>
 #include "game/hotkey_manager.hpp"
-#include "game/infoboxmanager.hpp"
 
 namespace script
 {
-
-static int infoboxLocked = 0;
 
 void Session::continuePlay(int years)
 {
@@ -236,6 +234,11 @@ std::string Session::getOverlayType(int i) const
   return object::toString(object::Type(i));
 }
 
+std::string Session::getWalkerType(int i) const
+{
+  return walker::toString(walker::Type(i));
+}
+
 VariantMap Session::getGoodInfo(std::string goodName) const
 {
   VariantMap ret;
@@ -247,6 +250,11 @@ VariantMap Session::getGoodInfo(std::string goodName) const
   ret[ "importPrice" ] = info.price( _game->city(), good::Info::importing );
 
   return ret;
+}
+
+gui::Widget* Session::findWidget(std::string wname) const
+{
+  return _game->gui()->rootWidget()->findChild(wname, true);
 }
 
 void Session::loadNextMission()
@@ -314,10 +322,6 @@ int Session::getAdvflag(const std::string & flag) const
   {
     value = gfx::Engine::instance().getFlag(gfx::Engine::batching) > 0;
   }
-  else if (flag == "lockwindow")
-  {
-    value = infoboxLocked;
-  }
   else if (flag == "tooltips")
   {
     value = _game->gui()->hasFlag(gui::Ui::showTooltips);
@@ -351,11 +355,6 @@ void Session::setAdvflag(const std::string & flag, int value)
   if (flag == "batching")
   {
     gfx::Engine::instance().setFlag(gfx::Engine::batching, value);
-  }
-  else if (flag == "lockwindow")
-  {
-    infoboxLocked = value;
-    gui::infobox::Manager::instance().setBoxLock(value > 0);
   }
   else if (flag == "tooltips")
   {

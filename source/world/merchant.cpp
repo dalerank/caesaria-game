@@ -30,7 +30,7 @@
 namespace world
 {
 
-class Merchant::Impl
+class WMerchant::Impl
 {
 public:
   TraderoutePtr route;
@@ -41,20 +41,20 @@ public:
   std::string destCity, baseCity;
 
 signals public:
-  Signal1<MerchantPtr> onDestinationSignal;
+  Signal1<WMerchantPtr> onDestinationSignal;
 };
 
-Merchant::~Merchant(){}
+WMerchant::~WMerchant(){}
 
-Merchant::Merchant( EmpirePtr empire )
+WMerchant::WMerchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
 }
 
-MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
-                              good::Store &sell, good::Store &buy )
+WMerchantPtr WMerchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
+                                good::Store &sell, good::Store &buy )
 {
-  MerchantPtr ret( new Merchant( empire ) );
+  WMerchantPtr ret( new WMerchant( empire ) );
   ret->drop();
 
   ret->_d->route = route;
@@ -78,16 +78,16 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   bool noWayForMe = ret->_d->steps.empty();
   if( noWayForMe )
   {
-    return MerchantPtr();
+    return WMerchantPtr();
   }
 
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
 
-Signal1<MerchantPtr>& Merchant::onDestination(){  return _d->onDestinationSignal;}
+Signal1<WMerchantPtr>& WMerchant::onDestination(){  return _d->onDestinationSignal;}
 
-void Merchant::timeStep( unsigned int time )
+void WMerchant::timeStep( unsigned int time )
 {
   _d->step++;
 
@@ -101,7 +101,7 @@ void Merchant::timeStep( unsigned int time )
   }
 }
 
-std::string Merchant::about(Object::AboutType type)
+std::string WMerchant::about(Object::AboutType type)
 {
   switch( type )
   {
@@ -112,10 +112,10 @@ std::string Merchant::about(Object::AboutType type)
   return "";
 }
 
-std::string Merchant::destinationCity() const {  return _d->destCity; }
-bool Merchant::isSeaRoute() const{  return _d->route->isSeaRoute();}
+std::string WMerchant::destinationCity() const {  return _d->destCity; }
+bool WMerchant::isSeaRoute() const{  return _d->route->isSeaRoute();}
 
-void Merchant::save(VariantMap& stream) const
+void WMerchant::save(VariantMap& stream) const
 {
   Object::save( stream );
 
@@ -127,7 +127,7 @@ void Merchant::save(VariantMap& stream) const
   VARIANT_SAVE_CLASS_D( stream, _d, steps )
 }
 
-void Merchant::load(const VariantMap& stream)
+void WMerchant::load(const VariantMap& stream)
 {
   Object::load( stream );
 
@@ -139,8 +139,8 @@ void Merchant::load(const VariantMap& stream)
   VARIANT_LOAD_CLASS_D_LIST( _d, steps, stream )
 }
 
-std::string Merchant::baseCity() const{  return _d->baseCity;}
-good::Store& Merchant::sellGoods() { return _d->sells; }
-good::Store& Merchant::buyGoods() { return _d->buys; }
+std::string WMerchant::baseCity() const{  return _d->baseCity;}
+good::Store& WMerchant::sellGoods() { return _d->sells; }
+good::Store& WMerchant::buyGoods() { return _d->buys; }
 
 }//end namespace world

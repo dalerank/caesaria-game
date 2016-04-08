@@ -22,7 +22,6 @@
 
 #include "gfx/picture.hpp"
 #include "core/exception.hpp"
-#include "gui/info_box.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"

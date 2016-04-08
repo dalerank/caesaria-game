@@ -103,7 +103,7 @@ public:
   {
     for( const auto& item : stream )
     {
-      object::Type btype = object::findType( item.first );
+      object::Type btype = object::toType( item.first );
       (*this)[ btype ].mayBuild = item.second.toBool();
     }
   }
@@ -112,7 +112,7 @@ public:
   {
     for( const auto& item : stream )
     {
-      object::Type btype = object::findType( item.first );
+      object::Type btype = object::toType( item.first );
       (*this)[ btype ].quotes = item.second.toInt();
     }
   }
@@ -253,7 +253,7 @@ void loadBranchOptions( vfs::Path filename )
 
       for( auto& bIt : vmTypes )
       {
-        object::Type ovType = object::findType( bIt.toString() );
+        object::Type ovType = object::toType( bIt.toString() );
         if( ovType != object::unknown )
           branchData.insert( ovType );
       }

@@ -319,8 +319,8 @@
       prosperity : 58,
       tax : 3
       txs : {
-        s1: [ "housng1a_00027", "housng1a_00028", "housng1b_00027", "housng1b_00028" ]
-        s2: [ "housng1a_00030", "housng1b_00030" ]
+        s1: [ "housng1a_00028", "housng1b_00028", "housng1c_00028", "housng1d_00028" ]
+        s2: [ "housng1a_00030", "housng1b_00030", "housng1c_00030", "housng1d_00030" ]
       }
     },
 

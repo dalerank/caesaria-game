@@ -27,14 +27,14 @@
 namespace world
 {
 
-class Merchant : public Object
+class WMerchant : public Object
 {
 public:
   enum { defaultCapacity=2000 };
 
-  static MerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
-                             good::Store& sell, good::Store& buy );
-  virtual ~Merchant();
+  static WMerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
+                              good::Store& sell, good::Store& buy );
+  virtual ~WMerchant();
 
   virtual void timeStep(const unsigned int time );
   virtual std::string about(AboutType type);
@@ -50,10 +50,10 @@ public:
   virtual void load( const VariantMap& stream );
 
 signals public:
-  Signal1<MerchantPtr>& onDestination();
+  Signal1<WMerchantPtr>& onDestination();
 
 private:
-  Merchant( EmpirePtr empire );
+  WMerchant( EmpirePtr empire );
 
   class Impl;
   ScopedPtr< Impl > _d;

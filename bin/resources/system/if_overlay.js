@@ -52,17 +52,33 @@ function UpdateServiceBuildingPrototype(ObjectPrototype) {
   UpdateWorkingBuildingPrototype(ObjectPrototype);
 }
 
+function UpdateEntertainmentBuildingPrototype(ObjectPrototype) {
+  UpdateServiceBuildingPrototype(ObjectPrototype);
+}
+
+function UpdateTrainingBuildingPrototype(ObjectPrototype) {
+  UpdateWorkingBuildingPrototype(ObjectPrototype);
+}
+
 /***************** Overlays ******************/
 UpdateOverlayPrototype(Overlay.prototype);
 UpdateOverlayPrototype(Ruins.prototype);
 UpdateOverlayPrototype(House.prototype);
+UpdateOverlayPrototype(Gatehouse.prototype);
 UpdateOverlayPrototype(Reservoir.prototype);
+UpdateOverlayPrototype(FortArea.prototype);
 
 /**************** Working buildings **********/
 UpdateWorkingBuildingPrototype(Senate.prototype);
 UpdateWorkingBuildingPrototype(WorkingBuilding.prototype);
 UpdateWorkingBuildingPrototype(Dock.prototype);
 UpdateWorkingBuildingPrototype(Warehouse.prototype);
+UpdateWorkingBuildingPrototype(Granary.prototype);
+UpdateWorkingBuildingPrototype(Fort.prototype);
+
+/*************** Training buildings ************/
+UpdateTrainingBuildingPrototype(Barracks.prototype);
+UpdateTrainingBuildingPrototype(WorkshopChariot.ptototype);
 
 /*************** Service buildings ************/
 UpdateServiceBuildingPrototype(Fountain.prototype);
@@ -71,3 +87,8 @@ UpdateServiceBuildingPrototype(Market.prototype);
 /*************** Other buildings **************/
 UpdateTemplePrototype(Temple.prototype);
 UpdateFactoryPrototype(Factory.prototype);
+
+/*************** Entertainment buildings ******************/
+UpdateEntertainmentBuildingPrototype(EntertainmentBuilding.prototype);
+UpdateEntertainmentBuildingPrototype(Therater.prototype);
+UpdateEntertainmentBuildingPrototype(Amphitheater.prototype);

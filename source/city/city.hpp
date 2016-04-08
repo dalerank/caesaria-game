@@ -56,7 +56,7 @@ public:
   virtual void timeStep(const unsigned int time);  // performs one simulation step
 
   /** Return array of walkers in current tile */
-  const WalkerList& walkers(const TilePos& pos);
+  const WalkerList& walkers(const TilePos& pos) const;
 
   /** Return all walkers in city */
   const WalkerList& walkers() const;
@@ -97,6 +97,7 @@ public:
 
   /** Return city's objects map */
   gfx::Tilemap& tilemap();
+  const gfx::Tilemap& tilemap() const;
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );

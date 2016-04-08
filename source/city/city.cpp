@@ -196,7 +196,7 @@ void PlayerCity::Impl::calculatePopulation()
   states.population = statistic->population.current();
 }
 
-const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
+const WalkerList& PlayerCity::walkers(const TilePos& pos) const { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
@@ -218,6 +218,7 @@ Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
+const gfx::Tilemap & PlayerCity::tilemap() const { return _d->tilemap; }
 econ::Treasury& PlayerCity::treasury()           { return _d->funds; }
 
 int PlayerCity::strength() const
@@ -449,13 +450,13 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
 
 bool PlayerCity::getBuildOption(const std::string& name, bool) const
 {
-  object::Type vtype = object::findType(name);
+  object::Type vtype = object::toType(name);
   return _d->buildOptions.isBuildingAvailable(vtype);
 }
 
 void PlayerCity::setBuildOption(const std::string& name, int value)
 {
-  object::Type vtype = object::findType(name);
+  object::Type vtype = object::toType(name);
   _d->buildOptions.setBuildingAvailable(vtype, value>0);
 }
 
@@ -579,9 +580,9 @@ int PlayerCity::sentiment() const {  return _d->sentiment; }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( object.is<world::Merchant>() )
+  if( object.is<world::WMerchant>() )
   {
-    world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
+    world::WMerchantPtr merchant = ptr_cast<world::WMerchant>( object );
     if( merchant->isSeaRoute() )
     {
       SeaMerchantPtr cityMerchant = Walker::create<SeaMerchant>( this, merchant );

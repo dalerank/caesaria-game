@@ -107,6 +107,19 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWarehouse(location);
   break;
 
+  case "gatehouse":
+    game.ui.infobox.aboutGatehouse(location);
+  break;
+
+  case "fort_legionaries": case "fort_javelin": case "fort_horse":
+  case "fortArea":
+    game.ui.infobox.aboutFort(location);
+  break;
+
+  case "granary":
+    game.ui.infobox.aboutGranary(location);
+  break;
+
   case "rift":
     game.ui.infobox.aboutObject(typename,_u("these_rift_info"))
   break;
@@ -122,6 +135,11 @@ game.ui.infobox.show = function(typename,location)
 }
 
 function OnShowOverlayInfobox(location) {
-  var overlay = g_session.city.getOverlay(location)
-  game.ui.infobox.show(overlay.typename, location)
+  var walkers = g_session.city.walkers(location);
+  if (walkers.length > 0) {
+    game.ui.infobox.wshow(walkers, location);
+  } else {
+    var overlay = g_session.city.getOverlay(location)
+    game.ui.infobox.show(overlay.typename, location)
+  }
 }
