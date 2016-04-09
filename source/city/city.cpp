@@ -450,13 +450,13 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
 
 bool PlayerCity::getBuildOption(const std::string& name, bool) const
 {
-  object::Type vtype = object::findType(name);
+  object::Type vtype = object::toType(name);
   return _d->buildOptions.isBuildingAvailable(vtype);
 }
 
 void PlayerCity::setBuildOption(const std::string& name, int value)
 {
-  object::Type vtype = object::findType(name);
+  object::Type vtype = object::toType(name);
   _d->buildOptions.setBuildingAvailable(vtype, value>0);
 }
 

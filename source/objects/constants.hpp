@@ -220,7 +220,6 @@ public:
 };
 
 Type toType( const std::string& name);
-Type findType( const std::string& name );
 
 template<class ObjectPtr>
 inline Type typeOrDefault( ObjectPtr obj, Type defaultValue=unknown )

@@ -92,8 +92,8 @@ class Sentiment::Impl
 {
 public:
   struct {
-    int current;
-    int finish;
+    float current;
+    float finish;
   } value;
 
   int affect;
@@ -145,7 +145,7 @@ void Sentiment::timeStep(const unsigned int time )
     _d->value.finish = 0;
     for (auto house : houses)
     {
-      house->setState(pr::happinessBuff, _d->buffValue);
+      house->setState(pr::happinessBuff, (float)_d->buffValue);
       _d->value.finish += house->state(pr::happiness);
    }
 
@@ -156,7 +156,7 @@ void Sentiment::timeStep(const unsigned int time )
   }
 }
 
-int Sentiment::value() const { return _d->value.current + _d->affect; }
+int Sentiment::value() const { return (int)(_d->value.current + _d->affect); }
 int Sentiment::buff() const { return _d->buffValue; }
 
 std::string Sentiment::reason() const

@@ -2,6 +2,7 @@ engine.log("CaesarIA: load modules started")
 
 var modules = [
                   "namespaces",
+                  "math",
                   "common",
                   "g_config",
                   "g_config_goods",

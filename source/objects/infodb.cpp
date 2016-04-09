@@ -188,7 +188,7 @@ void InfoDB::initialize( vfs::Path filename )
 
   for( auto& kv : constructions )
   {
-    const object::Type btype = object::findType( kv.first );
+    const object::Type btype = object::toType( kv.first );
 
     if( btype == object::unknown )
     {

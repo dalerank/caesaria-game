@@ -68,7 +68,7 @@ protected:
   virtual void _setModel(Model* model );
   void _setChildGeometry(Widget* w, const Rect& r );
   void _updateBuildOptions();
-  void _createBuildMenu( int type, Widget* parent );
+  void _createBuildMenu(const std::string& type, Widget* parent );
   void _createLink( Link& config);
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
