@@ -3,19 +3,19 @@
   map : ":/maps/Tingis.sav"
   funds : 6000
   city.name : "Tingis"
-  date : "-120.01.01"
   player.rank : 6
-  climate : 2
+  date : "-120.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false
+  climate : 2
   preview.text : "##tingis_preview_mission##"
   preview.title : "##tingis_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 6000
     name : "n2_tingis"
+	population : 6000
     culture : 65
     prosperity : 60
     peace : 60
@@ -23,13 +23,13 @@
     finishDate : "-1.01.01"
     next : ":/missions/mission8.briefing"
     title : "##praetor##"
-    winText : "##tingis_win_text##"
-    winContinue : false
-    maxHouseLevel : "big_villa"
-    caption : "##tingis_title##"
+	maxHouseLevel : "big_villa"
+	winContinue : false
+	caption : "##tingis_title##"
+    winText : "##tingis_win_text##" 
     startSound : "tingis_speech"
-    winSound      : "tingis_win_speech"
-    overview :  [ "##tingis_overview##" ]
+    winSound : "tingis_win_speech"
+    overview : [ "##tingis_overview##" ]
   }
 
   empire : {
@@ -39,22 +39,18 @@
     {
       "Carthago Nova" : {
         nation : "carthaginian"
-
         land : true
         sea : true
         available : true
-
         buys : { vegetable : 25, pottery : 25 }
         sells : { wine: 15, oil : 10, weapon : 15 }
       }
 
       Caesarea : {
         nation : "roman"
-
         sea : true
         land : true
         available : true
-
         sells : { meat : 15, wine : 15, marble : 15 }
         buys : { furniture : 25, pottery : 25 }
       }
@@ -78,7 +74,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -87,7 +83,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -96,7 +92,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -755,26 +751,20 @@
       roadBlock : true
       lumber_mill : true
       clay_pit : true
-
       pottery_workshop : true
       furniture_workshop : true
-
       garden : true
       low_bridge : true
       high_bridge : true
       dock : true
       wharf : true
       shipyard : true
-
       engineering_post : true
       plaza : true
-
       missioner_post : false
-
       market : true
       granary : true
       warehouse : true
-
       wheat_farm : true
       vegetable_farm : true
     }
