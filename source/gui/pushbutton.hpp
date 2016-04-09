@@ -104,6 +104,8 @@ public:
   virtual void setTextOffset( const Point& offset );
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
 
+  int getTextWidth(const std::string& text) const;
+
 signals public:
   virtual Signal0<>& onClicked();
   virtual Signal1<Widget*>& onClickedEx();

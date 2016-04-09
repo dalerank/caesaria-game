@@ -63,6 +63,8 @@ public:
   //! Return background draw
   virtual BackgroundStyle backgroundStyle() const;
 
+  int getTextWidth(const std::string& text) const;
+
   //!
   virtual bool onEvent(const NEvent &event);
 

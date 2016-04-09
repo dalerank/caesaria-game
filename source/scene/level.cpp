@@ -246,7 +246,6 @@ void Level::initialize()
   CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
   CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
-  CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction )
   CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
   CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
   CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
@@ -480,24 +479,27 @@ void Level::setConstructorMode(bool enabled)
 
 void Level::setOption(const std::string& name, Variant value)
 {
-  if (name == "nextFile")
-  {
+  if (name == "nextFile") {
     _d->mapToLoad = value.toString();
     bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
     _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
     stop();
   }
-  else if (name == "constructorMode")
-  {
+  else if (name == "constructorMode") {
     setConstructorMode(value.toBool());
   }
-  else if (name == "advisor")
-  {
+  else if (name == "advisor") {
     _d->showAdvisorsWindow(value.toEnum<Advisor>());
   }
-  else if (name == "layer")
-  {
+  else if (name == "layer") {
     _d->renderer.setLayer(value.toInt());
+  }
+  else if (name == "buildMode") {
+    int type = object::unknown;
+    if (value.type() == Variant::String) { type = object::toType(value.toString()); }
+    else { type = value.toInt(); }
+
+    _d->resolveCreateConstruction(type);
   }
 }
 

@@ -348,6 +348,11 @@ void PushButton::canvasDraw(const std::string& text, const Point& point, Font rf
   rfont.draw( pic, text, point, true, true  );
 }
 
+int PushButton::getTextWidth(const std::string & t) const
+{
+  return font(stNormal).getTextSize(t.empty() ? text() : t).width();
+}
+
 void PushButton::setPicture(Picture picture, ElementState state )
 {
   __D_REF(_d,PushButton);

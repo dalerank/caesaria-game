@@ -38,7 +38,7 @@ template<class T>
 class BaseWidgetCreator : public WidgetCreator
 {
 public:
-  Widget* create( Widget* parent )
+  Widget* create(Widget* parent)
   {
     return new T(parent);
   }

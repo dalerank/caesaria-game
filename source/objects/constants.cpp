@@ -143,39 +143,34 @@ public:
 
 std::string toString(const Type& t) { return Helper::instance().findName( t ); }
 
-Type findType(const std::string &name)
-{
-  object::Type type = Helper::instance().findType( name );
+std::string toString( const Group& g) {
+  return object::InfoDB::instance().findGroupname( g );
+}
 
-  Logger::warningIf( type == unknown,
-                     "WARNING !!! can't find type for typeName " + ( name.empty() ? "null" : name) );
+object::Type toType(const std::string& name) { 
+  object::Type type = Helper::instance().findType(name);
+
+  Logger::warningIf(type == unknown,
+                    "WARNING !!! can't find type for typeName " + (name.empty() ? "null" : name));
 
   return type;
 }
 
-std::string toString( const Group& g)
-{
-  return object::InfoDB::instance().findGroupname( g );
-}
-
-VariantList TypeSet::save() const
-{
+VariantList TypeSet::save() const {
   StringArray ret;
-  for( auto& type : *this )
-    ret.push_back( toString( type ) );
+  for (auto& type : *this) {
+    ret.push_back(toString(type));
+  }
 
   return ret;
 }
 
-void TypeSet::load(const VariantList& stream)
-{
+void TypeSet::load(const VariantList& stream){
   StringArray names;
   names << stream;
-  for( auto& typeStr : names )
-  {
-    object::Type type = findType( typeStr );
-    if( type != object::unknown )
-    {
+  for ( const auto& typeStr : names) {
+    object::Type type = toType(typeStr);
+    if (type != object::unknown) {
       insert( type );
     }
   }
