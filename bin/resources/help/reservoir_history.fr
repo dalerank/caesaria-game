@@ -1,0 +1,10 @@
+{
+ title : "##reservoir##"
+ sound : "fanfare"
+ text : "Les @aqueducs& amenaient de l'eau jusqu'aux réservoirs, à partir desquels elle était distribuée dans les @fontaines&, les @thermes& et les résidences privées par l'intermédiaire de tuyaux d'argile, de bois ou de plomb. En 270 après JC, Rome disposait de plus de 250 réservoirs, dotés de bacs à sédiments permettant de filtrer les débris solides, et de systèmes complexes de canaux et de vannes permettant de contrôler le débit d'écoulement de l'eau. La taxation des tuyaux débouchant dans les résidences ou les entreprises s'avéra une source majeure de revenus pour la trésorerie. Le diamètre autorisé des tuyaux des résidences privées était fixé par la loi. Les empereurs reconnurent le rôle crucial de l'approvisionnement en eau potable pour le maintien de l'ordre civil, et ordonnaient périodiquement des inspections du système de distribution, principalement pour localiser et réparer d'éventuelles fuites, mais aussi pour détecter des connexions illicites aux réseaux. Les citoyens les plus modestes allaient chercher de l'eau dans les fontaines publiques."
+ uri : {
+  "aqueducs" : "aqueduct_history"
+  "fontaines" : "fountain_history"
+  "thermes" : "baths_history"
+ }
+}

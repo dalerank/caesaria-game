@@ -1,0 +1,8 @@
+{
+ title : "##plebians##"
+ sound : "fanfare"
+ text : "Les plébéiens (ou la plèbe) constituent la base de votre population. Tous les citoyens autres que des patriciens (qui sont les habitants des villas) représentent la plèbe. Les travailleurs, c'est-à-dire les employés du bâtiment, les surveillants des thermes, les barbiers, les marchands, les docteurs et les professeurs, sont les personnes dont les efforts quotidiens permettent à votre cité de fonctionner. Leur niveau de richesse et de satisfaction doivent être au centre de votre attention. Leur taux de naissance et de décès, leur salaire et le taux d'imposition sont les facteurs qui déterminent la bonne ou mauvaise santé de votre cité. \n\tLorsque leur fortune augmente, les plébéiens aspirent à faire partie de la classe des @patriciens&. Seuls les plébéiens sont comptés dans la main-d'œuvre. Par conséquent, au moment où des plébéiens se mettent à habiter dans des villas, vous devez créer des quartiers moins riches afin de ne pas décourager la classe des travailleurs (tous les nouveaux immigrants sont des plébéiens)."
+ uri : {
+  "patriciens" : "patricians"
+ }
+}

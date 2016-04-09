@@ -1,0 +1,11 @@
+{
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text : "Rome elle-même ne compte qu'un seul hippodrome, le Circus Maximus. Par conséquent, votre cité ne saurait compter plus d'une de ces énormes structures de @loisirs&. En raison de la complexité technique de ce bâtiment, seules les grandes cités ou les cités avancées peuvent se permettre d'en lancer la construction. Le mot 'hippodrome' signifie 'champ de courses de chevaux' en Grec. \n\tL'hippodrome sert uniquement aux courses de chars. Cependant, il s'agit du spectacle le plus populaire et aucun logement ne peut réaliser tout son potentiel tant qu'il n'a pas accès à un hippodrome. Souvenez-vous qu'en dehors des @conducteurs de chars&, l'hippodrome nécessite un personnel conventionnel abondant. \n\tLes conducteurs de chars donnent accès à l'hippodrome en circulant dans les rues environnantes. Il est peu souhaitable d'habiter trop près d'un hippodrome en raison du bruit et du trafic. Pour observer les conducteurs de chars circuler, sélectionnez la @carte Loisirs&. Cliquez avec le bouton droit sur l'hippodrome pour connaître son statut. \n\nCliquez @ici& pour en savoir plus sur le véritable Circus Maximus, à Rome."
+ uri : {
+  "loisirs" : "entertainment"
+  "conducteurs de chars" : "actorColony"
+  "carte Loisirs" : "special_card_selection"
+  "ici" : "hippodrome_history"
+ }
+}

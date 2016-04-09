@@ -1,0 +1,16 @@
+{
+ title : "##weapons_workshop##"
+ sound : "fanfare"
+ text : "ALes armuriers forgent le fer en provenance de vos @mines& pour fabriquer des armes. \n\tUne mine de fer est suffisante pour approvisionner deux fabriques d'armes. Comme la plupart des industries, les fabriques d'armes sont des voisins indésirables. Elles ont besoin d'une main-d'œuvre locale et d'un accès routier à un @entrepôt& et à la mine de fer devant la fournir. Les @employés& livrent les armes aux @casernes& si ces dernières en ont besoin pour les légionnaires ou à un @entrepôt& si la caserne est complète. Vous pouvez les exporter si vous disposez d'une @route de commerce& adéquate. \n\tCertaines provinces ne disposent pas de minerai de fer. Toutefois, il est toujours possible d'en importer. Il est généralement plus économique d'importer du fer et de construire des fabriques d'armes que d'importer des armes. Les armes sont généralement un bien d'exportation très rentable. \n\tVous ne pouvez pas stationner vos légionnaires dans des @forts& si vous ne disposez pas d'armes, produites localement ou importées. Les auxiliaires se procurent leurs propres armes. \n\nLes fabriques d'armes actives sont animées. Cliquez avec le bouton droit sur l'une des fabriques pour connaître son statut, notamment si son activité a cessé. Cliquez sur les liens suivants pour en savoir plus sur la @guerre et la paix& ou sur les @structures défensives&. \n\nPour en savoir plus sur l'armement Romain, cliquez @ici&."
+ uri : {
+  "mines" : "iron_mine"
+  "entrepôt" : "warehouse"
+  "employés" : "worker"
+  "casernes" : "barracks"
+  "route de commerce" : "trade"
+  "forts" : "fort"
+  "guerre et la paix" : "peace_and_war"
+  "structures défensives" : "wall_tower_gatehouse"
+  "ici" : "weapon_history"
+ }
+}

@@ -1,0 +1,8 @@
+{
+ title : "##governorHouse##"
+ sound : "fanfare"
+ text : "otre position de gouverneur exige une résidence adéquate, peu importe qu'il s'agisse d'une simple maison, d'une villa ou d'un palais. Votre demeure deviendra le point de référence des citoyens ambitieux et d'importance. La résidence du gouverneur est l'un des bâtiments les plus attrayants de la ville. Plus elle est imposante, plus elle attire les citoyens. \n\nPour en savoir plus sur le plus célèbre des palais impériaux de Rome, cliquez @ici&."
+ uri : {
+  "ici" : "governor_home_history"
+ }
+}

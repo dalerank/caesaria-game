@@ -1,0 +1,8 @@
+{
+ title : "##rating_advisor##"
+ sound : "fanfare"
+ text : "e conseiller d'évaluation vous indique votre niveau courant de culture, de prospérité, de paix et d'estime. Il vous indique également les conditions auxquelles vous devez répondre pour être promu à la mission suivante. Lorsque vous construisez un sénat, les drapeaux affichés devant le bâtiment sont hissés ou abaissés selon les niveaux, pour vous donner une idée de votre situation sans avoir à consulter ce panneau. Cliquez sur ces numéros pour obtenir des conseils brefs sur la façon dont vous pouvez améliorer votre situation. Pour plus d'informations sur ces drapeaux, reportez-vous à la rubrique @Evaluation&."
+ uri : {
+  "Evaluation" : "ratings"
+ }
+}

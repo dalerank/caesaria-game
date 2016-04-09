@@ -1,0 +1,8 @@
+{
+ title : "##labor_advisor##"
+ sound : "fanfare"
+ text : "Cliquez @ici& pour obtenir une description générale du fonctionnement de la main-d'œuvre. Les fonctions principales de ce panneau sont les suivantes : \n\nDéfinir les priorités de la main-d'œuvre. Sans instructions de votre part, les travailleurs sont répartis par le conseiller en main d'œuvre. Toutefois, ses priorités ne sont pas toujours les mêmes que les vôtres. Si vous voulez que les postes soient distribués dans un ordre particulier, définissez leur priorité. \n\nDéfinir le niveau des salaires. Les citoyens comparent leur niveau de salaire à ceux de Rome. Le salaire de base est de 30 denarri, bien qu'il puisse varier avec le temps. Si vous baissez l'échelle des salaires, vous économisez de l'argent mais vous découragez les immigrants de s'installer. Vous risquez également d'encourager la criminalité dans la cité en détériorant l'humeur générale des citoyens. Des salaires plus élevés rendent évidemment les gens plus heureux. \n\nLe conseiller en main d'œuvre connaît également le volume de votre main-d'œuvre, ainsi que le nombre de personnes au chômage. Il vous transmet le rapport des coûts de main-d'œuvre totaux pour une année. Un douzième de ces coûts est imposable chaque mois."
+ uri : {
+  "ici" : "employment"
+ }
+}

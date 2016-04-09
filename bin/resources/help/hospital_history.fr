@@ -1,0 +1,9 @@
+{
+ title : "##hospital##"
+ sound : "fanfare"
+ text : "Lorsqu'ils avaient besoin de soins médicaux, les Romains souffrants étaient traités chez eux. Mais ces soins à domiciles s'avérèrent rapidement peu pratiques avec l'extension de l'empire. Les malades et les blessés se réfugiaient dans les @temples&, ce qui semble assez approprié sachant que leur guérison pouvait être attribuée aussi bien aux dieux qu'aux @médecins&. Les légions Romaines développèrent des hôpitaux militaires afin de soigner leurs blessés. Ces institutions élargirent leur champ d'activité afin de traiter également les malades. Finalement, des hôpitaux publics déchargèrent les temples et les militaires de ces fonctions."
+ uri : {
+  "temples" : "temple_oracle_history"
+  "médecins" : "clinic_history"
+ }
+}

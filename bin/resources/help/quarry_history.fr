@@ -1,0 +1,5 @@
+{
+ title : "##quarry##"
+ sound : "fanfare"
+ text : "Le marbre est une roche métamorphique générée à haute température dans les profondeurs de la terre et amenée à la surface par les volcans ou l'altération des roches. Ses magnifiques motifs gris, bleus et roses sont issus des impuretés cristallisées dans le magma refroidi. Pour un sculpteur ou un architecte, il n'y a cependant rien d'impur dans le marbre. Les tailleurs de pierre respectent une bonne veine de marbre et la découpent soigneusement en blocs. Bien que le marbre soit un matériau commun dans le bassin méditerranéen, il est très cher et surtout utilisé pour les façades extérieures des bâtisses, ainsi que pour rehausser les sols ou les bassins. Pour juger de sa durabilité, visitez un vieux cimetière et comparez les pierres tombales en marbre et celles faites en granit. Les monuments de marbre ont encore l'air récents après des siècles d'exposition aux éléments. \n\tCésar Auguste se vantait en déclarant qu'avant lui, Rome n'était qu'une cité de briques, et qu'il en avait fait une cité de marbre."
+}

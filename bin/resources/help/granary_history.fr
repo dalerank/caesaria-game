@@ -1,0 +1,5 @@
+{
+ title : "##granary##"
+ sound : "fanfare"
+ text : "L'origine des greniers remonte à la préhistoire. Ils ont probablement été inventés en même temps que l'agriculture. Leur fonction est simple : c'est de protéger les récoltes de la peste et des catastrophes naturelles et de stocker les surplus en prévision d'éventuelles pénuries. Les greniers ont pris différentes formes au cours des millénaires pour s'adapter à leurs différentes fonctions. Le bois, les briques et le béton (ce dernier ayant été inventé par les Romains) sont des matériaux de construction courants. Les greniers de la cité, qui permettaient de stocker le grain en plus grande quantité et sur une durée plus longue que ceux situés près des fermes, avaient des fondations solides de briques ou de pierre et une superstructure qui ont fait d'eux les premiers grands bâtiments publics. Les greniers n'ont pas un grand intérêt architectural mais ils étaient essentiels pour le développement des grandes cités. Même les plus petits villages ou camps militaires disposaient d'un grenier."
+}

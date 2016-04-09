@@ -1,0 +1,13 @@
+{
+ title : "##prefecture##"
+ sound : "fanfare"
+ text : "Les @préfets& sont le rempart de votre cité contre le désordre et forment probablement le seul groupe à être plus important que les @ingénieurs& pour la survie de votre cité. Ordonnez à votre @conseiller en main d'œuvre& de leur accorder une forte priorité. Les préfectures envoient des patrouilles de préfets inspecter les bâtiments pour prévenir les risques d'incendie ou pour régler les problèmes de criminalité et de contestation. Les bâtiments laissés à l'écart des patrouilles de préfets risquent de brûler. Il existe cependant un certain nombre d'exceptions : les réservoirs, les aqueducs, les fontaines, les puits, les jardins, les statues, les murs et les forts. Les préfets arrêtent les émeutiers dès que possible et sont autorisés à les abattre en cas de résistance caractérisée. Ils s'efforcent d'étouffer les flammes pour protéger votre cité contre la propagation d'un incendie. Consultez fréquemment la @carte Risques& pour identifier les bâtiments qui risquent de brûler et les zones susceptibles de provoquer des émeutes. Les émeutes peuvent réduire le niveau de paix et endommager sérieusement les propriétés si elles ne sont pas stoppées immédiatement. Mieux vaut prévenir que guérir, cependant. Pour plus de détails sur la prévention des émeutes, voir la rubrique @Crime&. En dépit de leur importance, les préfectures ne sont pas des voisins appréciés et réduisent l'attrait des logements environnants. Elles nécessitent un accès à la route et à la main-d'œuvre. \n\nCliquez sur le lien suivant pour en savoir plus sur le rôle @historique& des préfets dans l'Empire Romain."
+ uri : {
+  "préfets" : "worker"
+  "ingénieurs" : "engineering_post"
+  "conseiller en main d'œuvre" : "labor_advisor"
+  "carte Risques" : "special_card_selection"
+  "Crime" : "crime"
+  "historique" : "prefecture_history"
+ }
+}

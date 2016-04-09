@@ -1,0 +1,11 @@
+{
+ title : "##forum##"
+ sound : "fanfare"
+ text : "Les forums servent de bureaux administratifs à la périphérie de votre cité. Leur principale fonction est d'employer des percepteurs. Utilisez la @carte Commerce& pour identifier les foyers ne payant pas les taxes dues et construisez un forum à proximité pour y faire circuler des percepteurs. \n\tDemandez à votre @conseiller financier& quel pourcentage de la population paye des impôts. Si la valeur est nettement en dessous de 100 pour cent, assurez-vous que le Sénat et les forums fonctionnent correctement et consultez la carte pour identifier les foyers qui ne payent pas leur dû. \n\nL'argent perçu sous forme de taxes est placé dans des coffres, dans les sous-sols des forums et est retiré à la fin de l'année. Les forums peuvent alors devenir la cible des criminels. Mieux vaut donc bien les garder. \n\tLes forums sont des voisins enviables et ont besoin d'accès à la route et à la main-d'œuvre. \n\tCliquez sur les liens suivants pour en savoir plus sur le rôle de @l'argent& ou pour lire un bref @historique& des forums dans l'Empire Romain."
+ uri : {
+  "carte Commerce" : "special_card_selection"
+  "conseiller financier" : "finance_advisor"
+  "l'argent" : "money"
+  "historique" : "forum_history"
+ }
+}

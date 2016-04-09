@@ -1,0 +1,8 @@
+{
+ title : "##towers_and_gates##"
+ sound : "fanfare"
+ text : "Des @Murs& peuvent ralentir un intrus, mais ne l'arrêteront pas. Les postes de défense permettent d'éviter que des envahisseurs escaladent ou démolissent les murs. Des tours étaient placées à intervalles réguliers le long des murs et permettaient aux soldats de surveiller la campagne environnante. Les Romains construisaient généralement des tours indépendantes du mur. Les archers ou les lanceurs de javelots positionnés au sommet des tours pouvaient infliger des pertes conséquentes aux aspirants envahisseurs. Les tours étaient construites avec les mêmes matériaux que les murs, généralement du bois ou de la pierre, et mesuraient deux fois leur hauteur. \n\tLes corps de garde furent une tentative pour transformer le point faible d'un rempart (la porte) en un point fort. Les plus simples étaient constitués d'un poste de sentinelle et d'une porte fermée de l'intérieur. Les corps de garde plus élaborés comprenaient plusieurs niveaux de défense et d'importants groupes de défenseurs, mais seuls les accès principaux en étaient dotés."
+ uri : {
+  "Murs" : "wall_history"
+ }
+}

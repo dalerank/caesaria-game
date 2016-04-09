@@ -1,0 +1,5 @@
+{
+ title : "##collapsed_ruins##"
+ sound : "fanfare"
+ text : "Un bâtiment vient de s'effondrer. L'entretien assuré par les ingénieurs étant insuffisant, le bâtiment est devenu instable et s'est écroulé sous son propre poids."
+}

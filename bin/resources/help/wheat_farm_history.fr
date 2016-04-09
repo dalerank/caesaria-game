@@ -1,0 +1,5 @@
+{
+ title : "##cereals##"
+ sound : "fanfare"
+ text : "L'Egypte et l'Afrique du Nord étaient les @5greniers de l'Empire, et l'empereur était directement responsable du bon acheminement des navires transportant les 400000 tonnes de céréales nécessaires à Rome chaque année. L'état devint responsable de fournir la nourriture des classes inférieures. Les fluctuations de la 'Dole' influençaient grandement l'opinion et la stabilité des trois quarts de la population qui en dépendait. Afin d'encourager les marins à prendre la mer et à affronter les pirates, l'empereur exemptait les marchands de céréales des taxes locales. Les céréales étaient également modérément cultivées dans tous l'empire, principalement pour satisfaire les besoins locaux. Pendant plusieurs siècles, chaque foyer a moulu son grain et préparé son propre pain. Mais des meuniers spécialisés et des boulangeries sont progressivement apparus. Le maïs était la culture de base, mais l'orge et le blé étaient également très appréciés."
+}

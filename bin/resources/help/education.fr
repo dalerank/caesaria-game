@@ -1,0 +1,13 @@
+{
+ title : "##education##"
+ sound : "fanfare"
+ text : "Les @écoles& Romaines abordent trois compétences de base : la lecture, l'écriture et le calcul. Certains élèves vont jusqu'à l'@université& où l'histoire et la rhétorique sont enseignées. Les écoles permettent l'évolution des logements qu'elles desservent et améliorent votre @niveau de culture&. \n\tLes besoins éducatifs varient selon la composition de la population. Lorsque la cité est encore nouvelle, la densité de la population reste faible et il y a peu d'enfants en âge d'aller à l'école. Ensuite, les familles se développent et exigent davantage d'écoles. Lorsqu'ils atteignent un certain âge, un nombre restreint d'élèves ont le privilège d'accéder à l'université pour approfondir leurs connaissances. Les adultes, quant à eux, peuvent accéder aux @bibliothèques& tout au long de leur vie. Pour mieux planifier les structures éducatives de votre cité, demandez à votre @conseiller démographique& de vous présenter une pyramide des âges. Pour les enfants de moins de 13 ans, l'école est obligatoire. Les jeunes de 14 à 21 peuvent poursuivre leurs études à l'université. Les meilleurs quartiers veulent avoir accès aux trois types d'infrastructures éducatives. \n\tLorsque la cité est encore récente, la construction d'infrastructures éducatives à proximité des logements doit permettre de disposer de suffisamment d'écoles. Par la suite, l'évolution de la population risque de rendre ces infrastructures insuffisantes. Les quartiers disposeront certes d'un accès suffisant mais les classes risquent de vite devenir surpeuplées. Demandez à votre @conseiller d'éducation& quels sont les besoins en écoles, universités et bibliothèques. Votre @niveau de culture& baisse radicalement si ces bâtiments deviennent insuffisants."
+ uri : {
+  "écoles" : "school"
+  "université" : "academy"
+  "niveau de culture" : "ratings"
+  "bibliothèques" : "library"
+  "conseiller démographique" : "population_advisor"
+  "conseiller d'éducation" : "education_advisor"
+ }
+}

@@ -1,0 +1,9 @@
+{
+ title : "##entertainment_advisor##"
+ sound : "fanfare"
+ text : "Ce panneau affiche la liste des théâtres, des amphithéâtres, des colisées et des hippodromes en fonction dans la cité. Il indique le nombre de personnes qu'ils peuvent accueillir et s'ils desservent toute la cité. Votre cité a besoin d'artistes si un lieu de divertissement n'a pas ou peu de spectacles. Vous devez alors construire une nouvelle école de théâtre, une école de gladiateurs, un parc à lions ou une fabrique de chars. Chaque amphithéâtre ou colisée peut accueillir deux spectacles à la fois. Par conséquent, s'ils fonctionnent à pleine capacité, vous devriez avoir deux fois plus de spectacles que de lieux de spectacle. Consultez la @carte Loisirs& pour savoir quel est le meilleur endroit pour construire de nouveaux lieux de divertissement. Cliquez @ici& pour en savoir plus sur le concept de loisirs dans Caesar III. \n\nUtilisez ce panneau pour organiser un festival. Pour contenter les citoyens, vous vous devez d'organiser un festival au moins tous les deux ans. Sachez cependant que vous ne tirerez aucun avantage à organiser plus de deux festivals par an. Le second festival organisé dans la même année a également moins d'effets que le premier. Choisissez le dieu à honorer et la taille du festival (petit, grand ou grandiose). Pour organiser un festival grandiose, vos entrepôts doivent avoir suffisamment de vin en réserve pour tous vos citoyens. Plus un festival est somptueux, plus il demande du temps et de l'argent, mais ses bénéfices n'en seront que plus importants."
+ uri : {
+  "carte Loisirs" : "special_card_selection"
+  "ici" : "entertainment"
+ }
+}

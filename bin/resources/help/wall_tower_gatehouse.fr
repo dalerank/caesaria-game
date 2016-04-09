@@ -1,0 +1,12 @@
+{
+ title : "##wall_tower_gatehouse##"
+ sound : "fanfare"
+ text : "Protéger votre cité contre les invasions en l'entourant de murs. Un ennemi déterminé finira par franchir votre enceinte. Cependant, des murs épais sont généralement longs à percer. Construisez les murs de la même façon que les routes. Cliquez sur la carte pour marquer le point de départ du mur puis (en maintenant enfoncé le bouton gauche de la souris) faites glisser le mur pour obtenir la longueur et l'épaisseur voulues. Les murs sont très rarement construits en premier. Par conséquent, pensez à prévoir un espace pour ces derniers. Les murs n'ont pas besoin d'accès à une route et n'affectent pas l'attrait des propriétés environnantes. \n\nLes murs sont bien plus efficaces s'ils possèdent des tours à intervalles réguliers. Elles doivent être construites sur le mur existant. Les tours ayant accès à la route et disposant de suffisamment de personnel emploient des gardes qui doivent être entraînés dans une @caserne&. Les gardes effectuent des patrouilles sur les murs doubles d'épaisseur. Ils font pleuvoir une nuée de javelots sur les envahisseurs qui osent s'approcher. Les tours avec des gardes actifs disposent également d'une baliste. Les balistes sont des armes très puissantes qui entrent en action dès que l'ennemi arrive à portée. \n\nLes murs et les tours forment un système défensif impressionnant. Hélas, du point de vue militaire, ils sont également infranchissables par vos propres citoyens en l'absence d'un corps de garde. Votre cité doit bénéficier d'au moins un point d'entrée (pour les immigrants) et d'un point de sortie (pour les caravanes). Vous ne pouvez construire un corps de garde que sur une route existante. Lorsque vous procéderez à la construction, vous constaterez que l'orientation de ce bâtiment change régulièrement. Ceci a pour objectif de vous laisser choisir l'orientation voulue en cliquant. Les citoyens ordinaires préfèrent ne pas s'aventurer dans les parties les plus reculées de votre province. Par conséquent, lorsqu'ils atteignent un corps de garde, ils font demi-tour et regagnent la ville. \n\nSuivez les liens suivants pour obtenir des informations générales sur la @guerre et la paix& et pour superviser vos @légions&. Vous pouvez également cliquer sur les liens suivants pour un historique sur les @murs& ou les @tours et les corps de garde&."
+ uri : {
+  "caserne" : "barracks"
+  "guerre et la paix" : "peace_and_war"
+  "légions" : "legion_advisor"
+  "murs" : "wall_history"
+  "tours et les corps de garde" : "towers_and_gates"
+ }
+}
