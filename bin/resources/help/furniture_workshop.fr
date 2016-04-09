@@ -1,0 +1,13 @@
+{
+ title : "##furniture_workshop##"
+ sound : "fanfare"
+ text : "Dans les fabriques, les ébénistes transforment les troncs, en provenance de vos @chantiers de bois&, en meubles. \n\tUn chantier de bois produit suffisamment pour fournir deux fabriques de meubles. Comme la plupart des industries, les fabriques de meubles sont des voisins indésirables. Elles ont besoin d'une main-d'œuvre locale et d'un accès par la route à un @entrepôt& et au chantier de bois devant les fournir. Les @employés& transportent les meubles jusqu'à l'entrepôt disponible le plus proche. \n\tVous pouvez exporter une partie de votre production si une @route de commerce& adéquate est ouverte. Les vendeuses du marché se chargent de distribuer les meubles aux foyers qui en ont fait la requête. Certaines provinces ne permettent pas l'exploitation du bois. Cependant, vous avez toujours la possibilité d'en importer. L'importation de bois et sa transformation en meubles dans vos fabriques est plus économique que l'importation directe de meubles. \n\tLes meubles font partie des biens dont vos citoyens ont besoin pour accéder aux niveaux supérieurs de @logement&. Les fabriques de meubles actives sont animées. Cliquez avec le bouton droit sur l'une des fabriques pour connaître son statut, notamment si son activité a cessé. \n\nPour en savoir plus sur les meubles du temps de l'Empire Romain, cliquez @ici&."
+ uri : {
+  "chantiers de bois" : "lumber_mill"
+  "entrepôt" : "warehouse"
+  "employés" : "worker"
+  "route de commerce" : "trade"
+  "logement" : "house"
+  "ici" : "furniture_history"
+ }
+}

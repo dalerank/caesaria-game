@@ -1,0 +1,12 @@
+{
+ title : "##forum##"
+ sound : "fanfare"
+ text : "Tout comme le mot @'amphithéâtre&' fait tout de suite au penser au @Colisée&, bien que les amphithéâtres soient très répandus dans toute l'Europe, le mot 'forum' évoque inévitablement le Forum Romain. Mais Rome disposait en fait de nombreux forae, et la plupart des villes de province étaient construites autour de leurs propres forae. \n\tLe Forum de Rome apparut presque spontanément au temps des rois étrusques. Un carrefour près du Tibre représentait un lieu naturel de rencontre et de commerce. Le premier roi fit drainer les terres marécageuses, utilisées autrefois comme cimetière, et la zone fut ensuite pavée. L'endroit attira d'abord les @marchands&. Au début de la République, le Forum était déjà doté de quelques @temples&, et d'autres vinrent s'y ajouter au Ve siècle avant JC. \n\tRome n'était qu'une ville-état mineure, indiscernable de ses voisines, jusqu'aux guerres Puniques pour la domination de la Méditerranée. Après avoir prouvé leur supériorité à leurs voisins italiens, les Romains ressentirent le besoin d'afficher leur puissance et entamèrent une vague de constructions monumentales centrées autour du Forum. Rome commença à ressembler à la capitale d'un empire, dont le Forum était le centre. \n\tAprès la chute de la République, le Forum perdit beaucoup de son importance commerciale et devint un centre politique. Le gouvernement de l'Empire n'était plus une affaire publique. Le Forum se transforma en cour intérieure destinée à diffuser la propagande de l'empereur, qu'il exprimait à travers des @statues& et des bâtiments publics. César lança cette mode en faisant ériger un temple en son honneur. Ses successeurs suivirent son exemple, créant même parfois leurs propres forae. Mais aucun ne pouvait avoir l'impact d'une nouvelle arche ou d'une colonne dans le Forum. \n\tLe destin du Forum Romain reflète celui de l'Empire. Lorsque Constantinople devint le centre du monde et Rome une ville de province, le Forum fut transformé en carrière de marbre. Les statues de bronze furent volées et fondues. Au Moyen Age, les ruines du Forum couvertes de mauvaises herbes étaient connues sous le nom de 'il Campo Vaccino' ('le Pré des Vaches')."
+ uri : {
+  "'amphithéâtre" : "amphitheater_history"
+  "Colisée" : "colosseum_history"
+  "marchands" : "market_history"
+  "temples" : "temple_oracle_history"
+  "statues" : "statuary"
+ }
+}

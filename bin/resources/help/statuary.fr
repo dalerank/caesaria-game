@@ -1,0 +1,9 @@
+{
+ title : "##statuary##"
+ sound : "fanfare"
+ text : "Comme dans de nombreux autres domaines, les Romains reconnaissaient la primauté de l'art et de la sculpture des Grecs. Mais ils modifièrent et améliorèrent leur style et leurs techniques. La sculpture reflète particulièrement la prédilection des Romains pour les détails et le réalisme, à l'opposé des conventions des Grecs qui les conduisaient à idéaliser leurs sujets, en quête d'une vérité universelle. Lorsque des archéologues découvrent une 'nouvelle' statue Romaine, ils tentent, souvent avec succès, de relier son apparence à un personnage historique. Les Romains perfectionnèrent l'utilisation des ciseaux et des drilles, ce qui leur permit de maîtriser la sculpture des chevelures et des draperies. La sculpture Romaine se caractérise par sa sensualité, et le gigantisme est typique de la période impériale. \n\tCette tendance atteignit son apogée avec le Colossus Neronis. Cette énorme statue de bronze de trente mètres de haut représentait l'empereur en tant que dieu solaire. Elle se trouvait à l'origine à l'entrée du palais extravagant de Néron, la @Domus Aurea&, mais fut ensuite déplacée par 24 éléphants jusqu'à l'amphithéâtre Flavien, qui fut surnommé le @'Colisée&'. Après la mort de Néron, la tête du colosse fut coupée et remplacée par celle de ses successeurs. L'histoire ne dit pas ce qui en est advenu, mais il est fort probable qu'elle a été fondue afin d'en récupérer le métal."
+ uri : {
+  "Domus Aurea" : "governor_home_history"
+  "'Colisée" : "colosseum_history"
+ }
+}

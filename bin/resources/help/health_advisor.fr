@@ -1,0 +1,9 @@
+{
+ title : "##health_advisor##"
+ sound : "fanfare"
+ text : "Ce conseiller vous transmet un rapport sur le nombre de thermes, de barbiers, de dispensaires et d'hôpitaux en fonction dans votre cité. Il vous indique également s'ils desservent bien la population. Si l'un d'eux présente un déficit, utilisez la @carte Santé& pour connaître les quartiers qui ont le plus besoin d'établissements sanitaires. Les citoyens qui ne reçoivent pas la visite d'un médecin ont plus de risque de tomber malades, surtout s'ils n'ont pas un régime alimentaire sain. \n\nLa rubrique @Santé& fournit plus d'informations sur l'utilisation de ce panneau."
+ uri : {
+  "carte Santé" : "special_card_selection"
+  "Santé" : "health_and_sickness"
+ }
+}

@@ -1,0 +1,5 @@
+{
+ title : "##advisor_chief##"
+ sound : "fanfare"
+ text : "Votre conseiller personnel est en quelque sorte le gestionnaire des autres conseillers. Il vous permet à tout moment d'avoir un rapide aperçu des problèmes principaux auxquels votre cité doit faire face. Les problèmes qui requièrent rapidement votre attention sont mis en valeur en rouge. Soyez particulièrement attentif aux rapports concernant la nourriture, la criminalité ou la mauvaise humeur des citoyens. Pour plus d'informations, adressez-vous aux autres conseillers."
+}

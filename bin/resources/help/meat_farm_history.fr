@@ -1,0 +1,5 @@
+{
+ title : "##meat_production##"
+ sound : "fanfare"
+ text : "Une porcherie Romaine typique élevait entre 100 et 150 porcs, dont 10 ou 15 verrats. Les truies commençaient à engendrer à l'âge de 20 mois, et étaient tuées au bout de sept ans. Les porchers évitaient la consanguinité en marquant les porcelets avec de la poix. Les porcs étaient nourris avec des haricots, des glands, de l'orge ou des céréales. \n\tLe porc était la viande la plus répandue dans le régime alimentaire des Romains. Les classes supérieures étaient très friandes de cochons de lait, des porcelets non sevrés. La plus grande partie de la viande provenait de porcs castrés âgés de 6 à 12 mois, et de truies trop âgées pour la reproduction."
+}

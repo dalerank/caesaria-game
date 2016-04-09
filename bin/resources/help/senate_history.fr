@@ -1,0 +1,5 @@
+{
+ title : "##senate##"
+ sound : "fanfare"
+ text : "Le Sénat de Rome évolua du conseil des 100 anciens de Romulus pour devenir l'entité gouvernementale principale de la République. Les 300 sénateurs proposaient des lois, contrôlaient les finances de l'état et décidaient des guerres et de la politique étrangère. Ils constituaient la classe la plus haute de la société Romaine. Le déclin de la République, vieille de plus de 500 ans, entraîna, après des années de guerre civile, l'érosion du pouvoir du Sénat et la montée du bureau du 'dictator'. L'acceptation de la dictature à vie de Jules César affaiblit encore le Sénat et laissa le champ libre à l'avènement d'un empereur. Bien que le Sénat ait continué d'exister, tout comme le sentiment républicain, il resta toujours subordonné à la volonté de l'empereur. \n\tLe Sénat était abrité dans le Curia Hostilia, datant de l'ère des rois, jusqu'à ce qu'un incendie le détruise et qu'il soit reconstruit en 29 avant JC, sous le nom de Curia Julia, en hommage à Jules César."
+}

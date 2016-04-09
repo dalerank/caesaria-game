@@ -1,0 +1,9 @@
+{
+ title : "##hospital##"
+ sound : "fanfare"
+ text : "Seuls les logements de haut niveau ont besoin d'un accès individuel aux hôpitaux. Cependant, la cité a besoin d'un certain nombre de lits d'hôpitaux en prévision des maladies ou de la peste. \n\tVotre @conseiller d'hygiène& peut vous indiquer le nombre de lits nécessaires. Si une épidémie ou la peste se déclarent, les citoyens pouvant être admis dans un hôpital sont sauvés. Les autres sont condamnés. Les hôpitaux perdent une partie de leur pouvoir de guérison s'ils ne disposent pas de tout le personnel nécessaire. Cliquez avec le bouton droit sur un hôpital pour savoir combien de personnes il emploie. \n\nCliquez @ici& pour obtenir un historique des hôpitaux dans l'Empire Romain."
+ uri : {
+  "conseiller d'hygiène" : "health_advisor"
+  "ici" : "hospital_history"
+ }
+}

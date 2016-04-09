@@ -1,0 +1,12 @@
+{
+ title : "##water_supply_help##"
+ sound : "fanfare"
+ text : "Les logements ne peuvent absolument pas se développer sans une source d'eau fraîche fiable. Les puits fournissent une alimentation en eau limitée à une petite zone et de toute façon les gens n'aiment pas beaucoup les utiliser. Les réservoirs contiennent l'eau potable et sont automatiquement équipés de tuyaux souterrains. Les aqueducs servent à transporter l'eau d'un réservoir à l'autre. Enfin, les fontaines permettent aux gens d'avoir accès à l'eau. Les fontaines sont la source d'eau préférée de vos citoyens. Les établissements d'alimentation en eau (à l'exception des aqueducs) emploient tous du personnel, bien qu'ils n'aient pas besoin d'avoir directement accès à la main-d'œuvre. \n\tLes établissement d'alimentation en eau ne peuvent ni s'effondrer ni brûler. Ils ne requièrent pas d'accès à la route. Ils restent tout de même la cible des émeutiers, des envahisseurs et ne sont pas à l'abri des catastrophes naturelles ni du courroux des dieux. \n\nPour en savoir plus sur les composants individuels du système d'alimentation en eau, cliquez sur @Réservoirs&, @Aqueducs&, @Fontaines& ou @puits&. Utilisez la @carte d'alimentation& en eau pour planifier vos sources d'eau."
+ uri : {
+  "Réservoirs" : "reservoir"
+  "Aqueducs" : "aqueduct"
+  "Fontaines" : "fountain"
+  "puits" : "well"
+  "carte d'alimentation" : "special_card_selection"
+ }
+}

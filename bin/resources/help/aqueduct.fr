@@ -1,0 +1,9 @@
+{
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text : "Les aqueducs permettent de relier les @réservoirs&. Ils ne fournissent pas d'eau directement et ne nécessitent pas d'accès à la route ou de main-d'œuvre. La longueur d'un aqueduc n'est pas limitée. Ces derniers ne peuvent pas former d'intersections. Cependant, vous pouvez faire passer des routes entre leurs arches. Pour créer un aqueduc, cliquez sur le bouton de création de réservoir. Ensuite, cliquez avec le bouton gauche sur un réservoir. Maintenez le bouton de la souris enfoncé et 'faites glisser' le curseur vers l'emplacement du nouveau réservoir. Si vous avez choisi une zone constructible et qu'aucun terrain ne forme d'obstacle entre les deux réservoirs, un aqueduc les relie automatiquement. \n\nCliquez @ici& pour obtenir un historique des aqueducs dans l'Empire Romain."
+ uri : {
+  "réservoirs" : "reservoir"
+  "ici" : "aqueduct_history"
+ }
+}

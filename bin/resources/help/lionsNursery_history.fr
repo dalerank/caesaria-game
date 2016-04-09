@@ -1,0 +1,5 @@
+{
+ title : "##lionsNursery##"
+ sound : "fanfare"
+ text : "TLe type de combat le plus connu voyait s'affronter deux combattants entraînés. Mais les Romains étaient toujours avides de nouveauté, et les spectacles d'animaux apportaient une variété fort appréciée. \n\tTout le monde a entendu parler des 'confrontations' entre des Chrétiens et des lions dans les arènes, mais ce n'était là qu'une des nombreuses variantes des combats d'animaux. Des combats avaient lieu contre des girafes, des éléphants, des panthères, des lions et des tigres. Plus l'animal était dangereux et exotique, et plus la foule était heureuse. Parfois des animaux étaient confrontés l'un à l'autre, parfois ils luttaient contre des gladiateurs ou des criminels."
+}

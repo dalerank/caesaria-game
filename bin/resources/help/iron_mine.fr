@@ -1,0 +1,12 @@
+{
+ title : "##iron_mine_help##"
+ sound : "fanfare"
+ text : "Etablissez une mine de fer en vue d'exporter votre production ou pour fabriquer des @armes&. Les mines de fer doivent être situées à côté de rochers. \n\tComme la plupart des industries, les mines de fer sont des voisins  indésirables. Elles doivent disposer d'une main-d'œuvre locale et d'un accès à la route pour approvisionner les fabriques d'armes ou les entrepôts. Après avoir rempli une charrette de fer, un @employé& la pousse jusqu'à la fabrique d'armes la plus proche. Si toutes les fabriques sont déjà complètes ou si elles ne travaillent pas, le fer est transporté jusqu'à @l'entrepôt& disponible le plus proche. Vous pourrez ainsi exporter vos surplus si une @route de commerce& adéquate est ouverte. Les mines de fer actives sont animées. Cliquez avec le bouton droit sur l'une des mines pour connaître son statut, notamment si son activité a cessé. \n\nCliquez @ici& pour obtenir un historique de l'extraction du fer dans l'Empire Romain."
+ uri : {
+  "armes" : "weapons_workshop"
+  "employé" : "worker"
+  "l'entrepôt" : "warehouse"
+  "route de commerce" : "trade"
+  "ici" : "iron_mine_history"
+ }
+}

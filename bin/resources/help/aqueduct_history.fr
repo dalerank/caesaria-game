@@ -1,0 +1,8 @@
+{
+ title : "##aqueduct##"
+ sound : "fanfare"
+ text : "La population de Rome allant croissant, ses besoins en eau augmentèrent. Au Ve siècle avant JC, les @puits& ne suffisaient plus à satisfaire les besoins en eau potable. Le Tibre, déjà boueux à l'origine, était de plus très pollué par les égouts de Rome. La solution imaginée par les Romains fut un aqueduc, construit en 343 avant JC, le premier d'une série de chantiers monumentaux. \n\tFaire descendre l'eau des collines était un défi technique conséquent, en partie à cause de la faible pente. Pour chaque kilomètre d'aqueduc construit, la dénivellation ne dépassait pas un mètre. La pente se devait d'être constante, et la source d'eau devait être choisie avec soin, afin d'éviter qu'elle ne se tarisse et ne rende inutile un ouvrage onéreux. De plus, l'aqueduc devait être raisonnablement étanche et résister à l'érosion de l'eau courante, tout en minimisant l'évaporation. Bien que l'on se représente généralement les aqueducs comme des arches gracieuses et de grandes structures, ils étaient en fait pour la plupart souterrains. \n\tRome nécessita la construction de dix aqueducs, chacun surpassant les prouesses techniques de son prédécesseur, car les sources fiables étaient de plus en plus éloignées. Ces aqueducs couvraient une distance totale de 403 kilomètres et transportaient plus de 560000 litres d'eau par jour. Certains sont encore en service actuellement."
+ uri : {
+  "puits" : "well_history"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ title : "##market##"
+ sound : "fanfare"
+ text : "Les marchés sont essentiels dans la vie d'une cité. Ils permettent de distribuer les biens produits par les industries aux citoyens. \n\tLes maisons ont besoin de nourriture pour passer à des niveaux supérieurs. Cette nourriture provient des marchés. Les vendeuses du marché vont chercher la nourriture dans un grenier. Souvent, de jeunes auxiliaires des greniers les aident à transporter la nourriture au marché. Une fois que le marché a de la nourriture, celle-ci est distribuée à chaque maison dans le besoin par une nouvelle vendeuse . Toutes les habitations, exceptées les tentes, ont besoin de nourriture provenant des marchés. \n\tPour fonctionner, les marchés doivent avoir accès à la route, ainsi que des employés. Ils ont une influence légèrement négative sur l'attrait du quartier voisin. Ils ont un effet plutôt positif sur les maisons un peu plus éloignées. \n\tLes maisons de haut niveau requièrent des biens tels que des poteries ou des meubles, ainsi que des produits alimentaires variés. Chaque fois qu'une vendeuse passe devant une maison requérant de la nourriture, le marché envoie un vendeur chercher les biens demandés, à condition que ceux-ci soient disponibles. \n\tIl est généralement conseillé de construire un grenier (pour stocker de la nourriture) ou un entrepôt (pour les biens non-comestibles) à proximité d'un quartier résidentiel. Ainsi les vendeurs du marché peuvent aller chercher ce dont ils ont besoin plus facilement. Vous pouvez également utiliser les ordres spéciaux des greniers ou des entrepôts de façon à ce qu'ils stockent des biens demandés dans la zone où ils sont situés. \n\tToutes les activités commerciales qui ont lieu sur les marchés sont privées et ne concernent pas votre trésorerie. \n\nLes rubriques @Industrie&, @Population&, @Citoyens& et @Logement& vous donneront plus de détails. Consultez les rubriques @Greniers& et @Entrepôts& pour en savoir plus sur les ordres spéciaux relatifs à la distribution des biens. \n\nPour obtenir des informations sur les marchés dans l'Empire Romain, cliquez @ici&."
+ uri : {
+  "Industrie" : "industry"
+  "Population" : "population_and_mood"
+  "Citoyens" : "worker"
+  "Logement" : "house"
+  "Greniers" : "granary"
+  "Entrepôts" : "warehouse"
+  "ici" : "market_history"
+ }
+}

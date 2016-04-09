@@ -1,0 +1,8 @@
+{
+ title : "##shipyard##"
+ sound : "fanfare"
+ text : "Les ports Romains ordinaires étaient tout au plus des plages protégées. Les petits navires de commerce accostaient dans le sable ou s'ancraient à la limite des eaux navigables. Certains ports utilisaient des treuils pour tirer les navires à terre. \n\tSeuls les ports plus importants étaient plus sophistiqués. Des digues étaient construites afin de briser les vagues. Parfois des phares se trouvaient au bout des digues, et des docks permettaient aux navires de s'ancrer. Ces ports étaient étroits, et le pilotage des navires nécessitait l'aide de remorqueurs afin d'arriver à quai. Les remorqueurs attachaient une corde à la proue du cargo, puis le tiraient jusqu'à son poste à quai. Les marchands tentaient d'écouler les surplus directement dans les docks, car la plupart des marchandises étaient pré-vendues et stockées directement dans des @entrepôts&."
+ uri : {
+  "entrepôts" : "warehouse"
+ }
+}

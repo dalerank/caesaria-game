@@ -1,0 +1,9 @@
+{
+ title : "##bridges##"
+ sound : "fanfare"
+ text : "Ne construisez pas de pont à moins de vouloir absolument développer la rive opposée. Si vous décidez de construire un pont, choisissez entre 'Pont bas' et 'Pont surélevé' et déplacez le curseur le long des rives. Lorsque vous atteignez une partie du fleuve ne pouvant pas être franchie à gué, le curseur en forme de carré rouge prend la forme d'un pont vert en transparence. Vous ne pouvez construire de pont qu'à ces endroits. \n\tSélectionnez le type de pont en fonction de l'emplacement. Les bateaux ne peuvent pas passer sous un pont bas ! Evitez donc d'en construire entre les docks et le chenal de votre fleuve. Les navires marchands arrivent et repartent en amont. Les débris arrivent également de cette direction (les immigrants proviennent généralement de la même direction). \n\tLorsque vous prévoyez de construire des ponts, souvenez-vous que les docks ne peuvent pas être construits n'importe où. Voir la rubrique sur les @docks& pour plus de détails sur leur emplacement. Ne construisez pas de ponts bas avant d'avoir établi vos docks. Les ponts bas sont moins chers et peuvent être construits à davantage d'endroits que les ponts surélevés. \n\tLes coûts indiqués pour la construction d'un pont ne s'appliquent que pour chaque segment. Plus un pont est long, plus il coûte cher. \n\nCliquez @ici& pour obtenir un historique des ponts et des routes dans l'Empire Romain."
+ uri : {
+  "docks" : "dock"
+  "ici" : "road_history"
+ }
+}

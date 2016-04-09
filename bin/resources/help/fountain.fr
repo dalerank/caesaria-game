@@ -1,0 +1,11 @@
+{
+ title : "##fountain##"
+ sound : "fanfare"
+ text : "Les logements nécessitent un accès à une fontaine si la cité doit évoluer au delà du niveau d'un simple village de tentes. Lorsque vous construisez une nouvelle fontaine, l'image verte associée au pointeur de la souris indique que vous êtes au-dessus d'une zone ayant accès à des canalisations. Dans le cas contraire, l'image reste vide. \n\tLes fontaines reliées par des canalisations à un @réservoir& desservent une zone limitée. Pour afficher la zone desservie par la fontaine, sélectionnez la @carte Eau& et recherchez un emplacement bleu foncé. Seuls les logements ont besoin d'un accès à une fontaine et plusieurs fontaines desservant les mêmes maisons n'apportent aucun bénéfice. Il n'y a aucune raison de faire se chevaucher les zones desservies. \n\tLes fontaines n'ont pas besoin d'accès à la route ou d'employés. En revanche, elles augmentent les besoins globaux en personnel de votre système de @distribution de l'eau&. \n\nCliquez @ici& pour obtenir un historique des fontaines dans l'Empire Romain."
+ uri : {
+  "réservoir" : "reservoir"
+  "carte Eau" : "water_supply"
+  "distribution de l'eau" : "special_card_selection"
+  "ici" : "fountain_history"
+ }
+}
