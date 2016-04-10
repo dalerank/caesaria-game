@@ -14,22 +14,22 @@
 
   win :
   {
-    population : 10000
     name : "n2_valentia"
-    culture : 70
+    population : 10000
+	culture : 70
     prosperity : 65
     peace : 60
     favour : 60
     finishDate : "150.01.01"
     next : ":/missions/mission9.briefing"
     title : "##consul##"
-    winText : "##valencia_win_text##"
-    winContinue : false
-    maxHouseLevel : "big_villa"
-    caption : "##valentia_title##"
+	maxHouseLevel : "big_villa"
+	winContinue : false
+	caption : "##valentia_title##"
+    winText : "##valentia_win_text##"
     startSound : "valentia_speech"
-    winSound     : "valentia_win_speech"
-    overview :  [ "##valentia_overview##" ]
+    winSound : "valentia_win_speech"
+    overview : [ "##valentia_overview##" ]
   }
 
   empire : {
@@ -48,22 +48,18 @@
 
       Carthago : {
         nation : "carthaginian"
-
         sea : false
         land : false
         available : true
-
         sells : { weapons : 25, furniture : 25 }
         buys : { meat : 15, pottery : 25 }
       }
 
       Tingis : {
         nation : "carthaginian"
-
         sea : true
         land : true
         available : true
-
         sells : { marble : 15 }
         buys : { wine : 25 }
       }
@@ -536,7 +532,6 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-
       low_bridge : true
       high_bridge : true
     }

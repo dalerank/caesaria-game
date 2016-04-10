@@ -12,7 +12,8 @@
   preview.title : "##caesarea_preview_title##"
   preview.image : ""
 
-  win : {
+  win :
+  {
     name : "n2_caesarea"
     population : 7000
     culture : 60
@@ -23,12 +24,12 @@
     next : ":/missions/mission10.briefing"
     title : "##сaesar##"
     maxHouseLevel : "big_villa"
+	winContinue : false
     caption : "##caesarea_title##"
+	winText : "##caesarea_win_text##"
     startSound : "caesarea_speech"
-    overview :  [ "##caesarea_overview##" ]
-    winContinue : false
-    winSound      : "caesarea_win_speech"
-    winText : "##caesarea_win_text##"
+	winSound : "caesarea_win_speech"
+    overview : [ "##caesarea_overview##" ]
   }
 
   empire : {
@@ -682,13 +683,11 @@
       small_mercury_temple : true
       market : true
       roadBlock : true
-
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true
       military_academy : true
       barracks : true
-
       iron_mine : true
       oil_workshop : true
       lumber_mill : true
@@ -696,12 +695,10 @@
       furniture_workshop : true
       granary : true
       warehouse : true
-
       wheat_farm : true
       fig_farm : true
       meat_farm : true
       olive_farm : true
-
       senate : true
     }
   }
