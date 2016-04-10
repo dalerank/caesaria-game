@@ -1,0 +1,12 @@
+{
+ title : "##cereals##"
+ sound : "fanfare"
+ text : "Le blé est la nourriture de base de votre population. Les cultures céréalières ont un rendement double par rapport à tous les autres types de culture en Europe méridionale (mais pas dans le Nord ou dans les déserts). Les plantations céréalières sont des voisins indésirables et réduisent la valeur des logements environnants. Elles ne peuvent être construites que sur des terres arables. Ces terres sont signalées sur la carte par des touffes jaunes de végétation. Lorsque vous sélectionnez un type de ferme en cliquant sur l'un des boutons de construction, une image verte en transparence de la ferme apparaît lorsque votre curseur passe au-dessus d'une terre agricole. Les fermes ont besoin d'une source locale de main-d'œuvre et d'un accès routier à un @grenier&. Les récoltes sont placées (charrette par charrette) dans le grenier le plus proche ou dans un @entrepôt& si le grenier est plein ou non disponible. La nourriture stockée dans un grenier est distribuée à la population par l'intermédiaire des @vendeuses& du marché tandis que la nourriture stockée dans un entrepôt est exportée (si une route de commerce est ouverte). Tant que la ferme fonctionne, vous pouvez voir les cultures pousser. Cliquez sur une ferme pour plus de détails sur sa productivité. Le peuple peut survivre en se contentant de blé. Cependant, les niveaux supérieurs nécessitent d'autres types de nourriture. \n\nVoir la section @nourriture et agriculture& pour plus de détails. \n\nCliquez @ici& pour obtenir un historique du rôle de la culture du blé dans l'Empire Romain."
+ uri : {
+  "grenier" : "granary"
+  "entrepôt" : "warehouse"
+  "vendeuses" : "market"
+  "nourriture et agriculture" : "food_and_farming"
+  "ici" : "wheat_farm_history"
+ }
+}

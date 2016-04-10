@@ -1,0 +1,14 @@
+{
+ title : "##meat_fruit_and_vegetables##"
+ sound : "fanfare"
+ text : "Le @blé& est la nourriture de base de votre peuple. Cependant, des aliments complémentaires tels que la viande, les fruits et les légumes sont importants pour la santé et le bonheur de tous. Les cultures complémentaires sont généralement plus rentables à exporter que le blé. Le climat de votre province peut interdire la culture de ces aliments et par conséquent, vous aurez à les importer pour satisfaire vos citoyens. Suivez ce lien pour obtenir des informations plus détaillées sur le rôle de la @nourriture et de l'agriculture&. La plupart des fermes sont des voisins indésirables et réduisent la valeur des logements voisins à l'exception des vergers qui sont considérés comme plaisants. Les fermes ne peuvent être construites que sur des terres arables. Ces terres sont signalées sur la carte par des touffes jaunes de végétation. Lorsque vous sélectionnez un type de ferme en cliquant sur l'un des boutons de construction, une image verte en transparence de la ferme apparaît lorsque votre curseur passe au-dessus d'une terre agricole. Les fermes ont besoin d'une source locale de main-d'œuvre et d'un accès routier à un @grenier&. Les récoltes sont placées (charrette par charrette) dans le grenier le plus proche ou dans un @entrepôt& si le grenier est plein ou non disponible. La nourriture stockée dans un grenier est distribuée à la population par l'intermédiaire des @vendeuses& du marché tandis que la nourriture stockée dans un entrepôt peut être exportée (si une route de commerce est ouverte). Tant que la ferme fonctionne, vous pouvez voir les cultures pousser. Cliquez sur une ferme pour plus de détails sur sa productivité. \n\nCliquez sur les liens suivants pour en savoir plus sur le rôle historique de la @viande& ou des @fruits et légumes& dans l'Empire Romain."
+ uri : {
+  "blé" : "wheat_farm"
+  "nourriture et de l'agriculture" : "food_and_farming"
+  "grenier" : "granary"
+  "entrepôt" : "warehouse"
+  "vendeuses" : "market"
+  "viande" : "meat_farm_history"
+  "fruits et légumes" : "fruit_farm_history"
+ }
+}

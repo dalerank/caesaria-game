@@ -1,0 +1,11 @@
+{
+ title : "##advchief_education##"
+ sound : "fanfare"
+ text : "Ce conseiller vous indique le nombre d'écoles, d'universités et de bibliothèques en activité dans votre cité. Vous pouvez également connaître le nombre de personnes bénéficiant de ces services et savoir si l'ensemble de la cité est bien desservie. Si l'un d'eux présente un déficit, utilisez la @carte Education& pour déterminer les emplacements où vous devez construire de nouveaux établissements. \n\tVérifiez régulièrement le nombre de personnes en âge d'aller à l'école et à l'université. Faites une comparaison avec le nombre d'enfants indiqué dans la colonne 'Peut éduquer' pour savoir si votre cité propose une éducation de qualité à vos citoyens. La taille des classes a une influence sur le @niveau de culture& de la cité. Par exemple, si 300 enfants sont en âge d'aller à l'école et que votre ville ne dispose que de deux écoles, pouvant accueillir 75 enfants chacune, il y a deux enfants pour chaque place disponible. Ceci résulte en des classes énormes et fait baisser votre niveau de culture. Si ces mêmes 300 enfants sont répartis entre quatre écoles, la taille des classes est correcte et votre niveau de culture augmente. \n\nConsultez les rubriques @Education& et @niveaux& pour plus d'informations sur l'utilisation de ce panneau."
+ uri : {
+  "carte Education" : "special_card_selection"
+  "niveau de culture" : "ratings"
+  "Education" : "education"
+  "niveaux" : "ratings"
+ }
+}

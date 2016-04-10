@@ -1,0 +1,12 @@
+{
+ title : "##docks##"
+ sound : "fanfare"
+ text : "Si votre cité doit participer au @commerce& maritime, elle doit disposer d'au moins un dock pour recevoir les navires marchands. Les docks doivent être situés au bord de l'eau et ne peuvent être construits que sur une côte relativement rectiligne. Les endroits permettant la construction d'un dock sont signalés par une image verte en transparence, près de votre curseur. Assurez-vous que le dock est situé sur le chenal de navigation (la partie charriant les débris). Pour plus de conseils sur la construction des docks, reportez-vous à la rubrique relative aux @ponts&. Les docks ont besoin d'un accès à la route et à la main-d'œuvre comme tous les autres bâtiments. Lorsqu'un dock dispose de suffisamment de personnel, vous pouvez voir trois dockers s'affairer. Si vous ne voyez qu'un ou deux dockers, le personnel est insuffisant et les opérations de chargement et déchargement doivent se faire avec une seule charrette. Les docks ne disposent pas d'espace de stockage et doivent donc utiliser les services de @l'entrepôt& le plus proche. Lorsque vous prévoyez de construire un dock, pensez également à inclure des @routes& d'accès et des entrepôts à proximité. Comme pour la plupart des bâtiments commerciaux, les docks réduisent l'attrait des logements environnants. Lorsqu'un navire marchand accoste, les dockers déchargent les marchandises et les transportent (par charrette) vers l'entrepôt disponible le plus proche. La même charrette charge ensuite les produits à exporter. Les navires restent à quai tant qu'ils ne sont pas complètement chargés sauf si les biens à exporter sont épuisés. Vous réglez les importations et recevez les paiements des exportations pendant que les dockers s'occupent de la manutention. \n\nCliquez @ici& pour en savoir plus sur le commerce maritime et les installations portuaires du temps de l'Empire Romain."
+ uri : {
+  "commerce" : "trade"
+  "ponts" : "bridge"
+  "l'entrepôt" : "warehouse"
+  "routes" : "road"
+  "ici" : "dock_history"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ title : "##bath##"
+ sound : "fanfare"
+ text : "Des thermes renforcent l'attrait d'un quartier. \n\tUtilisez la @carte Hygiène& pour afficher les maisons desservies par des thermes et voir les employés circuler. Les thermes doivent avoir accès au réseau de tuyaux du @réservoir& pour pouvoir fonctionner. Cliquez avec le bouton droit sur les thermes pour afficher leur statut. \n\nPour savoir pourquoi les Romains comptent parmi les peuples les plus propres de l'histoire, cliquez @ici&."
+ uri : {
+  "carte Hygiène" : "special_card_selection"
+  "réservoir" : "reservoir"
+  "ici" : "baths_history"
+ }
+}

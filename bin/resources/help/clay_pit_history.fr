@@ -1,0 +1,8 @@
+{
+ title : "##clay_pit##"
+ sound : "fanfare"
+ text : "L'argile est une substance minérale complexe qui peut aussi bien être utilisée pour la poterie que comme complément alimentaire pour les animaux, comme revêtement de maçonnerie ou encore comme litière pour chat. Il en existe des centaines de variétés, caractérisées par les éléments qui entrent dans leur composition, leur contenu organique et leur plasticité. Toutes les argiles sont à la base du kaolin, issu de la décomposition du granit par de la vapeur à très haute température s'échappant de profondes fissures dans la croûte terrestre. On les trouve généralement dans d'épaisses couches sédimentaires déposées par des rivières. \n\tRome fut construite sur la plaine d'inondation du Tibre, et l'argile ne faisait donc jamais défaut. Facile à extraire, malléable et durable, l'argile devint rapidement indispensable. Elle était extraite en creusant dans les dépôts de minéraux exposés à l'eau d'une rivière ou à l'érosion. En creusant en profondeur, il était possible de récolter de l'argile plus pure contenant moins de déchets organiques. L'argile était la matière première utilisée par les @potiers&, pour façonner des amphores par exemple. Mais elle était également utilisée pour les toitures et la plomberie de Rome. Les tuiles de terra cotta, associées aux maisons méditerranéennes, sont toujours faites d'argile de nos jours."
+ uri : {
+  "potiers" : "pottery_history"
+ }
+}

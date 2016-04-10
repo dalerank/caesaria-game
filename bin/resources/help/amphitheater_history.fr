@@ -1,0 +1,8 @@
+{
+ title : "##amphitheater##"
+ sound : "fanfare"
+ text : "Les amphithéâtres étaient le symbole de la dichotomie du tempérament des Romains. D'un côté, ils appréciaient l'art, la sculpture, l'architecture, les orateurs et les passe-temps spirituels. De l'autre, les Romains restaient militaires dans l'âme, et les combats et les jeux sanglants étaient extrêmement populaires. \n\tLes combats constituaient les principaux spectacles de Rome. Au début, il ne s'agissait que de combats rituels qui n'avaient lieu que lors de funérailles. Mais la nature stylisée de ces luttes laissa bientôt la place à de véritables combats, et le public qui venait y assister devint rapidement si nombreux qu'il fut nécessaire de construire un bâtiment public pour l'accueillir. La construction d'amphithéâtres s'accéléra lorsque la République laissa la place à l'Empire, et les empereurs se mirent à utiliser les jeux pour apaiser les citoyens qui avaient perdu leur droit de vote. L'ancien calendrier Romain proclamait 159 jours fériés, et 93 d'entre eux entraînaient des jeux. \n\tLes combats de gladiateurs, d'animaux sauvages, les jeux guerriers et les compétitions d'athlétisme attiraient des foules immenses dans tout l'Empire. On peut trouver des ruines d'amphithéâtres dans toute l'Europe, mais aucune n'est aussi impressionnante que le @Colisée&."
+ uri : {
+  "Colisée" : "colosseum_history"
+ }
+}

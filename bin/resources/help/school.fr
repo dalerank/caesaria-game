@@ -1,0 +1,13 @@
+{
+ title : "##school##"
+ sound : "fanfare"
+ text : "Les écoles éduquent les jeunes Romains de moins de 13 ans. L'éducation élémentaire est un besoin universel et les logements ne pourront pas progresser de manière significative en l'absence de cette forme @d'éducation&. Utilisez la @carte Education& pour afficher la zone desservie par une école et pour observer les écoliers aller et venir pour étendre l'accès. Demandez à votre @conseiller d'éducation& quels sont les besoins éducatifs de la cité. Cliquez avec le bouton droit sur une école pour afficher son statut. Les gens n'aiment pas habiter trop près d'une école en raison du bruit fait par les jeunes enfants. \n\tAu départ, la construction d'un nombre d'écoles adéquat par rapport à la population permet de satisfaire les besoins globaux d'éducation de la cité. Cependant, une école ne peut accueillir qu'un nombre limité d'écoliers. Lorsque la population se multiplie, le nombre de classes reste constant. Par conséquent, les foyers réclament davantage d'écoles (pour éviter les classes surpeuplées) bien qu'elles disposent déjà d'un accès. \n\tLes écoles affectent votre @niveau culturel&. Veillez à conserver des classes de petite taille pour améliorer le niveau culturel de la cité. Comparez le nombre d'enfants en âge scolaire au nombre d'enfants pouvant être accueillis par vos écoles pour savoir combien d'enfants sont pris en charge par les écoles. Cliquez @ici(1)& pour explorer le concept d'éducation dans Caesar III. \n\nPour une brève leçon sur les écoles Romaines, cliquez @ici(2)&."
+ uri : {
+  "d'éducation" : "education"
+  "carte Education" : "special_card_selection"
+  "conseiller d'éducation" : "education_advisor"
+  "niveau culturel" : "ratings"
+  "ici(1)" : "education"
+  "ici(2)" : "school_history"
+ }
+}

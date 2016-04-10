@@ -1,0 +1,5 @@
+{
+ title : "##wine##"
+ sound : "fanfare"
+ text : "Le vin était la boisson favorite de l'Empire, et le raisin était cultivé partout, sauf en Grande-Bretagne et au nord de la Gaulle. Mais même sous ces climats plus froids où la population était habituée à boire de la bière depuis la préhistoire, la mode Romaine de consommation de vin finit par prendre le dessus. Lorsque les Romains désiraient garder les idées claires, ils coupaient leur vin avec de l'eau. \n\tLes variétés de raisin sont très différentes les unes des autres, et dépendent du sol et du climat du lieu où les vignes sont cultivées. Pour une même variété de raisin, il est possible d'effectuer la récolte à différents degrés de maturité et de préparer les grains de nombreuses façons. La méthode d'extraction du jus, la fermentation et le vieillissement influencent le goût du vin. Il est quasiment impossible à deux vignobles de produire le même vin. Cette grande diversité fait de chaque vin un produit typique, et quelle que soit la quantité de vin produite par une région, les amateurs désirent toujours essayer des vins de provenances différentes."
+}

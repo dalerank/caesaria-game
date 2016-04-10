@@ -1,0 +1,8 @@
+{
+ title : "##quarry##"
+ sound : "fanfare"
+ text : "Le marbre est disponible en abondance dans le bassin méditerranéen. Cependant, les veines de marbre d'une qualité suffisante pour les ouvrages architecturaux sont relativement rares. Le marbre est un bien précieux pour l'exportation et est cher à importer. \n\tLes oracles et les grands temples nécessitent du marbre pour leur construction. Vous devez disposer de l'équivalent de deux charrettes de marbre dans un entrepôt pour pouvoir construire l'une de ces structures. \n\nLes carrières de marbre doivent être situées à côté de rochers. Elles doivent avoir accès à la route pour pouvoir fonctionner. Une fois opérationnelles, leurs employés déposent les blocs dans l'entrepôt disponible le plus proche. \n\tLes carrières de marbre sont des voisins indésirables. Contrairement aux autres matières premières, le marbre n'est pas transformé dans un atelier. \n\nCliquez @ici& pour en savoir plus sur les carrières de marbre dans l'Empire Romain."
+ uri : {
+  "ici" : "quarry_history"
+ }
+}

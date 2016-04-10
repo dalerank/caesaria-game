@@ -3,19 +3,19 @@
   map : ":/maps/Tarsus.sav"
   funds : 6000
   city.name : "Tarsus"
-  date : "-120.01.01"
   player.rank : 6
-  climate : 2
+  date : "-120.01.01"
   adviserEnabled : true
   fishPlaceEnabled : true
+  climate : 2
   preview.text : "##tarsus_preview_mission##"
   preview.title : "##tarsus_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 6000
     name : "n2_tarsus"
+	population : 6000
     culture : 65
     prosperity : 60
     peace : 60
@@ -24,12 +24,12 @@
     next : ":/missions/mission8.briefing"
     title : "##praetor##"
     maxHouseLevel : "big_villa"
+	winContinue : false
     caption : "##tarsus_preview_title##"
+	winText : "##tarsus_win_text##"
     startSound : "tarsus_speech"
-    overview :  [ "##tarsus_overview##" ]
-    winContinue : false
-    winText : "##tarsus_win_text##"
-    winSound     : "tarsus_win_speech"
+	winSound : "tarsus_win_speech"
+    overview : [ "##tarsus_overview##" ]
   }
 
   empire : {
@@ -39,44 +39,36 @@
     {
       Miletus : {
         nation : "roman"
-
         land : true
         sea : true
         available : true
-
         sells : { wheat : 25, clay : 25 }
         buys : { meat: 15, marble : 10 }
       }
 
       Alexandria : {
         nation : "roman"
-
         sea : true
         land : true
         available : true
-
         sells : { furniture : 15 }
         buys : { wheapon : 25 }
       }
 
       Hierosolyma : {
         nation : "roman"
-
         sea : true
         land : true
         available : true
-
         sells : { olive : 40, pottery : 25 }
         buys : { weapon : 15, furniture : 25 }
       }
 
       Damascus : {
         location : [ 1740, 860 ]
-
         sea : true
         land : true
         available : true
-
         sells : { wheat : 25 }
         buys : { marble : 25 }
       }
@@ -100,7 +92,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -109,7 +101,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -118,7 +110,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -141,7 +133,7 @@
       emperorMoney : [ 8000, 5000, 0 ]
       video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
-      text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
+      text : [ "##city_has_runout_money##", "##city_has_runout_debt##", "##city_still_in_debt_text##" ]
     }
 
     price_change_1#trading_options : {
@@ -657,24 +649,19 @@
       quarry : true
       lumber_mill : true
       iron_mine : true
-
       wine_workshop : true
       pottery_workshop : true
       weapons_workshop : true
       furniture_workshop : true
-
       garden : true
       low_bridge : true
       high_bridge : true
       dock : true
       wharf : true
       shipyard : true
-
       engineering_post : true
       plaza : true
-
       missioner_post : false
-
       market : true
       granary : true
       warehouse : true

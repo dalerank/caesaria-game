@@ -1,0 +1,12 @@
+{
+ title : "##lumber_mill##"
+ sound : "fanfare"
+ text : "Etablissez un chantier pour couper le bois destiné à l'exportation ou à la fabrique de @meubles&. Les chantiers de bois doivent être situés à proximité d'arbres. \n\tComme la plupart des industries, les chantiers de bois sont des voisins indésirables. Ils doivent avoir un accès à la route pour employer la main-d'œuvre locale. Après avoir rempli une charrette de bois, un @employé& la pousse jusqu'à la fabrique de meubles la plus proche. Si toutes les fabriques sont déjà complètes ou si elles ne travaillent pas, le bois est transporté jusqu'à @l'entrepôt& disponible le plus proche. Vous pourrez ainsi exporter vos surplus si une @route de commerce &adéquate est ouverte. Les chantiers de bois actifs sont animés. Cliquez avec le bouton droit sur l'un des chantiers pour connaître son statut, notamment si son activité a cessé. \n\tLes meubles sont l'un des biens indispensables à l'amélioration des logements. \n\nCliquez @ici& pour obtenir un historique de l'exploitation du bois dans l'Empire Romain."
+ uri : {
+  "meubles" : "furniture_workshop"
+  "employé" : "worker"
+  "l'entrepôt" : "warehouse"
+  "route de commerce " : "trade"
+  "ici" : "lumber_mill_history"
+ }
+}

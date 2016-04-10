@@ -1,0 +1,8 @@
+{
+ title : "##wt_patrician##"
+ sound : "fanfare"
+ text : "La plupart des @plébéiens& aspirent à devenir des patriciens. Ces derniers sont des aristocrates riches qui sont logés dans des villas confortables. Les patriciens passent leurs journées à se rendre mutuellement visite, à paresser aux thermes, à aller au théâtre et à discuter politique, philosophie et art, mais ils ne travaillent jamais. \n\tA mesure que votre cité devient plus prospère et plus cultivée, les villas des patriciens remplacent les anciens appartements des plébéiens. Les patriciens ne sont pas comptés dans la main-d'œuvre et ne reçoivent pas de salaires. Ils sont tout de même une source importante de revenu d'imposition pour votre trésorerie car leur richesse est grande. Votre main d'oeuvre doit adapter le plus de logements possibles en villas de patriciens.  N'oubliez pas toutefois qu'une cité comptant un nombre trop élevé de patriciens ne peut pas être autosuffisante. Ils ne travaillent pas, mais cela ne les empêche pas de manger et d'avoir recours aux divers services offerts par les plébéiens."
+ uri : {
+  "plébéiens" : "plebians"
+ }
+}
