@@ -8,6 +8,10 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,left,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,right,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,top,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenTop,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenLeft,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenBottom,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenRight,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setTop,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setLeft,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,relativeRect,0) \
@@ -40,6 +44,10 @@ DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,width) \
 DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,height) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,bottom) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,top) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenTop) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenLeft) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenBottom) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenRight) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,left) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \

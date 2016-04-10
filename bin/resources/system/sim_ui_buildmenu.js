@@ -100,7 +100,7 @@ sim.ui.buildmenu.show = function(type, top) {
   var extMenu = g_ui.find("ExtentMenu");
   //var parent = g_ui.find(parentName);
   var buildMenu = new Widget(0);
-
+ 
   if (buildMenu != null) {
     buildMenu.clipped = false;
     buildMenu.name = "BuildMenu";
@@ -169,7 +169,7 @@ sim.ui.buildmenu.show = function(type, top) {
     //VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
     //VariantList submenu = config.get( "submenu" ).toList();
     //VariantList buildings = config.get( "buildings" ).toList();
-    engine.log( "Opened buildmenu " + type);
+    engine.log("Opened buildmenu " + type);
     var config = g_config.buildmenu[type];
 
     if (config.submenu != undefined) {

@@ -22,7 +22,7 @@ sim.ui.missionLose = function()
 
    window.moveToCenter();
    window.setModal();
-} 
+}
 
 sim.ui.missionWin = function()
 {
@@ -104,8 +104,9 @@ sim.start = function()
             }
   }
 
-  sim.ui.topmenu.initialize()
-  sim.hotkeys.init()
+  sim.ui.topmenu.initialize();
+  sim.ui.menu.initialize();
+  sim.hotkeys.init();
 }
 
 sim.ui.advisors.showEmpirePrices = function()

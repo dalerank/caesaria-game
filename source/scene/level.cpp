@@ -92,13 +92,13 @@ class Level::Impl
 {
 public:
   EventHandlers eventHandlers;
-  Minimap* mmap;
+  //Minimap* mmap;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   gui::Menu* menu;
   Engine* engine;
   DebugHandler dhandler;
-  gui::ExtentMenu* extMenu;
+  //gui::ExtentMenu* extMenu;
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
@@ -173,11 +173,11 @@ void Level::Impl::initMainUI()
   menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
   menu->hide();
 
-  extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  extMenu->show();
-  Rect minimapRect = extMenu->getMinimapRect();
+  //extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
+  //extMenu->show();
+  //Rect minimapRect = extMenu->getMinimapRect();
 
-  mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
+  //mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
   rightPanel->bringToFront();
@@ -186,20 +186,20 @@ void Level::Impl::initMainUI()
   {
     rightPanel->setSide( MenuRigthPanel::rightSide );
     menu->setSide( Menu::rightSide, rightPanel->lefttop() );
-    extMenu->setSide( Menu::rightSide, rightPanel->lefttop() );
+    //extMenu->setSide( Menu::rightSide, rightPanel->lefttop() );
   }
   else
   {
     rightPanel->setSide( MenuRigthPanel::leftSide );
     menu->setSide( Menu::leftSide, rightPanel->righttop() );
-    extMenu->setSide( Menu::leftSide, rightPanel->righttop() );
+    //extMenu->setSide( Menu::leftSide, rightPanel->righttop() );
   }
 }
 
 void Level::Impl::installHandlers( Base* scene )
 {
   scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
-  scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
+  //scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
 }
 
 void Level::Impl::initSound()
@@ -221,7 +221,7 @@ void Level::Impl::initTabletUI( Level* scene )
 
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
-  CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
+  //CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
 }
 
 void Level::initialize()
@@ -243,40 +243,40 @@ void Level::initialize()
 
   CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction )
   CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool )
-  CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
+  //CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
-  CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
-  CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
-  CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
-  CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
-  CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
-  CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
-  CONNECT( _d->extMenu, onRotateRight(),          _d->mmap,         Minimap::update )
-  CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
-  CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
-  CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTargetsWindow )
-  CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
-  CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
+  //CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
+  //CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
+  //CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
+  //CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
+  //CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
+  //CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
+  //CONNECT( _d->extMenu, onRotateRight(),          _d->mmap,         Minimap::update )
+  //CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
+  //CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
+  //CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
+  //CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTargetsWindow )
+  //CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
+  //CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
   CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
-  CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
+  //CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
-  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
+  //CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
+  //CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
-  CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
-  CONNECT( _d->mmap, onZoomChange(), _d->renderer.camera(),          gfx::Camera::changeZoom )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
-  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
+  //CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
+  //CONNECT( _d->mmap, onZoomChange(), _d->renderer.camera(),          gfx::Camera::changeZoom )
+  //CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
+  //CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
-  CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
-  CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
+  //CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
+  //CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
   _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
-  _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
+  //_d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible(KILLSWITCH(debugMenu));
@@ -474,7 +474,7 @@ void Level::setConstructorMode(bool enabled)
 {
   auto city = _d->game->city();
   city->setOption( PlayerCity::constructorMode, enabled ? 1 : 0 );
-  _d->extMenu->setConstructorMode( enabled );
+  //_d->extMenu->setConstructorMode( enabled );
 }
 
 void Level::setOption(const std::string& name, Variant value)
