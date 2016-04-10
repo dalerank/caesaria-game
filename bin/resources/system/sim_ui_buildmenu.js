@@ -186,11 +186,13 @@ sim.ui.buildmenu.show = function(type, top) {
     for (var i in buildMenu.buttons) {
       var bbutton = buildMenu.buttons[i];
       max_text_width = math.max(max_text_width, bbutton.textWidth );
-      max_cost_width = math.max(max_cost_width, bbutton.lbCost.textWidth);
+
+      if (bbutton.lbCost)
+        max_cost_width = math.max(max_cost_width, bbutton.lbCost.textWidth);
     }
 
     //engine.log(max_text_width);
-    var appear_width = math.max(150, max_text_width + max_cost_width);
+    var appear_width = math.max(150, max_text_width + max_cost_width ) + 80;
 
     // set the same size for all buttons
     for(var i in buildMenu.buttons) {
