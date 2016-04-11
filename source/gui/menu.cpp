@@ -754,7 +754,6 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr city )
     : Menu( p, id, rectangle, city )
 {
-  setupUI( ":/gui/fullmenu.gui" );
   _d->city = city;
 }
 

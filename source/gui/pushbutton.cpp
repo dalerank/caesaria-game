@@ -353,6 +353,14 @@ int PushButton::getTextWidth(const std::string & t) const
   return font(stNormal).getTextSize(t.empty() ? text() : t).width();
 }
 
+void PushButton::fitToImage()
+{
+  __D_REF(_d,PushButton);
+  Size size = _d.buttonStates[stNormal].rectangle.size();
+  if (size.area() > 0)
+    setGeometry(Rect(lefttop(), size));
+}
+
 void PushButton::setPicture(Picture picture, ElementState state )
 {
   __D_REF(_d,PushButton);
