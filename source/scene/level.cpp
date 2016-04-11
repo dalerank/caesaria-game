@@ -111,21 +111,16 @@ public:
   int result;
 
 public:
-  void showEmpireMapWindow();
-  void showAdvisorsWindow(const advisor::Type advType);
-  void showTradeAdvisorWindow();
-  void resolveCreateConstruction( int type );
-  void resolveCreateObject( int type );
   void resolveSelectLayer( int type );
+  void showTradeAdvisorWindow();
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission();
-  void resolveRemoveTool();
   void makeScreenShot();
+  void setAlarmEnabled(bool enable);
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void showMessagesWindow();
   void layerChanged( int layer );
-  //void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
   void initRender();
   void initMainUI();
@@ -133,6 +128,7 @@ public:
   void initSound();
   void initTabletUI(Level* scene);
   void connectTopMenu2scene(Level* scene);
+  void resolveUndoChange(bool enable);
 
   std::string getScreenshotName();
 };
@@ -222,6 +218,12 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
   //CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
 }
 
+void Level::Impl::resolveUndoChange(bool enable)
+{
+  VariantList vl; vl << enable;
+  events::dispatch<events::ScriptFunc>("OnChangeSessionUndoState", vl);
+}
+
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
@@ -235,29 +237,20 @@ void Level::initialize()
   _d->undoStack.init( city );
 
   //connect elements
-
   city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
-  //CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction )
-  //CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool )
   //CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
   //CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
-  //CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
-  //CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
-  //CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
-  //CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
   //CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
   //CONNECT( _d->extMenu, onRotateRight(),          _d->mmap,          Minimap::update )
   //CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
-  //CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
   //CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
-  //CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
   CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
-  //CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
+  CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d.data(),       Impl::setAlarmEnabled )
 
   //CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
@@ -267,8 +260,7 @@ void Level::initialize()
   //CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
   //CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
-  //CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
-  //CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
+  CONNECT( &_d->undoStack, onUndoChange(),       _d.data(),       Impl::resolveUndoChange )
 
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
@@ -276,14 +268,14 @@ void Level::initialize()
   _d->dhandler.setVisible(false);
 
   events::dispatch<events::ScriptFunc>("OnMissionStart");
-
-  if (_d->game->city()->getOption( PlayerCity::constructorMode ))
-  {
-    setConstructorMode( true );
-  }
 }
 
 std::string Level::nextFilename() const { return _d->mapToLoad; }
+
+void Level::Impl::setAlarmEnabled(bool enable) {
+  VariantList vl; vl << enable;
+  events::dispatch<events::ScriptFunc>("OnChangeSessionAlarmState", vl);
+}
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
@@ -338,11 +330,6 @@ std::string Level::Impl::getScreenshotName()
                                       time.hour(), time.minutes(), time.seconds() );
   vfs::Directory screenDir = SETTINGS_STR( screenshotDir );
   return (screenDir/filename).toString();
-}
-
-void Level::Impl::showEmpireMapWindow()
-{
-  events::dispatch<ShowEmpireMap>( true );
 }
 
 void Level::draw(Engine& engine)
@@ -464,13 +451,6 @@ void Level::Impl::checkWinMission()
 
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
 
-void Level::setConstructorMode(bool enabled)
-{
-  auto city = _d->game->city();
-  city->setOption( PlayerCity::constructorMode, enabled ? 1 : 0 );
-  //_d->extMenu->setConstructorMode( enabled );
-}
-
 void Level::setOption(const std::string& name, Variant value)
 {
   if (name == "nextFile") {
@@ -478,10 +458,8 @@ void Level::setOption(const std::string& name, Variant value)
     bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
     _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
     stop();
-  } else if (name == "constructorMode") {
-    setConstructorMode(value.toBool());
   } else if (name == "advisor") {
-    _d->showAdvisorsWindow(value.toEnum<Advisor>());
+    events::dispatch<ShowAdvisorWindow>(true, value.toEnum<Advisor>());
   } else if (name == "layer") {
     _d->renderer.setLayer(value.toInt());
   } else if (name == "buildMode") {
@@ -491,11 +469,29 @@ void Level::setOption(const std::string& name, Variant value)
     } else { 
       type = value.toInt(); 
     }
-
-    _d->resolveCreateConstruction(type);
+    _d->renderer.setMode(BuildMode::create(object::Type(type)));
   } else if (name == "removeTool") {
-    _d->resolveRemoveTool();
+    _d->renderer.setMode(DestroyMode::create());
+  } else if (name == "editorMode") {
+    int type = object::unknown;
+    if (value.type() == Variant::String) {      
+      type = object::toType(value.toString());
+    } else { 
+      type = value.toInt(); 
+    }
+    _d->renderer.setMode(EditorMode::create(object::Type(type)));
+  } else if (name == "rotateRight") {
+    _d->renderer.rotateRight();
+  } else if (name == "rotateLeft") {
+    _d->renderer.rotateLeft();
+  } else if (name == "showEmpireMap") {
+    events::dispatch<ShowEmpireMap>(true);
+  } else if (name == "undo") {
+    _d->undoStack.undo();
+  } else if (name == "nextAlarm") {
+    _d->alarmsHolder.next();
   }
+
 }
 
 Variant Level::getOption(const std::string& name)
@@ -530,11 +526,8 @@ void Level::setMode(int mode)
   }
 }
 
-void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
-void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
-void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
-void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
+void Level::Impl::showTradeAdvisorWindow(){ events::dispatch<ShowAdvisorWindow>(true, advisor::trading);  }
 void Level::setCameraPos(TilePos pos, bool force) {  _d->renderer.camera()->setCenter( pos, force ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
@@ -635,7 +628,5 @@ bool Level::_tryExecHotkey(NEvent &event)
 
   return handled;
 }
-
-void Level::Impl::showAdvisorsWindow(const advisor::Type advType) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
 
 }//end namespace scene

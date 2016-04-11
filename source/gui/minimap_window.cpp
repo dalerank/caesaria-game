@@ -29,12 +29,15 @@
 #include "core/color_list.hpp"
 #include "texturedbutton.hpp"
 #include "city/states.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 using namespace constants;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Minimap)
 
 class Minimap::Impl
 {

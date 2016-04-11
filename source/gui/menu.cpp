@@ -761,7 +761,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr c
 
 void ExtentMenu::_updateButtons()
 {
-  Menu::_updateButtons();
+  //Menu::_updateButtons();
 
   //_d->button.minimize->deleteLater();
   //_d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, gui::miniature.empty,
@@ -833,37 +833,9 @@ void ExtentMenu::toggleOverlayMenuVisible()
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->visible() );
 }
 
-void ExtentMenu::setConstructorMode(bool enabled)
-{
-  PushButton* btns1[] = { _d->senateButton, _d->empireButton,
-                          _d->missionButton, _d->northButton,
-                          _d->rotateLeftButton, _d->rotateRightButton,
-                          _d->model->actions[ Link::messages ].button,
-                          _d->model->actions[ Link::disaster ].button };
-
-  for( auto btn : btns1 )
-    btn->setEnabled( !enabled );
-
-  if( !_d->model->isLinkValid( Link::editTerrain ) )
-  {
-    _createLink( _d->model->actions[ Link::editTerrain ] );
-    _createLink( _d->model->actions[ Link::editForest  ] );
-    _createLink( _d->model->actions[ Link::editWater   ] );
-    _createLink( _d->model->actions[ Link::editRocks    ] );
-    _createLink( _d->model->actions[ Link::editMeadow  ] );
-    _createLink( _d->model->actions[ Link::editPlateau ] );
-    _createLink( _d->model->actions[ Link::editRift    ] );
-    _createLink( _d->model->actions[ Link::editRiver   ] );
-    _createLink( _d->model->actions[ Link::editIndigene] );
-    _createLink( _d->model->actions[ Link::editRoads   ] );
-    _createLink( _d->model->actions[ Link::editBorders ] );
-    _createLink( _d->model->actions[ Link::editAttacks ] );
-  }
-
-  _d->model->setConstructoMode( enabled );
+void ExtentMenu::resolveUndoChange(bool enabled) { 
+ 
 }
-
-void ExtentMenu::resolveUndoChange(bool enabled) { _d->model->actions[ Link::undoAction ].setEnabled( enabled ); }
 
 void ExtentMenu::changeOverlay(int ovType)
 {

@@ -180,7 +180,6 @@ enum {
   increase_house_level,
   decrease_house_level,
   lock_house_level,
-  enable_constructor_mode,
   show_requests,
   show_attacks,
   reset_fire_risk,
@@ -284,7 +283,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
-  ADD_DEBUG_EVENT( other, enable_constructor_mode )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -472,16 +470,6 @@ void DebugHandler::Impl::handleEvent(int event)
     auto pit = game->city()->overlays().select<ClayPit>().random();
     if( pit.isValid() )
       pit->flood();
-  }
-  break;
-
-  case enable_constructor_mode:
-  {
-    auto level = safety_cast<scene::Level*>( game->scene() );
-    if( level )
-    {
-      level->setConstructorMode( true );
-    }
   }
   break;
 

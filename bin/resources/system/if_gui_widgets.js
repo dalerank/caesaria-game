@@ -259,6 +259,7 @@ Object.defineProperty( ContextMenuItem.prototype, "autoChecking", {set: function
 
 ContextMenuItem.prototype.addItemWithCheckingCallback = function(caption,func) {
     var item = this.addSubmenuItem(_t(caption));
+    item.autoChecking = true;
     item.toggleCallback = func;
     return item;
 }
