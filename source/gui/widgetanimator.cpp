@@ -32,8 +32,7 @@ WidgetAnimator::WidgetAnimator( Widget* parent, int flags )
 void WidgetAnimator::beforeDraw(gfx::Engine& painter )
 {
   //! draw self area in debug mode
-  if( isFlag( debug ) )
-  {
+  if (isFlag(debug)) {
      // painter->drawRectangleOutline( getAbsoluteRect(), Color( 0xff, 0xff, 0xff, 0 ), &getAbsoluteClippingRectRef() );
 
       //Font font( Font::builtinName );
@@ -60,14 +59,14 @@ void WidgetAnimator::setFlag(const std::string& flagname, bool enabled)
 
 void WidgetAnimator::_afterFinished()
 {
-	if( isFlag( removeParent ) )
-	{
+	if (isFlag(removeParent)) {
 		parent()->deleteLater();
-	}
-  else if( isFlag( removeSelf ) )
+  } else if (isFlag(removeSelf)) {
     deleteLater();
+  }
 
   emit _onFinishSignal();
+  emit _onFinishExSignal(this);
 }
 
 }//end namespace gui

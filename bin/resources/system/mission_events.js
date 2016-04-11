@@ -107,6 +107,7 @@ sim.start = function()
   sim.ui.topmenu.initialize();
   sim.ui.menu.initialize();
   sim.hotkeys.init();
+  sim.ui.dialogs.showMissionTargets();
 }
 
 sim.ui.advisors.showEmpirePrices = function()

@@ -22,6 +22,7 @@ g_config.align = {
 g_config.audio = {
     theme: 2,
     speech: 4,
+    effects: 5,
     infobox : 6
 }
 

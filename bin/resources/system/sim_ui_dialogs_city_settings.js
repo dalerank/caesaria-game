@@ -64,7 +64,8 @@ var ctsettings = {
       dm.setVisible(value)
     } else if (name=="rightMenu") {
       engine.setOption("rightMenu",value);
-      g_ui.addInformationDialog( "##pls_note##", "##need_restart_mission_for_apply_changes##" );
+      sim.ui.menu.setSide(value);
+      //g_ui.addInformationDialog( "##pls_note##", "##need_restart_mission_for_apply_changes##" );
     }
   },
 

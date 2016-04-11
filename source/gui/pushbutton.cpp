@@ -43,13 +43,14 @@ public:
   BackgroundStyleHelper()
     : EnumsHelper<PushButton::BackgroundStyle>(PushButton::noBackground)
   {
-    append( PushButton::greyBorderLine, "grayBorderLine" );
-    append( PushButton::greyBorderLineBig, "greyBorderLineBig" );
-    append( PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
-    append( PushButton::whiteBorderUp, "whiteBorderUp" );
-    append( PushButton::blackBorderUp, "blackBorderUp" );
-    append( PushButton::flatBorderLine, "flatBorderLine" );
-    append( PushButton::noBackground, "noBackground" );
+    append(PushButton::greyBorderLine, "grayBorderLine" );
+    append(PushButton::greyBorderLineBig, "greyBorderLineBig" );
+    append(PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
+    append(PushButton::whiteBorderUp, "whiteBorderUp" );
+    append(PushButton::blackBorderUp, "blackBorderUp" );
+    append(PushButton::flatBorderLine, "flatBorderLine" );
+    append(PushButton::noBackground, "noBackground" );
+    append(PushButton::greyBorderLineFit, "greyBorderLineFit");
   }
 };
 
