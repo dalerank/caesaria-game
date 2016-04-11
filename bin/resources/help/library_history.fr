@@ -1,0 +1,5 @@
+{
+ title : "##library##"
+ sound : "fanfare"
+ text : "ers la fin de l'Empire, Rome disposait d'environ 40 bibliothèques publiques, et de plusieurs centaines de bibliothèques privées. Elles étaient généralement constituées de deux pièces rectangulaires, une pour les ouvrages en grec, l'autre pour ceux en latin. Les 'livres' de l'antiquité étaient en fait des rouleaux de parchemin ou de papyrus, considérablement plus encombrants que leur équivalent actuel relié. Même les plus grandes bibliothèques anciennes ne disposaient pas de plus d'un millier d'ouvrages, et une bibliothèque contenant quelques centaines de titres était considérée comme très impressionnante. \n\tLe fonctionnement des bibliothèques était proche de celui d'aujourd'hui, avec la possibilité d'emprunter des ouvrages pour les membres, généralement des érudits. Les rouleaux étaient chers et encombrants. De nombreux ouvrages étaient uniques et irremplaçables, et même les oeuvres littéraires les plus populaires n'existaient qu'en quelques centaines d'exemplaires."
+}

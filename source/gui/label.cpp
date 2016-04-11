@@ -643,6 +643,11 @@ void Label::beforeDraw(gfx::Engine& painter )
 
 Label::BackgroundStyle Label::backgroundStyle() const {  return _d->backgroundMode; }
 
+int Label::getTextWidth(const std::string & t) const
+{
+  return font().getTextSize(t.empty() ? text() : t).width();
+}
+
 bool Label::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventMouse )

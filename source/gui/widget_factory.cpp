@@ -19,10 +19,13 @@
 #include "core/utils.hpp"
 #include "core/requirements.hpp"
 #include "core/logger.hpp"
+#include "gui/widget.hpp"
 #include <map>
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Widget)
 
 class WidgetFactory::Impl
 {

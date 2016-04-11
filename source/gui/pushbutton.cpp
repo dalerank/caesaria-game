@@ -43,13 +43,14 @@ public:
   BackgroundStyleHelper()
     : EnumsHelper<PushButton::BackgroundStyle>(PushButton::noBackground)
   {
-    append( PushButton::greyBorderLine, "grayBorderLine" );
-    append( PushButton::greyBorderLineBig, "greyBorderLineBig" );
-    append( PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
-    append( PushButton::whiteBorderUp, "whiteBorderUp" );
-    append( PushButton::blackBorderUp, "blackBorderUp" );
-    append( PushButton::flatBorderLine, "flatBorderLine" );
-    append( PushButton::noBackground, "noBackground" );
+    append(PushButton::greyBorderLine, "grayBorderLine" );
+    append(PushButton::greyBorderLineBig, "greyBorderLineBig" );
+    append(PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
+    append(PushButton::whiteBorderUp, "whiteBorderUp" );
+    append(PushButton::blackBorderUp, "blackBorderUp" );
+    append(PushButton::flatBorderLine, "flatBorderLine" );
+    append(PushButton::noBackground, "noBackground" );
+    append(PushButton::greyBorderLineFit, "greyBorderLineFit");
   }
 };
 
@@ -346,6 +347,19 @@ void PushButton::canvasDraw(const std::string& text, const Point& point, Font rf
     rfont.setColor( color );
 
   rfont.draw( pic, text, point, true, true  );
+}
+
+int PushButton::getTextWidth(const std::string & t) const
+{
+  return font(stNormal).getTextSize(t.empty() ? text() : t).width();
+}
+
+void PushButton::fitToImage()
+{
+  __D_REF(_d,PushButton);
+  Size size = _d.buttonStates[stNormal].rectangle.size();
+  if (size.area() > 0)
+    setGeometry(Rect(lefttop(), size));
 }
 
 void PushButton::setPicture(Picture picture, ElementState state )

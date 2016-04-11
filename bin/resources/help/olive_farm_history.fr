@@ -1,0 +1,5 @@
+{
+ title : "##olive##"
+ sound : "fanfare"
+ text : "Les olives, quelle que soit leur variété, sont toujours assez amères lorsqu'elles sont fraîches. Leur arôme final dépend du degré de maturité qu'elles ont atteint au moment de la récolte, ainsi que de la façon dont elles sont préparées. Les oliviers argentés sont originaires de la Méditerranée et étaient déjà considérés comme sacrés au XVIIe siècle avant JC. Les Romains cultivaient des oliviers pour leurs fruits, principalement pour en tirer de l'huile. Les olives vertes ne sont pas mûres. La teinte des olives arrivées à maturité varie entre le vert foncé et le noir."
+}

@@ -252,6 +252,11 @@ VariantMap Session::getGoodInfo(std::string goodName) const
   return ret;
 }
 
+gui::Widget* Session::findWidget(std::string wname) const
+{
+  return _game->gui()->rootWidget()->findChild(wname, true);
+}
+
 void Session::loadNextMission()
 {
   city::VictoryConditions vc;

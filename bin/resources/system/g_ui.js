@@ -9,6 +9,12 @@ Ui.prototype.addWindow = function(rx,ry,rw,rh) {
     return window;
   }
 
+Ui.prototype.addGroupbox = function(rx,ry,rw,rh) {
+  var gb = new GroupBox(0);
+  gb.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
+  return gb;
+}
+
 Ui.prototype.addSimpleWindow = function(rx,ry,rw,rh) {
     var window = new Window(0);
     window.geometry = { x:rx, y:ry, w:rx+rw, h:ry+rh };
@@ -76,11 +82,25 @@ Ui.prototype.addImage = function() {
   }
 
 Ui.prototype.addLabel = function(rx,ry,rw,rh) {
-    var label = new Label(0);
-    label.geometry = { x:rx, y:ry, w:rw, h:rh };
-    return label;
-  }
+  var label = new Label(0);
+  label.geometry = { x:rx, y:ry, w:rw, h:rh };
+  return label;
+}
 
-Ui.prototype.elog = function(a) { engine.log(a); }
+Ui.prototype.addPosAnimator = function (parent, newPos, mstime, callback) {
+  var animator = new PositionAnimator(parent);
+  animator.setFlag("removeSelf", true);
+  animator.setDestination(newPos);
+  animator.setTime(mstime);
 
-var g_ui = new Ui()
+  if (callback)
+    animator.onFinishEx(callback);
+    
+  return animator;
+};
+
+Ui.prototype.find = function(name) {
+  return g_session.findWidget(name);
+}
+
+var g_ui = new Ui();

@@ -1,0 +1,14 @@
+{
+ title : "##population_and_mood##"
+ sound : "fanfare"
+ text : "Dès que vous établissez votre colonie, des immigrants arrivent pour s'installer dans les logements vides, avec des charrettes pleines d'objets. Une poignée de personnes est attirée par les nouvelles zones. Cependant, pour continuer à favoriser l'immigration, vous devez faire en sorte que l'humeur reste au beau fixe dans votre cité. Les éléments qui permettent de conserver cette bonne humeur sont : la nourriture, qui doit être en quantité suffisante, la création d'emplois, des salaires attrayants et des taxes raisonnables. \n\tTant que cet environnement positif est maintenu et que des logements sont disponibles, les immigrants continuent à s'installer dans votre cité. Si le taux de chômage augmente ou que les logements sont surpeuplés ou si vous réduisez les salaires ou augmentez les taxes, l'humeur se détériore et l'immigration s'arrête. Si vous ne remédiez pas au problème, les citoyens perdent bientôt espoir et émigrent. Par conséquent, si vous voyez des émigrants abandonner leur logement, cliquez sur eux avec le bouton droit de la souris. Ils n'hésiteront pas à exprimer leurs griefs. \n\tOutre l'immigration et l'émigration, votre population a un taux de croissance naturel dû aux naissances et aux décès. Soyez attentif à l'âge moyen de la population. Les jeunes sont moins susceptibles de mourir et font des enfants et, chose plus importante, ce sont eux qui constituent votre potentiel de main-d'œuvre. Si vous remarquez que la population vieillit, agissez de façon à attirer des immigrants (qui sont en général de jeunes gens). \n\tL'humeur des gens est influencée par presque tout ce que vous faites. Des citoyens heureux sont plus productifs et recommandent la cité à leurs amis (susceptibles ensuite de venir s'y installer). En revanche, des résidents mécontents risquent d'émigrer et de conseiller en outre à leur amis de ne pas venir dans votre cité. S'ils n'émigrent pas, ils risquent alors de tomber dans la criminalité, voire de provoquer une émeute. \n\tSi vos scribes vous avertissent d'une détérioration de l'humeur générale dans la cité, la solution la plus rapide consiste à organiser un @festival&. Malheureusement, même les festivités les plus somptueuses ne sont pas suffisantes pour faire oublier aux gens leurs griefs à long terme. Vous devez donc identifier et corriger les problèmes sous-jacents. \n\nPour en savoir plus sur le rôle spécifique des gens dans votre cité, cliquez sur @Plébéiens&, @Patriciens& ou @Citoyens&. Consultez également les rubriques @Logement&, @Evaluation& et @Emploi&."
+ uri : {
+  "festival" : "entertainment_advisor"
+  "Plébéiens" : "plebians"
+  "Patriciens" : "patricians"
+  "Citoyens" : "worker"
+  "Logement" : "house"
+  "Evaluation" : "ratings"
+  "Emploi" : "employment"
+ }
+}

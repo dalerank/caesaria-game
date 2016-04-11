@@ -1,0 +1,8 @@
+{
+ title : "##wharf##"
+ sound : "fanfare"
+ text : "Si vous voyez des mouettes tournoyer au-dessus d'un plan d'eau, votre province peut mettre en place une flottille de pêche. Les poissons sont une source importante de nourriture. Vous pouvez construire des bateaux de pêche dans un @chantier naval&. Une fois terminé, chaque bateau est amarré le long d'un quai en attendant son équipage. Lorsque tout l'équipage a embarqué, le bateau se rend sur les bancs de pêche et travaille jusqu'à ce qu'il ait rempli sa cale, puis revient à quai pour décharger ses prises. Les employés des quais placent les poissons dans un grenier ou dans un entrepôt. Il ne peut y avoir qu'un seul bateau par quai. \n\nComme pour la plupart des constructions, les quais nécessitent de la main-d'œuvre et un accès à la route pour pouvoir fonctionner. Ils réduisent également l'attrait du quartier."
+ uri : {
+  "chantier naval" : "shipyard"
+ }
+}

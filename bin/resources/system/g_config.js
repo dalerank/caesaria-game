@@ -11,9 +11,18 @@ g_config.lobby = {
     res_close:5
 }
 
+g_config.align = {
+  upperLeft:0,
+  lowerRight:1,
+  center:2,
+  scale:3,
+  automatic:4
+}
+
 g_config.audio = {
     theme: 2,
     speech: 4,
+    effects: 5,
     infobox : 6
 }
 

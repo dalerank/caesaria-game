@@ -1,0 +1,11 @@
+{
+ title : "##religion##"
+ sound : "fanfare"
+ text : "Votre cité compte cinq divinités : Cérès, la déesse de l'agriculture ; Mercure, le dieu du commerce ; Neptune, le dieu de la mer, Mars, le dieu de la guerre et Vénus, la déesse de l'amour. Faites preuve de respect pour ne pas subir leur courroux. \n\tPour plaire aux dieux, élevez leur des @temples&. Plus vous dédiez de temples aux dieux, plus ils vous accordent leurs faveurs. Le nombre de temples doit être proportionnel au nombre de citoyens. Les temples servent certes à apaiser les dieux mais aussi à améliorer l'attrait d'un quartier et le @niveau culturel& de la cité. \n\tLes citoyens aiment vivre près des temples. Les meilleurs quartiers requièrent la visite de prêtres attachés au culte d'au moins quatre dieux. \n\tUne divinité devient furieuse si elle estime que le nombre de temples qui lui sont dédiés est insuffisant, compte tenu de la taille de la cité. Les dieux sont jaloux et querelleurs. Ils ne manqueront pas de remarquer que certains temples favorisent davantage tel ou tel dieu. La colère des dieux se manifeste par des dommages dans les domaines qu'ils sont censés protéger. Ceci dit, si vous satisfaites les dieux, ils vous prendront sous leur protection. \n\nVous pouvez également dédier un festival à l'un des dieux pour le contenter, du moins temporairement. Pour plus de détails sur les festivals, cliquez sur @Loisirs&. \n\tPour démontrer votre largesse et impressionner les dieux, construisez de grands et de petits temples. Les grands temples nécessitent deux charrettes de marbre précieux, produites par vos carrières ou importées. \n\nLes oracles représentent un type particulier de temple, dédié à tous les dieux et à la prédiction de l'avenir. Ils ont le même effet sur un quartier et sur la culture qu'un temple classique. En outre, ils permettent de satisfaire les cinq dieux à la fois. Comme les grands temples, les oracles nécessitent deux charrettes de marbre. Contrairement aux temples, les oracles n'envoient pas de prêtres dans les quartiers voisins et ne fournissent aucun accès particulier à l'un des dieux. \n\tConsultez votre @conseiller en religion& pour savoir les dieux vous perçoivent."
+ uri : {
+  "temples" : "temple_oracle"
+  "niveau culturel" : "ratings"
+  "Loisirs" : "entertainment"
+  "conseiller en religion" : "religion_advisor"
+ }
+}

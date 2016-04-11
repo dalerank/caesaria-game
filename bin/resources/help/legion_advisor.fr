@@ -1,0 +1,9 @@
+{
+ title : "##legion_advisor##"
+ sound : "fanfare"
+ text : "Cliquez @ici& pour obtenir plus d'informations sur la paix et la guerre dans Caesar III. \n\nLe rôle du conseiller militaire est de surveiller les légions défensives de la cité. Les boutons affichés en regard du nom d'une légion vous permettent d'atteindre l'emplacement courant de cette légion dans votre province ; vous pouvez alors ordonner à la légion de rejoindre son @fort& de base ou mettre cette légion au 'service de l'Empire'. Utilisez cette option lorsque César vous demande de lui fournir des troupes. Votre conseiller de l'Empereur envoie alors la légion vers Rome ; le conseiller militaire ne fait que sélectionner les légions qui doivent partir. \n\tLe conseiller militaire vous fournit également un rapport sur le nombre total de soldats en activité dans votre province. Il vous rappelle tous les rapports des activités ennemies que vous avez reçus et vous indique si l'Empereur a requis des troupes."
+ uri : {
+  "ici" : "peace_and_war"
+  "fort" : "fort"
+ }
+}

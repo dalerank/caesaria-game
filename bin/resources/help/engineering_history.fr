@@ -1,0 +1,8 @@
+{
+ title : "##engineers##"
+ sound : "fanfare"
+ text : "La prédominance de ruines Romaines autour de la Méditerranée atteste des compétences et de l'enthousiasme des Romains pour les constructions, en particulier après l'invention du ciment. Les géomètres et les architectes étaient très demandés et jouissaient d'un statut privilégié. \n\tLes besoins de l'armée en @routes et ponts& attirèrent de nombreux bâtisseurs compétents au service des militaires. La plupart des soldats transportaient des équipements de construction avec eux, et les légions employaient de nombreux ingénieurs. Lorsque ces corps d'ingénieurs n'étaient pas occupés par des projets militaires, l'empereur leur affectait parfois des projets civils. \n\tAvec les riches Romains commissionnant les bâtiments publics, les effondrements fréquents d'insulae mal conçues, les incendies réguliers, les routes et les défenses militaires à bâtir dans les provinces nouvellement conquises, et avec le désir grandissant des provinciaux d'émuler leurs compatriotes des villes, les ingénieurs ne manquaient jamais de travail."
+ uri : {
+  "routes et ponts" : "road_history"
+ }
+}

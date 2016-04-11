@@ -1,0 +1,13 @@
+{
+ title : "##employment##"
+ sound : "fanfare"
+ text : "Presque toutes les structures que vous construisez (à l'exception des maisons) ont besoin de personnel. Les employés sont affectés aux activités commerciales, aux tâches d'alimentation en eau et en nourriture. \n\tDans un monde idéal, il devrait y avoir toujours un poste pour chaque personne désirant travailler. Malheureusement César lui-même n'est pas en mesure d'éviter le chômage. Vous rencontrerez certainement deux sortes de problèmes : pas assez d'emplois ou pas assez de travailleurs. \n\tLorsque le nombre de citoyens en demande d'emploi est plus élevé que le nombre des postes disponibles, ces personnes se retrouvent au chômage. Ils passent alors leur temps assis sur les marches du sénat. Un taux de chômage élevé est la cause principale de la mauvaise humeur qui peut régner dans une cité. Il peut également être à l'origine de troubles sociaux. Essayez de remédier rapidement à ce problème en mettant plus de personnes au travail. Si la situation est désespérée, démolissez certains logements afin d'obliger une partie de la population à émigrer. \n\tSi, en revanche, vous ne disposez pas d'un nombre suffisant de travailleurs, rendez une petite visite à votre @conseiller en main d'œuvre& afin d'établir les priorités et d'assurer que les emplois essentiels pour la cité soient comblés. Créez également de nouveaux quartiers résidentiels (ou aidez les maisons existantes à évoluer) afin de pouvoir accueillir plus de gens. Assurez-vous également que l'@humeur& de la cité est au beau fixe. Vous verrez que de nouveaux immigrants ne tarderont pas à venir demander ces emplois. Pour en savoir plus, consultez les rubriques @Salaires& et @Taxes&. \n\tVotre population est de toute façon toujours plus nombreuse que votre main-d'œuvre. En effet, seuls les plébéiens âgés de 20 à 50 ans travaillent et gagnent un salaire. Le reste est constitué de personnes trop jeunes, trop âgées ou n'appartenant pas à la main-d'œuvre pour des raisons personnelles. Les patriciens, eux, ne travaillent pas du tout. Généralement, vous pouvez résoudre les problèmes relatifs à l'emploi en augmentant la taille globale de la population. N'oubliez pas non plus de vérifier de temps en temps la @composition de votre population&. \n\tL'une des solutions en cas de problèmes d'emploi est de demander à votre @conseiller commercial& de désactiver certaines industries, afin de libérer leurs employés pour d'autres activités."
+ uri : {
+  "conseiller en main d'œuvre" : "labor_advisor"
+  "humeur" : "population_and_mood"
+  "Salaires" : "labor_advisor"
+  "Taxes" : "finance_advisor"
+  "composition de votre population" : "population_advisor"
+  "conseiller commercial" : "trade_advisor"
+ }
+}

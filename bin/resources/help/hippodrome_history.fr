@@ -1,0 +1,8 @@
+{
+ title : "##hippodrome##"
+ sound : "fanfare"
+ text : "Les hippodromes, dont le nom vient des mots grecs signifiant 'cheval' et 'circuit', étaient de grands @amphithéâtres& ovales, conçus spécifiquement pour les courses de chevaux et de chars. Le plus grand était le Circus Maximus ('le grand cercle' en Latin), qui mesurait 600 mètres de long sur 200 mètres de large, et pouvait accueillir 250000 personnes. Les Hippodromes étaient construits dans le flanc d'une colline, et la terre extraite était entassée de l'autre côté de l'ovale. Des gradins bordaient trois des côtés de l'arène, le dernier restant ouvert et constituant l'entrée. Bien que les gradins et les installations principales aient disparu, les contours du Circus Maximus accueillent toujours des Romains d'aujourd'hui, qui aiment y faire leur jogging. \n\tLe Circus Maximus fut construit au cours du IIe siècle avant JC dans une vallée peu profonde qui était déjà utilisée par les étrusques pour des courses de chevaux. Jules César y organisa des jeux guerriers, avec plus de 1 600 soldats et 40 éléphants."
+ uri : {
+  "amphithéâtres" : "amphitheater"
+ }
+}

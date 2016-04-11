@@ -1,0 +1,12 @@
+{
+ title : "##library##"
+ sound : "fanfare"
+ text : "Les Romains veulent avoir accès à des bibliothèques tout au long de leur vie. Les foyers doivent disposer d'un accès à une bibliothèque pour évoluer jusqu'à leur niveau le plus élevé. Les bibliothécaires donnent accès à la bibliothèque en circulant aux alentours de cette dernière. Utilisez la @carte Education& pour observer les tournées des bibliothécaires. Une bibliothèque renforce l'attrait d'un quartier. \n\tDemandez à votre @conseiller d'éducation& quels sont les besoins en bibliothèques de la cité. Cependant, une bibliothèque ne peut accueillir qu'un nombre limité de personnes. Lorsque la densité de votre population augmente, les foyers disposant déjà d'un accès à une bibliothèque réclameront également de nouveaux bâtiments pour réduire la surpopulation. \n\tLes bibliothèques affectent votre @niveau culturel&. Veillez à conserver des salles tranquilles et peu peuplées pour améliorer le niveau culturel de la cité. Comparez le nombre de citoyens au nombre de personnes pouvant être accueillies par vos bibliothèques pour savoir combien de lecteurs sont pris en charge. Cliquez @ici(1)& pour explorer le concept d'éducation dans Caesar III. \n\nCliquez @ici(2)& pour obtenir un historique des bibliothèques dans l'Empire Romain."
+ uri : {
+  "carte Education" : "special_card_selection"
+  "conseiller d'éducation" : "education_advisor"
+  "niveau culturel" : "ratings"
+  "ici(1)" : "education"
+  "ici(2)" : "library_history"
+ }
+}

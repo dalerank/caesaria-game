@@ -50,7 +50,7 @@ public:
   virtual gfx::Camera* camera() const;
 
   undo::UStack& undoStack();
-  void setConstructorMode( bool enabled );
+  void setConstructorMode(bool enabled);
   void setCameraPos( TilePos pos, bool force=false );
   void switch2layer( int layer );
 

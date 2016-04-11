@@ -1,0 +1,15 @@
+{
+ title : "##olive_groves_and_vineyards##"
+ sound : "fanfare"
+ text : "Les olives et le vin diffèrent des autres denrées agricoles dans le sens où ils ne peuvent pas être consommés directement et servent de matière première pour les @huileries& et les @fabriques de vin&. La productivité des oliveraies et des vignes est équivalente à celle des exploitations de @viande, de fruits ou de légumes&. Le climat de votre province conditionne la croissance de ces cultures. Ne faites pas pousser d'oliviers ou de vignes tant que vous n'avez pas ouvert au moins une route de commerce pour les produits dérivés ou tant que vos propres citoyens ne réclament ni huile ni vin. \n\tLes oliveraies et les vignobles sont des endroits plaisants et les gens apprécient de pouvoir s'établir à proximité. Ils ne peuvent être plantés que sur des terres arables. Ces terres sont signalées par des touffes jaunes de végétation. Lorsque vous sélectionnez un type de ferme en cliquant sur l'un des boutons de construction, une image verte en transparence de la ferme apparaît lorsque vous déplacez le curseur au-dessus d'une terre agricole. \n\tLes oliveraies et les vignobles nécessitent une main-d'œuvre locale et un accès routier aux ateliers. Pendant la récolte, le fermier dépose le contenu de sa charrette dans l'huilerie ou la fabrique de vin la plus proche ou dans un @entrepôt& si ces derniers ne sont pas disponibles. Les récoltes déposées dans un entrepôt peuvent être exportées si une route de commerce adéquate est ouverte. Lorsqu'une exploitation est active, vous pouvez voir les cultures pousser. Cliquez avec le bouton droit sur une ferme pour plus de détails sur sa productivité. \n\nIl est important de comprendre les principes du @commerce& dans le jeu avant de commencer à produire des olives. La rubrique @Nourriture et agriculture& comprend également des informations importantes. \n\nCliquez sur les liens suivants pour en savoir plus sur le rôle historique des @oliveraies& et des @vignobles& dans l'Empire Romain."
+ uri : {
+  "huileries" : "oil_workshop"
+  "fabriques de vin" : "wine_workshop"
+  "viande, de fruits ou de légumes" : "meat_farm"
+  "entrepôt" : "warehouse"
+  "commerce" : "trade"
+  "Nourriture et agriculture" : "food_and_farming"
+  "oliveraies" : "olive_farm_history"
+  "vignobles" : "vinard_history"
+ }
+}

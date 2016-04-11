@@ -27,7 +27,7 @@ game.ui.infobox.aboutRuins = function(location) {
 game.ui.infobox.aboutGatehouse = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var gates = g_session.city.getOverlay(location);
+  var gates = g_session.city.getOverlay(location).as(WorkingBuilding);
   ibox.overlay = gates;
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
   ibox.title = _u(gates.typename);
@@ -44,7 +44,7 @@ game.ui.infobox.aboutGatehouse = function(location) {
 
   ibox.text = _u("walls_need_a_gatehouse");
 
-  ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
+  //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
   ibox.setWorkingStatus(gates.active);
 
   ibox.update();
@@ -145,7 +145,7 @@ game.ui.infobox.aboutBarracks = function(location) {
 
   var barracks = g_session.city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
-  ibox.overlay = barracs;
+  ibox.overlay = barracks;
 
   ibox.title = _u(barracks.typename);
   ibox.setInfoText(_u("barracks_info"));
@@ -456,7 +456,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
     var state = _format( "Damage={0}\nFire={1}\nService={2}",
                          ibox.overlay.state(g_config.overlay.params.damage),
                          ibox.overlay.state(g_config.overlay.params.fire),
-                         lastServiceDate.format(g_session.metric) );
+                         lastServiceDate.format(g_session.metric.mode) );
 
     g_ui.addInformationDialog(_u("overlay_status"), state);
   }
@@ -464,7 +464,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var coloseum = g_session.getOverlay(location).as(WorkingBuilding);
+  var coloseum = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
   ibox.initBlackFrame(16, 145, ibox.w - 16,100);
@@ -529,7 +529,7 @@ game.ui.infobox.aboutTheater = function(location) {
     if (text.length==0)
       text = "##theater_now_local_show##";
 
-    ibox.setInfoText( _(text) );
+    ibox.setInfoText( _u(text) );
   } else {
     ibox.setInfoText( "##theater_need_actors##" );
   }
@@ -543,6 +543,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
 
   var amphitheater = g_session.city.getOverlay(location).as(WorkingBuilding);
   ibox.title = _u(amphitheater.typename);
+  ibox.overlay = amphitheater;
 
   ibox.setWorkersStatus(32, 150, 542, amphitheater.maximumWorkers(), amphitheater.numberWorkers());
   ibox.setWorkingStatus(amphitheater.active);

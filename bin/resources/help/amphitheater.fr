@@ -1,0 +1,11 @@
+{
+ title : "##amphitheater##"
+ sound : "fanfare"
+ text : "Les amphithéâtres sont plus grands que les théâtres et peuvent mettre en scène des pièces de théâtre ou des jeux de gladiateurs. Pour tirer parti du potentiel de vos amphithéâtres, construisez des @écoles d'acteurs& et des écoles de gladiateurs à proximité. Sachez que tous les bâtiments de loisirs ont besoin d'une main-d'œuvre régulière en supplément des différents types d'artistes. \n\tLes amphithéâtres répandent leur influence en faisant circuler les acteurs et les gladiateurs dans les quartiers environnants. Plus vous disposez de centres de loisirs faisant circuler leurs artistes près d'un groupe de maisons, plus ces habitations ont des chances d'évoluer. Les quartiers ordinaires ont généralement besoin d'un accès à un théâtre et à un amphithéâtre. Les amphithéâtres rendent les logements environnants plus attrayants. \n\nConsultez votre @conseiller aux loisirs& pour connaître la zone desservie par les amphithéâtres. Pour voir le circuit emprunté par les artistes d'un amphithéâtre, sélectionnez la @carte Loisirs&. Cliquez avec le bouton droit sur un amphithéâtre pour afficher son statut et savoir ce qui s'y joue. Si ses spectacles sont de courte durée, les artistes viennent de trop loin. Le temps perdu en déplacements réduit la longueur des spectacles. \n\nCliquez @ici& pour obtenir un historique des amphithéâtres dans l'Empire Romain."
+ uri : {
+  "écoles d'acteurs" : "actorColony"
+  "conseiller aux loisirs" : "entertainment_advisor"
+  "carte Loisirs" : "special_card_selection"
+  "ici" : "amphitheater_history"
+ }
+}

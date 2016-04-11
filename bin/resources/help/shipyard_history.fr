@@ -1,0 +1,8 @@
+{
+ title : "##shipyard##"
+ sound : "fanfare"
+ text : "Curieusement, bien que leur ville soit près d'un fleuve et que leur Empire couvre toute une mer, les Romains n'avaient pas le pied marin. Leur activité maritime se limita à de la pêche à petite échelle près des côtes, même durant leur conquête de l'Italie. Des flottes de guerre étaient constituées en cas de nécessité (les guerres Puniques confrontèrent Rome à Carthage, une puissance maritime majeure), mais ne subsistaient pas en temps de paix. Rome ne pris le contrôle de la Méditerranée que lorsque les besoins de l'Empire nécessitèrent une vaste flotte de marchands et de vaisseaux de guerre afin de les protéger des pirates. \n\tLes navires marchands étaient plus importants pour l'Empire que les vaisseaux de guerre. Ils étaient construits dans la tradition méditerranéenne datant des Grecs: c'était des navires lourds et arrondis très solides, mais lents et peu manoeuvrables. Les cargos avaient tous la même forme à la base, mais leur taille variait entre 20 tonnes pour une embarcation standard, et 600 tonnes pour un transporteur de @céréales&."
+ uri : {
+  "céréales" : "wheat_farm_history"
+ }
+}

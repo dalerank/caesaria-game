@@ -259,24 +259,24 @@ game.ui.infobox.aboutWarehouse = function(location) {
   // summary: total stock, free capacity
   var _paintY = 50;
 
-  ibox.drawGood(g_config.good.wheat,     0, _paintY+0);
-  ibox.drawGood(g_config.good.vegetable, 0, _paintY+25);
-  ibox.drawGood(g_config.good.fruit,     0, _paintY+50);
-  ibox.drawGood(g_config.good.olive,     0, _paintY+75);
-  ibox.drawGood(g_config.good.grape,     0, _paintY+100);
-  ibox.drawGood(g_config.good.fish,      0, _paintY+125);
+  ibox.drawWhGood(g_config.good.wheat,     0, _paintY+0);
+  ibox.drawWhGood(g_config.good.vegetable, 0, _paintY+25);
+  ibox.drawWhGood(g_config.good.fruit,     0, _paintY+50);
+  ibox.drawWhGood(g_config.good.olive,     0, _paintY+75);
+  ibox.drawWhGood(g_config.good.grape,     0, _paintY+100);
+  ibox.drawWhGood(g_config.good.fish,      0, _paintY+125);
 
-  ibox.drawGood(g_config.good.meat,      1, _paintY+0);
-  ibox.drawGood(g_config.good.wine,      1, _paintY+25);
-  ibox.drawGood(g_config.good.oil,       1, _paintY+50);
-  ibox.drawGood(g_config.good.iron,      1, _paintY+75);
-  ibox.drawGood(g_config.good.timber,    1, _paintY+100);
+  ibox.drawWhGood(g_config.good.meat,      1, _paintY+0);
+  ibox.drawWhGood(g_config.good.wine,      1, _paintY+25);
+  ibox.drawWhGood(g_config.good.oil,       1, _paintY+50);
+  ibox.drawWhGood(g_config.good.iron,      1, _paintY+75);
+  ibox.drawWhGood(g_config.good.timber,    1, _paintY+100);
 
-  ibox.drawGood(g_config.good.clay,      2, _paintY+0);
-  ibox.drawGood(g_config.good.marble,    2, _paintY+25);
-  ibox.drawGood(g_config.good.weapon,    2, _paintY+50);
-  ibox.drawGood(g_config.good.furniture, 2, _paintY+75);
-  ibox.drawGood(g_config.good.pottery,   2, _paintY+100);
+  ibox.drawWhGood(g_config.good.clay,      2, _paintY+0);
+  ibox.drawWhGood(g_config.good.marble,    2, _paintY+25);
+  ibox.drawWhGood(g_config.good.weapon,    2, _paintY+50);
+  ibox.drawWhGood(g_config.good.furniture, 2, _paintY+75);
+  ibox.drawWhGood(g_config.good.pottery,   2, _paintY+100);
 
   ibox.setWorkersStatus(32, 56+12, 542, wh.maximumWorkers(), wh.numberWorkers());
   ibox.setWorkingStatus(wh.active);

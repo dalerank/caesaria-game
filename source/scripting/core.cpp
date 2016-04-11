@@ -35,6 +35,7 @@
 #include "religion/pantheon.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
+#include "core/alignment.hpp"
 
 using namespace gui;
 using namespace gui::dialog;
@@ -52,6 +53,7 @@ namespace internal
 {
   Game* game = nullptr;
   std::set<std::string> files;
+  std::set<std::string> files2load;
   vfs::FileChangeObserver DirectoryChangeObserver;
   Session* session = nullptr;
   js_State *J = nullptr;
@@ -63,6 +65,7 @@ void engine_js_push(js_State* J, const NEvent& param);
 void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
 void engine_js_push(js_State* J, const Tilemap& param);
+void engine_js_push(js_State* J, Widget* param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
@@ -72,6 +75,7 @@ inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::T
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
 inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_toint32(J, n); }
 inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_toint32(J, n); }
+inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_toint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 Variant engine_js_to(js_State *J, int n, Variant)
@@ -332,6 +336,7 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 #define PUSH_USERDATA_WITHNEW(type) void engine_js_push(js_State* J, const type& p) { engine_js_pushud_new<type>(J, p, #type, destructor_##type); }
 
 PUSH_USERDATA(ContextMenuItem)
+PUSH_USERDATA(Widget)
 PUSH_USERDATA(Stock)
 PUSH_USERDATA(Store)
 
@@ -478,11 +483,7 @@ void engine_js_LoadArchive(js_State* J)
 
 void engine_js_ReloadFile(vfs::Path path)
 {
-  if (internal::files.count(path.toString()))
-  {
-    Logger::warning("JS: script {} reloaded ", path.toString());
-    Core::loadModule(path.toString());
-  }
+  internal::files2load.insert(path.toString());
 }
 
 void engine_js_SetVolume(js_State *J)
@@ -585,6 +586,20 @@ void Core::loadModule(const std::string& path)
 
   js_getglobal(internal::J,"");
   engine_js_tryPCall(internal::J, 0);
+}
+
+void Core::synchronize()
+{
+  if (internal::files2load.size() > 0) {
+    for (const auto& path : internal::files2load) {
+      if (internal::files.count(path) > 0) {
+        Logger::warning("JS: script {} reloaded ", path);
+        Core::loadModule(path);
+      }
+    }
+
+    internal::files2load.clear();
+  }
 }
 
 void Core::execFunction(const std::string& funcname)

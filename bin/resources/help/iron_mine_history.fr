@@ -1,0 +1,5 @@
+{
+ title : "##iron_mine_help##"
+ sound : "fanfare"
+ text : "Les Romains utilisaient de nombreux métaux faciles à obtenir et à raffiner, mais ne contribuèrent que très peu à l'évolution de la métallurgie. Le fer était très demandé, mais l'extraction du cuivre et du plomb était également bien développée. Les esclaves rebelles ou les plébéiens endettés étaient parfois envoyés dans les mines, ce qui équivalait à une peine de mort. L'extraction du minerai du sol et la séparation du métal et de la roche étaient les travaux les plus durs de l'Antiquité. Les mineurs ne pouvaient jamais suivre de riches veines de métaux très profondément, et d'énormes quantités de pierre devaient être extraites pour obtenir une production minimale de métal."
+}

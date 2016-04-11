@@ -18,3 +18,6 @@
 #include "objects/granary.hpp"
 #include "objects/gatehouse.hpp"
 #include "objects/watersupply.hpp"
+#include "objects/workshop_chariot.hpp"
+#include "objects/theater.hpp"
+#include "objects/amphitheater.hpp"

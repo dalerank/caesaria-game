@@ -22,9 +22,9 @@
 #include "core/color.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
-#include "buildmenu.hpp"
 #include "environment.hpp"
 #include "gfx/decorator.hpp"
+#include "city/build_options.hpp"
 #include "widgetpositionanimator.hpp"
 #include "label.hpp"
 #include "gfx/drawstate.hpp"
@@ -48,6 +48,7 @@
 #include "core/osystem.hpp"
 #include "game/settings.hpp"
 #include "events/playsound.hpp"
+#include "events/script_event.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -79,7 +80,7 @@ public:
   {
     active = false;
     pic = Picture( gui::rc.panel, 114 );
-    setSubElement( true );    
+    setSubElement( true );
   }
 
   void messagesChanged(int number)
@@ -145,7 +146,7 @@ struct Menu::Model
   int width;
   float scale;
   MenuType mtype;
-  bool fitToScreen;  
+  bool fitToScreen;
   std::map<Link::Name, Menu::Link> actions;
 
   void setEnabled( Link::Name name, bool enabled )
@@ -356,7 +357,7 @@ public:
   PushButton* overlaysButton;
 
   Image* middleLabel;
-  OverlaysMenu* overlaysMenu; 
+  OverlaysMenu* overlaysMenu;
   float koeff;
   Menu::Side side;
   PlayerCityPtr city;
@@ -483,7 +484,7 @@ void Menu::_createLink( Link& link )
   link.button = btn;
 }
 
-PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
+PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
                               int id, bool haveSubmenu, int midPic,
                               const std::string& ident, const Rect& rect )
 {
@@ -491,7 +492,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   int dy = 35;
 
   MenuButton& ret = add<MenuButton>( Point( 0, 0 ), -1, -1, startPic, pushBtn );
-  ret.setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+  ret.setID( id | ( haveSubmenu ? 0x1000 : 0 ) );
   Point temp = offset + Point( 0, dy * yMul );
   if( _d->koeff != 1 )
   {
@@ -520,7 +521,7 @@ void Menu::draw(gfx::Engine& painter)
   DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   pipe.draw( _d->bg.batch )
       .fallback( _d->bg.fallback, _d->bg.rects );
-    
+
   Widget::draw( painter );
 }
 
@@ -542,7 +543,7 @@ bool Menu::onEvent(const NEvent& event)
     if( id == object::house || id == object::road )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit _d->signal.onCreateConstruction( id );
     }
     else if( id == object::terrain || id == object::tree
@@ -551,25 +552,25 @@ bool Menu::onEvent(const NEvent& event)
              || id == object::river )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
-      emit _d->signal.onCreateObject( id );
+      _createBuildMenu("", this );
+      emit _d->signal.onCreateObject(id);
     }
     else if( id == (int)AdvToolMode::removeTool )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onRemoveTool();
     }
     else if( id == (int)AdvToolMode::undoAction )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onUndo();
     }
     else if( id == (int)AdvToolMode::messages )
     {
       _d->lastPressed = event.gui.caller;
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       emit onMessagesShow();
     }
     else
@@ -582,14 +583,14 @@ bool Menu::onEvent(const NEvent& event)
         if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
         {
           int id = btn->ID();
-          if( id & BuildMenu::subMenuCreateIdHigh )
+          if(id & 0x1000)
           {
-            _createBuildMenu( id & 0xff, event.gui.caller );
+            _createBuildMenu(development::toString(development::Branch(id&0xff)), event.gui.caller);
           }
           else
           {
-            emit _d->signal.onCreateConstruction( id );
-            _createBuildMenu( -1, this );
+            emit _d->signal.onCreateConstruction(id);
+            _createBuildMenu("", this );
             setFocus();
           }
         }
@@ -609,32 +610,12 @@ bool Menu::onEvent(const NEvent& event)
     switch( event.mouse.type )
     {
     case NEvent::Mouse::mouseRbtnRelease:
-      _createBuildMenu( -1, this );
+      _createBuildMenu("", this );
       cancel();
     return true;
 
-    case NEvent::Mouse::btnLeftPressed:
-    case NEvent::Mouse::mouseLbtnRelease:
-    {
-      //lock movement for tilemap
-      if( findChildren<BuildMenu*>().size() > 0 )
-        return true;
-    }
-    break;
-
     default: break;
     }
-  }
-
-  if( event.EventType == sEventKeyboard )
-  {
-    if( event.keyboard.key == KEY_ESCAPE )
-    {
-      auto menus = findChildren<BuildMenu*>();
-      for( auto m : menus ) m->deleteLater();
-    }
-
-    return true;
   }
 
   return Widget::onEvent( event );
@@ -642,7 +623,7 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen )
 {
-  auto model = new Model( parent, fitToScreen, ":/menu.model", Model::smallMenu );
+  /*auto model = new Model( parent, fitToScreen, ":/menu.model", Model::smallMenu );
 
   Menu& ret = parent->add<Menu>( id, Rect( 0, 0, model->width, parent->height() ), city );
 
@@ -652,27 +633,29 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen 
 
   CONNECT( city, onChangeBuildingOptions(), &ret, Menu::_updateBuildOptions );
 
-  return &ret;
+  return &ret;*/
+
+  return nullptr;
 }
 
 void Menu::minimize()
 {
-  _d->lastPressed = 0;
-  _createBuildMenu( -1, this );
+  /*_d->lastPressed = 0;
+  _createBuildMenu("", this );
   Point stopPos = lefttop() + Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
-  events::dispatch<PlaySound>( "panel", 3, 100 );
+  events::dispatch<PlaySound>( "panel", 3, 100 );*/
 }
 
 void Menu::maximize()
 {
-  Point stopPos = lefttop() - Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
+  /*Point stopPos = lefttop() - Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   show();
   add<PositionAnimator>( WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  events::dispatch<PlaySound>( "panel", 3, 100 );
+  events::dispatch<PlaySound>( "panel", 3, 100 );*/
 }
 
 void Menu::cancel()
@@ -683,7 +666,7 @@ void Menu::cancel()
 
 void Menu::setSide(Menu::Side side, const Point& offset)
 {
-  _d->side = side;
+  /*_d->side = side;
   switch( _d->side )
   {
   case leftSide:
@@ -693,7 +676,7 @@ void Menu::setSide(Menu::Side side, const Point& offset)
   case rightSide:
     setPosition( {static_cast<int>(offset.x() - (visible()?1:0) * width()), offset.y()} );
   break;
-  }
+  }*/
 }
 
 bool Menu::unselectAll()
@@ -709,25 +692,10 @@ bool Menu::unselectAll()
   return anyPressed;
 }
 
-void Menu::_createBuildMenu( int type, Widget* parent )
+void Menu::_createBuildMenu(const std::string& type, Widget* parent)
 {
-   auto menus = findChildren<BuildMenu*>();
-   for( auto m : menus )
-     m->deleteLater();
-
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,
-                                             _d->city->getOption( PlayerCity::c3gameplay ) );
-
-   if( buildMenu != NULL )
-   {
-     buildMenu->setNotClipped( true );
-     buildMenu->setBuildOptions( _d->city->buildOptions() );
-     buildMenu->setModel( SETTINGS_RC_PATH( buildMenuModel ).toString() );
-     buildMenu->initialize();
-
-     int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );
-     buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
-   }
+  VariantList vl; vl << Variant(type) << parent->screenTop();
+  events::dispatch<events::ScriptFunc>("OnShowBuildMenu", vl);
 }
 
 Signal0<>& Menu::onHide() { return _d->signal.onHide; }
@@ -744,7 +712,7 @@ void Menu::Impl::initActionButton(PushButton* btn, const Point& pos, bool pushBt
 
 void Menu::Impl::playSound( Widget* widget )
 {
-  std::string sound = widget->getProperty( "sound" ).toString();
+  /*std::string sound = widget->getProperty( "sound" ).toString();
   int index = 1;
   if( sound.empty() )
   {
@@ -752,7 +720,7 @@ void Menu::Impl::playSound( Widget* widget )
     index = math::random( 2 ) + 1;
   }
 
-  events::dispatch<PlaySound>( sound, index, 100 );
+  events::dispatch<PlaySound>( sound, index, 100 );*/
 }
 
 void Menu::Impl::updateBuildingOptions()
@@ -774,7 +742,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
   ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret.setID( Hash( TEXT(ExtentMenu)) );
+  ret.setID( Hash(TEXT(ExtentMenu)) );
+  ret.setInternalName( TEXT(ExtentMenu) );
   ret._setModel( model );
   ret._updateButtons();
   ret._updateBuildOptions();
@@ -787,7 +756,6 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr city )
     : Menu( p, id, rectangle, city )
 {
-  setupUI( ":/gui/fullmenu.gui" );
   _d->city = city;
 }
 
@@ -795,50 +763,50 @@ void ExtentMenu::_updateButtons()
 {
   Menu::_updateButtons();
 
-  _d->button.minimize->deleteLater();
-  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, gui::miniature.empty,
-                                   "hide_bigpanel" );
+  //_d->button.minimize->deleteLater();
+  //_d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, gui::miniature.empty,
+                                   //"hide_bigpanel" );
 
-  _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
+  //_setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
   //header
-  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
-  _setChildGeometry( _d->senateButton, Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
+  //_d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
+  //_setChildGeometry( _d->senateButton, Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
 
-  _d->empireButton = _addButton( 82, false, 0, -1, false, -1, "empire" );
-  _setChildGeometry( _d->empireButton, Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
+  //_d->empireButton = _addButton( 82, false, 0, -1, false, -1, "empire" );
+  //_setChildGeometry( _d->empireButton, Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
 
-  _d->missionButton = _addButton( 85, false, 0, -1, false, -1, "mission" );
-  _setChildGeometry( _d->missionButton, Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
+  //_d->missionButton = _addButton( 85, false, 0, -1, false, -1, "mission" );
+  //_setChildGeometry( _d->missionButton, Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
 
-  _d->northButton = _addButton( 88, false, 0, -1, false, -1, "reorient_map_to_north" );
-  _setChildGeometry( _d->northButton, Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
+  //_d->northButton = _addButton( 88, false, 0, -1, false, -1, "reorient_map_to_north" );
+  //_setChildGeometry( _d->northButton, Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
 
-  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, "rotate_map_counter_clockwise" );
-  _setChildGeometry( _d->rotateLeftButton, Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
+  //_d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, "rotate_map_counter_clockwise" );
+  //_setChildGeometry( _d->rotateLeftButton, Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
 
-  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
-  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );   
+  //_d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
+  //_setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
-  _d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
-  _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setPicture( gui::miniature.rc, gui::miniature.empty );
+  //_d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
+  //_setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
+  //_d->middleLabel->setPicture( gui::miniature.rc, gui::miniature.empty );
 
-  _d->overlaysMenu = &parent()->add<OverlaysMenu>( Rect( 0, 0, 160, 1 ), -1 );
-  _d->overlaysMenu->hide();
+  //_d->overlaysMenu = &parent()->add<OverlaysMenu>( Rect( 0, 0, 160, 1 ), -1 );
+  //_d->overlaysMenu->hide();
 
-  _d->overlaysButton = &add<PushButton>( Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
-  _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
-  _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
+  //_d->overlaysButton = &add<PushButton>( Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
+  //_setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
+  //_d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
-  CONNECT( _d->button.minimize, onClicked(), this, ExtentMenu::minimize );
-  CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
-  CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
+  //CONNECT( _d->button.minimize, onClicked(), this, ExtentMenu::minimize );
+  //CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
+  //CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  /*if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller );
     if( btn )
@@ -847,7 +815,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
       _d->middleLabel->setPicture( gui::miniature.rc, picId );
     }
   }
-
+*/
   return Menu::onEvent( event );
 }
 
@@ -905,7 +873,7 @@ void ExtentMenu::changeOverlay(int ovType)
 
 void ExtentMenu::showInfo(int type)
 {
-  int hash = Hash( TEXT(ExtentedDateInfo));
+ /* int hash = Hash( TEXT(ExtentedDateInfo));
   ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
   if( !window )
   {
@@ -914,17 +882,17 @@ void ExtentMenu::showInfo(int type)
   else
   {
     window->deleteLater();
-  }
+  }*/
 }
 
 void ExtentMenu::setAlarmEnabled( bool enabled )
 {
-  if( enabled )
+  /*if( enabled )
   {
     events::dispatch<PlaySound>( "extm_alarm", 1, 100, audio::effects );
   }
 
-  _d->model->actions[ Link::disaster ].setEnabled( enabled );
+  _d->model->actions[ Link::disaster ].setEnabled( enabled );*/
 }
 
 Rect ExtentMenu::getMinimapRect() const

@@ -1,0 +1,9 @@
+{
+ title : "##barbers##"
+ sound : "fanfare"
+ text : "Les quartiers les plus riches ne sauraient se dispenser des visites régulières d'un barbier. Les barbiers permettent d'accroître l'attrait des logements environnants. \n\tUtilisez la @carte Hygiène& pour afficher les maisons desservies par des barbiers et voir le barbier circuler. Cliquez avec le bouton droit sur l'échoppe du barbier pour afficher son statut. \n\nCliquez @ici& pour en savoir plus sur les coiffures anciennes des Romains."
+ uri : {
+  "carte Hygiène" : "special_card_selection"
+  "ici" : "barber_history"
+ }
+}

@@ -1,0 +1,9 @@
+{
+ title : "##market##"
+ sound : "fanfare"
+ text : "Les commerçants appartenaient aux classes inférieures, et étaient souvent des esclaves ou des affranchis. Cicéron considérait que les marchands se trouvaient en dernier sur la liste des professions acceptables pour des Romains cultivés. Les marchés étaient des lieux très animés où l'on pouvait trouver à peu près tout ce qui était produit dans l'Empire. La plupart étaient des marchés en plein air, mais certains bâtiments comme la 'basilica', contenaient des boutiques permanentes et étaient équivalentes à nos galeries marchandes d'aujourd'hui. \n\tLes basilicae, prestigieux lieux de commerce, abritaient les marchands de la chaleur de l'été tandis qu'ils distribuaient les meilleurs produits de l'Empire. Elles étaient toujours construites à proximité d'un @forum&. L'une des plus grandes et des plus célèbres, la Basilica Julia, faisait également office de cour de justice et de lieu de réunion pour le @Sénat&. \n\tLes procès étaient ouverts au public, et les avocats tentaient de gagner l'approbation de la foule de clients de la basilica en espérant réussir à influencer le juge. La Basilica Julia a brûlé deux fois, et des pièces de cuivre y ont laissé des tâches vertes sur le sol de marbre en fondant. L'empereur Caligula aimait lancer des pièces du haut du toit de la basilica et regarder les gens se battre pour les ramasser. \n\tDes marchés moins permanents, appelés 'tabernae', apparurent au début de la République. Ils étaient constitués de petits étals, ou parfois de tentes, où tout le monde, du simple fermier au propriétaire terrien, pouvait vendre ses produits."
+ uri : {
+  "forum" : "forum"
+  "Sénat" : "senate"
+ }
+}

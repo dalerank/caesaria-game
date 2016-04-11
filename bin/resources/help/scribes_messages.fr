@@ -1,0 +1,5 @@
+{
+ title : "##scribes_messages##"
+ sound : "fanfare"
+ text : "Lorsque vos subalternes pensent que certains faits méritent votre attention immédiate, ils vous envoient des messages auxquels vous pouvez accéder à l'aide de ce bouton. Les messages délivrés sont signalés par le bruit d'une fanfare. Pour lire un message, cliquez dessus avec le bouton gauche de la souris. Pour supprimer des messages de la liste, cliquez dessus avec le bouton droit de la souris. \n\nVos scribes ont parfois tendance à exagérer l'urgence d'une situation, mais si vous ignorez leurs messages, c'est à vos propres risques. Lorsqu'un message concerne un incendie, une émeute ou un bâtiment qui s'est effondré, utilisez le bouton 'd'alarme', situé à droite du message, pour vous rendre directement sur les lieux concernés."
+}

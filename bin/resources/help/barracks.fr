@@ -1,0 +1,12 @@
+{
+ title : "##barracks##"
+ sound : "fanfare"
+ text : "Les casernes servent à former les nouvelles recrues affectées aux @forts&. Elles requièrent un accès à la route, ainsi que de la main-d'œuvre. Malheureusement, elles ne font rien pour améliorer l'attrait des propriétés avoisinantes. Les casernes doivent pouvoir stocker 16 charretées d'@armes& pour pouvoir équiper correctement une nouvelle légion (infanterie lourde). Les légions auxiliaires apportent leurs propres armes et n'ont pas besoin d'aller les chercher dans les casernes. Une fois qu'ils sont formés et équipés, les soldats rejoignent leur fort ou bien l'@académie militaire& s'il en existe. \n\tLes casernes forment également des gardes destinés aux @tours&. Les gardes des tours n'utilisent pas les armes des casernes et doivent toujours être formés en premiers dans les casernes. \n\nPour mieux comprendre le rôle des casernes pour la défense de votre cité, consultez la rubrique @Guerre et paix&."
+ uri : {
+  "forts" : "fort"
+  "armes" : "weapons_workshop"
+  "académie militaire" : "military_academy"
+  "tours" : "wall_tower_gatehouse"
+  "Guerre et paix" : "peace_and_war"
+ }
+}

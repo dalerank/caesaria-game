@@ -1,0 +1,11 @@
+{
+ title : "##senate##"
+ sound : "fanfare"
+ text : "Les cités Romaines ne peuvent avoir qu'un seul Sénat, situé généralement dans le quartier le plus attrayant. Le Sénat améliore nettement l'attrait des maisons environnantes et emploie des percepteurs qui circulent aux alentours pour collecter les taxes. L'argent perçu est alors placé dans des coffres, dans les sous-sols du Sénat et est prélevé à la fin de l'année. Les criminels en font naturellement leur cible. Assurez-vous donc que les préfets patrouillent régulièrement les abords du Sénat. Les @forums& permettent également de percevoir des taxes. \n\nLes chômeurs se réunissent sur les marches du Sénat. Plus vous verrez de personnes assises sur les marches, plus le chômage est élevé. De façon générale, chaque personne assise représente un taux de chômage de 5 pour cent. \n\nLes drapeaux placés devant le Sénat indiquent vos @niveaux& de culture, de prospérité, de paix et d'estime. Vous pouvez alors vous faire une idée de votre progression sans avoir à quitter la carte de la cité. Les bulles d'aide du Sénat affichent les principales statistiques de votre cité. \n\tCliquez sur les liens suivants pour en savoir plus sur le rôle de @l'argent& ou pour lire un bref @historique& des sénats dans l'Empire Romain."
+ uri : {
+  "forums" : "forum"
+  "niveaux" : "ratings"
+  "l'argent" : "money"
+  "historique" : "senate_history"
+ }
+}
