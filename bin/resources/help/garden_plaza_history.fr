@@ -1,9 +1,11 @@
 {
  title : "##garden_plaza##"
  sound : "fanfare"
- text : "En raison peut-être de leurs origines agricoles, les Romains se spécialisèrent dans les jardins d'ornement, et toute villa digne de ce nom se devait de disposer d'un jardin soigneusement entretenu. Les grands jardins des villas de campagne comprenaient des vergers, des vignes, des roses et des prairies de fleurs sauvages. Même les villas urbaines étaient dotées de jardins traversés par des petits chemins, ornés de statues, de treillis couverts de vignes, et de bassins d'ornement. Les parcs et jardins publics donnaient accès à cet idéal de 'rus in urbe', la campagne à la ville, à tous les citoyens Romains. \n\tLes plazas étaient des lieux de rencontre populaires à Rome, et remplissaient à peu près les mêmes fonctions que les @forums&, mais en moins grand et avec moins de faste. Une plaza typique comprenait une fontaine, des bancs et quelques statues. Des marchands et des @barbiers& animaient souvent les lieux."
+ text : "En raison peut-être de leurs origines agricoles, les Romains se spécialisèrent dans les jardins d'ornement, et toute villa digne de ce nom se devait de disposer d'un jardin soigneusement entretenu. Les grands jardins des villas de campagne comprenaient des vergers, des vignes, des roses et des prairies de fleurs sauvages. Même les villas urbaines étaient dotées de jardins traversés par des petits chemins, ornés de @statues$, de treillis couverts de vignes, et de bassins d'ornement. Les parcs et jardins publics donnaient accès à cet idéal de 'rus in urbe', la campagne à la ville, à tous les citoyens Romains. \n\tLes plazas étaient des lieux de rencontre populaires à Rome, et remplissaient à peu près les mêmes fonctions que les @forums&, mais en moins grand et avec moins de faste. Une plaza typique comprenait une @fontaine&, des bancs et quelques statues. Des marchands et des @barbiers& animaient souvent les lieux."
  uri : {
+  "statues" : "statuary
   "forums" : "forum_history"
+  "fontaine" : "fountain_history"
   "barbiers" : "barber"
  }
 }
