@@ -1,7 +1,7 @@
 {
  title : "##fountain##"
  sound : "fanfare"
- text : "Les @aqueducs& permettaient de remplir les @réservoirs& avec l'eau des sources des collines, qui était ensuite distribuée dans les fontaines publiques par l'intermédiaire de tuyaux en céramique, en bois ou en plomb. La majorité des citoyens de Rome disposait ainsi gratuitement d'eau potable. Les fontaines étaient souvent des monuments élaborés en l'honneur de personnes célèbres ou d'événements, réels et mythiques. La construction d'une fontaine était une forme d'hommage si répandue que Rome fut rapidement dotée de plus de 1200 fontaines publiques, pour la plupart de véritables chef-d'oeuvres."
+ text : "Les @aqueducs& permettaient de remplir les @réservoirs& avec l'eau des sources des collines, qui était ensuite distribuée dans les fontaines publiques par l'intermédiaire de tuyaux en céramique, en bois ou en plomb. La majorité des citoyens de Rome disposait ainsi gratuitement d'eau potable. Les fontaines étaient souvent des monuments élaborés en l'honneur de personnes célèbres ou d'événements, réels et mythiques. La construction d'une fontaine était une forme d'hommage si répandue que Rome fut rapidement dotée de plus de 1200 @fontaines& publiques, pour la plupart de véritables chef-d'oeuvres."
  uri : {
   "aqueducs" : "aqueduct_history"
   "réservoirs" : "reservoir_history"
