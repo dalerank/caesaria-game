@@ -78,10 +78,10 @@ sim.ui.buildmenu.build = function(type) {
   sim.ui.buildmenu.hide();
 }
 
-sim.ui.buildmenu.sub = function(type) {
+sim.ui.buildmenu.sub = function(type,top) {
   var sound = "bmsel_" + type;
   g_session.playAudio(sound + "_00001", 100, g_config.audio.infobox);
-  sim.ui.buildmenu.show(branch);
+  sim.ui.buildmenu.show(type,top);
 }
 
 sim.ui.buildmenu.hide = function() {
@@ -100,7 +100,7 @@ sim.ui.buildmenu.show = function(type, top) {
   var extMenu = g_ui.find("ExtentMenu");
   //var parent = g_ui.find(parentName);
   var buildMenu = new Widget(0);
- 
+
   if (buildMenu != null) {
     buildMenu.clipped = false;
     buildMenu.name = "BuildMenu";
@@ -155,7 +155,7 @@ sim.ui.buildmenu.show = function(type, top) {
 
     //buildMenu.h = buildMenu.buttons.length * 25;
 
-    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch); }
+    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch,top); }
     else if (type != "") btn.callback = function() { sim.ui.buildmenu.build(type); }
   }
 

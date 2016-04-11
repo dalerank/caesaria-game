@@ -53,6 +53,7 @@ namespace internal
 {
   Game* game = nullptr;
   std::set<std::string> files;
+  std::set<std::string> files2load;
   vfs::FileChangeObserver DirectoryChangeObserver;
   Session* session = nullptr;
   js_State *J = nullptr;
@@ -482,11 +483,7 @@ void engine_js_LoadArchive(js_State* J)
 
 void engine_js_ReloadFile(vfs::Path path)
 {
-  if (internal::files.count(path.toString()))
-  {
-    Logger::warning("JS: script {} reloaded ", path.toString());
-    Core::loadModule(path.toString());
-  }
+  internal::files2load.insert(path.toString());
 }
 
 void engine_js_SetVolume(js_State *J)
@@ -589,6 +586,20 @@ void Core::loadModule(const std::string& path)
 
   js_getglobal(internal::J,"");
   engine_js_tryPCall(internal::J, 0);
+}
+
+void Core::synchronize()
+{
+  if (internal::files2load.size() > 0) {
+    for (const auto& path : internal::files2load) {
+      if (internal::files.count(path) > 0) {
+        Logger::warning("JS: script {} reloaded ", path);
+        Core::loadModule(path);
+      }
+    }
+
+    internal::files2load.clear();
+  }
 }
 
 void Core::execFunction(const std::string& funcname)

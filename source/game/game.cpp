@@ -445,6 +445,7 @@ bool Game::exec()
   __D_REF(d,Game)
   if (d.currentScreen && d.currentScreen->getScreenType() == d.nextScreen)
   {
+    script::Core::synchronize();
     if (!d.currentScreen->update(d.engine))
     {
       delete d.currentScreen;

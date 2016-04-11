@@ -87,6 +87,18 @@ Ui.prototype.addLabel = function(rx,ry,rw,rh) {
   return label;
 }
 
+Ui.prototype.addPosAnimator = function (parent, newPos, mstime, callback) {
+  var animator = new PositionAnimator(parent);
+  animator.setFlag("removeSelf", true);
+  animator.setDestination(newPos);
+  animator.setTime(mstime);
+
+  if (callback)
+    animator.onFinishEx(callback);
+    
+  return animator;
+};
+
 Ui.prototype.find = function(name) {
   return g_session.findWidget(name);
 }
