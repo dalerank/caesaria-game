@@ -45,10 +45,10 @@ var ctsettings = {
   getguiv: function(name) {
     engine.log("get guiopts " + name);
     if (name == "debug_menu") {
-      return sim.ui.topmenu.debugmenu.visible();
+      return sim.ui.topmenu.debugmenu.display;
     } else if (name == "andr_menu") {
       var dm = new Widget("AndroidActionsBar")
-      return dm.visible()
+      return dm.display;
     } else if (name=="rightMenu") {
       return engine.getOption("rightMenu")
     }
@@ -58,10 +58,10 @@ var ctsettings = {
     engine.log("set guiopts " + name);
     if (name == "debug_menu") {
       var dm = sim.ui.topmenu.debugmenu
-      dm.setVisible(value)
+      dm.display = value;
     } else if (name == "andr_menu") {
       var dm = new Widget("AndroidActionsBar")
-      dm.setVisible(value)
+      dm.display = value;
     } else if (name=="rightMenu") {
       engine.setOption("rightMenu",value);
       sim.ui.menu.setSide(value);

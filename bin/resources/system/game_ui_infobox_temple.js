@@ -79,7 +79,7 @@ game.ui.infobox.simple = function (rx, ry, rw, rh) {
     }
 
     ibox.setWorkersStatus = function (x, y, picId, need, have) {
-        ibox.blackFrame.setVisible(need > 0)
+        ibox.blackFrame.display = need > 0;
         if (0 == need)
             return;
 

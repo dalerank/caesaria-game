@@ -221,9 +221,6 @@ void Level::initialize()
   //city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
-  //CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
-
-  //CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
   //CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
 
   CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )

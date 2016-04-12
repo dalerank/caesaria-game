@@ -41,7 +41,7 @@ game.ui.dialogs.gift2emperor.show = function()
   w.setModal()
 
   var lbxGifts = w.addListBox(16, 64, w.w-32, 126)
-  lbxGifts.scrollbarVisible = false
+  lbxGifts.scrollbarVisible = false;
   lbxGifts.textAlign = { v:"center", h:"center" }
 
   var gifts = this.defaultGifts.slice();

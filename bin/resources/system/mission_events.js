@@ -127,6 +127,7 @@ sim.start = function () {
     }
 
     sim.ui.topmenu.initialize();
+    sim.ui.shortmenu.initialize();
     sim.ui.menu.initialize();
     sim.ui.rpanel.initialize();
     sim.hotkeys.init();

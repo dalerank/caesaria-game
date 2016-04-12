@@ -73,14 +73,14 @@ game.ui.infobox.wsimple = function (walkers, x, y, w, h) {
         a = ibox.walker.getProperty("vividly");
         if (!a) {
             ibox.title = _u(ibox.walker.typename);
-            ibox.lbName.visible = false;
-            ibox.lbType.visible = false;
-            ibox.lbCitizenPic.visible = false;
+            ibox.lbName.display = false;
+            ibox.lbType.display = false;
+            ibox.lbCitizenPic.display = false;
 
             ibox.lbThinks.geometry = ibox.blackFrame.geometry;
             ibox.lbThinks.text = _u(ibox.walker.typename + "_info");
-            ibox.btnMove2base.visible = false;
-            ibox.btnMove2dst.visible = false;
+            ibox.btnMove2base.display = false;
+            ibox.btnMove2dst.display = false;
             return;
         }
 
@@ -117,18 +117,12 @@ game.ui.infobox.aboutLegion = function (walkers) {
     lbNumberValue.text = _u("value");
 
     var lbHeathTitle = gbox.addLabel(90, 20, 200, 20);
-    lbHeathTitle.textAlign = {
-        h: "upperLeft",
-        v: "center"
-    };
+    lbHeathTitle.textAlign = {h: "upperLeft",v: "center" };
     lbHeathTitle.font = "FONT_2";
     lbHeathTitle.text = _u("soldiers_health");
 
     var lbHealthValue = gbox.addLabel(290, 20, 150, 20);
-    lbHealthValue.textAlign = {
-        h: "upperLeft",
-        v: "center"
-    };
+    lbHealthValue.textAlign = { h: "upperLeft", v: "center" };
     lbHealthValue.font = "FONT_2";
     lbHealthValue.text = _u("health");
 
@@ -229,9 +223,9 @@ game.ui.infobox.aboutLegion = function (walkers) {
         var soldiers = ibox.fort.soldiers();
 
         if (soldiers.length == 0) {
-            gbox.visible = false;
-            btnAttackAnimals.visible = false;
-            btnReturn.visible = false;
+            gbox.display = false;
+            btnAttackAnimals.display = false;
+            btnReturn.display = false;
 
             var barracks_n = g_session.statistic.objects.count(g_config.overlay.barracks);
 
@@ -419,7 +413,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         ibox.destinationPos = ibox.walker.getProperty("plDestination");
         var ov = g_session.city.getOverlay(ibox.destinationPos);
         var action = ibox.walker.getProperty("thoughts_action");
-        ibox.btnMove2dst.visible = (ov != null);
+        ibox.btnMove2dst.display = (ov != null);
         if (action) {
             ibox.lbCurrentAction.prefixText = _u("wlk_state");
             ibox.lbCurrentAction.text = _t(action) + "(" + _ut(text) + ")";
@@ -433,7 +427,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         var ov = g_session.city.getOverlay(pos);
 
         ibox.lbBaseBuilding.text = _u(ov.typename)
-        ibox.btnMove2base.visible = ov != null;
+        ibox.btnMove2base.display = ov != null;
     }
 
     ibox.setWalker = function (walker) {
