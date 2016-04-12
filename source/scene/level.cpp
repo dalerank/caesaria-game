@@ -114,11 +114,11 @@ public:
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission();
   void makeScreenShot();
+  void layerChangedOut(int type);
   void setAlarmEnabled(bool enable);
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void showMessagesWindow();
-  void layerChanged( int layer );
   void handleDirectionChange( Direction direction );
   void initRender();
   void initMainUI();
@@ -158,7 +158,7 @@ void Level::Impl::initMainUI()
   Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
   rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
 
-  topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
+  topMenu = &ui.add<TopMenu>(topMenuHeight, !city->getOption(PlayerCity::c3gameplay));
 
   bool fitToHeidht = OSystem::isAndroid();
   //menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
@@ -222,34 +222,27 @@ void Level::initialize()
   _d->undoStack.init( city );
 
   //connect elements
-  city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
+  //city->tilemap().setFlag( Tilemap::fSvkGround, !KILLSWITCH(oldgfx) );
   CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
   //CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
   //CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
-  //CONNECT( _d->extMenu, onRotateLeft(),           _d->mmap,          Minimap::update )
-  //CONNECT( _d->extMenu, onRotateRight(),          _d->mmap,          Minimap::update )
   //CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
-  //CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
 
   CONNECT( city, onDisasterEvent(),               &_d->alarmsHolder, AlarmEventHolder::add )
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
   CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d.data(),       Impl::setAlarmEnabled )
 
-  //CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
-  //CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
-  //CONNECT( _d->mmap, onZoomChange(), _d->renderer.camera(),          gfx::Camera::changeZoom )
-  //CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
-  //CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
+  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),              Impl::layerChangedOut )
   CONNECT( &_d->undoStack, onUndoChange(),       _d.data(),       Impl::resolveUndoChange )
 
-  _d->renderer.camera()->setCenter( city->cameraPos() );
+  _d->renderer.camera()->setCenter(city->cameraPos());
 
-  _d->dhandler.insertTo( _d->game, _d->topMenu );
+  _d->dhandler.insertTo(_d->game, _d->topMenu);
   _d->dhandler.setVisible(false);
 
   events::dispatch<events::ScriptFunc>("OnMissionStart");
@@ -291,15 +284,6 @@ void Level::Impl::showMessagesWindow()
   {
     wnd->bringToFront();
   }
-}
-
-void Level::Impl::layerChanged(int layer)
-{
-  if( layer > citylayer::simple && layer < citylayer::build )
-  {
-    lastLayerId = (citylayer::Type)layer;
-  }
-  undoStack.finished();
 }
 
 void Level::Impl::handleDirectionChange(Direction direction)
@@ -391,6 +375,19 @@ void Level::Impl::makeScreenShot()
   events::dispatch<WarningMessage>( "Screenshot save to " + filename, WarningMessage::neitral );
 }
 
+void Level::Impl::layerChangedOut(int layer)
+{
+  if (layer > citylayer::simple && layer < citylayer::build)
+  {
+    lastLayerId = (citylayer::Type)layer;
+    std::string layerName = citylayer::Helper::instance().findName((citylayer::Type)layer);
+
+    VariantList vl; vl << Variant(layerName);
+    events::dispatch<events::ScriptFunc>("OnRendererLayerChange", vl);
+  }
+  undoStack.finished();
+}
+
 void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 {
   PlayerCityPtr pcity = game->city();
@@ -475,6 +472,8 @@ void Level::setOption(const std::string& name, Variant value)
     _d->undoStack.undo();
   } else if (name == "nextAlarm") {
     _d->alarmsHolder.next();
+  } else if (name == "showScribes") {
+    _d->showMessagesWindow();
   }
 
 }

@@ -6,6 +6,10 @@ function OnChangeSessionAlarmState(enable) {
   sim.ui.menu.enableAlarm(enable);
 }
 
+function OnRendererLayerChange(layerName) {
+  sim.ui.menu.changeRendererLayer(layerName);
+}
+
 sim.ui.menu.simConfig = {
   housing : { pos: {x:13,y:277}, image: { rc:"paneling", index:123 }, object:"house",
                miniature: { rc:"panelwindows", index:1 },
@@ -190,20 +194,24 @@ sim.ui.menu.enableAlarm = function(enable) {
     g_session.playAudio("extm_alarm_00001", 100, g_config.audio.effects);
   }
 
-  sim.ui.menu.widget.disaster.button.enabled = enable;
+  sim.ui.menu.extmenu.disaster.button.enabled = enable;
 }
 
 sim.ui.menu.simConfig.disaster.func = function() {
   g_session.setOption( "nextAlarm", true );
 }
 
+sim.ui.menu.simConfig.messages.func = function() {
+  g_session.setOption( "showScribes", true );
+}
+
 sim.ui.menu.enableUndo = function(enable) {
-  sim.ui.menu.widget.undo.button.enabled = enable;
+  sim.ui.menu.extmenu.undo.button.enabled = enable;
 }
 
 sim.ui.menu.simConfig.housing.func = function() {
   sim.ui.buildmenu.hide();
-  sim.ui.menu.widget.miniature.picture = sim.ui.menu.config.housing.miniature;
+  sim.ui.menu.extmenu.miniature.picture = sim.ui.menu.config.housing.miniature;
   g_session.setOption("buildMode", "house");
 }
 
@@ -213,37 +221,37 @@ sim.ui.menu.simConfig.undo.func = function() {
 
 sim.ui.menu.simConfig.clearLand.func = function() {
   sim.ui.buildmenu.hide();
-  sim.ui.menu.widget.miniature.picture = sim.ui.menu.config.clearLand.miniature;
+  sim.ui.menu.extmenu.miniature.picture = sim.ui.menu.config.clearLand.miniature;
   g_session.setOption( "removeTool", true );
 }
 
 sim.ui.menu.simConfig.road.func = function() {
   sim.ui.buildmenu.hide();
-  sim.ui.menu.widget.miniature.picture = sim.ui.menu.config.road.miniature;
+  sim.ui.menu.extmenu.miniature.picture = sim.ui.menu.config.road.miniature;
   g_session.setOption( "buildMode", "road");
 }
 
 sim.ui.menu.showbuildmenu = function(o, y) {
   g_session.playAudio(o.sound, 100, g_config.audio.infobox);
-  sim.ui.menu.widget.miniature.picture = o.miniature;
+  sim.ui.menu.extmenu.miniature.picture = o.miniature;
   sim.ui.buildmenu.show(o.object, y);
 }
 
 sim.ui.menu.showshortmenu = function() {}
 
-sim.ui.menu.minimize = function() {
-  var menu = sim.ui.menu.widget;
+sim.ui.menu.simConfig.minimize.func = function() {
+  var menu = sim.ui.menu.extmenu;
 
   sim.ui.buildmenu.hide();
-  var stopPos = { x:menu.x - menu.w * (sim.ui.menu.rightSide ? 1 : -1 ), y:menu.y};
-  var animator = g_ui.addPosAnimator(menu, stopPos, 300, sim.ui.menu.config.showshortmenu);
+  var stopPos = { x:menu.x + menu.w * (sim.ui.menu.rightSide ? 1 : -1 ), y:menu.y};
+  var animator = g_ui.addPosAnimator(menu, stopPos, 300, sim.ui.menu.openShortmenu);
   animator.setFlag("showParent", false);
 
   g_session.playAudio("panel_00003", 100, g_config.audio.infobox);
 }
 
 sim.ui.menu.maximize = function() {
-  var menu = sim.ui.menu.widget;
+  var menu = sim.ui.menu.extmenu;
 
   sim.ui.buildmenu.hide();
   menu.visible = true;
@@ -257,9 +265,22 @@ sim.ui.menu.maximize = function() {
 sim.ui.menu.simConfig.senate.func = function() { g_session.setOption( "advisor", g_config.advisor.employers ); }
 sim.ui.menu.simConfig.empire.func = function() { g_session.setOption( "showEmpireMap", true); }
 sim.ui.menu.simConfig.mission.func = function() { sim.ui.dialogs.showMissionTargets(); }
+
 sim.ui.menu.simConfig.reorient_map_to_north.func = function() {  }
-sim.ui.menu.simConfig.rotate_map_counter_clockwise.func = function() { g_session.setOption("rotateLeft", true); }
-sim.ui.menu.simConfig.rotate_map_clockwise.func = function() { g_session.setOption("rotateRight", true); }
+
+sim.ui.menu.simConfig.rotate_map_counter_clockwise.func = function() {
+  g_session.setOption("rotateLeft", true);
+  sim.ui.menu.extmenu.minimap.update();
+}
+
+sim.ui.menu.simConfig.rotate_map_clockwise.func = function() {
+  g_session.setOption("rotateRight", true);
+  sim.ui.menu.extmenu.minimap.update();
+}
+
+sim.ui.menu.changeRendererLayer = function(layerName) {
+  sim.ui.menu.extmenu.overlays.text = _u(layerName);
+}
 
 sim.ui.menu.initialize = function() {
   if (g_session.city.getOption("constructorMode")) {
@@ -297,6 +318,9 @@ sim.ui.menu.initialize = function() {
 
   for (var i in sim.ui.menu.config) {
     var config = sim.ui.menu.config[i];
+
+    engine.log(i);
+
     var btn = new TexturedButton(menu);
     btn.position = config.pos;
     btn.tooltip = _u("extm_" + config.object + "_tlp");
@@ -324,7 +348,18 @@ sim.ui.menu.initialize = function() {
   menu.minimap = new Minimap(menu);
   menu.minimap.geometry = { x:8, y:35, w:144, h:110 };
   menu.minimap.city =  g_session.city;
-  menu.minimap.center = g_session.camera.center;
+  menu.minimap.center = g_session.camera.worldCenter;
+
+  g_session.camera.onLocationChanged = function(p) { menu.minimap.tileCenter = p; }
+
+  menu.minimap.onChangeZoom = function(delta) {
+    engine.log(delta);
+    g_session.camera.changeZoom(delta);
+  }
+
+  menu.minimap.onCenterChange = function(tilepos) {
+    g_session.camera.setCenter(tilepos);
+  }
 
   menu.miniature = new Image(menu);
   menu.miniature.geometry = { x:7, y:216, w:148, h:52 };
@@ -337,14 +372,14 @@ sim.ui.menu.initialize = function() {
   menu.overlays.geometry =  {x:4, y:1, w:119, h:28};
   menu.overlays.tooltip =  _u("select_city_layer");
 
-  sim.ui.menu.widget = menu;
+  sim.ui.menu.extmenu = menu;
 }
 
 sim.ui.menu.reset = function() {
-  if (sim.ui.menu.widget != null) {
-    engine.log( "Find old main menu -> removed" );
-    sim.ui.menu.widget.deleteLater();
-    sim.ui.menu.widget = null;
+  if (sim.ui.menu.extmenu != null) {
+    engine.log( "Found old main menu -> removed" );
+    sim.ui.menu.extmenu.deleteLater();
+    sim.ui.menu.extmenu = null;
     sim.ui.menu.initialize();
   }
 }

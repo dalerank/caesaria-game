@@ -74,6 +74,8 @@ public:
   virtual Point mpos( const Point& pos ) const;
   Tile* at( const TilePos& pos ) const;
   Tile* centerTile() const;
+  virtual void addProperty(const std::string& name, Variant v);
+  virtual Variant getProperty(const std::string& name) const;
 
   virtual void startFrame();
   virtual void refresh();
@@ -82,6 +84,7 @@ public signals:
   virtual Signal1<Point>& onPositionChanged();
   virtual Signal1<Direction>& onDirectionChanged();
   virtual Signal2<Camera*, Point>& onPositionChangedEx();
+  virtual Signal2<Camera*, TilePos>& onLocationChangedEx();
   virtual Signal2<Camera*, Direction>& onDirectionChangedEx();
 
 private:

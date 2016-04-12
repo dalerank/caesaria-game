@@ -511,10 +511,12 @@ bool Minimap::onEvent(const NEvent& event)
 {
   if( sEventGui == event.EventType && guiButtonClicked == event.gui.type )
   {
-    if( event.gui.caller == _d->btnZoomIn )
-      emit _d->signal.onZoomChange( +10 );
-    else if( event.gui.caller == _d->btnZoomOut )
-      emit _d->signal.onZoomChange( -10 );
+    if (event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut)
+    {
+      int delta = event.gui.caller == _d->btnZoomIn ? +10 : -10;
+      emit _d->signal.onZoomChange(delta);
+      emit _d->signal.onZoomChangeEx(this, delta);
+    }
     return true;
   }
 

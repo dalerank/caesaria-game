@@ -9,7 +9,7 @@ Path.prototype.slice = function(str) {
 /*************************************** Path class end ******************************************************************/
 
 /**************************************** Camera class begin **************************************************************/
-Object.defineProperty(Camera.prototype, "center", { get: function () {
+Object.defineProperty(Camera.prototype, "worldCenter", { get: function () {
   return { x: this.centerX(), y: this.centerZ() }
 }} )
 
@@ -17,6 +17,9 @@ Object.defineProperty(Camera.prototype, "tileCenter", {
    get: function ()    { this.center() },
    set: function (pos) { this.setCenter(pos) }
 } )
+
+Object.defineProperty(Camera.prototype, "onPositionChanged", {set: function (func) { this.onPositionChangedEx(func); }} )
+Object.defineProperty(Camera.prototype, "onLocationChanged", {set: function (func) { this.onLocationChangedEx(func); }} )
 /**************************************** Camera class end **************************************************************/
 
 

@@ -66,6 +66,7 @@ public:
 
   Tilemap* tmap;   // tile map to display
   PointF centerMapXZ; // center of the view(in tiles)
+  VariantMap options;
 
   struct
   {
@@ -87,6 +88,7 @@ public:
     Signal1<Direction> onDirectionChanged;
     Signal2<Camera*, Point> onPositionChangedEx;
     Signal2<Camera*, Direction> onDirectionChangedEx;
+    Signal2<Camera*, TilePos> onLocationChangedEx;
   } signal;
 };
 
@@ -104,6 +106,17 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
 }
 
 TilemapCamera::~TilemapCamera() {}
+
+void TilemapCamera::addProperty(const std::string& name, Variant v) { _d->options[name] = v; }
+
+Variant TilemapCamera::getProperty(const std::string & name) const
+{
+  auto it = _d->options.find(name);
+  if (it != _d->options.end())
+    return it->second;
+
+  return Variant();
+}
 
 void TilemapCamera::init(Tilemap &tilemap, Size size)
 {
@@ -172,6 +185,7 @@ void TilemapCamera::move(PointF relative)
     {
       _d->resetDrawn();
       _d->tiles.visible.clear();
+      emit _d->signal.onLocationChangedEx(this, center());
     }
 
     emit _d->signal.onPositionChanged( _d->centerMapXZ.toPoint() );
@@ -252,6 +266,7 @@ Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tmap->at( pos );
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->signal.onPositionChanged;}
 Signal1<Direction>& TilemapCamera::onDirectionChanged(){  return _d->signal.onDirectionChanged;}
 Signal2<Camera*, Point>& TilemapCamera::onPositionChangedEx(){  return _d->signal.onPositionChangedEx;}
+Signal2<Camera*, TilePos>& TilemapCamera::onLocationChangedEx() { return _d->signal.onLocationChangedEx; }
 Signal2<Camera*, Direction>& TilemapCamera::onDirectionChangedEx(){  return _d->signal.onDirectionChangedEx;}
 void TilemapCamera::moveRight(const int amount){  _setCenter( Point( centerX() + amount, centerZ() ), true );}
 void TilemapCamera::moveLeft(const int amount){  _setCenter( Point( centerX() - amount, centerZ() ), true );}
