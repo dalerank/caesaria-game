@@ -85,6 +85,8 @@ public:
   struct {
     Signal1<Point> onPositionChanged;
     Signal1<Direction> onDirectionChanged;
+    Signal2<Camera*, Point> onPositionChangedEx;
+    Signal2<Camera*, Direction> onDirectionChangedEx;
   } signal;
 };
 
@@ -122,7 +124,7 @@ void TilemapCamera::setViewport(const Size& newSize)
   Size vpSize( config::tilemap.cell.picSize().height() * 2, config::tilemap.cell.picSize().height() );
   _d->size.viewport = Size( ( nSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( nSize.height() + (vpSize.height()-1)) / vpSize.height() );
-  
+
   Logger::debug( "TilemapArea::setViewport w={} h={}, ScreenSize=[{}, {}]", _d->size.viewport.width(), _d->size.viewport.height(),
                                                                               newSize.width(), newSize.height() );
 }
@@ -144,6 +146,7 @@ void TilemapCamera::setCenter(TilePos pos, bool checkCorner)
   _setCenter( Point( pos.i() + pos.j(), _d->tmap->size() - 1 + pos.j() - pos.i() ), checkCorner );
 
   emit _d->signal.onPositionChanged( _d->centerMapXZ.toPoint() );
+  emit _d->signal.onPositionChangedEx( this, _d->centerMapXZ.toPoint() );
 }
 
 void TilemapCamera::move(PointF relative)
@@ -172,11 +175,12 @@ void TilemapCamera::move(PointF relative)
     }
 
     emit _d->signal.onPositionChanged( _d->centerMapXZ.toPoint() );
+    emit _d->signal.onPositionChangedEx( this, _d->centerMapXZ.toPoint() );
   }
 }
 
 void TilemapCamera::_setCenter(Point pos, bool checkBorder)
-{ 
+{
   if( _d->centerMapXZ.toPoint() != pos  )
   {
     _d->tiles.visible.clear();
@@ -195,10 +199,11 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
         || (futureOffset.y() + tilex0.y() < _d->size.virtuals.height() ) )
         return;
     }
-  }  
+  }
 
   _d->centerMapXZ = pos.toPointF();
   emit _d->signal.onPositionChanged( _d->centerMapXZ.toPoint() );
+  emit _d->signal.onPositionChangedEx( this, _d->centerMapXZ.toPoint() );
 }
 
 TilePos TilemapCamera::center() const
@@ -246,6 +251,8 @@ int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tmap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->signal.onPositionChanged;}
 Signal1<Direction>& TilemapCamera::onDirectionChanged(){  return _d->signal.onDirectionChanged;}
+Signal2<Camera*, Point>& TilemapCamera::onPositionChangedEx(){  return _d->signal.onPositionChangedEx;}
+Signal2<Camera*, Direction>& TilemapCamera::onDirectionChangedEx(){  return _d->signal.onDirectionChangedEx;}
 void TilemapCamera::moveRight(const int amount){  _setCenter( Point( centerX() + amount, centerZ() ), true );}
 void TilemapCamera::moveLeft(const int amount){  _setCenter( Point( centerX() - amount, centerZ() ), true );}
 void TilemapCamera::moveUp(const int amount){  _setCenter( Point( centerX(), centerZ() + amount ), true );}
@@ -278,7 +285,7 @@ const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.visible.empty() )
   {
-    _d->offset = _d->getOffset( _d->centerMapXZ );    
+    _d->offset = _d->getOffset( _d->centerMapXZ );
 
     int mapSize = _d->tmap->size();
     int zm = _d->tmap->size() + 1;
@@ -400,7 +407,7 @@ void TilemapCamera::Impl::updateFlatTiles()
       tile->setRendered();
       tiles.flat.push_back( tile );
     }
-  }  
+  }
 }
 
 Point TilemapCamera::offset() const{  return _d->offset;}

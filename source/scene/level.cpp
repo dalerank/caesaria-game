@@ -92,13 +92,11 @@ class Level::Impl
 {
 public:
   EventHandlers eventHandlers;
-  //Minimap* mmap;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   //gui::Menu* menu;
   Engine* engine;
   DebugHandler dhandler;
-  //gui::ExtentMenu* extMenu;
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
@@ -127,7 +125,6 @@ public:
   void installHandlers( Base* scene);
   void initSound();
   void initTabletUI(Level* scene);
-  void connectTopMenu2scene(Level* scene);
   void resolveUndoChange(bool enable);
 
   std::string getScreenshotName();
@@ -166,12 +163,6 @@ void Level::Impl::initMainUI()
   bool fitToHeidht = OSystem::isAndroid();
   //menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
   //menu->hide();
-
-  //extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  //extMenu->show();
-  //Rect minimapRect = extMenu->getMinimapRect();
-
-  //mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
   rightPanel->bringToFront();
@@ -213,11 +204,6 @@ void Level::Impl::initTabletUI( Level* scene )
   tabletUi.setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
-void Level::Impl::connectTopMenu2scene(Level* scene)
-{
-  //CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
-}
-
 void Level::Impl::resolveUndoChange(bool enable)
 {
   VariantList vl; vl << enable;
@@ -233,7 +219,6 @@ void Level::initialize()
   _d->installHandlers( this );
   _d->initSound();
   _d->initTabletUI( this );
-  _d->connectTopMenu2scene( this );
   _d->undoStack.init( city );
 
   //connect elements
@@ -466,18 +451,18 @@ void Level::setOption(const std::string& name, Variant value)
     int type = object::unknown;
     if (value.type() == Variant::String) {
       type = object::toType(value.toString());
-    } else { 
-      type = value.toInt(); 
+    } else {
+      type = value.toInt();
     }
     _d->renderer.setMode(BuildMode::create(object::Type(type)));
   } else if (name == "removeTool") {
     _d->renderer.setMode(DestroyMode::create());
   } else if (name == "editorMode") {
     int type = object::unknown;
-    if (value.type() == Variant::String) {      
+    if (value.type() == Variant::String) {
       type = object::toType(value.toString());
-    } else { 
-      type = value.toInt(); 
+    } else {
+      type = value.toInt();
     }
     _d->renderer.setMode(EditorMode::create(object::Type(type)));
   } else if (name == "rotateRight") {

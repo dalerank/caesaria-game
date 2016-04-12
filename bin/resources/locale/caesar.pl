@@ -168,7 +168,7 @@
 "##big_hovel##":"Duża rudera",
 "##big_hut##":"Duży dom",
 "##citizens_like_chariot_races##":"Mieszkańcy uwielbiają wyścigi rydwanów.",
-"##large_temples##":"Duże świątynie",
+"##big_temples##":"Duże świątynie",
 "##bldm_big_temple##":"Duże światynie",
 "##large##":"duży",
 "##middle_festival##":"Duży festiwal",

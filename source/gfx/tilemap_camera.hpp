@@ -81,7 +81,9 @@ public:
 public signals:
   virtual Signal1<Point>& onPositionChanged();
   virtual Signal1<Direction>& onDirectionChanged();
-  
+  virtual Signal2<Camera*, Point>& onPositionChangedEx();
+  virtual Signal2<Camera*, Direction>& onDirectionChangedEx();
+
 private:
   void _setCenter(Point pos, bool checkBorder);
 

@@ -22,12 +22,10 @@
 #include "core/direction.hpp"
 #include "core/signals.hpp"
 #include "gfx/tilepos.hpp"
+#include "gfx/predefinitions.hpp"
 
 namespace gfx
 {
-
-class Tile;
-class TilesArray;
 
 class Camera
 {
@@ -59,12 +57,16 @@ public:
   virtual void setCenter( TilePos pos, bool checkCorner ) = 0;
   virtual void setCenter( TilePos pos ) { setCenter( pos, true ); }
   virtual void refresh() = 0;
+  virtual void setProperty(const std::string& name, Variant v) = 0;
+  virtual Variant getProperty(const std::string& name) const = 0;
 
   virtual ~Camera() {}
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
   virtual Signal1<Direction>& onDirectionChanged() = 0;
+  virtual Signal2<Camera*, Point>& onPositionChangedEx() = 0;
+  virtual Signal2<Camera*, Direction>& onDirectionChangedEx() = 0;
 };
 
 } //end namespace gfx

@@ -56,19 +56,21 @@ public:
   } bg;
 
   PlayerCityPtr city;
-  Camera const* camera;
 
   unsigned int lastObjectsCount;
   ScopedPtr<minimap::Colors> colors;
 
   int lastTimeUpdate;
   Point center;
-  TexturedButton* btnZoomIn;
-  TexturedButton* btnZoomOut;
+  TilePos tileposCenter;
+  TexturedButton* btnZoomIn = nullptr;
+  TexturedButton* btnZoomOut = nullptr;
 
   struct {
     Signal1<TilePos> onCenterChange;
     Signal1<int>     onZoomChange;
+    Signal2<Widget*, TilePos> onCenterChangeEx;
+    Signal2<Widget*, int>     onZoomChangeEx;
   } signal;
 
 public:
@@ -82,22 +84,26 @@ public:
   void drawWalkersMmap(Picture& canvas, bool clear);
 };
 
-Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx::Camera& camera, const Size& size)
+Minimap::Minimap(Widget* parent)
+ : Minimap(parent, Rect(), nullptr, Size())
+{
+
+}
+
+Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const Size& size)
   : Widget( parent, Hash(TEXT(Minimap)), rect ), _d( new Impl )
 {
   setupUI( ":/gui/minimap.gui" );
 
-  _d->city = city;
   _d->size = size.width() == 0 ? Size( 144, 110 ) : size;
-  _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->lastObjectsCount = 0;
   _d->bg.image = Picture( _d->size, 0, true );
   _d->bg.init = false;
-  ClimateType type = city->climate();
-  _d->colors.createInstance( type );
   _d->btnZoomIn = &add<TexturedButton>( righttop() - Point( 28, -2  ), Size(24,24), -1, 605 );
   _d->btnZoomOut = &add<TexturedButton>( righttop() - Point( 28, -26 ), Size(24,24), -1, 601 );
+
+  setCity(city);
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -269,6 +275,9 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
 {
+  if (city.isNull())
+    return;
+
   Tilemap& tilemap = city->tilemap();
   int mapsize = tilemap.size();
 
@@ -315,6 +324,9 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
 
 void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 {
+  if (city.isNull())
+    return;
+
   Tilemap& tilemap = city->tilemap();
   int mapsize = tilemap.size();
 
@@ -402,6 +414,9 @@ void Minimap::Impl::updateImage()
 
 void Minimap::Impl::initStaticMmap()
 {
+  if (city.isNull())
+    return;
+
   Size size;
   Tilemap& tmap = city->tilemap();
   int mapSize = tmap.size();
@@ -463,29 +478,34 @@ void Minimap::draw(Engine& painter)
   if( !visible() )
     return;
 
-  Tilemap& tilemap = _d->city->tilemap();
-  int mapsize = tilemap.size();
+  if (_d->city.isValid())
+  {
+    Tilemap& tilemap = _d->city->tilemap();
+    int mapsize = tilemap.size();
 
-  TilePos tpos = _d->camera->center();
-  TilePos startPos = tpos;
+    float koeff = height() / (float)110;
+    Point p = getBitmapCoordinates(_d->tileposCenter.i(), _d->tileposCenter.j(), mapsize);
+    Point myCenter(width()/2,height()/2);
 
-  float koeff = height() / (float)110;
-  Point p = getBitmapCoordinates(startPos.i(), startPos.j(), mapsize);
-  Point myCenter(width()/2,height()/2);
+    painter.resetColorMask();
 
-  painter.resetColorMask();
-
-  painter.draw( _d->bg.image, absoluteRect(), &absoluteClippingRectRef() );
-  Rect baseRect( Point(), _d->immediate.landRockWater.size() );
-  Rect drawRect = baseRect * koeff + absoluteRect().lefttop() + myCenter - p * koeff;
-  painter.draw( _d->immediate.landRockWater, baseRect, drawRect, &absoluteClippingRectRef() );
-  painter.draw( _d->immediate.objects, baseRect, drawRect, &absoluteClippingRectRef() );
-  painter.draw( _d->immediate.walkers, baseRect, drawRect, &absoluteClippingRectRef() );
+    painter.draw( _d->bg.image, absoluteRect(), &absoluteClippingRectRef() );
+    Rect baseRect( Point(), _d->immediate.landRockWater.size() );
+    Rect drawRect = baseRect * koeff + absoluteRect().lefttop() + myCenter - p * koeff;
+    painter.draw( _d->immediate.landRockWater, baseRect, drawRect, &absoluteClippingRectRef() );
+    painter.draw( _d->immediate.objects, baseRect, drawRect, &absoluteClippingRectRef() );
+    painter.draw( _d->immediate.walkers, baseRect, drawRect, &absoluteClippingRectRef() );
+  }
 
   Widget::draw( painter );
 }
 
 void Minimap::setCenter( Point pos) {  _d->center = pos; }
+
+void Minimap::setTileCenter(const TilePos& tpos)
+{
+  _d->tileposCenter = tpos;
+}
 
 bool Minimap::onEvent(const NEvent& event)
 {
@@ -520,6 +540,21 @@ void Minimap::beforeDraw(Engine& painter)
   }
 }
 
+void Minimap::setCity(PlayerCityPtr city)
+{
+  _d->city = city;
+
+  ClimateType type = city.isValid() ? city->climate() : game::climate::central;
+  _d->colors.createInstance( type );
+
+  _d->bg.init = false;
+}
+
+void Minimap::setSize(const Size& size)
+{
+  _d->size = size.width() == 0 ? Size( 144, 110 ) : size;
+}
+
 void Minimap::saveImage( const std::string& filename ) const
 {
   Picture savePic( _d->immediate.landRockWater.size(), 0, true );
@@ -537,9 +572,14 @@ void Minimap::update()
 
 Signal1<TilePos>& Minimap::onCenterChange() { return _d->signal.onCenterChange; }
 Signal1<int>& Minimap::onZoomChange() { return _d->signal.onZoomChange; }
+Signal2<Widget*, TilePos>& Minimap::onCenterChangeEx() { return _d->signal.onCenterChangeEx; }
+Signal2<Widget*, int>& Minimap::onZoomChangeEx() { return _d->signal.onZoomChangeEx; }
 
-bool Minimap::_onMousePressed( const NEvent::Mouse& event)
+bool Minimap::_onMousePressed(const NEvent::Mouse& event)
 {
+  if (_d->city.isNull())
+    return true;
+
   Point clickPosition = screenToLocal( event.pos() );
 
   int mapsize = _d->city->tilemap().size();
@@ -553,6 +593,13 @@ bool Minimap::_onMousePressed( const NEvent::Mouse& event)
 
   emit _d->signal.onCenterChange( tpos );
   return true;
+}
+
+void Minimap::_finalizeResize()
+{
+  if (_d->btnZoomIn) _d->btnZoomIn->setPosition(righttop() - Point(28, -2));
+  if (_d->btnZoomOut) _d->btnZoomOut->setPosition(righttop() - Point(28, -26));
+  Widget::_finalizeResize();
 }
 
 }//end namespace gui

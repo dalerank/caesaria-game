@@ -287,3 +287,9 @@ GroupBox.prototype.addButton = function(rx,ry,rw,rh) {
   return btn;
 }
 //*************************** Groupbox class end ***************************************//
+
+UpdateWidgetPrototype(Minimap.prototype);
+Object.defineProperty(Minimap.prototype, "city", {set: function(c) { this.setCity(c)}} )
+Object.defineProperty(Minimap.prototype, "center", {set: function(c) { this.setCenter(c)}} )
+Object.defineProperty(Minimap.prototype, "onChangeCenter", {set: function (func) { this.onCenterChangeEx(func); }} )
+Object.defineProperty(Minimap.prototype, "onChangeZoom", {set: function (func) { this.onZoomChangeEx(func); }} )

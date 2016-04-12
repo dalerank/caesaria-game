@@ -186,7 +186,7 @@
 "##big_hovel##":"Velká kůlna",
 "##big_hut##":"Velký dům",
 "##citizens_like_chariot_races##":"Obyvatelé nadevše milují závody vozatajů. ",
-"##large_temples##":"Velké chrámy",
+"##big_temples##":"Velké chrámy",
 "##bldm_big_temple##":"Velké chrámy",
 "##large##":"velký",
 "##middle_festival##":"Velký festival",

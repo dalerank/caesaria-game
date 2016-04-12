@@ -158,7 +158,7 @@
 "##big_hovel##":"Stort skjul",
 "##big_hut##":"Stort hus",
 "##citizens_like_chariot_races##":"Medborgarna vet inget bättre än vagnkapplöpningar.",
-"##large_temples##":"Stora tempel",
+"##big_temples##":"Stora tempel",
 "##bldm_big_temple##":"Stora tempel",
 "##large##":"Stort",
 "##middle_festival##":"Stor festival",

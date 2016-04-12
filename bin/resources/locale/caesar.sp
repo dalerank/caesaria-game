@@ -104,7 +104,7 @@
 "##big_hovel##":"Tugurio grande",
 "##big_hut##":"Casa grande",
 "##citizens_like_chariot_races##":"Los ciudadanos adoran las carreras de caballos.",
-"##large_temples##":"Templos grandes",
+"##big_temples##":"Templos grandes",
 "##bldm_big_temple##":"Templos grandes",
 "##large##":"grande",
 "##middle_festival##":"Gran festival",

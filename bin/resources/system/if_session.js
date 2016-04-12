@@ -8,6 +8,18 @@ Path.prototype.slice = function(str) {
 }
 /*************************************** Path class end ******************************************************************/
 
+/**************************************** Camera class begin **************************************************************/
+Object.defineProperty(Camera.prototype, "center", { get: function () {
+  return { x: this.centerX(), y: this.centerZ() }
+}} )
+
+Object.defineProperty(Camera.prototype, "tileCenter", {
+   get: function ()    { this.center() },
+   set: function (pos) { this.setCenter(pos) }
+} )
+/**************************************** Camera class end **************************************************************/
+
+
 /**************************************** Emperor class begin **************************************************************/
 
 /**************************************** Emperor class end **************************************************************/
@@ -56,6 +68,7 @@ Object.defineProperty( Session.prototype, "emperor", { get: function()  { return
 Object.defineProperty( Session.prototype, "c3mode", { get: function()  { return this.isC3mode() }} )
 Object.defineProperty( Session.prototype, "empire", { get: function()  { return this.getEmpire() }} )
 Object.defineProperty( Session.prototype, "workdir", { get: function () { return this.getOptPath("workDir") }})
+Object.defineProperty( Session.prototype, "camera", { get: function () { return this.getCamera() }})
 
 Object.defineProperty( Session.prototype, "c3video", {
   get: function()  { return this.getOptPath("c3video").str },

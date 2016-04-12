@@ -193,7 +193,7 @@ sim.ui.menu.enableAlarm = function(enable) {
   sim.ui.menu.widget.disaster.button.enabled = enable;
 }
 
-sim.ui.menu.simConig.disaster.func = function() {
+sim.ui.menu.simConfig.disaster.func = function() {
   g_session.setOption( "nextAlarm", true );
 }
 
@@ -323,6 +323,8 @@ sim.ui.menu.initialize = function() {
 
   menu.minimap = new Minimap(menu);
   menu.minimap.geometry = { x:8, y:35, w:144, h:110 };
+  menu.minimap.city =  g_session.city;
+  menu.minimap.center = g_session.camera.center;
 
   menu.miniature = new Image(menu);
   menu.miniature.geometry = { x:7, y:216, w:148, h:52 };
