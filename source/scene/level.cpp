@@ -92,9 +92,7 @@ class Level::Impl
 {
 public:
   EventHandlers eventHandlers;
-  gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
-  //gui::Menu* menu;
   Engine* engine;
   DebugHandler dhandler;
   CityRenderer renderer;
@@ -156,7 +154,6 @@ void Level::Impl::initMainUI()
   ui.clear();
 
   Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
-  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
 
   topMenu = &ui.add<TopMenu>(topMenuHeight, !city->getOption(PlayerCity::c3gameplay));
 
@@ -165,7 +162,6 @@ void Level::Impl::initMainUI()
   //menu->hide();
 
   WindowMessageStack::create( ui.rootWidget() );
-  rightPanel->bringToFront();
 
   if( KILLSWITCH( rightMenu ) )
   {

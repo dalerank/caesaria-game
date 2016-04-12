@@ -21,6 +21,7 @@ sim.ui.topmenu.debug = {}
 sim.ui.topmenu.advisors = {}
 sim.ui.topmenu.options = {}
 sim.ui.menu = {}
+sim.ui.rpanel = {}
 sim.ui.dialogs = {}
 sim.ui.advisors = {}
 sim.hotkeys = {}

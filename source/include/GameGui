@@ -24,7 +24,6 @@
 #include "gui/spinbox.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "gui/groupbox.hpp"
-#include "gui/rightpanel.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
 #include "gui/keyvalue_listbox.hpp"
