@@ -1,9 +1,9 @@
 {
  title : "##well##"
  sound : "fanfare"
- text : "La Rome ancienne tirait toute son eau potable de puits. Le bassin hydrographique de Rome comprenait de nombreuses sources souterraines, dont l'eau était filtrée naturellement par le sol. Mais avec l'augmentation de la population, le nombre de puits s'avéra insuffisant. L'eau des puits fut alors complétée par celle apportée des collines, et un système de partage se mis en place. Les habitants des quartiers pauvres, trop éloignés de l'eau abondante des fontaines, s'approvisionnaient aux puits, tandis qu'ailleurs, les @fontaines& de Rome distribuaient gratuitement et en abondance l'eau des collines.
-Barbiers"
+ text : "La Rome ancienne tirait toute son eau potable de @puits&. Le bassin hydrographique de Rome comprenait de nombreuses sources souterraines, dont l'eau était filtrée naturellement par le sol. Mais avec l'augmentation de la population, le nombre de puits s'avéra insuffisant. L'eau des puits fut alors complétée par celle apportée des collines, et un système de partage se mis en place. Les habitants des quartiers pauvres, trop éloignés de l'eau abondante des fontaines, s'approvisionnaient aux puits, tandis qu'ailleurs, les @fontaines& de Rome distribuaient gratuitement et en abondance l'eau des collines."
  uri : {
+  "puits" : "well"
   "fontaines" : "fountain"
  }
 }

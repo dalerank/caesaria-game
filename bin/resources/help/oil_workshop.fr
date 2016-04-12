@@ -1,12 +1,13 @@
 {
  title : "##oil_workshop##"
  sound : "fanfare"
- text : "Les employés pressent les olives en provenance de vos @oliveraies& dans cet atelier. \n\tUne oliveraie produit suffisamment d'olives pour alimenter deux huileries. \n\tComme la plupart des industries, les huileries sont des voisins indésirables. Elles ont besoin d'une main-d'œuvre locale et d'un accès routier à un @entrepôt& et à l'oliveraie devant la fournir. Les @employés& transportent l'huile jusqu'à l'entrepôt disponible le plus proche. Vous pouvez exporter une partie de votre production si une @route de commerce& adéquate est ouverte. Les vendeuses du marché se chargent de distribuer l'huile aux foyers qui en ont fait la requête. \n\tL'huile fait partie des biens dont vos citoyens ont besoin pour accéder aux niveaux supérieurs de @logement&. \n\tLes huileries actives sont animées. Cliquez avec le bouton droit sur l'une des huileries pour connaître son statut, notamment si son activité a cessé. \n\nPour en savoir plus sur le rôle de l'huile dans l'Empire Romain, cliquez @ici.&"
+ text : "Les employés pressent les olives en provenance de vos @oliveraies& dans cet atelier. \n\tUne oliveraie produit suffisamment d'olives pour alimenter deux huileries. \n\tComme la plupart des industries, les huileries sont des voisins indésirables. Elles ont besoin d'une main-d'œuvre locale et d'un accès routier à un @entrepôt& et à l'oliveraie devant la fournir. Les @employés& transportent l'huile jusqu'à l'entrepôt disponible le plus proche. Vous pouvez exporter une partie de votre production si une @route de commerce& adéquate est ouverte. Les @vendeuses du marché& se chargent de distribuer l'huile aux foyers qui en ont fait la requête. \n\tL'huile fait partie des biens dont vos citoyens ont besoin pour accéder aux niveaux supérieurs de @logement&. \n\tLes huileries actives sont animées. Cliquez avec le bouton droit sur l'une des huileries pour connaître son statut, notamment si son activité a cessé. \n\nPour en savoir plus sur le rôle de l'huile dans l'Empire Romain, cliquez @ici.&"
  uri : {
   "oliveraies" : "olive_farm"
   "entrepôt" : "warehouse"
   "employés" : "worker"
   "route de commerce" : "trade"
+  "Les vendeuses du marché" : "market"
   "logement" : "house"
   "ici." : "oil_history"
  }
