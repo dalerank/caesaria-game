@@ -31,9 +31,13 @@ using namespace city;
 namespace events
 {
 
+namespace internal {
+uint32_t lastSoundBuildTime=0;
+}
+
 GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
-  return create( pos, Overlay::create( type ) );
+  return create(pos, Overlay::create(type));
 }
 
 GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
@@ -51,7 +55,7 @@ GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
 bool BuildAny::_mayExec(Game&, unsigned int) const {  return true;}
 
 void BuildAny::_exec( Game& game, unsigned int )
-{  
+{
   if( _overlay.isNull() )
     return;
 
@@ -93,13 +97,16 @@ void BuildAny::_exec( Game& game, unsigned int )
       auto info = _overlay->info();
       game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction, -info.cost() ) );
 
-      if( construction->group() != object::group::disaster )
-      {
-        events::dispatch<PlaySound>( "buildok", 1, 100 );
+      if (construction->group() != object::group::disaster) {
+        uint32_t currentTime = DateTime::elapsedTime();
+
+        if (math::abs(internal::lastSoundBuildTime - currentTime) > 10) {
+          internal::lastSoundBuildTime = currentTime;
+          events::dispatch<PlaySound>("buildok", 1, 100);
+        }
       }
 
-      if( construction->isNeedRoad() && construction->roadside().empty() )
-      {
+      if (construction->isNeedRoad() && construction->roadside().empty()) {
         events::dispatch<WarningMessage>( "##building_need_road_access##", 1 );
       }
 

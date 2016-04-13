@@ -436,7 +436,7 @@
 "##visit_labor_advisor##":"Odwiedź doradcę zatrudnienia",
 "##visit_financial_advisor##":"Odwiedź doradcę finansowego",
 "##extm_road_tlp##":"Buduj drogi",
-"##extm_housing_tlp##":"Buduj mieszkania",
+"##extm_house_tlp##":"Buduj mieszkania",
 "##city_warnings_on##":"Ostrzeżenia: Wł.",
 "##city_warnings_off##":"Ostrzeżenia: Wył.",
 "##ovrm_crime##":"Przestępczość",
