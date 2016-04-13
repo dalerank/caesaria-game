@@ -143,18 +143,17 @@ ListBox::~ListBox() {}
 unsigned int ListBox::itemsCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
-ListBoxItem& ListBox::item(unsigned int id)
+ListBoxItem& ListBox::itemAt(unsigned int index)
 {
-  if( id >= _d->items.size() )
-  {
-    Logger::warning( "Index out of range ListBox::items [{0}]", id );
+  if(index >= _d->items.size() ) {
+    Logger::warning( "Index out of range ListBox::items [{0}]", index);
     return ListBoxItem::invalidItem();
   }
 
-  return _d->items[id];
+  return _d->items[index];
 }
 
-ListBoxItem& ListBox::selectedItem() {	return item( selected() ); }
+ListBoxItem& ListBox::selectedItem() {	return itemAt( selected() ); }
 
 //! adds a list item, returns id of item
 void ListBox::removeItem(unsigned int id)
@@ -179,7 +178,7 @@ void ListBox::removeItem(unsigned int id)
   _recalculateItemHeight( _d->font, height() );
 }
 
-int ListBox::itemAt(Point pos ) const
+int ListBox::findIndex(Point pos) const
 {
   if(	pos.x() < screenLeft() || pos.x() >= screenRight()
        ||	pos.y() < screenTop() || pos.y() >= screenBottom() )
@@ -552,8 +551,8 @@ void ListBox::_selectNew(int ypos)
 
   _d->needItemsRepackTextures = true;
 
-  int newIndex = itemAt( Point( screenLeft(), ypos ) );
-  ListBoxItem& ritem = item( newIndex );
+  int newIndex = findIndex({screenLeft(), ypos});
+  ListBoxItem& ritem = itemAt(newIndex);
 
   if( ritem.isEnabled() )
   {
@@ -727,34 +726,21 @@ void ListBox::draw( gfx::Engine& painter )
   clipRect._lefttop += Point( 3, 3 );
   clipRect._bottomright -= Point( 3, 3 );
 
-  for (auto& refItem :  _d->items)
-  {
+  for (auto& refItem :  _d->items) {
     int mnY = frameRect.bottom() - _d->scrollBar->value();
     int mxY = frameRect.top() - _d->scrollBar->value();
 
     mnY += std::max( 0, refItem.icon().height() - frameRect.height() );
 
-    bool overBorder = (mnY < 0 && mxY < 0 ) || (mnY > (int)height() && mxY > (int)height() );
-    if( !overBorder )
-    {
-      if( refItem.icon().isValid() )
-      {
+    bool overBorder = (mnY < 0 && mxY < 0) || (mnY > (int)height() && mxY > (int)height());
+    if( !overBorder ) {
+      if (refItem.icon().isValid()) {
         _drawItemIcon( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect );
       }
 
-      if( refItem.picture().isValid() )
-      {
+      if (refItem.picture().isValid()) {
         _drawItemText( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect  );
       }
-
-     /* if( !refItem.url().empty() )
-      {
-        Point r = frameRect.rightbottom();
-        r += Point( 0, -_d->scrollBar->value() );
-        //_d->background->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
-        Point offset = localToScreen( lefttop() );
-        painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ) + offset, r + offset );
-      } */
     }
 
     frameRect += Point( 0, _d->height.item );
@@ -809,14 +795,14 @@ void ListBox::setScrollbarVisible(bool visible)
 
 void ListBox::setItemText(unsigned int index, const std::string& text)
 {
-  item(index).setText(text);
+  itemAt(index).setText(text);
   _d->needItemsRepackTextures = true;
   _recalculateItemHeight(_d->font, height());
 }
 
 void ListBox::setItemData(unsigned int index, const std::string& name, Variant tag)
 {
-  item(index).setData( name, tag );
+  itemAt(index).setData( name, tag );
 }
 
 Variant ListBox::getItemData(unsigned int index, const std::string& name)
@@ -825,6 +811,11 @@ Variant ListBox::getItemData(unsigned int index, const std::string& name)
     return Variant();
 
   return _d->items[index].data(name);
+}
+
+Rect ListBox::getItemRectangle(unsigned int index)
+{
+  return Rect();
 }
 
 //! Insert the item at the given index
@@ -881,7 +872,7 @@ void ListBox::resetItemOverrideColor(unsigned int index)
 
 void ListBox::setItemEnabled(unsigned int index, bool enabled)
 {
-  item(index).setEnabled(enabled);
+  itemAt(index).setEnabled(enabled);
 }
 
 void ListBox::resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType)
@@ -953,7 +944,7 @@ int ListBox::itemsHeight() const { return _d->height.item; }
 
 void ListBox::setItemAlignment(int index, Alignment horizontal, Alignment vertical)
 {
-  item(index).setTextAlignment( horizontal, vertical );
+  itemAt(index).setTextAlignment( horizontal, vertical );
   _d->needItemsRepackTextures = true;
 }
 
@@ -1053,7 +1044,7 @@ void ListBox::setItemsSelectable(bool en) {  setFlag( itemSelectable, en ); }
 
 void ListBox::setItemTooltip(unsigned int index, const std::string& text)
 {
-  item(index).setTooltip(text);
+  itemAt(index).setTooltip(text);
 }
 
 void ListBox::setupUI(const VariantMap& ui)

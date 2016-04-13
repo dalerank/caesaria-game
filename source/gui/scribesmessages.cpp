@@ -119,8 +119,8 @@ protected:
 
       case NEvent::Mouse::moved:
       {
-        int index = itemAt( event.mouse.pos() );
-        if( index >= 0 )
+        int index = findIndex(event.mouse.pos());
+        if (index >= 0)
         {
           //ListBoxItem& itemUnderMouse = item((unsigned int) index);
 
