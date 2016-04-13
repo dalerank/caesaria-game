@@ -73,17 +73,9 @@ lobby.ui.newgame.showpage = function () {
 lobby.ui.options.showLanguageSettings = function () {
     var wnd = g_ui.addWindow(0);
     wnd.title = "##mainmenu_language##"
-    wnd.geometry = {
-        x: 0,
-        y: 0,
-        w: 512,
-        h: 384
-    };
+    wnd.geometry = {x: 0,y: 0,w: 512,h: 384};
     wnd.moveToCenter();
-    wnd.closeAfterKey({
-        escape: true,
-        rmb: true
-    });
+    wnd.closeAfterKey({escape: true,rmb: true});
 
     var listbox = wnd.addListbox(20, 50, wnd.w - 40, wnd.h - 90);
     listbox.setTextAlignment("center", "center");
@@ -126,15 +118,8 @@ lobby.ui.changePlayerName = function (force, continueCallback) {
 
     if (playerName.length === 0 || force) {
         var wnd = g_ui.addWindow(0);
-        wnd.geometry = {
-            x: 0,
-            y: 0,
-            w: 380,
-            h: 128
-        }
-        wnd.closeAfterKey({
-            escape: true
-        });
+        wnd.geometry = { x: 0, y: 0, w: 380, h: 128 }
+        wnd.closeAfterKey({ escape: true });
         wnd.mayMove = false;
         wnd.title = "##enter_your_name##";
 
@@ -145,15 +130,9 @@ lobby.ui.changePlayerName = function (force, continueCallback) {
         }
 
         var editbox = wnd.addEditbox(32, 50, 320, 32);
-        editbox.textAlign = {
-            h: "upperLeft",
-            v: "center"
-        };
+        editbox.textAlign = {  h: "upperLeft",  v: "center" };
         editbox.font = "FONT_2_WHITE";
-        editbox.textOffset = {
-            x: 20,
-            y: 0
-        };
+        editbox.textOffset = {  x: 20,  y: 0 };
         editbox.tooltip = "##enter_dinasty_name_here##";
         editbox.text = playerName;
         editbox.cursorPos = playerName.length;
@@ -171,13 +150,7 @@ lobby.ui.changePlayerName = function (force, continueCallback) {
         };
 
         var btnContinue = wnd.addTexturedButton(300, 85, 27, 27);
-        btnContinue.states = {
-            rc: "paneling",
-            normal: 179,
-            hover: 180,
-            pressed: 181,
-            disabled: 179
-        };
+        btnContinue.states = {rc: "paneling",  normal: 179,  hover: 180,  pressed: 181,  disabled: 179};
         btnContinue.tooltip = "##plname_start_new_game##";
         btnContinue.callback = exitFunc;
 
@@ -193,20 +166,12 @@ lobby.ui.changePlayerName = function (force, continueCallback) {
 }
 
 lobby.ui.addButton = function (caption, callback) {
-    var buttonSize = {
-        w: 200,
-        h: 25
-    };
+    var buttonSize = { w: 200, h: 25 };
     var btnFont = "FONT_2";
     var offsetY = 40;
 
     var button = new Button(0);
-    button.geometry = {
-        x: 0,
-        y: 0,
-        w: buttonSize.w,
-        h: buttonSize.h
-    };
+    button.geometry = { x: 0,  y: 0,  w: buttonSize.w,  h: buttonSize.h};
     //button.setBackgroundStyle( style );
     button.font = btnFont;
     button.text = caption;
