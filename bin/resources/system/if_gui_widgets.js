@@ -9,6 +9,7 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "align", { set: function (obj) { this.setAlignment(obj.left,obj.right,obj.top,obj.bottom); } })
   Object.defineProperty(objProto, "name", { set: function (str) { this.setInternalName(str); } });
   Object.defineProperty(objProto, "clipped", { set: function (v) { this.setNotClipped(!v); } });
+  Object.defineProperty(objProto, "display", { set: function (v) { this.setVisible(v); }, get: function() { return this.visible() } });
 
   Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
   Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
@@ -178,6 +179,7 @@ UpdateWidgetPrototype(DictionaryText.prototype)
 Object.defineProperty( PositionAnimator.prototype, "destination", { set: function (point) { this.setDestination(point.x,point.y); }} )
 Object.defineProperty( PositionAnimator.prototype, "speed", { set:function (point) { this.setSpeed(point.x,point.y); }} )
 Object.defineProperty( PositionAnimator.prototype, "removeParent", { set:function (value) { this.setFlag("removeParent", value ); }} )
+Object.defineProperty( PositionAnimator.prototype, "onFinish", { set: function(func) { this.onFinishEx(func); }} );
 //*************************** Posisit class end ***************************************//
 
 //*************************** Image class begin ***************************************//
@@ -259,6 +261,7 @@ Object.defineProperty( ContextMenuItem.prototype, "autoChecking", {set: function
 
 ContextMenuItem.prototype.addItemWithCheckingCallback = function(caption,func) {
     var item = this.addSubmenuItem(_t(caption));
+    item.autoChecking = true;
     item.toggleCallback = func;
     return item;
 }
@@ -286,3 +289,10 @@ GroupBox.prototype.addButton = function(rx,ry,rw,rh) {
   return btn;
 }
 //*************************** Groupbox class end ***************************************//
+
+UpdateWidgetPrototype(Minimap.prototype);
+Object.defineProperty(Minimap.prototype, "city", {set: function(c) { this.setCity(c)}} )
+Object.defineProperty(Minimap.prototype, "center", {set: function(c) { this.setCenter(c)}} )
+Object.defineProperty(Minimap.prototype, "tileCenter", {set: function(c) { this.setTileCenter(c)}} )
+Object.defineProperty(Minimap.prototype, "onChangeCenter", {set: function (func) { this.onCenterChangeEx(func); }} )
+Object.defineProperty(Minimap.prototype, "onChangeZoom", {set: function (func) { this.onZoomChangeEx(func); }} )

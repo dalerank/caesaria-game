@@ -29,13 +29,16 @@ sim.ui.topmenu.help.aboutStrategy = function() {
 }
 
 sim.ui.topmenu.options.init = function() {
-    var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_options##"));
+    var m = sim.ui.topmenu.widget.addItem("", _ut("gmenu_options"));
     m.moveToIndex(1)
     m.addItemWithCallback("##screen_settings##", function () { game.ui.dialogs.showVideoOptions() } )
     m.addItemWithCallback("##sound_settings##", function () { game.ui.dialogs.showAudioOptions() } )
     m.addItemWithCallback("##speed_settings##",  function() { sim.ui.dialogs.showSpeedOptions() } )
-    m.addItemWithCallback("##city_settings##", function () { sim.ui.dialogs.showCitySettings() } )
-    m.addItemWithCheckingCallback("##city_constr_mode##", function(checked) { g_session.setOption("constructorMode",checked)} )
+    m.addItemWithCallback("##city_settings##", function () { sim.ui.dialogs.citySettings.show() } )
+    m.addItemWithCheckingCallback("##city_constr_mode##", function(checked) {
+      g_session.city.setOption("constructorMode",checked);
+      sim.ui.menu.reset();
+    } )
 }
 
 sim.ui.topmenu.setPopulation = function(pop)

@@ -94,8 +94,8 @@ Ui.prototype.addPosAnimator = function (parent, newPos, mstime, callback) {
   animator.setTime(mstime);
 
   if (callback)
-    animator.onFinishEx(callback);
-    
+    animator.onFinish = callback;
+
   return animator;
 };
 

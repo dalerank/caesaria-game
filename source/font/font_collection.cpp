@@ -106,6 +106,8 @@ Font FontCollection::_addFont(const std::string& name, vfs::Path pathFont, const
     std::string errorStr(TTF_GetError());
     if (OSystem::isWindows())
       errorStr += "\n Is it only latin symbols in path to game?";
+
+    OSystem::error( "Warning!!!", errorStr );
   }
 
   Font font0;
@@ -144,9 +146,12 @@ void FontCollection::initialize(const vfs::Directory& resourcePath, const std::s
   for( const auto& item : items )
   {
     TTF_Font* tmp_font = TTF_OpenFont(item.fullpath.toCString(),10);
-    std::string familyName = TTF_FontFaceFamilyName(tmp_font);
-    _d->familyPaths[familyName] = item.fullpath;
-    TTF_CloseFont(tmp_font);
+
+    if (tmp_font) {
+      std::string familyName = TTF_FontFaceFamilyName(tmp_font);
+      _d->familyPaths[familyName] = item.fullpath;
+      TTF_CloseFont(tmp_font);
+    }
   }
 
   if (absolutFontfilename.exist())

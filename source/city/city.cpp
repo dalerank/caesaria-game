@@ -109,32 +109,33 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   _d->services.initialize( this, ":/services.model" );
 
-  setOption( updateRoadsOnNextFrame, 0 );
-  setOption( godEnabled, 1 );
-  setOption( zoomEnabled, 1 );
-  setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
-  setOption( warningsEnabled, 1 );
-  setOption( fishPlaceEnabled, 1 );
-  setOption( fireKoeff, 100 );
-  setOption( collapseKoeff, 100 );
-  setOption( barbarianAttack, 0 );
-  setOption( legionAttack, 0 );
-  setOption( climateType, game::climate::central );
-  setOption( c3gameplay, 0 );
-  setOption( highlightBuilding, 1 );
-  setOption( destroyEpidemicHouses, 0 );
-  setOption( difficulty, game::difficulty::usual );
-  setOption( forestFire, 1 );
-  setOption( showGodsUnhappyWarn, 1 );
-  setOption( forestGrow, 1 );
-  setOption( warfNeedTimber, 1 );
-  setOption( riversideAsWell, 1 );
-  setOption( soldiersHaveSalary, 1 );
-  setOption( housePersonalTaxes, 1 );
-  setOption( ironInRocks, 1 );
-  setOption( farmUseMeadows, 1 );
+  setOption(updateRoadsOnNextFrame, 0);
+  setOption(godEnabled, 1);
+  setOption(zoomEnabled, 1);
+  setOption(zoomInvert, OSystem::isMac() ? 1 : 0);
+  setOption(warningsEnabled, 1);
+  setOption(fishPlaceEnabled, 1);
+  setOption(fireKoeff, 100);
+  setOption(collapseKoeff, 100);
+  setOption(barbarianAttack, 0);
+  setOption(legionAttack, 0);
+  setOption(climateType, game::climate::central);
+  setOption(c3gameplay, 0);
+  setOption(highlightBuilding, 1);
+  setOption(destroyEpidemicHouses, 0);
+  setOption(difficulty, game::difficulty::usual);
+  setOption(forestFire, 1);
+  setOption(showGodsUnhappyWarn, 1);
+  setOption(forestGrow, 1);
+  setOption(warfNeedTimber, 1);
+  setOption(riversideAsWell, 1);
+  setOption(soldiersHaveSalary, 1);
+  setOption(housePersonalTaxes, 1);
+  setOption(ironInRocks, 1);
+  setOption(farmUseMeadows, 1);
+  setOption(houseAvoidPlague, 0);
 
-  _setNation( world::nation::roman );
+  _setNation(world::nation::roman);
 }
 
 std::string PlayerCity::about(Object::AboutType type)

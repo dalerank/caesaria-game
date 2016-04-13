@@ -1,10 +1,11 @@
 {
  title : "##religion_advisor##"
  sound : "fanfare"
- text : "TCe conseiller est chargé de vérifier le nombre de @temples&, petits et grands, dédiés à Cérès, Neptune, Mercure, Mars, Vénus et les oracles contenus dans la cité. Vous pouvez également le consulter pour connaître l'opinion des dieux sur vous. Pour pacifier des dieux en colère, construisez plus de temples ou organisez un @festival&. \n\nConsultez les rubriques @Evaluation& et @51Religion pour plus d'informations sur l'utilisation de ce panneau."
+ text : "TCe conseiller est chargé de vérifier le nombre de @temples&, petits et grands, dédiés à Cérès, Neptune, Mercure, Mars, Vénus et les oracles contenus dans la cité. Vous pouvez également le consulter pour connaître l'opinion des dieux sur vous. Pour pacifier des dieux en colère, construisez plus de temples ou organisez un @festival&. \n\nConsultez les rubriques @Evaluation& et @Religion& pour plus d'informations sur l'utilisation de ce panneau."
  uri : {
   "temples" : "temple_oracle"
   "festival" : "entertainment_advisor"
   "Evaluation" : "ratings"
+  "Religion"
  }
 }

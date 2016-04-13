@@ -53,7 +53,7 @@ protected:
   virtual void _reachedPathway();
 
 protected:
-  Prefect( PlayerCityPtr city );
+  Prefect(PlayerCityPtr city);
 
   WalkerPtr _looks4Enemy( const int range);
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );

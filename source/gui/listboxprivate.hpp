@@ -35,7 +35,7 @@ public:
     gfx::Pictures fallback;
   } bg;
 
-  std::vector< ListBoxItem > items;
+  std::vector<ListBoxItem> items;
 
   struct {
     NColor text;
