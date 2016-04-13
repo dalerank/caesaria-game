@@ -251,16 +251,15 @@ void SdlEngine::init()
   Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
   _d->window = SDL_CreateWindow( "CaesarIA:android",
-                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                             _srcSize.width(), _srcSize.height(),
-                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                 _srcSize.width(), _srcSize.height(),
+                                 SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
   Logger::debug( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  if( isFullscreen() )
-  {
+  if (isFullscreen()) {
     auto mode = modes().front();
     Size s( mode.width(), mode.height() );
 
@@ -269,9 +268,7 @@ void SdlEngine::init()
                               SDL_WINDOWPOS_UNDEFINED,
                               s.width(), s.height(),
                               SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_SHOWN );
-  }
-  else
-  {
+  } else {
     _d->window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED,
@@ -279,8 +276,7 @@ void SdlEngine::init()
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   }
 
-  if (_d->window == NULL)
-  {
+  if (_d->window == NULL) {
     Logger::fatal( "!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
   }
@@ -290,8 +286,7 @@ void SdlEngine::init()
 
   SDL_Renderer *renderer = SDL_CreateRenderer(_d->window, -1, SDL_RENDERER_ACCELERATED );
 
-  if (renderer == NULL)
-  {
+  if (renderer == NULL) {
     Logger::fatal( "!!! Unable to create renderer: {}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
@@ -304,8 +299,7 @@ void SdlEngine::init()
   SDL_RenderPresent(renderer);
 
   SDL_RendererInfo info;
-  for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
-  {
+  for (int k=0; k < SDL_GetNumRenderDrivers(); k++) {
     SDL_GetRenderDriverInfo( k, &info );
     Logger::debug( "SDLGraficEngine: availabe render {}", info.name );
   }
@@ -329,8 +323,7 @@ void SdlEngine::init()
   _d->screen.init( screenTexture, 0, 0 );
   _d->screen.setOriginRect( Rect( 0, 0, _srcSize.width(), _srcSize.height() ) );
 
-  if( !_d->screen.isValid() )
-  {
+  if (!_d->screen.isValid()) {
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
@@ -355,6 +348,12 @@ void SdlEngine::init()
   _d->frame.handlers.start = makeDelegate( _d.data(), &Impl::renderStart );
   _d->frame.handlers.finish = makeDelegate( _d.data(), &Impl::renderFinish );
   _d->frame.handlers.metrics = makeDelegate( this, &SdlEngine::_drawFrameMetrics );
+
+  Point windowPos;
+  SDL_GetWindowPosition(_d->window, &windowPos.rx(), &windowPos.ry());
+  if (windowPos.x() < 0 || windowPos.y() < 0) {
+    SDL_SetWindowPosition(_d->window, 0, 0);
+  }
 }
 
 void SdlEngine::exit()

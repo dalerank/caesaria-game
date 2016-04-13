@@ -466,8 +466,21 @@ void engine_js_Panic(js_State *J)
 
 void engine_js_Log(js_State *J)
 {
-  const char *text = js_tostring(J, 1);
-  Logger::warning( text );
+  if (js_isstring(J, 1)) {
+    const char* text = js_tostring(J, 1);
+    Logger::warning( text );
+  } else if (js_isnumber(J, 1)) {
+    int severity = js_toint16(J, 1);
+    const char* text = js_tostring(J, 2);
+    switch(severity) {
+    case 0: Logger::debug(text); break;
+    case 1: Logger::info(text); break;
+    case 3: Logger::error(text); break;
+    case 4: Logger::fatal(text); break;
+    default: Logger::warning(text); break;
+    }
+  }
+
   js_pushundefined(J);
 }
 
