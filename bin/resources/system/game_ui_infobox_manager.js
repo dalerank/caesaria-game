@@ -95,12 +95,9 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutObject(typename,_u("bridge_extends_city_area"))
   break;
 
-  case "collapsed_ruins": case "burned_ruins": case "plague_ruins":
+  case "collapsed_ruins": case "burned_ruins":
+  case "plague_ruins", "burning_ruins":
     game.ui.infobox.aboutRuins(location)
-  break;
-
-  case "burning_ruins":
-    game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
   break;
 
   case "warehouse":
