@@ -74,10 +74,10 @@ sim.ui.buildmenu.build = function(type) {
   sim.ui.buildmenu.hide();
 }
 
-sim.ui.buildmenu.sub = function(type,top) {
+sim.ui.buildmenu.sub = function(type, left, top) {
   var sound = "bmsel_" + type;
   g_session.playAudio(sound + "_00001", 100, g_config.audio.infobox);
-  sim.ui.buildmenu.show(type,top);
+  sim.ui.buildmenu.show(type, left, top);
 }
 
 sim.ui.buildmenu.hide = function() {
@@ -112,21 +112,24 @@ sim.ui.buildmenu.show = function(type, left, top) {
   }
 
   buildMenu.addButton = function(branch,type) {
-    var ltype = branch.length ? branch : type;
-    var title = _format( "bldm_{0}", ltype);
+    var ltype = branch.length ? branch : type; 
+    var title = "";
+
+    if (branch.length)
+      title = _format( "##bldm_{0}##", ltype);
+    else
+      title = _u(type);
 
     if (type != "" && !g_session.city.getBuildOption(type))
       return;
 
     engine.log("Build menu add type " + ltype);
-    title = _ut(title);
-    if (title[0] == "#")
-      title = ltype;
+    engine.log("Build menu add type " + _t(title));
 
     var btn = new Button(buildMenu);
     btn.geometry = { x:0, y:25*buildMenu.buttons.length, w:buildMenu.w, h:24};
     btn.hoverFont = "FONT_2_RED";
-    btn.text = _u(title);
+    btn.text = title;
     btn.textAlign = { h:"upperLeft", v:"center" };
     btn.textOffset = { x:15, y:0 };
 
@@ -149,7 +152,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
 
     //buildMenu.h = buildMenu.buttons.length * 25;
 
-    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch,top); }
+    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch, left, top); }
     else if (type != "") btn.callback = function() { sim.ui.buildmenu.build(type); }
   }
 

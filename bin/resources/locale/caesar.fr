@@ -521,7 +521,7 @@
 "##charioter_so_hungry##":"Si j'ai faim ? Je vais finir par manger mon cheval si ça continue comme ça !",
 "##hippodrome_haveno_races##":"Aucune course pour l'instant",
 "##current_races_runs_for_another##":"Actuellement une course",
-"##pottery_workshop##":"L'atelier de poteries",
+"##pottery_workshop##":"Atelier de poteries",
 "##city##":"Cité",
 "##pestilent_event_text##":"L'épidémie frappe la cité. Le manque d'hôpitaux oblige les préfets à désinfecter les quartiers touchés par la maladie, par fumigation.",
 "##city_is_besieged##":"Cité assiégée",
