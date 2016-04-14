@@ -485,6 +485,12 @@
       wheat_farm : true
       vinard : true
       senate : true
+	  fort_legionaries : true
+      fort_javelin : true
+	  fort_horse : true
+	  fortification : true     
+	  barracks : true
+	  tower	: true	
     }
   }
 }
