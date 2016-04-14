@@ -25,6 +25,7 @@ sim.ui.shortmenu = {}
 sim.ui.rpanel = {}
 sim.ui.dialogs = {}
 sim.ui.advisors = {}
+sim.ui.tutorial = {}
 sim.hotkeys = {}
 sim.fastsave = {}
 sim.autosave = {}
