@@ -179,7 +179,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent)
   _d.drawEntertainment();
   _d.drawSentiment();
 
-  add<HelpButton>( Point( 12, height() - 39 ), "advisor_chief" );
+  add<HelpButton>(Point(12, height() - 39), "advisor_chief");
 }
 
 void Chief::setupUI(const VariantMap& ui)
@@ -187,29 +187,28 @@ void Chief::setupUI(const VariantMap& ui)
   Base::setupUI( ui );
 }
 
-void Chief::Impl::initRows( Widget* parent, int width )
+void Chief::Impl::initRows(Widget* parent, int width)
 {
-  Rect rowRect( rows.startPoint, Size( width-rows.startPoint.x()*2, rows.relHeight ) );
-  for(const auto& row : Advice::row )
-  {
-    rows[ row.first ] = &parent->add<InfomationRow>( row.second, rowRect );
-    rowRect += Point( 0, rows.relHeight );
+  Rect rowRect(rows.startPoint, Size(width-rows.startPoint.x()*2, rows.relHeight));
+  for (const auto& row : Advice::row) {
+    rows[row.first] = &parent->add<InfomationRow>(row.second, rowRect);
+    rowRect += Point(0, rows.relHeight);
   }
 }
 
-void Chief::draw( gfx::Engine& painter )
+void Chief::draw(gfx::Engine& painter)
 {
-  if( !visible() )
+  if (!visible())
     return;
 
-  Window::draw( painter );
+  Window::draw(painter);
 }
 
-void Chief::Impl::drawReportRow(Advice::Type type, const ColoredStrings& strings )
+void Chief::Impl::drawReportRow(Advice::Type type, const ColoredStrings& strings)
 {
-  auto it = rows.find( type );
-  if( it != rows.end() )
-    it->second->setReasons( strings );
+  auto it = rows.find(type);
+  if (it != rows.end())
+    it->second->setReasons(strings);
 }
 
 void Chief::Impl::drawEmploymentState()
@@ -218,28 +217,22 @@ void Chief::Impl::drawEmploymentState()
   int workless = city->statistic().workers.worklessPercent();
   ColoredStrings reasons;
 
-  if( city->states().population == 0 )
-  {
+  if (city->states().population == 0) {
     reasons.addIfValid( {"##no_people_in_city##", ColorList::brown} );
-  }
-  else
-  {
+  } else {
     int needWorkersNumber = wInfo.need - wInfo.current;
-    if( needWorkersNumber > 10 )
-    {
-      reasons.addIfValid( { fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber ),
-                            ColorList::brown } );
+    if (needWorkersNumber > 10) {
+      reasons.addIfValid( {fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber ),
+                           ColorList::brown} );
+    } else if(workless > bigWorklessPercent) {
+      reasons.addIfValid( {fmt::format( "{} {}%", _("##advchief_workless##"), workless ),
+                           ColorList::brown } );
+    } else {
+      reasons.addIfValid({"##advchief_employers_ok##", ColorList::black});
     }
-    else if( workless > bigWorklessPercent )
-    {
-      reasons.addIfValid( { fmt::format( "{} {}%", _("##advchief_workless##"), workless ),
-                            ColorList::brown } );
-    }
-    else
-      reasons.addIfValid( { "##advchief_employers_ok##", ColorList::black } );
   }
 
-  drawReportRow( Advice::employers, reasons );
+  drawReportRow(Advice::employers, reasons);
 }
 
 void Chief::Impl::drawProfitState()
