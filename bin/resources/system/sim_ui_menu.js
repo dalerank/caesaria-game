@@ -199,7 +199,7 @@ sim.ui.menu.enableAlarm = function(enable) {
 
 sim.ui.menu.simConfig.disaster.func = function() { g_session.setOption( "nextAlarm", true ); }
 sim.ui.menu.simConfig.messages.func = function() { g_session.setOption( "showScribes", true ); }
-sim.ui.menu.enableUndo = function(enable) { sim.ui.menu.extmenu.undo.button.enabled = enable; }
+sim.ui.menu.enableUndo = function(enable) { sim.ui.menu.extmenu.buttons.undo.enabled = enable; }
 
 sim.ui.menu.simConfig.housing.func = function() {
   sim.ui.buildmenu.hide();

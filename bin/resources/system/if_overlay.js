@@ -17,7 +17,12 @@ g_config.overlay.params = {
     reserveExpires: 13
 };
 
-function UpdateOverlayPrototype(ObjectPrototype) {
+function UpdateOverlayPrototype(ObjectPrototype, name) {
+    if (ObjectPrototype == undefined) {
+      engine.log( "WARNING !!! Cant update prototype for " + name);
+      return;
+    }
+
     Object.defineProperty(ObjectPrototype, "typename", {
         get: function () {
             return g_session.getOverlayType(this.type())
@@ -28,8 +33,8 @@ function UpdateOverlayPrototype(ObjectPrototype) {
     }
 }
 
-function UpdateWorkingBuildingPrototype(ObjectPrototype) {
-    UpdateOverlayPrototype(ObjectPrototype)
+function UpdateWorkingBuildingPrototype(ObjectPrototype, name) {
+    UpdateOverlayPrototype(ObjectPrototype, name);
 
     Object.defineProperty(ObjectPrototype, "active", {
         get: function () {
@@ -41,8 +46,8 @@ function UpdateWorkingBuildingPrototype(ObjectPrototype) {
     })
 }
 
-function UpdateTemplePrototype(ObjectPrototype) {
-    UpdateWorkingBuildingPrototype(ObjectPrototype)
+function UpdateTemplePrototype(ObjectPrototype, name) {
+    UpdateWorkingBuildingPrototype(ObjectPrototype, name);
     Object.defineProperty(ObjectPrototype, "big", {
         get: function () {
             return this.size().w > 2
@@ -50,8 +55,8 @@ function UpdateTemplePrototype(ObjectPrototype) {
     })
 }
 
-function UpdateFactoryPrototype(ObjectPrototype) {
-    UpdateWorkingBuildingPrototype(ObjectPrototype);
+function UpdateFactoryPrototype(ObjectPrototype, name) {
+    UpdateWorkingBuildingPrototype(ObjectPrototype, name);
     Object.defineProperty(ObjectPrototype, "effiency", {
         get: function () {
             return this.getProperty("effiency");
@@ -71,47 +76,47 @@ function UpdateFactoryPrototype(ObjectPrototype) {
     })
 }
 
-function UpdateServiceBuildingPrototype(ObjectPrototype) {
-    UpdateWorkingBuildingPrototype(ObjectPrototype);
+function UpdateServiceBuildingPrototype(ObjectPrototype, name) {
+    UpdateWorkingBuildingPrototype(ObjectPrototype, name);
 }
 
-function UpdateEntertainmentBuildingPrototype(ObjectPrototype) {
-    UpdateServiceBuildingPrototype(ObjectPrototype);
+function UpdateEntertainmentBuildingPrototype(ObjectPrototype, name) {
+    UpdateServiceBuildingPrototype(ObjectPrototype, name);
 }
 
-function UpdateTrainingBuildingPrototype(ObjectPrototype) {
-    UpdateWorkingBuildingPrototype(ObjectPrototype);
+function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {
+    UpdateWorkingBuildingPrototype(ObjectPrototype, name);
 }
 
 /***************** Overlays ******************/
-UpdateOverlayPrototype(Overlay.prototype);
-UpdateOverlayPrototype(Ruins.prototype);
-UpdateOverlayPrototype(House.prototype);
-UpdateOverlayPrototype(Gatehouse.prototype);
-UpdateOverlayPrototype(Reservoir.prototype);
-UpdateOverlayPrototype(FortArea.prototype);
+UpdateOverlayPrototype(Overlay.prototype, "Overlay");
+UpdateOverlayPrototype(Ruins.prototype, "Ruins");
+UpdateOverlayPrototype(House.prototype, "House");
+UpdateOverlayPrototype(Gatehouse.prototype, "Gatehouse");
+UpdateOverlayPrototype(Reservoir.prototype, "Reservoir");
+UpdateOverlayPrototype(FortArea.prototype, "FortArea");
 
 /**************** Working buildings **********/
-UpdateWorkingBuildingPrototype(Senate.prototype);
-UpdateWorkingBuildingPrototype(WorkingBuilding.prototype);
-UpdateWorkingBuildingPrototype(Dock.prototype);
-UpdateWorkingBuildingPrototype(Warehouse.prototype);
-UpdateWorkingBuildingPrototype(Granary.prototype);
-UpdateWorkingBuildingPrototype(Fort.prototype);
+UpdateWorkingBuildingPrototype(Senate.prototype, "Senate");
+UpdateWorkingBuildingPrototype(WorkingBuilding.prototype, "WorkingBuilding");
+UpdateWorkingBuildingPrototype(Dock.prototype, "Dock");
+UpdateWorkingBuildingPrototype(Warehouse.prototype, "Warehouse");
+UpdateWorkingBuildingPrototype(Granary.prototype, "Granary");
+UpdateWorkingBuildingPrototype(Fort.prototype, "Fort");
 
 /*************** Training buildings ************/
-UpdateTrainingBuildingPrototype(Barracks.prototype);
-UpdateTrainingBuildingPrototype(WorkshopChariot.ptototype);
+UpdateTrainingBuildingPrototype(Barracks.prototype, "Barracks");
+UpdateTrainingBuildingPrototype(WorkshopChariot.prototype, "WorkshopChariot");
 
 /*************** Service buildings ************/
-UpdateServiceBuildingPrototype(Fountain.prototype);
-UpdateServiceBuildingPrototype(Market.prototype);
+UpdateServiceBuildingPrototype(Fountain.prototype, "Fountain");
+UpdateServiceBuildingPrototype(Market.prototype, "Market");
 
 /*************** Other buildings **************/
-UpdateTemplePrototype(Temple.prototype);
-UpdateFactoryPrototype(Factory.prototype);
+UpdateTemplePrototype(Temple.prototype, "Temple");
+UpdateFactoryPrototype(Factory.prototype, "Factory");
 
 /*************** Entertainment buildings ******************/
-UpdateEntertainmentBuildingPrototype(EntertainmentBuilding.prototype);
-UpdateEntertainmentBuildingPrototype(Therater.prototype);
-UpdateEntertainmentBuildingPrototype(Amphitheater.prototype);
+UpdateEntertainmentBuildingPrototype(EntertainmentBuilding.prototype, "EntertainmentBuilding");
+UpdateEntertainmentBuildingPrototype(Theater.prototype, "Theater");
+UpdateEntertainmentBuildingPrototype(Amphitheater.prototype, "Amphitheater");

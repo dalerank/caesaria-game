@@ -479,6 +479,8 @@ void engine_js_Log(js_State *J)
     case 4: Logger::fatal(text); break;
     default: Logger::warning(text); break;
     }
+  } else if (js_isundefined(J, 1)) {
+    Logger::warning("Try to print undefined object");
   }
 
   js_pushundefined(J);
