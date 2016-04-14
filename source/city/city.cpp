@@ -543,6 +543,7 @@ Variant PlayerCity::getProperty(const std::string& name) const
   if (name == "roadExit") return getBorderInfo(roadExit).pos();
   if (name == "roadEntry") return getBorderInfo(roadEntry).pos();
   if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
+  if (name == "mayorRank") return (int)mayor()->rank();
 
   return Variant();
 }
