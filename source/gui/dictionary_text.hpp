@@ -103,7 +103,6 @@ protected:
   virtual void _handleClick(const Point& p);
 
   gfx::Picture& _textPicture();
-  gfx::Pictures& _backgroundRef();
 
 private:
   void _init();

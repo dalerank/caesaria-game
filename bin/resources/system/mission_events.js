@@ -6,6 +6,10 @@ function OnMissionWin() {
     sim.ui.missionWin()
 }
 
+function OnExitSplashScreen() {
+  
+}
+
 function OnMissionStart() {
     sim.start()
 }

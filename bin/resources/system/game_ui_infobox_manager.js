@@ -14,7 +14,7 @@ game.ui.infobox.show = function(typename,location)
   case "roadBlock": case "elevation": case "aqueduct":
   case "garden": case "statue_small": case "statue_middle":
   case "statue_big": case "native_hut": case "native_field":
-  case "native_center": case "high_bridge": case "fortification":
+  case "native_center": case "fortification":
   case "wall":
     game.ui.infobox.aboutObject(typename);
   break;
@@ -91,16 +91,13 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutReservoir(location);
   break;
 
-  case "low_bridge":
+  case "low_bridge": case "high_bridge":
     game.ui.infobox.aboutObject(typename,_u("bridge_extends_city_area"))
   break;
 
-  case "collapsed_ruins": case "burned_ruins": case "plague_ruins":
+  case "collapsed_ruins": case "burned_ruins":
+  case "plague_ruins", "burning_ruins":
     game.ui.infobox.aboutRuins(location)
-  break;
-
-  case "burning_ruins":
-    game.ui.infobox.aboutObject(typename,_u("this_fire_can_spread"))
   break;
 
   case "warehouse":

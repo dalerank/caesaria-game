@@ -90,22 +90,22 @@ public:
 PlayerCity::PlayerCity(world::EmpirePtr empire)
   :  City( empire ), _d( new Impl )
 {
-  LOG_CITY.warn( "Start initialize" );
+  LOG_CITY.warn("Start initialize");
 
-  setBorderInfo( roadEntry, TilePos( 0, 0 ) );
-  setBorderInfo( roadExit, TilePos( 0, 0 ) );
-  setBorderInfo( boatEntry, TilePos( 0, 0 ) );
-  setBorderInfo( boatExit, TilePos( 0, 0 ) );
+  setBorderInfo(roadEntry, TilePos(0, 0));
+  setBorderInfo(roadExit,  TilePos(0, 0));
+  setBorderInfo(boatEntry, TilePos(0, 0));
+  setBorderInfo(boatExit,  TilePos(0, 0));
 
-  _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->funds.resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
-  _d->funds.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->funds.setTaxRate(econ::Treasury::defaultTaxPrcnt);
   _d->states.age = 0;
-  _d->statistic.createInstance( *this );
+  _d->statistic.createInstance(*this);
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
-  _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
+  _d->empMapPicture.load(ResourceGroup::empirebits, 1);
 
   _d->services.initialize( this, ":/services.model" );
 
@@ -543,6 +543,7 @@ Variant PlayerCity::getProperty(const std::string& name) const
   if (name == "roadExit") return getBorderInfo(roadExit).pos();
   if (name == "roadEntry") return getBorderInfo(roadEntry).pos();
   if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
+  if (name == "mayorRank") return (int)mayor()->rank();
 
   return Variant();
 }

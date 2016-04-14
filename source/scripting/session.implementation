@@ -56,7 +56,10 @@ DEFINE_OBJECT_FUNCTION_2(Emperor,updateRelation,std::string,int)
 DEFINE_OBJECT_FUNCTION_3(Emperor,sendGift,std::string,std::string,int)
 
 DEFINE_OBJECT_GETTER_0(Player,int,money)
+DEFINE_OBJECT_GETTER_0(Player,int,salary)
+DEFINE_OBJECT_GETTER_0(Player,GovernorRank::Level,rank)
 DEFINE_OBJECT_FUNCTION_1(Player,appendMoney,int)
+DEFINE_OBJECT_FUNCTION_1(Player,setSalary,int)
 
 DEFINE_OBJECT_GETTER_0(Camera,int,centerX)
 DEFINE_OBJECT_GETTER_0(Camera,int,centerZ)

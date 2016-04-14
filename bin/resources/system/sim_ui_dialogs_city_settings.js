@@ -145,7 +145,7 @@ sim.ui.dialogs.citySettings.config = [
 {    base: "city_mines_collapse",    states: ["off", "on"],    group: "city",    flag: "minesMayCollapse"  },
 {    base: "draw_svk_border",    states: ["off", "on"],    group: "city",    flag: "svkBorderEnabled"  },
 {    base: "city_farm_use_meadow",    states: ["off", "on"],    group: "city",    flag: "farmUseMeadows"  },
-{    base: "city_fire_risk",    group: "risks",    flag: "fireCoeff"  },
+{    base: "city_fire_risk",    group: "risks",    flag: "fireKoeff"  },
 {    base: "city_collapse_risk",    group: "risks",    flag: "collapseKoeff"  },
 {    base: "city_df",    states: ["fun", "easy", "simple", "usual", "nicety", "hard", "impossible"],    group: "city",    flag: "difficulty"  },
 {    base: "city_batching",    states: ["off", "on"],    group: "game",    flag: "batching"  },

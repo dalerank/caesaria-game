@@ -552,13 +552,13 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
   richText.text += whitespace;
   richText.text += word;
 
-  dline.push_back( richText );
-  brokenText.push_back( dline );
+  dline.push_back(richText);
+  brokenText.push_back(dline);
 
   int lineHeight = font.current.getTextSize("A").height() + text.lineOffset;
-  int maxValue = std::max<int>( brokenText.size() * lineHeight - wdgSize.height(), 0);
-  scrollbar->setMaxValue( maxValue );
-  scrollbar->setEnabled( maxValue > 0  );
+  int maxValue = std::max<int>(brokenText.size() * lineHeight - wdgSize.height(), 0);
+  scrollbar->setMaxValue(maxValue);
+  scrollbar->setVisible(maxValue > 0);
 }
 
 void DictionaryText::Impl::setOffset(int value)
@@ -570,11 +570,11 @@ void DictionaryText::Impl::setOffset(int value)
 //! Sets the new caption of this element.
 void DictionaryText::setText(const string& newText)
 {
-  Widget::setText( newText );
+  Widget::setText(newText);
 
   _d->yoffset = 0;
-  _d->scrollbar->setValue( 0 );
-  _d->breakText( text(), size() );
+  _d->scrollbar->setValue(0);
+  _d->breakText(text(), size());
   _d->flags.invalidate = true;
 }
 
