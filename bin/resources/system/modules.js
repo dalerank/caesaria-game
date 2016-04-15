@@ -57,6 +57,7 @@ var modules = [
     "sim_ui_dialogs_city_settings",
     "sim_ui_dialogs_speed_settings",
     "sim_ui_dialogs_gift_emperor",
+    "sim_ui_dialogs_scribesmessages",
     "sim_ui_topmenu_debug",
     "sim_ui_topmenu",
     "sim_ui_buildmenu",
