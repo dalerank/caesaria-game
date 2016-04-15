@@ -36,3 +36,4 @@
 #include "gui/scribesmessages.hpp"
 #include "gui/city_donation_window.hpp"
 #include "gui/advisor_request_button.hpp"
+#include "gui/helper.hpp"

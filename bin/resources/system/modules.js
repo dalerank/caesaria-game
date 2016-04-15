@@ -63,6 +63,7 @@ var modules = [
     "sim_ui_rpanel",
     "sim_ui_menu",
     "sim_ui_shortmenu",
+    "sim_ui_tutorial",
     "sim_hotkeys",
     "mission_common",
     "lobby",

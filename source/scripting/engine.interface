@@ -5,5 +5,6 @@ DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engine_js_GetOption,"getOption",1);
   REGISTER_FUNCTION(engine_js_SetOption,"setOption",1);
   REGISTER_FUNCTION(engine_js_SetVolume,"setVolume",2);
+  REGISTER_FUNCTION(engine_js_Load,"load",1);
   REGISTER_FUNCTION(engine_js_LoadArchive, "loadArchive", 2);
 REGISTER_GLOBAL_OBJECT(engine)
