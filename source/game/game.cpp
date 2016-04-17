@@ -239,13 +239,22 @@ void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
   config::tilemap.cell.setWidth( cellWidth );
 }
 
-void Game::Impl::initFontCollection( bool& isOk, std::string& result )
+void Game::Impl::initFontCollection(bool& isOk, std::string& result)
 {
-  Logger::warning( "Game: load fonts" );
+  Logger::warning("Game: load fonts");
 
-  vfs::Path resourcePath = SETTINGS_RC_PATH( fontsDirectory );
-  std::string fontname = SETTINGS_STR( font );
-  FontCollection::instance().initialize( resourcePath, fontname );
+  vfs::Directory fontsFolder = SETTINGS_RC_PATH(fontsDirectory);
+  std::string fontname = SETTINGS_STR(font);
+
+  vfs::Path mainFont = fontsFolder/fontname;
+  if (!mainFont.exist()) {
+    std::string error = fmt::format( "Font {0} not found and will be set to default", mainFont.toString() );
+    OSystem::error( "WARNING", error);
+    fontname = SETTINGS_STR(defaultFont);
+    SETTINGS_SET_VALUE(font, fontname);
+  }
+
+  FontCollection::instance().initialize(fontsFolder, fontname);
 }
 
 void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
@@ -445,6 +454,7 @@ bool Game::exec()
   __D_REF(d,Game)
   if (d.currentScreen && d.currentScreen->getScreenType() == d.nextScreen)
   {
+    script::Core::synchronize();
     if (!d.currentScreen->update(d.engine))
     {
       delete d.currentScreen;

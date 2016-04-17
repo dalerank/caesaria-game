@@ -1,4 +1,5 @@
 TEMPLATE_WIDGET_IMPLEMENTATION(PushButton)
+DEFINE_OBJECT_FUNCTION_0(PushButton,fitToImage)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setBackgroundStyle,std::string)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setIconMask,int)
 DEFINE_OBJECT_FUNCTION_1(PushButton,setTextOffset,Point)

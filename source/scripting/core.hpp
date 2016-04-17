@@ -32,6 +32,7 @@ class Core
 public:
   static Core& instance();
   static void loadModule( const std::string& path );
+  static void synchronize();
   static void execFunction(const std::string& funcname);
   static void execFunction(const std::string& funcname,
                            const VariantList& params);                           

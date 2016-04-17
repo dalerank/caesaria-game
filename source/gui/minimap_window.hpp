@@ -35,24 +35,32 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap( Widget* parent, const Rect& rect, PlayerCityPtr city,
-           const gfx::Camera& camera, const Size& size=Size() );
+  Minimap(Widget* parent);
+  Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city,
+          const Size& size=Size() );
 
-  void setCenter( Point pos );
+  void setCenter(Point pos);
+  void setTileCenter(const TilePos& tpos);
 
   virtual void draw( gfx::Engine& painter);
   virtual bool onEvent(const NEvent &event);
   virtual void beforeDraw( gfx::Engine& painter );
 
-  void saveImage( const std::string& filename ) const;
+  void setCity(PlayerCityPtr city);
+  void setSize(const Size& size);
+  void saveImage(const std::string& filename) const;
   void update();
 
 public signals:
   Signal1<TilePos>& onCenterChange();
+  Signal2<Widget*, TilePos>& onCenterChangeEx();
   Signal1<int>& onZoomChange();
+  Signal2<Widget*, int>& onZoomChangeEx();
 
 private:
   virtual bool _onMousePressed( const NEvent::Mouse& event);
+  virtual void _finalizeResize();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

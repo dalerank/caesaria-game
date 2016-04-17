@@ -22,20 +22,18 @@
 #include "core/direction.hpp"
 #include "core/signals.hpp"
 #include "gfx/tilepos.hpp"
+#include "gfx/predefinitions.hpp"
 
 namespace gfx
 {
 
-class Tile;
-class TilesArray;
-
 class Camera
 {
 public:
-  virtual Tile* at( const TilePos& p ) const = 0;
-  virtual Tile* at( const Point& p, bool overborder ) const = 0;
+  virtual Tile* at(const TilePos& p) const = 0;
+  virtual Tile* at(const Point& p, bool overborder) const = 0;
   virtual Point offset() const = 0;
-  virtual Point mpos( const Point& p ) const = 0;
+  virtual Point mpos(const Point& p) const = 0;
   virtual void move(PointF relative) = 0;
   virtual void moveRight(const int amount) = 0;
   virtual void moveLeft(const int amount) = 0;
@@ -52,19 +50,24 @@ public:
   virtual int scrollSpeed() const = 0;
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
-  virtual void setZoom( int amount ) = 0;
-  virtual void changeZoom( int delta ) = 0;
+  virtual void setZoom(int amount) = 0;
+  virtual void changeZoom(int delta) = 0;
   virtual int maxZoom() const = 0;
   virtual int zoom() const = 0;
-  virtual void setCenter( TilePos pos, bool checkCorner ) = 0;
-  virtual void setCenter( TilePos pos ) { setCenter( pos, true ); }
+  virtual void setCenter(TilePos pos, bool checkCorner) = 0;
+  virtual void setCenter(TilePos pos) { setCenter(pos, true); }
   virtual void refresh() = 0;
+  virtual void addProperty(const std::string& name, Variant v) = 0;
+  virtual Variant getProperty(const std::string& name) const = 0;
 
   virtual ~Camera() {}
 
 public signals:
   virtual Signal1<Point>& onPositionChanged() = 0;
   virtual Signal1<Direction>& onDirectionChanged() = 0;
+  virtual Signal2<Camera*, Point>& onPositionChangedEx() = 0;
+  virtual Signal2<Camera*, TilePos>& onLocationChangedEx() = 0;
+  virtual Signal2<Camera*, Direction>& onDirectionChangedEx() = 0;
 };
 
 } //end namespace gfx

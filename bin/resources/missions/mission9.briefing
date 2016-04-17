@@ -4,16 +4,16 @@
   title : "##briefing_nineth_title##"
 
   items : {
-    damascus : {
-      title : "##damascus_title##"
-      location : [ 570, 280 ]
-      mission : ":/missions/damascus.mission"
-    }
-
     caesarea : {
       title : "##caesarea_title##"
       mission : ":/missions/caesarea.mission"
       location : [ 20, 320 ]
+    }
+	
+    damascus : {
+      title : "##damascus_title##"
+      location : [ 570, 280 ]
+      mission : ":/missions/damascus.mission"
     }
   }
 }

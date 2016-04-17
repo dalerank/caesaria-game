@@ -1,0 +1,11 @@
+{
+ title : "##fort##"
+ sound : "fanfare"
+ text : "Les forts abritent les légions chargées de défendre votre cité contre les envahisseurs. Lorsque vous construisez un nouveau fort, vous devez indiquer s'il est destiné aux légionnaires, aux auxiliaires montés ou aux auxiliaires armés de javelots. Pour plus de détails sur ces différents types de troupe, voir la rubrique @Guerre et paix&. Si votre cité dispose d'une @caserne& en service, les soldats rejoignent le nouveau fort dès qu'ils ont terminé leur formation. Lorsque 16 soldats se tiennent sur l'esplanade du fort, la légion est prête à agir. Les légionnaires préfèrent rester dans le fort lorsque leurs services ne sont pas requis et doivent absolument y retourner à l'issue d'une bataille. La santé et le moral des soldats s'améliorent progressivement lorsqu'ils restent au fort. C'est là que les pertes sont comblées. Consultez votre @conseiller militaire& pour passer en revue vos troupes. Une province peut abriter six forts au maximum. Etant donné le bruit et le danger qu'ils génèrent, les forts ont l' impact négatif le plus important sur les autres bâtiments. Placez-les en dehors de votre cité. Les forts ne nécessitent pas d'accès à la route et ne risquent pas de s'écrouler ou de prendre feu. \n\nCliquez @ici& pour afficher un bref historique des forts Romains."
+ uri : {
+  "Guerre et paix" : "peace_and_war"
+  "caserne" : "barracks"
+  "conseiller militaire" : "legion_advisor"
+  "ici" : "fort_history"
+ }
+}

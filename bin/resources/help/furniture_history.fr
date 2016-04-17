@@ -1,0 +1,5 @@
+{
+ title : "##furniture##"
+ sound : "fanfare"
+ text : "Même les villas les plus grandes et les plus luxueuses ne disposaient que de peu de meubles. Les Romains préféraient être couchés, même pour manger, et leurs demeures étaient donc surtout remplies de coussins. Les quelques tables, chaises et lits étaient extrêmement simples, et souvent fabriqués maison par des esclaves. L'industrie Romaine du meuble était mineure et très spécialisée, et ses produits constituaient plus des curiosités que des nécessités."
+}

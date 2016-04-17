@@ -1,0 +1,10 @@
+{
+ title : "##well##"
+ sound : "fanfare"
+ text : "Seuls les quartiers les plus pauvres doivent compter sur des puits pour la @distribution de l'eau&. Creusez des puits là où la construction d'une @fontaine &semble irréalisable. Les puits permettent aux logements de progresser plus vite qu'en l'absence de toute source d'eau. Toutefois, ces logements ne pourront jamais évoluer de manière significative. Les puits desservent une zone plus réduite que toutes les autres sources de distribution. \n\tLes puits n'ont pas besoin de routes d'accès à la main-d'œuvre mais alourdissent légèrement les besoins en personnel de votre service de distribution de l'eau. \n\nCliquez @ici& pour obtenir un historique des puits dans l'Empire Romain."
+ uri : {
+  "distribution de l'eau" : "water_supply"
+  "fontaine " : "fountain"
+  "ici" : "well_history"
+ }
+}

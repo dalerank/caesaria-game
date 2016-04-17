@@ -1,0 +1,13 @@
+{
+ title : "##pottery_workshop##"
+ sound : "fanfare"
+ text : "C'est ici que les potiers travaillent l'argile provenant des @puits d'argile& dont dispose votre province. \n\tLes ateliers doivent avoir des employés ainsi qu'un accès à la route. Cependant, ils n'ont pas besoin d'être approvisionnés en eau. L'argile est livrée directement par les travailleurs qui vont la chercher dans les puits ou dans un entrepôt. Vous serez parfois obligé d'importer de l'argile. Une fois que les poteries sont fabriquées, le personnel de l'atelier les livre à l'@entrepôt& disponible le plus proche au moyen d'une charrette. \n\tLes ateliers animés sont ceux qui sont en pleine fabrication. \n\tLes potiers peuvent stocker leur surplus d'argile à l'intérieur de l'atelier, ce qui accélère la production des poteries. L'argile est stocké dans la cour de l'atelier de poterie. \n\tLes poteries peuvent être échangées contre de l'argent. Elles servent à agrémenter les habitations de vos citoyens. Ainsi, si les belles maisons viennent à manquer de poteries pendant un certain temps, elles perdent leur statut. Plus les cités sont grandes, plus le besoin en poteries est important. \n\tSi vous exportez des poteries, demandez à votre @conseiller commercial& de définir la quantité spécifique de poteries à conserver dans votre entrepôt. Les vendeurs du marché vont chercher les poteries aux entrepôts et les apportent au marché, où ils les distribuent aux citoyens. \n\tLes ateliers de poteries rendent les quartiers avoisinants peu attrayants. \n\tUn puits d'argile peut facilement approvisionner deux ateliers. \n\tConsultez les informations de la rubrique @Marché& pour savoir comment faire parvenir aux gens les biens stockés dans les entrepôts. La rubrique @Commerce& vous fournira des informations utiles si vous prévoyez d'exporter des poteries ou d'importer de l'argile. \n\nPour en savoir plus sur les poteries de l'Empire Romain, cliquez @ici&."
+ uri : {
+ "puits d'argile" : "clay_pit"
+  "entrepôt" : "warehouse"
+  "conseiller commercial" : "trade_advisor"
+  "Marché" : "market"
+  "Commerce" : "trade"
+  "ici" : "pottery_history"
+ }
+}

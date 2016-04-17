@@ -90,51 +90,52 @@ public:
 PlayerCity::PlayerCity(world::EmpirePtr empire)
   :  City( empire ), _d( new Impl )
 {
-  LOG_CITY.warn( "Start initialize" );
+  LOG_CITY.warn("Start initialize");
 
-  setBorderInfo( roadEntry, TilePos( 0, 0 ) );
-  setBorderInfo( roadExit, TilePos( 0, 0 ) );
-  setBorderInfo( boatEntry, TilePos( 0, 0 ) );
-  setBorderInfo( boatExit, TilePos( 0, 0 ) );
+  setBorderInfo(roadEntry, TilePos(0, 0));
+  setBorderInfo(roadExit,  TilePos(0, 0));
+  setBorderInfo(boatEntry, TilePos(0, 0));
+  setBorderInfo(boatExit,  TilePos(0, 0));
 
-  _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->funds.resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
-  _d->funds.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->funds.setTaxRate(econ::Treasury::defaultTaxPrcnt);
   _d->states.age = 0;
-  _d->statistic.createInstance( *this );
+  _d->statistic.createInstance(*this);
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
-  _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
+  _d->empMapPicture.load(ResourceGroup::empirebits, 1);
 
   _d->services.initialize( this, ":/services.model" );
 
-  setOption( updateRoadsOnNextFrame, 0 );
-  setOption( godEnabled, 1 );
-  setOption( zoomEnabled, 1 );
-  setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
-  setOption( warningsEnabled, 1 );
-  setOption( fishPlaceEnabled, 1 );
-  setOption( fireKoeff, 100 );
-  setOption( collapseKoeff, 100 );
-  setOption( barbarianAttack, 0 );
-  setOption( legionAttack, 0 );
-  setOption( climateType, game::climate::central );
-  setOption( c3gameplay, 0 );
-  setOption( highlightBuilding, 1 );
-  setOption( destroyEpidemicHouses, 0 );
-  setOption( difficulty, game::difficulty::usual );
-  setOption( forestFire, 1 );
-  setOption( showGodsUnhappyWarn, 1 );
-  setOption( forestGrow, 1 );
-  setOption( warfNeedTimber, 1 );
-  setOption( riversideAsWell, 1 );
-  setOption( soldiersHaveSalary, 1 );
-  setOption( housePersonalTaxes, 1 );
-  setOption( ironInRocks, 1 );
-  setOption( farmUseMeadows, 1 );
+  setOption(updateRoadsOnNextFrame, 0);
+  setOption(godEnabled, 1);
+  setOption(zoomEnabled, 1);
+  setOption(zoomInvert, OSystem::isMac() ? 1 : 0);
+  setOption(warningsEnabled, 1);
+  setOption(fishPlaceEnabled, 1);
+  setOption(fireKoeff, 100);
+  setOption(collapseKoeff, 100);
+  setOption(barbarianAttack, 0);
+  setOption(legionAttack, 0);
+  setOption(climateType, game::climate::central);
+  setOption(c3gameplay, 0);
+  setOption(highlightBuilding, 1);
+  setOption(destroyEpidemicHouses, 0);
+  setOption(difficulty, game::difficulty::usual);
+  setOption(forestFire, 1);
+  setOption(showGodsUnhappyWarn, 1);
+  setOption(forestGrow, 1);
+  setOption(warfNeedTimber, 1);
+  setOption(riversideAsWell, 1);
+  setOption(soldiersHaveSalary, 1);
+  setOption(housePersonalTaxes, 1);
+  setOption(ironInRocks, 1);
+  setOption(farmUseMeadows, 1);
+  setOption(houseAvoidPlague, 0);
 
-  _setNation( world::nation::roman );
+  _setNation(world::nation::roman);
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -542,6 +543,7 @@ Variant PlayerCity::getProperty(const std::string& name) const
   if (name == "roadExit") return getBorderInfo(roadExit).pos();
   if (name == "roadEntry") return getBorderInfo(roadEntry).pos();
   if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
+  if (name == "mayorRank") return (int)mayor()->rank();
 
   return Variant();
 }

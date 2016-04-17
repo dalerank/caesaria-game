@@ -1,0 +1,14 @@
+{
+ title : "##entertainment##"
+ sound : "fanfare"
+ text : "Les loisirs sont un besoin universel et vos administrés ne font pas exception. \n\tPrévoyez des lieux de détente pour vos citoyens, tels que des @théâtres&, des @amphithéâtres& ou des @colisées&. Vous devez bien sûr prévoir également le personnel nécessaire. Construisez une école d'artistes, par exemple, tout en prévoyant un accès routier et le personnel adéquat. Vous verrez ainsi des acteurs affluer vers un théâtre ou un amphithéâtre pour jouer. Aucun artiste ne viendra perdre son temps dans votre cité si vous ne disposez pas d'une infrastructure d'accueil. \n\nLorsque les artistes traversent votre cité, ils informent les citoyens sur les divertissements du jour. Par conséquent, pour améliorer l'accès aux loisirs d'un logement, encouragez les artistes à passer dans ce quartier. Il est souvent judicieux de construire les écoles d'artistes à l'écart des théâtres pour obliger les acteurs à suivre un certain itinéraire. \n\tConsultez les @listes d'artistes& pour plus de détails sur les affectations : - d'acteurs à des théâtres ou des amphithéâtres - de gladiateurs à des amphithéâtres et des colisées - de dompteurs de lions à des colisées - de conducteurs de chars à l'hippodrome.  Lorsque vous ordonnez la construction d'un nouveau centre de loisirs, assurez-vous que votre cité dispose des artistes voulus. \n\tLes logements les plus avancés exigent un certain choix de divertissements accessibles à pied. Les quartiers ayant accès à plusieurs théâtres sont préférables aux quartiers ne pouvant accéder qu'à un seul. En outre, les quartiers dépourvus de théâtre ne pourront pas beaucoup évoluer. En revanche, une communauté ayant accès à un théâtre, un amphithéâtre, un colisée et un hippodrome peut développer les plus belles maisons. \n\tOutre l'amélioration du logement, les théâtres contribuent au @niveau culturel&. \n\nVotre @conseiller aux loisirs& peut également organiser des @festivals&. Les festivals sont dédiés à un dieu, ce qui flatte ce dernier tout en améliorant l'humeur de vos citoyens. En fait, un festival est souvent une bonne méthode pour faire plaisir à vos administrés, ce qui est utile de temps à autre. \n\tIl y a trois types de festivals. Plus le festival est important, plus il est cher et plus il demandera de temps à votre conseiller aux loisirs. Le festival le plus important, le festival grandiose, nécessite de suffisamment de vin pour tous vos citoyens et ne saurait être envisagé si vos entrepôts ne possèdent pas les stocks suffisants."
+ uri : {
+  "théâtres" : "theater"
+  "amphithéâtres" : "amphitheater"
+  "colisées" : "colosseum"
+  "listes d'artistes" : "actorColony"
+  "niveau culturel" : "ratings"
+  "conseiller aux loisirs" : "entertainment_advisor"
+  "festivals" : "entertainment_advisor"
+ }
+}

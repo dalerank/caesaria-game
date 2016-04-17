@@ -1,0 +1,10 @@
+{
+ title : "##road_caption##"
+ sound : "fanfare"
+ text : "Au départ, les nouvelles routes ne sont que de vulgaires chemins de terre battue. Lorsque le prix des propriétés augmente, les citoyens pavent ces chemins et les transforment en routes. Dans les quartiers les plus riches, vous pouvez augmenter encore plus la valeur des propriétés en couvrant les routes de @plazas&. \n\tLes routes longues et droites sont meilleures pour la circulation que les petites routes (comprenant de nombreux virages et intersections). \n\nLes @citoyens au travail &répandent leur influence lorsqu'ils parcourent les routes de la cité. Tous les bâtiments qui envoient des citoyens dans les quartiers environnants doivent avoir accès à une route. Les autres bâtiments doivent être situés dans un rayon de deux carrés pour bénéficier de la visite de ces promeneurs. Seules quelques structures - notamment les bâtiments de gestion de l'eau, les forts, les murs, les jardins et les statues - peuvent être implantées loin des routes. Cliquez avec le bouton droit sur un bâtiment pour savoir s'il requiert un accès à la route. \n\tVotre seul contrôle sur l'itinéraire de vos citoyens est la disposition de votre réseau routier. Si les employés d'un bâtiment ne peuvent pas atteindre une propriété donnée, vous devez déplacer le bâtiment d'origine du promeneur ou ajouter ou supprimer des intersections de votre réseau routier. \n\nCliquez @ici& pour obtenir un historique des routes dans l'Empire Romain."
+ uri : {
+  "plazas" : "garden_plaza"
+  "citoyens au travail " : "worker"
+  "ici" : "road_history"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ title : "##health_and_sickness##"
+ sound : "fanfare"
+ text : "Le niveau de santé de votre cité permet de déterminer les risques d'épidémie. Des citoyens bien nourris et consultant régulièrement un docteur dans un @dispensaire& permettent généralement d'accroître le niveau de santé et de réduire les risques d'épidémie. Si le niveau de santé diminue et que des maladies se déclarent, les malades sont traités dans des @hôpitaux&. Si le nombre de lits est insuffisant, les malades ne pouvant pas être soignés sont condamnés. L'adage 'mieux vaut prévenir que guérir' prend ici toute sa dimension. Vos citoyens ne sont pas aussi stupides qu'ils en ont l'air et les habitants des quartiers les plus modestes nécessitent également un accès régulier aux dispensaires. Vous avez donc le devoir d'en construire. Seuls les citoyens riches sont suffisamment paranoïaques pour exiger en plus un accès à l'hôpital. \n\nLes thermes et les barbiers contribuent davantage au bien-être qu'à la santé de la population. Ils sont cependant fort appréciés dans les quartiers les plus favorisés. Quels que soient vos talents de gouverneur, vous n'échappez pas aux risques de peste. Votre cité peut être frappée à tout moment, sans avertissement. Heureusement, ce type d'épidémie reste rare. Méfiez-vous particulièrement de la colère de Vénus qui n'hésite pas à répandre la peste dans les cités qui lui manquent de respect. Si votre cité comporte suffisamment d'hôpitaux, les malades peuvent être soignés. Si la répartition des hôpitaux n'est pas adéquate ou si les hôpitaux ne disposent pas de suffisamment de personnel, une partie de vos citoyens est condamnée. Ces morts prématurées et totalement inutiles ne font rien pour améliorer l'humeur de votre cité. N'oubliez pas de consulter votre @conseiller d'hygiène& de temps à autre."
+ uri : {
+  "dispensaire" : "clinic"
+  "hôpitaux" : "hospital"
+  "conseiller d'hygiène" : "health_advisor"
+ }
+}

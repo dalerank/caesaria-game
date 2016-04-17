@@ -1,0 +1,8 @@
+{
+ title : "##missionary_post##"
+ sound : "fanfare"
+ text : "Lorsque César vous nomme gouverneur d'une province déjà habitée par des tribus indigènes, vous avez la possibilité d'y construire une mission. Cette mission doit avoir accès à la route et de la main-d'œuvre. Une fois installée, une mission envoie un de ces membres établir un contact avec les indigènes. Le missionnaire tente de leur expliquer que les Romains ne leur veulent aucun mal et qu'il ne faut pas les combattre. Utilisez la @carte Risques& pour visualiser les terres qu'ils réclament. Construisez la mission sur 'leur' territoire, comme symbole de vos intentions pacifiques. Une fois qu'ils vous auront acceptés, ils feront du commerce avec vous. Après cela, vous pourrez construire en toute sécurité d'autres structures sur leurs terres."
+ uri : {
+  "carte Risques" : "special_card_selection"
+ }
+}

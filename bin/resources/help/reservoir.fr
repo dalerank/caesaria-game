@@ -1,0 +1,14 @@
+{
+ title : "##reservoir##"
+ sound : "fanfare"
+ text : "Les réservoirs sont à la base du système de @distribution des eaux& de votre cité. Ils doivent être situés près d'un fleuve ou de la côte, ou reliés par un @aqueduc& à un autre réservoir alimenté correctement. Lorsque vous déplacez votre curseur au-dessus d'une source d'eau, l'image verte associée au curseur se remplit d'eau. \n\tLe réseau de tuyaux des réservoirs couvre une vaste zone. Les @fontaines& et les @thermes& doivent impérativement avoir accès à ces tuyaux pour fonctionner. Lorsque vous construisez un nouveau réservoir près d'une source d'eau et que ce dernier dispose d'une @main-d'œuvre spécialisée&, consultez la @carte Eau& pour afficher le réseau de canalisations. Les réservoirs comptent parmi les rares bâtiments qui n'ont pas besoin d'accès à la route ou à la main-d'œuvre. Les réservoirs ne sont pas appréciés près des logements. \n\nCliquez @ici& pour obtenir un historique des réservoirs dans l'Empire Romain."
+ uri : {
+  "distribution des eaux" : "water_supply"
+  "aqueduc" : "aqueduct"
+  "fontaines" : "fountain_history"
+  "thermes" : "baths"
+  "main-d'œuvre spécialisée" : "labor_advisor"
+  "carte Eau" : "special_card_selection"
+  "ici" : "reservoir_history"
+ }
+}

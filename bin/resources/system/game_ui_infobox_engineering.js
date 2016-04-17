@@ -13,13 +13,22 @@ game.ui.infobox.aboutObject = function(typename,info) {
 
 game.ui.infobox.aboutRuins = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350)
+  ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
-  var ruins = g_session.city.getOverlay(location).as(Ruins)
+  var ruins = g_session.city.getOverlay(location).as(Ruins);
   ibox.overlay = ruins;
-  engine.log(ruins.typename)
+  engine.log(ruins.typename);
 
-  ibox.title = _u(ruins.typename)
-  ibox.setInfoText(ruins.getProperty("pinfo"))
+  ibox.title = _u(ruins.typename);
+
+  var text = _t(ruins.getProperty("pinfo"));
+  if (text[0] == "#") {
+    var defaultRuinInfo = _ut(ruins.typename + "_info");
+    text = defaultRuinInfo + "\n(was: " + text + ")";
+  }
+  
+  ibox.setInfoText(text);
+  ibox.btnInfo.display = false;
 
   ibox.show();
 }

@@ -1,0 +1,11 @@
+{
+ title : "##temple_and_oracle##"
+ sound : "fanfare"
+ text : "Le principal but d'un temple est d'attirer les faveurs de la divinité à laquelle il est dédié. Les temples ont également trois autres fonctions : -ils améliorent l'attrait du quartier environnant -ils permettent aux différents foyers d'accéder à leurs divinités (par l'intermédiaire du prêtre qui parcourt le quartier) -ils améliorent le @niveau culturel& de la cité. \n\tLes dieux se jalousent et puniront votre cité à leur manière s'ils s'estiment délaissés. Vous pouvez les satisfaire en leur dédiant des temples et en organisant régulièrement des @festivals& en leur honneur. Lorsque votre population s'accroît, les dieux exigent la construction de nouveaux temples. Un petit temple peut contenter une divinité si la population est de 750 personnes. Un grand temple est satisfaisant pour une population de 1500 personnes. Les très vastes cités ont donc besoin de plusieurs temples, grands et petits, pour satisfaire toutes les divinités. \n\tLes grands temples sont plus chers. Cependant, ils ont pour avantage de desservir une population plus importante et d'améliorer nettement l'attrait de la zone environnante. Ils nécessitent également deux charrettes de marbre. \n\nLes oracles ont une fonction religieuse plus générale. Ils améliorent la valeur des propriétés locales, de la même façon que les temples et contribuent à l'amélioration du niveau culturel. Dans la mesure où ils sont dédiés à l'ensemble des divinités, ils les satisfont toutes. Comme les grands temples, les oracles nécessitent deux charrettes de marbre. Les oracles n'emploient pas de prêtres et ne servent d'intermédiaire auprès d'aucun dieu. \n\tL'exaltation des dieux peut parfois rapporter un bonus aux adorateurs. \n\tPour qu'un logement réalise tout son potentiel, les prêtres des temples honorant les différents dieux doivent passer devant. \n\nCliquez @ici(1)& pour en savoir plus sur le concept de religion dans Caesar III. \n\nCliquez @ici(2)& pour en savoir plus sur le rôle des temples, des oracles et des dieux dans l'Empire Romain."
+ uri : {
+  "niveau culturel" : "ratings"
+  "festivals" : "entertainment_advisor"
+  "ici(1)" : "religion"
+  "ici(2)" : "temple_oracle_history"
+ }
+}

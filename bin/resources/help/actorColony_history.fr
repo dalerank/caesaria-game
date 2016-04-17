@@ -1,0 +1,5 @@
+{
+ title : "##actorColony##"
+ sound : "fanfare"
+ text : "De nombreuses cultures absorbées par Rome avaient des traditions beaucoup plus évoluées que celles de leurs conquérants. Les souffleurs de verre, les travailleurs de métaux, les sculpteurs et les forgerons pouvaient vivre de leurs talents à Rome, et de nombreux artisans menaient une vie de nomade, se déplaçant là où leurs compétences étaient requises. Les artistes et sculpteurs les plus renommés travaillaient pour le compte des classes supérieures de Rome. Certains rejoignaient même parfois les domestiques de patriciens et ne travaillaient que pour leur patron."
+}

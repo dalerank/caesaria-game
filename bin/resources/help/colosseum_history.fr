@@ -1,0 +1,10 @@
+{
+ title : "##colosseum##"
+ sound : "fanfare"
+ text : "Le Colisée était à la Rome antique ce que la Tour Eiffel est à Paris, la Statue de la Liberté à New York ou Big Ben à Londres. Il fut commencé en 70 après JC, à l'emplacement du @Domus& Aureleus de Néron, haït de tous. Dans le but d'effacer des mémoires le souvenir de son prédécesseur impopulaire, l'Empereur Vespasien fit vider le lac artificiel de Néron et ordonna qu'on y construise l'amphithéâtre Flavien (Flavius était le nom de famille de Vespasien), et qu'il y soit organisé des jeux gratuits pour les citoyens de Rome. Cet @amphithéâtre& doit son nom populaire à la proximité de la statue géante de Néron, le @Colossus Neronis&. Le nom resta même après la disparition de la statue. Le Colisée fut achevé par Titus, le fils de Vespasien, en 80 après JC, et 100 jours consécutifs de jeux s'y déroulèrent alors. \n\tLe Colisée pouvait accueillir plus de 50000 Romains qui venaient assister à des combats de gladiateurs ou d'animaux sauvages, à des jeux guerriers, et même à de mini batailles navales, à l'occasion desquelles l'amphithéâtre était rempli d'eau. Après les jeux, la foule pouvait quitter les lieux en cinq minutes en empruntant l'une des 80 sorties. Des marins expérimentés avaient tissé une immense toile capable de protéger la majorité des spectateurs de la pluie ou du soleil. Sous l'arène se trouvait un véritable labyrinthe de cellules, de cages et de passages pour les animaux et les prisonniers."
+ uri : {
+  "Domus" : "governorHouse"
+  "amphithéâtre" : "amphitheater"
+  "Colossus Neronis" : "statuary"
+ }
+}

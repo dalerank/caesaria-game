@@ -1,0 +1,13 @@
+{
+ title : "##colosseum##"
+ sound : "fanfare"
+ text : "Le colisée est un amphithéâtre imposant et très particulier consacré aux combats de gladiateurs ou de lions, sans aucune pièce de théâtre. Un colisée  nécessite une @école& de gladiateurs et un parc à lions en supplément des employés nécessaires dans la plupart des bâtiments. \n\tLes gladiateurs et les dompteurs de lions parcourent les quartiers environnants pour donner accès au colisée. Plus vous disposez de centres de loisirs faisant circuler leurs artistes près d'un groupe de maisons, plus ces maisons ont des chances d'évoluer. Les meilleurs quartiers doivent être parcourus par des acteurs, des gladiateurs et des dompteurs de lions en provenance d'un @théâtre&, d'un @amphithéâtre& et d'un colisée. Les colisées réduisent l'attrait des propriétés environnantes, en raison du bruit et du trafic généré par leurs spectacles. \n\tConsultez votre @conseiller aux loisirs& pour connaître la zone desservie par les colisées. Pour plus de détails sur un colisée, observez le parcours de ses 'artistes' sur la @carte Loisirs&. Cliquez avec le bouton droit sur un colisée pour afficher son état, y compris les jeux à l'affiche. Si les jeux sont de courtes durée, les artistes du colisée doivent probablement parcourir de longues distances. \n\nCliquez @ici& pour en savoir plus sur le véritable Colisée de Rome."
+ uri : {
+  "amphithéâtre" : "amphitheater"
+  "école" : "actorColony"
+  "théâtre" : "theater"
+  "conseiller aux loisirs" : "entertainment_advisor"
+  "carte Loisirs" : "special_card_selection"
+  "ici" : "colosseum_history"
+ }
+}

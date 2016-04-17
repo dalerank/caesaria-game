@@ -188,6 +188,15 @@ int Session::videoModesCount() const { return _game->engine()->modes().size(); }
 Size Session::getVideoMode(int index) const { return _game->engine()->modes().at(index); }
 Size Session::getResolution() const { return _game->engine()->screenSize(); }
 
+gfx::Camera* Session::getCamera() const
+{
+  scene::Level* lvl = safety_cast<scene::Level*>(_game->scene());
+  if (lvl)
+    return lvl->camera();
+
+  return nullptr;
+}
+
 void Session::setResolution(const Size& size)
 {
   SETTINGS_SET_VALUE(resolution, size);

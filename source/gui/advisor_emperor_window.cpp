@@ -224,25 +224,24 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
   GameAutoPauseWidget::insertTo( this );
   _d->isRequestsUpdated = true;
 
-  Widget::setupUI( ":/gui/emperoropts.gui" );
+  Widget::setupUI(":/gui/emperoropts.gui");
 
-  INIT_WIDGET_FROM_UI( Label*, lbTitle )
-  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavour )
-  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc )
+  INIT_WIDGET_FROM_UI(Label*, lbTitle)
+  INIT_WIDGET_FROM_UI(Label*, lbEmperorFavour)
+  INIT_WIDGET_FROM_UI(Label*, lbEmperorFavourDesc)
 
-  if( lbEmperorFavour )
+  if (lbEmperorFavour)
     lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->states().favor ) );
 
   if( lbEmperorFavourDesc )
     lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
 
-  if( lbTitle )
-  {
+  if (lbTitle) {
     std::string text = _mayor()->name();
-    if( text.empty() )
+    if (text.empty()) 
       text = _("##emperor_advisor_title##");
 
-    lbTitle->setText( text );
+    lbTitle->setText(text);
   }
 
   _updatePrimaryFunds();
@@ -252,6 +251,8 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnGiftHistory,  onClicked(), Emperor::_showGiftHistory )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnRqHistory,    onClicked(), Emperor::_showRequestsHistory )
+
+  add<HelpButton>(Point(12, height() - 39), "emperor_advisor");
 }
 
 void Emperor::draw(gfx::Engine& painter )

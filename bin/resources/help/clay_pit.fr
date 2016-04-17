@@ -1,0 +1,12 @@
+{
+ title : "##clay_pit##"
+ sound : "fanfare"
+ text : "Creusez un puits d'argile pour exporter la matière brute ou pour fabriquer de la @poterie&. Les puits d'argile doivent être situés à proximité d'une source d'eau. \n\tComme la plupart des industries, les centres de production d'argile ne sont pas des voisins enviables. Les puits d'argile doivent disposer d'une main-d'œuvre locale et d'un accès à la route pour approvisionner leurs clients. Après avoir rempli une charrette d'argile, un @employé& la pousse jusqu'à l'atelier de poterie le plus proche. Si tous les ateliers sont déjà complets ou s'ils ne travaillent pas, l'argile est transportée jusqu'à @l'entrepôt& disponible le plus proche. Vous pourrez ainsi exporter vos surplus si une @route de commerce& adéquate est ouverte. Les puits d'argile actifs sont animés. Cliquez avec le bouton droit sur l'un des puits pour connaître son statut, notamment si son activité a cessé. \n\tLa poterie est l'un des biens indispensables à la progression vers de meilleurs niveaux de logements. \n\nCliquez @ici& pour obtenir un historique de l'extraction de l'argile dans l'Empire Romain."
+ uri : {
+  "poterie" : "pottery_workshop"
+  "employé" : "worker"
+  "l'entrepôt" : "warehouse"
+  "route de commerce" : "trade"
+  "ici" : "clay_pit_history"
+ }
+}

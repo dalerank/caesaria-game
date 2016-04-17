@@ -1,17 +1,26 @@
-function Render() {
+function Render() {}
+
+Render.prototype.picture = function () {
+    var pic = new Picture()
+
+    if (arguments.length == 1) {
+        pic.load_str(arguments[0])
+    } else if (arguments.length == 2) {
+        pic.load_rcIndex(arguments[0], arguments[1])
+    }
+
+    return pic
 }
 
-Render.prototype.picture = function() {
-  var pic = new Picture()
+Object.defineProperty(Picture.prototype, "w", {
+    get: function () {
+        return this.width();
+    }
+});
+Object.defineProperty(Picture.prototype, "h", {
+    get: function () {
+        return this.height();
+    }
+});
 
-  if (arguments.length == 1) {
-    pic.load_str(arguments[0])
-  }
-  else if (arguments.length == 2) {
-    pic.load_rcIndex(arguments[0], arguments[1])
-  }
-  
-  return pic
-}
-
-var g_render = new Render()
+var g_render = new Render();

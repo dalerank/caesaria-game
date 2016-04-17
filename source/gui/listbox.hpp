@@ -57,7 +57,7 @@ public:
   virtual unsigned int itemsCount() const;
 
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
-  virtual ListBoxItem& item(unsigned int id);
+  virtual ListBoxItem& itemAt(unsigned int index);
 
   //!
   virtual ListBoxItem& selectedItem();
@@ -90,7 +90,7 @@ public:
   virtual void removeItem(unsigned int id);
 
   //! get the the id of the item at the given absolute coordinates
-  virtual int itemAt(Point pos) const;
+  virtual int findIndex(Point pos) const;
 
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor(unsigned int index, NColor color,
@@ -147,6 +147,9 @@ public:
 
   //!
   virtual Variant getItemData(unsigned int index, const std::string& name);
+
+  //!
+  virtual Rect getItemRectangle(unsigned int index);
 
   //! Insert the item at the given index
   //! Return the index on success or -1 on failure.

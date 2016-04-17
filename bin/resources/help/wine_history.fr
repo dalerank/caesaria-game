@@ -1,0 +1,5 @@
+{
+ title : "##wine##"
+ sound : "fanfare"
+ text : "Les origines du vin remontent à la préhistoire. Il a été observé que de nombreuses espèces d'animaux préféraient manger des baies fermentées. Certains anthropologues pensent même que les humains ont développé l'agriculture afin de s'assurer un approvisionnement constant en breuvages alcoolisés. L'étude des fragments des plus anciennes @198poteries retrouvées a permis de déterminer qu'elles avaient contenu du vin. Le vin était donc un breuvage déjà ancien au temps des Romains. \n\tUne orgie digne de ce nom se devait de faire couler beaucoup de vin, qui était consommé à tous les repas et à n'importe quelle heure du jour ou de la nuit. Les Romains qui ne cherchaient qu'à apaiser leur soif le coupaient avec de l'eau. Le vin était produit localement dans tout l'Empire. Tout comme aujourd'hui, il y avait déjà à l'époque des connaisseurs qui préféraient les produits de certains vignobles, et bien qu'étant un produit local, le vin était exporté sur de grandes distances."
+}

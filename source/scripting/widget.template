@@ -8,6 +8,10 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,left,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,right,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,top,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenTop,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenLeft,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenBottom,0) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,screenRight,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setTop,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setLeft,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,relativeRect,0) \
@@ -25,6 +29,7 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setVisible,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setEnabled,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setAlignment,4) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,findChild,2) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setSubElement,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setInternalName,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
@@ -40,6 +45,10 @@ DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,width) \
 DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,height) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,bottom) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,top) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenTop) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenLeft) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenBottom) \
+DEFINE_OBJECT_GETTER_0(WidgetType,int,screenRight) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,left) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
@@ -65,5 +74,6 @@ DEFINE_OBJECT_FUNCTION_1(WidgetType,setupUI,Path) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setTooltipText,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setSubElement,bool) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setProperty,std::string,Variant) \
+DEFINE_OBJECT_GETTER_2(WidgetType,findChild,std::string,bool) \
 DEFINE_OBJECT_GETTER_1(WidgetType,const Variant&,getProperty,const std::string&,"") \
 DEFINE_WIDGET_CONSTRUCTOR(WidgetType)

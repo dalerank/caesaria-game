@@ -1,0 +1,8 @@
+{
+ title : "##prefecture##"
+ sound : "fanfare"
+ text : "Faire régner l'ordre dans la cité n'était pas une tâche de tout repos. Un praefectus urbi, équivalent d'un maire, supervisait un petit groupe d'aediles, qui à leur tour organisaient des patrouilles de gardiens et de combattants du feu. L'éclairage public était quasiment inexistant, et seuls les plus téméraires osaient s'aventurer la nuit dans les rues de Rome. Les bagarres n'attiraient que rarement l'attention, sauf en cas de meurtre ou si un citoyen important y était impliqué. Les émeutes étaient fréquentes. Les empereurs avaient tendance à laisser le désordre civil se régler de lui-même, mais de grands nombres de soldats étaient constamment stationnés près de la ville afin d'éviter que les émeutes ne dégénèrent en véritables insurrections. \n\tLes incendies représentaient un sérieux danger. Les insulae, avec leurs étages supérieurs en bois, étaient construites en groupes compacts, et les Romains cuisinaient, s'éclairaient et se chauffaient uniquement avec du feu. Les citoyens réagissaient rapidement lorsqu'un incendie était signalé, en formant une chaîne de seaux jusqu'à la @fontaine& la plus proche. Mais les dommages étaient toujours très importants, quelle que soit la vitesse de réaction des combattants du feu. \n\tLe pire incendie de Rome se déclencha en 64 après JC, sous le règne de Néron. Les historiens sont partagés lorsqu'il s'agit de déterminer le degré d'implication de Néron dans cet incendie. Certains pensent qu'il aurait ordonné que le feu soit allumé. Quoi qu'il en soit, le feu n'aurait jamais pu être maîtrisé, même en donnant un seau à tous les citoyens de Rome. Plus des deux tiers de la cité furent réduits en cendres."
+ uri : {
+  "fontaine" : "fountain_history"
+ }
+}

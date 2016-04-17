@@ -1,0 +1,11 @@
+{
+ title : "##engineering_post##"
+ sound : "fanfare"
+ text : "Une étude d'ingénieurs envoie un @ingénieur& réparer et procéder à la maintenance des bâtiments. La plupart des bâtiments qui ne se trouvent pas sur le chemin de l'ingénieur risquent de s'effondrer à terme. Cependant, certaines structures telles que les réservoirs, les aqueducs, les fontaines, les puits, les jardins, les statues, les forts et les murs ne nécessitent pas l'intervention d'un ingénieur. \n\tLes études d'ingénieurs n'influencent pas le pouvoir d'attraction des logements avoisinants. \n\tVotre @conseiller en main d'œuvre& accorde généralement une priorité élevée aux ingénieurs. Utilisez la @carte Risques& pour identifier les bâtiments qui risquent de s'effondrer et pour afficher le parcours suivi par l'ingénieur. Cliquez avec le bouton droit sur une étude d'ingénieur pour connaître son statut. Les études ouvertes sont munies d'un petit drapeau bleu. \n\nCliquez sur le lien suivant pour en savoir plus sur le rôle @historique& des ingénieurs."
+ uri : {
+  "ingénieur" : "worker"
+  "conseiller en main d'œuvre" : "labor_advisor"
+  "carte Risques" : "special_card_selection"
+  "historique" : "engineering_history"
+ }
+}

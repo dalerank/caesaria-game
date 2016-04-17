@@ -1,0 +1,9 @@
+{
+ title : "##garden_plaza##"
+ sound : "fanfare"
+ text : "Les jardins et les plazas ont un rôle très simple dans Caesar III : améliorer l'attrait des logements par l'embellissement de la cité. Les jardins transforment la terre nue en un parc agréable. Les plazas recouvrent les @routes& existantes. Appliquez ces améliorations pour renforcer l'attrait d'un quartier. Les jardins n'ont pas besoin d'accès à la route. \n\nCliquez @ici& pour en savoir plus sur les parcs et les plazas dans la Rome antique."
+ uri : {
+  "routes" : "road"
+  "ici" : "garden_plaza_history"
+ }
+}

@@ -1,0 +1,9 @@
+{
+ title : "##statues_and_triumphal_arches##"
+ sound : "fanfare"
+ text : "Comme les @jardins&, les statues renforcent l'attrait d'un quartier. Les monuments dédiés à des citoyens importants et à des événements édifiants donnent une impression d'autorité et font rayonner la culture Romaine. Les statues montrent aux habitants que leur gouverneur fait des efforts pour mettre leur propriété en valeur et constituent d'agréables points de convergence ou de référence dans un quartier. \n\tL'érection d'une statue et l'aménagement d'un jardin sont des activités très similaires. Les grandes statues sont cependant plus attrayantes que les jardins. Les statues n'ont pas besoin d'accès à la route. \n\nVous ne pouvez pas ériger d'arc de triomphe avant de l'avoir mérité. Lorsque César vous ordonne de détacher vos légions pour défendre une autre cité et que ces dernières reviennent victorieuses, Rome vous récompense en vous accordant le personnel et les matériaux nécessaires à la construction d'un arc. Ce présent témoigne de la gratitude du Sénat de Rome. Votre argent n'est donc pas mis à contribution. Le bouton servant à construire le nouvel arc porte la mention 'Gouvernement'. \n\tUn arc de triomphe renforce considérablement l'attrait des zones environnantes et son rayonnement s'étend sur une distance considérable. Les arcs de triomphe sont traditionnellement construits sur une route et le trafic est possible sous l'arc. \n\nPour consulter l'historique de la sculpture Romaine, cliquez @ici&."
+ uri : {
+  "jardins" : "garden_plaza"
+  "ici" : "statuary"
+ }
+}

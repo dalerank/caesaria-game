@@ -1,0 +1,13 @@
+{
+ title : "##theater##"
+ sound : "fanfare"
+ text : "Les théâtres sont les centres de @loisirs& les plus petits et les moins chers à construire. Ils n'offrent qu'un seul type de performance - des pièces - et par conséquent ont seulement besoin @d'écoles de théâtre&. Sachez que tous les bâtiments de loisirs ont besoin d'une main-d'œuvre régulière en supplément des différents types d'artistes. \n\tLes théâtres répandent leur influence en faisant circuler les acteurs dans les quartiers environnants. Les foyers doivent avoir accès à au moins une source de loisirs pour atteindre un niveau moyen. D'autre part, la présence d'un théâtre renforce l'attrait d'un quartier. \n\tLes théâtres contribuent également à l'élévation du @niveau culturel&. \n\tConsultez votre @conseiller aux loisirs& pour connaître la zone desservie par les théâtres. Pour plus de détails sur un théâtre, observez le parcours de ses acteurs sur la @carte Loisirs&. Cliquez avec le bouton droit sur un théâtre pour afficher son statut et savoir ce qui s'y joue. Si les spectacles sont toujours de courte durée, l'école d'acteurs est probablement située trop loin. \n\nCliquez @ici& pour en savoir plus sur le rôle des théâtres dans l'Empire Romain."
+ uri : {
+  "loisirs" : "entertainment"
+  "d'écoles de théâtre" : "actorColony"
+  "niveau culturel" : "ratings"
+  "conseiller aux loisirs" : "entertainment_advisor"
+  "carte Loisirs" : "special_card_selection"
+  "ici" : "theater_history"
+ }
+}

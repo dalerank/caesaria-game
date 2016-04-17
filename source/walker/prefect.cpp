@@ -57,16 +57,18 @@ public:
   TilePos endPatrolPoint;
   Prefect::SbAction prefectAction;
   int fumigateHouseNumber;
+  bool burnPlagueHouse;
 };
 
-Prefect::Prefect(PlayerCityPtr city )
-  : ServiceWalker( city, Service::prefect ), _d( new Impl )
+Prefect::Prefect(PlayerCityPtr city)
+  : ServiceWalker(city, Service::prefect), _d(new Impl)
 {
-  _setType( walker::prefect );
+  _setType(walker::prefect);
 
   _d->water = 0;
+  _d->burnPlagueHouse = !city->getOption(PlayerCity::houseAvoidPlague);
   _d->fumigateHouseNumber = 0;
-  _setSubAction( doNothing );  
+  _setSubAction(doNothing);  
 }
 
 bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
@@ -99,8 +101,8 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->pos().distanceFrom( pos() ) < 1.5f )
     {
       turn( building->pos() );
-      _setSubAction( fightFire );
-      _setAction( acFightFire  );
+      _setSubAction(fightFire);
+      _setAction(acFightFire);
       setSpeed( 0.f );
       return true;
     }
@@ -117,7 +119,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       _setSubAction( go2fire );
       _updatePathway( tmp );      
       go();
-      _setAction( acDragWater );
+      _setAction(acDragWater);
       return true;
     }
   }
@@ -160,49 +162,50 @@ void Prefect::_back2Prefecture()
   }
 }
 
-void Prefect::_serveHouse( HousePtr house )
+void Prefect::_serveHouse(HousePtr house)
 {
-  if( !house.isValid() )
+  if (!house.isValid())
     return;
 
-  float healthLevel = house->state( pr::health );
-  if( healthLevel < 1.f )
-  {
+  if (!_d->burnPlagueHouse)
+    return;
+
+  float healthLevel = house->state(pr::health);
+  if (healthLevel < 1.f) {
     house->deleteLater();
 
     _d->fumigateHouseNumber++;
-    house->removeHabitants( 1000 ); //all habitants will killed
+    house->removeHabitants(1000); //all habitants will killed
 
-    events::dispatch<Disaster>( house->tile(), Disaster::plague );
+    events::dispatch<Disaster>(house->tile(), Disaster::plague);
 
-    if( _d->fumigateHouseNumber > 5 )
-    {
-      events::dispatch<ShowInfobox>( "##pestilence_event_title##", "##pestilent_event_text##",
-                                     true, "sick" );
+    if (_d->fumigateHouseNumber > 5) {
+      events::dispatch<ShowInfobox>("##pestilence_event_title##", "##pestilent_event_text##",
+                                    true, "sick");
       _d->fumigateHouseNumber = -999;
     }
-
-    if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
-    {
-      HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
-      for( auto h : hlist )
-      {
-        events::dispatch<Disaster>( h->tile(), Disaster::plague );
+    
+    if (_city()->getOption(PlayerCity::destroyEpidemicHouses)) {
+      HouseList hlist = _city()->statistic().objects.neighbors<House>(house);
+      for (auto h : hlist) {
+        events::dispatch<Disaster>(h->tile(), Disaster::plague);
       }
     }
   }
 }
 
-void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
-{        
-  for( auto bld : reachedBuildings )
-  {
-    if( bld.isNull() ) continue;
-    if( bld->isDeleted() ) continue;
+void Prefect::_serveBuildings(ReachedBuildings& reachedBuildings)
+{          
+  for (auto bld : reachedBuildings) {
+    if (bld.isNull())
+      continue;
+    
+    if(bld->isDeleted()) 
+      continue;
 
-    bld->applyService( this );
+    bld->applyService(this);
 
-    _serveHouse( bld.as<House>() );
+    _serveHouse(bld.as<House>());
   }
 }
 
@@ -533,24 +536,20 @@ Prefect::~Prefect() {}
 
 float Prefect::serviceValue() const {  return 5; }
 
-void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int water/*=0 */ )
+void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int water/*=0 */)
 {
   _setSubAction( water > 0 ? findFire : patrol );
   _d->water = water;
   _setAction( water > 0 ? acDragWater : acMove );
 
-  if( water > 0 )
-  {
+  if (water > 0) {
     setBase( prefecture.object() );
     attach();
-  }
-  else
-  {
+  } else {
     ServiceWalker::send2City( prefecture.object() );
   }
 
-  if( _pathway().isValid() )
-  {
+  if (_pathway().isValid()) {
     _d->endPatrolPoint = _pathway().stopPos();
   }
 }
@@ -559,12 +558,9 @@ void Prefect::send2City(BuildingPtr base, int orders)
 {
   auto prefecture = base.as<Prefecture>();
 
-  if( prefecture.isValid() )
-  {
-    send2City( prefecture, Prefect::patrol );
-  }
-  else
-  {
+  if (prefecture.isValid()) {
+    send2City(prefecture, Prefect::patrol);
+  } else {
     Logger::warning( "!!!Warning: Prefect try send from non prefecture building. Delete prefect.");
     deleteLater();
   }

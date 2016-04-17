@@ -1,0 +1,9 @@
+{
+ title : "##militaryAcademy##"
+ sound : "fanfare"
+ text : "Une académie militaire améliore la formation des soldats stationnés dans une @caserne&. L'académie permet non seulement d'améliorer les qualités guerrières des légionnaires mais encore d'utiliser la formation en tortue. Voir la rubrique @guerre et paix& pour plus de détails sur les formations. Si vous avez accepté une mission très dangereuse, l'avantage conféré par une académie militaire peut permettre d'assurer la victoire de vos légions. L'académie militaire n'est pas un voisin apprécié. L'académie doit avoir accès à la route et à la main-d'œuvre comme tous les autres bâtiments."
+ uri : {
+  "caserne" : "barracks"
+  "guerre et paix" : "peace_and_war"
+ }
+}

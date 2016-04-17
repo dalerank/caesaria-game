@@ -1,0 +1,10 @@
+{
+ title : "##ovrm_clinic##"
+ sound : "fanfare"
+ text : "Les quartiers les plus riches ne peuvent pas se passer des visites régulières d'un docteur. Les médecins contribuent à @l'hygiène& de la zone qu'ils desservent. Utilisez la @carte Santé& pour afficher les logements ayant accès à un dispensaire et observer les visites à domicile des médecins - il s'agit probablement du seul endroit où vous pouvez observer ce genre de chose ! Cliquez avec le bouton droit sur l'un des dispensaires pour afficher son statut. \n\nCliquez @ici& pour en savoir plus sur la médecine des Romains."
+ uri : {
+  "l'hygiène" : "health_and_sickness"
+  "carte Santé" : "special_card_selection"
+  "ici" : "clinic_history"
+ }
+}

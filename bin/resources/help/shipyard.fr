@@ -1,0 +1,9 @@
+{
+ title : "##shipyard##"
+ sound : "fanfare"
+ text : "Les chantiers navals servent à construire les bateaux de pêche qui, dans certaines provinces, peuvent venir compléter les produits de l'agriculture. Lorsque vous voyez des mouettes tournoyer au-dessus d'un plan d'eau, votre province dispose de ressources viables en poissons. Vous pouvez alors créer une flottille de pêche pour exploiter ces ressources. Naturellement, le chantier naval doit avoir accès à un plan d'eau navigable. En outre, il doit disposer d'un accès à la route pour les ouvriers chargés de la construction. Les bateaux terminés rejoignent automatiquement l'un des @quais& disponibles. Comme vous vous en doutez, une industrie de cette taille rend les propriétés avoisinantes peu désirables pour le logement. Les marchands avec lesquels vous traitez disposent de leurs propres vaisseaux. Vous n'avez pas besoin de fabriquer des navires marchands. Les chantiers navals n'ont d'utilité que pour les flottilles de pêche. \n\nCliquez sur le lien suivant pour un @historique& sur la construction navale dans l'Empire Romain."
+ uri : {
+  "quais" : "wharf"
+  "historique" : "shipyard_history"
+ }
+}

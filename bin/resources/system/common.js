@@ -1,5 +1,12 @@
 function _t(text) { return engine.translate(text) }
-function _u(text) { return "##"+text+"##" }
+
+function _u(text) {
+  if (text[0] == "#")
+    return text;
+
+  return "##"+text+"##"
+}
+
 function _ut(text) { return _t(_u(text)) }
 
 var _format = function() {

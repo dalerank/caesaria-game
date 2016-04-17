@@ -1,0 +1,8 @@
+{
+ title : "##warehouse##"
+ sound : "fanfare"
+ text : "Les entrepôts ont très peu changé depuis l'Antiquité. Toute cité qui effectue d'importantes opérations de commerce a besoin de structures peu coûteuses mais assez grandes pour stocker temporairement des marchandises. Les entrepôts doivent être secs, abrités et dépourvus de vermine, bien que ces conditions dépendent de la nature de la cargaison (le marbre par exemple résiste mieux aux éléments que les biens périssables). Les entrepôts Romains étaient généralement situés près des structures de transport maritime ou des routes principales. \n\t@Les& ports disposaient d'une zone commerciale, appelée 'centre d'échanges', où les marchandises étaient échangées. Le centre d'échanges comprenait des magasins de stockage rudimentaires construits dans des matériaux peu coûteux qui servaient à stocker les marchandises temporairement invendues. Les entrepôts de la cité avaient un caractère plus permanent. Il étaient destinés à abriter différents types de biens de manière plus durable. Ces entrepôts étaient construits en pierre et pouvaient parfois comporter des colonnes. Leurs fenêtres étaient juste assez hautes et larges pour éclairer l'intérieur tout en préservant les produits. Ils avaient une porte unique, fermée par un grand cadenas. Les entrepôts employaient souvent des gardiens."
+ uri : {
+  "Les" : "dock"
+ }
+}

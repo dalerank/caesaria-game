@@ -1,0 +1,15 @@
+{
+ title : "##wine_workshop##"
+ sound : "fanfare"
+ text : "Les employés de ces fabriques transforment les raisins de votre @vignoble& en vin. \n\tLe traitement des matières premières nécessite plus de main-d'œuvre que leur extraction. Vous pouvez fournir deux fabriques avec la production d'un seul vignoble. \n\tComme la plupart des autres industries, les fabriques de vin sont des voisins indésirables sans l'être autant que les autres ateliers. Les fabriques ont besoin d'une main-d'œuvre locale et d'un accès à la route pour obtenir les raisins et accéder à un @entrepôt&. Les @employés& transportent le vin jusqu'à l'entrepôt disponible le plus proche. Vous pouvez exporter une partie de votre production si une @route de commerce& adéquate est ouverte. @Les vendeuses du marché& se chargent de distribuer le vin aux foyers qui en ont fait la requête. \n\tLe vin fait partie des biens dont vos citoyens ont besoin pour accéder aux niveaux supérieurs de @logement&. Différents crus doivent être disponibles pour inciter l'installation de villas grandioses. Vous pouvez leur offrir un vin produit localement et un vin importé, ou deux vins importés. Cependant, deux crus locaux ne sauraient les satisfaire, même s'ils sont produits dans deux fabriques différentes. Les patriciens considèrent tous les vins produits localement comme étant identiques. \n\nVous devez disposer d'une réserve de vin pour organiser de grands @festivals&. Cette réserve doit pouvoir étancher la soif de l'ensemble des citoyens. \n\tLe vin est généralement l'un des produits d'exportation les plus rentables. \n\tLes fabriques de vin actives sont animées. Cliquez avec le bouton droit sur l'une d'entre elles pour connaître son statut, notamment si son activité a cessé. \n\nPour en savoir plus sur le rôle du vin dans l'Empire Romain, cliquez @ici&."
+ uri : {
+  "vignoble" : "olive_farm"
+  "entrepôt" : "warehouse"
+  "employés" : "worker"
+  "route de commerce" : "trade"
+  "Les vendeuses du marché" : "market"
+  "logement" : "house"
+  "festivals" : "entertainment_advisor"
+  "ici" : "wine_history"
+ }
+}

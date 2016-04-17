@@ -1,0 +1,13 @@
+{
+ title : "##academy##"
+ sound : "fanfare"
+ text : "Les universités éduquent les jeunes Romains de 13 à 21 ans, lorsqu'ils ont reçu un diplôme de leur @école&. Pour évoluer vers des niveaux supérieurs, les foyers doivent avoir accès à cette forme d'éducation plus avancée. Les professeurs donnent accès à l'université en circulant aux abords de cette dernière. Utilisez la @carte Education& pour observer les professeurs se promener dans le quartier. Cliquez avec le bouton droit sur une université pour afficher son statut. Une université renforce l'attrait d'un quartier. \n\tDemandez à votre @conseiller d'éducation& quels sont les besoins éducatifs de la cité. Cependant, une université ne peut accueillir qu'un nombre limité d'étudiants. Lorsque la densité de la population augmente, construisez davantage d'universités pour stabiliser le nombre d'étudiants par classe. Les foyers disposant déjà d'un accès à l'université réclameront également un programme de construction si les classes deviennent surpeuplées. \n\tLes universités affectent votre @niveau culturel&. Veillez à conserver des classes de petite taille pour améliorer le niveau culturel de la cité. Comparez le nombre de jeunes en âge scolaire au nombre de personnes pouvant être accueillies par vos universités pour savoir combien de personnes sont prises en charge. Cliquez @ici(1)& pour explorer le concept d'éducation dans Caesar III. \n\nPour une brève leçon sur les universités Romaines, cliquez @ici(2)&."
+ uri : {
+  "école" : "school"
+  "carte Education" : "special_card_selection"
+  "conseiller d'éducation" : "education_advisor"
+  "niveau culturel" : "ratings"
+  "ici(1)" : "education"
+  "ici(2)" : "school_history"
+ }
+}

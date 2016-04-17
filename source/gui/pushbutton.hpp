@@ -58,42 +58,42 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! prepare render state
-  virtual void beforeDraw( gfx::Engine& painter );
+  virtual void beforeDraw(gfx::Engine& painter);
 
   //! override render function
-  virtual void draw( gfx::Engine& painter );
+  virtual void draw(gfx::Engine& painter);
 
   virtual void debugDraw(gfx::Engine &painter);
 
-  virtual void setText(const std::string& text );
+  virtual void setText(const std::string& text);
 
-  virtual void setPressed( bool pressed );
+  virtual void setPressed(bool pressed);
   virtual bool isPressed() const;
 
   virtual bool isBodyVisible() const;
   virtual bool isTextVisible() const;
-  virtual void setTextVisible( bool value );
+  virtual void setTextVisible(bool value);
 
-  virtual void drawIcon( gfx::Engine& painter );
+  virtual void drawIcon(gfx::Engine& painter);
 
-  virtual void setPicture( const std::string& rcname, int index);
-  virtual void setPicture( gfx::Picture picture, ElementState state );
-  virtual void setPicture( const std::string& rcname, int index, ElementState state );
+  virtual void setPicture(const std::string& rcname, int index);
+  virtual void setPicture(gfx::Picture picture, ElementState state);
+  virtual void setPicture(const std::string& rcname, int index, ElementState state);
 
-  virtual void setIcon( const std::string& rcname, int index, ElementState state );
-  virtual void setIcon( const std::string& rcname, int index );
-  virtual void setIcon( gfx::Picture pic );
+  virtual void setIcon(const std::string& rcname, int index, ElementState state);
+  virtual void setIcon(const std::string& rcname, int index);
+  virtual void setIcon(gfx::Picture pic);
   virtual void setIconMask(int mask);
   virtual void setIconOffset( Point offset );
 
-  virtual void setBackgroundStyle( const BackgroundStyle style );
-  virtual void setBackgroundStyle( const std::string& style );
+  virtual void setBackgroundStyle(const BackgroundStyle style);
+  virtual void setBackgroundStyle(const std::string& style);
 
-  virtual void setFont( const Font& font, ElementState state );
-  virtual void setFont( const Font& font );
-  virtual void setFont( const std::string& fname, NColor color=NColor() );
+  virtual void setFont(const Font& font, ElementState state);
+  virtual void setFont(const Font& font );
+  virtual void setFont(const std::string& fname, NColor color=NColor());
 
-  virtual Font font( ElementState state ) const;
+  virtual Font font(ElementState state) const;
 
   virtual bool isPushButton() const;
   virtual void setIsPushButton( bool value );
@@ -105,6 +105,7 @@ public:
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
 
   int getTextWidth(const std::string& text) const;
+  void fitToImage();
 
 signals public:
   virtual Signal0<>& onClicked();

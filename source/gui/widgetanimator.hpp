@@ -42,10 +42,12 @@ public:
 
 public signals:
   Signal0<>& onFinish() { return _onFinishSignal; }
+  Signal1<Widget*>& onFinishEx() { return _onFinishExSignal; }
 
 protected:
   virtual void _afterFinished();
   Signal0<> _onFinishSignal;
+  Signal1<Widget*> _onFinishExSignal;
 };
 
 }//end namespace gui

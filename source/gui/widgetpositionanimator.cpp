@@ -61,6 +61,7 @@ void PositionAnimator::restart()
 {
   _d->pos.start = parent() ? parent()->relativeRect().lefttop() : Point( 0, 0 );
   _d->pos.current = _d->pos.start.toPointF();
+  _d->lastTimeUpdate = DateTime::elapsedTime();
 }
 
 void PositionAnimator::beforeDraw(gfx::Engine& painter )
@@ -118,10 +119,15 @@ void PositionAnimator::setDestination( const Point& p )
   restart();
 }
 
+void PositionAnimator::setTime(int time) 
+{ 
+  _d->time = time; 
+  restart();
+}
+
 PositionAnimator::~PositionAnimator( void ) {}
 void PositionAnimator::setStartPos( const Point& p ){	_d->pos.start = p;}
 Point PositionAnimator::getStartPos() const{	return _d->pos.start;}
-void PositionAnimator::setTime( int time ){	_d->time = time;}
 void PositionAnimator::setSpeed(PointF speed) { _d->speed = speed; }
 Point PositionAnimator::destination() const{	return _d->pos.stop; }
 

@@ -4,16 +4,16 @@
   title : "##briefing_eighth_title##"
 
   items : {
-    lutetia : {
-      title : "##lutetia_title##"
-      location : [ 570, 280 ]
-      mission : ":/missions/lutetia.mission"
-    }
-
     valencia : {
       title : "##valencia_title##"
       mission : ":/missions/valentia.mission"
       location : [ 20, 320 ]
+    }
+	
+    lutetia : {
+      title : "##lutetia_title##"
+      location : [ 570, 280 ]
+      mission : ":/missions/lutetia.mission"
     }
   }
 }

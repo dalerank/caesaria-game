@@ -1,0 +1,13 @@
+{
+ title : "##actorColony##"
+ sound : "fanfare"
+ text : "En dehors des employés indispensables au bon fonctionnement des @centres de loisirs&, les théâtres, les amphithéâtres, les colisées et les hippodromes ont naturellement besoin d'artistes. \n\nLes acteurs sont formés dans des écoles d'acteurs. Les gladiateurs s'entraînent dans une école de gladiateurs, les lions dans un parc à lions et les conducteurs de chars dans une école.  \n\tTous ces établissements nécessitent du personnel et un accès à la route. Si le personnel est insuffisant, leur capacité est réduite et le nombre d'artistes formés par mois diminue. \n\nLorsqu'un artiste a achevé sa formation, il marche jusqu'au centre de loisirs et informe les résidents sur son passage. Ces derniers ont alors accès au type de loisir représenté par cet artiste. Lorsqu'il arrive à destination, il monte un spectacle dont la durée est limitée. Une fois le spectacle terminé, il rentre chez lui. Il doit alors être remplacé par un autre artiste. Sinon, le centre perd son utilité. \n\tLa plupart des écoles d'artistes sont des voisins indésirables à cause du bruit et de leurs horaires hors du commun. Vos citoyens pensent néanmoins que les écoles de théâtre sont importantes. \n\tLa @carte Loisirs& vous permet de voir circuler les artistes en provenance de leur école. Cliquez avec le bouton droit sur une école d'artistes pour évaluer son état. \n\nSuivez les liens ci-dessous pour consulter un historique sur les @écoles d'acteurs&, les @écoles de gladiateurs&, les @parcs à lions& et les @fabriques de chars& ou pour en savoir plus sur les divertissements du temps de l'Empire Romain."
+ uri : {
+  "centres de loisirs" : "entertainment"
+  "carte Loisirs" : "special_card_selection"
+  "écoles d'acteurs" : "actorColony_history"
+  "écoles de gladiateurs" : "gladiatorSchool_history"
+  "parcs à lions" : "lionsNursery_history"
+  "fabriques de chars" : "chariotSchool_history"
+ }
+}

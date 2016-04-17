@@ -1,0 +1,8 @@
+{
+ title : "##population_advisor##"
+ sound : "fanfare"
+ text : "Consultez ce conseiller pour obtenir des informations sur la taille et la composition de votre population. \n\nPar défaut, le premier graphique qui s'affiche sur la fenêtre principale est celui de la croissance de la population totale de la cité. Si votre population évolue normalement, ce graphique présente une augmentation régulière et des variations mineures. Les désastres et les mauvaises gestions sont représentés par des baisses importantes. \n\tCliquez sur l'un des petits graphiques pour l'afficher dans la fenêtre principale. 'Recensement' indique la répartition de votre population par âge. Seules les personnes âgées de 20 à 50 ans participent à la main-d'œuvre. Les moins de 22 ans vont à l'école ou à l'université. Si ce graphique présente un creux dans la population des 20 à 50 ans, votre cité manque probablement de main-d'œuvre par rapport à sa taille. \n\t'Société' affiche une répartition de la population par niveau de revenu. Plus le nombre de personnes situées dans la catégorie des salaires élevés est grand, plus le revenu de l'imposition est important. Une grande disparité entre les citoyens pauvres et riches détériore l'humeur de la cité. Un nombre trop important de personnes faisant partie de la catégorie des bas salaires fait baisser votre niveau de prospérité. \n\tLa petite fenêtre qui s'affiche sous le graphique contient un récapitulatif des réserves de nourriture de la cité et vous permet de savoir si le régime des gens est suffisamment varié. Elle vous permet également de savoir le nombre de personnes qui émigrent ou immigrent. \n\nPour plus d'informations sur ces graphiques, consultez la rubrique @Population&."
+ uri : {
+  "Population" : "population_and_mood"
+ }
+}

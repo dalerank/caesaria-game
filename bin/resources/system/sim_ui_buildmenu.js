@@ -1,7 +1,3 @@
-function OnShowBuildMenu(type, top) {
-  sim.ui.buildmenu.show(type, top);
-}
-
 g_config.buildmenu = {
   water : {
     buildings : [ "fountain", "well", "aqueduct", "reservoir" ]
@@ -78,10 +74,10 @@ sim.ui.buildmenu.build = function(type) {
   sim.ui.buildmenu.hide();
 }
 
-sim.ui.buildmenu.sub = function(type) {
+sim.ui.buildmenu.sub = function(type, left, top) {
   var sound = "bmsel_" + type;
   g_session.playAudio(sound + "_00001", 100, g_config.audio.infobox);
-  sim.ui.buildmenu.show(branch);
+  sim.ui.buildmenu.show(type, left, top);
 }
 
 sim.ui.buildmenu.hide = function() {
@@ -90,14 +86,13 @@ sim.ui.buildmenu.hide = function() {
     menus.deleteLater();
 }
 
-sim.ui.buildmenu.show = function(type, top) {
+sim.ui.buildmenu.show = function(type, left, top) {
   sim.ui.buildmenu.hide();
   engine.log(top);
 
   if (type == undefined || type == "")
     return;
 
-  var extMenu = g_ui.find("ExtentMenu");
   //var parent = g_ui.find(parentName);
   var buildMenu = new Widget(0);
 
@@ -105,34 +100,36 @@ sim.ui.buildmenu.show = function(type, top) {
     buildMenu.clipped = false;
     buildMenu.name = "BuildMenu";
     buildMenu.buttons = [];
+    buildMenu.hleft = left;
     buildMenu.htop = top;
     buildMenu.subElement = true;
     var resolution = g_session.resolution;
-    buildMenu.geometry = {x:0, y:0, w:resolution.w - extMenu.w, h:extMenu.h};
+    buildMenu.geometry = {x:0, y:0, w:resolution.w - left, h:resolution.h};
 
     var wcloser = new WidgetClosers(buildMenu);
     wcloser.addCloseCode(g_config.key.KEY_RBUTTON);
     wcloser.addCloseCode(g_config.key.KEY_ESCAPE);
-    //buildMenu.geometry = { x:extMenu.left()-60, y:parent.top(), w:60, h:60 };
-    //buildMenu.geometry = { x:0, y:0, w:80, h:25 };
   }
 
   buildMenu.addButton = function(branch,type) {
-    var ltype = branch.length ? branch : type;
-    var title = _format( "bldm_{0}", ltype);
+    var ltype = branch.length ? branch : type; 
+    var title = "";
+
+    if (branch.length)
+      title = _format( "##bldm_{0}##", ltype);
+    else
+      title = _u(type);
 
     if (type != "" && !g_session.city.getBuildOption(type))
       return;
 
     engine.log("Build menu add type " + ltype);
-    title = _ut(title);
-    if (title[0] == "#")
-      title = ltype;
+    engine.log("Build menu add type " + _t(title));
 
     var btn = new Button(buildMenu);
     btn.geometry = { x:0, y:25*buildMenu.buttons.length, w:buildMenu.w, h:24};
     btn.hoverFont = "FONT_2_RED";
-    btn.text = _u(title);
+    btn.text = title;
     btn.textAlign = { h:"upperLeft", v:"center" };
     btn.textOffset = { x:15, y:0 };
 
@@ -155,7 +152,7 @@ sim.ui.buildmenu.show = function(type, top) {
 
     //buildMenu.h = buildMenu.buttons.length * 25;
 
-    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch); }
+    if (branch != "") btn.callback = function() { sim.ui.buildmenu.sub(branch, left, top); }
     else if (type != "") btn.callback = function() { sim.ui.buildmenu.build(type); }
   }
 
@@ -169,7 +166,7 @@ sim.ui.buildmenu.show = function(type, top) {
     //VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
     //VariantList submenu = config.get( "submenu" ).toList();
     //VariantList buildings = config.get( "buildings" ).toList();
-    engine.log( "Opened buildmenu " + type);
+    engine.log("Opened buildmenu " + type);
     var config = g_config.buildmenu[type];
 
     if (config.submenu != undefined) {
@@ -186,11 +183,13 @@ sim.ui.buildmenu.show = function(type, top) {
     for (var i in buildMenu.buttons) {
       var bbutton = buildMenu.buttons[i];
       max_text_width = math.max(max_text_width, bbutton.textWidth );
-      max_cost_width = math.max(max_cost_width, bbutton.lbCost.textWidth);
+
+      if (bbutton.lbCost)
+        max_cost_width = math.max(max_cost_width, bbutton.lbCost.textWidth);
     }
 
     //engine.log(max_text_width);
-    var appear_width = math.max(150, max_text_width + max_cost_width);
+    var appear_width = math.max(150, max_text_width + max_cost_width ) + 80;
 
     // set the same size for all buttons
     for(var i in buildMenu.buttons) {
