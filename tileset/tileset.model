@@ -518,6 +518,13 @@
           files : [ "security_*" ]
         }
 
+        wahrf :
+        {
+          type : "atlas"
+          folder : "/resources/wharf"
+          files : "*"
+        }
+
         prefecture :
         {
           type : "atlas"

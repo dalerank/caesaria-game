@@ -26,6 +26,7 @@ game.ui.infobox.aboutRuins = function(location) {
     var defaultRuinInfo = _ut(ruins.typename + "_info");
     text = defaultRuinInfo + "\n(was: " + text + ")";
   }
+  
   ibox.setInfoText(text);
   ibox.btnInfo.display = false;
 
