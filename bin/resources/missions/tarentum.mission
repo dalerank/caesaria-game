@@ -23,21 +23,21 @@
     next : ":/missions/mission4.briefing"
     title : "##architect##"
     maxHouseLevel : "big_villa"
-	winContinue : false
-	caption : "##tarentum_title##"
+    winContinue : false
+    caption : "##tarentum_title##"
     winText : "##tarentum_win_text##"
     startSound : "tarentum_speech"
-	winSound : "tarentum_win_speech"
+    winSound : "tarentum_win_speech"
     overview : [ "##tarentum_overview##",
                   "@img=picture5_00013",
                   "##tarentum_overview2##",
-				  "##tarentum_overview3##",
-				  "##tarentum_overview4##",
-				  "##tarentum_overview5##",
-				  "##tarentum_overview6##",
-				  "##tarentum_overview7##",
-				  "##tarentum_overview8##",
-				  "##tarentum_overview9##" ]
+          "##tarentum_overview3##",
+          "##tarentum_overview4##",
+          "##tarentum_overview5##",
+          "##tarentum_overview6##",
+          "##tarentum_overview7##",
+          "##tarentum_overview8##",
+          "##tarentum_overview9##" ]
   }
 
   empire :
@@ -337,10 +337,10 @@
 
       exec : {
       barbarian_attack#messagebox : {
-		title : "##barbarian_attack_title##"
-		text : "##barbarian_attack_text##"
-		video : "spy_barbarian"
-		}
+    title : "##barbarian_attack_title##"
+    text : "##barbarian_attack_text##"
+    video : "spy_barbarian"
+    }
       }
     }
 
@@ -443,21 +443,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       engineering_post : true
       roadBlock : true
       plaza : true
@@ -485,12 +497,12 @@
       wheat_farm : true
       vinard : true
       senate : true
-	  fort_legionaries : true
+      fort_legionaries : true
       fort_javelin : true
-	  fort_horse : true
-	  fortification : true     
-	  barracks : true
-	  tower	: true	
+      fort_horse : true
+      fortification : true
+      barracks : true
+      tower	: true
     }
   }
 }

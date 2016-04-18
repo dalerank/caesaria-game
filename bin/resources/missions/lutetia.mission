@@ -15,20 +15,20 @@
   win :
   {
     name : "n2_lutetia"
-	population : 10000
+    population : 10000
     culture : 45
     prosperity : 50
     peace : 50
-	favour : 40
+    favour : 40
     finishDate : "70.01.01"
     next : ":/missions/mission6.briefing"
     title : "##consul##"
     maxHouseLevel : "big_villa"
-	winContinue : false
+    winContinue : false
     caption : "##lutetia_title##"
-	winText : "##lutetia_win_text##"
+    winText : "##lutetia_win_text##"
     startSound : "lutetia_speech"
-	winSound : "lutetia_win_speech"
+    winSound : "lutetia_win_speech"
     overview : [ "##lutetia_overview##" ]
   }
 
@@ -707,21 +707,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       prefecture : true
       engineering_post : true
       plaza : true

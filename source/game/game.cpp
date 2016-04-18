@@ -105,7 +105,6 @@ public:
   void initVideo(bool& isOk, std::string& result);
   void initSound(bool& isOk, std::string& result);
   void initPictures(bool& isOk, std::string& result);
-  void initGameConfigs(bool& isOk, std::string& result);
   void initHotkeys(bool& isOk, std::string& result);
   void initMetrics(bool& isOk, std::string& result);
   void initUI(bool& isOk, std::string& result);
@@ -255,11 +254,6 @@ void Game::Impl::initFontCollection(bool& isOk, std::string& result)
   }
 
   FontCollection::instance().initialize(fontsFolder, fontname);
-}
-
-void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
-{
-  city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
 }
 
 void Game::Impl::initHotkeys(bool& isOk, std::string& result)
@@ -415,7 +409,6 @@ void Game::initialize()
     ADD_STEP( &d, Impl::initTilemapSettings ),
     ADD_STEP( &d, Impl::initVfsSettings ),
     ADD_STEP( &d, Impl::initMetrics ),
-    ADD_STEP( &d, Impl::initGameConfigs ),
     ADD_STEP( &d, Impl::initArchiveLoaders ),
     ADD_STEP( &d, Impl::initLocale ),
     ADD_STEP( &d, Impl::initVideo ),

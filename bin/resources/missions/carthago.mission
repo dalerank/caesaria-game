@@ -16,22 +16,22 @@
   {
     name : "n2_carthago"
     population : 6000
-	culture : 45
+    culture : 45
     prosperity : 30
     peace : 40
     favour : 30
     finishDate : "-100.01.01"
     next : ":/missions/mission7.briefing"
     title : "##aedile##"
-	maxHouseLevel : "big_villa"
-	winContinue : false
-	caption : "##carthago_preview_title##"
+    maxHouseLevel : "big_villa"
+    winContinue : false
+    caption : "##carthago_preview_title##"
     winText : "##carthago_win_text##"
     startSound : "carthago_speech"
     winSound : "carthago_win_speech"
     overview :  [ "##carthago_overview##",
-				  "##carthago_overview2##",
-				  "##carthago_overview3##" ]
+          "##carthago_overview2##",
+          "##carthago_overview3##" ]
   }
 
   empire : {
@@ -753,21 +753,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "enabled"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       prefecture : true
       wall : true
       gatehouse : true

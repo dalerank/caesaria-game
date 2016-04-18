@@ -24,7 +24,7 @@
     next : ":/missions/mission3.briefing"
     title : "##engineer##"
     winContinue : false
-	caption : "##tt2_caption##"
+  caption : "##tt2_caption##"
     shortDesc : "##tt2_short##"
     winText : "##tutorial2_win_text##"
     startSound : "tutorial2_speech"
@@ -85,12 +85,12 @@
       population : 450
       adviser : { enabled : true }
     }
-	
-	"empire_trade#tutorial_window" : {
+
+  "empire_trade#tutorial_window" : {
       population : 550
       tutorial : ":/tutorial/tt2_trade.tutorial"
     }
-	
+
     "enable_empire#empire_options" : {
       population : 550
       empire : {
@@ -118,17 +118,6 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "disable_all"
-    health : "disable_all"
-    religion : "disable_all"
-    education : "disable_all"
-    entertainment : "disable_all"
-    govt : "disable_all"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : false
 
     buildings :

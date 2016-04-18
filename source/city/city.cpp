@@ -108,6 +108,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->empMapPicture.load(ResourceGroup::empirebits, 1);
 
   _d->services.initialize( this, ":/services.model" );
+  _d->buildOptions.setAvailable(false);
 
   setOption(updateRoadsOnNextFrame, 0);
   setOption(godEnabled, 1);

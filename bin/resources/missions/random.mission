@@ -50,18 +50,7 @@
 
   buildoptions :
   {
-    farm : "enabled"
-    raw_material : "enabled"
-    factory : "enabled"
-    water : "enabled"
-    health : "enabled"
-    religion : "enabled"
-    education : "enabled"
-    commerce : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "enabled"
-    security : "enabled"
-    check_desirability : false
+    enabled_all : true
+    check_desirability : true
   }
 }
