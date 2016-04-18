@@ -22,19 +22,19 @@
     prosperity : 0
     peace : 0
     favour : 0
-	finishDate : "-300.01.01"
+    finishDate : "-300.01.01"
     next : ":/missions/tutorial2.mission"
     title : "##clerk##"
-	maxHouseLevel : "hut"
+    maxHouseLevel : "hut"
     winContinue : false
-	caption : "##new_village##"
+    caption : "##new_village##"
     shortDesc : "##build_some_houses##"
     winText : "##tutorial_win_text##"
     startSound : "tutorial_speech"
     winSound : "tutorial_win_speech"
     overview : [ "##tutorial_text##",
                  "@img=picture2_00002",
-				 "##right_mouse_btn_tutorial##",
+                 "##right_mouse_btn_tutorial##",
                  "##tutorial_text_roads##",
                  "@img=picture3_00002",
                  "##tutorial_text_roads2##",
@@ -56,7 +56,7 @@
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money_again##", "##city_still_in_debt_text##" ]
     }
-	
+
     tutorial#random_fire : {
       population : 30
       strong : 25
@@ -101,23 +101,18 @@
       }
     }
 
+    "health_upper#health_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 30
+    }
+  }
+
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "disable_all"
-    health : "disable_all"
-    religion : "disable_all"
-    education : "disable_all"
-    entertainment : "disable_all"
-    govt : "disable_all"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : false
 
-    buildings :
-    {
+    buildings : {
       well : true
     }
   }

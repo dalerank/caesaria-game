@@ -25,50 +25,50 @@ sim.ui.menu.simConfig = {
 
   water: { pos:{x:13,y:313}, image : { rc:"paneling", index:127 }, object:"water",
            miniature : { rc:"panelwindows", index:4 }, shortmenuIndex:3,
-           pushButton : true, submenu: false, sound: "water" },
+           pushButton : true, submenu: false, sound: "water", branch : "water"  },
 
   health: { pos:{x:63,y:313}, image : { rc:"paneling", index:163 }, object:"health",
             miniature : { rc:"panelwindows", index:6 },pushButton : true, shortmenuIndex:4,
-            submenu: false, sound: "health"},
+            submenu: false, sound: "health", branch:"health"},
 
   religion: { pos:{x:113,y:313}, image : { rc:"paneling", index:151 }, object:"religion",
               miniature : { rc:"panelwindows", index:2 }, shortmenuIndex:5,
-              pushButton : true, submenu: false, sound: "temples"},
+              pushButton : true, submenu: false, sound: "temples", branch:"religion"},
 
   education: { pos:{x:13,y:349}, image : { rc:"paneling", index:147 }, object:"education",
                miniature : { rc:"panelwindows", index:7 }, shortmenuIndex:6,
-               pushButton : true, submenu: false, sound: "education" },
+               pushButton : true, submenu: false, sound: "education", branch:"education"},
 
   entertainment : { pos: {x:63,y:349}, image : { rc:"paneling", index:143 }, object:"entertainment",
                     miniature : { rc:"panelwindows", index:5 }, shortmenuIndex:7,
-                    pushButton : true, submenu: false, sound: "entertainment" },
+                    pushButton : true, submenu: false, sound: "entertainment" , branch:"entertainment"},
 
   govt : { pos:{x:113,y:349}, image : { rc:"paneling", index:139 }, object:"administration",
            miniature : { rc:"panelwindows", index:3 }, shortmenuIndex:8,
-           pushButton : true, submenu: false, sound: "administration" },
+           pushButton : true, submenu: false, sound: "administration", branch:"administration" },
 
   engineering: { pos:{x:13,y:385}, image : { rc:"paneling", index:167 }, object:"engineering",
            miniature : { rc:"panelwindows", index:8 }, shortmenuIndex:9,
-           pushButton : true, submenu: false, sound: "engineering" },
+           pushButton : true, submenu: false, sound: "engineering", branch:"engineering" },
 
   security : { pos:{x:63,y:385}, image : { rc:"paneling", index:159 }, object:"security",
            miniature : { rc:"panelwindows", index:9 }, shortmenuIndex:10,
-           pushButton : true, submenu: false, sound: "security" },
+           pushButton : true, submenu: false, sound: "security", branch:"security" },
 
   commerce : { pos:{x:113,y:385}, image: { rc:"paneling", index:155 }, object:"commerce",
            miniature : { rc:"panelwindows", index:10 }, shortmenuIndex:11,
-           pushButton : true, submenu: false, sound: "commerce" },
+           pushButton : true, submenu: false, sound: "commerce", branch:"commerce" },
 
   messages : { pos:{x:63, y:421}, image: { rc:"paneling", index:115 }, object:"message",
-           miniature : { rc:"panelwindows", index:12 },
+           miniature : { rc:"panelwindows", index:12 }, enabled : false,
            pushButton : true, submenu: false, sound: "message", height : 22 },
 
   disaster: { pos:{x:113, y:421}, image: { rc:"paneling", index:119 }, object:"disaster",
-           miniature : { rc:"panelwindows", index:12 },
+           miniature : { rc:"panelwindows", index:12 }, enabled : false,
            pushButton : true, submenu: false, sound: "troubles", height : 22 },
 
   undo : { pos:{x:13,y:421}, image: { rc:"paneling", index:171 }, object:"cancel",
-           miniature : { rc:"panelwindows", index:12 },
+           miniature : { rc:"panelwindows", index:12 }, enabled : false,
            pushButton : true, submenu: false, sound: "cancel", height : 22},
 
   minimize : { pos:{x:127,y:5}, image: { rc:"paneling", index:97 }, object:"maximize",
@@ -338,6 +338,11 @@ sim.ui.menu.initialize = function() {
 
     if (config.height)
       btn.h = config.height;
+
+    if (config.branch) {
+      var avail = sim.ui.buildmenu.isBranchAvailable(config.branch);
+      btn.enabled = avail;
+    }
 
     (function(c, x, y){
       if (config.func) sim.ui.menu.funcs[i] = c.func;

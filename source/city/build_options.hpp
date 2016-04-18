@@ -25,59 +25,10 @@
 #include "objects/constants.hpp"
 
 namespace city
-{  
+{
 
 namespace development
 {
-
-typedef enum
-{
-  unknown,
-  water,
-  health,
-  security,
-  education,
-  engineering,
-  administration,
-  entertainment,
-  commerce,
-  farm,
-  raw_material,
-  factory,
-  religion,
-  temple,
-  big_temple,
-  all
-} Branch;
-
-/** convert name to Branch
- *  return Branch::unkown if not found
- */
-Branch findBranch( const std::string& name );
-
-/**
- * @brief convert Branch type to string
- * @param branch type
- * @return string, empty string if not found
- */
-std::string toString( Branch branch );
-void loadBranchOptions(vfs::Path filename );
-
-class Range : public object::TypeSet
-{
-public:
-  static Range fromBranch( const Branch branch);
-  static Range fromSequence( const object::Type start, const object::Type stop );
-
-  /**
-   * @brief Add type to range
-   * @param object type
-   * @return ref to self
-   */
-  Range& operator<<( const object::Type type );
-protected:
-  static Range _defaultRange( const Branch branch );
-};
 
 /**
  * @brief The city build options class
@@ -89,9 +40,9 @@ public:
   virtual ~Options();
 
   void setBuildingAvailable( const object::Type type, bool mayBuild );
-  void setGroupAvailable(const Branch type, Variant mayBuild );
-  bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const object::Type type ) const;
+
+  void setAvailable(bool av);
 
   bool isBuildingAvailable( const object::Type type ) const;
 
@@ -101,9 +52,7 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailable(const Range& range, bool mayBuild);
   void toggleBuildingAvailable( const object::Type type );
-  bool isBuildingsAvailable(const Range& range) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

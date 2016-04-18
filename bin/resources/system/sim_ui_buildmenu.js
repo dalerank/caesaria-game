@@ -86,6 +86,32 @@ sim.ui.buildmenu.hide = function() {
     menus.deleteLater();
 }
 
+sim.ui.buildmenu.isBranchAvailable = function(branch) {
+  var city = g_session.city;
+  engine.log("sim.ui.buildmenu.isBranchAvailable");
+  if (g_config.buildmenu[branch]) {
+    var currentBranch = g_config.buildmenu[branch];
+    if (currentBranch.buildings != undefined) {
+      for (var b in currentBranch.buildings) {
+        engine.log(b);
+        var buildingAvailable = city.getBuildOption(currentBranch.buildings[b]);
+        if (buildingAvailable)
+          return true;
+      }
+    }
+
+    if (currentBranch.submenu != undefined) {
+      for (var s in currentBranch.submenu) {
+        var submenuAvailable = sim.ui.buildmenu.isBranchAvailable(currentBranch.submenu[s]);
+        if (submenuAvailable)
+          return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 sim.ui.buildmenu.show = function(type, left, top) {
   sim.ui.buildmenu.hide();
   engine.log(top);
@@ -112,7 +138,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
   }
 
   buildMenu.addButton = function(branch,type) {
-    var ltype = branch.length ? branch : type; 
+    var ltype = branch.length ? branch : type;
     var title = "";
 
     if (branch.length)
@@ -120,11 +146,12 @@ sim.ui.buildmenu.show = function(type, left, top) {
     else
       title = _u(type);
 
-    if (type != "" && !g_session.city.getBuildOption(type))
-      return;
-
-    engine.log("Build menu add type " + ltype);
-    engine.log("Build menu add type " + _t(title));
+    if (type) {
+      var av = g_session.city.getBuildOption(type);
+      engine.log("Build menu add type " + ltype + ":" + (av?"true":"false"));
+      if (!av)
+        return;
+    }
 
     var btn = new Button(buildMenu);
     btn.geometry = { x:0, y:25*buildMenu.buttons.length, w:buildMenu.w, h:24};

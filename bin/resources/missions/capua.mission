@@ -23,10 +23,10 @@
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
     title : "##architect##"
-	maxHouseLevel : "big_villa"
-	winContinue : false
-	caption : "##capua_title##"
-    winText : "##capua_win_text##" 
+    maxHouseLevel : "big_villa"
+    winContinue : false
+    caption : "##capua_title##"
+    winText : "##capua_win_text##"
     startSound : "capua_speech"
     winSound : "capua_win_speech"
     overview :  [ "##capua_overview##",
@@ -201,21 +201,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       engineering_post : true
       plaza : true
       forum : true
@@ -233,6 +245,11 @@
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
+      big_ceres_temple : true
+      big_venus_temple : true
+      big_mars_temple : true
+      big_neptune_temple : true
+      big_mercury_temple : true
       market : true
       oil_workshop : true
       lumber_mill : true

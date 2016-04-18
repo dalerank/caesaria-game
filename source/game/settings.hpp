@@ -98,7 +98,6 @@ public:
   __GS_PROPERTY(celebratesConfig)
   __GS_PROPERTY(ambientsounds)
   __GS_PROPERTY(debugMenu)
-  __GS_PROPERTY(cntrGroupsModel)
   __GS_PROPERTY(logfile)
   __GS_PROPERTY(rightMenu)
   __GS_PROPERTY(showEmpireMapTiles)

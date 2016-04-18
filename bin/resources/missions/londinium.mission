@@ -15,7 +15,7 @@
   win :
   {
     name : "n2_londinium"
-	population : 10000
+    population : 10000
     culture : 75
     prosperity : 75
     peace : 60
@@ -24,12 +24,12 @@
     next : ":/missions/mission11.briefing"
     title : "##win_procurator_title##"
     maxHouseLevel : "big_villa"
-	winContinue : false
+    winContinue : false
     caption : "##londinium_10_title##"
-	winText : "##londinium_win_text##"
+    winText : "##londinium_win_text##"
     startSound : "londinium_speech"
-	winSound : "londinium_win_speech"
-    overview : [ "##ondinium_10_overview##" ]    
+    winSound : "londinium_win_speech"
+    overview : [ "##ondinium_10_overview##" ]
   }
 
   empire : {
@@ -762,21 +762,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       prefecture : true
       engineering_post : true
       plaza : true

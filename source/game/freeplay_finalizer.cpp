@@ -27,6 +27,7 @@
 #include "gfx/tilesarray.hpp"
 #include "world/config.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/infodb.hpp"
 
 using namespace events;
 using namespace gfx;
@@ -81,7 +82,7 @@ void Finalizer::initBuildOptions()
 {
   city::development::Options bopts;
   bopts = _city->buildOptions();
-  bopts.setGroupAvailable( city::development::all, true );
+  bopts.setAvailable(true);
   _city->setBuildOptions( bopts );
 }
 
