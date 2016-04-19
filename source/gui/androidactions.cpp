@@ -21,7 +21,6 @@
 #include "scene/level.hpp"
 #include "gfx/camera.hpp"
 #include "widget_helper.hpp"
-#include "events/showtileinfo.hpp"
 #include "events/script_event.hpp"
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
@@ -230,7 +229,7 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  events::dispatch<ShowTileInfo>( _tilepos );
+  //events::dispatch<ShowTileInfo>( _tilepos );
 }
 
 }//end namespace tablet

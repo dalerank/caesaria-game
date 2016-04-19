@@ -48,7 +48,4 @@ class TilePosSet : public std::set<TilePos>
 public:
   TilePosSet& operator<<(const TilePos& pos );
 };
-
-typedef TilePosArray Locations;
-typedef TilePosSet   UqLocations;
 #endif//CAESARIA_TILEPOS_ARRAY_HPP
