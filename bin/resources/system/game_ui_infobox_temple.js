@@ -1,7 +1,3 @@
-function OnShowTempleInfobox(location) {
-    game.ui.infobox.aboutTemple(location)
-}
-
 function InfoboxWindow(rx, ry, rw, rh) {
     return g_ui.addSimpleWindow(rx, ry, rw, rh)
 }
@@ -193,4 +189,10 @@ game.ui.infobox.aboutTemple = function (location) {
     }
 
     ibox.show();
+    return ibox;
+}
+
+game.ui.infobox.aboutOracle = function (location) {
+  var ibox = game.ui.infobox.aboutTemple(location);
+  ibox.initBlackframe(16, 136, ibox.w-32, 56);
 }

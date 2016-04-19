@@ -7,8 +7,11 @@ game.ui.infobox.show = function(typename,location)
   case "small_mercury_temple": case "big_ceres_temple":
   case "big_mars_temple": case "big_neptune_temple":
   case "big_venus_temple": case "big_mercury_temple":
-  case "oracle":
     game.ui.infobox.aboutTemple(location)
+  break;
+
+  case "oracle":
+    game.ui.infobox.aboutOracle(location)
   break;
 
   case "roadBlock": case "elevation": case "aqueduct":
