@@ -26,7 +26,7 @@ game.ui.infobox.aboutRuins = function(location) {
     var defaultRuinInfo = _ut(ruins.typename + "_info");
     text = defaultRuinInfo + "\n(was: " + text + ")";
   }
-  
+
   ibox.setInfoText(text);
   ibox.btnInfo.display = false;
 
@@ -36,9 +36,10 @@ game.ui.infobox.aboutRuins = function(location) {
 game.ui.infobox.aboutGatehouse = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var gates = g_session.city.getOverlay(location).as(WorkingBuilding);
-  ibox.overlay = gates;
+  var gates = g_session.city.getOverlay(location).as(Overlay);
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.overlay = gates;
+  engine.log(_ut(gates.typename));
   ibox.title = _u(gates.typename);
 
   ibox.update = function() {
@@ -51,7 +52,7 @@ game.ui.infobox.aboutGatehouse = function(location) {
     ibox.update();
   }
 
-  ibox.text = _u("walls_need_a_gatehouse");
+  ibox.setInfoText(_u("walls_need_a_gatehouse"));
 
   //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
   ibox.setWorkingStatus(gates.active);
