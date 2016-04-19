@@ -39,7 +39,6 @@ game.ui.infobox.aboutGatehouse = function(location) {
   var gates = g_session.city.getOverlay(location).as(Overlay);
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
   ibox.overlay = gates;
-  engine.log(_ut(gates.typename));
   ibox.title = _u(gates.typename);
 
   ibox.update = function() {
@@ -151,7 +150,7 @@ game.ui.infobox.aboutDock = function(location) {
 
 game.ui.infobox.aboutBarracks = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
-  ibox.initBlackframe(16, 80, ibox.w-32, 56);
+  ibox.initBlackframe(16, 200, ibox.w-32, 56);
 
   var barracks = g_session.city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
@@ -160,9 +159,9 @@ game.ui.infobox.aboutBarracks = function(location) {
   ibox.title = _u(barracks.typename);
   ibox.setInfoText(_u("barracks_info"));
 
-  var lbWeaponQty = ibox.addLabel(20, ibox.lbText.bottom(), ibox.w-32, 24);
+  var lbWeaponQty = ibox.addLabel(20, ibox.blackFrame.bottom(), ibox.w-32, 24);
   lbWeaponQty.font = "FONT_3";
-  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.goodQty("weapon") );
+  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.getProperty("weapon") );
 
   ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers());
   ibox.setWorkingStatus(barracks.active);
