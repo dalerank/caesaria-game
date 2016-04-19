@@ -64,6 +64,7 @@ void engine_js_push(js_State* J, const DateTime& param);
 void engine_js_push(js_State* J, const NEvent& param);
 void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
+void engine_js_push(js_State* J, const Locations& param);
 void engine_js_push(js_State* J, const Tilemap& param);
 void engine_js_push(js_State* J, Widget* param);
 void engine_js_push(js_State* J, gfx::Camera* param);
@@ -226,6 +227,16 @@ void engine_js_push(js_State *J, const StringArray& items)
   for (uint32_t i = 0; i<items.size(); i++)
   {
     js_pushstring(J, items[i].c_str());
+    js_setindex(J, -2, i);
+  }
+}
+
+void engine_js_push(js_State *J, const Locations& locs)
+{
+  js_newarray(J);
+  for (uint32_t i = 0; i<locs.size(); i++)
+  {
+    engine_js_push(J, locs[i]);
     js_setindex(J, -2, i);
   }
 }

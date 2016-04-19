@@ -1,7 +1,3 @@
-function OnShowTempleInfobox(location) {
-    game.ui.infobox.aboutTemple(location)
-}
-
 function InfoboxWindow(rx, ry, rw, rh) {
     return g_ui.addSimpleWindow(rx, ry, rw, rh)
 }
@@ -14,10 +10,7 @@ game.ui.infobox.simple = function (rx, ry, rw, rh) {
     ibox.autoPosition = true
     ibox.blackFrame = ibox.addLabel(0, 0, 0, 0)
     ibox.blackFrame.style = "blackFrame"
-    ibox.blackFrame.textOffset = {
-        x: 50,
-        y: 15
-    }
+    ibox.blackFrame.textOffset = {x: 50,y: 15}
 
     ibox.btnHelp = ibox.addHelpButton(12, ibox.h - 36);
     ibox.btnHelp.tooltip = _u("infobox_tooltip_help");
@@ -26,32 +19,16 @@ game.ui.infobox.simple = function (rx, ry, rw, rh) {
         if (ibox.lbText == undefined) {
             ibox.lbText = ibox.addLabel(rx, ry, rw, rh);
             ibox.lbText.multiline = true;
-            ibox.lbText.textAlign = {
-                h: "center",
-                v: "center"
-            };
+            ibox.lbText.textAlign = {h: "center",v: "center"};
         } else {
-            ibox.lbText.geometry = {
-                x: rx,
-                y: ry,
-                w: rw,
-                h: rh
-            };
+            ibox.lbText.geometry = {x: rx,y: ry,w: rw,h: rh};
         }
     }
 
     ibox.initBlackframe = function (rx, ry, rw, rh) {
-        ibox.blackFrame.geometry = {
-            x: rx,
-            y: ry,
-            w: rw,
-            h: rh
-        };
+        ibox.blackFrame.geometry = {x: rx,y: ry,w: rw,h: rh};
         ibox.initInfoLabel(32, 45, ibox.w - 54, ibox.blackFrame.top() - 50);
-        ibox.lbText.textAlign = {
-            h: "upperLeft",
-            v: "upperLeft"
-        };
+        ibox.lbText.textAlign = {h: "upperLeft",v: "upperLeft"};
     }
 
     ibox.setInfoText = function (text) {
@@ -85,14 +62,8 @@ game.ui.infobox.simple = function (rx, ry, rw, rh) {
             return;
 
         // number of workers
-        ibox.blackFrame.icon = {
-            rc: "paneling",
-            index: picId
-        }
-        ibox.blackFrame.iconOffset = {
-            x: 20,
-            y: 10
-        };
+        ibox.blackFrame.icon = {rc: "paneling",index: picId}
+        ibox.blackFrame.iconOffset = {x: 20,y: 10};
 
         ibox.blackFrame.text = _format("{0} {1} ({2} {3})",
             have, _ut("employers"),
@@ -108,12 +79,24 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.btnNext = ibox.addButton(ibox.w - 36, 12, 24, 24)
     ibox.btnNext.text = ">"
     ibox.btnNext.style = "whiteBorderUp"
-    ibox.tooltip = _u("infobox_construction_comma_tip")
+    ibox.btnNext.tooltip = _u("infobox_construction_comma_tip")
+    ibox.btnNext.callback = function () {
+      var pos = g_session.city.findNextSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      g_session.camera.tileCenter = pos;
+      ibox.deleteLater();
+      game.ui.infobox.tryShow(pos);
+    }
 
     ibox.btnPrev = ibox.addButton(ibox.w - 60, 12, 24, 24)
     ibox.btnPrev.text = "<"
     ibox.btnPrev.style = "whiteBorderUp"
     ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
+    ibox.btnPrev.callback = function () {
+      var pos = g_session.city.findPrevSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      g_session.camera.tileCenter = pos;
+      ibox.deleteLater();
+      game.ui.infobox.tryShow(pos);
+    }
 
     ibox.btnInfo = ibox.addButton(38, ibox.h - 36, 24, 24);
     ibox.btnInfo.text = "i";
@@ -206,4 +189,10 @@ game.ui.infobox.aboutTemple = function (location) {
     }
 
     ibox.show();
+    return ibox;
+}
+
+game.ui.infobox.aboutOracle = function (location) {
+  var ibox = game.ui.infobox.aboutTemple(location);
+  ibox.initBlackframe(16, 136, ibox.w-32, 56);
 }

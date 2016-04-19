@@ -119,12 +119,6 @@ public:
     template< class T >
     SmartList< T > find( const object::Type type, const TilePos& center, int radius ) const;
 
-    template< class T >
-    SmartPtr< T > next( SmartPtr< T > current ) const;
-
-    template<class T>
-    SmartPtr<T> prew( SmartPtr<T> current) const;
-
     template<class T, class B>
     SmartList<T> neighbors( SmartPtr<B> overlay) const;
 
@@ -139,7 +133,7 @@ public:
     OverlayList neighbors( OverlayPtr overlay, bool v ) const;
     OverlayList neighbors(const TilePos& pos ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
-    int laborAccess( WorkingBuildingPtr wb ) const;    
+    int laborAccess( WorkingBuildingPtr wb ) const;
 
     Statistic& _parent;
   } objects;
@@ -590,48 +584,6 @@ inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
   return ret;
 }
 
-template<class T>
-inline SmartPtr<T> Statistic::_Objects::prew( SmartPtr<T> current) const
-{
-  if( current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = find<T>( current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      if (obj == objects.begin()) // MSVC compiler doesn't support circular lists. Neither standart does.
-      {
-        obj = objects.end();
-      }
-      obj--;
-      return *obj;
-    }
-  }
-
-  return SmartPtr<T>();
-}
-
-template< class T >
-inline SmartPtr< T > Statistic::_Objects::next( SmartPtr< T > current ) const
-{
-  if( current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = find<T>( current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      obj++;
-      if( obj == objects.end() ) { return *objects.begin(); }
-      else { return *obj; }
-    }
-  }
-
-  return SmartPtr<T>();
-}
 
 template<class T>
 inline SmartPtr<T> Statistic::_Services::find() const

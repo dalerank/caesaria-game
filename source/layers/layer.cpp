@@ -26,7 +26,7 @@
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "gfx/city_renderer.hpp"
-#include "events/showtileinfo.hpp"
+#include "events/script_event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -210,7 +210,8 @@ bool Layer::onMouseBtnRelease(const NEvent::Mouse& event)
     Tile* tile = _d.camera->at( event.pos(), false );  // tile under the cursor (or NULL)
     if( tile )
     {
-      events::dispatch<events::ShowTileInfo>( tile->epos() );
+      VariantList vl; vl << tile->epos();
+      events::dispatch<events::ScriptFunc>("OnShowOverlayInfobox", vl);
     }
   }
   else

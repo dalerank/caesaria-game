@@ -46,7 +46,7 @@ Barracks::Barracks() : TrainingBuilding( object::barracks, Size(3,3) ),
 }
 
 void Barracks::deliverTrainee()
-{ 
+{
   if( walkers().size() == 0 && _d->store.freeQty() > 0 )
   {
     CartSupplierPtr walker = Walker::create<CartSupplier>( _city() );
@@ -126,6 +126,13 @@ std::string Barracks::workersProblemDesc() const
   }
 
   return WorkingBuilding::workersProblemDesc();
+}
+
+Variant Barracks::getProperty(const std::string& name) const
+{
+  if (name == "weapon") return goodQty(good::weapon);
+
+  return Building::getProperty(name);
 }
 
 void Barracks::save(VariantMap& stream) const
