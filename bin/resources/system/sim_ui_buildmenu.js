@@ -5,7 +5,7 @@ g_config.buildmenu = {
 
   security : {
     buildings : [ "prefecture", "wall", "fortification", "fort_javelin", "fort_legionaries",
-                  "fort_horse", "barracks", "gatehouse", "tower" ]
+                  "fort_horse", "barracks", "gatehouse", "tower", "military_academy" ]
   },
 
   education : {

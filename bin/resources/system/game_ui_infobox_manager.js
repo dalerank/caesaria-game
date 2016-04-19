@@ -104,6 +104,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWarehouse(location);
   break;
 
+  case "military_academy":
+    game.ui.infobox.aboutMillitaryAcademy(location);
+  break;
+
   case "gatehouse":
     game.ui.infobox.aboutGatehouse(location);
   break;

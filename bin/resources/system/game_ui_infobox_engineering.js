@@ -60,6 +60,21 @@ game.ui.infobox.aboutGatehouse = function(location) {
   ibox.show();
 }
 
+game.ui.infobox.aboutMillitaryAcademy = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var academy = g_session.city.getOverlay(location).as(WorkingBuilding);
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(academy.typename);
+
+  ibox.setInfoText(_u("military_academy_info"));
+
+  ibox.setWorkersStatus(32, 8, 542, academy.maximumWorkers(), academy.numberWorkers());
+  ibox.setWorkingStatus(academy.active);
+
+  ibox.show();
+}
+
 game.ui.infobox.aboutFort = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
@@ -83,12 +98,13 @@ game.ui.infobox.aboutFort = function(location) {
   var startPos = { x:ibox.lbText.left(), y:ibox.lbText.bottom() };
   var soldiersCount = fort.getProperty( "soldiersCount" );
   var lbWidth = (ibox.w-40) / 2;
-  for (var i=0; i < soldiersCount; i++)
-  {
+  for (var i=0; i < soldiersCount; i++) {
     var soldier = fort.getSoldier(i);
     var lbSoldierName = ibox.addLabel(i < 8 ? 0 : lbWidth, startPos.y + (25 * i)%8, lbWidth, 24);
     lb.text = soldier.name();
   }
+
+  ibox.show();
 }
 
 game.ui.infobox.aboutDock = function(location) {
@@ -165,7 +181,6 @@ game.ui.infobox.aboutBarracks = function(location) {
 
   ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers());
   ibox.setWorkingStatus(barracks.active);
-  ibox.setAutoPosition();
 
   ibox.show();
 }
