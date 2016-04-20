@@ -82,6 +82,9 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.btnNext.tooltip = _u("infobox_construction_comma_tip")
     ibox.btnNext.callback = function () {
       var pos = g_session.city.findNextSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      if (pos.i < 0)
+          return;
+
       g_session.camera.tileCenter = pos;
       ibox.deleteLater();
       game.ui.infobox.tryShow(pos);
@@ -93,6 +96,9 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
     ibox.btnPrev.callback = function () {
       var pos = g_session.city.findPrevSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      if (pos.i < 0)
+          return;
+
       g_session.camera.tileCenter = pos;
       ibox.deleteLater();
       game.ui.infobox.tryShow(pos);
@@ -121,12 +127,8 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.setWorkingStatus = function (active) {
         if (!ibox.btnToggleWorks) {
             ibox.btnToggleWorks = new Button(ibox.blackFrame);
-            ibox.btnToggleWorks.geometry = {
-                x: ibox.blackFrame.w - 110,
-                y: (ibox.blackFrame.h - 25) / 2,
-                w: 100,
-                h: 25
-            }
+            ibox.btnToggleWorks.geometry = { x: ibox.blackFrame.w - 110, y: (ibox.blackFrame.h - 25) / 2,
+                                             w: 100, h: 25 };
             ibox.btnToggleWorks.style = "blackBorderUp"
             ibox.btnToggleWorks.font = "FONT_1"
 
