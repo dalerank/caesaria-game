@@ -225,7 +225,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
       btn.x = buildMenu.w - btn.w - 35;
       btn.y = buildMenu.htop + 25 * i;
       if (btn.lbCost)
-        btn.lbCost.geometry = { x:btn.w-55, y:0, w:30, h:25 };
+        btn.lbCost.geometry = { x:btn.w-24-max_cost_width, y:0, w:max_cost_width, h:25 };
     }
     //  button->setWidth( width() );
   }
