@@ -378,11 +378,15 @@ sim.ui.menu.initialize = function() {
   menu.miniature.mode = "fit";
   menu.miniature.picture = { rc: "panelwindows", index:13 };
 
-  menu.overlays = new PushButton(menu);
+  menu.overlays = new Button(menu);
   menu.overlays.text = _u("ovrm_text");
   menu.overlays.style = "greyBorderLineFit";
   menu.overlays.geometry =  {x:4, y:1, w:119, h:28};
   menu.overlays.tooltip =  _u("select_city_layer");
+  menu.overlays.callback = function() {
+    sim.ui.overlaymenu.show("all", sim.ui.menu.extmenu.w,
+                                   sim.ui.menu.extmenu.overlays.screeny);
+  }
 
   sim.ui.menu.extmenu = menu;
 }

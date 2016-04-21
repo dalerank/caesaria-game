@@ -399,7 +399,14 @@ void Level::setOption(const std::string& name, Variant value)
   } else if (name == "advisor") {
     events::dispatch<ShowAdvisorWindow>(true, value.toEnum<Advisor>());
   } else if (name == "layer") {
-    _d->renderer.setLayer(value.toInt());
+    int type = citylayer::count;
+    if (value.type() == Variant::String) {
+      type = citylayer::Helper::instance().findType(value.toString());
+    } else {
+      type = citylayer::Type(value.toInt());
+    }
+
+    _d->renderer.setLayer(type);
   } else if (name == "buildMode") {
     int type = object::unknown;
     if (value.type() == Variant::String) {
