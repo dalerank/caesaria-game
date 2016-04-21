@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_CORE_PREDEFINITIONS_H_INCLUDED__
+#define __CAESARIA_CORE_PREDEFINITIONS_H_INCLUDED__
 
 #include "platform_types.hpp"
 
@@ -24,6 +24,7 @@
 #define PREDEFINE_CLASS_SMARTLIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef SmartList< a > a##b;
 
 class TilePos;
+class TilePosArray;
 class Point;
 class FointF;
 class Size;
@@ -31,5 +32,9 @@ class Variant;
 class VariantList;
 class VariantMap;
 class DateTime;
+class TilePosSet;
 
-#endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__
+typedef TilePosArray Locations;
+typedef TilePosSet   UqLocations;
+
+#endif //__CAESARIA_CORE_PREDEFINITIONS_H_INCLUDED__

@@ -7,8 +7,11 @@ game.ui.infobox.show = function(typename,location)
   case "small_mercury_temple": case "big_ceres_temple":
   case "big_mars_temple": case "big_neptune_temple":
   case "big_venus_temple": case "big_mercury_temple":
-  case "oracle":
     game.ui.infobox.aboutTemple(location)
+  break;
+
+  case "oracle":
+    game.ui.infobox.aboutOracle(location)
   break;
 
   case "roadBlock": case "elevation": case "aqueduct":
@@ -104,6 +107,10 @@ game.ui.infobox.show = function(typename,location)
     game.ui.infobox.aboutWarehouse(location);
   break;
 
+  case "military_academy":
+    game.ui.infobox.aboutMillitaryAcademy(location);
+  break;
+
   case "gatehouse":
     game.ui.infobox.aboutGatehouse(location);
   break;
@@ -131,7 +138,7 @@ game.ui.infobox.show = function(typename,location)
   }
 }
 
-function OnShowOverlayInfobox(location) {
+game.ui.infobox.tryShow = function (location) {
   var walkers = g_session.city.walkers(location);
   if (walkers.length > 0) {
     game.ui.infobox.wshow(walkers, location);
@@ -139,4 +146,8 @@ function OnShowOverlayInfobox(location) {
     var overlay = g_session.city.getOverlay(location)
     game.ui.infobox.show(overlay.typename, location)
   }
+}
+
+function OnShowOverlayInfobox(location) {
+  game.ui.infobox.tryShow(location);
 }

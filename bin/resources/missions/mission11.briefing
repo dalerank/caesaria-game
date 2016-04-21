@@ -4,16 +4,16 @@
   title : "##briefing_eleventh_title##"
 
   items : {
-    lindum : {
-      title : "##lindum_title##"
-      location : [ 570, 280 ]
-      mission : ":/missions/lindum.mission"
-    }
-
     massilia : {
       title : "##massilia_title##"
       mission : ":/missions/massilia.mission"
       location : [ 20, 320 ]
+    }
+	
+    lindum : {
+      title : "##lindum_title##"
+      location : [ 570, 280 ]
+      mission : ":/missions/lindum.mission"
     }
   }
 }

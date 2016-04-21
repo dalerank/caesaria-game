@@ -2,6 +2,7 @@
 SCRIPT_OBJECT_BEGIN(OverlayType) \
   SCRIPT_OBJECT_FUNCTION(OverlayType,type,0) \
   SCRIPT_OBJECT_FUNCTION(OverlayType,size,0) \
+  SCRIPT_OBJECT_FUNCTION(OverlayType,pos,0) \
   SCRIPT_OBJECT_FUNCTION(OverlayType,state,1) \
   SCRIPT_OBJECT_FUNCTION(OverlayType,setState,2) \
   SCRIPT_OBJECT_FUNCTION(OverlayType,updateState,2) \
@@ -24,6 +25,7 @@ SCRIPT_OBJECT_END(OverlayType)
 #define TEMPLATE_OVERLAY_IMPLEMENTATION(OverlayType) \
 DEFINE_OBJECT_GETTER_0(OverlayType,object::Type,type) \
 DEFINE_OBJECT_GETTER_0(OverlayType,const Size&,size) \
+DEFINE_OBJECT_GETTER_0(OverlayType,const TilePos&,pos) \
 DEFINE_OBJECT_GETTER_1(OverlayType,float,state,int,0) \
 DEFINE_OBJECT_GETTER_1(OverlayType,Variant,getProperty,const std::string&,std::string()) \
 DEFINE_OBJECT_FUNCTION_2(OverlayType,setState,int,float) \

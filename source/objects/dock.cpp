@@ -146,15 +146,14 @@ Construction::BuildArea Dock::buildArea(const city::AreaInfo& areaInfo) const
 {
   Construction::BuildArea ret;
 
-  TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
-  for( auto tile : area )
-    ret[ tile->pos() ] = tile->getFlag( Tile::isConstructible );
+  TilesArea area(areaInfo.city->tilemap(), areaInfo.pos, size());
+  for (auto tile : area)
+    ret[ tile->pos() ] = tile->getFlag(Tile::isConstructible);
 
-  TilesArray border = areaInfo.city->tilemap().rect( areaInfo.pos, size() );
-  for( auto tile : border )
-  {
-    bool isCoast = tile->terrain().coast && _d->isFlatCoast( *tile );
-    ret[ tile->pos() ] = isCoast;
+  TilesArray border = areaInfo.city->tilemap().rect( areaInfo.pos, size());
+  for (auto tile : border) {
+    bool isCoast = tile->terrain().coast && _d->isFlatCoast(*tile);
+    ret[tile->pos()] = isCoast;
   }
 
   return ret;
@@ -162,23 +161,22 @@ Construction::BuildArea Dock::buildArea(const city::AreaInfo& areaInfo) const
 
 bool Dock::build( const city::AreaInfo& info )
 {
-  _setDirection( _d->getDirection( info.city, info.pos, size() ) );
+  _setDirection(_d->getDirection(info.city, info.pos, size()));
 
-  TilesArea area( info.city->tilemap(), info.pos, size() );
+  TilesArea area(info.city->tilemap(), info.pos, size());
 
-  for( auto tile : area )
-     _d->saved_tile.push_back( tile::encode( *tile ) );
-
-  WorkingBuilding::build( info );
+  for (auto tile : area)
+     _d->saved_tile.push_back(tile::encode(*tile));
 
   TilePos landingPos = landingTile().pos();
   Pathway way = PathwayHelper::create( landingPos, info.city->getBorderInfo( PlayerCity::boatEntry ).epos(),
                                        PathwayHelper::deepWater );
-  if( !way.isValid() )
-  {
+  if (!way.isValid()) {
     _setError( "##inland_lake_has_no_access_to_sea##" );
+    return false;
   }
 
+  WorkingBuilding::build(info);
   return true;
 }
 
@@ -187,18 +185,17 @@ void Dock::destroy()
   TilesArray tiles = area();
 
   int index=0;
-  for( auto tile : tiles )
+  for (auto tile : tiles) {
     tile::decode( *tile, _d->saved_tile[ index++ ] );
+  }
 
   WorkingBuilding::destroy();
 }
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( time % game::Date::days2ticks( 1 ) == 0 )
-  {
-    if( _d->dateSendGoods < game::Date::current() )
-    {
+  if (time % game::Date::days2ticks(1) == 0) {
+    if (_d->dateSendGoods < game::Date::current()) {
       _tryReceiveGoods();
       _tryDeliverGoods();
 

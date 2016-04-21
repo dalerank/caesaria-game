@@ -64,6 +64,7 @@ void engine_js_push(js_State* J, const DateTime& param);
 void engine_js_push(js_State* J, const NEvent& param);
 void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
+void engine_js_push(js_State* J, const Locations& param);
 void engine_js_push(js_State* J, const Tilemap& param);
 void engine_js_push(js_State* J, Widget* param);
 void engine_js_push(js_State* J, gfx::Camera* param);
@@ -226,6 +227,16 @@ void engine_js_push(js_State *J, const StringArray& items)
   for (uint32_t i = 0; i<items.size(); i++)
   {
     js_pushstring(J, items[i].c_str());
+    js_setindex(J, -2, i);
+  }
+}
+
+void engine_js_push(js_State *J, const Locations& locs)
+{
+  js_newarray(J);
+  for (uint32_t i = 0; i<locs.size(); i++)
+  {
+    engine_js_push(J, locs[i]);
     js_setindex(J, -2, i);
   }
 }
@@ -466,21 +477,21 @@ void engine_js_Panic(js_State *J)
 
 void engine_js_Log(js_State *J)
 {
-  if (js_isstring(J, 1)) {
-    const char* text = js_tostring(J, 1);
-    Logger::warning( text );
-  } else if (js_isnumber(J, 1)) {
-    int severity = js_toint16(J, 1);
-    const char* text = js_tostring(J, 2);
-    switch(severity) {
-    case 0: Logger::debug(text); break;
-    case 1: Logger::info(text); break;
-    case 3: Logger::error(text); break;
-    case 4: Logger::fatal(text); break;
-    default: Logger::warning(text); break;
-    }
-  } else if (js_isundefined(J, 1)) {
-    Logger::warning("Try to print undefined object");
+  if (js_isundefined(J, 1)) {
+    Logger::warning("log() Try to print undefined object");
+  } else {
+    Logger::info(js_tostring(J, 1));
+  }
+
+  js_pushundefined(J);
+}
+
+void engine_js_Warn(js_State *J)
+{
+  if (js_isundefined(J, 1)) {
+    Logger::warning("warning() Try to print undefined object");
+  } else {
+    Logger::warning(js_tostring(J, 1));
   }
 
   js_pushundefined(J);

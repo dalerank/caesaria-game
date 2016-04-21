@@ -103,19 +103,18 @@ game.ui.infobox.baseSpecialOrdersWindow = function (top, left, height) {
     return ibox;
 }
 
-game.ui.infobox.showGrSpecialOrdersWindow = function (parent, gr) {
-    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 250, 250);
+game.ui.infobox.showGrSpecialOrdersWindow = function (parent, grStore) {
+    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 250, 245);
     ibox.title = _u("granary_orders");
 
-    var grStore = gr.store();
-    for (var i in g_config.good.storable) {
-        var gtype = g_config.good.storable[i];
+    for (var i in g_config.good.grararable) {
+        var gtype = g_config.good.grararable[i];
         var rule = grStore.getOrder(gtype);
         ibox.gbOrders.addProduct(gtype, grStore);
     }
 
     ibox.update = function () {
-        ibox.btnToggleDevastation.text = gr.store().isDevastation() ? _u("stop_granary_devastation") : _u("devastate_granary");
+        ibox.btnToggleDevastation.text = grStore.isDevastation() ? _u("stop_granary_devastation") : _u("devastate_granary");
     }
 
 
@@ -124,7 +123,7 @@ game.ui.infobox.showGrSpecialOrdersWindow = function (parent, gr) {
     ibox.btnToggleDevastation.font = "FONT_2"
     ibox.btnToggleDevastation.text = _u("unknown_text");
     ibox.btnToggleDevastation.callback = function () {
-        gr.store().setDevastation(!gr.store().isDevastation());
+        grStore.setDevastation(!grStore.isDevastation());
         ibox.update();
     }
 
@@ -206,6 +205,7 @@ game.ui.infobox.aboutGranary = function (location) {
     var granary = g_session.city.getOverlay(location).as(Granary);
 
     var ibox = this.aboutStorage(0, 0, 510, 280);
+    ibox.initBlackframe(16, 150, ibox.w - 32, 58);
 
     ibox.title = _u(granary.typename);
 
@@ -215,9 +215,10 @@ game.ui.infobox.aboutGranary = function (location) {
     }
 
     var lbUnits = ibox.addLabel(16, 45, ibox.w - 32, 25)
+    var grStore = granary.store();
         // summary: total stock, free capacity
-    var capacity = granary.store().qty();
-    var freeQty = granary.store().freeQty();
+    var capacity = grStore.qty();
+    var freeQty = grStore.free();
     var desc = _format("{0} {1}, {2} {3} ({4})",
         g_config.metric.convQty(capacity),
         _ut("units_in_stock"),
@@ -226,16 +227,16 @@ game.ui.infobox.aboutGranary = function (location) {
         g_config.metric.modeShort);
     lbUnits.text = desc;
 
-    ibox.drawGood(g_config.good.wheat, 0, lbUnits.bottom());
-    ibox.drawGood(g_config.good.meat, 0, lbUnits.bottom() + 25);
-    ibox.drawGood(g_config.good.fruit, 1, lbUnits.bottom());
-    ibox.drawGood(g_config.good.vegetable, 1, lbUnits.bottom() + 25);
+    ibox.drawGrGood(g_config.good.wheat, 0, lbUnits.bottom());
+    ibox.drawGrGood(g_config.good.meat, 0, lbUnits.bottom() + 25);
+    ibox.drawGrGood(g_config.good.fruit, 1, lbUnits.bottom());
+    ibox.drawGrGood(g_config.good.vegetable, 1, lbUnits.bottom() + 25);
 
     var btnOrders = ibox.addButton(65, ibox.h - 37, ibox.w - 125, 25)
     btnOrders.text = _u("granary_orders");
     btnOrders.style = "whiteBorderUp";
     btnOrders.callback = function () {
-        game.ui.infobox.showGrSpecialOrdersWindow(ibox, wh);
+        game.ui.infobox.showGrSpecialOrdersWindow(ibox, grStore);
     }
 
     ibox.setWorkersStatus(32, 130, 542, granary.maximumWorkers(), granary.numberWorkers());

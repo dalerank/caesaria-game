@@ -5,7 +5,7 @@ g_config.buildmenu = {
 
   security : {
     buildings : [ "prefecture", "wall", "fortification", "fort_javelin", "fort_legionaries",
-                  "fort_horse", "barracks", "gatehouse", "tower" ]
+                  "fort_horse", "barracks", "gatehouse", "tower", "military_academy" ]
   },
 
   education : {
@@ -86,9 +86,34 @@ sim.ui.buildmenu.hide = function() {
     menus.deleteLater();
 }
 
+sim.ui.buildmenu.isBranchAvailable = function(branch) {
+  var city = g_session.city;
+  engine.log("sim.ui.buildmenu.isBranchAvailable");
+  if (g_config.buildmenu[branch]) {
+    var currentBranch = g_config.buildmenu[branch];
+    if (currentBranch.buildings != undefined) {
+      for (var b in currentBranch.buildings) {
+        engine.log(b);
+        var buildingAvailable = city.getBuildOption(currentBranch.buildings[b]);
+        if (buildingAvailable)
+          return true;
+      }
+    }
+
+    if (currentBranch.submenu != undefined) {
+      for (var s in currentBranch.submenu) {
+        var submenuAvailable = sim.ui.buildmenu.isBranchAvailable(currentBranch.submenu[s]);
+        if (submenuAvailable)
+          return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 sim.ui.buildmenu.show = function(type, left, top) {
   sim.ui.buildmenu.hide();
-  engine.log(top);
 
   if (type == undefined || type == "")
     return;
@@ -112,7 +137,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
   }
 
   buildMenu.addButton = function(branch,type) {
-    var ltype = branch.length ? branch : type; 
+    var ltype = branch.length ? branch : type;
     var title = "";
 
     if (branch.length)
@@ -120,11 +145,12 @@ sim.ui.buildmenu.show = function(type, left, top) {
     else
       title = _u(type);
 
-    if (type != "" && !g_session.city.getBuildOption(type))
-      return;
-
-    engine.log("Build menu add type " + ltype);
-    engine.log("Build menu add type " + _t(title));
+    if (type) {
+      var av = g_session.city.getBuildOption(type);
+      engine.log("Build menu add type " + ltype + ":" + (av?"true":"false"));
+      if (!av)
+        return;
+    }
 
     var btn = new Button(buildMenu);
     btn.geometry = { x:0, y:25*buildMenu.buttons.length, w:buildMenu.w, h:24};
@@ -159,13 +185,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
   buildMenu.update = function(type) {
     var max_text_width = 0;
     var max_cost_width = 0;
-    //Size textSize;
-    //Font font = Font::create( "FONT_2" );
 
-    //VariantMap allItems = config::load( _d->menuModel );
-    //VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
-    //VariantList submenu = config.get( "submenu" ).toList();
-    //VariantList buildings = config.get( "buildings" ).toList();
     engine.log("Opened buildmenu " + type);
     var config = g_config.buildmenu[type];
 
@@ -198,9 +218,8 @@ sim.ui.buildmenu.show = function(type, left, top) {
       btn.x = buildMenu.w - btn.w - 35;
       btn.y = buildMenu.htop + 25 * i;
       if (btn.lbCost)
-        btn.lbCost.geometry = { x:btn.w-55, y:0, w:30, h:25 };
+        btn.lbCost.geometry = { x:btn.w-24-max_cost_width, y:0, w:max_cost_width, h:25 };
     }
-    //  button->setWidth( width() );
   }
 
   if (type != "")

@@ -30,6 +30,7 @@
 #include "gfx/animation_bank.hpp"
 #include "core/position_array.hpp"
 #include "warehouse.hpp"
+#include "events/removegoods.hpp"
 #include "core/logger.hpp"
 
 using namespace religion;
@@ -310,19 +311,16 @@ unsigned int BigTemple::currentVisitors() const { return 1500; }
 
 bool BigTemple::build( const city::AreaInfo& info )
 {
-  if(info.onload)  //load from savefiles
-  {
+  if (info.onload) { //load from savefiles
     Temple::build( info );
     return true;
   }
 
-  good::ProductMap goods = info.city->statistic().goods.details( false );
-  if( goods[ good::marble ] >= 2 )
-  {
+  good::ProductMap goods = info.city->statistic().goods.details(false);
+  if (goods[good::marble] >= 2) {
     Temple::build( info );
-  }
-  else
-  {
+    events::dispatch<events::RemoveGoods>(good::marble,200);
+  } else {
     _setError( "##need_marble_for_large_temple##" );
     deleteLater();
     return false;

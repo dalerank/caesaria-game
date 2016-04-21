@@ -77,21 +77,21 @@
         {
           type : "atlas"
           folder : "/resources/marketkid"
-          files : [ "marketkid_*" ]
+          files : [ "*" ]
         }
 
         marketlady :
         {
           type : "atlas"
           folder : "/resources/marketlady"
-          files : [ "marketlady_*" ]
+          files : [ "*" ]
         }
 
         fishingboat :
         {
           type : "atlas"
           folder : "/resources/fishingboat"
-          files : [ "fboat_*" ]
+          files : [ "*" ]
         }
 
         prefect :
@@ -112,28 +112,21 @@
         {
           type : "atlas"
           folder : "/resources/priest"
-          files : [ "priest_*" ]
+          files : [ "*" ]
         }
 
         dust :
         {
           type : "atlas"
           folder : "/resources/dust"
-          files : [ "dust_*" ]
+          files : [ "*" ]
         }
 
         pleb :
         {
           type : "atlas"
           folder : "/resources/pleb"
-          files : [ "citizen*" ]
-        }
-
-        pleb_die :
-        {
-          type : "atlas"
-          folder : "/resources/pleb"
-          files : [ "wd_*" ]
+          files : [ "*" ]
         }
       }
     }
@@ -431,7 +424,7 @@
         {
           type : "atlas"
           folder : "/resources/walls"
-          files : [ "land2a_*" ]
+          files : [ "*" ]
         }
 
         lubmill :
@@ -516,6 +509,13 @@
           type : "atlas"
           folder : "/resources/security"
           files : [ "security_*" ]
+        }
+
+        wahrf :
+        {
+          type : "atlas"
+          folder : "/resources/wharf"
+          files : "*"
         }
 
         prefecture :

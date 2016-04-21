@@ -5,17 +5,17 @@
   city.name : "Lugdunum"
   player.rank : 5
   date : "50.01.01"
-  climate : 1
   adviserEnabled : true
   fishPlaceEnabled : false
+  climate : 1
   preview.text : "##londinium_preview_mission##"
   preview.title : "##londinium_preview_title##"
   preview.image : ""
 
   win :
   {
-    population : 10000
     name : "n2_londinium"
+    population : 10000
     culture : 75
     prosperity : 75
     peace : 60
@@ -24,12 +24,12 @@
     next : ":/missions/mission11.briefing"
     title : "##win_procurator_title##"
     maxHouseLevel : "big_villa"
-    caption : "##londinium_10_title##"
-    startSound : "londinium_speech"
-    overview :  [ "##ondinium_10_overview##" ]
-    winText : "##londinium_win_text##"
     winContinue : false
-    winSound     : "londinium_win_speech"
+    caption : "##londinium_10_title##"
+    winText : "##londinium_win_text##"
+    startSound : "londinium_speech"
+    winSound : "londinium_win_speech"
+    overview : [ "##ondinium_10_overview##" ]
   }
 
   empire : {
@@ -42,18 +42,15 @@
         sea : true
         land : true
         available : true
-
         sells : { iron : 25, weapon : 15 }
         buys : { timber : 40, pottery : 40 }
       }
 
       Lutetia : {
         nation : "roman"
-
         sea : true
         land : true
         available : true
-
         sells : { wine : 15, oil : 15 }
         buys : { wheat : 15, pottery : 40 }
       }
@@ -63,7 +60,6 @@
         land : true
         available : true
         nation : "roman"
-
         sells : { meat : 15, wine : 15 }
         buys : { vegetable : 25 }
       }
@@ -87,7 +83,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##1000_citzens_in_city##"
     }
 
     population_milestone_2000#messagebox : {
@@ -96,7 +92,7 @@
       send2scribe : true
       video : "population1"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##2000_citzens_in_city##"
     }
 
     population_milestone_3000#messagebox : {
@@ -105,7 +101,7 @@
       send2scribe : true
       video : "population2"
       title : "##population_milestone##"
-      text : "##500_citzens_in_city##"
+      text : "##3000_citzens_in_city##"
     }
 
     first_colosseum_work#start_work : {
@@ -766,21 +762,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       prefecture : true
       engineering_post : true
       plaza : true
@@ -789,23 +797,19 @@
       clay_pit : true
       iron_mine : false
       lumber_mill : true
-
       pottery_workshop : true
       weapons_workshop : true
       furniture_workshop : true
-
       garden : true
       low_bridge : true
       high_bridge : true
       dock : true
       wharf : true
-
       small_ceres_temple : true
       small_venus_temple : true
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
-
       shipyard : true
       market : true
       granary : true
@@ -823,12 +827,10 @@
       fort_horse : true
       military_academy : true
       barracks : true
-
       baths : true
       clinic : true
       hospital : true
       barber : true
-
       wheat_farm : true
       vegetable_farm : true
     }

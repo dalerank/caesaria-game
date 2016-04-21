@@ -28,9 +28,6 @@
 
 class Game;
 class PlayerCity;
-class VariantList;
-class VariantMap;
-class Variant;
 class StringArray;
 namespace gfx { class Picture; class Camera; }
 
@@ -87,6 +84,7 @@ public:
   VariantMap getGoodInfo(std::string goodName) const;
   gui::Widget* findWidget(std::string wname) const;
   Size getResolution() const;
+  Locations getBuildingLocations(Variant type) const;
   gfx::Camera* getCamera() const;
   void setFont(const std::string& fontname);
   void setLanguage(const std::string& lang,const std::string& audio);

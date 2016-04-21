@@ -32,6 +32,7 @@ g_config.good.storable = [ g_config.good.wheat, g_config.good.fish, g_config.goo
                            g_config.good.olive, g_config.good.oil, g_config.good.grape, g_config.good.wine, g_config.good.timber,
                            g_config.good.furniture, g_config.good.clay, g_config.good.pottery, g_config.good.iron,
                            g_config.good.weapon, g_config.good.marble, g_config.good.prettyWine ];
+g_config.good.grararable = [ g_config.good.wheat, g_config.good.meat, g_config.good.fruit, g_config.good.vegetable ];                           
 
 g_config.good.cache = {}
 
@@ -88,6 +89,14 @@ Store.prototype.qty = function(gtype) {
       return this.qty_void();
     } else {
       return this.qty_product(gtype);
+    }
+}
+
+Store.prototype.free = function(gtype) {
+    if (typeof gtype == "undefined") {
+      return this.freeQty_void();
+    } else {
+      return this.freeQty_product(gtype);
     }
 }
 

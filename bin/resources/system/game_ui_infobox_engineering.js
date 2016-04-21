@@ -26,6 +26,7 @@ game.ui.infobox.aboutRuins = function(location) {
     var defaultRuinInfo = _ut(ruins.typename + "_info");
     text = defaultRuinInfo + "\n(was: " + text + ")";
   }
+
   ibox.setInfoText(text);
   ibox.btnInfo.display = false;
 
@@ -35,9 +36,9 @@ game.ui.infobox.aboutRuins = function(location) {
 game.ui.infobox.aboutGatehouse = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var gates = g_session.city.getOverlay(location).as(WorkingBuilding);
-  ibox.overlay = gates;
+  var gates = g_session.city.getOverlay(location).as(Overlay);
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.overlay = gates;
   ibox.title = _u(gates.typename);
 
   ibox.update = function() {
@@ -50,12 +51,27 @@ game.ui.infobox.aboutGatehouse = function(location) {
     ibox.update();
   }
 
-  ibox.text = _u("walls_need_a_gatehouse");
+  ibox.setInfoText(_u("walls_need_a_gatehouse"));
 
   //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
   ibox.setWorkingStatus(gates.active);
 
   ibox.update();
+  ibox.show();
+}
+
+game.ui.infobox.aboutMillitaryAcademy = function(location) {
+  var ibox = this.aboutConstruction(0, 0, 510, 350);
+
+  var academy = g_session.city.getOverlay(location).as(WorkingBuilding);
+  ibox.initBlackframe(20, 240, ibox.w-40, 50);
+  ibox.title = _u(academy.typename);
+
+  ibox.setInfoText(_u("military_academy_info"));
+
+  ibox.setWorkersStatus(32, 8, 542, academy.maximumWorkers(), academy.numberWorkers());
+  ibox.setWorkingStatus(academy.active);
+
   ibox.show();
 }
 
@@ -82,12 +98,13 @@ game.ui.infobox.aboutFort = function(location) {
   var startPos = { x:ibox.lbText.left(), y:ibox.lbText.bottom() };
   var soldiersCount = fort.getProperty( "soldiersCount" );
   var lbWidth = (ibox.w-40) / 2;
-  for (var i=0; i < soldiersCount; i++)
-  {
+  for (var i=0; i < soldiersCount; i++) {
     var soldier = fort.getSoldier(i);
     var lbSoldierName = ibox.addLabel(i < 8 ? 0 : lbWidth, startPos.y + (25 * i)%8, lbWidth, 24);
     lb.text = soldier.name();
   }
+
+  ibox.show();
 }
 
 game.ui.infobox.aboutDock = function(location) {
@@ -149,7 +166,7 @@ game.ui.infobox.aboutDock = function(location) {
 
 game.ui.infobox.aboutBarracks = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
-  ibox.initBlackframe(16, 80, ibox.w-32, 56);
+  ibox.initBlackframe(16, 200, ibox.w-32, 56);
 
   var barracks = g_session.city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
@@ -158,13 +175,12 @@ game.ui.infobox.aboutBarracks = function(location) {
   ibox.title = _u(barracks.typename);
   ibox.setInfoText(_u("barracks_info"));
 
-  var lbWeaponQty = ibox.addLabel(20, ibox.lbText.bottom(), ibox.w-32, 24);
+  var lbWeaponQty = ibox.addLabel(20, ibox.blackFrame.bottom(), ibox.w-32, 24);
   lbWeaponQty.font = "FONT_3";
-  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.goodQty("weapon") );
+  lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.getProperty("weapon") );
 
   ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers());
   ibox.setWorkingStatus(barracks.active);
-  ibox.setAutoPosition();
 
   ibox.show();
 }
@@ -472,27 +488,27 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var coloseum = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var colosseum = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
-  ibox.initBlackFrame(16, 145, ibox.w - 16,100);
+  ibox.initBlackframe(16, 145, ibox.w - 32, 100);
 
-  ibox.setWorkersStatus(32, 150, 542, coloseum.maximumWorkers(), coloseum.numberWorkers());
-  ibox.setWorkingStatus(coloseum.active);
-  ibox.title = _u(colosseum.typename)
+  ibox.setWorkersStatus(32, 150, 542, colosseum.maximumWorkers(), colosseum.numberWorkers());
+  ibox.setWorkingStatus(colosseum.active);
+  ibox.btnToggleWorks.y = 10;
+  ibox.title = _u(colosseum.typename);
+
+  ibox.setInfoText(_u("colosseum_info"));
 
   var isNeedGladiators = colosseum.getProperty("isNeedGladiators");
-  if (isNeedGladiators)
-  {
+  if (isNeedGladiators) {
     var lb = ibox.addLabel(35, 190,ibox.w-35,20);
     lb.text = _u("colosseum_haveno_gladiatorpit");
-  }
-  else
-  {
+  } else {
     var text = _u("colosseum_haveno_animal_bouts");
     var isShowLionBattles = colosseum.getProperty("isShowLionBattles");
-    if(isShowLionBattles)
-    {
+
+    if(isShowLionBattles) {
       var lastAnimalBoutDate = coloseum.getProperty("lastAnimalBoutDate");
       text = _format( "{0} {1} {2}", _ut("colosseum_animal_contest_runs"),
                                      lastAnimalBoutDate.daysTo(g_session.date),
@@ -502,8 +518,8 @@ game.ui.infobox.aboutColosseum = function(location) {
 
     text = _u("colosseum_haveno_gladiator_bouts");
     var isShowGladiatorBattles = coloseum.getProperty("isShowGladiatorBattles");
-    if (isShowGladiatorBattles)
-    {
+
+    if (isShowGladiatorBattles) {
       var lastGlBoutDate = coloseum.getProperty("lastGladiatorBoutDate");
       text = _format( "{0} {1} {2}", _ut("colosseum_gladiator_contest_runs"), lastGlBoutDate.daysTo(g_session.date), _ut("days") );
     }

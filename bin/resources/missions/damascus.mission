@@ -16,7 +16,7 @@
   {
     name : "n2_damascus"
     population : 6000
-	culture : 55
+    culture : 55
     prosperity : 55
     peace : 50
     favour : 40
@@ -24,10 +24,10 @@
     next : ":/missions/mission10.briefing"
     title : "##сaesar##"
     maxHouseLevel : "big_villa"
-	winContinue : false
+    winContinue : false
     caption : "##damascus_title##"
-	winText : "##damascus_win_text##"
-	startSound : "damascus_speech"
+    winText : "##damascus_win_text##"
+    startSound : "damascus_speech"
     winSound : "damascus_win_speech"
     overview : [ "##damascus_overview##" ]
   }
@@ -696,21 +696,33 @@
 
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "enabled"
-    health : "enabled"
-    religion : "disable_all"
-    education : "enabled"
-    entertainment : "enabled"
-    govt : "enabled"
-    engineering : "disable_all"
-    security : "disable_all"
     check_desirability : true
 
     buildings :
     {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
       engineering_post : true
       plaza : true
       garden : true

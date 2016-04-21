@@ -1,5 +1,6 @@
 DEF_GLOBAL_OBJECT(engine)
   REGISTER_FUNCTION(engine_js_Log,"log",1);
+  REGISTER_FUNCTION(engine_js_Warn,"warning",1);
   REGISTER_FUNCTION(engine_js_LoadModule,"loadModule",1);
   REGISTER_FUNCTION(engine_js_Translate,"translate",1);
   REGISTER_FUNCTION(engine_js_GetOption,"getOption",1);

@@ -188,6 +188,24 @@ int Session::videoModesCount() const { return _game->engine()->modes().size(); }
 Size Session::getVideoMode(int index) const { return _game->engine()->modes().at(index); }
 Size Session::getResolution() const { return _game->engine()->screenSize(); }
 
+Locations Session::getBuildingLocations(Variant var) const
+{
+  object::Type type = object::unknown;
+  if (var.type() == Variant::String) {
+    type = object::toType(var.toString());
+  } else if (var.type() == Variant::Int) {
+    type = object::Type(var.toInt());
+  }
+
+  auto ovs = _game->city()->overlays().where( [type] (OverlayPtr ov) { return ov->type() == type; } );
+  Locations result;
+  for (auto ov : ovs) {
+    result.push_back(ov->pos());
+  }
+
+  return result;
+}
+
 gfx::Camera* Session::getCamera() const
 {
   scene::Level* lvl = safety_cast<scene::Level*>(_game->scene());
