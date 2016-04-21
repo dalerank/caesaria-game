@@ -49,4 +49,6 @@
   theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
   way : { rc : "way", start : 1, stop : 200, offset : [ -1, -1 ] }
   ground : { rc : "ground", start : 1, stop : 5, offset : [ -1, -1 ] }
+  gatehouseNorth : { rc : "sprites", start : 224, stop : 1, offset : [ 8, 80 ] }
+  gatehouseWest : { rc : "sprites", start : 225, stop : 1, offset : [ 12, 80 ] }
 }

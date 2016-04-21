@@ -1,4 +1,4 @@
-project(CaesarIA-game)
+  project(CaesarIA-game)
 
 # Find revision ID and hash of the sourcetree
 include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
