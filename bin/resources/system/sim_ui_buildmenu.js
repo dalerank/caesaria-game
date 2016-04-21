@@ -114,7 +114,6 @@ sim.ui.buildmenu.isBranchAvailable = function(branch) {
 
 sim.ui.buildmenu.show = function(type, left, top) {
   sim.ui.buildmenu.hide();
-  engine.log(top);
 
   if (type == undefined || type == "")
     return;
@@ -186,13 +185,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
   buildMenu.update = function(type) {
     var max_text_width = 0;
     var max_cost_width = 0;
-    //Size textSize;
-    //Font font = Font::create( "FONT_2" );
 
-    //VariantMap allItems = config::load( _d->menuModel );
-    //VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
-    //VariantList submenu = config.get( "submenu" ).toList();
-    //VariantList buildings = config.get( "buildings" ).toList();
     engine.log("Opened buildmenu " + type);
     var config = g_config.buildmenu[type];
 
@@ -225,9 +218,8 @@ sim.ui.buildmenu.show = function(type, left, top) {
       btn.x = buildMenu.w - btn.w - 35;
       btn.y = buildMenu.htop + 25 * i;
       if (btn.lbCost)
-        btn.lbCost.geometry = { x:btn.w-55, y:0, w:30, h:25 };
+        btn.lbCost.geometry = { x:btn.w-24-max_cost_width, y:0, w:max_cost_width, h:25 };
     }
-    //  button->setWidth( width() );
   }
 
   if (type != "")

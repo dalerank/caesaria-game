@@ -488,27 +488,27 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var coloseum = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var colosseum = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
-  ibox.initBlackFrame(16, 145, ibox.w - 16,100);
+  ibox.initBlackframe(16, 145, ibox.w - 32, 100);
 
-  ibox.setWorkersStatus(32, 150, 542, coloseum.maximumWorkers(), coloseum.numberWorkers());
-  ibox.setWorkingStatus(coloseum.active);
-  ibox.title = _u(colosseum.typename)
+  ibox.setWorkersStatus(32, 150, 542, colosseum.maximumWorkers(), colosseum.numberWorkers());
+  ibox.setWorkingStatus(colosseum.active);
+  ibox.btnToggleWorks.y = 10;
+  ibox.title = _u(colosseum.typename);
+
+  ibox.setInfoText(_u("colosseum_info"));
 
   var isNeedGladiators = colosseum.getProperty("isNeedGladiators");
-  if (isNeedGladiators)
-  {
+  if (isNeedGladiators) {
     var lb = ibox.addLabel(35, 190,ibox.w-35,20);
     lb.text = _u("colosseum_haveno_gladiatorpit");
-  }
-  else
-  {
+  } else {
     var text = _u("colosseum_haveno_animal_bouts");
     var isShowLionBattles = colosseum.getProperty("isShowLionBattles");
-    if(isShowLionBattles)
-    {
+
+    if(isShowLionBattles) {
       var lastAnimalBoutDate = coloseum.getProperty("lastAnimalBoutDate");
       text = _format( "{0} {1} {2}", _ut("colosseum_animal_contest_runs"),
                                      lastAnimalBoutDate.daysTo(g_session.date),
@@ -518,8 +518,8 @@ game.ui.infobox.aboutColosseum = function(location) {
 
     text = _u("colosseum_haveno_gladiator_bouts");
     var isShowGladiatorBattles = coloseum.getProperty("isShowGladiatorBattles");
-    if (isShowGladiatorBattles)
-    {
+
+    if (isShowGladiatorBattles) {
       var lastGlBoutDate = coloseum.getProperty("lastGladiatorBoutDate");
       text = _format( "{0} {1} {2}", _ut("colosseum_gladiator_contest_runs"), lastGlBoutDate.daysTo(g_session.date), _ut("days") );
     }

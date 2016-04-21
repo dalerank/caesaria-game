@@ -477,21 +477,21 @@ void engine_js_Panic(js_State *J)
 
 void engine_js_Log(js_State *J)
 {
-  if (js_isstring(J, 1)) {
-    const char* text = js_tostring(J, 1);
-    Logger::warning( text );
-  } else if (js_isnumber(J, 1)) {
-    int severity = js_toint16(J, 1);
-    const char* text = js_tostring(J, 2);
-    switch(severity) {
-    case 0: Logger::debug(text); break;
-    case 1: Logger::info(text); break;
-    case 3: Logger::error(text); break;
-    case 4: Logger::fatal(text); break;
-    default: Logger::warning(text); break;
-    }
-  } else if (js_isundefined(J, 1)) {
-    Logger::warning("Try to print undefined object");
+  if (js_isundefined(J, 1)) {
+    Logger::warning("log() Try to print undefined object");
+  } else {
+    Logger::info(js_tostring(J, 1));
+  }
+
+  js_pushundefined(J);
+}
+
+void engine_js_Warn(js_State *J)
+{
+  if (js_isundefined(J, 1)) {
+    Logger::warning("warning() Try to print undefined object");
+  } else {
+    Logger::warning(js_tostring(J, 1));
   }
 
   js_pushundefined(J);

@@ -637,6 +637,8 @@
     desirability : { base : 0, 	range : 0,	step : 0 }
     employers : 0
     class : "native"
+    inflammability : 0
+    collapsibility : 0
   },
 
   native_center : {
@@ -644,6 +646,8 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "native"
+    inflammability : 0
+    collapsibility : 0
   },
 
   reservoir : {
@@ -686,6 +690,8 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "native"
+    inflammability : 0
+    collapsibility : 0
   },
 
   military_academy : {

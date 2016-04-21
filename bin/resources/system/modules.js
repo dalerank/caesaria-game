@@ -60,6 +60,7 @@ var modules = [
     "sim_ui_topmenu_debug",
     "sim_ui_topmenu",
     "sim_ui_buildmenu",
+    "sim_ui_overlaymenu",
     "sim_ui_rpanel",
     "sim_ui_menu",
     "sim_ui_shortmenu",
