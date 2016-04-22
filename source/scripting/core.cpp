@@ -66,6 +66,8 @@ void engine_js_push(js_State* J, const WalkerPtr& w);
 void engine_js_push(js_State* J, const Tile& param);
 void engine_js_push(js_State* J, const Locations& param);
 void engine_js_push(js_State* J, const Tilemap& param);
+void engine_js_push(js_State* J, const OverlayList& param);
+void engine_js_push(js_State* J, const OverlayPtr& param);
 void engine_js_push(js_State* J, Widget* param);
 void engine_js_push(js_State* J, gfx::Camera* param);
 
@@ -227,6 +229,16 @@ void engine_js_push(js_State *J, const StringArray& items)
   for (uint32_t i = 0; i<items.size(); i++)
   {
     js_pushstring(J, items[i].c_str());
+    js_setindex(J, -2, i);
+  }
+}
+
+void engine_js_push(js_State *J, const OverlayList& ovs)
+{
+  js_newarray(J);
+  for (uint32_t i = 0; i<ovs.size(); i++)
+  {
+    engine_js_push(J, ovs[i]);
     js_setindex(J, -2, i);
   }
 }
@@ -497,6 +509,14 @@ void engine_js_Warn(js_State *J)
   js_pushundefined(J);
 }
 
+void engine_js_Load(js_State* J)
+{
+  Path path = js_tostring(J, 1);
+
+  std::string text = NFile::open(path).readAll().toString();
+  js_pushstring(J, text.c_str());
+}
+
 void engine_js_LoadArchive(js_State* J)
 {
   Path archivePath = js_tostring(J, 1);
@@ -681,7 +701,6 @@ void constructor_jsobject(js_State *J)
   js_getproperty(J, -1, "prototype");
   js_newuserdata(J, "userdata", new T(), &destructor_jsobject<T>);
 }
-
 
 template<typename T, typename ObjectType>
 void object_handle_callback_0(ObjectType* object,const std::string& callback, const std::string& className)
@@ -1091,6 +1110,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #include "overlay.implementation"
 #include "religion.implementation"
 #include "walker.implementation"
+#include "muter.implementation"
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
@@ -1131,6 +1151,7 @@ void Core::registerFunctions(Game& game)
 #include "overlay.interface"
 #include "religion.interface"
 #include "walker.interface"
+#include "muter.interface"
 
   Core::loadModule(":/system/modules.js");
   js_pop(internal::J,2); //restore stack after call js-function

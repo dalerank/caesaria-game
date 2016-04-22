@@ -27,7 +27,7 @@ namespace gui
 class SoundMuter : public Widget
 {
 public:
-  SoundMuter(Widget* parent,int value=-1);
+  SoundMuter(Widget* parent, int value=-1);
   ~SoundMuter();
 
   void setVolume(int value);

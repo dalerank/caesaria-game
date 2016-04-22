@@ -217,6 +217,12 @@ void Warehouse::computePictures()
 good::Store& Warehouse::store() {   return _d->goodStore; }
 const good::Store& Warehouse::store() const {   return _d->goodStore; }
 
+void Warehouse::pushToStore(good::Product product, int amount)
+{
+  good::Stock stock(product, amount, amount);
+  store().store(stock, 400 );
+}
+
 void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );

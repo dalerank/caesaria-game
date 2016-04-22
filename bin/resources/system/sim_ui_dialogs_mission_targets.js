@@ -95,10 +95,10 @@ sim.ui.dialogs.showMissionTargets = function()
     for (var i in items)
       lbxHelp.fitText( _t(items[i]) )
 
-    var startSound = wint.startSound;
-    if (startSound.lenght>0)
+    if (wint.startSound.length>0)
     {
+      engine.log(wint.startSound);
       w.addSoundMuter(5)
-      w.addSoundEmitter(startSound, 100, g_config.audio.speech)
+      w.addSoundEmitter(wint.startSound, 100, g_config.audio.speech)
     }
 }

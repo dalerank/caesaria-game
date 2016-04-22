@@ -70,10 +70,7 @@ void Emperor::_showChangeSalaryWindow()
 
 void Emperor::_showSend2CityWindow()
 {
-  auto& donationWindow = ui()->add<dialog::CityDonation>( _mayor()->money() );
-  donationWindow.show();
-
-  CONNECT_LOCAL( &donationWindow, onSendMoney(), Emperor::_sendMoney );
+  events::dispatch<events::ScriptFunc>("ShowPlayer2CityDonationWindow");;
 }
 
 void Emperor::_showGiftWindow()
@@ -238,7 +235,7 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
 
   if (lbTitle) {
     std::string text = _mayor()->name();
-    if (text.empty()) 
+    if (text.empty())
       text = _("##emperor_advisor_title##");
 
     lbTitle->setText(text);
@@ -266,14 +263,6 @@ void Emperor::draw(gfx::Engine& painter )
   }
 
   Window::draw( painter );
-}
-
-void Emperor::_sendMoney( int money )
-{
-  _mayor()->appendMoney( -money );
-  events::dispatch<Payment>( econ::Issue::donation, money );
-
-  _updatePrimaryFunds();
 }
 
 std::string Emperor::_getEmperorFavourStr()

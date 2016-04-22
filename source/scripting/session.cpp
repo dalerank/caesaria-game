@@ -190,6 +190,18 @@ Size Session::getResolution() const { return _game->engine()->screenSize(); }
 
 Locations Session::getBuildingLocations(Variant var) const
 {
+  auto ovs = getOverlays(var);
+
+  Locations result;
+  for (auto ov : ovs) {
+    result.push_back(ov->pos());
+  }
+
+  return result;
+}
+
+OverlayList Session::getOverlays(Variant var) const
+{
   object::Type type = object::unknown;
   if (var.type() == Variant::String) {
     type = object::toType(var.toString());
@@ -197,13 +209,7 @@ Locations Session::getBuildingLocations(Variant var) const
     type = object::Type(var.toInt());
   }
 
-  auto ovs = _game->city()->overlays().where( [type] (OverlayPtr ov) { return ov->type() == type; } );
-  Locations result;
-  for (auto ov : ovs) {
-    result.push_back(ov->pos());
-  }
-
-  return result;
+  return _game->city()->overlays().where( [type] (OverlayPtr ov) { return ov->type() == type; } );
 }
 
 gfx::Camera* Session::getCamera() const
@@ -329,12 +335,6 @@ void Session::clearUi()
 void Session::save(const std::string& path)
 {
   _game->save(path);
-}
-
-void Session::createIssue(const std::string& type, int value)
-{
-  econ::Issue::Type vtype = econ::findType(type);
-  _game->city()->treasury().resolveIssue( {vtype, value} );
 }
 
 void Session::createDir(const std::string & dir)

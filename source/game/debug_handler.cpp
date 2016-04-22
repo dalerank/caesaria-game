@@ -134,22 +134,6 @@ enum {
   add_meat_to_granary,
   add_fruit_to_granary,
   add_vegetable_to_granary,
-  add_wheat_to_warehouse,
-  add_fish_to_warehouse,
-  add_meat_to_warehouse,
-  add_olives_to_warehouse,
-  add_fruit_to_warehouse,
-  add_grape_to_warehouse,
-  add_vegetable_to_warehouse,
-  add_clay_to_warehouse,
-  add_timber_to_warehouse,
-  add_iron_to_warehouse,
-  add_marble_to_warehouse,
-  add_pottery_to_warehouse,
-  add_furniture_to_warehouse,
-  add_weapons_to_warehouse,
-  add_wine_to_warehouse,
-  add_oil_to_warehouse,
   property_browser,
   make_generation,
   all_wheatfarms_ready,
@@ -199,7 +183,6 @@ public:
   EnemySoldierPtr makeEnemy( walker::Type type );
   void setFactoryReady(object::Type type);
   void updateSentiment( int delta );
-  void addGoods2Wh( good::Product type );
   void addGoods2Gr( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
@@ -239,23 +222,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
   ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
-
-  ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_fish_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_meat_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_olives_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_fruit_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_grape_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_vegetable_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_clay_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_timber_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_iron_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_marble_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_pottery_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_furniture_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_weapons_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_wine_to_warehouse )
-  ADD_DEBUG_EVENT( goods, add_oil_to_warehouse )
 
   ADD_DEBUG_EVENT( goods, add_wheat_to_granary )
   ADD_DEBUG_EVENT( goods, add_fish_to_granary )
@@ -362,16 +328,6 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
   }
 
   return enemy;
-}
-
-void DebugHandler::Impl::addGoods2Wh(good::Product type)
-{
-  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>();
-  for( auto warehouse : whList)
-  {
-    good::Stock stock(type, 400, 400 );
-    warehouse->store().store( stock, 400 );
-  }
 }
 
 void DebugHandler::Impl::addGoods2Gr(good::Product type)
@@ -563,23 +519,6 @@ void DebugHandler::Impl::handleEvent(int event)
       festivals->doFestivalNow();
   }
   break;
-
-  case add_wheat_to_warehouse: addGoods2Wh( good::wheat ); break;
-  case add_fish_to_warehouse:  addGoods2Wh( good::fish  ); break;
-  case add_meat_to_warehouse:  addGoods2Wh( good::meat  ); break;
-  case add_olives_to_warehouse: addGoods2Wh( good::olive); break;
-  case add_fruit_to_warehouse: addGoods2Wh( good::fruit ); break;
-  case add_grape_to_warehouse: addGoods2Wh( good::grape ); break;
-  case add_vegetable_to_warehouse:addGoods2Wh( good::vegetable); break;
-  case add_clay_to_warehouse:  addGoods2Wh( good::clay  ); break;
-  case add_timber_to_warehouse:addGoods2Wh( good::timber); break;
-  case add_iron_to_warehouse:  addGoods2Wh( good::iron  ); break;
-  case add_marble_to_warehouse:addGoods2Wh( good::marble); break;
-  case add_pottery_to_warehouse:addGoods2Wh( good::pottery); break;
-  case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
-  case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
-  case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
-  case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
 
   case add_wheat_to_granary: addGoods2Gr( good::wheat ); break;
   case add_fish_to_granary: addGoods2Gr( good::fish ); break;

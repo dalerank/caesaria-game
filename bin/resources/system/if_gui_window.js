@@ -170,12 +170,7 @@ Window.prototype.addTexturedButton = function (rx, ry, rw, rh) {
 
 Window.prototype.addButton = function (rx, ry, rw, rh) {
     var button = new Button(this)
-    button.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    }
+    button.geometry = {x: rx,y: ry,w: rw,h: rh}
     return button
 }
 
@@ -187,10 +182,7 @@ Window.prototype.addHelpButton = function (rx, ry) {
 
 Window.prototype.addExitButton = function (rx, ry) {
     var btn = new ExitButton(this)
-    btn.position = {
-        x: rx,
-        y: ry
-    }
+    btn.position = { x: rx, y: ry }
     return btn;
 }
 

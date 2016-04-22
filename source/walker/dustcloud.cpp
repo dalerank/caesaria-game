@@ -180,9 +180,8 @@ void DustCloud::load( const VariantMap& stream )
 
 void DustCloud::initialize(const VariantMap &options)
 {
-  VariantMap anim = options.get( "animation" ).toMap();
-  if( !anim.empty() )
-  {
+  VariantMap anim = options.get("animation").toMap();
+  if (!anim.empty()) {
     _d->animation.clear();
     _d->animation.simple( anim );
   }
