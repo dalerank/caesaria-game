@@ -1,95 +1,95 @@
+function ShowPlayer2CityDonationWindow() {
+  game.ui.dialogs.citydonation.show();
+}
+
 game.ui.dialogs.citydonation = {}
 
 game.ui.dialogs.citydonation.show = function() {
   var ibox = g_ui.addSimpleWindow(0, 0, 510, 160);
 
   ibox.title = _u("send_money_to_city");
-
-lbBlack#Label : {
-  geometry : [ 50, 50, 465, 110 ]
-  bgtype : "blackFrame"
-  font : "FONT_3"
-  text.align : [ "center", "center" ]
-
-  btn0#PushButton : {
-    geometry : [ 15, 10, 80, 30 ]
-    font : "FONT_1"
-    text : "0"
-    pushbutton : false
-    id : 3840  /*0x0F00*/
-    tooltip : "##set_amount_to_donate##"
-    bgtype : "blackBorderUp"
+  ibox.lbBlack = ibox.addLabel(50, 50, ibox.w-100, 60);
+  ibox.lbBlack.style = "blackFrame";
+  ibox.lbBlack.font = "FONT_3";
+  ibox.lbBlack.textAlign = { h:"center", v:"center" };
+  ibox.wantSend = function(value) {
+    ibox.denaries2send = math.clamp(value, 0, g_session.player.money() );
+    ibox.lbDonation.text = _format( "{0} {1} from {2} dn", _ut("donation_is"), ibox.denaries2send, g_session.player.money() );
   }
 
-  btn500#PushButton : {
-    geometry : [ 95, 10, 160, 30 ]
-    font : "FONT_1"
-    text : "500"
-    pushbutton : false
-    id : 3841  /*0x0F01*/
-    tooltip : "##set_amount_to_donate##"
-    bgtype : "blackBorderUp"
+  var btn0 = ibox.addButton(15, 10, 65, 20);
+  btn0.font = "FONT_1";
+  btn0.text = "0";
+  btn0.tooltip = "##set_amount_to_donate##"
+  btn0.style = "blackBorderUp"
+  btn0.callback = function() { ibox.wantSend(0); }
+
+  var btn500 = ibox.addButton( 95, 10, 65, 20)
+  btn500.font = "FONT_1"
+  btn500.text = "500"
+  btn500.tooltip = "##set_amount_to_donate##"
+  btn500.style = "blackBorderUp"
+  btn500.callback = function() { ibox.wantSend(500); }
+
+  var btn2000 = ibox.addButton(175, 10, 65, 20)
+  btn2000.font = "FONT_1"
+  btn2000.text = "2000"
+  btn2000.tooltip = "##set_amount_to_donate##"
+  btn2000.style = "blackBorderUp"
+  btn2000.callback = function() { ibox.wantSend(2000); }
+
+  var btnAll = ibox.addButton(255, 10, 65, 20);
+  btnAll.font = "FONT_1"
+  btnAll.text = "##send_all##"
+  btnAll.tooltip = "##set_amount_to_donate##"
+  btnAll.style = "blackBorderUp"
+  btnAll.callback = function() { ibox.wantSend(g_session.player.money()); }
+
+  lbDonation = ibox.addLabel(25, 32, 225, 24)
+  lbDonation.text = "##donation_is##"
+  lbDonation.textAlign = { h:"center", v:"center" }
+  lbDonation.font : "FONT_2"
+  ibox.lbDonation = lbDonation;
+
+  var btnDecreaseDonation = ibox.addTexturedButton(255, 32, 24, 24)
+  btnDecreaseDonation.states = { rc:"paneling", normal:601, hover:602, pressed:603, disabled:301 };
+  btnDecreaseDonation.callback = function() {
+    ibox.wantSend(ibox.denaries2send-10);
   }
 
-  btn2000#PushButton : {
-    geometry : [ 175, 10, 240, 30 ]
-    font : "FONT_1"
-    text : "2000"
-    pushbutton : false
-    id : 3844  /*0x0F03*/
-    tooltip : "##set_amount_to_donate##"
-    bgtype : "blackBorderUp"
+  var btnIncreaseDonation = ibox.addTexturedButton(280, 32, 24, 24);
+  btnIncreaseDonation.states = { rc:"paneling", normal:605, hover:606, pressed:607, disabled:305 };
+  btnIncreaseDonation.callback = function() {
+    ibox.wantSend(ibox.denaries2send+10);
   }
 
-  btnAll#PushButton : {
-    geometry : [ 255, 10, 380, 30 ]
-    font : "FONT_1"
-    pushbutton : false
-    text : "##send_all##"
-    id : 4095  /*0xfff*/
-    tooltip : "##set_amount_to_donate##"
-    bgtype : "blackBorderUp"
+  var btnSend = ibox.addButton( 80, ibox.h-35, 160, 20)
+  btnSend.font = "FONT_2"
+  btnSend.text = "##give_money##"
+  btnSend.tooltip = "##give_money_tip##"
+  btnSend.style = "whiteBorderUp"
+  btnSend.callback = function() {
+    g_session.player.appendMoney(-ibox.denaries2send);
+    g_session.city.createIssue("donation",ibox.denaries2send)
+
+    //_updatePrimaryFunds();
+    ibox.deleteLater();
   }
 
-  lbDonation#Label : {
-    geometry : [ 25, 32, 250, 56 ]
-    text : "##donation_is##"
-    textAlign : [ "center", "center" ]
-    font : "FONT_2"
+  var btnCancel = ibox.addButton(270, ibox.h-35, 160, 20);
+  btnCancel.font = "FONT_2"
+  btnCancel.text = "##cancel##"
+  btnCancel.tooltip = "##donationwnd_exit_tip##"
+  btnCancel.style = "whiteBorderUp"
+  btnCancel.callback = function() { ibox.deleteLater(); }
+
+  var player = g_session.player;
+  if (player.money() == 0) {
+    //for( auto& widget : lbBlack->children() )
+    //  widget->hide();
+
+    lbBlack.text = "##no_money_for_donation##";
   }
 
-  btnDecreaseDonation#TexturedButton : {
-    id : 4097 /*0x1001*/
-    geometry : [ 255, 32, 279, 56 ]
-    normal : [ "paneling", 601 ]
-    hovered : [ "paneling", 602 ]
-    pressed : [ "paneling", 603 ]
-    disabled : [ "paneling", 301 ]
-  }
-
-  btnIncreaseDonation#TexturedButton : {
-    id : 4098 /*0x1002*/
-    geometry : [ 280, 32, 304, 56 ]
-    normal : [ "paneling", 605 ]
-    hovered : [ "paneling", 606 ]
-    pressed : [ "paneling", 607 ]
-    disabled : [ "paneling", 305 ]
-  }
-}
-
-btnSend#PushButton : {
-  geometry : [ 80, "ph-35", 240, "ph-15" ]
-  font : "FONT_2"
-  text : "##give_money##"
-  tooltip : "##give_money_tip##"
-  bgtype : "whiteBorderUp"
-}
-
-btnCancel#PushButton : {
-  geometry : [ 270, "ph-35", 430, "ph-15" ]
-  font : "FONT_2"
-  text : "##cancel##"
-  tooltip : "##donationwnd_exit_tip##"
-  bgtype : "whiteBorderUp"
-}
+  btnSend.display = (player.money != 0);
 }

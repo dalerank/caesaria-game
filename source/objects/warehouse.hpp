@@ -45,8 +45,11 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
+
   good::Store& store();
   const good::Store& store() const;
+
+  void pushToStore(good::Product product, int amount);
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

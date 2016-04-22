@@ -120,6 +120,7 @@ public:
 
   bool getBuildOption(const std::string& name,bool) const;
   void setBuildOption(const std::string& name, int value);
+  void createIssue(const std::string& name, int value);
 
   /** Return current information about city */
   virtual const city::States& states() const;

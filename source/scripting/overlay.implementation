@@ -66,6 +66,7 @@ TEMPLATE_WORKINGBUILDING_IMPLEMENTATION(Warehouse)
 DEFINE_OBJECT_GETTER_0(Warehouse,const Store&,store)
 DEFINE_OBJECT_GETTER_0(Warehouse,bool,isTradeCenter)
 DEFINE_OBJECT_FUNCTION_1(Warehouse,setTradeCenter,bool)
+DEFINE_OBJECT_FUNCTION_2(Warehouse,pushToStore,good::Product,int)
 
 /************ Granary ********************************/
 TEMPLATE_OVERLAY_IMPLEMENTATION(Granary)
