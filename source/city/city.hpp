@@ -163,7 +163,6 @@ public:
 signals public:
   Signal1<std::string>& onWarningMessage();
   Signal2<TilePos,std::string>& onDisasterEvent();
-  Signal0<>& onChangeBuildingOptions();
 
 private:
   PlayerCity( world::EmpirePtr empire );

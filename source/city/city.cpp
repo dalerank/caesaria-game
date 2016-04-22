@@ -83,7 +83,6 @@ public:
  struct {
   Signal1<std::string> onWarningMessage;
   Signal2<TilePos,std::string> onDisasterEvent;
-  Signal0<> onBuildingOptionsChanged;
  } signal;
 };
 
@@ -447,7 +446,7 @@ const city::SrvcList& PlayerCity::services() const { return _d->services; }
 void PlayerCity::setBuildOptions(const city::development::Options& options)
 {
   _d->buildOptions = options;
-  emit _d->signal.onBuildingOptionsChanged();
+  events::dispatch<events::ScriptFunc>("OnChangeBuildingOptions");
 }
 
 bool PlayerCity::getBuildOption(const std::string& name, bool) const
@@ -464,7 +463,6 @@ void PlayerCity::setBuildOption(const std::string& name, int value)
 
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
-Signal0<>& PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
