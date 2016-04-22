@@ -101,6 +101,6 @@
   }
 
   dustCloud : {
-    animation : { rc : "dust", start : 1, frames : 19, delay : 4 }
+    animation : { rc : "dust", start : 1, frames : 48, delay : 1 }
   }
 }

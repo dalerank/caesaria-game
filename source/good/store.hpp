@@ -76,13 +76,13 @@ public:
   virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
 
   virtual int capacity() const = 0;
-  virtual int capacity(const good::Product& goodType ) const = 0;
+  virtual int capacity(const good::Product& goodType) const = 0;
 
   // store/retrieve
   virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
   virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
 
-  virtual int freeQty( const good::Product& goodType ) const;
+  virtual int freeQty(const good::Product& goodType) const;
   virtual int freeQty() const;
 
   virtual ProductMap details() const;
@@ -118,24 +118,24 @@ public:
   ProductMap amounts() const;
 
   // immediate store/retrieve, exception if impossible
-  virtual void store( good::Stock& stock, const int amounts);
-  virtual void retrieve( good::Stock& stock, const int amounts);
+  virtual void store(good::Stock& stock, const int amounts);
+  virtual void retrieve(good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
   virtual void storeAll(Store& goodStore);
 
   virtual bool isDevastation() const;
-  virtual void setDevastation( bool value );
+  virtual void setDevastation(bool value);
 
   virtual VariantMap save() const;
-  virtual void load( const VariantMap& stream );
+  virtual void load(const VariantMap& stream);
 
   virtual TilePos owner() const;
 
-  virtual void setOrder( const good::Product type, const Orders::Order order );
-  virtual Orders::Order getOrder( const good::Product type ) const;
+  virtual void setOrder(const good::Product type, const Orders::Order order);
+  virtual Orders::Order getOrder(const good::Product type) const;
 
-  virtual void removeExpired( DateTime date );
+  virtual void removeExpired(DateTime date);
 
 protected:
   Reservations& _getStoreReservations();

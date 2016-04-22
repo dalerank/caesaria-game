@@ -30,6 +30,10 @@ PlayerCity.prototype.findNextSameBuilding = function(location, type) {
   return {i:-1, j:-1};
 }
 
+PlayerCity.prototype.findOverlays = function(type) {
+  return g_session.getOverlays(type);
+}
+
 PlayerCity.prototype.findPrevSameBuilding = function(location, type) {
   var locations = g_session.getBuildingLocations(type);
 

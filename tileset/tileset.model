@@ -424,7 +424,7 @@
         {
           type : "atlas"
           folder : "/resources/walls"
-          files : [ "land2a_*" ]
+          files : [ "*" ]
         }
 
         lubmill :

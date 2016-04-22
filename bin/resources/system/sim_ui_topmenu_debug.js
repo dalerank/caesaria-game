@@ -4,6 +4,14 @@ sim.ui.topmenu.debug.reset = function()
   sim.ui.topmenu.init()
 }
 
+sim.ui.topmenu.debug.addGood2Wh = function(type) {
+  var whs = g_session.city.findOverlays("warehouse");
+  for(var i in whs) {
+    var warehouse = whs[i].as(Warehouse);
+    warehouse.pushToStore(type, 400);
+  }
+}
+
 sim.ui.topmenu.debug.init = function()
 {
   var topmenu = sim.ui.topmenu.widget;
@@ -30,30 +38,30 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/money", "Add 1000 dn to city", function() {
       engine.log("Added 1000 dn to city")
-      g_session.createIssue("donation",1000)
+      g_session.city.createIssue("donation",1000)
   } )
   topmenu.addItemWithCallback("Debug/money", "Add 1000 dn to player", function() {
     g_session.player.appenMoney(1000);
   } )
 
-  /*topmenu.addItemWithCallback("Debug/goods", "add_wheat_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_fish_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_meat_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_olives_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_fruit_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_grape_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_vegetable_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_clay_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_timber_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_iron_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_marble_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_pottery_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_furniture_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_weapons_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_wine_to_warehouse", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/goods", "add_oil_to_warehouse", function() {engine.log("test")} )
+  topmenu.addItemWithCallback("Debug/goods", "Add wheat to warehouse", function()  { sim.ui.topmenu.debug.addGood2Wh(g_config.good.wheat)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add fish to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.fish)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add meat to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.meat)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add olives to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.olive)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add fruit to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.fruit)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add grape to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.grape)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add vegetable to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.vegetable)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add clay to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g config.good.clay)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add timber to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.timber)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add iron to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.iron)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add marble to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.marble)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add pottery to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.pottery)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add furniture to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.furniture)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add weapons to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.weapon)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add wine to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.wine)} )
+  topmenu.addItemWithCallback("Debug/goods", "Add oil to warehouse", function() {sim.ui.topmenu.debug.addGood2Wh(g_config.good.oil)} )
 
-  topmenu.addItemWithCallback("Debug/goods", "add_wheat_to_granary", function() {engine.log("test")} )
+  /*topmenu.addItemWithCallback("Debug/goods", "add_wheat_to_granary", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_fish_to_granary", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_meat_to_granary", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/goods", "add_fruit_to_granary", function() {engine.log("test")} )
@@ -93,6 +101,8 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/disaster", "earthquake", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "fill_random_claypit", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "forest_fire", function() {engine.log("test")} )*/
+
+  topmenu.addItemWithCallback("Debug/tutorials", "First collapse", function() { sim.ui.tutorial.show(":/tutorial/first_collapse.tutorial"); } )
 
   topmenu.addItemWithCallback("Debug/level", "win_mission", function() { sim.ui.missionWin() } )
   topmenu.addItemWithCallback("Debug/level", "fail_mission", function() { sim.ui.missionLose() } )

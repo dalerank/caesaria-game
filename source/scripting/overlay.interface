@@ -72,6 +72,7 @@ TEMPLATE_OVERLAY_BEGIN(Warehouse)
   SCRIPT_OBJECT_FUNCTION(Warehouse,isTradeCenter,0)
   SCRIPT_OBJECT_FUNCTION(Warehouse,setTradeCenter,1)
   SCRIPT_OBJECT_FUNCTION(Warehouse,store,0)
+  SCRIPT_OBJECT_FUNCTION(Warehouse,pushToStore,2)
 TEMPLATE_OVERLAY_END(Warehouse)
 
 TEMPLATE_OVERLAY_BEGIN(EntertainmentBuilding)

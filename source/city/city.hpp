@@ -120,6 +120,7 @@ public:
 
   bool getBuildOption(const std::string& name,bool) const;
   void setBuildOption(const std::string& name, int value);
+  void createIssue(const std::string& name, int value);
 
   /** Return current information about city */
   virtual const city::States& states() const;
@@ -163,7 +164,6 @@ public:
 signals public:
   Signal1<std::string>& onWarningMessage();
   Signal2<TilePos,std::string>& onDisasterEvent();
-  Signal0<>& onChangeBuildingOptions();
 
 private:
   PlayerCity( world::EmpirePtr empire );

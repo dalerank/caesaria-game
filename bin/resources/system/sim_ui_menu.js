@@ -10,6 +10,10 @@ function OnRendererLayerChange(layerName) {
   sim.ui.menu.changeRendererLayer(layerName);
 }
 
+function OnChangeBuildingOptions() {
+  sim.ui.menu.changeBuildingOptions();
+}
+
 sim.ui.menu.simConfig = {
   housing : { pos: {x:13,y:277}, image: { rc:"paneling", index:123 }, object:"house",
                miniature: { rc:"panelwindows", index:1 }, shortmenuIndex:0,
@@ -189,12 +193,23 @@ sim.ui.menu.funcs = [];
 
 sim.ui.menu.rightSide = engine.getOption("rightMenu");
 
+sim.ui.menu.changeBuildingOptions = function() {
+  for (var i in sim.ui.menu.buildConfig) {
+    var config = sim.ui.menu.buildConfig[i];
+    var button = sim.ui.menu.extmenu.buttons[i];
+    if (config.branch && button) {
+      var avail = sim.ui.buildmenu.isBranchAvailable(config.branch);
+      button.enabled = avail;
+    }
+  }
+}
+
 sim.ui.menu.enableAlarm = function(enable) {
-  if (enabled) {
+  if (enable) {
     g_session.playAudio("extm_alarm_00001", 100, g_config.audio.effects);
   }
 
-  sim.ui.menu.extmenu.disaster.button.enabled = enable;
+  sim.ui.menu.extmenu.buttons.disaster.enabled = enable;
 }
 
 sim.ui.menu.simConfig.disaster.func = function() { g_session.setOption( "nextAlarm", true ); }

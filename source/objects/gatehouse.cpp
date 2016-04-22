@@ -91,7 +91,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
   if( (rmap[ direction::none ] && rmap[ east ]) ||
       (rmap[ northEast ] && rmap[ north ] ) )
   {
-      _d->direction = west;
+    _d->direction = west;
     index = 151;
   }
 
@@ -250,8 +250,8 @@ void Gatehouse::Impl::updateSprite()
 {
   if( direction != direction::none )
   {
-    gatehouseSprite[ 0 ].load( ResourceGroup::sprites, direction == north ? 224 : 225 );
-    gatehouseSprite[ 0 ].setOffset( direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
+    gatehouseSprite[ 0 ].load(ResourceGroup::sprites, direction == north ? 224 : 225);
+    //gatehouseSprite[ 0 ].setOffset(direction == north ? Point(8, 80) : Point(12, 80));
   }
   else
   {

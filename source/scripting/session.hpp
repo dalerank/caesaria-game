@@ -46,7 +46,6 @@ public:
   void showSysMessage(std::string title, std::string message);
   void clearUi();
   void save(const std::string& path);
-  void createIssue(const std::string& type, int value);
   void createDir(const std::string& dir);
   int getAdvflag(const std::string& flag) const;
   void setAdvflag(const std::string& flag, int value);
@@ -85,6 +84,7 @@ public:
   gui::Widget* findWidget(std::string wname) const;
   Size getResolution() const;
   Locations getBuildingLocations(Variant type) const;
+  OverlayList getOverlays(Variant type) const;
   gfx::Camera* getCamera() const;
   void setFont(const std::string& fontname);
   void setLanguage(const std::string& lang,const std::string& audio);

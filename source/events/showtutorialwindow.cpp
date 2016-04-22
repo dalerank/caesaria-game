@@ -17,7 +17,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
-#include "gui/tutorial_window.hpp"
+#include "script_event.hpp"
 #include "gui/environment.hpp"
 #include "factory.hpp"
 
@@ -47,9 +47,10 @@ void ShowTutorial::_exec(Game& game, unsigned int)
   if( _tutorial.empty() )
     return;
 
-  game.gui()->add<gui::TutorialWindow>( _tutorial );
+  VariantList vl; vl << Variant(_tutorial);
+  events::dispatch<events::ScriptFunc>("OnShowTutorialWindow", vl);
 }
 
 bool ShowTutorial::_mayExec(Game&, unsigned int) const { return true; }
 
-}
+}//end namespace events

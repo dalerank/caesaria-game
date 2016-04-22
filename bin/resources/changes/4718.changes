@@ -1,0 +1,47 @@
+{
+  revision : 4718
+
+  lbTitle#Label : {
+    geometry : [ 15, 15, "100%-15", 40 ]
+    text : "##window_changes_title##"
+    font : "FONT_5"
+    textAlign : [ "center", "center" ]
+  }
+
+  lbxChanges#ListBox : {
+    geometry : [ 15, 40, "100%-15", "100%-36" ]
+    itemheight : 18
+    items.font : "FONT_1"
+
+    items : [
+      "1. Added textures for gatehouse and tower"
+      "2. Redesigned overlays menu"
+      "3. Redesigned buildmenu"
+      "4. Improved infobox for colosseum, oracle, barracks"
+      "5. Native hut/center not depends from prefecture"
+      "6. Next/prev buttons in infobox now works correct"
+      "7. Military academy availaible to build on map"
+      "8. Added textures for poor house by P. Chiovaro"
+      "9. Added textures for wharf"
+      "10. Improved for infobox granary"
+      "11. Avoid build dock without access to trade route"
+      "12. Added new splash images"
+      "13. Tutorial logic moved to javascript"
+      "14. Mission pack updated by Lars Gusowski"
+      "15. Added Lindum map"
+      "16. Fixed fire risk sets from city settings window"
+      "17. Claypit infobox now show correct"
+      "18. Mission title show correct in briefing scene"
+      "19. Player salary window works correct"
+      "20. Ruins infobox shows which building was before"
+      "21. Fixed crash when select language with broken font"
+      "22. Fixed bug when sound playing many times after built"
+      "    construction"
+      "23. Fixed french localization by GandjX"
+      "24. Short/Build menu now work in javascript"
+      "25. Added textures for homeless by Leon Gronsk"
+      "26. Fixed crash on citizen infobox"
+      "27. Much nonvisual fixes for gameplay and logic"
+    ]
+  }
+}

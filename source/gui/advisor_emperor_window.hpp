@@ -42,7 +42,6 @@ protected:
   void _updateRequests();
   void _updatePrimaryFunds();
   void _showRequestsHistory();
-  void _sendMoney( int money );
   std::string _getEmperorFavourStr();
   void _resolveRequest( city::RequestPtr request );
   PlayerPtr _mayor();
