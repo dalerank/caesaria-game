@@ -38,7 +38,7 @@ GameEventPtr ScribeMessage::create(const std::string& title, const std::string& 
 
 void ScribeMessage::_exec(Game& game, unsigned int)
 {
-  city::Scribes::Message msg;
+  city::ScribeMessage msg;
   msg.date = game::Date::current();
   msg.opened = false;
   msg.gtype = _gtype;

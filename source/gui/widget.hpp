@@ -292,7 +292,7 @@ public:
 
   //! Brings a widget to front
   /** \return true if successful, false if not. */
-  virtual bool bringToFront();
+  virtual void bringToFront();
 
   //! Moves a child to the back, so it's siblings are drawn on top of it
   /** \return True if successful, false if not. */

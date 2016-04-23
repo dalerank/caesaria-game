@@ -32,6 +32,7 @@
 #include "cityservice_peace.hpp"
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
+#include "events/script_event.hpp"
 #include "cityservice_military.hpp"
 #include "cityservice_factory.hpp"
 
@@ -41,12 +42,11 @@ namespace city
 class Scribes::Impl
 {
 public:
-  int unreadMessage_n;
   Scribes::Messages messages;
 
-  Signal1<int> onChangeMessageNumberSignal;
-
-  void checkUnreadMessages();
+  void changeStatus() {
+    events::dispatch<events::ScriptFunc>("OnScribesStatusChanged");
+  }
 };
 
 Scribes::Scribes() : _d( new Impl )
@@ -69,29 +69,32 @@ VariantMap Scribes::save() const
 void Scribes::load(const VariantMap& stream)
 {
   VARIANT_LOAD_CLASS_D( _d, messages, stream );
+  _d->changeStatus();
 }
 
-const Scribes::Message& Scribes::getMessage(unsigned int index) const
+const ScribeMessage& Scribes::getMessage(unsigned int index) const
 {
-  return _d->messages.at( index );
+  return _d->messages.at(index);
 }
 
-Signal1<int>& Scribes::onChangeMessageNumber()
+const ScribeMessage& Scribes::readMessage(unsigned int index)
 {
-  return _d->onChangeMessageNumberSignal;
-}
-
-const Scribes::Message& Scribes::readMessage(unsigned int index)
-{
-  Message& m = _d->messages.at( index );
+  _d->changeStatus();
+  ScribeMessage& m = _d->messages.at(index);
   m.opened = true;
-  _d->checkUnreadMessages();
   return m;
 }
 
-bool Scribes::haveUnreadMessage() const { return _d->unreadMessage_n > 0; }
+bool Scribes::haveUnreadMessage() const
+{
+  for( const auto& i : _d->messages )
+    if (!i.opened)
+      return true;
 
-void Scribes::changeMessage(int index, Message& message)
+  return false;
+}
+
+void Scribes::changeMessage(int index, ScribeMessage& message)
 {
   Messages::iterator it = _d->messages.begin();
   std::advance( it, index );
@@ -106,13 +109,30 @@ void Scribes::removeMessage(int index)
   if( it != _d->messages.end() )
     _d->messages.erase( it );
 
-  _d->checkUnreadMessages();
+  _d->changeStatus();
 }
 
-void Scribes::addMessage(const Message& message)
+int Scribes::getMessagesNumber() const
+{
+  return _d->messages.size();
+}
+
+void Scribes::addSimpleMessage(const std::string& text, const std::string& title)
+{
+  ScribeMessage message;
+  message.date = game::Date::current();
+  message.text = text;
+  message.title = title;
+  message.opened = false;
+  message.type = 0;
+
+  addMessage(message);
+}
+
+void Scribes::addMessage(const ScribeMessage& message)
 {
   _d->messages.push_front( message );
-  _d->checkUnreadMessages();
+  _d->changeStatus();
 }
 
 namespace {
@@ -120,7 +140,7 @@ GAME_LITERALCONST(gtype)
 GAME_LITERALCONST(ext)
 }
 
-VariantMap Scribes::Message::save() const
+VariantMap ScribeMessage::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY( ret, text )
@@ -135,7 +155,7 @@ VariantMap Scribes::Message::save() const
   return ret;
 }
 
-void Scribes::Message::load(const VariantMap& stream)
+void ScribeMessage::load(const VariantMap& stream)
 {
   VARIANT_LOAD_STR( text, stream )
   VARIANT_LOAD_STR( title, stream )
@@ -164,31 +184,21 @@ VariantMap Scribes::Messages::save() const
 
 void Scribes::Messages::load(const VariantMap &vm)
 {
-  for( const auto& i : vm )
-  {
-    push_front( Message() );
+  for( const auto& i : vm ) {
+    push_front( ScribeMessage() );
     back().load( i.second.toMap() );
   }
 }
 
-Scribes::Message& Scribes::Messages::at(unsigned int index)
+ScribeMessage& Scribes::Messages::at(unsigned int index)
 {
-  static Message invalidMessage;
+  static ScribeMessage invalidMessage;
   Messages::iterator it = begin();
   std::advance( it, index );
   if( it != end() )
     return *it;
 
   return invalidMessage;
-}
-
-void Scribes::Impl::checkUnreadMessages()
-{
-  unreadMessage_n = 0;
-  for( const auto& i : messages )
-    unreadMessage_n += i.opened ? 0 : 1;
-
-  emit onChangeMessageNumberSignal( unreadMessage_n );
 }
 
 }//end namespace city

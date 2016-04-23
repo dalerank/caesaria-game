@@ -29,49 +29,48 @@
 namespace city
 {
 
+struct ScribeMessage
+{
+  std::string text;
+  std::string title;
+  good::Product gtype;
+  Point position;
+  int type;
+  DateTime date;
+  bool opened;
+  Variant ext;
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
+};
+
 class Scribes
 {
 public:
-  struct Message
-  {
-    std::string text;
-    std::string title;
-    good::Product gtype;
-    Point position;
-    int type;
-    DateTime date;
-    bool opened;
-    Variant ext;
-
-    VariantMap save() const;
-    void load( const VariantMap& stream );
-  };
-
-  class Messages : public std::list<Message>
+  class Messages : public std::list<ScribeMessage>
   {
   public:
     VariantMap save() const;
     void load( const VariantMap& vm );
-    Message& at( unsigned int index );
+    ScribeMessage& at( unsigned int index );
   };
 
   const Messages& messages() const;
-  const Message& getMessage( unsigned int index ) const;
-  const Message& readMessage( unsigned int index );
+  const ScribeMessage& getMessage( unsigned int index ) const;
+  const ScribeMessage& readMessage( unsigned int index );
   bool haveUnreadMessage() const;
-  void changeMessage( int index, Message& message );
-  void removeMessage( int index );
-  void addMessage( const Message& message );
+  void changeMessage(int index, ScribeMessage& message);
+  void removeMessage(int index);
+  int getMessagesNumber() const;
+
+  void addSimpleMessage(const std::string& text, const std::string& title);
+  void addMessage(const ScribeMessage& message);
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
   Scribes();
   ~Scribes();
-
-public signals:
-  Signal1<int>& onChangeMessageNumber();
-
 private:
   class Impl;
   ScopedPtr< Impl > _d;

@@ -92,3 +92,8 @@ function EventManager()
 };
 
 game.eventmgr = new EventManager();
+
+game.events = {
+	OnDayChanged: "OnDayChanged",
+	OnScribesStatusChanged: "OnScribesStatusChanged"
+}

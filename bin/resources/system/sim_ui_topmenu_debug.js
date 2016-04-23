@@ -122,9 +122,9 @@ sim.ui.topmenu.debug.init = function()
   /*topmenu.addItemWithCallback("Debug/city", "add_soldiers_in_fort", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "add_city_border", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "crash_favor", function() {engine.log("test")} )
-  topmenu.addItemWithCallback("Debug/city", "add_scribe_messages", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "show_fest", function() {engine.log("test")} )*/
   topmenu.addItemWithCallback("Debug/city", "add_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), 10)} )
+  topmenu.addItemWithCallback("Debug/city", "Add scribe message", function() { g_session.city.scribes().addSimpleMessage("test_message", "this is test message from yout scribes")} )
   topmenu.addItemWithCallback("Debug/city", "remove_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), -10)} )
 
   topmenu.addItemWithCallback("Debug/windows", "emperor gift", function() {game.ui.dialogs.gift2emperor.show()} )

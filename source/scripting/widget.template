@@ -34,6 +34,7 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setInternalName,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,getProperty,1) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,bringToFront,0) \
   SCRIPT_OBJECT_FUNCTION(Window,setupUI,1)
 
 #define TEMPLATE_WIDGET_END(WidgetType) \
@@ -55,6 +56,7 @@ DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,isNotClipped) \
 DEFINE_OBJECT_GETTER_0(WidgetType,const Rect&,relativeRect) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
+DEFINE_OBJECT_FUNCTION_0(WidgetType,bringToFront) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,setFocus) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setWidth,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setLeft,int) \

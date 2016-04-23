@@ -7,3 +7,8 @@ SCRIPT_OBJECT_BEGIN(PositionAnimator)
   SCRIPT_OBJECT_CALLBACK(PositionAnimator,onFinishEx,1)
   SCRIPT_OBJECT_CONSTRUCTOR(PositionAnimator)
 SCRIPT_OBJECT_END(PositionAnimator)
+
+TEMPLATE_WIDGET_BEGIN(ImageBlinker)
+  SCRIPT_OBJECT_FUNCTION(ImageBlinker,setImage,1)
+  SCRIPT_OBJECT_FUNCTION(ImageBlinker,setActive,1)
+TEMPLATE_WIDGET_END(ImageBlinker)

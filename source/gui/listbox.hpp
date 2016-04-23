@@ -124,15 +124,17 @@ public:
   virtual NColor itemDefaultColor( ListBoxItem::ColorType colorType) const;
 
   //! set default color which will used for the given colorType
-  virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, const NColor& color );
+  virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, const NColor& color);
 
   //! set default color which will used for the given colorType
-  virtual void setItemDefaultColor(const std::string& typeName, const std::string& colorName );
+  virtual void setItemDefaultColor(const std::string& typeName, const std::string& colorName);
 
   //!
   virtual void setItemsFont(Font font);
 
+  //!
   virtual void setItemsFont( const std::string& fontname );
+
   //!
   virtual void setItemTooltip(unsigned int index, const std::string& text);
 
@@ -141,6 +143,9 @@ public:
 
   //! set the item at the given index
   virtual void setItemText(unsigned int index,const std::string& text);
+
+  //! set item icon
+  virtual void setItemIcon(unsigned int index, gfx::Picture icon, const Point& offset);
 
   //!
   virtual void setItemData(unsigned int index, const std::string& name, Variant tag);
@@ -170,12 +175,13 @@ public:
   //! Sets whether to draw the background
   virtual void setBackgroundVisible(bool draw);
 
-  //! adds an list item with an icon
+  //! adds an list item
   //! \param text Text of list entry
-  //! \param icon Sprite index of the Icon within the current sprite bank. Set it to -1 if you want no icon
+  //! \param font
+  //! \param color
   //! \return
   //! returns the id of the new created item
-  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), NColor color=NColor() );
+  virtual ListBoxItem& addItem(const std::string& text, Font font=Font(), NColor color=NColor() );
 
   //!
   virtual ListBoxItem& addItem(gfx::Picture pic);
@@ -217,6 +223,7 @@ signals public:
 
   Signal2<Widget*,int>& onIndexSelectedEx();
   Signal2<Widget*,int>& onIndexSelectedAgainEx();
+  Signal2<Widget*,int>& onIndexRmbClickedEx();
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar

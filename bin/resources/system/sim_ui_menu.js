@@ -213,8 +213,18 @@ sim.ui.menu.enableAlarm = function(enable) {
 }
 
 sim.ui.menu.simConfig.disaster.func = function() { g_session.setOption( "nextAlarm", true ); }
-sim.ui.menu.simConfig.messages.func = function() { g_session.setOption( "showScribes", true ); }
+sim.ui.menu.simConfig.messages.func = function() { sim.ui.dialogs.scribesmessages.show(); }
 sim.ui.menu.enableUndo = function(enable) { sim.ui.menu.extmenu.buttons.undo.enabled = enable; }
+
+sim.ui.menu.updateScribeStatus = function() {
+  if(sim.ui.menu.extmenu.scribes) {
+    var haveUnreadMessages = sim.ui.menu.extmenu.scribes.haveUnreadMessage();
+    var messagesNumber = sim.ui.menu.extmenu.scribes.getMessagesNumber();
+
+    sim.ui.menu.extmenu.buttons.messages.enabled = messagesNumber > 0;
+    sim.ui.menu.extmenu.scribesBlinker.setActive(haveUnreadMessages);
+  }
+}
 
 sim.ui.menu.simConfig.housing.func = function() {
   sim.ui.buildmenu.hide();
@@ -372,6 +382,15 @@ sim.ui.menu.initialize = function() {
     menu.buttons[i] = btn;
   }
 
+  if (menu.buttons.messages) {
+    menu.scribesBlinker = new ImageBlinker(menu.buttons.messages);
+    menu.scribesBlinker.w = menu.buttons.messages.w;
+    menu.scribesBlinker.h = menu.buttons.messages.h;
+    menu.scribesBlinker.setImage(g_render.picture("paneling", 116));
+    menu.scribesBlinker.setActive(false);
+    menu.scribes = g_session.city.scribes();
+  }
+
   menu.minimap = new Minimap(menu);
   menu.minimap.geometry = { x:8, y:35, w:144, h:110 };
   menu.minimap.city =  g_session.city;
@@ -404,6 +423,8 @@ sim.ui.menu.initialize = function() {
   }
 
   sim.ui.menu.extmenu = menu;
+
+  game.eventmgr.bindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
 }
 
 sim.ui.menu.reset = function() {
@@ -411,6 +432,8 @@ sim.ui.menu.reset = function() {
     engine.log( "Found old main menu -> removed" );
     sim.ui.menu.extmenu.deleteLater();
     sim.ui.menu.extmenu = null;
+    game.eventmgr.unbindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
+
     sim.ui.menu.initialize();
   }
 }

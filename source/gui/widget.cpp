@@ -385,14 +385,11 @@ bool Widget::enabled() const
   return _d->flag.enabled;
 }
 
-bool Widget::bringToFront()
+void Widget::bringToFront()
 {
-  if( parent() )
-  {
-    return parent()->bringChildToFront( this );
+  if (parent()) {
+    parent()->bringChildToFront(this);
   }
-
-  return false;
 }
 
 bool Widget::bringChildToFront( Widget* element )

@@ -5,3 +5,7 @@ DEFINE_OBJECT_FUNCTION_1(PositionAnimator,setTime,int)
 DEFINE_OBJECT_FUNCTION_2(PositionAnimator,setFlag,std::string,bool)
 DEFINE_WIDGET_CALLBACK_0(PositionAnimator,onFinishEx)
 DEFINE_WIDGET_CONSTRUCTOR(PositionAnimator)
+
+TEMPLATE_WIDGET_IMPLEMENTATION(ImageBlinker)
+DEFINE_OBJECT_FUNCTION_1(ImageBlinker,setImage,Picture)
+DEFINE_OBJECT_FUNCTION_1(ImageBlinker,setActive,bool)
