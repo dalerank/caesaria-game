@@ -89,13 +89,18 @@ void Emperor::sendGift(const std::string &who, const std::string &type,
   sendGift(gift);
 }
 
-const Gift &Emperor::lastGift(const std::string &cityname) const {
+const Gift& Emperor::lastGift(const std::string &cityname) const {
   auto it = _dfunc()->relations.find(cityname);
   return (it == _dfunc()->relations.end()) ? Gift::invalid
                                            : it->second.gifts().last();
 }
 
-const Relation &Emperor::relation(const std::string &cityname) const {
+DateTime Emperor::lastGiftDate(const std::string& cityname) const
+{
+  return lastGift(cityname).date();
+}
+
+const Relation& Emperor::relation(const std::string &cityname) const {
   auto it = _dfunc()->relations.find(cityname);
   return (it == _dfunc()->relations.end()) ? Relation::invalid : it->second;
 }
