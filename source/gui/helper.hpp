@@ -60,5 +60,20 @@ public:
   Signal1<SmartPtr<Walker>> _onClickedSignal;
 };
 
+class ImageBlinker : public Widget
+{
+public:
+  ImageBlinker(Widget* parent, const Rect& rect=Rect());
+  void setImage(gfx::Picture pic);
+  void setActive(bool active);
+
+  virtual void setProperty(const std::string &name, const Variant &value);
+  virtual void draw(gfx::Engine& painter);
+
+private:
+  bool _active;
+  gfx::Picture _pic;
+};
+
 }//end namesapce gui
 #endif //__CAESARIA_WIDGET_HELPER_H_INCLUDED__

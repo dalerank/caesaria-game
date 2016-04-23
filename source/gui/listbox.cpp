@@ -491,13 +491,21 @@ bool ListBox::onEvent(const NEvent& event)
         }
         break;
 
+        case NEvent::Mouse::mouseRbtnRelease:
+        {
+          if (isPointInside(p)) {
+            int index = findIndex(event.mouse.pos());
+            emit _d->signal.onIndexRmbClickedEx(this, index);
+          }
+        }
+        break;
+
         case NEvent::Mouse::btnLeftPressed:
         {
           _d->dragEventSended = false;
           _d->selecting = true;
 
-          if (isPointInside(p) && isFlag( selectOnMDown ) )
-          {
+          if (isPointInside(p) && isFlag(selectOnMDown)) {
             _selectNew(event.mouse.y);
           }
 
@@ -509,8 +517,7 @@ bool ListBox::onEvent(const NEvent& event)
         {
           _d->selecting = false;
 
-          if (isPointInside(p) && !isFlag( selectOnMDown ) )
-          {
+          if (isPointInside(p) && !isFlag(selectOnMDown)) {
             _selectNew(event.mouse.y);
           }
 
@@ -520,10 +527,8 @@ bool ListBox::onEvent(const NEvent& event)
 
         case NEvent::Mouse::moved:
         {
-          if( _d->selecting && isFlag( selectOnMove ) )
-          {
-            if (isPointInside(p))
-            {
+          if (_d->selecting && isFlag(selectOnMove)) {
+            if (isPointInside(p)) {
               _selectNew(event.mouse.y);
               return true;
             }
@@ -800,6 +805,13 @@ void ListBox::setItemText(unsigned int index, const std::string& text)
   _recalculateItemHeight(_d->font, height());
 }
 
+void ListBox::setItemIcon(unsigned int index, Picture icon, const Point& offset)
+{
+  itemAt(index).setIcon(icon);
+  if (offset.y() > -100)
+    itemAt(index).setIconOffset(offset);
+}
+
 void ListBox::setItemData(unsigned int index, const std::string& name, Variant tag)
 {
   itemAt(index).setData( name, tag );
@@ -1035,8 +1047,9 @@ int ListBox::selected() {    return _d->index.selected; }
 Signal1<const ListBoxItem&>& ListBox::onItemSelectedAgain(){  return _d->signal.onItemSelectedAgain;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->signal.onItemSelected;}
 
-Signal2<Widget*, int>& ListBox::onIndexSelectedEx() {  return _d->signal.onIndexSelectedEx; }
-Signal2<Widget*, int>& ListBox::onIndexSelectedAgainEx() {  return _d->signal.onIndexSelectedAgainEx; }
+Signal2<Widget*, int>& ListBox::onIndexSelectedEx() { return _d->signal.onIndexSelectedEx; }
+Signal2<Widget*, int>& ListBox::onIndexSelectedAgainEx() { return _d->signal.onIndexSelectedAgainEx; }
+Signal2<Widget*, int>&ListBox::onIndexRmbClickedEx() { return _d->signal.onIndexRmbClickedEx; }
 void ListBox::setItemsFont(Font font) { _d->font = font; }
 void ListBox::setItemsFont(const std::string& fname) { _d->font = Font::create(fname); }
 void ListBox::setItemsTextOffset(Point p) { _d->itemTextOffset = p; }

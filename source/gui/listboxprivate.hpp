@@ -82,6 +82,7 @@ public:
     Signal1<const ListBoxItem&> onItemSelected;
     Signal2<Widget*,int> onIndexSelectedEx;
     Signal2<Widget*,int> onIndexSelectedAgainEx;
+    Signal2<Widget*,int> onIndexRmbClickedEx;
   } signal;
 };
 

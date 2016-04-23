@@ -20,6 +20,7 @@
 #include "gfx/engine.hpp"
 #include "walker/walker.hpp"
 #include "widget_factory.hpp"
+#include "game/resourcegroup.hpp"
 
 using namespace audio;
 
@@ -29,6 +30,7 @@ namespace gui
 REGISTER_CLASS_IN_WIDGETFACTORY(SoundMuter)
 REGISTER_CLASS_IN_WIDGETFACTORY(SoundEmitter)
 REGISTER_CLASS_IN_WIDGETFACTORY(WalkerImage)
+REGISTER_CLASS_IN_WIDGETFACTORY(ImageBlinker)
 
 SoundMuter::SoundMuter(Widget* parent, int value)
   : Widget(parent,-1,Rect())
@@ -112,6 +114,39 @@ void WalkerImage::draw(gfx::Engine &painter)
     gfx::Pictures pics;
     _walker->getPictures(pics);
     painter.draw(pics, absoluteRect().lefttop() + Point(30, 30), &clipRect);
+  }
+}
+
+ImageBlinker::ImageBlinker(Widget* parent, const Rect& rect)
+  : Widget( parent, -1, rect )
+{
+  _active = false;
+  setSubElement(true);
+}
+
+void ImageBlinker::setImage(gfx::Picture pic)
+{
+  _pic = pic.withFallback(gui::rc.panel, 114);
+}
+
+void ImageBlinker::setActive(bool active)
+{
+  _active = active;
+}
+
+void ImageBlinker::setProperty(const std::string& name, const Variant& value)
+{
+  if (name == "active") { _active = value.toBool(); }
+
+  Widget::setProperty(name, value);
+}
+
+void ImageBlinker::draw(gfx::Engine& painter)
+{
+  unsigned int time = DateTime::elapsedTime() ;
+  if (enabled() && _active && (time % 1000 < 500)) {
+    Rect rect( Point(), _pic.size() );
+    painter.draw(_pic, rect, absoluteRect(), nullptr/*&absoluteClippingRectRef()*/);
   }
 }
 

@@ -1,11 +1,11 @@
-function OnUpdateTopMenuCityStats() {
+sim.ui.topmenu.labels = {}
+
+sim.ui.topmenu.updateCityStats = function() {
   var states = g_session.city.states();
   sim.ui.topmenu.setPopulation(states.population)
   sim.ui.topmenu.setFunds(states.money)
   sim.ui.topmenu.setDate(g_session.date)
 }
-
-sim.ui.topmenu.labels = {}
 
 sim.ui.topmenu.help.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _ut("gmenu_help"));
@@ -180,6 +180,6 @@ sim.ui.topmenu.initialize = function () {
     t.advisors.init()
 
     t.widget.setProperty("resetToDefaultFonts",1);
-
-    OnUpdateTopMenuCityStats()
+    
+    game.eventmgr.bindEvent(game.events.OnDayChanged, sim.ui.topmenu.updateCityStats);
 }

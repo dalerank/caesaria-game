@@ -127,6 +127,8 @@ Object.defineProperty( ListBox.prototype, "selectedWithData", { set: function(ob
 Object.defineProperty( ListBox.prototype, "count", { get: function () { return this.itemsCount() }} )
 Object.defineProperty( ListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func) }} )
 Object.defineProperty( ListBox.prototype, "onDblclickCallback", { set: function(func) { this.onIndexSelectedAgainEx(func) }} )
+Object.defineProperty( ListBox.prototype, "onRmbSelectedCallback", { set: function(func) { this.onIndexRmbClickedEx(func) }} )
+
 Object.defineProperty( ListBox.prototype, "scrollbarVisible", { set: function(v) {this.setScrollbarVisible(v)}} )
 Object.defineProperty( ListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h) }} )
 Object.defineProperty( ListBox.prototype, "itemFont", {set: function (fname) { this.setFont(h) }} )
@@ -289,6 +291,7 @@ GroupBox.prototype.addButton = function(rx,ry,rw,rh) {
   return btn;
 }
 //*************************** Groupbox class end ***************************************//
+UpdateWidgetPrototype(ImageBlinker.prototype);
 
 UpdateWidgetPrototype(Minimap.prototype);
 Object.defineProperty(Minimap.prototype, "city", {set: function(c) { this.setCity(c)}} )

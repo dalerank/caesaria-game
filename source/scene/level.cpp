@@ -70,7 +70,7 @@ public:
   int result;
 
 public:
-  void resolveSelectLayer( int type );
+  void resolveSelectLayer(int type);
   void showTradeAdvisorWindow();
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission();
@@ -79,7 +79,6 @@ public:
   void setAlarmEnabled(bool enable);
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
-  void showMessagesWindow();
   void handleDirectionChange( Direction direction );
   void initRender();
   void initMainUI();
@@ -116,11 +115,9 @@ void Level::Impl::initMainUI()
 
   ui.clear();
 
-  Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
-
   topMenu = &ui.add<TopMenu>(topMenuHeight, !city->getOption(PlayerCity::c3gameplay));
 
-  bool fitToHeidht = OSystem::isAndroid();
+  //bool fitToHeidht = OSystem::isAndroid();
   //menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
   //menu->hide();
 
@@ -143,7 +140,6 @@ void Level::Impl::initMainUI()
 void Level::Impl::installHandlers( Base* scene )
 {
   scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
-  //scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
 }
 
 void Level::Impl::initSound()
@@ -227,21 +223,6 @@ void Level::Impl::saveCameraPos(Point p)
   }
 }
 
-void Level::Impl::showMessagesWindow()
-{
-  unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
-  Widget* wnd = game->gui()->findWidget( id );
-
-  if( wnd == 0 )
-  {
-    wnd = &game->gui()->add<dialog::ScribesMessages>( game->city() );
-  }
-  else
-  {
-    wnd->bringToFront();
-  }
-}
-
 void Level::Impl::handleDirectionChange(Direction direction)
 {
   events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
@@ -286,7 +267,7 @@ void Level::animate( unsigned int time )
 void Level::afterFrame()
 {
   if (game::Date::isDayChanged())
-    events::dispatch<events::ScriptFunc>("OnUpdateTopMenuCityStats");
+    events::dispatch<events::ScriptFunc>("OnGameDayChanged");
 }
 
 void Level::handleEvent( NEvent& event )
@@ -435,10 +416,7 @@ void Level::setOption(const std::string& name, Variant value)
     _d->undoStack.undo();
   } else if (name == "nextAlarm") {
     _d->alarmsHolder.next();
-  } else if (name == "showScribes") {
-    _d->showMessagesWindow();
   }
-
 }
 
 Variant Level::getOption(const std::string& name)

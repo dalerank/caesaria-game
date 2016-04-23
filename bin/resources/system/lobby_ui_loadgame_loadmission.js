@@ -17,9 +17,7 @@ lobby.ui.loadgame.loadmission = function () {
     selector.background = false;
     selector.itemHeight = 16;
     selector.itemsFont = "FONT_1";
-    selector.itemColor = {
-        hovered: "0xff000000"
-    };
+    selector.itemColor = { hovered: "0xff000000" };
 
     var files = g_session.getFiles(g_session.missionsdir.str, ".mission");
     selector.items = files;

@@ -56,7 +56,6 @@
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 #include "events/random_plague.hpp"
-#include "events/scribemessage.hpp"
 #include "world/emperor.hpp"
 #include "objects/warehouse.hpp"
 #include "vfs/archive.hpp"
@@ -124,7 +123,6 @@ enum {
   random_plague,
   reload_aqueducts,
   crash_favor,
-  add_scribe_messages,
   send_venus_smallcurse,
   send_neptune_wrath,
   send_mars_spirit,
@@ -268,7 +266,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
   ADD_DEBUG_EVENT( in_city, crash_favor )
-  ADD_DEBUG_EVENT( in_city, add_scribe_messages )
   ADD_DEBUG_EVENT( in_city, show_fest )
   ADD_DEBUG_EVENT( in_city, make_generation )
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
@@ -604,12 +601,6 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = KILLSWITCH( showEmpireMapTiles );
     SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
-  }
-  break;
-
-  case add_scribe_messages:
-  {
-    events::dispatch<ScribeMessage>( "test_message", "this is test message from yout scribes" );
   }
   break;
 

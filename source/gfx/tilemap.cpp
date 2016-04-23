@@ -119,6 +119,7 @@ public:
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
+  _d->svk.addGround = config::tilemap.cell.size().width() > 58;
   _d->direction = direction::north;
   _d->virtWidth = config::tilemap.cell.size().width() * 2;
 }

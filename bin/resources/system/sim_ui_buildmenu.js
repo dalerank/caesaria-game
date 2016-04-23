@@ -88,7 +88,6 @@ sim.ui.buildmenu.hide = function() {
 
 sim.ui.buildmenu.isBranchAvailable = function(branch) {
   var city = g_session.city;
-  engine.log("sim.ui.buildmenu.isBranchAvailable");
   if (g_config.buildmenu[branch]) {
     var currentBranch = g_config.buildmenu[branch];
     if (currentBranch.buildings != undefined) {

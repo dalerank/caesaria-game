@@ -35,6 +35,7 @@ var modules = [
     "g_config_construction",
     "init_render",
     "init_game",
+    "game_events",
     "game_pantheon",
     "game_sound_player",
     "game_event_manager",

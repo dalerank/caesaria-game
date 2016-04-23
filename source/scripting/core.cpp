@@ -68,18 +68,20 @@ void engine_js_push(js_State* J, const Locations& param);
 void engine_js_push(js_State* J, const Tilemap& param);
 void engine_js_push(js_State* J, const OverlayList& param);
 void engine_js_push(js_State* J, const OverlayPtr& param);
+void engine_js_push(js_State* J, Scribes& scribes);
 void engine_js_push(js_State* J, Widget* param);
 void engine_js_push(js_State* J, gfx::Camera* param);
 
 inline std::string engine_js_to(js_State *J, int n, std::string) { return js_tostring(J, n); }
 inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, n); }
-inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_toint32(J, n); }
-inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_toint32(J, n); }
-inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_toint32(J, n); }
-inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_toint32(J, n); }
-inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_toint32(J, n); }
-inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_toint32(J, n); }
-inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_toint32(J, n); }
+inline unsigned int engine_js_to(js_State *J, int n, unsigned int) { return js_touint32(J, n); }
+inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_touint32(J, n); }
+inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_touint32(J, n); }
+inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_touint32(J, n); }
+inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_touint32(J, n); }
+inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_touint32(J, n); }
+inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_touint32(J, n); }
+inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_touint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
 PlayerCityPtr engine_js_to(js_State *J, int n, PlayerCityPtr) {
@@ -257,6 +259,7 @@ void engine_js_push(js_State *J, const good::Stock& stock) { engine_js_pushud(J,
 void engine_js_push(js_State *J, const gfx::Tile& tile) { engine_js_pushud(J, TEXT(Tile), &const_cast<Tile&>(tile), nullptr); }
 void engine_js_push(js_State *J, const good::Store& store) { engine_js_pushud(J, TEXT(Store), &const_cast<good::Store&>(store), nullptr); }
 void engine_js_push(js_State *J, const gfx::Tilemap& tmap) { engine_js_pushud(J, TEXT(Tilemap), &const_cast<gfx::Tilemap&>(tmap), nullptr); }
+void engine_js_push(js_State *J, Scribes& scribes) { engine_js_pushud(J, TEXT(Scribes), &const_cast<Scribes&>(scribes), nullptr); }
 
 void engine_js_push(js_State *J, const VariantMap& items)
 {
@@ -371,6 +374,7 @@ PREDEFINE_TYPE_DESTRUCTOR(Picture)
 PUSH_USERDATA(ContextMenuItem)
 PUSH_USERDATA(Widget)
 PUSH_USERDATA(Stock)
+PUSH_USERDATA(Scribes)
 PUSH_USERDATA(Store)
 
 PUSH_USERDATA_SMARTPTR(PlayerCity)
@@ -389,6 +393,7 @@ PUSH_USERDATA_WITHNEW(Path)
 PUSH_USERDATA_WITHNEW(DateTime)
 PUSH_USERDATA_WITHNEW(Picture)
 PUSH_SAVEDDATA(States)
+PUSH_SAVEDDATA(ScribeMessage)
 PUSH_SAVEDDATA(VictoryConditions)
 
 inline DateTime engine_js_to(js_State *J, int n, DateTime)
@@ -789,6 +794,22 @@ void object_call_func_0(js_State *J, void (T::*f)())
 }
 
 template<typename T, typename Rtype>
+void object_call_getter_0(js_State *J, Rtype (T::*f)())
+{
+  try {
+    T* parent = (T*)js_touserdata(J, 0, "userdata");
+    if (parent) {
+      Rtype value = (parent->*f)();
+      engine_js_push(J,value);
+    } else {
+      js_pushundefined(J);
+    }
+  } catch(...) {
+    //something bad happens
+  }
+}
+
+template<typename T, typename Rtype>
 void object_call_getter_0(js_State *J, Rtype (T::*f)() const)
 {
   try {
@@ -981,7 +1002,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 #define DEFINE_WIDGET_CALLBACK_0(name,callback) DEFINE_OBJECT_CALLBACK_0(name,Widget,callback)
 #define DEFINE_WIDGET_CALLBACK_1(name,callback,type) DEFINE_OBJECT_CALLBACK_1(name,Widget,callback,type)
 
-
+#define DEFINE_OBJECT_GETTER_NCONST_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)()=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_0(name,rtype,funcname) void name##_##funcname(js_State* J) { rtype (name::*p)() const=&name::funcname; object_call_getter_0<name,rtype>(J,p); }
 #define DEFINE_OBJECT_GETTER_1(name,rtype,funcname,p1type,def) void name##_##funcname(js_State* J) { auto p=&name::funcname; object_call_getter_1<name,rtype,p1type>(J,p,def); }
 
