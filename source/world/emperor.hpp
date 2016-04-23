@@ -43,7 +43,9 @@ public:
 
   void sendGift(const Gift& gift);
   void sendGift(const std::string& who, const std::string& type, int value);
+
   const Gift& lastGift(const std::string& cityname) const;
+  DateTime lastGiftDate(const std::string& cityname) const;
   const Relation& relation(const std::string& cityname) const;
 
   void timeStep(unsigned int time);

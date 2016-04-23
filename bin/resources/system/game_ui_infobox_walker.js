@@ -246,7 +246,7 @@ game.ui.infobox.aboutLegion = function (walkers) {
     lbNumberValue.text = ibox.fort.soldiers().length;
 
     var health = ["sldh_health_low", "sldh_health_sparse", "sldh_health_middle", "sldh_health_strong", "sldh_health_strongest"];
-    var index = math.clamp(ibox.fort.legionHealth() / 20, 0, 4);
+    var index = Math.clamp(ibox.fort.legionHealth() / 20, 0, 4);
     lbHealthValue.text = _u(health[index]);
 
     var morale = ["sldr_totally_distraught", "sldr_terrified", "sldr_very_frightened",
@@ -254,7 +254,7 @@ game.ui.infobox.aboutLegion = function (walkers) {
         "sldr_extremely_scared", "sldr_daring", "sld_quite_daring", "sldr_encouraged", "sdlr_bold", "sldr_very_bold"
     ];
 
-    var index = math.clamp(ibox.fort.legionMorale() / 9, 0, 9);
+    var index = Math.clamp(ibox.fort.legionMorale() / 9, 0, 9);
     lbMoraleValue.text = _u(morale[index]);
 
     lbTrainedValue.text = ibox.fort.legionTrained();
@@ -271,7 +271,7 @@ game.ui.infobox.aboutLegion = function (walkers) {
     };
     lbFlag.icon = pic;
 
-    var mIndex = 20 - math.clamp(ibox.fort.legionMorale() / 5, 0, 20);
+    var mIndex = 20 - Math.clamp(ibox.fort.legionMorale() / 5, 0, 20);
     var pic = g_render.picture("sprites", mIndex + 48);
     pic.offset = {
         x: 0,
