@@ -254,6 +254,7 @@
       big_mars_temple : true
       big_neptune_temple : true
       big_mercury_temple : true
+      oracle : true
       market : true
       oil_workshop : true
       lumber_mill : true
