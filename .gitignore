@@ -36,6 +36,7 @@ en/*
 #other
 *.cbp
 *.a
+Thumbs.db
 
 # MSVC ignore
 /Debug
