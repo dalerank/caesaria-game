@@ -32,10 +32,10 @@ public:
   Entertainment( PlayerCityPtr city, Widget* parent );
 
   virtual void draw( gfx::Engine& painter );
+  virtual void setWindowFlag(const std::string &flag, bool enabled);
 
 private:
   void _showFestivalWindow();
-  void _assignFestival(int divinityType, int festSize);
 
   class Impl;
   ScopedPtr< Impl > _d;

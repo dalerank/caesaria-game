@@ -37,7 +37,7 @@ namespace rome
 
 class Pantheon::Impl
 {
-public:  
+public:
   DivinityList divinties;
 };
 
@@ -76,7 +76,7 @@ DivinityPtr Pantheon::add(const std::string& name)
   if (divn.isNull())
   {
     auto& gods = instance()._d->divinties;
-    divn = DivinityPtr(new RomeDivinity(RomeDivinity::Type(gods.size())));  
+    divn = DivinityPtr(new RomeDivinity(RomeDivinity::Type(gods.size())));
     divn->setInternalName(name);
     divn->drop();
 
@@ -95,7 +95,7 @@ DivinityPtr Pantheon::mercury(){  return get( RomeDivinity::Mercury ); }
 DivinityPtr Pantheon::ceres() {  return get( RomeDivinity::Ceres );}
 
 void Pantheon::load(const VariantMap& stream)
-{  
+{
   for( auto name : RomeDivinity::getIntNames() )
   {
     auto divn = get(name);
@@ -113,7 +113,7 @@ void Pantheon::save(VariantMap& stream)
   }
 }
 
-void Pantheon::doFestival(RomeDivinity::Type who, int type )
+void Pantheon::doFestival(RomeDivinity::Type who, int type)
 {
   auto divn = get( who ).as<RomeDivinity>();
   if( divn.isValid() )

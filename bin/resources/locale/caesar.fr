@@ -413,7 +413,7 @@
 "##water_caption##":"Eau",
 "##water_info##":"Infranchissable, mais des ponts peuvent être construits à certains endroits. L'eau est une voie commerciale vitale reliant votre cité au reste de l'empire. Construisez des docks à proximité. De plus, les puits d'argile doivent être construits près de l'eau.",
 "##water_supply##":"Eau",
-"##militaryAcademy##":"Académie militaire",
+"##military_academy##":"Académie militaire",
 "##advchief_military##":"Militaire",
 "##adve_military##":"Militaire",
 "##high_salary_angers_senate##":"Le très grand salaire que vous vous payez rend le sénat en colère. Rome ne fait que parler de votre indiscipline.",

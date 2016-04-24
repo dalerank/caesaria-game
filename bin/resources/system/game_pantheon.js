@@ -1,26 +1,35 @@
-game.religion.gods_config = [
-  { id: g_config.gods.ceres,   name : "Ceres",   service : "srvc_religionCeres",   image:  "panelwindows_00017" },
-  { id: g_config.gods.mars,    name : "Mars",    service : "srvc_religionMars",    image : "panelwindows_00020" },
-  { id: g_config.gods.neptune, name : "Neptune", service : "srvc_religionNeptune", image : "panelwindows_00018" },
-  { id: g_config.gods.venus,   name : "Venus",	 service : "srvc_religionVenus",   image : "panelwindows_00021"	},
-	{ id: g_config.gods.mercury, name : "Mercury", service : "srvc_religionMercury", image : "panelwindows_00019" }
-]
-
 function OnInitRomePantheon() {
-  game.religion.pantheon.init()
+  game.religion.initRomePantheon()
 }
 
-game.religion.pantheon.init = function()
-{
-  for (var i in game.religion.gods_config)
-  {
-    var config = game.religion.gods_config[i]
+game.religion.initRomePantheon = function() {
+  for (var i in g_config.religion.gods_config) {
+    var config = g_config.religion.gods_config[i]
     var god = g_session.addGod(config.id);
     var pic = g_render.picture(config.image)
                       .fallback("dlcperf",1)
-    god.setName( config.name )
-    god.setService( config.service )
-    god.setPicture( pic )
-    god.setRelation( 50 )
+    god.setName(config.name)
+    god.setService(config.service)
+    god.setPicture(pic)
+    god.setRelation(50)
+
+    game.gods.roman[config.id] = god;
   }
+}
+
+game.religion.getFestivalCost = function(festival) {
+  var pop = g_session.city.states().population;
+  return (pop / festival.limiter) + festival.minCost;
+}
+
+game.religion.assignFestival = function(who, size) {
+  var festival = {};
+
+  if (size==1) festival = g_config.festival.small;
+  else if (size==2) festival = g_config.festival.middle;
+  else if (size==3) festival = g_config.festival.big;
+
+  var cost = game.religion.getFestivalCost(festival);
+  g_session.city.createIssue("sundries",-cost);
+  g_session.assignFestival(who, size);
 }

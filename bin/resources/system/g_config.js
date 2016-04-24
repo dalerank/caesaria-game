@@ -61,6 +61,7 @@ g_config.advisor = {
 }
 
 g_config.walker = {}
+g_config.religion = {}
 
 g_config.layer = {
     simple : 0,
@@ -87,14 +88,6 @@ g_config.layer = {
     commerce : 29, tax : 30, market : 31, sentiment : 32, unemployed : 33, comturnover : 34,
     build : 35, destroyd : 36, constructor : 37,
     products : 38
-}
-
-g_config.gods = {
-  ceres : "ceres",
-  mars : "mars",
-  neptune : "neptune",
-  venus : "venus",
-  mercury : "mercury"
 }
 
 g_config.saves = {

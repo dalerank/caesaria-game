@@ -1,4 +1,8 @@
 TEMPLATE_WIDGET_IMPLEMENTATION(TexturedButton)
 DEFINE_WIDGET_CALLBACK_0(TexturedButton,onClickedEx)
 DEFINE_OBJECT_FUNCTION_0(TexturedButton,fitToImage)
+DEFINE_OBJECT_FUNCTION_1(TexturedButton,setPressed,bool)
+DEFINE_OBJECT_FUNCTION_1(TexturedButton,setIsPushButton,bool)
 DEFINE_OBJECT_FUNCTION_5(TexturedButton,changeImageSet,std::string,int,int,int,int)
+DEFINE_OBJECT_GETTER_0(TexturedButton,bool,isPushButton)
+DEFINE_OBJECT_GETTER_0(TexturedButton,bool,isPressed)

@@ -27,13 +27,13 @@
 #include "core/gettext.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "festival_planing_window.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/entertainment.hpp"
 #include "city/cityservice_festival.hpp"
 #include "religion/romedivinity.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "events/script_event.hpp"
 #include "objects/constants.hpp"
 #include "objects/hippodrome.hpp"
 #include "widget_helper.hpp"
@@ -161,6 +161,8 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent)
   _d->initUI( this );
   _d->updateInfo();
   _d->updateFestivalInfo();
+
+  setInternalName("EntertainmentAdvisor");
 }
 
 void Entertainment::draw( Engine& painter )
@@ -168,13 +170,18 @@ void Entertainment::draw( Engine& painter )
   if( !visible() )
     return;
 
-  Window::draw( painter );
+  Window::draw(painter);
+}
+
+void Entertainment::setWindowFlag(const std::string& flag, bool enabled)
+{
+   if (flag=="updateFestivalInfo") { _d->updateFestivalInfo(); }
+   else Base::setWindowFlag(flag, enabled);
 }
 
 void Entertainment::_showFestivalWindow()
 {
-  auto& dialog = add<dialog::FestivalPlanning>( -1, Rect(), _d->city );
-  CONNECT( &dialog, onFestivalAssign(), this, Entertainment::_assignFestival );
+  events::dispatch<events::ScriptFunc>("OnShowFestivalPlaningWindow");
 }
 
 const EntertInfo& Entertainment::Impl::getInfo(const object::Type objectType)
@@ -206,16 +213,6 @@ const EntertInfo& Entertainment::Impl::getInfo(const object::Type objectType)
   infos[ objectType ] = ret;
 
   return infos[ objectType ];
-}
-
-void Entertainment::_assignFestival( int divinityType, int festSize)
-{
-  FestivalPtr fest = _d->city->statistic().services.find<Festival>();
-  if( fest.isValid() )
-  {
-    fest->assign( (religion::RomeDivinity::Type)divinityType, festSize );
-    _d->updateFestivalInfo();
-  }
 }
 
 void Entertainment::Impl::updateInfo()

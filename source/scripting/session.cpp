@@ -237,6 +237,15 @@ void Session::setFont(const std::string& fontname)
   FontCollection::instance().initialize(game::Settings::rcpath().toString(), fontname);
 }
 
+void Session::assignFestival(const std::string& name, int size)
+{
+  auto srvc = _game->city()->findService(city::Festival::defaultName()).as<city::Festival>();
+  auto god = religion::rome::Pantheon::get(name).as<religion::RomeDivinity>();
+  if (srvc.isValid() && god.isValid()) {
+    srvc->assign(god->dtype(), size);
+  }
+}
+
 void Session::setLanguage(const std::string& lang, const std::string& audio)
 {
   SETTINGS_SET_VALUE(language,lang);

@@ -326,7 +326,7 @@
 "##water_caption##":"Vatten",
 "##water_info##":"Kan inte forceras, men broar kan byggas på vissa platser. Vatten är en vital handelslänk till resten av imperiet via handelshamnar. Lertag måste byggas nära vatten.",
 "##water_supply##":"Vatten",
-"##militaryAcademy##":"Militärhögskola",
+"##military_academy##":"Militärhögskola",
 "##advchief_military##":"Militär",
 "##adve_military##":"Militär",
 "##high_salary_angers_senate##":"Den löjligt höga lön du betalar till dig själv upprör senaten. Hela Rom talar om din öppna girighet.",

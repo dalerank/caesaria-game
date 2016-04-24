@@ -74,6 +74,7 @@ function UpdateButtonPrototype(objProto) {
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
    Object.defineProperty(objProto, "iconMask", {  set: function(value) { this.setIconMask(value) }})
    Object.defineProperty(objProto, "textWidth", {get: function() { return this.getTextWidth("")}})
+   Object.defineProperty(objProto, "pressed", {get: function() { return this.isPressed()}, set: function(v) {this.setPressed(v)}})
    Object.defineProperty(objProto, "bistate", {get: function() { return this.isPushButton()}, set: function(v) { this.setIsPushButton(v)}})
 
    Object.defineProperty(objProto, "icon", { set: function(value) {

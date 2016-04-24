@@ -270,7 +270,7 @@
 "##water_caption##":"Agua",
 "##water_info##":"Infranqueable, aunque se pueden construir algunos puentes. El agua es, a menudo, un nexo comercial imprescindible con el resto del imperio gracias a la construcción de muelles. Los pozos de arcilla deben construirse cerca del agua.",
 "##water_supply##":"Agua",
-"##militaryAcademy##":"Academia militar",
+"##military_academy##":"Academia militar",
 "##advchief_military##":"Ejército",
 "##adve_military##":"Ejército",
 "##high_salary_angers_senate##":"El altísimo salario que te has asignado está indignando al Senado. Toda Roma habla de tu avaricia descarada.",

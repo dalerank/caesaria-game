@@ -87,6 +87,7 @@ public:
   OverlayList getOverlays(Variant type) const;
   gfx::Camera* getCamera() const;
   void setFont(const std::string& fontname);
+  void assignFestival(const std::string& name, int size);
   void setLanguage(const std::string& lang,const std::string& audio);
 
 private:

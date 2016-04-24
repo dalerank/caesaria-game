@@ -568,7 +568,9 @@ void Widget::setTextAlignment(const std::string& horizontal, const std::string& 
 void Widget::setupUI( const VariantMap& options )
 {
   __D_REF(_d,Widget)
-  _d.internalName = options.get( "name" ).toString();
+  auto vname = options.get("name").toString();
+  if (!vname.empty())
+    _d.internalName = vname;
   align::Helper ahelper;
   VariantList textAlign = options.get( "textAlign" ).toList();
   VariantList altAlign = options.get( "text.align" ).toList();

@@ -269,7 +269,7 @@
 "##ovrm_water##":"Voda",
 "##water_caption##":"Voda",
 "##water_supply##":"Voda",
-"##militaryAcademy##":"Vojenská akademie",
+"##military_academy##":"Vojenská akademie",
 "##advchief_military##":"Vojenství",
 "##adve_military##":"Vojenství",
 "##charioteer##":"Vozataj",
