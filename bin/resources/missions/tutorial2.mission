@@ -53,7 +53,7 @@
 
     "reservoir#tutorial_window" : {
       population : 150
-      tutorial : ":/tutorial/reservoir.tutorial"
+      tutorial : "reservoir"
     }
 
     "enable_reservoir#building_options" : {
@@ -63,7 +63,7 @@
 
     "gardens#tutorial_window" : {
       population : 250
-      tutorial : ":/tutorial/gardens.tutorial"
+      tutorial : "gardens"
     }
 
     "enable_gardens#building_options" : {
@@ -73,7 +73,7 @@
 
     "taxes_and_industry#tutorial_window" : {
       population : 450
-      tutorial : ":/tutorial/taxes_and_industry.tutorial"
+      tutorial : "taxes_and_industry"
     }
 
     "enable_industry#building_options" : {
@@ -88,7 +88,7 @@
 
   "empire_trade#tutorial_window" : {
       population : 550
-      tutorial : ":/tutorial/tt2_trade.tutorial"
+      tutorial : "tt2_trade"
     }
 
     "enable_empire#empire_options" : {

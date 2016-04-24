@@ -62,7 +62,7 @@
       strong : 25
       exec : {
         "step_1.fire#tutorial_window" : {
-          tutorial : ":/tutorial/first_fire.tutorial"
+          tutorial : "first_fire"
         }
 
         "step_2.prefecture#building_options" :  {
@@ -76,7 +76,7 @@
       strong : 25
       exec : {
         "first_collapse#tutorial_window" : {
-          tutorial : ":/tutorial/first_collapse.tutorial"
+          tutorial : "first_collapse"
         }
 
         "enable_engineer#building_options" : {
@@ -87,7 +87,7 @@
 
     "tutorial#tutorial_window" : {
       population : 80
-      tutorial : ":/tutorial/religion.tutorial"
+      tutorial : "religion"
     }
 
     "enable_religion#building_options" : {
