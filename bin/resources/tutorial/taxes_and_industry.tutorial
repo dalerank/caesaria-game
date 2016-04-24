@@ -1,7 +1,7 @@
 {
- title : "##tax_and_industry##"
- speech : "tutorial2_taxes"
- items : [ "##tax_tutorial##",
+ "title" : "##tax_and_industry##",
+ "speech" : "tutorial2_taxes",
+ "items" : [ "##tax_tutorial##",
            "@img=picture4_00006",
            "##nice_house_pay_more##",
            "@img=picture4_00007",

@@ -1,8 +1,8 @@
 {
- title : "##tutorial_fire##"
- sound : "fanfare"
- speech : "tutorial_first_fire"
- items : [ "##tutorial_prefecture_info##",
+ "title" : "##tutorial_fire##",
+ "sound" : "fanfare",
+ "speech" : "tutorial_first_fire",
+ "items" : [ "##tutorial_prefecture_info##",
            "@img=picture2_00005",
            "##tutorial_prefect_detect_fire##",
            "@img=picture2_00006",

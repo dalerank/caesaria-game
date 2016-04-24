@@ -146,7 +146,7 @@ void ImageBlinker::draw(gfx::Engine& painter)
   unsigned int time = DateTime::elapsedTime() ;
   if (enabled() && _active && (time % 1000 < 500)) {
     Rect rect( Point(), _pic.size() );
-    painter.draw(_pic, rect, absoluteRect(), nullptr/*&absoluteClippingRectRef()*/);
+    painter.draw(_pic, rect, absoluteRect(), &absoluteClippingRectRef());
   }
 }
 
