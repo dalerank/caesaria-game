@@ -155,7 +155,6 @@ Statistic::Statistic(PlayerCity& c)
       INIT_SUBSTAT(population),
       INIT_SUBSTAT(food),
       INIT_SUBSTAT(services),
-      INIT_SUBSTAT(festival),
       INIT_SUBSTAT(crime),
       INIT_SUBSTAT(goods),
       INIT_SUBSTAT(health),
@@ -477,19 +476,6 @@ size_t Statistic::_Food::possibleProducing() const
     foodProducing += farm->produceQty();
 
   return foodProducing;
-}
-
-unsigned int Statistic::_Festival::calcCost(FestivalType type) const
-{
-  unsigned int pop = _parent.rcity.states().population;
-  switch( type )
-  {
-  case smallFest: return int( pop / smallFestivalCostLimiter ) + smallFestivalMinCost;
-  case middleFest: return int( pop / middleFestivalCostLimiter ) + middleFestivalMinCost;
-  case greatFest: return int( pop / greatFestivalCostLimiter ) + greatFestivalMinCost;
-  }
-
-  return 0;
 }
 
 good::ProductMap Statistic::_Goods::inCity() const { return details( true ); }

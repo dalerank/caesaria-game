@@ -194,20 +194,6 @@ public:
     Statistic& _parent;
   } services;
 
-  struct _Festival
-  {
-    unsigned int calcCost( FestivalType type ) const;
-
-    enum { greatFestivalCostLimiter=5,
-           middleFestivalCostLimiter=10,
-           smallFestivalMinCost=10,
-           smallFestivalCostLimiter=20,
-           middleFestivalMinCost=20,
-           greatFestivalMinCost=40 };
-
-    Statistic& _parent;
-  } festival;
-
   struct _Crime
   {
     unsigned int level() const;

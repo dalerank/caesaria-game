@@ -421,7 +421,7 @@
 "##water_caption##":"Water",
 "##water_info##":"Impassable, but may be bridged at certain points. Water is often a vital trade link to the rest of the Empire via the construction of docks. Clay pits must be adjacent to water.",
 "##water_supply##":"Water",
-"##militaryAcademy##":"Military academy",
+"##military_academy##":"Military academy",
 "##advchief_military##":"Military",
 "##adve_military##":"Military",
 "##high_salary_angers_senate##":"The ridiculously high salary you pay yourself angers the senate. All Rome is talking about your bare-faced greed.",

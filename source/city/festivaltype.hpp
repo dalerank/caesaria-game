@@ -19,6 +19,6 @@
 #ifndef _CAESARIA_FESTIVALTYPE_INCLUDE_H_
 #define _CAESARIA_FESTIVALTYPE_INCLUDE_H_
 
-enum FestivalType { smallFest=1, middleFest, greatFest };
+enum FestivalType { none=0, smallFest=1, middleFest, greatFest };
 
 #endif  //_CAESARIA_FESTIVALTYPE_INCLUDE_H_

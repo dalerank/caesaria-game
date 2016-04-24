@@ -5,7 +5,8 @@ game.ui.dialogs = {}
 game.ui.infobox = {}
 game.ui.caesopedia = {}
 game.religion = {}
-game.religion.pantheon = {}
+game.gods = {}
+game.gods.roman = {}
 game.sound = {}
 
 /********************** namespace level **********************************/

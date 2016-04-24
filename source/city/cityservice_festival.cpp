@@ -29,6 +29,7 @@
 #include "events/updatehouseservice.hpp"
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
+#include "events/script_event.hpp"
 #include "cityservice_factory.hpp"
 #include "config.hpp"
 
@@ -121,8 +122,6 @@ void Festival::assign(RomeDivinity::Type name, int size )
   _d->fest.next.date= game::Date::current();
   _d->fest.next.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->fest.next.divinity = name;
-
-  events::dispatch<Payment>( econ::Issue::sundries, -1 * _city()->statistic().festival.calcCost( (FestivalType)size ) );
 }
 
 Festival::Festival(PlayerCityPtr city)

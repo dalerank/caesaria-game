@@ -948,11 +948,11 @@ void reg_widget_constructor(js_State *J, const std::string& name)
   Widget* widget = nullptr;
   if (js_isstring(J,1))
   {
-    std::string name = js_tostring(J, 1);
-    widget = internal::game->gui()->rootWidget()->findChild(name, true);
+    std::string widgetName = js_tostring(J, 1);
+    widget = internal::game->gui()->rootWidget()->findChild(widgetName, true);
 
     if (widget == nullptr)
-      Logger::warning("!!! Cant found widget with name " + name);
+      Logger::warning("!!! Cant found widget with name " + widgetName);
   }
   else
   {

@@ -387,7 +387,7 @@
 "##water_caption##":"Wasser",
 "##water_info##":"Unpassierbar, kann jedoch an bestimmten Stellen überbrückt werden. Wasser erlaubt mit Hilfe von Docks oftmals den Aufbau wichtiger Handelsverbindungen mit dem übrigen Imperium. Tongruben müssen neben Gewässern eingerichtet werden.",
 "##water_supply##":"Wasser",
-"##militaryAcademy##":"Militärakademie",
+"##military_academy##":"Militärakademie",
 "##advchief_military##":"Militär",
 "##adve_military##":"Militär",
 "##high_salary_angers_senate##":"Das unverschämt hohe Gehalt, das Sie sich zahlen, erzürnt den Senat. Ganz Rom spricht schon über Ihre schamlose Gier.",
