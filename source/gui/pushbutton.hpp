@@ -34,7 +34,7 @@ public:
                  blackBorderUp, noBackground, greyBorderLineBig,
                  flatBorderLine, greyBorderLineFit } BackgroundStyle;
 
-  PushButton( Widget* );
+  PushButton(Widget*);
 
   PushButton(Widget* parent,
               const RectF& rectangle,
@@ -44,12 +44,12 @@ public:
               const BackgroundStyle bgstyle=greyBorderLine);
 
   //! constructor
-  PushButton( Widget* parent,
-              const Rect& rectangle,
-              const std::string& caption="",
-              int id=-1,
-              bool noclip=false,
-              const BackgroundStyle bgtyle=greyBorderLine);
+  PushButton(Widget* parent,
+             const Rect& rectangle,
+             const std::string& caption="",
+             int id=-1,
+             bool noclip=false,
+             const BackgroundStyle bgtyle=greyBorderLine);
 
   //! destructor
   virtual ~PushButton();
@@ -96,12 +96,12 @@ public:
   virtual Font font(ElementState state) const;
 
   virtual bool isPushButton() const;
-  virtual void setIsPushButton( bool value );
+  virtual void setIsPushButton(bool value);
 
   virtual void setupUI(const VariantMap &ui);
   virtual void setupUI(const vfs::Path &ui);
 
-  virtual void setTextOffset( const Point& offset );
+  virtual void setTextOffset(const Point& offset);
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
 
   int getTextWidth(const std::string& text) const;
