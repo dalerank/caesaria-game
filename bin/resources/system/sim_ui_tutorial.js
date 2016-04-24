@@ -17,8 +17,14 @@ sim.ui.tutorial.show = function(tutorial) {
   lbxHelp.itemsHeight = 17;
   lbxHelp.background = true;
 
-  var data = engine.load(tutorial);
-  var vm = JSON.parse(data);
+  var vm = {};
+  if (g_config.tutorial.hasOwnProperty(tutorial)) {
+    engine.log("Find tutorial for " + tutorial)
+    vm = g_config.tutorial[tutorial];
+  } else {
+    var data = engine.load(":/tutorial/" + tutorial + ".tutorial");
+    vm = JSON.parse(data);
+  }
 
   ibox.title = vm.title;
   if (vm.sound) {

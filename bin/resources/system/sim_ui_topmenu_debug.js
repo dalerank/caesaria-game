@@ -102,7 +102,8 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/disaster", "fill_random_claypit", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/disaster", "forest_fire", function() {engine.log("test")} )*/
 
-  topmenu.addItemWithCallback("Debug/tutorials", "First collapse", function() { sim.ui.tutorial.show(":/tutorial/first_collapse.tutorial"); } )
+  topmenu.addItemWithCallback("Debug/tutorials", "First collapse", function() { sim.ui.tutorial.show("first_collapse"); } )
+  topmenu.addItemWithCallback("Debug/tutorials", "First fire", function() { sim.ui.tutorial.show("first_fire"); } )
 
   topmenu.addItemWithCallback("Debug/level", "win_mission", function() { sim.ui.missionWin() } )
   topmenu.addItemWithCallback("Debug/level", "fail_mission", function() { sim.ui.missionLose() } )

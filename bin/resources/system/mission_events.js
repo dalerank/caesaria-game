@@ -2,16 +2,12 @@ function OnMissionLose() {
     sim.ui.missionLose()
 }
 
-function OnGameDayChanged() {
-  game.eventmgr.dispatchEvent(game.events.OnDayChanged,{});
-}
-
 function OnMissionWin() {
     sim.ui.missionWin()
 }
 
 function OnExitSplashScreen() {
-  
+
 }
 
 function OnMissionStart() {
