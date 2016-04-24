@@ -228,6 +228,10 @@
       "statue_small": true,
       "statue_middle": true,
       "statue_big": true,
+      "fountain" : true,
+      "well": true,
+      "aqueduct": true,
+      "reservoir": true,
       engineering_post : true
       plaza : true
       forum : true
