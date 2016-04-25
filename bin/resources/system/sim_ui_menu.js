@@ -194,11 +194,13 @@ sim.ui.menu.funcs = [];
 sim.ui.menu.rightSide = engine.getOption("rightMenu");
 
 sim.ui.menu.changeBuildingOptions = function() {
-  for (var i in sim.ui.menu.buildConfig) {
-    var config = sim.ui.menu.buildConfig[i];
+  for (var i in sim.ui.menu.simConfig) {
+    var config = sim.ui.menu.simConfig[i];
     var button = sim.ui.menu.extmenu.buttons[i];
+    engine.log("check for " + i)
     if (config.branch && button) {
       var avail = sim.ui.buildmenu.isBranchAvailable(config.branch);
+      engine.log("set avail for " + config.branch)
       button.enabled = avail;
     }
   }
