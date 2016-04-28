@@ -181,6 +181,8 @@ if(WIN32)
   elseif(CMAKE_COMPILER_IS_GNUCXX)
     ####################### Win32 mingw settings ##################################
     #not show console window
+    include(CheckCXXCompilerFlag)
+    CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows -static-libstdc++ -static-libgcc")
   endif()
 

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #include "listbox.hpp"
 #include "listboxprivate.hpp"
@@ -533,6 +533,7 @@ bool ListBox::onEvent(const NEvent& event)
               return true;
             }
           }
+
         }
         break;
 
@@ -667,13 +668,11 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
       if( refItem.icon().isValid() )
       {
-        Point offset;
         if( refItem.horizontalAlign() == align::center )
         {
-          offset.setX( (width() - refItem.icon().width()) / 2 );
+          Point offset( (width() - refItem.icon().width()) / 2, refItem.iconOffset().y() );
+          refItem.setIconOffset( offset );
         }
-
-        refItem.setIconOffset( offset );
       }
 
       int mnY = frameRect.bottom() - _d->scrollBar->value();
@@ -689,7 +688,11 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         currentFont = _getCurrentItemFont( refItem, underMouse );
         currentFont.setColor( _getCurrentItemColor( refItem, underMouse ) );
 
-        Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
+        Point p;
+        if (refItem.icon().isValid()) {
+          p = Point(refItem.icon().width(), 0 );
+        }
+        Rect textRect = currentFont.getTextRect( refItem.text(), Rect( p, frameRect.size() ),
                                                  itemTextHorizontalAlign, itemTextVerticalAlign );
 
         textRect._lefttop += Point( _d->itemsIconWidth+3, 0 );
@@ -714,7 +717,7 @@ void ListBox::draw( gfx::Engine& painter )
   if ( !visible() )
     return;
 
-  if( isFlag( drawBackground ) )
+  if (isFlag(drawBackground))
   {
     DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     pipe.draw( _d->bg.batch )
@@ -744,7 +747,7 @@ void ListBox::draw( gfx::Engine& painter )
       }
 
       if (refItem.picture().isValid()) {
-        _drawItemText( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset, &clipRect  );
+        _drawItemText( painter, refItem, widgetLeftup + frameRect.lefttop() + scrollBarOffset + refItem.iconOffset(), &clipRect  );
       }
     }
 
@@ -854,23 +857,17 @@ void ListBox::swapItems(unsigned int index1, unsigned int index2)
   _d->items[index2] = dummmy;
 }
 
-void ListBox::setItemOverrideColor(unsigned int index, NColor color, ListBoxItem::ColorType colorType )
+void ListBox::setItemOverrideColor(unsigned int index, NColor color, int colorType)
 {
   if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
         return;
 
-  if( colorType == ListBoxItem::all )
-  {
-    for ( unsigned int c=0; c < ListBoxItem::count; ++c )
-    {
-      _d->items[index].overrideColors[c].Use = true;
-      _d->items[index].overrideColors[c].color = color;
+  if( colorType == ListBoxItem::all ) {
+    for ( unsigned int c=0; c < ListBoxItem::count; ++c ) {
+      _d->items[index].setTextColor( ListBoxItem::ColorType(c), color);
     }
-  }
-  else
-  {
-    _d->items[index].overrideColors[colorType].Use = true;
-    _d->items[index].overrideColors[colorType].color = color;
+  } else {
+    _d->items[index].setTextColor(ListBoxItem::ColorType(colorType), color);
   }
 }
 

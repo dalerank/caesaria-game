@@ -527,7 +527,7 @@ public:
     for( auto& a : *this )
     {
       if( index >= currentStart &&
-          index < currentStart + a->textures.size() )
+          index < currentStart + (int)a->textures.size() )
       {
         int tI = index - currentStart;
         ret = a->textures[ tI ]->image;

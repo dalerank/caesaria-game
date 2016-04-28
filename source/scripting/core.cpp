@@ -84,6 +84,18 @@ inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Wal
 inline Alignment engine_js_to(js_State *J, int n, Alignment) { return (Alignment)js_touint32(J, n); }
 inline float engine_js_to(js_State *J, int n, float) { return (float)js_tonumber(J, n); }
 
+inline NColor engine_js_to(js_State *J, int n, NColor) {
+  NColor color = ColorList::pink;
+  if (js_isstring(J, n)) {
+    std::string colorName = js_tostring(J, n);
+    color = ColorList::find(colorName);
+  } else if (js_isnumber(J, n)) {
+    color = NColor(js_toint32(J, n));
+  }
+
+  return color;
+}
+
 PlayerCityPtr engine_js_to(js_State *J, int n, PlayerCityPtr) {
   PlayerCity* parent = (PlayerCity*)js_touserdata(J, n, "userdata");
   if (parent != nullptr) {
@@ -219,10 +231,14 @@ void engine_js_push(js_State* J, const Rect& p)
 
 void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize destructor)
 {
-  js_newobject(J);
-  js_getglobal(J, name.c_str());
-  js_getproperty( J, -1, "prototype");
-  js_newuserdata(J, "userdata", v, destructor);
+  if (v) {
+    js_newobject(J);
+    js_getglobal(J, name.c_str());
+    js_getproperty( J, -1, "prototype");
+    js_newuserdata(J, "userdata", v, destructor);
+  } else {
+    js_pushnull(J);
+  }
 }
 
 void engine_js_push(js_State *J, const StringArray& items)
@@ -409,9 +425,9 @@ inline DateTime engine_js_to(js_State *J, int n, DateTime)
 
 inline Picture engine_js_to(js_State *J, int n, Picture)
 {
-  if (js_isuserdata(J, 1, "userdata"))
+  if (js_isuserdata(J, n, "userdata"))
   {
-    Picture* pic = (Picture*)js_touserdata(J, 1, "userdata");
+    Picture* pic = (Picture*)js_touserdata(J, n, "userdata");
     return *pic;
   }
 
