@@ -95,5 +95,6 @@ game.eventmgr = new EventManager();
 
 game.events = {
 	OnDayChanged: "OnDayChanged",
-	OnScribesStatusChanged: "OnScribesStatusChanged"
+	OnScribesStatusChanged: "OnScribesStatusChanged",
+	OnLevelDestroyed : "OnLevelDestroyed"
 }

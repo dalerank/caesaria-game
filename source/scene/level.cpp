@@ -37,6 +37,7 @@
 #include "sound/engine.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "layers/layer.hpp"
+#include "scripting/core.hpp"
 #include "game/debug_handler.hpp"
 #include "game/hotkey_manager.hpp"
 #include "steam.hpp"
@@ -98,7 +99,9 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-Level::~Level() {}
+Level::~Level() {
+  script::Core::execFunction( "OnLevelDestroyed" );
+}
 
 void Level::Impl::initRender()
 {

@@ -206,6 +206,11 @@ sim.ui.menu.changeBuildingOptions = function() {
   }
 }
 
+sim.ui.menu.clean = function() {
+  engine.log("sim.ui.menu.clean");
+  sim.ui.menu.extmenu = {}
+}
+
 sim.ui.menu.enableAlarm = function(enable) {
   if (enable) {
     g_session.playAudio("extm_alarm_00001", 100, g_config.audio.effects);
@@ -427,6 +432,7 @@ sim.ui.menu.initialize = function() {
   sim.ui.menu.extmenu = menu;
 
   game.eventmgr.bindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
+  game.eventmgr.bindEvent(game.events.OnLevelDestroyed, sim.ui.menu.clean);
 }
 
 sim.ui.menu.reset = function() {
@@ -435,6 +441,7 @@ sim.ui.menu.reset = function() {
     sim.ui.menu.extmenu.deleteLater();
     sim.ui.menu.extmenu = null;
     game.eventmgr.unbindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
+    game.eventmgr.unbindEvent(game.events.OnLevelDestroyed, sim.ui.menu.clean);
 
     sim.ui.menu.initialize();
   }

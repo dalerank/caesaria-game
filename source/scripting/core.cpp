@@ -1050,10 +1050,12 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 }
 
 #define DEFINE_OBJECT_FUNCTION_1(name,funcname,paramType) void name##_##funcname(js_State *J) { \
-                                  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
-                                  paramType paramValue = engine_js_to(J, 1, paramType()); \
-                                  if( parent ) parent->funcname( paramValue ); \
-                                  js_pushundefined(J); \
+                                  try { \
+                                    name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+                                    paramType paramValue = engine_js_to(J, 1, paramType()); \
+                                    if( parent ) parent->funcname( paramValue ); \
+                                    js_pushundefined(J); \
+                                  } catch(...) {} \
                                 }
 
 #define DEFINE_OBJECT_OVERRIDE_FUNCTION_1(name,funcname,ov,paramType) void name##_##funcname##_##ov(js_State *J) { \
