@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GUI_LISTBOX_H_INCLUDED__
 #define __CAESARIA_GUI_LISTBOX_H_INCLUDED__
@@ -29,15 +29,15 @@
 namespace gui
 {
 
-typedef enum { selectOnMove=0, selectOnMDown,
-               drawBackground, autoscroll, moveOverSelect,
-               hightlightNotinfocused, itemSelectable, count } Flag;
-
 class ScrollBar;
 
-class ListBox : public Widget, public FlagHolder<Flag>
+class ListBox : public Widget, public FlagHolder<int>
 {
 public:
+  typedef enum { selectOnMove=0x1, selectOnMDown=0x2,
+                 drawBackground=0x4, autoscroll=0x8, moveOverSelect=0x10,
+                 hightlightNotinfocused=0x20, itemSelectable=0x40 } Flag;
+
   typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
@@ -93,8 +93,7 @@ public:
   virtual int findIndex(Point pos) const;
 
   //! set all item colors of specified type at given index to color
-  virtual void setItemOverrideColor(unsigned int index, NColor color,
-                                    ListBoxItem::ColorType colorType=ListBoxItem::all );
+  virtual void setItemOverrideColor(unsigned int index, NColor color, int colorType=ListBoxItem::all);
 
   //! set whether the listbox should scroll to newly selected items
   virtual void setAutoScrollEnabled(bool scroll);

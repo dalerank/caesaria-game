@@ -64,9 +64,9 @@ game.ui.dialogs.gift2emperor.show = function()
         continue;
 
       var index = lbxGifts.addLine(_format("{0} : {1}", giftName, rcost))
-      lbxGifts.setItemOverrideColor(index, rcost < g_session.player.money() ? g_config.colors.black : g_config.colors.grey)
-      lbxGifts.setItemEnabled(index, rcost < g_session.player.money())
-      giftConfig.push({name:giftName, cost:rcost})
+      lbxGifts.setItemOverrideColor(index, rcost < g_session.player.money() ? g_config.colors.black : g_config.colors.grey, lbxGifts.flag.allColors);
+      lbxGifts.setItemEnabled(index, rcost < g_session.player.money());
+      giftConfig.push({name:giftName, cost:rcost});
 
       gifts.splice(index,1)
     }

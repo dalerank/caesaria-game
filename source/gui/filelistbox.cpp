@@ -27,8 +27,8 @@ namespace gui
 
 REGISTER_CLASS_IN_WIDGETFACTORY(FileListBox)
 
-const Flag showTime = Flag(count+1);
-const Flag showExtension = Flag(count+2);
+const ListBox::Flag showTime = ListBox::Flag(0x100);
+const ListBox::Flag showExtension = ListBox::Flag(0x200);
 
 FileListBox::FileListBox(Widget* parent)
   : ListBox( parent, Rect( 0, 0, 1, 1) )

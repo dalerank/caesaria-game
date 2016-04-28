@@ -194,14 +194,21 @@ sim.ui.menu.funcs = [];
 sim.ui.menu.rightSide = engine.getOption("rightMenu");
 
 sim.ui.menu.changeBuildingOptions = function() {
-  for (var i in sim.ui.menu.buildConfig) {
-    var config = sim.ui.menu.buildConfig[i];
+  for (var i in sim.ui.menu.simConfig) {
+    var config = sim.ui.menu.simConfig[i];
     var button = sim.ui.menu.extmenu.buttons[i];
+    engine.log("check for " + i)
     if (config.branch && button) {
       var avail = sim.ui.buildmenu.isBranchAvailable(config.branch);
+      engine.log("set avail for " + config.branch)
       button.enabled = avail;
     }
   }
+}
+
+sim.ui.menu.clean = function() {
+  engine.log("sim.ui.menu.clean");
+  sim.ui.menu.extmenu = {}
 }
 
 sim.ui.menu.enableAlarm = function(enable) {
@@ -425,6 +432,7 @@ sim.ui.menu.initialize = function() {
   sim.ui.menu.extmenu = menu;
 
   game.eventmgr.bindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
+  game.eventmgr.bindEvent(game.events.OnLevelDestroyed, sim.ui.menu.clean);
 }
 
 sim.ui.menu.reset = function() {
@@ -433,6 +441,7 @@ sim.ui.menu.reset = function() {
     sim.ui.menu.extmenu.deleteLater();
     sim.ui.menu.extmenu = null;
     game.eventmgr.unbindEvent(game.events.OnScribesStatusChanged, sim.ui.menu.updateScribeStatus);
+    game.eventmgr.unbindEvent(game.events.OnLevelDestroyed, sim.ui.menu.clean);
 
     sim.ui.menu.initialize();
   }

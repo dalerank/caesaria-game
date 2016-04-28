@@ -63,7 +63,7 @@ public:
   void removeMessage(int index);
   int getMessagesNumber() const;
 
-  void addSimpleMessage(const std::string& text, const std::string& title);
+  void addSimpleMessage(const std::string& title, const std::string& text);
   void addMessage(const ScribeMessage& message);
 
   virtual VariantMap save() const;

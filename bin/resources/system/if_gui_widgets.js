@@ -135,6 +135,14 @@ Object.defineProperty( ListBox.prototype, "scrollbarVisible", { set: function(v)
 Object.defineProperty( ListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h) }} )
 Object.defineProperty( ListBox.prototype, "itemFont", {set: function (fname) { this.setFont(h) }} )
 Object.defineProperty( ListBox.prototype, "itemTextAlignment", {set: function (obj) { this.setTextAlignment(obj.h,obj.v) }} )
+Object.defineProperty( ListBox.prototype, "flag", { get: function () {
+    return {
+      itemSimple : 0,
+      itemHovered : 1,
+      allColors : 5
+    }
+  }
+} )
 
 Object.defineProperty( ListBox.prototype, "itemColor", { set: function (obj) {
     if(obj.simple) this.setItemDefaultColor("simple", obj.simple);

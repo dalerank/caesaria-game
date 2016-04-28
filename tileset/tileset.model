@@ -122,10 +122,15 @@
           files : [ "*" ]
         }
 
-        pleb :
-        {
+        pleb : {
           type : "atlas"
           folder : "/resources/pleb"
+          files : [ "*" ]
+        }
+
+        homeless : {
+          type : "atlas"
+          folder : "/resources/homeless"
           files : [ "*" ]
         }
       }

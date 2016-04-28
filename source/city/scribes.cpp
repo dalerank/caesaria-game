@@ -117,7 +117,7 @@ int Scribes::getMessagesNumber() const
   return _d->messages.size();
 }
 
-void Scribes::addSimpleMessage(const std::string& text, const std::string& title)
+void Scribes::addSimpleMessage(const std::string& title, const std::string& text)
 {
   ScribeMessage message;
   message.date = game::Date::current();
