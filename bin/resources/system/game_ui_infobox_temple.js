@@ -166,7 +166,7 @@ game.ui.infobox.aboutTemple = function (location) {
         ibox.setInfoText(_u("oracle_info"))
     } else {
         var divn = temple.divinity()
-        var shortDesc = divn.internalName() + "_desc"
+        var shortDesc = divn.iname + "_desc"
         var text = _format("{0}_{1}_temple",
             temple.big ? "big" : "small",
             divn.internalName())
@@ -174,7 +174,7 @@ game.ui.infobox.aboutTemple = function (location) {
 
         var goodRelation = divn.relation() >= 50;
 
-        var longDescr = _format("{}_{}_info",
+        var longDescr = _format("{0}_{1}_info",
             divn.internalName(),
             goodRelation ? "goodmood" : "badmood");
 

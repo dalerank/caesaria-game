@@ -22,7 +22,7 @@
 #include <string>
 #include <cstring>
 
-class ByteArray : public std::vector<char>
+class ByteArray
 {
 public:
   ByteArray();
@@ -39,6 +39,18 @@ public:
   char* data();
 
   std::string toString() const;
+  bool empty() const;
+  char& operator[](size_t index);
+
+  ByteArray& push_back(char c);
+  char& back();
+
+  ByteArray& operator=(const ByteArray& other);
+  bool operator == (const ByteArray& other) const;
+
+  void clear();
+  size_t size() const;
+  void resize(size_t value);
 
   unsigned long crc32(unsigned long crc);
 
@@ -46,6 +58,8 @@ public:
   std::string base64() const;
 
   static unsigned long CRC32(unsigned long crc, const char* data, size_t length);
+private:
+  std::vector<char> _data;
 };
 
 #endif //__CAESARIA_BYTEARRAY_H_INCLUDED__

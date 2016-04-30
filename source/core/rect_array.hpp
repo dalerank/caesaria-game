@@ -19,9 +19,6 @@
 #include "rectangle.hpp"
 #include <vector>
 
-class Rects : public std::vector<Rect>
-{
-public:
-};
+typedef std::vector<Rect> Rects;
 
 #endif  //_CAESARIA_RECT_ARRAY_INCLUDE_H_

@@ -32,7 +32,7 @@ class PushButton : public Widget
 public:
   typedef enum { greyBorderLine, greyBorderLineSmall, whiteBorderUp,
                  blackBorderUp, noBackground, greyBorderLineBig,
-                 flatBorderLine, greyBorderLineFit } BackgroundStyle;
+                 flatBorderLine, greyBorderLineFit, brownBorderOnly } BackgroundStyle;
 
   PushButton(Widget*);
 
@@ -103,6 +103,7 @@ public:
 
   virtual void setTextOffset(const Point& offset);
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
+  virtual void canvasDraw(const gfx::Picture& pic, const Point& point);
 
   int getTextWidth(const std::string& text) const;
   void fitToImage();

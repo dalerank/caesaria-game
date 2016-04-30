@@ -14,9 +14,9 @@ g_config.festival = {
 }
 
 g_config.religion.gods_config = [
-  { id: g_config.gods.ceres,   name : "Ceres",   service : "srvc_religionCeres",   image:  "panelwindows_00017" },
-  { id: g_config.gods.mars,    name : "Mars",    service : "srvc_religionMars",    image : "panelwindows_00020" },
-  { id: g_config.gods.neptune, name : "Neptune", service : "srvc_religionNeptune", image : "panelwindows_00018" },
-  { id: g_config.gods.venus,   name : "Venus",	 service : "srvc_religionVenus",   image : "panelwindows_00021"	},
-  { id: g_config.gods.mercury, name : "Mercury", service : "srvc_religionMercury", image : "panelwindows_00019" }
+  { id: g_config.gods.ceres,   name : "Ceres",   service : "srvc_religionCeres",   image:  "panelwindows_00017", smallt : "small_ceres_temple", bigt : "big_ceres_temple" },
+  { id: g_config.gods.mars,    name : "Mars",    service : "srvc_religionMars",    image : "panelwindows_00020", smallt : "small_mars_temple", bigt : "big_mars_temple" },
+  { id: g_config.gods.neptune, name : "Neptune", service : "srvc_religionNeptune", image : "panelwindows_00018", smallt : "small_neptune_temple", bigt : "big_neptune_temple" },
+  { id: g_config.gods.venus,   name : "Venus",	 service : "srvc_religionVenus",   image : "panelwindows_00021", smallt : "small_venus_temple", bigt : "big_venus_temple"	},
+  { id: g_config.gods.mercury, name : "Mercury", service : "srvc_religionMercury", image : "panelwindows_00019", smallt : "small_mercury_temple", bigt : "big_mercury_temple" }
 ]

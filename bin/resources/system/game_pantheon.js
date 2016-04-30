@@ -12,6 +12,9 @@ game.religion.initRomePantheon = function() {
     god.setService(config.service)
     god.setPicture(pic)
     god.setRelation(50)
+    god.smallt = config.smallt;
+    god.bigt = config.bigt;
+    god.iname = config.name;
 
     game.gods.roman[config.id] = god;
   }
@@ -32,4 +35,15 @@ game.religion.assignFestival = function(who, size) {
   var cost = game.religion.getFestivalCost(festival);
   g_session.city.createIssue("sundries",-cost);
   g_session.assignFestival(who, size);
+}
+
+Object.defineProperty( Divinity.prototype, "moodDescription", { get: function() {
+  var _moodDescr = [ "god_wrathful", "god_irriated", "god_veryangry",
+                     "god_verypoor", "god_quitepoor", "god_poor",
+                     "god_displeased", "god_indifferent", "god_pleased",
+                     "god_good", "god_verygood", "god_charmed", "god_happy",
+                     "god_excellent", "god_exalted" ];
+
+  var delim = 100 / _moodDescr.length;
+  return _moodDescr[ math::clamp<int>( _relation.current / delim, 0, _moodDescr.size()-1 ) ];
 }

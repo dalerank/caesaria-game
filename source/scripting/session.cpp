@@ -212,6 +212,18 @@ OverlayList Session::getOverlays(Variant var) const
   return _game->city()->overlays().where( [type] (OverlayPtr ov) { return ov->type() == type; } );
 }
 
+uint32_t Session::getOverlaysNumber(Variant var) const
+{
+  object::Type type = object::unknown;
+  if (var.type() == Variant::String) {
+    type = object::toType(var.toString());
+  } else if (var.type() == Variant::Int) {
+    type = object::Type(var.toInt());
+  }
+
+  return _game->city()->statistic().objects.count(type);
+}
+
 gfx::Camera* Session::getCamera() const
 {
   scene::Level* lvl = safety_cast<scene::Level*>(_game->scene());

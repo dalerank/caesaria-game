@@ -1154,6 +1154,7 @@ Variant House::getProperty(const std::string & name) const
   }
   if (name == "isPatrician") return spec().isPatrician();
   if (name == "taxRate") return spec().taxRate();
+  if (name == "minReligionLevel") return spec().minReligionLevel();
 
   return Building::getProperty(name);
 }

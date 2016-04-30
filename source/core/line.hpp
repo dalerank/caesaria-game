@@ -28,25 +28,25 @@ public:
   NColor color;
 };
 
-class Lines : public std::vector<Line>
+class Lines
 {
 public:
   void add( const NColor& color, const Point& p1, const Point& p2 )
   {
     Line a = { p1, p2, color };
-    push_back( a );
+    _data.push_back( a );
   }
 
   Lines& append(const Point& p1, const Point& p2)
   {
-    this->push_back({p1,p2});
+    _data.push_back({p1,p2});
     return *this;
   }
 
   std::vector<Point> points() const
   {
     std::vector<Point> pnts;
-    for (const auto& line : *this)
+    for (const auto& line : _data)
     {
       pnts.push_back(line.begin);
       pnts.push_back(line.end);
@@ -54,6 +54,15 @@ public:
 
     return pnts;
   }
+
+  std::vector<Line>::iterator begin() { return _data.begin(); }
+  std::vector<Line>::iterator end() { return _data.end(); }
+
+  std::vector<Line>::const_iterator begin() const{ return _data.begin(); }
+  std::vector<Line>::const_iterator end() const{ return _data.end(); }
+
+private:
+  std::vector<Line> _data;
 };
 
 #endif //__CAESARIA_LINE_INCLUDE_H__

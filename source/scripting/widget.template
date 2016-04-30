@@ -35,7 +35,9 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setProperty,2) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,getProperty,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,bringToFront,0) \
-  SCRIPT_OBJECT_FUNCTION(Window,setupUI,1)
+  SCRIPT_OBJECT_FUNCTION(WidgetType,canvasDraw_pic,2) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,canvasDraw_text,4) \
+  SCRIPT_OBJECT_FUNCTION(WidgetType,setupUI,1)
 
 #define TEMPLATE_WIDGET_END(WidgetType) \
   SCRIPT_OBJECT_CONSTRUCTOR(WidgetType) \
@@ -55,6 +57,8 @@ DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,isNotClipped) \
 DEFINE_OBJECT_GETTER_0(WidgetType,const Rect&,relativeRect) \
+DEFINE_OBJECT_GETTER_1(WidgetType,const Variant&,getProperty,const std::string&,"") \
+DEFINE_OBJECT_GETTER_2(WidgetType,findChild,std::string,bool) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,bringToFront) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,setFocus) \
@@ -76,6 +80,6 @@ DEFINE_OBJECT_FUNCTION_1(WidgetType,setupUI,Path) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setTooltipText,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setSubElement,bool) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setProperty,std::string,Variant) \
-DEFINE_OBJECT_GETTER_2(WidgetType,findChild,std::string,bool) \
-DEFINE_OBJECT_GETTER_1(WidgetType,const Variant&,getProperty,const std::string&,"") \
+DEFINE_OBJECT_OVERRIDE_FUNCTION_2(WidgetType,canvasDraw,pic,Picture,Point) \
+DEFINE_OBJECT_OVERRIDE_FUNCTION_4(WidgetType,canvasDraw,text,std::string,Point,Font,NColor) \
 DEFINE_WIDGET_CONSTRUCTOR(WidgetType)

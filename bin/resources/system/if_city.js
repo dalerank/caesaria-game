@@ -34,6 +34,10 @@ PlayerCity.prototype.findOverlays = function(type) {
   return g_session.getOverlays(type);
 }
 
+PlayerCity.prototype.getOverlaysNumber = function(type) {
+  return g_session.getOverlaysNumber(type);
+}
+
 PlayerCity.prototype.findPrevSameBuilding = function(location, type) {
   var locations = g_session.getBuildingLocations(type);
 

@@ -20,9 +20,23 @@
 
 class VariantList;
 
-class PointsArray : public std::vector<Point>
+class PointsArray
 {
+  typedef std::vector<Point> Collection;
 public:
+  PointsArray& push_back(const Point& p);
+  Point& operator[](size_t index);
+  const Point& operator[](size_t index) const;
+  Collection::const_iterator begin() const;
+  Collection::iterator begin();
+  Collection::iterator end();
+  Collection::const_iterator end() const;
+  size_t size() const;
+  void resize(size_t newSize);
+  bool empty() const;
+  void clear();
+  Point& front();
+
   PointsArray() {}
 
   PointsArray(const std::vector<Point>& points);
@@ -36,6 +50,8 @@ public:
   Point valueOrEmpty( unsigned int index ) const;
 
   PointsArray& load( const VariantList& vl );
+private:
+  Collection _points;
 };
 
 #endif  //_CAESARIA_POSITIONARRAY_INCLUDE_H_

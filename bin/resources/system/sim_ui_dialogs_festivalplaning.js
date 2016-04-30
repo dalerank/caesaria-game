@@ -81,7 +81,6 @@ game.ui.dialogs.festivalplaning.show = function() {
 
     var widget = new Window("EntertainmentAdvisor");
     if (widget) {
-      engine.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       widget.setWindowFlag("updateFestivalInfo", true);
     }
   }

@@ -79,62 +79,62 @@ static const char *ExceptionName(DWORD exceptionCode)
 static void Stacktrace(LPEXCEPTION_POINTERS e)
 {
   /*PIMAGEHLP_SYMBOL pSym;
-	STACKFRAME sf;
-	HANDLE process, thread;
-	DWORD dwModBase, Disp;
-	BOOL more = FALSE;
-	int count = 0;
-	char modname[MAX_PATH];
+  STACKFRAME sf;
+  HANDLE process, thread;
+  DWORD dwModBase, Disp;
+  BOOL more = FALSE;
+  int count = 0;
+  char modname[MAX_PATH];
 
-	pSym = (PIMAGEHLP_SYMBOL)GlobalAlloc(GMEM_FIXED, 16384);
+  pSym = (PIMAGEHLP_SYMBOL)GlobalAlloc(GMEM_FIXED, 16384);
 
-	ZeroMemory(&sf, sizeof(sf));
-	sf.AddrPC.Offset = e->ContextRecord->Eip;
-	sf.AddrStack.Offset = e->ContextRecord->Esp;
-	sf.AddrFrame.Offset = e->ContextRecord->Ebp;
-	sf.AddrPC.Mode = AddrModeFlat;
-	sf.AddrStack.Mode = AddrModeFlat;
-	sf.AddrFrame.Mode = AddrModeFlat;
+  ZeroMemory(&sf, sizeof(sf));
+  sf.AddrPC.Offset = e->ContextRecord->Eip;
+  sf.AddrStack.Offset = e->ContextRecord->Esp;
+  sf.AddrFrame.Offset = e->ContextRecord->Ebp;
+  sf.AddrPC.Mode = AddrModeFlat;
+  sf.AddrStack.Mode = AddrModeFlat;
+  sf.AddrFrame.Mode = AddrModeFlat;
 
-	process = GetCurrentProcess();
-	thread = GetCurrentThread();
+  process = GetCurrentProcess();
+  thread = GetCurrentThread();
 
-	while(1) {
-		more = StackWalk(
-			IMAGE_FILE_MACHINE_I386, // TODO: fix this for 64 bit windows?
-			process,
-			thread,
-			&sf,
-			e->ContextRecord,
-			NULL,
-			SymFunctionTableAccess,
-			SymGetModuleBase,
-			NULL
-		);
-		if(!more || sf.AddrFrame.Offset == 0) {
-			break;
-		}
+  while(1) {
+    more = StackWalk(
+      IMAGE_FILE_MACHINE_I386, // TODO: fix this for 64 bit windows?
+      process,
+      thread,
+      &sf,
+      e->ContextRecord,
+      NULL,
+      SymFunctionTableAccess,
+      SymGetModuleBase,
+      NULL
+    );
+    if(!more || sf.AddrFrame.Offset == 0) {
+      break;
+    }
 
-		dwModBase = SymGetModuleBase(process, sf.AddrPC.Offset);
+    dwModBase = SymGetModuleBase(process, sf.AddrPC.Offset);
 
-		if(dwModBase) {
-			GetModuleFileName((HINSTANCE)dwModBase, modname, MAX_PATH);
-		} else {
-			strcpy(modname, "Unknown");
-		}
+    if(dwModBase) {
+      GetModuleFileName((HINSTANCE)dwModBase, modname, MAX_PATH);
+    } else {
+      strcpy(modname, "Unknown");
+    }
 
-		pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL);
-		pSym->MaxNameLength = MAX_PATH;
+    pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL);
+    pSym->MaxNameLength = MAX_PATH;
 
-		if(SymGetSymFromAddr(process, sf.AddrPC.Offset, &Disp, pSym)) {
-			// This is the code path taken on VC if debugging syms are found.
-			Logger::warning("(%d) %s(%s+%#0x) [0x%08X]\n", count, modname, pSym->Name, Disp, sf.AddrPC.Offset);
-		} else {
-			// This is the code path taken on MinGW, and VC if no debugging syms are found.
-			Logger::warning("(%d) %s [0x%08X]\n", count, modname, sf.AddrPC.Offset);
-		}
-		++count;
-	}
+    if(SymGetSymFromAddr(process, sf.AddrPC.Offset, &Disp, pSym)) {
+      // This is the code path taken on VC if debugging syms are found.
+      Logger::warning("(%d) %s(%s+%#0x) [0x%08X]\n", count, modname, pSym->Name, Disp, sf.AddrPC.Offset);
+    } else {
+      // This is the code path taken on MinGW, and VC if no debugging syms are found.
+      Logger::warning("(%d) %s [0x%08X]\n", count, modname, sf.AddrPC.Offset);
+    }
+    ++count;
+  }
   GlobalFree(pSym);*/
 }
 
@@ -145,54 +145,54 @@ static BOOL CALLBACK EnumModules(PCSTR moduleName, ULONG baseOfDll, PVOID userCo
 static BOOL CALLBACK EnumModules(LPSTR moduleName, DWORD baseOfDll, PVOID userContext)
 #endif
 {
-	Logger::warning("0x%08x\t%s\n", baseOfDll, moduleName);
-	return TRUE;
+  Logger::warning("0x%08x\t%s\n", baseOfDll, moduleName);
+  return TRUE;
 }
 
 /** Called by windows if an exception happens. */
 static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 {
-	// Prologue.
+  // Prologue.
   Logger::warning("CaesarIA {} has crashed.", GAME_BUILD_NUMBER );
-	// Initialize IMAGEHLP.DLL.
-	SymInitialize(GetCurrentProcess(), ".", TRUE);
+  // Initialize IMAGEHLP.DLL.
+  SymInitialize(GetCurrentProcess(), ".", TRUE);
 
-	// Record exception info.
-	Logger::warning("Exception: %s (0x%08x)\n", ExceptionName(e->ExceptionRecord->ExceptionCode), e->ExceptionRecord->ExceptionCode);
-	Logger::warning("Exception Address: 0x%08x\n", e->ExceptionRecord->ExceptionAddress);
+  // Record exception info.
+  Logger::warning("Exception: %s (0x%08x)\n", ExceptionName(e->ExceptionRecord->ExceptionCode), e->ExceptionRecord->ExceptionCode);
+  Logger::warning("Exception Address: 0x%08x\n", e->ExceptionRecord->ExceptionAddress);
 
-	// Record list of loaded DLLs.
-	//Logger::warning("DLL information:\n");
-	//SymEnumerateModules(GetCurrentProcess(), EnumModules, NULL);
+  // Record list of loaded DLLs.
+  //Logger::warning("DLL information:\n");
+  //SymEnumerateModules(GetCurrentProcess(), EnumModules, NULL);
 
-	// Record stacktrace.
-	Logger::warning("Stacktrace:\n");
-	Stacktrace(e);
+  // Record stacktrace.
+  Logger::warning("Stacktrace:\n");
+  Stacktrace(e);
 
-	// Unintialize IMAGEHLP.DLL
-	SymCleanup(GetCurrentProcess());
+  // Unintialize IMAGEHLP.DLL
+  SymCleanup(GetCurrentProcess());
 
-	// Cleanup.
-	// FIXME: update closing of demo to new netcode
+  // Cleanup.
+  // FIXME: update closing of demo to new netcode
 
-	// Inform user.
-	char dir[MAX_PATH];
-	GetCurrentDirectory(sizeof(dir) - 1, dir);
-	std::string msg = utils::format( 0xff,
-		"CaesarIA has crashed.\n\n"
-		"A stacktrace has been written to:\n"
-		"%s\\stdout.txt", dir);
-	OSystem::error( "CaesarIA: Unhandled exception", msg );
+  // Inform user.
+  char dir[MAX_PATH];
+  GetCurrentDirectory(sizeof(dir) - 1, dir);
+  std::string msg = utils::format( 0xff,
+    "CaesarIA has crashed.\n\n"
+    "A stacktrace has been written to:\n"
+    "%s\\stdout.txt", dir);
+  OSystem::error( "CaesarIA: Unhandled exception", msg );
 
-	// this seems to silently close the application
-	return EXCEPTION_EXECUTE_HANDLER;
+  // this seems to silently close the application
+  return EXCEPTION_EXECUTE_HANDLER;
 
-	// this triggers the microsoft "application has crashed" error dialog
-	//return EXCEPTION_CONTINUE_SEARCH;
+  // this triggers the microsoft "application has crashed" error dialog
+  //return EXCEPTION_CONTINUE_SEARCH;
 
-	// in practice, 100% CPU usage but no continuation of execution
-	// (tested segmentation fault and division by zero)
-	//return EXCEPTION_CONTINUE_EXECUTION;
+  // in practice, 100% CPU usage but no continuation of execution
+  // (tested segmentation fault and division by zero)
+  //return EXCEPTION_CONTINUE_EXECUTION;
 }
 
 #endif
@@ -230,8 +230,7 @@ void printstack( bool showMessage, unsigned int starting_frame, unsigned int max
 
   // allocate string which will be filled with the demangled function name
   size_t funcnamesize = 256;
-  ByteArray funcname;
-  funcname.resize( funcnamesize );
+  ByteArray funcname(funcnamesize);
 
   // iterate over the returned symbol lines. skip the first, it is the
   // address of this function.

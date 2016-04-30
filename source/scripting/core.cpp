@@ -1081,7 +1081,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
                                   paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
                                   paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
-                                  if( parent ) parent->funcname( paramValue1, paramValue2 ); \
+                                  if(parent) parent->funcname(paramValue1, paramValue2); \
                                   js_pushundefined(J); \
                                 }
 
@@ -1103,6 +1103,16 @@ void reg_widget_constructor(js_State *J, const std::string& name)
                                   if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4); \
                                   js_pushundefined(J); \
                                 }
+
+#define DEFINE_OBJECT_OVERRIDE_FUNCTION_4(name,funcname,ov,paramType1,paramType2,paramType3,paramType4) void name##_##funcname##_##ov(js_State *J) { \
+  name* parent = (name*)js_touserdata(J, 0, "userdata"); \
+  paramType1 paramValue1 = engine_js_to( J, 1, paramType1() ); \
+  paramType2 paramValue2 = engine_js_to( J, 2, paramType2() ); \
+  paramType3 paramValue3 = engine_js_to( J, 3, paramType3() ); \
+  paramType4 paramValue4 = engine_js_to( J, 4, paramType4() ); \
+  if( parent ) parent->funcname( paramValue1, paramValue2, paramValue3, paramValue4); \
+  js_pushundefined(J); \
+}
 
 #define DEFINE_OBJECT_FUNCTION_5(name,funcname,paramType1,paramType2,paramType3,paramType4,paramType5) void name##_##funcname(js_State *J) { \
                                   name* parent = (name*)js_touserdata(J, 0, "userdata"); \
@@ -1153,7 +1163,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 
 DEFINE_VANILLA_CONSTRUCTOR(Session, internal::session)
 DEFINE_VANILLA_CONSTRUCTOR(PlayerCity, (internal::game)->city().object())
-DEFINE_VANILLA_CONSTRUCTOR(Tilemap, &(internal::game)->city()->tilemap());
+DEFINE_VANILLA_CONSTRUCTOR(Tilemap, &(internal::game)->city()->tilemap())
 DEFINE_VANILLA_CONSTRUCTOR(Emperor, &(internal::game)->empire()->emperor())
 DEFINE_VANILLA_CONSTRUCTOR(Player, (internal::game)->player().object())
 
