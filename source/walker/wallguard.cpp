@@ -30,7 +30,6 @@
 #include "objects/tower.hpp"
 #include "objects/fortification.hpp"
 #include "walker/spear.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
@@ -108,8 +107,8 @@ void WallGuard::timeStep(const unsigned long time)
     bool haveEnemies = _findEnemiesInRange( attackDistance() ).count<EnemySoldier>() > 0;
 
     if( haveEnemies )
-    {    
-      fight();      
+    {
+      fight();
     }
     else
     {

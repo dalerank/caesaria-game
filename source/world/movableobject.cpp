@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "movableobject.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"
@@ -60,7 +59,7 @@ void MovableObject::timeStep(const unsigned int time)
 {
   __D_IMPL(d,MovableObject)
   if( ( time % (d->speed+1) ) == 1 )
-  {    
+  {
     if( !d->way.empty() )
     {
       d->way.step++;

@@ -25,7 +25,6 @@
 #include "game/game.hpp"
 #include "core/event.hpp"
 #include "core/logger.hpp"
-#include "core/foreach.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 
@@ -93,7 +92,7 @@ public:
   }
 };
 
-Briefing::Briefing(Game& game, Engine& engine, std::string filename) 
+Briefing::Briefing(Game& game, Engine& engine, std::string filename)
   : _d(new Impl)
 {
   _d->isStopped = false;
@@ -124,7 +123,7 @@ void Briefing::initialize()
   if (Impl::currentVesion == vm[ "version" ].toInt()) {
     Picture mapBackImage("mapback", 1);
     std::string briefingCaption = vm["title"].toString();
-    
+
     if (briefingCaption.empty()) {
       briefingCaption = "##briefing_select_next_mission##";
     }
@@ -134,7 +133,7 @@ void Briefing::initialize()
     if (!mapBackImage.isValid()) {
       mapback.setGeometry(Rect(0, 0, 640, 480));
     }
-    
+
     mapback.setCenter(_d->game->gui()->rootWidget()->center());
     std::string mapToLoad = vm["image"].toString();
     mapBackImage.load(mapToLoad)

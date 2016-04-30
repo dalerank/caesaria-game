@@ -35,7 +35,6 @@
 #include "ability.hpp"
 #include "name_generator.hpp"
 #include "helper.hpp"
-#include "core/foreach.hpp"
 #include "walkers_factory.hpp"
 #include "corpse.hpp"
 

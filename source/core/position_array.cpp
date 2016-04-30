@@ -16,50 +16,20 @@
 #include "position_array.hpp"
 #include "variant_list.hpp"
 
-PointsArray& PointsArray::push_back(const Point& p) { _points.push_back(p); return *this; }
-Point& PointsArray::operator[](size_t index) { return _points[index]; }
-const Point& PointsArray::operator[](size_t index) const { return _points[index]; }
-PointsArray::Collection::const_iterator PointsArray::begin() const { return _points.begin(); }
-PointsArray::Collection::iterator PointsArray::begin() { return _points.begin(); }
-PointsArray::Collection::iterator PointsArray::end() { return _points.end(); }
-PointsArray::Collection::const_iterator PointsArray::end() const { return _points.end(); }
-size_t PointsArray::size() const { return _points.size(); }
-void PointsArray::resize(size_t newSize) { _points.resize(newSize); }
-bool PointsArray::empty() const { return _points.empty(); }
-void PointsArray::clear() { _points.clear(); }
-Point& PointsArray::front() { return _points.front(); }
-
-PointsArray::PointsArray(const std::vector<Point>& points)
-{
-  _points.resize(points.size());
-  std::copy(points.begin(),points.end(),_points.begin());
-}
-
 VariantList PointsArray::save() const
 {
   VariantList ret;
-  for (auto& item : _points) ret << item;
+  for (const auto& item : *this) ret << item;
   return ret;
 }
 
 void PointsArray::move(const Point& offset)
 {
-  for (auto& p : _points) p += offset;
-}
-
-PointsArray& PointsArray::operator<<(const Point& point)
-{
-  _points.push_back(point);
-  return *this;
-}
-
-Point PointsArray::valueOrEmpty(unsigned int index) const
-{
-  return index < _points.size() ? _points.at(index) : Point();
+  for (auto& p : *this) p += offset;
 }
 
 PointsArray& PointsArray::load(const VariantList& vl)
 {
-  for (const auto& item : vl) { _points.push_back( item ); }
+  for (const auto& item : vl) { push_back(item); }
   return *this;
 }

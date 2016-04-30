@@ -24,7 +24,6 @@
 #include "city/statistic.hpp"
 #include "events/build.hpp"
 #include "constants.hpp"
-#include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "walker/dustcloud.hpp"
@@ -324,13 +323,13 @@ Ruins::Ruins(object::Type type)
   _parent = utils::format( 0xff, "ruins_%04d_text", (int)type);
 }
 
-void Ruins::setInfo(const std::string& parent) 
-{ 
-  _parent = parent; 
+void Ruins::setInfo(const std::string& parent)
+{
+  _parent = parent;
 }
 
-std::string Ruins::pinfo() const 
-{ 
+std::string Ruins::pinfo() const
+{
   return utils::replace(_parent, "{}", info().typeName() );
 }
 

@@ -182,8 +182,8 @@ void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
   if ( columnIndex >= _d->columns.size() )
   {
     _d->columns.push_back( columnHeader );
-    foreach( it, _d->rows )
-      it->items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
+    for( auto& row : _d->rows )
+      row.items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
   }
   else
   {
@@ -430,8 +430,8 @@ void Table::clear()
 
   clearRows();
 
-  foreach( cit, _d->columns )
-    (*cit)->deleteLater();
+  for (auto& cit :_d->columns)
+    cit->deleteLater();
 
   _d->rows.clear();
   _d->columns.clear();
@@ -486,10 +486,10 @@ void Table::setSelectedRow( int index )
 void Table::_recalculateColumnsWidth()
 {
   _totalItemWidth=0;
-  foreach( it, _d->columns )
+  for (auto& it: _d->columns)
   {
-    (*it)->setLeft( _totalItemWidth );
-    _totalItemWidth += (*it)->width();
+    it->setLeft( _totalItemWidth );
+    _totalItemWidth += it->width();
   }
 }
 

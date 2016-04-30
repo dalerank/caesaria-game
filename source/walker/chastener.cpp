@@ -27,7 +27,6 @@
 #include "enemysoldier.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
-#include "core/foreach.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 #include "core/variant_map.hpp"

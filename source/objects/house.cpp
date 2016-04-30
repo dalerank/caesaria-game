@@ -1554,8 +1554,8 @@ void House::Impl::initGoodStore(int size)
 
 void House::Impl::consumeServices()
 {
-  foreach( s, services )
-    { s->second->consume( -1 ); } //consume services
+  for( auto& s : services)
+    { s.second->consume( -1 ); } //consume services
 }
 
 void House::Impl::consumeGoods( HousePtr house )

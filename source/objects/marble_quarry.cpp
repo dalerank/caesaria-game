@@ -20,7 +20,6 @@
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
-#include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;

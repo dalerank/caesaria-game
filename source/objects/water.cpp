@@ -23,7 +23,6 @@
 #include "constants.hpp"
 #include "gfx/imgid.hpp"
 #include "gfx/tilesarray.hpp"
-#include "core/foreach.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"
 
@@ -53,7 +52,7 @@ bool Water::build( const city::AreaInfo& info )
   for( auto tile : tiles )
   {
     bool isWater = tile->getFlag( Tile::tlWater );
-    isWater |= tile->getFlag( Tile::tlDeepWater );    
+    isWater |= tile->getFlag( Tile::tlDeepWater );
     if( !isWater )
     {
       tile->setPicture( Picture::getInvalid() );

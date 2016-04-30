@@ -21,7 +21,6 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/foreach.hpp"
 
 using namespace gfx;
 

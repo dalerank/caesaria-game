@@ -27,7 +27,6 @@
 #include "enemysoldier.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/priorities.hpp"
 #include "walkers_factory.hpp"

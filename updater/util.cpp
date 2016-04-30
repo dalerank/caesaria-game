@@ -19,7 +19,6 @@
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "vfs/directory.hpp"
-#include "core/foreach.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -82,7 +81,7 @@ bool Util::caesariaIsRunning()
 
   return false;
 }
-    
+
 #elif defined(GAME_PLATFORM_LINUX) || defined(GAME_PLATFORM_HAIKU)
 // Linux implementation
 
@@ -135,10 +134,8 @@ bool Util::caesariaIsRunning()
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
   vfs::Entries procs = vfs::Directory(systemProcFolder).entries();
 
-  foreach( i, procs )
-  {
-    if( CheckProcessFile( i->name.toString(), caesariaProcessName) ) // grayman - looking for caesaria
-    {
+  for (auto& i: procs) {
+    if (CheckProcessFile(i.name.toString(), caesariaProcessName) ) { // grayman - looking for caesaria
       return true;
     }
   }
@@ -162,49 +159,49 @@ bool FindProcessByName(const char* processName)
 {
     int name[4] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
     size_t length = 0;
-	
-	// Call sysctl with a NULL buffer.
-	int err = sysctl(name, 4, NULL, &length, NULL, 0);
-	
-	if (err == -1)
-	{
+
+  // Call sysctl with a NULL buffer.
+  int err = sysctl(name, 4, NULL, &length, NULL, 0);
+
+  if (err == -1)
+  {
     Logger::warning("Failed to receive buffer size for process list.");
-		return false;
-	}
-	
+    return false;
+  }
+
   kinfo_proc* procList = static_cast<kinfo_proc*>(malloc(length));
-	
-	if (procList == NULL)
-	{
+
+  if (procList == NULL)
+  {
         Logger::warning( "Out of Memory trying to allocate process buffer");
-		return false;
-	}
-	
-	// Load process info
-	sysctl(name, 4, procList, &length, NULL, 0);
-	
-	size_t procCount = length / sizeof(kinfo_proc);
-	bool result = false;
-	
-	for (size_t i = 0; i < procCount; ++i)
-	{
-		//TraceLog::WriteLine(LOG_STANDARD, procList[i].kp_proc.p_comm);
-		
-		if (strcmp(procList[i].kp_proc.p_comm, processName) == 0)
-		{
-			result = true;
-			break;
-		}
-	}
-	
-	free(procList);
-	
-	return result;
+    return false;
+  }
+
+  // Load process info
+  sysctl(name, 4, procList, &length, NULL, 0);
+
+  size_t procCount = length / sizeof(kinfo_proc);
+  bool result = false;
+
+  for (size_t i = 0; i < procCount; ++i)
+  {
+    //TraceLog::WriteLine(LOG_STANDARD, procList[i].kp_proc.p_comm);
+
+    if (strcmp(procList[i].kp_proc.p_comm, processName) == 0)
+    {
+      result = true;
+      break;
+    }
+  }
+
+  free(procList);
+
+  return result;
 }
 
 bool Util::caesariaIsRunning()
 {
-	return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
+  return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
 }
 
 #else

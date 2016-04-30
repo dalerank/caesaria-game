@@ -25,7 +25,6 @@
 #include "walker/trainee.hpp"
 #include "core/utils.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
@@ -80,7 +79,7 @@ BigStatue::BigStatue() : Building( object::statue_big, Size::square(3))
 
 bool BigStatue::isNeedRoad() const {  return false;}
 
-// second arch pictures is land3a 45 + 46	
+// second arch pictures is land3a 45 + 46
 TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size::square(3) )
 {
   _picture().load( config::rc.land3a, 43 );

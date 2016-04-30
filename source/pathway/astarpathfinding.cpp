@@ -134,9 +134,8 @@ void Pathfinder::update( const Tilemap& tilemap )
 
   LOG_PF.info( "Allocating AStarPoints" );
   const TilesArray& tiles = tilemap.allTiles();
-  foreach( tile, tiles )
-  {
-    _d->grid.init( *tile );
+  for (auto& tile : tiles) {
+    _d->grid.init(tile);
   }
   LOG_PF.info( "Updating finished" );
 }
@@ -219,9 +218,8 @@ void Pathfinder::setVerboseMode(int level) {  _d->verbose = level;}
 
 bool _inArea( APoints& area, AStarPoint* end )
 {
-  foreach( p, area )
-  {
-    if( *p == end )
+  for (auto& p : area) {
+    if (p == end)
       return true;
   }
 
@@ -305,11 +303,11 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   {
     n++;
     // Look for the smallest F value in the openList and make it the current point
-    foreach(point, openList)
+    for(auto& point : openList)
     {
-      if( *point == openList.front() || (*point)->getFScore() <= current->getFScore() )
+      if( point == openList.front() || point->getFScore() <= current->getFScore() )
       {
-        current = *point;
+        current = point;
       }
     }
 

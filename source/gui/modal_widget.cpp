@@ -18,7 +18,6 @@
 #include "modal_widget.hpp"
 #include "core/safetycast.hpp"
 #include "core/event.hpp"
-#include "core/foreach.hpp"
 #include "widgetescapecloser.hpp"
 #include "gfx/engine.hpp"
 #include "environment.hpp"
@@ -149,35 +148,35 @@ bool ModalScreen::onEvent(const NEvent& event)
   break;
   }
 
-	Widget::onEvent(event);	// anyone knows why events are passed on here? Causes p.e. problems when this is child of a CGUIWindow.
-	return true; // absorb everything else
+  Widget::onEvent(event);	// anyone knows why events are passed on here? Causes p.e. problems when this is child of a CGUIWindow.
+  return true; // absorb everything else
 }
 
 
 //! draws the element and its children
 void ModalScreen::draw(gfx::Engine& painter )
 {
-	unsigned int now = DateTime::elapsedTime();
+  unsigned int now = DateTime::elapsedTime();
 
-	if( now - _mouseDownTime < 300 && (now / 70) % 2 )
-	{
-		Rect r;
+  if( now - _mouseDownTime < 300 && (now / 70) % 2 )
+  {
+    Rect r;
 
-		Widget::Widgets rchildren = children();
+    Widget::Widgets rchildren = children();
     for( auto w : rchildren )
-		{
+    {
       if( w->visible())
-			{
+      {
         r = w->absoluteRect();
         r._bottomright += Point( 1, 1 );
         r._lefttop -= Point( 1, 1 );
 
-				//painter.drawRectangle( 0xffc0c0c0, r, &getAbsoluteClippingRectRef() );
-			}
-		}
-	}
+        //painter.drawRectangle( 0xffc0c0c0, r, &getAbsoluteClippingRectRef() );
+      }
+    }
+  }
 
-	Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 void ModalScreen::beforeDraw(gfx::Engine& painter)

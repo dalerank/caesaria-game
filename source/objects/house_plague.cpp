@@ -19,7 +19,6 @@
 #include "core/variant_map.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/common.hpp"
 #include "constants.hpp"
@@ -90,7 +89,7 @@ void HousePlague::timeStep(const unsigned long time)
     if( health_value > 20 )
     {
       deleteLater();
-    }   
+    }
   }
 
   if( _d->counter > _d->time )

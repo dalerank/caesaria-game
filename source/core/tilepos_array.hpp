@@ -18,29 +18,18 @@
 #ifndef CAESARIA_TILEPOS_ARRAY_HPP
 #define CAESARIA_TILEPOS_ARRAY_HPP
 
-#include <vector>
 #include <set>
 #include "variant.hpp"
+#include "vector_extension.hpp"
 
-class TilePosArray : public std::vector< TilePos >
+class TilePosArray : public Array<TilePos>
 {
 public:
-  TilePosArray& operator<<(const TilePos& pos );
-
-  TilePosArray& addUnique( const TilePos& pos );
-
-  TilePosArray& append( const TilePos& pos );
-  TilePosArray& append( int i, int j);
-
-  TilePos valueOrEmpty( unsigned int index );
-  TilePosArray& pop_front();
-  void remove( const TilePos& pos );
-
-  TilePos random();
+  TilePosArray& append(int i, int j);
 
   VariantList save() const;
 
-  void load( const VariantList& vlist );
+  void load(const VariantList& vlist);
 };
 
 class TilePosSet : public std::set<TilePos>

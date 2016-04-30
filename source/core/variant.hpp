@@ -25,7 +25,6 @@
 #include "size.hpp"
 #include "position.hpp"
 #include "rectangle.hpp"
-#include "foreach.hpp"
 
 #include <list>
 #include <map>

@@ -31,7 +31,6 @@
 #include "core/exception.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "vfs/filesystem.hpp"
 #include "thread/safethread.hpp"

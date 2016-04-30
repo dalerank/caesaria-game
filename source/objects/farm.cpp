@@ -30,7 +30,6 @@
 #include "constants.hpp"
 #include "walker/locust.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "core/tilepos_array.hpp"
 #include "game/gamedate.hpp"
 #include "events/clearland.hpp"

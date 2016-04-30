@@ -14,7 +14,6 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "factory.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 
 #include <map>

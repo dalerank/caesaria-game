@@ -28,7 +28,6 @@
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 
 using namespace direction;

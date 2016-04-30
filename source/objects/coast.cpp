@@ -26,7 +26,6 @@
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/tilesarray.hpp"
-#include "core/foreach.hpp"
 #include "objects_factory.hpp"
 #include "terrain.hpp"
 

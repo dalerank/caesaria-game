@@ -21,7 +21,6 @@
 #include "good/storage.hpp"
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "merchant.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"

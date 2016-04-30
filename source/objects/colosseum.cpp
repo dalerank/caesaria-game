@@ -18,7 +18,6 @@
 #include "colosseum.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/foreach.hpp"
 #include "city/statistic.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"

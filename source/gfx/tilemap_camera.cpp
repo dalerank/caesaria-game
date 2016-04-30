@@ -22,7 +22,6 @@
 #include "core/size.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilemap_config.hpp"
-#include "core/foreach.hpp"
 #include "objects/overlay.hpp"
 #include "gfx/tilesarray.hpp"
 

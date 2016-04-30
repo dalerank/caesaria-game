@@ -27,7 +27,6 @@
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
 #include "objects/house_level.hpp"
-#include "core/foreach.hpp"
 #include "events/event.hpp"
 #include "font/font.hpp"
 #include "gfx/sdl_engine.hpp"

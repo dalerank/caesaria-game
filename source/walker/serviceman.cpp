@@ -31,7 +31,6 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "city/states.hpp"
 #include "gfx/tilearea.hpp"

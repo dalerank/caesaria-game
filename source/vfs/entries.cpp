@@ -68,9 +68,8 @@ Entries& Entries::operator=( const Entries& other )
   _d->path = other._d->path;
   _d->files.clear();
 
-  foreach( it, other._d->files )
-  {
-    _d->files.push_back( *it );
+  for (auto& f : other._d->files) {
+    _d->files.push_back(f);
   }
 
   _updateCache();
@@ -87,9 +86,7 @@ void Entries::_updateCache()
   _d->hashedIndex.clear();
   _d->hashedIcIndex.clear();
   int k=0;
-  foreach( it, _d->files )
-  {
-    EntryInfo& info = *it;
+  for (auto& info : _d->files) {
     info.fphash = info.fullpath.hash();
     info.nhash = info.name.hash();
     info.nihash = info.name.canonical().hash();

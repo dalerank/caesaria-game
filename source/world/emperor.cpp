@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "emperor.hpp"
-#include "core/foreach.hpp"
 #include "game/funds.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"

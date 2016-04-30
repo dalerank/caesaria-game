@@ -32,7 +32,6 @@
 #include "core/utils.hpp"
 #include "good/storage.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"

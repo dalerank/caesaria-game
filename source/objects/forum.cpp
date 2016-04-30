@@ -20,7 +20,6 @@
 #include "gfx/picture.hpp"
 #include "walker/taxcollector.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "constants.hpp"
 #include "game/funds.hpp"
 #include "walker/constants.hpp"

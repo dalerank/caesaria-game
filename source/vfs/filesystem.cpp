@@ -26,14 +26,14 @@
 #include "core/platform_specific.hpp"
 
 #if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <limits.h>
-	#include <sys/types.h>
-	#include <dirent.h>
-	#include <sys/stat.h>
-	#include <unistd.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  #include <limits.h>
+  #include <sys/types.h>
+  #include <dirent.h>
+  #include <sys/stat.h>
+  #include <unistd.h>
 #endif
 
 namespace vfs
@@ -44,12 +44,12 @@ class FileSystem::Impl
 public:
   //! currently attached ArchiveLoaders
   std::vector< ArchiveLoaderPtr > archiveLoaders;
-	//! currently attached Archives
+  //! currently attached Archives
   std::vector< ArchivePtr > openArchives;
 
   Directory resourdFolder;
 
-  //! WorkingDirectory for Native and Virtual filesystems	
+  //! WorkingDirectory for Native and Virtual filesystems
   Path workingDirectory[2];
 
   FileSystem::Mode fileSystemType;
@@ -178,10 +178,10 @@ bool FileSystem::moveArchive(unsigned int sourceIndex, int relative)
 
 //! Adds an archive to the file system.
 ArchivePtr FileSystem::mountArchive(  const Path& filename,
-				      Archive::Type archiveType,
-				      bool ignoreCase,
-				      bool ignorePaths,
-				      const std::string& password)
+              Archive::Type archiveType,
+              bool ignoreCase,
+              bool ignorePaths,
+              const std::string& password)
 {
   Logger::debug( "FileSystem: mountArchive(path) archive call for " + filename.toString() );
   ArchivePtr archive;
@@ -194,10 +194,9 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
     return archive;
   }
 
-  foreach( it, _d->openArchives )
-  {
-    if( filename == (*it)->entries()->getPath())
-      return *it;
+  for (auto& it : _d->openArchives) {
+    if( filename == it->entries()->getPath())
+      return it;
   }
 
   int i;
@@ -207,7 +206,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   {
     Logger::debug( "FileSystem: try to load archive based on file name" );
     for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
-    {        
+    {
       if (_d->archiveLoaders[i]->isALoadableFileFormat(filename) )
       {
         Logger::debug( "FileSystem: find archive reader by extension " + filename.toString() );
@@ -420,7 +419,7 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
     }
   }
 
-	_d->openArchives.push_back(archive);
+  _d->openArchives.push_back(archive);
   return archive;
 }
 
@@ -583,98 +582,98 @@ Entries FileSystem::getFileList()
   Entries ret;
   Path rpath = utils::replace( workingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
-  
+
   //! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
-	{
-		// --------------------------------------------
-		//! Windows version
+  {
+    // --------------------------------------------
+    //! Windows version
     #if defined(GAME_PLATFORM_WIN)
-			struct _finddata_t c_file;
-			long hFile;
+      struct _finddata_t c_file;
+      long hFile;
 
-			if( (hFile = _findfirst( "*", &c_file )) != -1L )
-			{
-				do
-				{
+      if( (hFile = _findfirst( "*", &c_file )) != -1L )
+      {
+        do
+        {
           if(!strcmp( c_file.name, ".") || !strcmp( c_file.name, ".."))
           {
             continue;
           }
-					ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
-				}
-				while( _findnext( hFile, &c_file ) == 0 );
+          ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
+        }
+        while( _findnext( hFile, &c_file ) == 0 );
 
-				_findclose( hFile );
-			}
+        _findclose( hFile );
+      }
 
-			//TODO add drives
-			//entry.Name = "E:\\";
-			//entry.isDirectory = true;
-			//Files.push_back(entry);
+      //TODO add drives
+      //entry.Name = "E:\\";
+      //entry.isDirectory = true;
+      //Files.push_back(entry);
     #elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
-			// --------------------------------------------
-			//! Linux version
-			//ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+      // --------------------------------------------
+      //! Linux version
+      //ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
-			//! We use the POSIX compliant methods instead of scandir
-			DIR* dirHandle=opendir( rpath.toString().c_str() );
-			if( dirHandle )
-			{
-				struct dirent *dirEntry;
-				while ((dirEntry=readdir(dirHandle)))
-				{
-					unsigned int size = 0;
-					bool isDirectory = false;
+      //! We use the POSIX compliant methods instead of scandir
+      DIR* dirHandle=opendir( rpath.toString().c_str() );
+      if( dirHandle )
+      {
+        struct dirent *dirEntry;
+        while ((dirEntry=readdir(dirHandle)))
+        {
+          unsigned int size = 0;
+          bool isDirectory = false;
 
           if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
-					{
-						continue;
+          {
+            continue;
           }
-					struct stat buf;
-					if (stat(dirEntry->d_name, &buf)==0)
-					{
-						size = buf.st_size;
-						isDirectory = S_ISDIR(buf.st_mode);
-					}
-					
-					ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
-				}
-				closedir(dirHandle);
-			}
+          struct stat buf;
+          if (stat(dirEntry->d_name, &buf)==0)
+          {
+            size = buf.st_size;
+            isDirectory = S_ISDIR(buf.st_mode);
+          }
+
+          ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
+        }
+        closedir(dirHandle);
+      }
     #endif //GAME_PLATFORM_UNIX
-	}
-	else
-	{
-		//! create file list for the virtual filesystem
-		ret.setSensType( Path::equaleCase );
+  }
+  else
+  {
+    //! create file list for the virtual filesystem
+    ret.setSensType( Path::equaleCase );
 
-		//! add relative navigation
-		EntryInfo e2;
-		EntryInfo e3;
+    //! add relative navigation
+    EntryInfo e2;
+    EntryInfo e3;
 
-		//! PWD
+    //! PWD
     ret.addItem( rpath.toString() + Path::firstEntry, 0, 0, true, 0);
 
-		//! parent
+    //! parent
     ret.addItem( rpath.toString() + Path::secondEntry, 0, 0, true, 0);
 
-		//! merge archives
-		for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-		{
-		  const Entries *merge = _d->openArchives[i]->entries();
+    //! merge archives
+    for (unsigned int i=0; i < _d->openArchives.size(); ++i)
+    {
+      const Entries *merge = _d->openArchives[i]->entries();
 
-		  for (unsigned int j=0; j < merge->getFileCount(); ++j)
-		  {
-		    if ( isInSameDirectory(rpath, merge->getFullFileName(j)) == 0)
-		    {
-		      ret.addItem(merge->getFullFileName(j), merge->getFileOffset(j), merge->getFileSize(j), merge->isDirectory(j), 0);
-		    }
-		  }
-		}
-	}
+      for (unsigned int j=0; j < merge->getFileCount(); ++j)
+      {
+        if ( isInSameDirectory(rpath, merge->getFullFileName(j)) == 0)
+        {
+          ret.addItem(merge->getFullFileName(j), merge->getFileOffset(j), merge->getFileSize(j), merge->isDirectory(j), 0);
+        }
+      }
+    }
+  }
 
-	ret.sort();
+  ret.sort();
 
   return ret;
 }

@@ -35,7 +35,6 @@
 #include "spear.hpp"
 #include "helper.hpp"
 #include "core/variant_map.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 

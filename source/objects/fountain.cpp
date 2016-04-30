@@ -27,7 +27,6 @@
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"

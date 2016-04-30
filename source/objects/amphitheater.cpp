@@ -18,7 +18,6 @@
 #include "amphitheater.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/foreach.hpp"
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "training.hpp"

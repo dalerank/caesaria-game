@@ -920,9 +920,9 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
           VariantMap* rMap = static_cast<VariantMap*>(result);
 
           rMap->clear();
-          foreach( it, *tmp )
+          for( auto& it : *tmp )
           {
-            rMap->insert( std::make_pair( it->first, it->second ) );
+            rMap->insert( std::make_pair( it.first, it.second ) );
           }
         }
         else

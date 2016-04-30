@@ -23,7 +23,6 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "walker/dustcloud.hpp"
-#include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -35,7 +34,7 @@ namespace{
 }
 
 Rift::Rift() : Overlay( object::rift, Size::square(1) )
-{  
+{
 }
 
 bool Rift::build( const city::AreaInfo& info )

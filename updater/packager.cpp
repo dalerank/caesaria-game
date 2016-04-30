@@ -9,7 +9,6 @@
 #include "vfs/directory.hpp"
 #include "vfs/entries.hpp"
 #include "vfs/entryinfo.hpp"
-#include "core/foreach.hpp"
 
 namespace updater
 {
@@ -24,18 +23,17 @@ typedef std::vector<vfs::Path> FilePathList;
 static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePathList& files )
 {
   vfs::Entries entries = dir.entries();
-  foreach( i, entries )
-  {
-    if( i->name.isDirectoryEntry() )
+  for (auto& i : entries) {
+    if( i.name.isDirectoryEntry() )
       continue;
 
-    if( i->fullpath.isFolder() )
+    if( i.fullpath.isFolder() )
     {
-      __gartherFiles( basedir, i->fullpath, files );
+      __gartherFiles( basedir, i.fullpath, files );
     }
     else
     {
-      files.push_back( basedir.relativePathTo( i->fullpath ) );
+      files.push_back( basedir.relativePathTo( i.fullpath ) );
     }
   }
 }

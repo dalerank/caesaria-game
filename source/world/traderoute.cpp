@@ -197,7 +197,7 @@ WMerchantPtr Traderoute::merchant( unsigned int index ) { return _d->merchants.v
 const WMerchantList& Traderoute::merchants() const{  return _d->merchants; }
 
 VariantMap Traderoute::save() const
-{  
+{
   VariantMap ret;
 
   VARIANT_SAVE_CLASS_D( ret, _d, merchants)

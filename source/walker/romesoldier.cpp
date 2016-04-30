@@ -28,7 +28,6 @@
 #include "core/variant_map.hpp"
 #include "helper.hpp"
 #include "enemysoldier.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "animals.hpp"
 #include "walkers_factory.hpp"
@@ -125,7 +124,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   break;
 
   case doStuck:
-    //check when can 
+    //check when can
     if( _d->stuckTime == 0 )
     {
       _d->lastStuckInterval = _d->lastStuckInterval == 0

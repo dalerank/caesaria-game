@@ -35,7 +35,6 @@
 #include "helper.hpp"
 #include "animals.hpp"
 #include "throwing_weapon.hpp"
-#include "core/foreach.hpp"
 #include "events/militarythreat.hpp"
 #include "walkers_factory.hpp"
 #include "objects/metadata.hpp"
@@ -189,7 +188,7 @@ void EnemySoldier::_check4attack()
   {
     int size = _map().size();
     pathway = _findPathway2NearestConstruction( size/2 );
-  }   
+  }
 
   if( !pathway.isValid() )
   {
@@ -379,7 +378,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   break;
 
   case destroyBuilding:
-  {    
+  {
     ConstructionList constructions;
     ConstructionPtr c = _map().overlay<Construction>( target() );
 

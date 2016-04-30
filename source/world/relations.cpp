@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "relations.hpp"
-#include "core/foreach.hpp"
 #include "game/gift.hpp"
 #include "config.hpp"
 #include "core/variant_list.hpp"

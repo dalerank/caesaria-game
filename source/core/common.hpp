@@ -41,7 +41,7 @@ template<class ObjectList, class T>
 int countByType( const ObjectList& objects, const T& type )
 {
   int ret = 0;
-  for( auto& it : objects )
+  for( const auto& it : objects )
   {
     if( it->type() == type )
       ret++;

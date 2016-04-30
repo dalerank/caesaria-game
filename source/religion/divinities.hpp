@@ -67,7 +67,6 @@ public:
   virtual void setInternalName(const std::string &newName);
   virtual void updateRelation(float income, PlayerCityPtr city);
   virtual std::string internalName() const;
-  virtual std::string moodDescription() const;
   virtual void checkAction(PlayerCityPtr city);
 
   virtual void setRelation(float value);

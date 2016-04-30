@@ -22,7 +22,6 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "gfx/imgid.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilesarray.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"

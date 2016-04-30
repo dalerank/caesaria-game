@@ -18,7 +18,6 @@
 #include "entertainment.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/foreach.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
