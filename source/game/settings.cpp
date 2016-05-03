@@ -227,29 +227,23 @@ void Settings::set( const std::string& option, const Variant& value )
 
 Variant Settings::get(const std::string& option)
 {
-  VariantMap::iterator it = instance()._d->options.find( option );
-  return  instance()._d->options.end() == it
-              ? Variant()
-              : it->second;
+  return instance()._d->options.get(option);
 }
 
 void Settings::setwdir(const std::string& wdirstr)
 {
   vfs::Directory wdir( wdirstr );
-  _d->options[ workDir ] = Variant( wdir.toString() );
+  _d->options[ workDir      ] = Variant( wdir.toString() );
   _d->options[ resourcePath ] = Variant( (wdir/defaultResDir).toString() );
-  _d->options[ localePath ] = Variant( (wdir/defaultLocaleDir).toString() );
-  _d->options[ savedir ] = Variant( (wdir/defaultSaveDir).toString() );
+  _d->options[ localePath   ] = Variant( (wdir/defaultLocaleDir).toString() );
+  _d->options[ savedir      ] = Variant( (wdir/defaultSaveDir).toString() );
 
   vfs::Directory saveDir;
   vfs::Path dirName;
-  if( OSystem::isLinux() )
-  {
+  if( OSystem::isLinux() ) {
     dirName = ".caesaria/" + defaultSaveDir;
     saveDir = vfs::Directory::userDir()/dirName;
-  }
-  else
-  {
+  } else {
     saveDir = wdir/defaultSaveDir;
   }
   _d->options[ savedir ] = Variant(saveDir.toString());

@@ -40,7 +40,7 @@ public:
 
 class WalkerHelper::Impl
 {
-public:    
+public:
   typedef std::map< world::Nation, std::string > PrettyNations;
 
   WalkersDB infodb;
@@ -127,7 +127,7 @@ public:
 VariantMap WalkerHelper::getOptions(const walker::Type type )
 {
   std::string tname = getTypename( type );
-  VariantMap::iterator mapIt = instance()._d->options.find( tname );
+  auto mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
     Logger::warning( "Unknown walker info for type {}", type );

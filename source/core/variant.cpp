@@ -229,8 +229,8 @@ static bool compareVariants(const Variant2Impl *a, const Variant2Impl *b)
         const VariantMap *m2 = v_cast<VariantMap>(b);
         if (m1->size() != m2->size())
             return false;
-        VariantMap::const_iterator it = m1->begin();
-        VariantMap::const_iterator it2 = m2->begin();
+        auto it = m1->begin();
+        auto it2 = m2->begin();
         while (it != m1->end())
         {
             if (*it != *it2 || it->first != it2->first )
@@ -920,9 +920,8 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
           VariantMap* rMap = static_cast<VariantMap*>(result);
 
           rMap->clear();
-          for( auto& it : *tmp )
-          {
-            rMap->insert( std::make_pair( it.first, it.second ) );
+          for( auto& it : *tmp ) {
+            (*rMap)[ it.first ] = it.second;
           }
         }
         else

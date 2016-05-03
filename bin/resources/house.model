@@ -229,8 +229,8 @@
       prosperity : 35,
       tax : 2
       txs : {
-        s1: [ "housng1a_00019", "housng1b_00019" ]
-        s2: [ "housng1a_00024", "housng1b_00024" ]
+        s1: [ "housng1a_00019", "housng1b_00019", "housng1c_00019", "housng1d_00019", ]
+        s2: [ "housng1a_00023", "housng1b_00023", "housng1c_00023", "housng1d_00023",]
       }
     },
 
@@ -260,7 +260,7 @@
       tax : 2
       txs : {
         s1: [ "housng1a_00021", "housng1b_00021", "housng1c_00021", "housng1d_00021" ]
-        s2: [ "housng1a_00026", "housng1b_00026", "housng1c_00026", "housng1d_00026" ]
+        s2: [ "housng1a_00024", "housng1b_00024", "housng1c_00024", "housng1d_00024" ]
       }
     },
 
@@ -319,7 +319,7 @@
       prosperity : 58,
       tax : 3
       txs : {
-        s1: [ "housng1a_00028", "housng1b_00028", "housng1c_00028", "housng1d_00028" ]
+        s1: [ "housng1a_00027", "housng1b_00027", "housng1c_00027", "housng1d_00027" ]
         s2: [ "housng1a_00030", "housng1b_00030", "housng1c_00030", "housng1d_00030" ]
       }
     },
@@ -349,7 +349,7 @@
       prosperity : 65,
       tax : 3
       txs : {
-        s2 : [ "housng1a_00031", "housng1a_00032", "housng1b_00031", "housng1b_00032" ]
+        s2 : [ "housng1a_00031", "housng1b_00031", "housng1c_00031", "housng1d_00031" ]
       }
     },
 
@@ -378,7 +378,7 @@
       prosperity : 80,
       tax : 4
       txs : {
-        s2 : [ "housng1a_00033", "housng1a_00034", "housng1b_00033", "housng1b_00034" ]
+        s2 : [ "housng1a_00033", "housng1b_00033", "housng1c_00033", "housng1d_00033" ]
       }
     },
 
