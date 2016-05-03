@@ -105,9 +105,9 @@ sim.ui.advisors.religion.show = function() {
   lbMoodText.font = "FONT_1";
   lbMoodText.text = "##rladv_mood_t##";
 
-  var lbReligionAdvice = w.addLabel(40, w.h-100, w.w-40, 90);
+  var lbReligionAdvice = w.addLabel(40, w.h-95, w.w-80, 85);
   lbReligionAdvice.multiline = true;
-  lbReligionAdvice.text = sim.ui.advisors.religion.getAvice();
+  lbReligionAdvice.text = _u(sim.ui.advisors.religion.getAvice());
   lbReligionAdvice.font = "FONT_1";
 
   w.btnHelp = w.addHelpButton(12, w.h - 36);
@@ -118,25 +118,42 @@ sim.ui.advisors.religion.show = function() {
     btn.geometry = {x:pos.x, y:pos.y, w:lbBlackframe.w-pos.x*2, h:20}
     btn.style = "brownBorderOnly";
 
+    var small_n = 0;
+    var big_n = 0;
+    var month2lastFest = 0;
+    var shortDesc = 0;
+    var wPoints = 0;
+    var moodText = "";
+    var godText = "";
     if (god != null) {
-      var small_n = g_session.city.getOverlaysNumber(god.smallt);
-      var big_n = g_session.city.getOverlaysNumber(god.bigt);
-      var month2lastFest = god.lastFestivalDate().monthsTo(g_session.date);
-
-      var shortDesc = _format("{0}_desc", god.iname);
-      btn.addLabel(0, 0, 80, 20, god.name(), "FONT_1_WHITE");
-      btn.addLabel(80, 0, 140, 20, "(" + _ut(shortDesc) + ")");
-      btn.addLabel(220, 0, 60, 20, small_n);
-      btn.addLabel(280, 0, 70, 20, big_n);
-      btn.addLabel(350, 0, 50, 20, month2lastFest);
-
-      var wrathImage = g_render.picture("paneling", 334);
-      for (var k=0; k < god.wrathPoints() / 15; k++ )
-        btn.addImage(400 + k * 15, 0, wrathImage);
+      small_n = g_session.city.getOverlaysNumber(god.smallt);
+      big_n = g_session.city.getOverlaysNumber(god.bigt);
+      month2lastFest = god.lastFestivalDate().monthsTo(g_session.date);
+      shortDesc = _format("{0}_desc", god.iname);
+      wPoints = god.wrathPoints();
+      moodText = god.moodDescription;
+      godText = god.name();
+    } else {
+      small_n = g_session.city.getOverlaysNumber("oracle");
+      //big_n = g_session.city.getOverlaysNumber();
+      godText = _u("oracle");
+      shortDesc = _u("all");
     }
 
-    var moodOffsetX = 400 + god.wrathPoints() / 15 * 15;
-    btn.addLabel(moodOffsetX, 0, 100, 20, _ut(god.moodDescription) );
+    btn.addLabel(0, 0, 80, 20, godText, "FONT_1_WHITE");
+    btn.addLabel(80, 0, 140, 20, "(" + _ut(shortDesc) + ")", "FONT_1");
+    btn.addLabel(220, 0, 60, 20, small_n, "FONT_1");
+    btn.addLabel(280, 0, 70, 20, big_n, "FONT_1");
+    btn.addLabel(350, 0, 50, 20, month2lastFest, "FONT_1");
+
+    var wrathImage = g_render.picture("paneling", 334);
+    for (var k=0; k < w / 15; k++ )
+      btn.addImage(400 + k * 15, 0, wrathImage);
+
+    if (moodText.length > 0) {
+      var moodOffsetX = 400 + wPoints / 15 * 15;
+      btn.addLabel(moodOffsetX, 0, 100, 20, _ut(moodText), "FONT_1" );
+    }
   }
 
   var ry=5;
@@ -146,4 +163,5 @@ sim.ui.advisors.religion.show = function() {
     w.addReligionButton({x:12, y:ry}, god);
     ry += 20;
   }
+  w.addReligionButton({x:12, y:ry}, null);
 }
