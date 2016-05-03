@@ -19,37 +19,40 @@
 
 Variant VariantList::get(const unsigned int index, Variant defaultVal) const
 {
-  VariantList::const_iterator it = begin();
-  if( index >= size() )
-    {
-      return defaultVal;
-    }
-  else
-    {
-      std::advance( it, index );
-      return *it;
-    }
+  auto it = _data.begin();
+  if( index >= _data.size() ) {
+    return defaultVal;
+  } else {
+    std::advance( it, index );
+    return *it;
+  }
 }
 
 void VariantList::visitEach(VariantList::Visitor visitor)
 {
-  for( auto& item : *this )
+  for (auto& item : _data) {
     visitor( item );
+  }
 }
 
 VariantList& VariantList::operator <<(const Variant& v)
 {
-  push_back( v );
+  _data.push_back( v );
   return *this;
 }
 
+bool VariantList::operator==(const VariantList& a) const
+{
+  return _data == a._data;
+}
+
 VariantListReader::VariantListReader(const VariantList& list)
-  : _list( list )
+  : _list(list)
 {
   _it = _list.begin();
 }
 
-const Variant&VariantListReader::next()
+const Variant& VariantListReader::next()
 {
   const Variant& value = *_it;
   ++_it;

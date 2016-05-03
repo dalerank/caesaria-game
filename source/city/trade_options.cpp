@@ -30,9 +30,9 @@ namespace trade
 class Options::Impl
 {
 public:
-  struct GoodInfo 
-  { 
-    unsigned int sellPrice; 
+  struct GoodInfo
+  {
+    unsigned int sellPrice;
     unsigned int buyPrice;
     unsigned int exportLimit;
     unsigned int importLimit;
@@ -42,7 +42,7 @@ public:
     trade::Order order;
     bool vendor;
 
-    VariantList save() 
+    VariantList save()
     {
       VariantList ret;
       ret << sellPrice
@@ -66,7 +66,7 @@ public:
         return;
       }
 
-      VariantList::const_iterator it=stream.begin();
+      auto it=stream.begin();
       sellPrice = it->toUInt(); ++it;
       buyPrice = it->toUInt(); ++it;
       exportLimit = it->toUInt(); ++it;
@@ -131,7 +131,7 @@ public:
 };
 
 Options::Options() : _d( new Impl )
-{  
+{
 }
 
 metric::Unit Options::tradeLimit( Order state, good::Product type) const

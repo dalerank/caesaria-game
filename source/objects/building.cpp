@@ -63,7 +63,7 @@ public:
   {
     VariantList ret;
     for( auto& item : *this )
-      ret.emplace_back( VariantList(item.first, item.second) );
+      ret.push_back( VariantList(item.first, item.second) );
 
     return ret;
   }
@@ -101,7 +101,7 @@ public:
   {
     VariantList ret;
     for( auto& item : *this )
-      ret.emplace_back( VariantList(item.first, item.second) );
+      ret.push_back( VariantList(item.first, item.second) );
 
     return ret;
   }

@@ -619,9 +619,8 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
       && hovered->tooltipText().size()
     )
   {
-    if( hovered.isValid() )
-    {
-      hovered->onEvent( NEvent::ev_none() );
+    if (hovered.isValid()) {
+      hovered->onEvent(NEvent::ev_none());
     }
 
     element = standart( rootWidget, hovered.object(), cursor );

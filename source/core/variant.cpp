@@ -584,7 +584,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         TilePos *pos = static_cast< TilePos* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin();
+        auto it = list->begin();
         pos->setI( it->toInt() ); ++it;
         pos->setJ( it->toInt() );
       }

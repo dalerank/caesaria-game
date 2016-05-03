@@ -42,8 +42,8 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto& item : *this )
-      ret.emplace_back( item );
+    for (auto& item : *this)
+      ret.push_back(item);
 
     return ret;
   }
