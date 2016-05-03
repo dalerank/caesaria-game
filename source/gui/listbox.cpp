@@ -25,7 +25,6 @@
 #include "core/variant_list.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
-#include "core/foreach.hpp"
 #include "gfx/drawstate.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"

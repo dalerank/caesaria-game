@@ -40,7 +40,6 @@ public:
   virtual const gfx::Picture& picture() const = 0;
   virtual void updateRelation( float income, PlayerCityPtr city ) = 0;
   virtual DateTime lastFestivalDate() const = 0;
-  virtual std::string moodDescription() const = 0;
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
   virtual void setEffectPoint( int value ) = 0;

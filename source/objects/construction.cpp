@@ -24,7 +24,6 @@
 #include "events/disaster.hpp"
 #include "core/variant_list.hpp"
 #include "core/logger.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "extension.hpp"
 #include "gfx/tilearea.hpp"

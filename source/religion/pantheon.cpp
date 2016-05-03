@@ -99,7 +99,8 @@ void Pantheon::load(const VariantMap& stream)
   for( auto name : RomeDivinity::getIntNames() )
   {
     auto divn = get(name);
-    divn->load( stream.get(name).toMap() );
+    if (divn.isValid())
+      divn->load( stream.get(name).toMap() );
   }
 }
 

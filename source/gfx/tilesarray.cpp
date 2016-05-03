@@ -257,7 +257,7 @@ TilesArray& TilesArray::remove( const TilePos& pos)
 PointsArray TilesArray::mappositions() const
 {
   PointsArray ret;
-  for( auto tile : *this )
+  for( auto& tile : *this )
     ret.push_back(tile->mappos());
 
   return ret;

@@ -20,7 +20,6 @@
 #include "core/delegate.hpp"
 #include "gfx/tilepos.hpp"
 #include "core/tilepos_array.hpp"
-#include "core/foreach.hpp"
 
 namespace world
 {
@@ -109,11 +108,11 @@ public:
       unsigned int offset = pos.j() * _size.width() + pos.i();
       if( offset < size() )
       {
-      	Grid::iterator it = begin();
-      	std::advance( it, offset );
-      	return &(*it)	;
+        Grid::iterator it = begin();
+        std::advance( it, offset );
+        return &(*it)	;
       }
-      
+
       return 0;
     }
   private:

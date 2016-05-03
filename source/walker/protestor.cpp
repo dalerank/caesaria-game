@@ -22,7 +22,6 @@
 #include "city/statistic.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
-#include "core/foreach.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/constants.hpp"
@@ -55,7 +54,7 @@ public:
 
 Protestor::Protestor(PlayerCityPtr city)
   : Human( city, walker::protestor ), _d( new Impl )
-{    
+{
   addAbility( Illness::create( 0.3, 4) );
 }
 
@@ -237,7 +236,7 @@ void Protestor::load(const VariantMap& stream)
 int Protestor::agressive() const { return 1; }
 
 Pathway Protestor::Impl::findHouse(PlayerCityPtr city, HouseList constructions, TilePos pos )
-{  
+{
   if( !constructions.empty() )
   {
     Pathway pathway;

@@ -1154,6 +1154,7 @@ Variant House::getProperty(const std::string & name) const
   }
   if (name == "isPatrician") return spec().isPatrician();
   if (name == "taxRate") return spec().taxRate();
+  if (name == "minReligionLevel") return spec().minReligionLevel();
 
   return Building::getProperty(name);
 }
@@ -1553,8 +1554,8 @@ void House::Impl::initGoodStore(int size)
 
 void House::Impl::consumeServices()
 {
-  foreach( s, services )
-    { s->second->consume( -1 ); } //consume services
+  for( auto& s : services)
+    { s.second->consume( -1 ); } //consume services
 }
 
 void House::Impl::consumeGoods( HousePtr house )

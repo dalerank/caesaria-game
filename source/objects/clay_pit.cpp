@@ -19,7 +19,6 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"

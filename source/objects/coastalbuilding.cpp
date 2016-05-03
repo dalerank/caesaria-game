@@ -21,7 +21,6 @@
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "good/store.hpp"
 #include "core/variant_list.hpp"

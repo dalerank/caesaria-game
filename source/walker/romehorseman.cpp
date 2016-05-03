@@ -25,7 +25,6 @@
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "enemysoldier.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 

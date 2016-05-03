@@ -19,49 +19,10 @@
 #include "gfx/tilepos.hpp"
 #include "variant_list.hpp"
 
-TilePosArray& TilePosArray::operator<<(const TilePos& pos)
-{
-  push_back( pos );
-  return *this;
-}
-
-TilePosArray& TilePosArray::addUnique(const TilePos& pos)
-{
-  auto it = std::find(begin(), end(), pos);
-  if( it == end() )
-    push_back( pos );
-
-  return *this;
-}
-
-TilePosArray& TilePosArray::append(const TilePos &pos)
-{
-  push_back( pos );
-  return *this;
-}
-
-TilePosArray&TilePosArray::append(int i, int j)
+TilePosArray& TilePosArray::append(int i, int j)
 {
   push_back( TilePos( i, j ) );
   return *this;
-}
-
-TilePos TilePosArray::valueOrEmpty(unsigned int index)
-{
-  return index < size() ? at( index ) : TilePos();
-}
-
-TilePosArray&TilePosArray::pop_front()
-{
-  if( !empty() )
-    erase( begin() );
-
-  return *this;
-}
-
-void TilePosArray::remove(const TilePos& pos)
-{
-  erase( std::remove( begin(), end(), pos ) );
 }
 
 VariantList TilePosArray::save() const
@@ -83,9 +44,4 @@ TilePosSet& TilePosSet::operator<<(const TilePos &pos)
 {
   insert( pos );
   return *this;
-}
-
-TilePos TilePosArray::random()
-{
-  return valueOrEmpty( math::random( size() - 1 ) );
 }

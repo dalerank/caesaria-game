@@ -23,7 +23,6 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "gfx/imgid.hpp"
-#include "core/foreach.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"
 

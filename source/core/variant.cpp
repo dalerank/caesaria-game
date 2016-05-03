@@ -111,7 +111,7 @@ typedef bool (*f_compare)(const Variant2Impl*, const Variant2Impl*);
 typedef bool (*f_convert)(const Variant2Impl* d, Variant::Type t, void *, bool *);
 typedef bool (*f_canConvert)(const Variant2Impl* d, Variant::Type t);
 
-struct Variant2Handler 
+struct Variant2Handler
 {
   f_construct construct;
   f_clear clear;
@@ -160,12 +160,12 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
 
 static void clearVariant(Variant2Impl *d)
 {
-  switch( d->type ) 
-	{
-		case Variant::String: v_clear<std::string>(d); break;
-		case Variant::NStringArray: v_clear<StringArray>(d); break;
-		case Variant::Map: v_clear<VariantMap>(d); break;
-		case Variant::List: v_clear<VariantList>(d); break;
+  switch( d->type )
+  {
+    case Variant::String: v_clear<std::string>(d); break;
+    case Variant::NStringArray: v_clear<StringArray>(d); break;
+    case Variant::Map: v_clear<VariantMap>(d); break;
+    case Variant::List: v_clear<VariantList>(d); break;
     /*case Variant::Date:
         v_clear<Date>(d);
         break;
@@ -335,7 +335,7 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
     switch( (unsigned long long)(d->type) )
     {
     case Variant::String: return utils::toInt( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray: return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::NByteArray: return utils::toInt( v_cast<ByteArray>(d)->data() );
     case Variant::Bool: return (long long)(d->data.b);
     case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
@@ -362,10 +362,10 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
 {
     *ok = true;
 
-    switch((unsigned int)(d->type)) 
+    switch((unsigned int)(d->type))
     {
     case Variant::String:  return utils::toUint( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray: return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::NByteArray: return utils::toUint( v_cast<ByteArray>(d)->data() );
     case Variant::Bool: return (unsigned long long)(d->data.b);
     case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
@@ -421,17 +421,17 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
     */
-        case Variant::String: 
+        case Variant::String:
         {
           std::string *str = static_cast<std::string*>(result);
-            switch (d->type) 
+            switch (d->type)
             {
-            case Variant::Char: *str = d->data.c; 
-			      break;
+            case Variant::Char: *str = d->data.c;
+            break;
 
             case Variant::Uchar: *str = utils::format( 0xff, "%d", (unsigned char)Variant2Number(d) );
             break;
-            
+
             case Variant::Short:
             case Variant::Long:
             case Variant::Int:
@@ -452,7 +452,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             case Variant::Double:
                 *str = utils::format( 0xff, "%g", d->data.d );
             break;
-    
+
             case Variant::NDateTime:
               {
                 const DateTime* dt = v_cast<DateTime>(d);
@@ -464,7 +464,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
               *str = std::string( d->data.b ? "true" : "false" );
             break;
             case Variant::NByteArray:
-              *str = std::string( &(*v_cast<ByteArray>(d))[0] );
+              *str = std::string( v_cast<ByteArray>(d)->data() );
             break;
             case Variant::NStringArray:
               if( v_cast<StringArray>(d)->size() == 1)
@@ -491,7 +491,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     }
     case Variant::Char: {
         char *c = static_cast<char*>(result);
-        switch (d->type) 
+        switch (d->type)
         {
         case Variant::Int:
         case Variant::LongLong:
@@ -514,7 +514,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         break;
     }
 
-    case Variant::NSize: 
+    case Variant::NSize:
       {
         Size *s = static_cast<Size*>(result);
         switch (d->type)
@@ -530,22 +530,22 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
           s->setHeight( list->get( 1, 0 ).toInt() );
         }
         break;
-		           
+
         default:
         return false;
         }
         break;
       }
 
-    case Variant::NSizeF: 
+    case Variant::NSizeF:
     {
         SizeF *s = static_cast<SizeF*>(result);
-        switch (d->type) 
+        switch (d->type)
         {
         case Variant::NSize:
           *s = v_cast<Size>(d)->toSizeF();
         break;
-		           
+
         default:
             return false;
         }
@@ -555,7 +555,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //     case Variant::Line:
 //     {
 //         Line *s = static_cast<Line*>(result);
-//         switch (d->type) 
+//         switch (d->type)
 //         {
 //         case Variant::LineF:
 //             *s = v_cast<LineF>(d)->As<int>();
@@ -566,10 +566,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //         break;
 //     }
 
-//     case Variant::LineF: 
+//     case Variant::LineF:
 //     {
 //         LineF *s = static_cast<LineF *>(result);
-//         switch (d->type) 
+//         switch (d->type)
 //         {
 //         case Variant::Line:
 //             *s = v_cast<Line>(d)->As<float>();
@@ -584,7 +584,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         TilePos *pos = static_cast< TilePos* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin(); 
+        VariantList::const_iterator it = list->begin();
         pos->setI( it->toInt() ); ++it;
         pos->setJ( it->toInt() );
       }
@@ -652,20 +652,20 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 
 
     case Variant::NStringArray:
-        if (d->type == Variant::List) 
+        if (d->type == Variant::List)
         {
             StringArray* slst = static_cast<StringArray*>(result);
             const VariantList* list = v_cast< VariantList >(d);
             for( const auto& it : *list )
                 slst->push_back( it.toString() );
-        } 
-        else if( d->type == Variant::String ) 
+        }
+        else if( d->type == Variant::String )
         {
             StringArray *slst = static_cast<StringArray*>(result);
             slst->clear();
             slst->push_back( *v_cast<std::string>(d) );
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
@@ -678,7 +678,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //             *dt = Date::fromString(*v_cast<String>(d), t::ISODate);
 //         else
 //             return false;
-// 
+//
 //         return dt->isValid();
 //     }
 //     case Variant::Time: {
@@ -695,10 +695,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
 //         }
 //         return t->isValid();
 //     }
-    case Variant::NDateTime: 
+    case Variant::NDateTime:
     {
         DateTime *dt = static_cast<DateTime *>(result);
-        switch (d->type) 
+        switch (d->type)
         {
         case Variant::String:
           *dt = DateTime( v_cast<std::string>(d)->c_str() );
@@ -711,11 +711,11 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         return dt->isValid();
     }
-    
-    case Variant::NByteArray: 
+
+    case Variant::NByteArray:
     {
         ByteArray *ba = static_cast<ByteArray *>(result);
-        switch (d->type) 
+        switch (d->type)
         {
         case Variant::String:
           *ba = *v_cast<std::string>(d);
@@ -724,7 +724,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         case Variant::Double:
           *ba = utils::format( 0xff, "%f", d->data.d );
         break;
-        
+
         case Variant::Float:
             *ba = utils::format( 0xff, "%f", d->data.f );
             break;
@@ -778,25 +778,25 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         *static_cast<unsigned long long*>(result) = ConvertToUnsignedNumber(d, ok);
         return *ok;
     }
-    case Variant::Uchar: 
+    case Variant::Uchar:
     {
         *static_cast<unsigned char*>(result) = static_cast<unsigned char>(ConvertToUnsignedNumber(d, ok));
         return *ok;
     }
-    case Variant::Bool: 
+    case Variant::Bool:
     {
         bool *b = static_cast<bool *>(result);
-        switch(d->type) 
+        switch(d->type)
         {
         case Variant::NByteArray:
           *b = ( strcmp( v_cast<ByteArray>( d )->data(), "true" ) == 0 );
         break;
-        
+
         case Variant::String:
           *b = ( *v_cast<std::string>(d) == "true" );
         break;
-        
-        case Variant::Char:       
+
+        case Variant::Char:
         case Variant::Double:
         case Variant::Int:
         case Variant::LongLong:
@@ -818,19 +818,19 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
     }
-    case Variant::Double: 
+    case Variant::Double:
         {
         double *f = static_cast<double*>(result);
-        switch (d->type) 
+        switch (d->type)
         {
         case Variant::String:
           *f = utils::toFloat( v_cast<std::string>(d)->c_str() );
         break;
-        
+
         case Variant::NByteArray:
           *f = utils::toFloat( v_cast<ByteArray>(d)->data() );
         break;
-        
+
         case Variant::Bool:
             *f = double(d->data.b);
             break;
@@ -858,18 +858,18 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         }
         break;
     }
-    case Variant::Float: 
+    case Variant::Float:
     {
         float *f = static_cast<float*>(result);
         switch (d->type) {
         case Variant::String:
           *f =utils::toFloat( v_cast<std::string>(d)->c_str() );
         break;
-        
+
         case Variant::NByteArray:
           *f = utils::toFloat( v_cast<ByteArray>(d)->data() );
         break;
-        
+
         case Variant::Bool:
             *f = float(d->data.b);
             break;
@@ -897,18 +897,18 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         break;
     }
     case Variant::List:
-        if (d->type == Variant::NStringArray) 
+        if (d->type == Variant::NStringArray)
         {
             VariantList *lst = static_cast<VariantList *>(result);
             const StringArray *slist = v_cast<StringArray>(d);
             for (unsigned int i = 0; i < slist->size(); ++i)
                 lst->push_back( Variant( (*slist)[i] ) );
-        } 
+        }
         else if( Variant::typeToName( Variant::Type( d->type ) ) == "list<Variant>" )
         {
             *static_cast<VariantList*>(result) = *static_cast< VariantList* >(d->data.ptr);
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
@@ -920,12 +920,12 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
           VariantMap* rMap = static_cast<VariantMap*>(result);
 
           rMap->clear();
-          foreach( it, *tmp )
+          for( auto& it : *tmp )
           {
-            rMap->insert( std::make_pair( it->first, it->second ) );
+            rMap->insert( std::make_pair( it.first, it.second ) );
           }
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
@@ -989,7 +989,7 @@ Variant::~Variant()
 Variant::Variant(const Variant &p)
     : _d(p._d)
 {
-  if (p._d.type > Short && p._d.type < UserType) 
+  if (p._d.type > Short && p._d.type < UserType)
   {
     varHandler->construct(&_d, p.constData());
     _d.is_null = p._d.is_null;
@@ -1077,12 +1077,12 @@ Variant& Variant::operator=(const Variant &variant)
       return *this;
 
   clear();
-  if( variant._d.type > Short && variant._d.type < UserType ) 
+  if( variant._d.type > Short && variant._d.type < UserType )
   {
     _d.type = variant._d.type;
     varHandler->construct(&_d, variant.constData());
     _d.is_null = variant._d.is_null;
-  } 
+  }
   else
   {
     _d = variant._d;
@@ -1160,7 +1160,7 @@ inline T Variant2ToHelper(const Variant2Impl &d, Variant::Type t,
       return *v_cast<T>(&d);
 
   T ret;
-	varHandler->convert(&d, t, &ret, 0);
+  varHandler->convert(&d, t, &ret, 0);
   return ret;
 }
 
@@ -1346,10 +1346,10 @@ PointF Variant::toPointF() const
 
 // /*!
 //     \fn Url Variant::toUrl() const
-// 
+//
 //     Returns the variant as a Url if the variant has type()
 //     \l Url; otherwise returns an invalid Url.
-// 
+//
 //     \sa canConvert(), convert()
 // */
 // Url Variant::toUrl() const
@@ -1782,9 +1782,9 @@ static bool isFloatingPoint(unsigned int tp)
 bool Variant::cmp(const Variant &v) const
 {
     Variant v2 = v;
-    if (_d.type != v2._d.type) 
+    if (_d.type != v2._d.type)
     {
-        if (isNumericType(_d.type) && isNumericType(v._d.type)) 
+        if (isNumericType(_d.type) && isNumericType(v._d.type))
         {
             if (isFloatingPoint(_d.type) || isFloatingPoint(v._d.type))
                 return math::isEqual( toFloat(), v.toFloat() );
@@ -1843,11 +1843,11 @@ bool Variant::isValid() const
 
 Variant2Handler::Variant2Handler()
 {
-	construct = constructNewVariant;
+  construct = constructNewVariant;
   compare = compareVariants;
-	canConvert = 0;
-	convert = convertVariantType2Type;
-	clear = clearVariant;
+  canConvert = 0;
+  convert = convertVariantType2Type;
+  clear = clearVariant;
   isNull = checkVariantNull;
 }
 

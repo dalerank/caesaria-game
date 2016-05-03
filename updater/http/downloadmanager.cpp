@@ -21,31 +21,31 @@ namespace updater
 {
 
 DownloadManager::DownloadManager() :
-	_nextAvailableId(1),
-	_allDownloadsDone(true)
+  _nextAvailableId(1),
+  _allDownloadsDone(true)
 {}
 
 int DownloadManager::add(const DownloadPtr& download)
 {
-	int id = _nextAvailableId++;
+  int id = _nextAvailableId++;
 
-	_downloads[id] = download;
+  _downloads[id] = download;
 
-	_allDownloadsDone = false;
+  _allDownloadsDone = false;
 
-	return id;
+  return id;
 }
 
 DownloadPtr DownloadManager::GetDownload(int id)
 {
-	Downloads::iterator found = _downloads.find(id);
+  Downloads::iterator found = _downloads.find(id);
 
-	return (found != _downloads.end()) ? found->second : DownloadPtr();
+  return (found != _downloads.end()) ? found->second : DownloadPtr();
 }
 
 void DownloadManager::clearDownloads()
 {
-	_downloads.clear();
+  _downloads.clear();
 }
 
 bool DownloadManager::DownloadInProgress()
@@ -55,91 +55,89 @@ bool DownloadManager::DownloadInProgress()
 
 bool DownloadManager::hasPendingDownloads()
 {
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		if (i->second->GetStatus() == Download::IN_PROGRESS ||
-			i->second->GetStatus() == Download::NOT_STARTED_YET)
-		{
-			return true;
-		}
-	}
+  for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
+  {
+    if (i->second->GetStatus() == Download::IN_PROGRESS ||
+      i->second->GetStatus() == Download::NOT_STARTED_YET)
+    {
+      return true;
+    }
+  }
 
-	return false;
+  return false;
 }
 
 void DownloadManager::remove(int id)
 {
-	Downloads::iterator found = _downloads.find(id);
+  Downloads::iterator found = _downloads.find(id);
 
-	if (found != _downloads.end()) 
-	{
-		_downloads.erase(found);
-	}
+  if (found != _downloads.end())
+  {
+    _downloads.erase(found);
+  }
 }
 
 int DownloadManager::GetCurrentDownloadId()
 {
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		if (i->second->GetStatus() == Download::IN_PROGRESS)
-		{
-			return i->first;
-		}
-	}
+  for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
+  {
+    if (i->second->GetStatus() == Download::IN_PROGRESS)
+    {
+      return i->first;
+    }
+  }
 
-	return -1;
+  return -1;
 }
 
 DownloadPtr DownloadManager::GetCurrentDownload()
 {
-	return GetDownload(GetCurrentDownloadId());
+  return GetDownload(GetCurrentDownloadId());
 }
 
 void DownloadManager::process()
 {
-	if (_allDownloadsDone || _downloads.empty()) 
-	{
-		return; // nothing to do
-	}
+  if (_allDownloadsDone || _downloads.empty())
+  {
+    return; // nothing to do
+  }
 
-	if (DownloadInProgress())
-	{
-		return; // download still in progress
-	}
+  if (DownloadInProgress())
+  {
+    return; // download still in progress
+  }
 
-	// No download in progress, pick a new from the queue
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		if (i->second->GetStatus() == Download::NOT_STARTED_YET)
-		{
-			i->second->Start();
-			return;
-		}
-	}
+  // No download in progress, pick a new from the queue
+  for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
+  {
+    if (i->second->GetStatus() == Download::NOT_STARTED_YET)
+    {
+      i->second->Start();
+      return;
+    }
+  }
 
-	// No download left to handle
-	_allDownloadsDone = true;
+  // No download left to handle
+  _allDownloadsDone = true;
 }
 
 bool DownloadManager::HasFailedDownloads()
 {
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		if (i->second->GetStatus() == Download::FAILED)
-		{
-			return true;
-		}
-	}
+  for (auto& i : _downloads) {
+    if (i.second->GetStatus() == Download::FAILED) {
+      return true;
+    }
+  }
 
-	return false;
+  return false;
 }
 
 void DownloadManager::ForeachDownload(DownloadVisitor& visitor)
 {
-	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
-	{
-		visitor.Visit(i->first, i->second);
-	}
+  for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
+  {
+    visitor.Visit(i->first, i->second);
+  }
 }
 
 }

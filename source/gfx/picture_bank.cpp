@@ -33,7 +33,6 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "picture_info_bank.hpp"
-#include "core/foreach.hpp"
 #include "loader.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
@@ -221,7 +220,7 @@ PictureBank::~PictureBank(){}
 
 Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 {
-  vfs::Path realPath( name );  
+  vfs::Path realPath( name );
 
   bool fileExist = false;
   if( realPath.extension().empty() )
@@ -239,7 +238,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   }
 
   if( fileExist )
-  {    
+  {
     vfs::NFile file = vfs::NFile::open( realPath );
     if( file.isOpen() )
     {

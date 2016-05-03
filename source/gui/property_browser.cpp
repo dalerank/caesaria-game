@@ -89,8 +89,8 @@ void PropertyBrowser::setAttribs(const VariantMap &attribs)
 void PropertyBrowser::_clearAttributesList()
 {
   // clear the attribute list
-  foreach( i, _attribList )
-    (*i)->deleteLater();
+  for( auto& i : _attribList )
+    i->deleteLater();
 
   _attribList.clear();
 }

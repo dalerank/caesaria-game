@@ -36,17 +36,17 @@ VariantMap load( const vfs::Path& filename )
   return load( f );
 }
 
-VariantMap load( vfs::NFile f )
+VariantMap load (vfs::NFile f)
 {
   if( f.isOpen() )
   {
     ByteArray data = f.readAll();
 
-    if( data.empty() )
+    if (data.empty())
       return VariantMap();
 
     bool jsonParsingOk;
-    Variant ret = Json::parse( data.toString(), jsonParsingOk );
+    Variant ret = Json::parse( data.toString(), jsonParsingOk);
     if( jsonParsingOk )
     {
       return ret.toMap();

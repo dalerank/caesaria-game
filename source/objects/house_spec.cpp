@@ -24,7 +24,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "good/store.hpp"
-#include "core/foreach.hpp"
 #include "city/statistic.hpp"
 #include "good/helper.hpp"
 #include "gfx/tilemap.hpp"

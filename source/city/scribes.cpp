@@ -27,7 +27,6 @@
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/funds.hpp"
-#include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
 #include "core/variant_map.hpp"

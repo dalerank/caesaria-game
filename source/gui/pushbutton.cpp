@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #include "pushbutton.hpp"
 #include "core/event.hpp"
@@ -51,6 +51,7 @@ public:
     append(PushButton::flatBorderLine, "flatBorderLine" );
     append(PushButton::noBackground, "noBackground" );
     append(PushButton::greyBorderLineFit, "greyBorderLineFit");
+    append(PushButton::brownBorderOnly, "brownBorderOnly" );
   }
 };
 
@@ -248,6 +249,11 @@ void PushButton::_updateBackground( ElementState state )
     }
     break;
 
+    case brownBorderOnly:
+      if (state == stHovered)
+        Decorator::draw( pics, Rect(Point( 0, 0 ), size()), Decorator::brownBorder );
+    break;
+
     case blackBorderUp:
     {
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
@@ -347,6 +353,11 @@ void PushButton::canvasDraw(const std::string& text, const Point& point, Font rf
     rfont.setColor( color );
 
   rfont.draw( pic, text, point, true, true  );
+}
+
+void PushButton::canvasDraw(const Picture& pic, const Point& point)
+{
+  _textPicture().draw(pic, point, pic.size());
 }
 
 int PushButton::getTextWidth(const std::string & t) const

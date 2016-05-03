@@ -22,7 +22,6 @@
 #include "game/roadbuild_helper.hpp"
 #include "core/logger.hpp"
 #include "events/build.hpp"
-#include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/event.hpp"
 #include "gfx/sdl_engine.hpp"

@@ -20,7 +20,6 @@
 #include "gfx/imgid.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects_factory.hpp"
@@ -43,7 +42,7 @@ bool Waymark::isDestructible() const{  return false; }
 void Waymark::initTerrain(Tile&) {}
 
 bool Waymark::build( const city::AreaInfo& info )
-{  
+{
   Tilemap& tmap = info.city->tilemap();
   TilesArray around = tmap.getNeighbors( info.pos );
   TilePos entryPos = info.city->getBorderInfo( PlayerCity::roadEntry ).epos();

@@ -22,7 +22,6 @@
 #include "city/statistic.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
-#include "core/foreach.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/constants.hpp"
@@ -59,7 +58,7 @@ public:
 
 Rioter::Rioter(PlayerCityPtr city)
   : Human( city, walker::rioter ), _d( new Impl )
-{    
+{
   addAbility( Illness::create( 0.3, 4) );
   excludeAttack( object::group::disaster );
 }
@@ -267,7 +266,7 @@ int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos )
-{    
+{
   if( !items.empty() )
   {
     auto constructions = items.random( 10 );

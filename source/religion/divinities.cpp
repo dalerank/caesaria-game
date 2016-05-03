@@ -98,30 +98,6 @@ void RomeDivinity::load(const VariantMap& vm)
   _relation.target = vm.get( "needRelation" );
   _effectPoints = vm.get( "effectPoints" );
   _moodDescr.clear();
-
-  Variant value = vm.get( "moodDescription" );
-  if( value.isValid() )
-  {
-    _moodDescr << vm.get( "moodDescription" ).toList();
-  }
-  else
-  {
-    _moodDescr << "##god_wrathful##"
-               << "##god_irriated##"
-               << "##god_veryangry##"
-               << "##god_verypoor##"
-               << "##god_quitepoor##"
-               << "##god_poor##"
-               << "##god_displeased##"
-               << "##god_indifferent##"
-               << "##god_pleased##"
-               << "##god_good##"
-               << "##god_verygood##"
-               << "##god_charmed##"
-               << "##god_happy##"
-               << "##god_excellent##"
-               << "##god_exalted##";
-  }
 }
 
 Service::Type RomeDivinity::serviceType() const { return _service; }
@@ -199,15 +175,6 @@ void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
   }
 }
 
-std::string RomeDivinity::moodDescription() const
-{
-  if( _moodDescr.empty() )
-    return "##no_descriptions_divinity_mood##";
-
-  int delim = relation::maximum / _moodDescr.size();
-  return _moodDescr[ math::clamp<int>( _relation.current / delim, 0, _moodDescr.size()-1 ) ];
-}
-
 void RomeDivinity::checkAction( PlayerCityPtr city )
 {
   if( _relation.current >= relation::maximum && !_blessingDone )
@@ -240,7 +207,7 @@ void RomeDivinity::setService(const std::string & service)
   _service = ServiceHelper::getType(service);
 }
 
-void RomeDivinity::setName(const std::string & name) { _name = name;} 
+void RomeDivinity::setName(const std::string & name) { _name = name;}
 
 RomeDivinity::RomeDivinity(Type type)
 {

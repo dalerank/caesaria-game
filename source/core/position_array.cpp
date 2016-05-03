@@ -16,37 +16,20 @@
 #include "position_array.hpp"
 #include "variant_list.hpp"
 
-PointsArray::PointsArray(const std::vector<Point>& points)
-{
-  resize(points.size());
-  std::copy(points.begin(),points.end(),this->begin());
-}
-
 VariantList PointsArray::save() const
 {
   VariantList ret;
-  for( auto& item : *this ) ret << item;
+  for (const auto& item : *this) ret << item;
   return ret;
 }
 
 void PointsArray::move(const Point& offset)
 {
-  for( auto&& p : *this ) p += offset;
+  for (auto& p : *this) p += offset;
 }
 
-PointsArray& PointsArray::operator<<(const Point& point)
+PointsArray& PointsArray::load(const VariantList& vl)
 {
-  push_back( point );
-  return *this;
-}
-
-Point PointsArray::valueOrEmpty(unsigned int index) const
-{
-  return index < size() ? at( index ) : Point();
-}
-
-PointsArray&PointsArray::load(const VariantList& vl)
-{
-  for( const auto& item : vl ) { push_back( item ); }
+  for (const auto& item : vl) { push_back(item); }
   return *this;
 }

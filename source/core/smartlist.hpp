@@ -25,19 +25,9 @@
 #include <deque>
 
 template <class T>
-class SmartList : public std::deque<SmartPtr< T > >
+class SmartList : public std::deque<SmartPtr<T>>
 {
 public:
-/*  template< class Src >
-  SmartList& operator<<( const SmartList<Src>& srcList )
-  {
-    for( auto& it : srcList )
-      addIfValid( ptr_cast<T>( it ) );
-
-    return *this;
-  }
-  */
-
   SmartList& append( const SmartList<T>& other )
   {
     for( auto& it : other )

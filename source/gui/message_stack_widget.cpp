@@ -19,7 +19,6 @@
 #include "widget_deleter.hpp"
 #include "gfx/engine.hpp"
 #include "game/resourcegroup.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include <list>
 
@@ -67,7 +66,7 @@ protected:
   }
 };
 
-WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rectangle ) 
+WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rectangle )
   : Widget( parent, id, rectangle )
 {
 }
@@ -99,7 +98,7 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
   for( auto widget : wds )
-  {    
+  {
     unsigned int wd = widget->width();
     if( wd != myWidth )
     {

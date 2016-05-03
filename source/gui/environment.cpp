@@ -23,7 +23,6 @@
 #include "widgetprivate.hpp"
 #include "label.hpp"
 #include "core/time.hpp"
-#include "core/foreach.hpp"
 #include "widget_factory.hpp"
 #include "console.hpp"
 #include "core/logger.hpp"
@@ -60,7 +59,7 @@ struct FocusedWorker
 
 class Ui::Impl
 {
-public:  
+public:
   TooltipWorker tooltip;
   FocusedWorker focused;
   SmartPtr<WidgetFinalizer> finalizer;
@@ -173,7 +172,7 @@ void Ui::draw()
     return;
   }
 
-  Widget::draw( *_d->engine );  
+  Widget::draw( *_d->engine );
 
   if (hasFlag(drawDebugArea))
     Widget::debugDraw(*_d->engine);
@@ -234,7 +233,17 @@ Widget* Ui::getFocus() const { return _d->focused.element.object(); }
 
 bool Ui::isHovered( const Widget* element )
 {
-  return element != NULL ? (_d->hovered.current.object() == element) : false;
+  if (element != NULL) {
+    if (_d->hovered.current.isValid()) {
+      if (_d->hovered.current->isSubElement()) {
+        return _d->hovered.noSubelement.object() == element;
+      }
+    } else {
+     return _d->hovered.current.object() == element;
+    }
+  }
+
+  return false;
 }
 
 Widget* Ui::findWidget(int id)
@@ -325,6 +334,7 @@ void Ui::_updateHovered( const Point& mousePos )
   if( _d->hovered.current != rootWidget() )
   {
     _d->hovered.noSubelement = _d->hovered.current;
+
     while ( _d->hovered.noSubelement.isValid() && _d->hovered.noSubelement->isSubElement() )
     {
       _d->hovered.noSubelement = _d->hovered.noSubelement->parent();
@@ -412,7 +422,7 @@ Widget* Ui::next(bool reverse, bool group)
 
 //! posts an input event to the environment
 bool Ui::handleEvent( const NEvent& event )
-{  
+{
   switch(event.EventType)
   {
     case sEventGui:
@@ -453,7 +463,7 @@ bool Ui::handleEvent( const NEvent& event )
             // focus could have died in last call
             inFocus = getFocus();
             if( !inFocus && _d->hovered.current.isValid() )
-            {                
+            {
               return _d->hovered.current->onEvent(event);
             }
         }
@@ -523,7 +533,7 @@ bool Ui::handleEvent( const NEvent& event )
 Widget* Ui::hovered() const { return _d->hovered.current.object(); }
 
 void Ui::beforeDraw()
-{  
+{
   const Size& screenSize = _d->size;
   const Point& rigthDown = rootWidget()->absoluteRect().rightbottom();
 
@@ -616,7 +626,7 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
 
     element = standart( rootWidget, hovered.object(), cursor );
     element->addProperty( "tooltip", 1 );
-    element->setGeometry( element->relativeRect() + Point( 2, 5 ) );
+    element->setGeometry( element->relativeRect() );
     element->setVisible( showTooltips );
     lastPos = Point();
   }
@@ -627,9 +637,9 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
 
     if( lastPos != cursor )
     {
-      Rect geom = element->absoluteRect();
-      geom.constrainTo( rootWidget.absoluteRect() );
-      element->setGeometry( geom );
+      Rect geom(cursor + Point(2, 5), element->size());
+      geom.constrainTo(rootWidget.absoluteRect());
+      element->setGeometry(geom);
     }
 
     // got invisible or removed in the meantime?

@@ -28,7 +28,6 @@
 #include "walker/cart_pusher.hpp"
 #include "good/store.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"

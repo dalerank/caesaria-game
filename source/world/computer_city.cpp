@@ -21,7 +21,6 @@
 #include "good/storage.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
-#include "core/foreach.hpp"
 #include "merchant.hpp"
 #include "game/funds.hpp"
 #include "game/resourcegroup.hpp"
@@ -209,7 +208,7 @@ struct BuildingInfo
   }
 };
 
-class Buildings : public std::vector<BuildingInfo> 
+class Buildings : public std::vector<BuildingInfo>
 {
 public:
   int count( object::Type type )
@@ -318,16 +317,16 @@ void ComputerCity::Impl::updateWorkersInBuildings()
   }
 
   float koeffLabor = workersCount / (float)workersNeed;
-  foreach( it, buildings )
+  for (auto& b : buildings)
   {
     if( workersCount <= 0 )
       break;
 
-    if( it->maxWorkersNumber > 0 )
+    if (b.maxWorkersNumber > 0)
     {
-      int workers = ceil( it->maxWorkersNumber * koeffLabor );
+      int workers = ceil(b.maxWorkersNumber * koeffLabor );
       workers = math::clamp( workers, 0, workersCount );
-      it->workersNumber = workers;
+      b.workersNumber = workers;
       workersCount -= workers;
     }
   }
@@ -558,12 +557,12 @@ void ComputerCity::Impl::placeNewBuildings()
         << object::small_neptune_temple << object::small_mercury_temple
         << object::small_venus_temple;
 
-  foreach( it, types )
+  for (auto& t : types)
   {
-    if( targets.need[ *it ] > 8 )
+    if( targets.need[t] > 8 )
     {
-      placeNewBuilding( *it );
-      targets.need[ *it ] = 0;
+      placeNewBuilding(t);
+      targets.need[t] = 0;
     }
   }
 }
@@ -955,7 +954,7 @@ void ComputerCity::timeStep( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     _d->trade.delay = math::clamp<int>( _d->trade.delay-1, 0, 99 );
-    _d->calculateMonthState();    
+    _d->calculateMonthState();
   }
 
   if( game::Date::isYearChanged() )

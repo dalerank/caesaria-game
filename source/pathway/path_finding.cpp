@@ -320,15 +320,14 @@ DirectRoute Propagator::getShortestRoute(const DirectPRoutes& routes )
   DirectRoute ret;
   unsigned int minLength = 999;
 
-  foreach( pathWayIt, routes )
-  {
+  for (auto& pathWayIt : routes) {
     // for every warehouse within range
-    PathwayPtr pathWay = pathWayIt->second;
+    PathwayPtr pathWay = pathWayIt.second;
 
     if( pathWay->length() < minLength )
     {
       minLength = pathWay->length();
-      ret = DirectRoute( pathWayIt->first, *pathWay.object() );
+      ret = DirectRoute( pathWayIt.first, *pathWay.object() );
     }
   }
 

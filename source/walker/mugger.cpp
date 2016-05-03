@@ -22,7 +22,6 @@
 #include "city/statistic.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
-#include "core/foreach.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/constants.hpp"
@@ -48,7 +47,7 @@ public:
 
 Mugger::Mugger(PlayerCityPtr city)
   : Human( city, walker::mugger ), _d( new Impl )
-{    
+{
   addAbility( Illness::create( 0.3, 4) );
 }
 

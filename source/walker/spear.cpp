@@ -20,7 +20,6 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
-#include "core/foreach.hpp"
 #include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 

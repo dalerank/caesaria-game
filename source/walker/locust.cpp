@@ -18,7 +18,6 @@
 #include "locust.hpp"
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "city/city.hpp"

@@ -37,13 +37,13 @@
 #include "advisor_education_window.hpp"
 #include "advisor_health_window.hpp"
 #include "advisor_entertainment_window.hpp"
-#include "advisor_religion_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
 #include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
 #include "image.hpp"
+#include "events/script_event.hpp"
 #include "gameautopause.hpp"
 #include "events/fundissue.hpp"
 #include "core/smartlist.hpp"
@@ -107,6 +107,8 @@ Parlor::Parlor( Widget* parent, int id )
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
+
+  setInternalName("ParlorWindow");
 }
 
 void Parlor::setModel(ParlorModel* model)
@@ -264,7 +266,8 @@ void ParlorModel::switchAdvisor(Advisor type)
     d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
   break;
   case advisor::religion:
-    d.advisorPanel = new advisorwnd::Religion( d.city, d.parent );
+    events::dispatch<events::ScriptFunc>( "OnShowAdvisorReligion" );
+    //d.advisorPanel = new advisorwnd::Religion( d.city, d.parent );
   break;
   case advisor::finance:
     d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );

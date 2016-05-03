@@ -19,7 +19,6 @@
 #include "http/mirrordownload.hpp"
 #include "http/httprequest.hpp"
 #include "constants.hpp"
-#include "core/foreach.hpp"
 #include "core/osystem.hpp"
 #include "vfs/filesystem.hpp"
 #include "util.hpp"
@@ -34,10 +33,10 @@ public:
 
 Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
   _d( new Impl ),
-	_options(options),
-	_downloadManager(new DownloadManager),
-	_executable( executable ), // convert that file to lower to be sure
-	_updatingUpdater(false)
+  _options(options),
+  _downloadManager(new DownloadManager),
+  _executable( executable ), // convert that file to lower to be sure
+  _updatingUpdater(false)
 {
   // Set up internet connectivity
   HttpConnectionPtr http( new HttpConnection() );
@@ -94,7 +93,7 @@ void Updater::setBinaryAsExecutable()
 
 void Updater::removeDownload(std::string itemname)
 {
-	_downloadQueue.removeItem( itemname );
+  _downloadQueue.removeItem( itemname );
 }
 
 void Updater::cleanupPreviousSession()
@@ -332,14 +331,14 @@ void Updater::DetermineLocalVersion()
 
   if (!_localVersions.empty())
   {
-    foreach( i, _localVersions )
+    for( auto& i :_localVersions)
     {
-      const std::string& version = i->first;
+      const std::string& version = i.first;
 
       Logger::warning( "Files matching version {}: {} (size: {})",
                        version.c_str(),
-                       i->second.numFiles,
-                       Util::getHumanReadableBytes(i->second.filesize).c_str() );
+                       i.second.numFiles,
+                       Util::getHumanReadableBytes(i.second.filesize).c_str() );
     }
   }
 }
@@ -568,7 +567,7 @@ void Updater::prepareUpdateStep(const std::string& prefix)
 
 void Updater::PerformUpdateStep()
 {
-	// Wait until the download is done
+  // Wait until the download is done
   while (_downloadManager->hasPendingDownloads())
   {
     // For catching terminations
@@ -691,9 +690,8 @@ std::size_t Updater::GetTotalDownloadSize()
 {
   std::size_t totalSize = 0;
 
-  foreach( i, _downloadQueue )
-  {
-    totalSize += i->second.filesize;
+  for (auto& i :_downloadQueue) {
+    totalSize += i.second.filesize;
   }
 
   return totalSize;

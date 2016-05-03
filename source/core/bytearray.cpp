@@ -85,11 +85,11 @@ static const unsigned long crc_table[1][256] =
 /* ========================================================================= */
 unsigned long ByteArray::crc32(unsigned long crc)
 {
-  if(size() == 0)
+  if(_data.size() == 0)
     return 0UL;
 
   crc = crc ^ 0xffffffffUL;
-  unsigned int len = size();
+  unsigned int len = _data.size();
   const char* buf = data();
   while( len >= 8 )
   {
@@ -128,18 +128,33 @@ unsigned long ByteArray::CRC32(unsigned long crc, const char * data, size_t leng
 }
 
 ByteArray::ByteArray()
-{  
+{
 }
 
 ByteArray::ByteArray(unsigned int cap)
 {
-  resize( cap );
+  _data.resize( cap );
 }
 
 ByteArray::ByteArray(const std::string& str)
 {
   *this = str;
 }
+
+ByteArray& ByteArray::operator=(const ByteArray& other)
+{
+  _data = other._data;
+  return *this;
+}
+
+bool ByteArray::operator ==(const ByteArray& other) const
+{
+  return _data == other._data;
+}
+
+void ByteArray::clear() { _data.clear(); }
+size_t ByteArray::size() const {  return _data.size(); }
+void ByteArray::resize(size_t value) { _data.resize(value); }
 
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -151,7 +166,7 @@ static inline bool is_base64(unsigned char c) { return (isalnum(c) || (c == '+')
 std::string ByteArray::base64() const
 {
   unsigned char const* bytes_to_encode = (unsigned char*)data();
-  unsigned int in_len = size();
+  unsigned int in_len = _data.size();
   std::string ret;
   int i = 0;
   int j = 0;
@@ -203,7 +218,7 @@ ByteArray ByteArray::fromBase64(std::string const& encoded_string)
   int in_ = 0;
   unsigned char char_array_4[4], char_array_3[3];
   ByteArray ret;
-  ret.reserve( encoded_string.size() );
+  ret._data.reserve( encoded_string.size() );
 
   while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_]))
   {
@@ -217,7 +232,7 @@ ByteArray ByteArray::fromBase64(std::string const& encoded_string)
       char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
       for (i = 0; (i < 3); i++)
-        ret.push_back( char_array_3[i] );
+        ret._data.push_back( char_array_3[i] );
       i = 0;
     }
   }
@@ -234,7 +249,7 @@ ByteArray ByteArray::fromBase64(std::string const& encoded_string)
     char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
     for (j = 0; (j < i - 1); j++)
-      ret.push_back( char_array_3[j] );
+      ret._data.push_back( char_array_3[j] );
   }
 
   return ret;
@@ -242,8 +257,8 @@ ByteArray ByteArray::fromBase64(std::string const& encoded_string)
 
 ByteArray& ByteArray::operator=(const std::string& str)
 {
-  resize( str.size() + 1, 0 );
-  memcpy( &(*this)[0], str.c_str(), str.size() );
+  _data.resize( str.size() + 1, 0 );
+  memcpy( data(), str.c_str(), str.size() );
   return *this;
 }
 
@@ -252,23 +267,38 @@ ByteArray ByteArray::copy(unsigned int start, int length) const
   ByteArray ret;
   if( length < 0 )
   {
-    ret.resize( math::clamp<int>( length - start, 0, length ) );
+    ret._data.resize( math::clamp<int>( length - start, 0, length ) );
   }
   else
   {
-    ret.resize( length );
+    ret._data.resize( length );
   }
 
   memcpy( ret.data(), data() + start, length );
   return ret;
 }
 
-const char* ByteArray::data() const {  return &(*this)[0]; }
-char* ByteArray::data(){  return &(*this)[0]; }
+const char* ByteArray::data() const { return _data.data(); }
+char* ByteArray::data(){ return _data.data(); }
 
 std::string ByteArray::toString() const
-{  
-  std::string ret( data() );
-  ret.resize( size() );
+{
+  std::string ret(data());
+  ret.resize(_data.size());
   return ret;
 }
+
+bool ByteArray::empty() const
+{
+  return _data.empty();
+}
+
+char&ByteArray::operator[](size_t index) { return _data[index]; }
+
+ByteArray& ByteArray::push_back(char c)
+{
+  _data.push_back(c);
+  return *this;
+}
+
+char& ByteArray::back() { return _data.back(); }

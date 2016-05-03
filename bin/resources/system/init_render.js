@@ -12,15 +12,7 @@ Render.prototype.picture = function () {
     return pic
 }
 
-Object.defineProperty(Picture.prototype, "w", {
-    get: function () {
-        return this.width();
-    }
-});
-Object.defineProperty(Picture.prototype, "h", {
-    get: function () {
-        return this.height();
-    }
-});
+Object.defineProperty(Picture.prototype, "w", {    get: function () {        return this.width();    }});
+Object.defineProperty(Picture.prototype, "h", {    get: function () {        return this.height();   }});
 
 var g_render = new Render();

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_PUSHBUTTON_H_INCLUDE_
 #define __CAESARIA_PUSHBUTTON_H_INCLUDE_
@@ -32,7 +32,7 @@ class PushButton : public Widget
 public:
   typedef enum { greyBorderLine, greyBorderLineSmall, whiteBorderUp,
                  blackBorderUp, noBackground, greyBorderLineBig,
-                 flatBorderLine, greyBorderLineFit } BackgroundStyle;
+                 flatBorderLine, greyBorderLineFit, brownBorderOnly } BackgroundStyle;
 
   PushButton(Widget*);
 
@@ -103,6 +103,7 @@ public:
 
   virtual void setTextOffset(const Point& offset);
   virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=NColor());
+  virtual void canvasDraw(const gfx::Picture& pic, const Point& point);
 
   int getTextWidth(const std::string& text) const;
   void fitToImage();

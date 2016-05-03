@@ -22,7 +22,6 @@
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
 #include "game/resourcegroup.hpp"
@@ -59,7 +58,7 @@ WMerchantPtr WMerchant::create( EmpirePtr empire, TraderoutePtr route, const std
 
   ret->_d->route = route;
   bool startCity = (route->beginCity()->name() == start);
-  
+
   ret->_d->sells.resize( sell );
   ret->_d->sells.storeAll( sell );
 
@@ -73,7 +72,7 @@ WMerchantPtr WMerchant::create( EmpirePtr empire, TraderoutePtr route, const std
   ret->_d->destCity = destCity->name();
 
   ret->_d->steps = route->points( !startCity );
-  ret->_d->step = 0;  
+  ret->_d->step = 0;
 
   bool noWayForMe = ret->_d->steps.empty();
   if( noWayForMe )

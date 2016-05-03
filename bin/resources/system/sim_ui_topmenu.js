@@ -139,23 +139,13 @@ sim.ui.topmenu.help.showHotkeys = function() {
   wnd.setModal();
 }
 
-sim.ui.topmenu.file.restart = function() {
-  game.eventmgr.dispatchEvent(game.events.OnLevelDestroyed, {});
-  g_session.setMode(g_config.level.res_restart);
-}
-
-sim.ui.topmenu.file.exitToMainMenu = function() {
-  game.eventmgr.dispatchEvent(game.events.OnLevelDestroyed, {});
-  g_session.setMode(g_config.level.res_menu);
-}
-
 sim.ui.topmenu.file.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_file##"));
     m.moveToIndex(0)
-    m.addItemWithCallback("##gmenu_file_restart##",  sim.ui.topmenu.file.restart );
+    m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
     m.addItemWithCallback("##mainmenu_loadgame##",   function() { lobby.ui.loadgame.loadsave()})
     m.addItemWithCallback("##gmenu_file_save##",     function() { game.ui.dialogs.savegame()})
-    m.addItemWithCallback("##gmenu_file_mainmenu##", sim.ui.topmenu.file.exitToMainMenu )
+    m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
     m.addItemWithCallback("##gmenu_exit_game##",     function() { game.ui.dialogs.requestExit()})
 }
 

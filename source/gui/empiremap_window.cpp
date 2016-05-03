@@ -40,7 +40,7 @@ namespace internal
 
 void drawLines(Engine &painter, const Lines& lines)
 {
-  for( auto line : lines )
+  for( auto& line : lines )
     painter.drawLine( line.color, line.begin, line.end );
 }
 
@@ -132,11 +132,9 @@ public:
       }
 
       const world::Route& way = mobject->way();
-      if( !way.empty() )
-      {
-        Point lastPos = way[ way.step ];
-        for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
-        {
+      if (!way.empty()) {
+        Point lastPos = way[way.step];
+        for (size_t k = way.step+1; k < way.size(); k++) {
           lines.add( ColorList::aliceBlue, offset + lastPos, offset + way[ k ] );
           lastPos = way[ k ];
         }

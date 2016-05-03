@@ -20,7 +20,6 @@
 #include "events/event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap_config.hpp"

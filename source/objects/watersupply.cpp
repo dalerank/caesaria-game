@@ -27,7 +27,6 @@
 #include "core/variant_map.hpp"
 #include "walker/serviceman.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -102,13 +101,13 @@ void Reservoir::broke()
 
 Reservoir::Reservoir()
     : WaterSource( object::reservoir, Size::square( 3 ) )
-{  
+{
   _isWaterSource = false;
   setPicture( info().randomPicture( size() ) );
-  
+
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
- 
+
   _animation().load( ResourceGroup::utilitya, 35, 8);
   _animation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
   _animation().setDelay( 11 );
@@ -175,7 +174,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   _animation().update( time );
-  
+
   // takes current animation frame and put it into foreground
   _fgPicture( 0 ) = _animation().currentFrame();
 }
@@ -232,12 +231,12 @@ void WaterSource::addWater( const WaterSource& source )
   }
 }
 
-bool WaterSource::haveWater() const{  return _d->water > 0;} 
+bool WaterSource::haveWater() const{  return _d->water > 0;}
 
 void WaterSource::timeStep( const unsigned long time )
 {
   if( game::Date::isDayChanged() )
-  {  
+  {
     _d->daysWithoutWater++;
     if( _d->daysWithoutWater > 5 )
     {
@@ -264,7 +263,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     if( tilemap.isInside( p ) )
     {
       auto ws = tilemap.at( p ).overlay<WaterSource>();
-    
+
       if( ws.isValid() )
       {
         if( ws->water() < water() )

@@ -17,7 +17,6 @@
 
 #include "empiremap.hpp"
 #include "core/logger.hpp"
-#include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/tilepos.hpp"
@@ -28,7 +27,7 @@ namespace world
 {
 
 struct EmTile
-{  
+{
   TilePos pos;
   EmpireMap::TerrainType terrain = EmpireMap::trUnknown;
 
@@ -138,7 +137,7 @@ void EmpireMap::load(const VariantMap& stream)
   }
 
   _d->resize( stream.get( "size" ).toSize() );
-  _d->tilesize = stream.get( "tilesize" ).toSize();  
+  _d->tilesize = stream.get( "tilesize" ).toSize();
 
   VariantList tiles = stream.get( "tiles" ).toList();
   int index = 0;
