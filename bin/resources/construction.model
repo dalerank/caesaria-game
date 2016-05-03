@@ -699,6 +699,7 @@
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 20
     sound : [ "military_acad", 1 ]
+    image : [ "security", 18 ]
     class : "military"
   },
 

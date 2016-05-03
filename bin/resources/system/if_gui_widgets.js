@@ -18,11 +18,18 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "screenx", { get: function() { return this.screenLeft(); } } );
   Object.defineProperty(objProto, "screeny", { get: function() { return this.screenTop(); } } );
   objProto.find = function(name) { return this.findChild(name,true); };
+  objProto.canvasDraw = function() {
+    if (arguments.length == 2) {
+      this.canvasDraw_pic(arguments[0],arguments[1]);
+    } else if (arguments.length == 4) {
+      this.canvasDraw_text(arguments[0],arguments[1],arguments[2],arguments[3]);
+    }
+  };
 
   Object.defineProperty(objProto, "geometry", {
     set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); },
     get: function () { return this.relativeRect(); }
-  })
+  });
 
   Object.defineProperty(objProto, "position", { set: function (point) {
     if (arguments.length==1) {
@@ -92,6 +99,24 @@ function UpdateButtonPrototype(objProto) {
         }
       }
     } )
+
+   objProto.addLabel = function(rx, ry, rw, rh, text, font) {
+     var lb = new Label(this);
+     lb.geometry = {x:rx, y:ry, w:rw, h:rh};
+     lb.text = text;
+     lb.subElement = true;
+     if (font != undefined)
+      lb.font = font;
+     return lb;
+   }
+
+   objProto.addImage = function(rx, ry, pic) {
+     var im = new Image(this);
+     im.geometry = {x:rx, y:ry, w:rx+pic.w, h:y+pic.h};
+     im.picture = pic;
+     im.subElement = true;
+     return im;
+   }
  }
 
 //*************************** button class end***************************************//

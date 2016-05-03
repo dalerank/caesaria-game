@@ -650,6 +650,7 @@
     cost : 1000,
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 20
+    image : [ "security", 18 ]
     class : "military"
   },
 

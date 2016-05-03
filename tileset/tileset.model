@@ -513,7 +513,7 @@
         {
           type : "atlas"
           folder : "/resources/security"
-          files : [ "security_*" ]
+          files : [ "*" ]
         }
 
         wahrf :

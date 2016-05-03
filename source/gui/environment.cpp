@@ -233,7 +233,17 @@ Widget* Ui::getFocus() const { return _d->focused.element.object(); }
 
 bool Ui::isHovered( const Widget* element )
 {
-  return element != NULL ? (_d->hovered.current.object() == element) : false;
+  if (element != NULL) {
+    if (_d->hovered.current.isValid()) {
+      if (_d->hovered.current->isSubElement()) {
+        return _d->hovered.noSubelement.object() == element;
+      }
+    } else {
+     return _d->hovered.current.object() == element;
+    }
+  }
+
+  return false;
 }
 
 Widget* Ui::findWidget(int id)
@@ -324,6 +334,7 @@ void Ui::_updateHovered( const Point& mousePos )
   if( _d->hovered.current != rootWidget() )
   {
     _d->hovered.noSubelement = _d->hovered.current;
+
     while ( _d->hovered.noSubelement.isValid() && _d->hovered.noSubelement->isSubElement() )
     {
       _d->hovered.noSubelement = _d->hovered.noSubelement->parent();
@@ -615,7 +626,7 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
 
     element = standart( rootWidget, hovered.object(), cursor );
     element->addProperty( "tooltip", 1 );
-    element->setGeometry( element->relativeRect() + Point( 2, 5 ) );
+    element->setGeometry( element->relativeRect() );
     element->setVisible( showTooltips );
     lastPos = Point();
   }
@@ -626,9 +637,9 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
 
     if( lastPos != cursor )
     {
-      Rect geom = element->absoluteRect();
-      geom.constrainTo( rootWidget.absoluteRect() );
-      element->setGeometry( geom );
+      Rect geom(cursor + Point(2, 5), element->size());
+      geom.constrainTo(rootWidget.absoluteRect());
+      element->setGeometry(geom);
     }
 
     // got invisible or removed in the meantime?

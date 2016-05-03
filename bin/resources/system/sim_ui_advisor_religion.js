@@ -25,8 +25,6 @@ sim.ui.advisors.religion.getAvice = function() {
   if( !needSecondReligion && !needThirdReligion && !needBasicReligion) {
     text = "this_time_you_city_not_need_religion";
 
-    DivinityList gods = rome::Pantheon::instance().all();
-
     for(var i in game.gods.roman) {
       var god = game.gods.roman[i];
       if( god.relation() < 75 ) {
@@ -59,14 +57,22 @@ sim.ui.advisors.religion.getAvice = function() {
   return text;
 }
 
+sim.ui.advisors.hide = function() {
+  var window = g_ui.find("CurrentAdvisor")
+
+  if (window != null)
+    window.deleteLater();
+}
+
 sim.ui.advisors.religion.show = function() {
   var parlor = g_ui.find("ParlorWindow");
 
-  if (sim.ui.advisors.current != null)
-    sim.ui.advisors.current.deleteLater();
+  sim.ui.advisors.hide();
 
   var resolution = g_session.resolution;
   var w = new Window(parlor);
+  w.name = "CurrentAdvisor";
+
   w.geometry = {x:0, y:0, w:640, h:290};
   w.title = _u("religion_advisor");
   w.x = (resolution.w - w.w)/2;
@@ -76,8 +82,8 @@ sim.ui.advisors.religion.show = function() {
   var lbIcon = w.addLabel(10, 10, 50, 50);
   lbIcon.icon = {rc:"paneling", index:264};
 
-  var lbBlackframe = w.addLabel(35, 62, w.w-70, 130);
-  lbBlackframe.bgtype = "blackFrame";
+  var lbBlackframe = w.addLabel(35, 64, w.w-70, 130);
+  lbBlackframe.style = "blackFrame";
 
   var lbTemplesText = w.addLabel(268, 32, 100, 20);
   lbTemplesText.font = "FONT_1";
@@ -99,9 +105,9 @@ sim.ui.advisors.religion.show = function() {
   lbMoodText.font = "FONT_1";
   lbMoodText.text = "##rladv_mood_t##";
 
-  var lbReligionAdvice = w.addLabel(40, w.h-140, w.w-40, 130);
+  var lbReligionAdvice = w.addLabel(40, w.h-100, w.w-40, 90);
   lbReligionAdvice.multiline = true;
-  lbReligionAdvice.text = sim.ui.advisors.religion.getAdvice();
+  lbReligionAdvice.text = sim.ui.advisors.religion.getAvice();
   lbReligionAdvice.font = "FONT_1";
 
   w.btnHelp = w.addHelpButton(12, w.h - 36);
@@ -118,28 +124,26 @@ sim.ui.advisors.religion.show = function() {
       var month2lastFest = god.lastFestivalDate().monthsTo(g_session.date);
 
       var shortDesc = _format("{0}_desc", god.iname);
-      btn.canvasDraw( god.name(), {x:0, y:0}, "FONT_1_WHITE" );
-      btn.canvasDraw( "(" + _ut(shortDesc) + ")", {x:80, y:0}, "FONT_1");
-      btn.canvasDraw( small_n, {x:220, y:0}, "FONT_1_WHITE" );
-      btn.canvasDraw( big_n, {x:280, y:0}, "FONT_1_WHITE" );
-      btn.canvasDraw( month2lastFest, {x:350, y:0}, "FONT_1_WHITE" );
+      btn.addLabel(0, 0, 80, 20, god.name(), "FONT_1_WHITE");
+      btn.addLabel(80, 0, 140, 20, "(" + _ut(shortDesc) + ")");
+      btn.addLabel(220, 0, 60, 20, small_n);
+      btn.addLabel(280, 0, 70, 20, big_n);
+      btn.addLabel(350, 0, 50, 20, month2lastFest);
 
       var wrathImage = g_render.picture("paneling", 334);
       for (var k=0; k < god.wrathPoints() / 15; k++ )
-        btn.canvasDraw( wrathImage, { x:400 + k * 15, y:0} );
+        btn.addImage(400 + k * 15, 0, wrathImage);
     }
 
     var moodOffsetX = 400 + god.wrathPoints() / 15 * 15;
-    canvasDraw( _( d.divinity->moodDescription() ), Point( moodOffsetX, 0 ) );
+    btn.addLabel(moodOffsetX, 0, 100, 20, _ut(god.moodDescription) );
   }
 
-  var y=65;
+  var ry=5;
   for (var i in game.gods.roman) {
     var god = game.gods.roman[i];
 
-    w.addReligionButton({42, y}, god);
-    y += 20;
+    w.addReligionButton({x:12, y:ry}, god);
+    ry += 20;
   }
-
-  sim.ui.advisors.current = w;
 }
