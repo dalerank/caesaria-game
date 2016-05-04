@@ -391,8 +391,11 @@ game.ui.infobox.aboutRaw = function(location) {
   ibox.title = _u(factory.typename);
   ibox.overlay = factory;
 
-  var lbProgress = ibox.addLabel(20, 45, ibox.w-32,24);
+  var lbProgress = ibox.addLabel(20, 45, ibox.w/2,24);
   lbProgress.text = _format("{0} {1}%", _ut("rawm_production_complete_m"), factory.progress());
+
+  var lbProductivity = ibox.addLabel(ibox.w/2, 45, ibox.w/2-32,24);
+  lbProductivity.text = _format("{0} {1}%", _ut("effiency"), factory.effiency);
 
   var lbAbout = ibox.addLabel(16, 70, ibox.w-32, 24);
   lbAbout.multiline = true;
