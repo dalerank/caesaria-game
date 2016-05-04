@@ -294,20 +294,15 @@ Entries Entries::filter(int flags, const std::string& options)
     if( isFile ) { mayAdd = !item.isDirectory; }
     if( !mayAdd && isDirectory ) { mayAdd = item.isDirectory; }
 
-    if( mayAdd && !item.isDirectory && checkFileExt )
-    {
-      if( exts.size() > 1 )
-      {
-        mayAdd = exts.contains( item.fullpath.extension() );
-      }
-      else
-      {
-        mayAdd = item.fullpath.isMyExtension( options );
+    if (mayAdd && !item.isDirectory && checkFileExt) {
+      if( exts.size() > 1 ) {
+        mayAdd = exts.contain(item.fullpath.extension());
+      } else {
+        mayAdd = item.fullpath.isMyExtension(options);
       }
     }
 
-    if( mayAdd )
-    {
+    if (mayAdd) {
       ret._d->files.push_back( item );
     }
   }
@@ -370,8 +365,7 @@ StringArray Entries::Items::files(const std::string& ext) const
   StringArray ret;
 
   bool any = ext.empty();
-  for (auto& item : *this)
-  {
+  for (auto& item : *this) {
     if (any || item.fullpath.isMyExtension( ext ))
       ret << item.fullpath.toString();
   }
@@ -386,11 +380,9 @@ StringArray Entries::Items::folders(bool full) const
   StringArray excludeFolders;
   excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
 
-  for (const auto& item : *this)
-  {
-    if (item.isDirectory)
-    {
-      if (excludeFolders.contains(item.name.toString()))
+  for (const auto& item : *this) {
+    if (item.isDirectory) {
+      if (excludeFolders.contain(item.name.toString()))
         continue;
 
       ret << (full ? item.fullpath.toString() : item.name.toString());

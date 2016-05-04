@@ -21,9 +21,6 @@
 #include "core/utils.hpp"
 
 #include <map>
-//#include <boost/algorithm/string/predicate.hpp>
-//#include <boost/lexical_cast.hpp>
-//#include <boost/algorithm/string/erase.hpp> // grayman #3208
 
 namespace updater
 {
@@ -31,31 +28,31 @@ namespace updater
 // Information about a TDM mirror
 struct Mirror
 {
-	// Display name, e.g. "KeepOfMetalAndGold"
-	std::string displayName;
+  // Display name, e.g. "KeepOfMetalAndGold"
+  std::string displayName;
 
-	// URL prefix, e.g. "http://www.keepofmetalandgold.com/files/tdm/"
-	std::string	url;
+  // URL prefix, e.g. "http://www.keepofmetalandgold.com/files/tdm/"
+  std::string	url;
 
-	// Probability [0..1]
-	float weight;
+  // Probability [0..1]
+  float weight;
 
-	Mirror(const std::string& displayName_,
-				 const std::string& url_,
-				 float weight_) :
-		displayName(displayName_),
-		url(url_),
-		weight(weight_)
-	{
-		// grayman #3208 - remove all spaces in the url
-		url = utils::replace( url, " ", "");
+  Mirror(const std::string& displayName_,
+         const std::string& url_,
+         float weight_) :
+    displayName(displayName_),
+    url(url_),
+    weight(weight_)
+  {
+    // grayman #3208 - remove all spaces in the url
+    url = utils::replace( url, " ", "");
 
-		// url should terminate with "/"
-		if( *url.rbegin() != '/' )
-		{
-			url += "/";
-		}
-	}
+    // url should terminate with "/"
+    if( *url.rbegin() != '/' )
+    {
+      url += "/";
+    }
+  }
 };
 
 /**
@@ -67,56 +64,56 @@ struct Mirror
 class MirrorList : public std::vector<Mirror>, public IniFile::SectionVisitor
 {
 public:
-	MirrorList()
-	{}
-	
-	virtual ~MirrorList() {}
+  MirrorList()
+  {}
 
-	// Construct this mirror list from the given ini file
-	MirrorList(IniFilePtr iniFile)
-	{
-		iniFile->ForeachSection(*this);
+  virtual ~MirrorList() {}
 
-		NormaliseWeights();
-	}
+  // Construct this mirror list from the given ini file
+  MirrorList(IniFilePtr iniFile)
+  {
+    iniFile->ForeachSection(*this);
 
-	void VisitSection(const IniFile& iniFile, const std::string& sectionName)
-	{
-		if( !utils::startsWith( sectionName, "Mirror ") )
-		{
-			return; // ignore non-Mirror sections
-		}
+    NormaliseWeights();
+  }
 
-		push_back( Mirror( sectionName.substr(7), // displayname
-											 iniFile.GetValue( sectionName, "url" ),
-											 utils::toFloat( iniFile.GetValue(sectionName, "weight") ))
-						 );
-	}
+  void VisitSection(const IniFile& iniFile, const std::string& sectionName)
+  {
+    if( !utils::startsWith( sectionName, "Mirror ") )
+    {
+      return; // ignore non-Mirror sections
+    }
+
+    push_back( Mirror( sectionName.substr(7), // displayname
+                       iniFile.GetValue( sectionName, "url" ),
+                       utils::toFloat( iniFile.GetValue(sectionName, "weight") ))
+             );
+  }
 
 private:
-	void NormaliseWeights()
-	{
-		// Calculate weight sum
-		float sum = 0;
+  void NormaliseWeights()
+  {
+    // Calculate weight sum
+    float sum = 0;
 
-		for (const_iterator i = begin(); i != end(); ++i)
-		{
-			sum += i->weight;
-		}
+    for (const_iterator i = begin(); i != end(); ++i)
+    {
+      sum += i->weight;
+    }
 
-		// Normalise weights
-		if (sum > 0)
-		{
-			for (iterator i = begin(); i != end(); ++i)
-			{
-				i->weight /= sum;
-			}
-		}
-		else
-		{
-			Logger::warning( "Invalid weights, total sum <= 0" );
-		}
-	}
+    // Normalise weights
+    if (sum > 0)
+    {
+      for (iterator i = begin(); i != end(); ++i)
+      {
+        i->weight /= sum;
+      }
+    }
+    else
+    {
+      Logger::warning( "Invalid weights, total sum <= 0" );
+    }
+  }
 };
 
 } // namespace

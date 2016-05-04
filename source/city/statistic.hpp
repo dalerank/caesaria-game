@@ -412,13 +412,12 @@ inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
 
   if( start == TilePos::invalid() )
   {
-    const WalkerList& all =_parent.rcity.walkers();
-    walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
+    walkersInArea.append(_parent.rcity.walkers(), false);
   }
   else if( stop == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
-    walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
+    walkersInArea.append(wlkOnTile, false);
   }
   else
   {
@@ -426,7 +425,7 @@ inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
     for( auto& tile : area)
     {
       const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
-      walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
+      walkersInArea.append(wlkOnTile, false);
     }
   }
 
@@ -521,7 +520,7 @@ inline SmartList<T> Statistic::_Objects::find( object::Group group ) const
     SmartPtr<T> b = item.as<T>();
     if( b.isValid() && (b->group() == group || group == object::group::any ) )
     {
-      ret.push_back( b );
+      ret.push_back(b);
     }
   }
 

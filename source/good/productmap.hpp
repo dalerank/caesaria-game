@@ -21,11 +21,12 @@
 
 #include "good.hpp"
 #include "core/variant_map.hpp"
+#include "core/serialized_map.hpp"
 
 namespace good
 {
 
-class ProductMap : public std::map<Product,int>
+class ProductMap : public Map<Product,int>
 {
 public:
   ProductMap& operator+=( const ProductMap& other );
@@ -35,5 +36,5 @@ public:
 };
 
 }//end namespace good
-    
+
 #endif //_CAESARIA_GOOD_PRODUCTMAP_H_INCLUDE_

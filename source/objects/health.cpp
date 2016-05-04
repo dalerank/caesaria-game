@@ -29,7 +29,7 @@
 
 using namespace gfx;
 
-class ServedHouses : public std::map<int, int>
+class ServedHouses : public Map<int, int>
 {
 public:
   VariantList save() const
@@ -72,8 +72,8 @@ HealthBuilding::HealthBuilding(const Service::Type service, const object::Type t
 
 }
 
-void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
-{  
+void HealthBuilding::buildingsServed(const SmartSet<Building>& buildings, ServiceWalkerPtr walker)
+{
   for( auto building : buildings )
   {
     if( building->type() == object::house )

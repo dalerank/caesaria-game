@@ -20,6 +20,7 @@
 
 #include "cityservice.hpp"
 #include "core/time.hpp"
+#include "core/vector_extension.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -43,7 +44,7 @@ public:
                  favour, prosperity, blackHouses,
                  paramsCount } ParamName;
 
-  class Parameters : public std::vector<int>
+  class Parameters : public Array<int>
   {
   public:
     DateTime date;
@@ -61,14 +62,14 @@ public:
     int value;
   };
 
-  class History : public std::vector<Parameters>
+  class History : public Array<Parameters>
   {
   public:
     VariantMap save() const;
     void load( const VariantMap& vm );
   };
 
-  class MaxParameters : public std::vector< MaxParameterValue >
+  class MaxParameters : public Array<MaxParameterValue>
   {
   public:
     VariantMap save() const;

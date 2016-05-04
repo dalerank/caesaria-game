@@ -22,7 +22,7 @@
 #include "predefinitions.hpp"
 #include "core/enumerator.hpp"
 #include "core/utils.hpp"
-#include <set>
+#include "core/serialized_map.hpp"
 
 namespace object
 {
@@ -212,7 +212,7 @@ typedef std::vector<Group> Groups;
 typedef std::vector<Type> Types;
 std::string toString( const Type& t);
 
-class TypeSet : public std::set<Type>
+class TypeSet : public Set<Type>
 {
 public:
   VariantList save() const;

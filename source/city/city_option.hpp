@@ -22,7 +22,7 @@
 #include "core/serialized_map.hpp"
 
 namespace city
-{  
+{
 
 PlayerCity::OptionType findOption( const std::string& name);
 

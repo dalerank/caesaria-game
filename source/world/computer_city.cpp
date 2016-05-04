@@ -144,10 +144,7 @@ struct PriceInfo
   }
 };
 
-class Prices : public std::set<PriceInfo>
-{
-public:
-};
+typedef std::set<PriceInfo> Prices;
 
 struct BuildingInfo
 {
@@ -208,7 +205,7 @@ struct BuildingInfo
   }
 };
 
-class Buildings : public std::vector<BuildingInfo>
+class Buildings : public Array<BuildingInfo>
 {
 public:
   int count( object::Type type )

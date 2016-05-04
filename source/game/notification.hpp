@@ -13,13 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_NOTIFICATION_H_INCLUDE_
 #define _CAESARIA_NOTIFICATION_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
+#include "core/vector_extension.hpp"
 #include "core/variant_map.hpp"
 
 namespace notification
@@ -46,7 +47,7 @@ struct Note
   void load(const VariantList &stream);
 };
 
-class Array : public std::vector< Note >
+class Notes : public Array<Note>
 {
 public:
   void eraseOld( const DateTime& date, int ageMonth );
@@ -57,6 +58,6 @@ Note create(const VariantList &stream);
 }//end namespace
 
 typedef notification::Note Notification;
-typedef notification::Array Notifications;
+typedef notification::Notes Notifications;
 
 #endif //_CAESARIA_NOTIFICATION_H_INCLUDE_

@@ -24,6 +24,7 @@
 #include "core/position.hpp"
 #include "core/signals.hpp"
 #include "core/time.hpp"
+#include "core/vector_extension.hpp"
 #include "core/variant.hpp"
 
 namespace city
@@ -47,7 +48,7 @@ struct ScribeMessage
 class Scribes
 {
 public:
-  class Messages : public std::list<ScribeMessage>
+  class Messages : public Array<ScribeMessage>
   {
   public:
     VariantMap save() const;

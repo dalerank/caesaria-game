@@ -145,7 +145,7 @@ public:
   }
 };
 
-class EmpireMapObjects : public std::vector<EmpireMapObjectView>
+class EmpireMapObjects : public Array<EmpireMapObjectView>
 {
 public:
   VariantMap options;
@@ -165,15 +165,15 @@ public:
                           .exclude<world::MovableObject>()
                           .exclude<world::City>();
     for( auto obj : objects )
-      emplace_back( obj, options );
+      push_back({obj, options});
 
     auto mobjects = empire->objects().select<world::MovableObject>();
     for( auto obj : mobjects )
-      emplace_back( obj.as<world::Object>(), options );
+      push_back({obj.as<world::Object>(), options});
 
     auto cities = empire->cities();
     for( auto obj : cities )
-      emplace_back( obj.as<world::Object>(), options );
+      push_back({obj.as<world::Object>(), options});
 
     dirty = false;
   }

@@ -30,10 +30,12 @@ namespace utils
 template<class ObjectList, class Set>
 void excludeByType( ObjectList& list, const Set& set )
 {
-  for( auto it=list.begin(); it != list.end(); )
-  {
-    if( set.count( (*it)->type() ) > 0 ) { it=list.erase( it ); }
-    else { ++it; }
+  for (auto it=list.begin(); it != list.end();) {
+    if( set.count( (*it)->type() ) > 0 ) {
+      it=list.erase( it );
+    } else {
+      ++it;
+    }
   }
 }
 

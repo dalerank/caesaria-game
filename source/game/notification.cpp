@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2016 Dalerank, dalerankn8@gmail.com
 
 #include "notification.hpp"
 #include "gamedate.hpp"
@@ -46,7 +46,7 @@ Note create(const VariantList &stream)
   return ret;
 }
 
-void Array::eraseOld(const DateTime& date, int ageMonth)
+void Notes::eraseOld(const DateTime& date, int ageMonth)
 {
   for( auto it=begin(); it != end(); )
   {
@@ -55,7 +55,7 @@ void Array::eraseOld(const DateTime& date, int ageMonth)
   }
 }
 
-bool Array::contain( Type type) const
+bool Notes::contain(Type type) const
 {
   for( auto& notification : *this )
   {

@@ -155,14 +155,13 @@ void Treasury::updateHistory( const DateTime& date )
   }
 
   IssuesValue& step = _d->history.front();
-  step[ Issue::balance ] = _d->money;
-  step[ Issue::cityProfit ] = profit();
+  step[Issue::balance    ] = _d->money;
+  step[Issue::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
-  _d->history.insert( _d->history.begin(), IssuesValue() );
+  _d->history.push_front(IssuesValue());
 
-  if( _d->history.size() > 2 )
-  {
+  if (_d->history.size() > 2) {
     _d->history.pop_back();
   }
 }
@@ -173,7 +172,7 @@ int Treasury::getIssueValue(Issue::Type type, int age ) const
     return 0;
 
   const IssuesValue& step = _d->history[ age ];
-     
+
   IssuesValue::const_iterator it = step.find( type );
   return ( it == step.end() ) ? 0 : it->second;
 }

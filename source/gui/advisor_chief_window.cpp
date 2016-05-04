@@ -107,7 +107,7 @@ public:
     _reasons = reasons;
     auto r = _reasons.random();
     setFont( "FONT_2", r.color );
-    setText( _( r ) );
+    setText( _(r.str) );
   }
 
 protected:
@@ -128,7 +128,7 @@ class Chief::Impl
 {
 public:
   class InformationRows
-     : public std::map<Advice::Type,InfomationRow*>
+     : public Map<Advice::Type,InfomationRow*>
   {
   public:
     Point startPoint = { 22, 60 };

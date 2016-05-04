@@ -43,7 +43,7 @@ struct ReserveInfo
   }
 };
 
-class Reservations : public std::set<ReserveInfo>
+class Reservations : public Set<ReserveInfo>
 {
   static const ReserveInfo invalid;
 public:

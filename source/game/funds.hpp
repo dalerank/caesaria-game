@@ -23,7 +23,9 @@
 #include "core/signals.hpp"
 #include "good/good.hpp"
 #include "predefinitions.hpp"
+#include "core/vector_extension.hpp"
 #include "economy_issue.hpp"
+#include "core/serialized_map.hpp"
 
 namespace econ
 {
@@ -63,14 +65,14 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-class IssuesValue : public std::map< Issue::Type, int >
+class IssuesValue : public Map< Issue::Type, int >
 {
 public:
   VariantList save() const;
   void load( const VariantList& stream );
 };
 
-class IssuesHistory : public std::vector< IssuesValue >
+class IssuesHistory : public Array<IssuesValue >
 {
 public:
   VariantList save() const;

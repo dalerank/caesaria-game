@@ -246,8 +246,8 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
     ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
     for( auto bld : reachedBuildings )
     {
-      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
-      if (rc.second == true)
+      bool added = doneBuildings.insert( bld );
+      if (added)
       {
         // the building has not been evaluated yet
         int oneTileValue = bld->evaluateService( this );
@@ -272,8 +272,8 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
     ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
     for( auto bld : reachedBuildings )
     {
-      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
-      if (rc.second == true)
+      bool added = doneBuildings.insert( bld );
+      if (added)
       {
         // the building has not been reserved yet
         bld->reserveService(_d->service);
@@ -328,17 +328,15 @@ void ServiceWalker::_centerTile()
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
-  for( auto b : reachedBuildings )
-    b->applyService( this );
+  for (auto b : reachedBuildings)
+    b->applyService(this);
 
-  if( base().is<ServiceBuilding>() )
-  {
+  if (base().is<ServiceBuilding>()) {
     auto servBuilding = base().as<ServiceBuilding>();
-    servBuilding->buildingsServed( reachedBuildings, this );
+    servBuilding->buildingsServed(reachedBuildings, this);
   }
 
-  if( _d->lastHousePos == pos() )
-  {
+  if (_d->lastHousePos == pos()) {
     deleteLater();
   }
 }

@@ -78,28 +78,28 @@ void Options::load(const VariantList& stream)
 {
   SerializedMap::load( stream );
 
-  resetIfNot( PlayerCity::climateType, game::climate::central );
-  resetIfNot( PlayerCity::adviserEnabled, 1 );
-  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
-  resetIfNot( PlayerCity::godEnabled, 1 );
-  resetIfNot( PlayerCity::zoomEnabled, 1 );
-  resetIfNot( PlayerCity::zoomInvert, 1 );
-  resetIfNot( PlayerCity::fireKoeff, 100 );
-  resetIfNot( PlayerCity::collapseKoeff, 100 );
-  resetIfNot( PlayerCity::barbarianAttack, 1 );
-  resetIfNot( PlayerCity::legionAttack, 1 );
-  resetIfNot( PlayerCity::c3gameplay, 0 );
-  resetIfNot( PlayerCity::warfNeedTimber, 1 );
-  resetIfNot( PlayerCity::showGodsUnhappyWarn, 1);
-  resetIfNot( PlayerCity::claypitMayFloods, 1);
-  resetIfNot( PlayerCity::minesMayCollapse, 1);
-  resetIfNot( PlayerCity::riversideAsWell, 1);
-  resetIfNot( PlayerCity::soldiersHaveSalary, 1);
-  resetIfNot( PlayerCity::housePersonalTaxes, 1);
-  resetIfNot( PlayerCity::cutForest2timber, 1 );
-  resetIfNot( PlayerCity::ironInRocks, 1 );
-  resetIfNot( PlayerCity::svkBorderEnabled, 1 );
-  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
+  resetIfNot(PlayerCity::climateType, game::climate::central );
+  resetIfNot(PlayerCity::adviserEnabled, 1 );
+  resetIfNot(PlayerCity::fishPlaceEnabled, 1 );
+  resetIfNot(PlayerCity::godEnabled, 1 );
+  resetIfNot(PlayerCity::zoomEnabled, 1 );
+  resetIfNot(PlayerCity::zoomInvert, 1 );
+  resetIfNot(PlayerCity::fireKoeff, 100 );
+  resetIfNot(PlayerCity::collapseKoeff, 100 );
+  resetIfNot(PlayerCity::barbarianAttack, 1 );
+  resetIfNot(PlayerCity::legionAttack, 1 );
+  resetIfNot(PlayerCity::c3gameplay, 0 );
+  resetIfNot(PlayerCity::warfNeedTimber, 1 );
+  resetIfNot(PlayerCity::showGodsUnhappyWarn, 1);
+  resetIfNot(PlayerCity::claypitMayFloods, 1);
+  resetIfNot(PlayerCity::minesMayCollapse, 1);
+  resetIfNot(PlayerCity::riversideAsWell, 1);
+  resetIfNot(PlayerCity::soldiersHaveSalary, 1);
+  resetIfNot(PlayerCity::housePersonalTaxes, 1);
+  resetIfNot(PlayerCity::cutForest2timber, 1 );
+  resetIfNot(PlayerCity::ironInRocks, 1 );
+  resetIfNot(PlayerCity::svkBorderEnabled, 1 );
+  resetIfNot(PlayerCity::difficulty, game::difficulty::usual );
 }
 
 void Options::resetIfNot( int name, int value)

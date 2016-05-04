@@ -179,10 +179,10 @@ Picture Info::randomPicture(int size) const
 
 bool Info::havePicture(const std::string& name) const
 {
-  for( auto& pics : _d->pictures )
+  for (auto& pics : _d->pictures)
   {
-    bool found = pics.second.contains( name );
-    if( found )
+    bool found = pics.second.contain(name);
+    if (found)
       return true;
   }
 

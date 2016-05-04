@@ -23,6 +23,7 @@
 #include "gfx/tilepos.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant_map.hpp"
+#include "core/serialized_map.hpp"
 
 namespace good
 {
@@ -45,14 +46,14 @@ struct SmInfo
 typedef std::vector<TurnoverInfo> Turnovers;
 typedef std::vector<SmInfo> SmHistory;
 
-class StockInfoMap : public std::map<Product,SmHistory>
+class StockInfoMap : public Map<Product,SmHistory>
 {
 public:
   VariantMap save() const;
-  void load( const VariantMap& stream );
+  void load(const VariantMap& stream);
 };
 
-class TurnoverDetails : public std::map<unsigned int,StockInfoMap>
+class TurnoverDetails : public Map<unsigned int,StockInfoMap>
 {
 public:
   typedef enum { in=0, out } Mode;

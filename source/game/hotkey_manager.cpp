@@ -108,9 +108,9 @@ void HotkeyManager::add(const std::string & name, const std::string& config)
   {
     HotkeyAction action;
     action.code = code;
-    action.alt = items.contains("alt");
-    action.ctrl = items.contains("ctrl");
-    action.shift = items.contains("shift");
+    action.alt = items.contain("alt");
+    action.ctrl = items.contain("ctrl");
+    action.shift = items.contain("shift");
 
     _d->actions[name] = action;
   }

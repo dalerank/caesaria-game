@@ -256,7 +256,7 @@ void engine_js_push(js_State *J, const OverlayList& ovs)
   js_newarray(J);
   for (uint32_t i = 0; i<ovs.size(); i++)
   {
-    engine_js_push(J, ovs[i]);
+    engine_js_push(J, ovs.at(i));
     js_setindex(J, -2, i);
   }
 }
@@ -302,7 +302,7 @@ void engine_js_push(js_State *J, const SmartList<Walker>& items)
   js_newobject(J);
   for (uint32_t i=0; i < items.size(); i++)
   {
-    engine_js_push(J, items[i]);
+    engine_js_push(J, items.at(i));
     js_setproperty(J, -2, utils::i2str(i).c_str());
   }
 }

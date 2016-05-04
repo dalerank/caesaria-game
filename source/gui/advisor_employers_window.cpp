@@ -319,7 +319,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   for( const auto& gr : groups )
   {
     WorkingBuildingList sectorBuildings = city->statistic().objects.find<WorkingBuilding>( gr );
-    buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
+    buildings.append(sectorBuildings);
   }
 
   EmployersInfo ret = { 0, 0 };

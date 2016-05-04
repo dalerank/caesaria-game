@@ -124,23 +124,7 @@ TilePos TilesArray::rightDownCorner() const
 TilesArray& TilesArray::operator=(const TilesArray& a)
 {
   clear();
-  if( a.size() == 1 )
-    push_back( a.front() );
-  else
-    insert(begin(), a.begin(), a.end());
-  return *this;
-}
-
-TilesArray& TilesArray::append(const TilesArray& a)
-{
-  insert( end(), a.begin(), a.end() );
-
-  return *this;
-}
-
-TilesArray &TilesArray::append(Tile *a)
-{
-  push_back( a );
+  append(a);
   return *this;
 }
 

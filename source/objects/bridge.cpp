@@ -27,7 +27,7 @@ Bridge::Bridge(const object::Type type)
 
 }
 
-class IdxSet : public std::set<int>
+class IdxSet : public Set<int>
 {
 public:
   IdxSet& load( const VariantList& stream )

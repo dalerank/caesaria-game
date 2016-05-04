@@ -28,7 +28,7 @@ public:
   virtual unsigned int patientsMax() const;
   virtual unsigned int patientsCurrent() const;
 
-  virtual void buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr);
+  virtual void buildingsServed(const SmartSet<Building>&, ServiceWalkerPtr);
   virtual unsigned int walkerDistance() const;
   virtual void deliverService();
 

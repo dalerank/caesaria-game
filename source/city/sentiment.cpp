@@ -65,7 +65,7 @@ struct BuffInfo
   }
 };
 
-class Buffs : public std::vector<BuffInfo>
+class Buffs : public Array<BuffInfo>
 {
 public:
   VariantList save() const

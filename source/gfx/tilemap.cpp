@@ -73,7 +73,7 @@ public:
   }
 };
 
-class TileGrid : public std::vector< TileRow >
+class TileGrid : public Array<TileRow>
 {
 };
 

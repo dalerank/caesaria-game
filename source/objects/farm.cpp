@@ -265,10 +265,11 @@ void Farm::timeStep(const unsigned long time)
 
 void Farm::_updateMeadowsCoverage()
 {
-  if (_cityOpt(PlayerCity::farmUseMeadows)>0)
-  {
+  if (_cityOpt(PlayerCity::farmUseMeadows)>0) {
     auto tiles = area();
     _d->meadowsCoverage = (float)tiles.count(Tile::tlMeadow) / (float)tiles.size();
+  } else {
+    _d->meadowsCoverage = 1.f;
   }
 }
 
@@ -285,8 +286,6 @@ bool Farm::build(const city::AreaInfo& info)
   _fgPictures().clear();
   Factory::build(upInfo);
 
-  if (_d->meadowsCoverage > 1.f || _d->meadowsCoverage <= 0)
-    _d->meadowsCoverage = 1.f;
   _fgPictures().resize(config::fgpic::idxFactoryMax);
 
   setPicture(_getMainPicture());

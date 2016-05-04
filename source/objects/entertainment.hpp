@@ -27,7 +27,7 @@ struct TraineeWayInfo
   TilePos  destination;
 };
 
-class TraineeWays : public std::vector<TraineeWayInfo>
+class TraineeWays : public Array<TraineeWayInfo>
 {
 public:
   VariantList save() const;

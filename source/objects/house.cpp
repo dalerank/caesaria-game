@@ -109,7 +109,7 @@ public:
   virtual void consume( float delta ) {} //worker force not consumable
 };
 
-class Services : public std::map<Service::Type, ISrvcAdapter*>
+class Services : public Map<Service::Type, ISrvcAdapter*>
 {
 public:
   ~Services()
@@ -120,9 +120,8 @@ public:
 
   Services()
   {
-    for( int i = 0; i<Service::srvCount; ++i )
-    {
-      insert( std::make_pair( Service::Type(i), new SrvcAdapter<Service>() ) );
+    for( int i = 0; i<Service::srvCount; ++i ) {
+      (*this)[Service::Type(i)] = new SrvcAdapter<Service>();
     }
 
     at( Service::crime )->set( 0 );
@@ -136,7 +135,7 @@ public:
     else
     {
       ISrvcAdapter* newService = new SrvcAdapter<Service>();
-      insert( std::make_pair( t, newService ) );
+      (*this)[t] = newService;
       return newService;
     }
   }

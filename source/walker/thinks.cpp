@@ -67,7 +67,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   Info::Parameters params = info->lastParams();
   ThinksConstructor ret( walker->info().typeName() );
-  ret << own;
+  ret.append(own);
 
   ret.addIf( params[ Info::monthWithFood ] < 3,     "_so_hungry" )
      .addIf( params[ Info::godsMood ] < 3,          "_gods_angry" )
@@ -83,7 +83,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     return ret.random();
 
   ret.clear();
-  ret << own;
+  ret.append(own);
   ret.addIf( params[ Info::lifeValue ] > 90, "_good_life" )
      .addIf( params[ Info::lifeValue ] > 75, "_average_life" )
      .addIf( params[ Info::lifeValue ] > 50, "_normal_life" )

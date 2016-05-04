@@ -28,6 +28,7 @@
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "core/variant_list.hpp"
+#include "core/serialized_map.hpp"
 
 using namespace gfx;
 
@@ -76,18 +77,18 @@ void InfoDB::_loadConfig(object::Type type, const std::string& name, const Varia
   addData( bData, force );
 }
 
-class ObjectsMap : public std::map<object::Type, Info>
+class ObjectsMap : public Map<object::Type, Info>
 {
 public:
-  const Info& valueOrEmpty( object::Type type )
+  const Info& valueOrEmpty(object::Type type)
   {
-    ObjectsMap::const_iterator mapIt = find( type );
-    if( mapIt == end() )
-    {
+    const Info& ret = valueOrDefault(type, Info::invalid);
+
+    if (ret.type() == object::unknown) {
       Logger::warning("MetaDataHolder::Unknown objects {}", type );
-      return Info::invalid;
     }
-    return mapIt->second;
+
+    return ret;
   }
 };
 
@@ -129,7 +130,7 @@ const Info& InfoDB::find(const object::Type buildingType)
 
 bool InfoDB::hasData(const object::Type buildingType) const
 {
-  return _d->objectsInfo.count( buildingType ) > 0;
+  return _d->objectsInfo.count(buildingType) > 0;
 }
 
 object::Types InfoDB::availableTypes() const
@@ -152,24 +153,24 @@ void InfoDB::reload(const object::Type type)
   }
 }
 
-void InfoDB::addData(const Info& data, bool force )
+void InfoDB::addData(const Info& data, bool force)
 {
   object::Type buildingType = data.type();
 
-  if( force )
-    _d->objectsInfo.erase( buildingType );
+  if (force) {
+    _d->objectsInfo.erase(buildingType);
+  }
 
-  if( hasData(buildingType) )
-  {
+  if (hasData(buildingType)) {
     Logger::warning( "MetaDataHolder: Info is already set for " + data.name() );
     return;
   }
 
-  _d->objectsInfo.insert( std::make_pair(buildingType,data) );
+  _d->objectsInfo.insert(buildingType, data);
 }
 
 
-InfoDB::InfoDB() : _d( new Impl )
+InfoDB::InfoDB() : _d(new Impl)
 {
 }
 

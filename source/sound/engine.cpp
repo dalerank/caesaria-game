@@ -37,6 +37,7 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
+#include "core/serialized_map.hpp"
 
 using namespace vfs;
 
@@ -77,10 +78,9 @@ struct Sample
   }
 };
 
-class Samples : public std::map< unsigned int, Sample >
+class Samples : public Map<unsigned int, Sample>
 {
 public:
-
 };
 
 struct SampleInfo

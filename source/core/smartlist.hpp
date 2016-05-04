@@ -25,27 +25,53 @@
 #include <deque>
 
 template <class T>
-class SmartList : public std::deque<SmartPtr<T>>
+class SmartList
 {
 public:
-  SmartList& append( const SmartList<T>& other )
+  typedef std::deque<SmartPtr<T>> Collection;
+  typedef typename Collection::iterator iterator;
+  typedef typename Collection::const_iterator const_iterator;
+  typedef typename Collection::reference reference;
+  typedef typename Collection::const_reference const_reference;
+
+  const_iterator begin() const { return _data.begin(); }
+  iterator begin() { return _data.begin(); }
+  iterator end() { return _data.end(); }
+  const_iterator end() const { return _data.end(); }
+  size_t size() const { return _data.size(); }
+  void resize(size_t newSize) { _data.resize(newSize); }
+  bool empty() const { return _data.empty(); }
+  void clear() { _data.clear(); }
+  void push_back(const SmartPtr<T>& value) { _data.push_back(value); }
+  reference front() { return _data.front(); }
+  const_reference front() const { return _data.front(); }
+  const_reference back() const { return _data.back(); }
+  iterator erase( typename Collection::iterator it) { return _data.erase(it); }
+  reference operator[](size_t index) { return _data[index]; }
+  const_reference operator [](size_t index) const { return _data[index]; }
+
+  SmartList& append( const SmartList<T>& other, bool checkValid=true)
   {
-    for( auto& it : other )
-      addIfValid( it );
+    if (checkValid) {
+      for (const auto& it : other)
+        addIfValid(it);
+    } else {
+      _data.insert(_data.end(), other.begin(), other.end());
+    }
 
     return *this;
   }
 
-  SmartList& operator<<( SmartPtr< T > a )
+  SmartList& operator<<( SmartPtr<T> a )
   {
-    this->push_back( a );
+    _data.push_back( a );
     return *this;
   }
 
-  bool contain( SmartPtr<T> a ) const
+  bool contain(SmartPtr<T> a) const
   {
-    for( const auto& it : *this )
-      if( it == a ) return true;
+    for (const auto& it : _data)
+      if (it == a) return true;
 
     return false;
   }
@@ -54,16 +80,16 @@ public:
   SmartList<Dst> select() const
   {
     SmartList<Dst> ret;
-    for( const auto& it : *this )
-      ret.addIfValid( ptr_cast<Dst>( it ) );
+    for( const auto& it : _data )
+      ret.addIfValid(ptr_cast<Dst>(it));
 
     return ret;
   }
 
-  SmartList& for_each( std::function<void (SmartPtr<T>)> function )
+  SmartList& for_each(std::function<void (SmartPtr<T>)> function)
   {
-    for( const auto& item : *this )
-       function( item );
+    for (const auto& item : _data)
+       function(item);
 
     return *this;
   }
@@ -78,7 +104,7 @@ public:
     return ret;
   }
 
-  SmartPtr<T> select( std::function<bool (SmartPtr<T>)> comparer ) const
+  SmartPtr<T> select(std::function<bool (SmartPtr<T>)> comparer) const
   {
     for( const auto& item : *this )
       if( comparer( item ) )
@@ -89,9 +115,9 @@ public:
 
   SmartPtr<T> firstOrEmpty() const
   {
-    return this->empty()
+    return _data.empty()
               ? SmartPtr<T>()
-              : this->front();
+              : _data.front();
   }
 
   template<class U>
@@ -108,7 +134,7 @@ public:
   }
 
   template< class Q >
-  Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ ) const
+  Q summ(const Q& initial, std::function<Q (SmartPtr<T>)> func_summ) const
   {
     Q ret = initial;
     for( const auto& item : *this )
@@ -120,7 +146,7 @@ public:
   SmartList& addIfValid( SmartPtr< T > a )
   {
     if( a.isValid() )
-      this->push_back( a );
+      _data.push_back( a );
 
     return *this;
   }
@@ -161,7 +187,7 @@ public:
     return ret;
   }
 
-  void remove( const SmartPtr< T >& a )
+  void remove( const SmartPtr<T>& a )
   {
     for( auto it = this->begin(); it != this->end(); )
     {
@@ -170,7 +196,7 @@ public:
     }
   }
 
-  SmartPtr<T> valueOrEmpty( unsigned int index ) const
+  SmartPtr<T> valueOrEmpty(unsigned int index) const
   {
     if( index >= this->size() )
       return SmartPtr<T>();
@@ -180,7 +206,7 @@ public:
     return *it;
   }
 
-  void removeAt( int index )
+  void removeAt(int index)
   {
     if( index < this->size() )
       return;
@@ -190,7 +216,7 @@ public:
     this->erase( it );
   }
 
-  int indexOf( SmartPtr<T> who ) const
+  int indexOf(SmartPtr<T> who) const
   {
     int index=0;
     for( const auto& it : *this )
@@ -210,7 +236,7 @@ public:
     return ret;
   }
 
-  int count( std::function<bool (SmartPtr<T>)> comparer ) const
+  int count(std::function<bool (SmartPtr<T>)> comparer) const
   {
     int ret = 0;
     for( const auto& item : *this )
@@ -229,6 +255,17 @@ public:
 
     return ret;
   }
+
+  const_reference at(size_t index) const {
+    return _data.at(index);
+  }
+
+  reference at(size_t index) {
+    return _data.at(index);
+  }
+
+protected:
+  Collection _data;
 };
 
 #endif //__CAESARIA_SMARTLIST_H_INCLUDE__

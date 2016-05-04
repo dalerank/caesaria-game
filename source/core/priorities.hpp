@@ -18,7 +18,7 @@
 #ifndef _CAESARIA_PRIORITIES_INCLUDE_H_
 #define _CAESARIA_PRIORITIES_INCLUDE_H_
 
-#include <vector>
+#include "vector_extension.hpp"
 #include "variant_list.hpp"
 #include <set>
 
@@ -39,19 +39,13 @@ inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
 }
 
 template<class T>
-class Vector : public std::vector< T >
+class Vector : public Array<T>
 {
 public:
-  inline Vector& operator<<( const T& v )
-  {
-    this->push_back( v );
-    return *this;
-  }
-
   VariantList save() const
   {
     VariantList vl;
-    for( auto& item : *this ) { vl.push_back( Variant( item ) ); }
+    for (const auto& item : *this) { vl.push_back( Variant( item ) ); }
 
     return vl;
   }
@@ -61,13 +55,7 @@ public:
     *this << stream;
   }
 
-  bool contain( const T& v ) const
-  {
-    auto it = std::find(this->begin(), this->end(), v);
-    return it != this->end();
-  }
-
-  Vector& operator << ( const VariantList& vl )
+  Vector& operator << (const VariantList& vl)
   {
     for( auto& i : vl ) { this->push_back( (T)i.toInt() ); }
     return *this;

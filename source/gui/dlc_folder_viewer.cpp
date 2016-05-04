@@ -76,8 +76,7 @@ public:
       }
 
       Path picPath = items[ k ];
-      if( available.contains( picPath.extension() ) )
-      {
+      if( available.contain( picPath.extension() ) ) {
         picPath = picPath.changeExtension( "png" );
       }
 
@@ -130,10 +129,10 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     vfs::Entries::Items entries = folder.entries().items();
     for( auto& item : entries )
     {
-      if( _d->exclude.contains( item.name.toString() ) )
+      if( _d->exclude.contain( item.name.toString() ) )
         continue;
 
-      if( _d->available.contains( item.name.extension() )  )
+      if( _d->available.contain( item.name.extension() )  )
         items.push_back( item.fullpath );
     }
   }

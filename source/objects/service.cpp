@@ -131,7 +131,7 @@ Variant ServiceBuilding::getProperty(const std::string & name) const
   return WorkingBuilding::getProperty(name);
 }
 
-void ServiceBuilding::buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr) {}
+void ServiceBuilding::buildingsServed(const SmartSet<Building>&, ServiceWalkerPtr) {}
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
 unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; }

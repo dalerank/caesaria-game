@@ -225,13 +225,13 @@ void Info::load(const VariantMap& stream)
   {
     Info::History::iterator oldHistoryStart = _d->lastHistory.begin();
     Info::History::iterator oldHistoryEnd = _d->lastHistory.begin() + _d->lastHistory.size() - DateTime::monthsInYear;
-    _d->lastHistory.erase( oldHistoryStart, oldHistoryEnd );
+    _d->lastHistory.erase(oldHistoryStart, oldHistoryEnd);
   }
 }
 
 Info::Parameters::Parameters()
 {
-  resize( paramsCount, 0 );
+  resize(paramsCount, 0);
 }
 
 Info::Parameters::Parameters(const Info::Parameters& other)

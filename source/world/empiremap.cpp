@@ -38,7 +38,7 @@ struct EmTile
 static EmTile invalidTile = EmTile( TilePos( -1, -1 ) );
 typedef std::vector< EmTile > EmRow;
 
-class EmTileGrid : public std::vector< EmRow >
+class EmTileGrid : public Array<EmRow>
 {
 };
 

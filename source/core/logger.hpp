@@ -73,7 +73,7 @@ private:
 
   std::string _category;
 
-  void llog(LogWriter::Severity, const std::string &text);  
+  void llog(LogWriter::Severity, const std::string &text);
 };
 
 class Logger : public StaticSingleton<Logger>
@@ -99,7 +99,7 @@ public:
   static void addFilter(const std::string& text);
   static void addFilter(LogWriter::Severity s);
   static bool hasFilter(const std::string& text);
-  static bool removeFilter(const std::string& text);
+  static void removeFilter(const std::string& text);
 
   static void registerWriter(Type type, const std::string &param);
   static void registerWriter(const std::string& name, LogWriterPtr writer);

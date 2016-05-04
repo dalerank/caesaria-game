@@ -67,7 +67,7 @@ namespace {
   }
 }
 
-class History : public std::vector<FestivalInfo>
+class History : public Array<FestivalInfo>
 {
 public:
   VariantList save() const

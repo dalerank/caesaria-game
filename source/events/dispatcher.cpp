@@ -55,7 +55,7 @@ void Dispatcher::append(GameEventPtr event)
 
 void Dispatcher::update(Game& game, unsigned int time )
 {
-  for( Events::iterator it=_d->events.begin(); it != _d->events.end();  )
+  for( auto it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
 
