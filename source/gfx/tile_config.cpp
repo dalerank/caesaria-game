@@ -43,8 +43,8 @@ int encode(const Tile& tt)
   res += tt.getFlag( Tile::tlMeadow )    ? 0x00800 : 0;
   res += tt.getFlag( Tile::tlRubble )    ? 0x01000 : 0;
   res += tt.getFlag( Tile::tlWall )      ? 0x04000 : 0;
-  res += tt.getFlag( Tile::tlDeepWater ) ? 0x08000 : 0;
   res += tt.getFlag( Tile::tlRift )      ? 0x10000 : 0;
+  res += tt.getFlag( Tile::tlDeepWater ) ? 0x20000 : 0;
   return res;
 }
 
@@ -136,8 +136,8 @@ void decode(Tile& tile, const int bitset)
   if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }
   if(bitset & 0x01000) { tile.setFlag( Tile::tlRubble, true);    }
   if(bitset & 0x04000) { tile.setFlag( Tile::tlWall, true);      }
-  if(bitset & 0x08000) { tile.setFlag( Tile::tlDeepWater, true); }
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }
+  if(bitset & 0x20000) { tile.setFlag( Tile::tlDeepWater, true); }
 }
 
 const Tile& getInvalid()

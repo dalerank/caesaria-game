@@ -211,6 +211,7 @@ bool Layer::onMouseBtnRelease(const NEvent::Mouse& event)
     if( tile )
     {
       VariantList vl; vl << tile->epos();
+      Logger::warning("IMGID: {}", tile->imgId());
       events::dispatch<events::ScriptFunc>("OnShowOverlayInfobox", vl);
     }
   }

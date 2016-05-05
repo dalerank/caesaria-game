@@ -63,9 +63,11 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
     case 0xc89:                                 ovType = object::small_ceres_temple;    break;
     case 0xb8b:                                 ovType = object::library; break;
     case 0x2b8:                                 ovType = object::tower; break;
-    case 0xb10:  case 0xb0d:                    ovType = object::native_center;    break;
+    case 0xb10: case 0xb0d:                     ovType = object::native_center;    break;
     case 0xb0e:                                 ovType = object::well;    break;
-    case 0xb0f:  case 0xb0b:  case 0xb0c:       ovType = object::native_hut;    break;
+    case 0x2bf: case 0x2da: case 0x2bc: case 0x2d7:
+    case 0x2db: case 0x2c7: case 0x2c5:         ovType = object::wall;    break;
+    case 0xb0f: case 0xb0b:  case 0xb0c:        ovType = object::native_hut;    break;
     case 0xbdf:                                 ovType = object::amphitheater; break;
     case 0xb8c:                                 ovType = object::academy;  break;
     case 0xb17:  case 0xb56:                    ovType = object::fountain;    break;
@@ -108,17 +110,18 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
     case 0xc8f:                                 ovType = object::small_mars_temple; break;
     case 0xcf6:                                 ovType = object::missionaryPost; break;
     case 0xcf7: case 0xd17: case 0xd09:         ovType = object::warehouse;    break;
-    case 0xc55: ovType = object::statue_big; break;
-    case 0xb08: ovType = object::governorHouse; break;
-    case 0xb09: ovType = object::governorVilla; break;
-    case 0xb0a: ovType = object::governorPalace; break;
-    case 0xb8d: ovType = object::wine_workshop; break;
-    case 0xc6e: ovType = object::military_academy; break;
-    case 0x2b9: ovType = object::gatehouse; break;
-    case 0xc1c: ovType = object::lionsNursery; break;
-    case 0xbac: ovType = object::furniture_workshop; break;
-    case 0xba3: ovType = object::weapons_workshop; break;
-    case 0xbbb: ovType = object::pottery_workshop; break;
+    case 0xc55:                                 ovType = object::statue_big; break;
+    case 0xb08:                                 ovType = object::governorHouse; break;
+    case 0xb09:                                 ovType = object::governorVilla; break;
+    case 0xb0a:                                 ovType = object::governorPalace; break;
+    case 0xb8d:                                 ovType = object::wine_workshop; break;
+    case 0xc6e:                                 ovType = object::military_academy; break;
+    case 0x2b9: case 0x2ba: ovType = object::gatehouse; break;
+    case 0x2f9: case 0x2de: case 0x2f0: case 0x302: ovType = object::burned_ruins; break;
+    case 0xc1c:                                 ovType = object::lionsNursery; break;
+    case 0xbac:                                 ovType = object::furniture_workshop; break;
+    case 0xba3:                                 ovType = object::weapons_workshop; break;
+    case 0xbbb:                                 ovType = object::pottery_workshop; break;
   }
 
   return ovType;
@@ -129,8 +132,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   int changeId = 0;
   unsigned int imgId = oTile.imgId();
   object::Type ovType = object::unknown;
-  if( oTile.getFlag( Tile::tlRoad ) )   // road
-  {
+  if (oTile.getFlag( Tile::tlRoad)) {
     ovType = object::road;
     Picture pic = object::Info::find( object::terrain ).randomPicture( Size::square(1) );
     oTile.setPicture( pic );
