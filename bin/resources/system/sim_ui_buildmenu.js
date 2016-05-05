@@ -148,6 +148,10 @@ sim.ui.buildmenu.show = function(type, left, top) {
       engine.log("Build menu add type " + ltype + ":" + (av?"true":"false"));
       if (!av)
         return;
+    } else {
+      var branchAvailable = sim.ui.buildmenu.isBranchAvailable(branch);
+      if (!branchAvailable)
+       return;
     }
 
     var btn = new Button(buildMenu);
