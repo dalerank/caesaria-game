@@ -43,8 +43,8 @@ sim.ui.topmenu.options.init = function() {
 
 sim.ui.topmenu.setPopulation = function(pop)
 {
-  if (sim.ui.topmenu.labels.pop)
-    sim.ui.topmenu.labels.pop.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##pop##"), pop)
+  var lbPop = sim.ui.topmenu.widget.find("#population")
+  lbPop.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##pop##"), pop)
 }
 
 sim.ui.topmenu.setDate = function(date)
@@ -64,13 +64,12 @@ sim.ui.topmenu.labels.init = function() {
   var lbPopulation = new Label(m)
   var useIcon = sim.ui.topmenu.useIcom
   lbPopulation.geometry = {x:m.w-344, y:0, w:120, h:23}
-  lbPopulation.background = "paneling_00015"
-  lbPopulation.font = "FONT_2_WHITE"
+  lbPopulation.name = "#population";
+  lbPopulation.background = "paneling_00015";
+  lbPopulation.font = "FONT_2_WHITE";
   lbPopulation.icon = { rc:useIcon ? "population" : "none", index:1 }
   lbPopulation.textAlign = { h:"center", v:"center" }
   lbPopulation.tooltip = "##population_tooltip##"
-
-  sim.ui.topmenu.labels.pop = lbPopulation
 
   var lbDate = new Label(m)
   lbDate.geometry = {x:m.w-155, y:0, w:120, h:23}
