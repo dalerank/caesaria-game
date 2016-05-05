@@ -171,7 +171,7 @@ StringArray Session::getFolders(const std::string& dir, bool full)
   if (!fdir.exist())
     return StringArray();
 
-  return fdir.entries().items().folders(false);
+  return fdir.entries().items().folders(full);
 }
 
 void Session::playAudio(const std::string& filename, int volume, int mode)

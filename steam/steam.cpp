@@ -384,7 +384,7 @@ bool connect()
     int pid = getpid();
     StringArray processIdTree;
     OSystem::getProcessTree( pid, processIdTree );
-    gameRunFromClient = processIdTree.contains( "steam" );
+    gameRunFromClient = processIdTree.contain("steam");
 #endif
 
   // set our debug handler
