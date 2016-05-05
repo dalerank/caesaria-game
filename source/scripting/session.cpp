@@ -118,14 +118,12 @@ void Session::setHotkey(const std::string & name, const std::string& config)
 
 void Session::setRank(int i, const std::string & name, const std::string & pretty, int salary)
 {
-  world::GovernorRanks& ranks = world::EmpireHelper::ranks();
-  if ((int)ranks.size() <= i)
-    ranks.resize(i + 1);
+  world::GovernorRank& rank = world::EmpireHelper::getRankRef((world::GovernorRank::Level)i);
 
-  ranks[i].title = name;
-  ranks[i].pretty = pretty;
-  ranks[i].salary = salary;
-  ranks[i].level = (world::GovernorRank::Level)i;
+  rank.title = name;
+  rank.pretty = pretty;
+  rank.salary = salary;
+  rank.level = (world::GovernorRank::Level)i;
 }
 
 DateTime Session::getGameDate() const

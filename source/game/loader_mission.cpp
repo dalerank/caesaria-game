@@ -68,12 +68,12 @@ public:
 };
 
 Mission::Mission()
- : _d( new Impl )
+ : _d(new Impl)
 {
   _d->needFinalizeMap = false;
 }
 
-bool Mission::load( const std::string& filename, Game& game )
+bool Mission::load(const std::string& filename, Game& game)
 {
   VariantMap vm = config::load(filename);
   _d->restartFile = filename;
@@ -131,65 +131,70 @@ bool Mission::load( const std::string& filename, Game& game )
       city->setName( cityName );
     }
 
-    city->mayor()->setRank(vm.get("player.rank", 0).toEnum<world::GovernorRank::Level>());
     city->treasury().resolveIssue(econ::Issue(econ::Issue::donation, vm.get("funds").toInt()));
 
     Logger::debug( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
-    city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
-    city->setOption( PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
-    city->setOption( PlayerCity::claypitMayFloods, vm.get( TEXT(claypitMayCollapse), 1 ) );
-    city->setOption( PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
-    city->setOption( PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
-    city->setOption( PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
-    city->setOption( PlayerCity::housePersonalTaxes, vm.get( TEXT(housePersonalTaxes), 1 ) );
-    city->setOption( PlayerCity::cutForest2timber, vm.get( TEXT(cutForest2timber), 1 ) );
-    city->setOption( PlayerCity::forestGrow, vm.get( TEXT(forestGrow), 1 ) );
-    city->setOption( PlayerCity::forestFire, vm.get( TEXT(forestFire), 1 ) );
-    city->setOption( PlayerCity::destroyEpidemicHouses, vm.get( TEXT(destroyEpidemicHouses), 1 ) );
-    city->setOption( PlayerCity::ironInRocks, vm.get( TEXT(ironInRocks), 1 ) );
+    city->setOption(PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
+    city->setOption(PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
+    city->setOption(PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
+    city->setOption(PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
+    city->setOption(PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
+    city->setOption(PlayerCity::claypitMayFloods, vm.get( TEXT(claypitMayCollapse), 1 ) );
+    city->setOption(PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
+    city->setOption(PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
+    city->setOption(PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
+    city->setOption(PlayerCity::housePersonalTaxes, vm.get( TEXT(housePersonalTaxes), 1 ) );
+    city->setOption(PlayerCity::cutForest2timber, vm.get( TEXT(cutForest2timber), 1 ) );
+    city->setOption(PlayerCity::forestGrow, vm.get( TEXT(forestGrow), 1 ) );
+    city->setOption(PlayerCity::forestFire, vm.get( TEXT(forestFire), 1 ) );
+    city->setOption(PlayerCity::destroyEpidemicHouses, vm.get( TEXT(destroyEpidemicHouses), 1 ) );
+    city->setOption(PlayerCity::ironInRocks, vm.get( TEXT(ironInRocks), 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm.get( "events" ).toMap();
-    for( const auto& item : vm_events ) {
-      events::dispatch<PostponeEvent>( item.first, item.second.toMap() );
+    for (const auto& item : vm_events) {
+      events::dispatch<PostponeEvent>(item.first, item.second.toMap());
     }
 
-    game.empire()->setCitiesAvailable( false );
+    game.empire()->setCitiesAvailable(false);
     Logger::debug( "GameLoaderMission: load empire state" );
-    game.empire()->load( vm.get( "empire" ).toMap() );
+    game.empire()->load(vm.get("empire").toMap());
 
     city::VictoryConditions winConditions;
-    Variant winOptions = vm.get( "win" );
-    Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
+    Variant winOptions = vm.get("win");
+    Logger::warningIf(winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename);
 
-    winConditions.load( winOptions.toMap() );
-    city->setVictoryConditions( winConditions );
+    winConditions.load(winOptions.toMap());
+    city->setVictoryConditions(winConditions);
 
-    game.empire()->emperor().updateRelation( city->name(), 50 );
+    game.empire()->emperor().updateRelation(city->name(), 50);
 
-    VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
-    for( const auto& item : fishpointsVm ) {
-      events::dispatch<ChangeFishery>( item.second.toTilePos(), ChangeFishery::add );
+    VariantMap fishpointsVm = vm.get("fishpoints").toMap();
+    for (const auto& item : fishpointsVm) {
+      events::dispatch<ChangeFishery>(item.second.toTilePos(), ChangeFishery::add);
     }
 
-    std::string missionName = vfs::Path( filename ).baseName().removeExtension();
-    Locale::addTranslation( missionName );
-    SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
+    std::string missionName = vfs::Path(filename).baseName().removeExtension();
+    Locale::addTranslation(missionName);
+    SETTINGS_SET_VALUE(lastTranslation, Variant(missionName));
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
-    for( const auto it : gods )
-      rome::Pantheon::doFestival( it->name(), 0 );
+    for (const auto god : gods)
+      rome::Pantheon::doFestival(god->name(), 0);
 
-    freeplay::Finalizer finalizer( city );
-    if( city->getOption( PlayerCity::ironInRocks ) > 0 ) {
-      int ironQty = vm.get( TEXT(ironInRocks.qty), 10000 );
-      finalizer.resetIronCovery( ironQty );
+    freeplay::Finalizer finalizer(city);
+    if (city->getOption(PlayerCity::ironInRocks) > 0) {
+      int ironQty = vm.get(TEXT(ironInRocks.qty), 10000);
+      finalizer.resetIronCovery(ironQty);
     }
+
+    auto player = city->mayor();
+    world::GovernorRank::Level level = vm.get("player.rank", 0).toEnum<world::GovernorRank::Level>();
+    const world::GovernorRank& rank = world::EmpireHelper::getRank(level);
+    player->setRank(rank.level);
+    player->setSalary(rank.salary);
 
     return true;
   }

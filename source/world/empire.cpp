@@ -288,9 +288,9 @@ void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path f
 void Empire::addObject(ObjectPtr obj)
 {
   if( obj->name().empty() )
-  {          
+  {
     obj->setName( obj->type() + utils::i2str( _d->objects.id++ ) );
-  }  
+  }
 
   for( auto object : _d->objects )
   {
@@ -331,7 +331,7 @@ EmpirePtr Empire::create()
 CityPtr Empire::findCity( const std::string& name ) const { return _d->cities.find( name ); }
 
 void Empire::save( VariantMap& stream ) const
-{  
+{
   VARIANT_SAVE_CLASS_D( stream, _d, cities               )
   VARIANT_SAVE_CLASS_D( stream, _d, objects              )
   VARIANT_SAVE_CLASS_D( stream, _d, trading              )
@@ -397,7 +397,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 
   bool startAndDstCorrect = startCity.isValid() && stopCity.isValid();
   if( startAndDstCorrect )
-  {    
+  {
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
     EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
     bool land = (startType & EmpireMap::trLand) && (stopType & EmpireMap::trLand);
@@ -465,7 +465,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 }
 
 void Empire::timeStep( unsigned int time )
-{    
+{
   if( game::Date::isMonthChanged() )
   {
     _d->checkLoans();
@@ -525,7 +525,7 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   for( auto item : _d->objects )
   {
     if( item->isAvailable() && location.getDistanceFromSQ( item->location() ) < sqrDeviance )
-    {        
+    {
       ret << item;
     }
   }
@@ -557,6 +557,10 @@ ObjectPtr Empire::findObject(const std::string& name) const
   return city.as<Object>();
 }
 
+namespace internal{
+  GovernorRanks ranks = GovernorRanks(GovernorRank::caesar+1);
+}
+
 float EmpireHelper::governorSalaryKoeff(CityPtr city)
 {
   PlayerPtr pl = city->mayor();
@@ -574,17 +578,14 @@ float EmpireHelper::governorSalaryKoeff(CityPtr city)
   return result;
 }
 
-GovernorRanks& EmpireHelper::ranks()
+const GovernorRanks& EmpireHelper::ranks()
 {
-  static std::vector<GovernorRank> instRanks;
-  return instRanks;
+  return internal::ranks;
 }
 
 const GovernorRank& EmpireHelper::getRank(GovernorRank::Level level)
 {
-  const GovernorRanks& ranks = EmpireHelper::ranks();
-  int l = math::clamp<int>(level, GovernorRank::citizen, ranks.size());
-  return ranks[l];
+  return getRankRef(level);
 }
 
 void Empire::Impl::checkLoans()
@@ -652,7 +653,7 @@ void Empire::Impl::takeTaxes()
     if( city.is<Rome>() )
     {
       //no take taxes from capital
-    }       
+    }
     else if( city.is<ComputerCity>() )
     {
       empireTax = econ::calcTaxValue( city->states().population, defaultCityTaxKoeff );
@@ -692,6 +693,12 @@ void Empire::Impl::takeTaxes()
       }
     }
   }
+}
+
+GovernorRank& EmpireHelper::getRankRef(GovernorRank::Level level)
+{
+  int l = math::clamp<int>(level, GovernorRank::citizen, internal::ranks.size());
+  return internal::ranks[l];
 }
 
 }//end namespace world

@@ -989,7 +989,7 @@ void Widget::moveToCenter() { setCenter( parent()->center() ); }
 void Widget::addProperty(const std::string& name, const Variant& value)
 {
   bool hasProp  = _dfunc()->properties.has(name);
-  if (!hasProp)
+  if (hasProp)
     Logger::warning("WARNING!!! Widget {} already have property {}", internalName(), name);
 
   _dfunc()->properties[name] = value;

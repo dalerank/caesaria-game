@@ -12,8 +12,7 @@ g_config.ranks = [
   {  name: "caesar" ,   pretty : "##caesar##",   salary : 100}
 ]
 
-for (var i in g_config.ranks)
-{
+for (var i in g_config.ranks) {
   var r = g_config.ranks[i]
   g_session.setRank(i, r.name, r.pretty, r.salary)
 }
