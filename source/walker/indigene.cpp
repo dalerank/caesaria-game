@@ -91,13 +91,10 @@ void Indigene::_updateState()
     else
     {
       Pathway way = _d->findWay2bestField( _city(), pos() );
-      if( way.isValid() )
-      {
+      if (way.length() > 1) {
         setPathway( way );
         go();
-      }
-      else
-      {
+      } else {
         _d->action = Impl::randomWay;
         _updateState();
       }
