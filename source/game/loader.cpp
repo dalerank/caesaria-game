@@ -80,7 +80,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   TilePos tlOffset;
   Tilemap& tmap = city->tilemap();
   if( tlPos.i() == 0 || tlPos.i() == tmap.size() - 1 )
-  {    
+  {
     tlOffset = TilePos( 0, 1 );
   }
   else if( tlPos.j() == 0 || tlPos.j() == tmap.size() - 1 )
@@ -187,22 +187,21 @@ bool Loader::load(vfs::Path filename, Game& game)
   // try to load file based on file extension
   for( auto loader : _d->loaders )
   {
-    if( !loader->isLoadableFileExtension( filename.toString() ) )
+    if (!loader->isLoadableFileExtension(filename.toString()))
       continue;
 
-    ClimateType currentClimate = (ClimateType)loader->climateType( filename.toString() );
-    if( currentClimate >= 0  )
-    {
+    ClimateType currentClimate = (ClimateType)loader->climateType(filename.toString());
+
+    if (currentClimate >= 0) {
       game::climate::initialize( currentClimate );
     }
 
-    bool loadok = loader->load( filename.toString(), game );
+    bool loadok = loader->load(filename.toString(), game);
     bool needToFinalizeMap = loader->finalizeMap();
-    if( loadok )
-    {
-      _d->restartFile = loader->restartFile();
 
-      _d->finalize( game, needToFinalizeMap );
+    if (loadok) {
+      _d->restartFile = loader->restartFile();
+      _d->finalize(game, needToFinalizeMap);
     }
 
     return loadok;

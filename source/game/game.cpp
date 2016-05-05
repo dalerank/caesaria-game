@@ -229,10 +229,9 @@ void Game::Impl::initVfsSettings(bool& isOk, std::string& result)
 
 void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 {
-  int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != config::tilemap.cell.width.oldw
-      && cellWidth != config::tilemap.cell.width.neww )
-  {
+  int cellWidth = SETTINGS_VALUE(cellw );
+  if (cellWidth != config::tilemap.cell.width.oldw
+      && cellWidth != config::tilemap.cell.width.neww) {
     cellWidth = config::tilemap.cell.width.oldw;
   }
   config::tilemap.cell.setWidth( cellWidth );
@@ -325,7 +324,7 @@ bool Game::load(std::string filename)
   screen.setBackground( usingOldgfx ? "load4" : "freska", 1+math::random(2) );
   screen.update( *_dfunc()->engine );
 
-  vfs::Path fPath( filename );
+  vfs::Path fPath(filename);
   if( !fPath.exist() )
   {
     Logger::debug( "Game: Cannot find file " + fPath.toString() );
@@ -357,8 +356,7 @@ bool Game::load(std::string filename)
 
   bool loadOk = loader.load( fPath, *this );
 
-  if( !loadOk )
-  {
+  if (!loadOk) {
     Logger::error( "can't load game from " + filename );
     return false;
   }
@@ -366,20 +364,20 @@ bool Game::load(std::string filename)
   d.restartFile = loader.restartFile();
   Logger::debug( "Game: init player city" );
   world::CityPtr city = d.empire->initPlayerCity( ptr_cast<world::City>( d.city ) );
-  if( city.isNull() )
-  {
+
+  if (city.isNull()) {
     Logger::error( "Can't initalize city {} in empire" + d.city->name() );
     return false;
   }
+
   d.empire->emperor().checkCities();
 
   Logger::debug( "Game: calculate road access for buildings" );
   const OverlayList& llo = d.city->overlays();
-  for( auto overlay : llo )
-  {
+
+  for (auto overlay : llo) {
     ConstructionPtr construction = overlay.as<Construction>();
-    if( construction.isValid() )
-    {
+    if (construction.isValid()) {
       construction->computeRoadside();
     }
   }
@@ -478,10 +476,10 @@ bool Game::exec()
     {
       Logger::debug( "game: enter setScreenGame" );
       d.simulation.reset();
-      d.currentScreen = new gamestate::InGame( this, d.engine,
-                                               d.simulation,
-                                               d.nextFilename,
-                                               d.restartFile );
+      d.currentScreen = new gamestate::InGame(this, d.engine,
+                                              d.simulation,
+                                              d.nextFilename,
+                                              d.restartFile);
       am.initAddons4level( addon::level );
     }
     break;
