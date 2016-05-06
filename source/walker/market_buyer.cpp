@@ -138,12 +138,10 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
     pathPropagator.propagate( _d->maxDistance);
 
     // try to find the most needed good
-    for( auto& goodType : priorityGoods )
-    {
+    for (auto& goodType : priorityGoods) {
       _d->priorityGood = goodType;
 
-      if( good::isFood( _d->priorityGood ) )
-      {
+      if (good::isFood(_d->priorityGood)) {
         // try get that good from a granary
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granary, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );

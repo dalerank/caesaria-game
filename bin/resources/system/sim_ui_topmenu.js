@@ -31,8 +31,8 @@ sim.ui.topmenu.help.aboutStrategy = function() {
 sim.ui.topmenu.options.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _ut("gmenu_options"));
     m.moveToIndex(1)
-    m.addItemWithCallback("##screen_settings##", function () { game.ui.dialogs.showVideoOptions() } )
-    m.addItemWithCallback("##sound_settings##", function () { game.ui.dialogs.showAudioOptions() } )
+    m.addItemWithCallback(_u("screen_settings"), function () { game.ui.dialogs.showVideoOptions() } )
+    m.addItemWithCallback(_u("sound_settings"), function () { game.ui.dialogs.showAudioOptions() } )
     m.addItemWithCallback("##speed_settings##",  function() { sim.ui.dialogs.showSpeedOptions() } )
     m.addItemWithCallback("##city_settings##", function () { sim.ui.dialogs.citySettings.show() } )
     m.addItemWithCheckingCallback("##city_constr_mode##", function(checked) {
@@ -135,14 +135,24 @@ sim.ui.topmenu.help.showHotkeys = function() {
   wnd.setModal();
 }
 
+sim.ui.topmenu.file.restart = function () {
+  var dialog = g_ui.addConfirmationDialog( "", _u("really_restart_mission") );
+  dialog.onYesCallback = function() { g_session.setMode(g_config.level.res_restart); }
+}
+
+sim.ui.topmenu.file.exitmenu = function () {
+  var dialog = g_ui.addConfirmationDialog( "", _u("exit_without_saving_question") );
+  dialog.onYesCallback = function() { g_session.setMode(g_config.level.res_menu); }
+}
+
 sim.ui.topmenu.file.init = function() {
     var m = sim.ui.topmenu.widget.addItem("", _t("##gmenu_file##"));
     m.moveToIndex(0)
-    m.addItemWithCallback("##gmenu_file_restart##",  function() { g_session.setMode(g_config.level.res_restart)})
-    m.addItemWithCallback("##mainmenu_loadgame##",   function() { lobby.ui.loadgame.loadsave()})
-    m.addItemWithCallback("##gmenu_file_save##",     function() { game.ui.dialogs.savegame()})
-    m.addItemWithCallback("##gmenu_file_mainmenu##", function() { g_session.setMode(g_config.level.res_menu)})
-    m.addItemWithCallback("##gmenu_exit_game##",     function() { game.ui.dialogs.requestExit()})
+    m.addItemWithCallback(_u("gmenu_file_restart"),  sim.ui.topmenu.file.restart);
+    m.addItemWithCallback("##mainmenu_loadgame##",   lobby.ui.loadgame.loadsave );
+    m.addItemWithCallback("##gmenu_file_save##",     game.ui.dialogs.savegame );
+    m.addItemWithCallback(_u("gmenu_file_mainmenu"), sim.ui.topmenu.file.exitmenu );
+    m.addItemWithCallback("##gmenu_exit_game##",     game.ui.dialogs.requestExit );
 }
 
 sim.ui.topmenu.advisors.init = function() {
