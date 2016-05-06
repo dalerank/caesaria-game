@@ -594,6 +594,7 @@ bool Minimap::_onMousePressed(const NEvent::Mouse& event)
   tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
   emit _d->signal.onCenterChange( tpos );
+  emit _d->signal.onCenterChangeEx( this, tpos );
   return true;
 }
 

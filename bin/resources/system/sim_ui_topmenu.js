@@ -49,14 +49,14 @@ sim.ui.topmenu.setPopulation = function(pop)
 
 sim.ui.topmenu.setDate = function(date)
 {
-  if (sim.ui.topmenu.labels.date)
-    sim.ui.topmenu.labels.date.text = g_session.date.format(g_session.metric)
+  var lbDate = sim.ui.topmenu.widget.find("#date")
+  lbDate.text = g_session.date.format(g_session.metric)
 }
 
 sim.ui.topmenu.setFunds = function(money)
 {
-  if (sim.ui.topmenu.labels.funds)
-    sim.ui.topmenu.labels.funds.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##denarii_short##"), money)
+  var lbFunds = sim.ui.topmenu.widget.find("#funds");
+  lbFunds.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##denarii_short##"), money)
 }
 
 sim.ui.topmenu.labels.init = function() {
@@ -69,18 +69,18 @@ sim.ui.topmenu.labels.init = function() {
   lbPopulation.font = "FONT_2_WHITE";
   lbPopulation.icon = { rc:useIcon ? "population" : "none", index:1 }
   lbPopulation.textAlign = { h:"center", v:"center" }
-  lbPopulation.tooltip = "##population_tooltip##"
+  lbPopulation.tooltip = _u("population_tooltip")
 
   var lbDate = new Label(m)
+  lbDate.name = "#date"
   lbDate.geometry = {x:m.w-155, y:0, w:120, h:23}
   lbDate.font = "FONT_2_YELLOW"
   lbDate.textAlign = { h:"center", v:"center" }
   lbDate.background = "paneling_00015"
   lbDate.tooltip = "##date_tooltip##"
 
-  sim.ui.topmenu.labels.date = lbDate
-
   var lbFunds = new Label(m)
+  lbFunds.name = "#funds";
   lbFunds.geometry = {x:m.w-464, y:0, w:120, h:23}
   lbFunds.font = "FONT_2_WHITE"
   lbFunds.name = "lbFunds"
@@ -88,8 +88,6 @@ sim.ui.topmenu.labels.init = function() {
   lbFunds.textAlign = { h:"center", v:"center" }
   lbFunds.background = "paneling_00015"
   lbFunds.tooltip = "##funds_tooltip##"
-
-  sim.ui.topmenu.labels.funds = lbFunds
 }
 
 sim.ui.topmenu.help.showHotkeys = function() {

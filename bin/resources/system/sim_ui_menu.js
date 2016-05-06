@@ -410,8 +410,10 @@ sim.ui.menu.initialize = function() {
     g_session.camera.changeZoom(delta);
   }
 
-  menu.minimap.onCenterChange = function(tilepos) {
+  menu.minimap.onChangeCenter = function(tilepos) {
+    engine.log("Move camera from minimap [i:" + tilepos.i + "  j:" + tilepos.j + "]");
     g_session.camera.setCenter(tilepos);
+    sim.ui.menu.extmenu.minimap.update();
   }
 
   menu.miniature = new Image(menu);
