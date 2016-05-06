@@ -49,6 +49,7 @@ DEFINE_OBJECT_GETTER_1(Session,Variant,getOption,std::string,"")
 DEFINE_OBJECT_GETTER_1(Session,int,getAdvflag,const std::string&,"unknown")
 DEFINE_OBJECT_GETTER_2(Session,formatDate,DateTime,bool)
 DEFINE_OBJECT_GETTER_2(Session,getFiles,std::string,std::string)
+DEFINE_OBJECT_GETTER_2(Session,getFolders,std::string,bool)
 
 DEFINE_OBJECT_DESTRUCTOR(MissionInfo)
 DEFINE_OBJECT_FUNCTION_1(MissionInfo,load,std::string)

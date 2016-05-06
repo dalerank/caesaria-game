@@ -19,6 +19,7 @@
 #include "good.hpp"
 #include "core/priorities.hpp"
 #include "helper.hpp"
+#include "core/stringarray.hpp"
 
 namespace good
 {

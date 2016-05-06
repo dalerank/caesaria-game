@@ -2,7 +2,7 @@
   size : [ 640, 256 ]
   bgtype : "whiteFrame"
   static : true
-  
+
   lbBlackframe#Label : {
     geometryf : [ 0.05, 0.4, 0.95, 0.7 ]
     bgtype : "blackFrame"
@@ -22,7 +22,7 @@
   lbMaxAvailableText#Label : {
     font : "FONT_1"
     geometry : [ 290, 80, 450, 105 ]
-    text : "##max_available##"
+    text : "##max_teach##"
   }
 
   lbCoverageText#Label : {

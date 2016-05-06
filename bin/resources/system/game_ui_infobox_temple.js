@@ -156,7 +156,7 @@ game.ui.infobox.aboutReservoir = function (location) {
 }
 
 game.ui.infobox.aboutTemple = function (location) {
-    var ibox = this.aboutConstruction(0, 0, 510, 256)
+    var ibox = this.aboutConstruction(0, 0, 510, 266)
     ibox.initBlackframe(16, 56, ibox.w - 32, 56);
 
     var temple = g_session.city.getOverlay(location).as(Temple);
@@ -166,7 +166,7 @@ game.ui.infobox.aboutTemple = function (location) {
         ibox.setInfoText(_u("oracle_info"))
     } else {
         var divn = temple.divinity()
-        var shortDesc = divn.iname + "_desc"
+        var shortDesc = divn.internalName() + "_desc"
         var text = _format("{0}_{1}_temple",
             temple.big ? "big" : "small",
             divn.internalName())
@@ -178,7 +178,7 @@ game.ui.infobox.aboutTemple = function (location) {
             divn.internalName(),
             goodRelation ? "goodmood" : "badmood");
 
-        var img = ibox.addImage(192, 140, divn.picture())
+        var img = ibox.addImage(192, 120, divn.picture())
         img.tooltip = _u(longDescr);
     }
 
@@ -189,6 +189,17 @@ game.ui.infobox.aboutTemple = function (location) {
         temple.active = !temple.active;
         ibox.setWorkingStatus(temple.active);
     }
+
+    var btnAdvisor = ibox.addTexturedButton(340, 220, 28,28);
+    btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
+    btnAdvisor.callback = function() {
+      g_session.setOption("advisor",g_config.advisor.religion);
+      ibox.deleteLater();
+    }
+
+    var lb = ibox.addLabel(60, 220, 275, 24);
+    lb.text = _u("visit_religion_advisor");
+    lb.textAlign = { h:"lowerRight", v:"center" };
 
     ibox.show();
     return ibox;

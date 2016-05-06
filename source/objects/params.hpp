@@ -20,11 +20,12 @@
 
 #include "param.hpp"
 #include "core/variant_map.hpp"
+#include "core/serialized_map.hpp"
 
 namespace pr
 {
 
-class Array : public std::map<int, float>
+class ParamsMap : public Map<int, float>
 {
 public:
   VariantList save() const;
@@ -33,6 +34,6 @@ public:
 
 }
 
-typedef pr::Array Params;
+typedef pr::ParamsMap Params;
 
 #endif //__CAESARIA_OBJECT_PARAMS_H_INCLUDED__

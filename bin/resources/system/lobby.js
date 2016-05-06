@@ -312,23 +312,32 @@ lobby.ui.options.showdlc = function () {
     engine.log("JS:lobby.ui.options.showdlc");
     lobby.ui.clear();
 
-    var path = g_session.getPath(":/dlc");
+    var dlcFolder = ":/dlc";
+    var path = g_session.getPath(dlcFolder);
     if (!path.exist()) {
         g_ui.addInformationDialog("##no_dlc_found_title##", "##no_dlc_found_text##");
         lobby.ui.mainmenu.showpage();
         return;
     }
 
-    var folders = g_session.getFolders(path.str, true);
+    var folders = g_session.getFolders(path.str, false);
     for (var i in folders) {
-        var fullpath = g_session.getPath(folders[i]);
-        var folderName = fullpath.baseName;
-        var locText = "##mainmenu_dlc_" + folderName + "##";
-
-        lobby.ui.addButton(locText, function () {
-            g_session.showDlcViewer(fullpath.str);
+        var locText = "##mainmenu_dlc_" + folders[i] + "##";
+        var fullpath = g_session.getPath(dlcFolder + "/" + folders[i]);
+        (function(fp) {
+            lobby.ui.addButton(locText, function () {
+            if (fullpath.exist()) {
+              g_session.showDlcViewer(fp.absolutePath());
+            } else {
+              g_ui.addInformationDialog("WARNING", "Folder " + fp.absolutePath() + " not exist");
+            }
         });
+      })(fullpath);
     }
+
+    lobby.ui.addButton("##cancel##", function () {
+        lobby.ui.mainmenu.showpage()
+    })
 }
 
 lobby.ui.mainmenu.showpage = function () {

@@ -165,6 +165,7 @@ protected:
   virtual void _updatePathway(const Pathway& pathway );
   virtual Point& _rndOffset();
   virtual void _updateThoughts();
+  virtual void _beforeDestroy();
 
   Pathway& _pathway();
 

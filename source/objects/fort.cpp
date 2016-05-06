@@ -378,9 +378,8 @@ TilesArray Fort::enterArea() const
   TilesArray tiles = WorkingBuilding::enterArea();
 
   Tile& rtile = _map().at( pos() + TilePos( 1, -1 ) );
-  if( rtile.isWalkable( true ) )
-  {
-    tiles.insert( tiles.begin(), &rtile );
+  if (rtile.isWalkable(true)) {
+    tiles.push_front(&rtile);
   }
 
   return tiles;

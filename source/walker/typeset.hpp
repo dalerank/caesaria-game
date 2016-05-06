@@ -22,37 +22,44 @@
 #include "walker/constants.hpp"
 #include <set>
 
-class WalkerTypeSet : public std::set<walker::Type>
+class WalkerTypeSet
 {
 public:
+  typedef std::set<walker::Type> Collection;
+
   WalkerTypeSet() {}
 
-  WalkerTypeSet( walker::Type a, walker::Type b )
+  WalkerTypeSet(walker::Type a, walker::Type b)
   {
-    insert( a );
-    insert( b );
+    _data.insert(a);
+    _data.insert(b);
   }
+
+  size_t count(walker::Type type) const { return _data.count(type); }
 
   WalkerTypeSet& operator << ( walker::Type a )
   {
-    insert( a );
+    _data.insert(a);
     return *this;
   }
 
   VariantList save() const
   {
     VariantList ret;
-    for( auto& item : *this )
-      ret.emplace_back( item );
+    for (auto& item : _data)
+      ret.push_back(item);
 
     return ret;
   }
 
-  void load( const VariantList& stream )
+  void load(const VariantList& stream)
   {
-    for( auto& item : stream )
-      insert( item.toEnum<walker::Type>() );
+    for(const auto& item : stream )
+      _data.insert(item.toEnum<walker::Type>());
   }
+
+protected:
+  Collection _data;
 };
 
 #endif //_CAESARIA_WALKERTYPESET_INCLUDE_H_

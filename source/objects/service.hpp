@@ -21,6 +21,7 @@
 
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
+#include "walker/serviceman.hpp"
 
 class ServiceBuilding : public WorkingBuilding
 {
@@ -43,18 +44,18 @@ public:
 
   // called when a service man should service the neighborhood
   virtual void deliverService();
-  
+
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream);
   virtual Variant getProperty(const std::string& name) const;
-  virtual void buildingsServed( const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker );
+  virtual void buildingsServed( const SmartSet<Building>& buildings, ServiceWalkerPtr walker );
   virtual unsigned int walkerDistance() const;
 
   std::string workersStateDesc() const;
 protected:
   virtual int _getWalkerOrders() const;
 
-private:  
+private:
   void _setLastSendService( DateTime time );
 
   class Impl;

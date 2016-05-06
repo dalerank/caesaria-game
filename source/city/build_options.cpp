@@ -22,6 +22,7 @@
 #include "objects/constants.hpp"
 #include "objects/overlay.hpp"
 #include "core/variant_list.hpp"
+#include "core/serialized_map.hpp"
 
 using namespace gfx;
 
@@ -40,13 +41,13 @@ struct BuildingRule
   unsigned int quotes;
 };
 
-class BuildingRules : public std::map< object::Type, BuildingRule >
+class BuildingRules : public Map<object::Type, BuildingRule>
 {
 public:
   VariantMap saveRules() const
   {
     VariantMap ret;
-    for( auto& it : *this )
+    for( const auto& it : _data )
       ret[ object::toString( it.first ) ] = it.second.mayBuild;
 
     return ret;
@@ -55,7 +56,7 @@ public:
   VariantMap saveQuotes() const
   {
     VariantMap ret;
-    for( auto& it : *this )
+    for( const auto& it : _data )
       ret[ object::toString( it.first ) ] = it.second.quotes;
 
     return ret;
@@ -63,19 +64,17 @@ public:
 
   void loadRules( const VariantMap& stream )
   {
-    for( const auto& item : stream )
-    {
+    for (const auto& item : stream) {
       object::Type btype = object::toType( item.first );
-      (*this)[ btype ].mayBuild = item.second.toBool();
+      _data[ btype ].mayBuild = item.second.toBool();
     }
   }
 
   void loadQuotes( const VariantMap& stream )
   {
-    for( const auto& item : stream )
-    {
+    for (const auto& item : stream) {
       object::Type btype = object::toType( item.first );
-      (*this)[ btype ].quotes = item.second.toInt();
+      _data[ btype ].quotes = item.second.toInt();
     }
   }
 };
@@ -114,8 +113,9 @@ unsigned int Options::getBuildingsQuote(const object::Type type) const
 void Options::setAvailable(bool av)
 {
   auto types = object::InfoDB::instance().availableTypes();
-  for (auto t : types)
+  for (auto t : types) {
     setBuildingAvailable(t, av);
+  }
 }
 
 void Options::clear() {  _d->rules.clear(); }

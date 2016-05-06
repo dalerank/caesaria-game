@@ -39,7 +39,7 @@
 #include <SDL_system.h>
 #endif
 
-const char* LogWriter::severity(LogWriter::Severity s) 
+const char* LogWriter::severity(LogWriter::Severity s)
 {
   switch (s) {
   case LogWriter::debug: return "[DEBUG]";
@@ -189,17 +189,9 @@ bool Logger::hasFilter(const std::string& text)
   return false;
 }
 
-bool Logger::removeFilter(const std::string& text)
+void Logger::removeFilter(const std::string& text)
 {
-  foreach(filter, instance()._d->filters)
-  {
-    if (*filter == text)
-    {
-      instance()._d->filters.erase(filter);
-      return true;
-    }
-  }
-  return false;
+  instance()._d->filters.remove(text);
 }
 
 void Logger::registerWriter(Logger::Type type, const std::string& param )

@@ -116,11 +116,11 @@ sim.ui.overlaymenu.show = function(type, left, top) {
 
     for (var i in ovmenu.buttons) {
       var bbutton = ovmenu.buttons[i];
-      max_text_width = math.max(max_text_width, bbutton.textWidth);
+      max_text_width = Math.max(max_text_width, bbutton.textWidth);
     }
 
     //engine.log(max_text_width);
-    var appear_width = math.max(150, max_text_width) + 80;
+    var appear_width = Math.max(150, max_text_width) + 80;
 
     // set the same size for all buttons
     for(var i in ovmenu.buttons) {

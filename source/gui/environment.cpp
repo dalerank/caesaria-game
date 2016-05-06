@@ -233,13 +233,11 @@ Widget* Ui::getFocus() const { return _d->focused.element.object(); }
 
 bool Ui::isHovered( const Widget* element )
 {
-  if (element != NULL) {
-    if (_d->hovered.current.isValid()) {
-      if (_d->hovered.current->isSubElement()) {
-        return _d->hovered.noSubelement.object() == element;
-      }
+  if (element != NULL && _d->hovered.current.isValid()) {
+    if (_d->hovered.current->isSubElement()) {
+      return _d->hovered.noSubelement.object() == element;
     } else {
-     return _d->hovered.current.object() == element;
+      return _d->hovered.current.object() == element;
     }
   }
 
@@ -619,9 +617,8 @@ void TooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTool
       && hovered->tooltipText().size()
     )
   {
-    if( hovered.isValid() )
-    {
-      hovered->onEvent( NEvent::ev_none() );
+    if (hovered.isValid()) {
+      hovered->onEvent(NEvent::ev_none());
     }
 
     element = standart( rootWidget, hovered.object(), cursor );

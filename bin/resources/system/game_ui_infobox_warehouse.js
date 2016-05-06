@@ -3,10 +3,7 @@ game.ui.infobox.ruleNames = ["accept", "reject", "deliver", "none"];
 game.ui.infobox.baseSpecialOrdersWindow = function (top, left, height) {
     var ibox = this.simple(0, 0, 510, height);
 
-    ibox.position = {
-        x: top,
-        y: left
-    };
+    ibox.position = { x: top, y: left};
     ibox.gbOrders = ibox.addGroupbox(17, 42, ibox.w - 35, ibox.h - 120);
     ibox.gbOrders.buttons = [];
 
@@ -132,7 +129,10 @@ game.ui.infobox.showGrSpecialOrdersWindow = function (parent, grStore) {
 }
 
 game.ui.infobox.showWhSpecialOrdersWindow = function (parent, wh) {
-    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 560, 560);
+    var y = parent.bottom() - 560;
+    if (y < 0)
+      y = parent.top();
+    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), y, 560);
 
     ibox.title = _u("warehouse_orders");
 
@@ -180,20 +180,11 @@ game.ui.infobox.aboutStorage = function (x, y, w, h) {
         var btn = ibox.addButton(col * offset + 15, paintY, 150, 24);
         btn.font = "FONT_2";
         btn.style = "noBackground";
-        btn.textAlign = {
-            h: "upperLeft",
-            v: "center"
-        };
+        btn.textAlign = { h: "upperLeft", v: "center" };
         btn.icon = ginfo.picture.local;
-        btn.iconOffset = {
-            x: 0,
-            y: 4
-        };
-        btn.text = _format("{0} {1} {2}", g_config.metric.convQty(qty / 100), _ut(ginfo.name), g_config.metric.modeShort);
-        btn.textOffset = {
-            x: 25,
-            y: 0
-        };
+        btn.text = _format("{0} {1}", g_config.metric.convQty(qty), _ut(ginfo.name) /* g_config.metric.modeShort */);
+        btn.iconOffset = { x: 0, y: 4 };
+        btn.textOffset = { x: 25,y: 0 };
 
         return btn;
     }
@@ -299,6 +290,17 @@ game.ui.infobox.aboutWarehouse = function (location) {
     ibox.drawWhGood(g_config.good.weapon, 2, _paintY + 50);
     ibox.drawWhGood(g_config.good.furniture, 2, _paintY + 75);
     ibox.drawWhGood(g_config.good.pottery, 2, _paintY + 100);
+
+    var btnAdvisor = ibox.addTexturedButton(340, btnOrders.top() - 30, 28,28);
+    btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
+    btnAdvisor.callback = function() {
+      g_session.setOption("advisor",g_config.advisor.trading);
+      ibox.deleteLater();
+    }
+
+    var lb = ibox.addLabel(60, btnOrders.top() - 26, 275, 24);
+    lb.text = _u("visit_trade_advisor");
+    lb.textAlign = { h:"lowerRight", v:"center" };
 
     ibox.setWorkersStatus(32, 56 + 12, 542, wh.maximumWorkers(), wh.numberWorkers());
     ibox.setWorkingStatus(wh.active);

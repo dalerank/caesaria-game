@@ -84,9 +84,9 @@ void Trade::Impl::updateGoodsInfo()
       exportQty = importQty = 0;
       tradeState = trade::stacking;
     }
-    
+
     auto& btn = gbInfo->add<TradeGoodInfo>( Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
+                                            gtype, allgoods[gtype], workState, tradeState, exportQty, importQty );
     indexOffset++;
     btn.onClickedA().connect( this, &Impl::showGoodOrderManageWindow );
   }

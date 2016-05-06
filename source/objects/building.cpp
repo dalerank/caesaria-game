@@ -51,7 +51,7 @@ struct CityKoeffs
 };
 
 template<class T>
-class ExpiredMap : public std::map<T, DateTime>
+class ExpiredMap : public Map<T, DateTime>
 {
 public:
   bool contain( T type ) const
@@ -63,7 +63,7 @@ public:
   {
     VariantList ret;
     for( auto& item : *this )
-      ret.emplace_back( VariantList(item.first, item.second) );
+      ret.push_back( VariantList(item.first, item.second) );
 
     return ret;
   }
@@ -94,14 +94,14 @@ public:
   }
 };
 
-class TraineeMap : public std::map<walker::Type,int>
+class TraineeMap : public Map<walker::Type,int>
 {
 public:
   VariantList save() const
   {
     VariantList ret;
     for( auto& item : *this )
-      ret.emplace_back( VariantList(item.first, item.second) );
+      ret.push_back( VariantList(item.first, item.second) );
 
     return ret;
   }

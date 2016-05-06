@@ -48,7 +48,7 @@ void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
-  UqBuildings<House> houses = getReachedBuildings( pos() ).select<House>();
+  SmartSet<House> houses = getReachedBuildings( pos() ).select<House>();
   for( auto house : houses )
   {
     if( house->isDeleted() || _d->history.count( house->pos() ) > 0 )

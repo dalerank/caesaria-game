@@ -41,6 +41,7 @@ public:
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual Variant getProperty(const std::string &name) const;
 
   gfx::TilesArray meadows() const;
   gfx::TilesArray area() const;

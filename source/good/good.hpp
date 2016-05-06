@@ -20,8 +20,7 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
-#include <set>
-#include <map>
+#include "core/serialized_map.hpp"
 
 class StringArray;
 
@@ -49,7 +48,7 @@ APPEND_NAMEDTYPE_ID(denaries,   17)
 APPEND_NAMEDTYPE_ID(prettyWine, 18)
 END_NAMEDTYPE(Product)
 
-class Products : public std::set<Product>
+class Products : public Set<Product>
 {
 public:
   Products& operator<<(const Product& a);
@@ -74,5 +73,5 @@ class Stock;
 class ProductMap;
 class Store;
 }//end namespace good
-    
+
 #endif //_CAESARIA_GOOD_H_INCLUDE_

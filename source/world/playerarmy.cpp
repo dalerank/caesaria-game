@@ -48,7 +48,7 @@ VariantMap save;
 
 class PlayerArmy::Impl
 {
-public:  
+public:
   typedef std::vector<SoldierInfo> SoldiersInfo;
 
   PlayerArmy::Mode mode;
@@ -201,7 +201,7 @@ int PlayerArmy::searchRange() const { return 30; }
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
   _d->mode = PlayerArmy::wait;
-  _d->waitSoldiers.insert( _d->waitSoldiers.end(), soldiers.begin(), soldiers.end() );
+  _d->waitSoldiers.append(soldiers);
 }
 
 bool PlayerArmy::_isAgressiveArmy(ArmyPtr other) const

@@ -21,35 +21,46 @@
 #include "variant.hpp"
 #include "delegate.hpp"
 
-class VariantList : public std::list<Variant>
+class VariantList
 {
 public:
+  typedef std::list<Variant> Collection;
+  typedef Delegate1< const Variant& > Visitor;
+
   VariantList() {}
 
   Variant get( const unsigned int index, Variant defaultVal=Variant() ) const;
 
-  typedef Delegate1< const Variant& > Visitor;
-
   void visitEach( Visitor visitor );
 
   VariantList& operator <<( const Variant& v );
+  Collection::const_iterator begin() const { return _data.begin(); }
+  Collection::const_iterator end() const { return _data.end(); }
+  bool operator==(const VariantList& a) const;
+  bool empty() const { return _data.empty(); }
+  Collection::reference front() { return _data.front(); }
+  Collection::reference back() { return _data.back(); }
+  size_t size() const { return _data.size(); }
+
+  VariantList& push_back(const Variant& a) { _data.push_back(a); return *this; }
 
   template<class T>
   VariantList( const std::vector<T>& array )
   {
     //typename std::vector<T>::iterator it = array.begin();
-    for( auto& item : array )
-    {
-      push_back( Variant(item) );
+    for( auto& item : array ) {
+      _data.push_back( Variant(item) );
     }
   }
 
   template<class A, class B>
   VariantList( const A& a, const B& b)
   {
-    emplace_back( Variant(a) );
-    emplace_back( Variant(b) );
+    _data.emplace_back( Variant(a) );
+    _data.emplace_back( Variant(b) );
   }
+private:
+  Collection _data;
 };
 
 class VariantListReader
@@ -62,7 +73,7 @@ public:
   bool atEnd();
 
 private:
-  VariantList::const_iterator _it;
+  VariantList::Collection::const_iterator _it;
   const VariantList& _list;
 };
 

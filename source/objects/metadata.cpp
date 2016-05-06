@@ -179,10 +179,10 @@ Picture Info::randomPicture(int size) const
 
 bool Info::havePicture(const std::string& name) const
 {
-  for( auto& pics : _d->pictures )
+  for (auto& pics : _d->pictures)
   {
-    bool found = pics.second.contains( name );
-    if( found )
+    bool found = pics.second.contain(name);
+    if (found)
       return true;
   }
 
@@ -191,8 +191,7 @@ bool Info::havePicture(const std::string& name) const
 
 Variant Info::getOption(const std::string &name, Variant defaultVal ) const
 {
-  VariantMap::iterator it = _d->options.find( name );
-  return it != _d->options.end() ? it->second : defaultVal;
+  return _d->options.get(name);
 }
 
 bool Info::getFlag(const std::string& name, bool defValue) const

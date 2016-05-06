@@ -20,7 +20,6 @@
 
 #include "referencecounted.hpp"
 #include "bytearray.hpp"
-#include "stringarray.hpp"
 #include "time.hpp"
 #include "size.hpp"
 #include "position.hpp"
@@ -33,6 +32,7 @@
 class Variant;
 class VariantList;
 class VariantMap;
+class StringArray;
 class NColor;
 class TilePos;
 

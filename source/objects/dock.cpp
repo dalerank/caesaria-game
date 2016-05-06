@@ -55,6 +55,7 @@ public:
   Direction direction;
 
 public:
+  TilePos landingTileOffset() const;
   bool isFlatCoast( const Tile& tile ) const;
   Direction getDirection(PlayerCityPtr city, TilePos pos, Size size);
   bool isConstructibleArea( const TilesArray& tiles );
@@ -168,7 +169,7 @@ bool Dock::build( const city::AreaInfo& info )
   for (auto tile : area)
      _d->saved_tile.push_back(tile::encode(*tile));
 
-  TilePos landingPos = landingTile().pos();
+  TilePos landingPos = info.pos + _d->landingTileOffset();
   Pathway way = PathwayHelper::create( landingPos, info.city->getBorderInfo( PlayerCity::boatEntry ).epos(),
                                        PathwayHelper::deepWater );
   if (!way.isValid()) {
@@ -252,10 +253,9 @@ bool Dock::isBusy() const
   return !merchants.empty();
 }
 
-const Tile& Dock::landingTile() const
-{
+TilePos Dock::Impl::landingTileOffset() const {
   TilePos offset( -999, -999 );
-  switch( _d->direction )
+  switch( direction )
   {
   case direction::south: offset = TilePos( 0, -1 ); break;
   case direction::west: offset = TilePos( -1, 0 ); break;
@@ -265,6 +265,12 @@ const Tile& Dock::landingTile() const
   default: break;
   }
 
+  return offset;
+}
+
+const Tile& Dock::landingTile() const
+{
+  TilePos offset = _d->landingTileOffset();
   return _map().at( pos() + offset );
 }
 

@@ -988,8 +988,8 @@ void Widget::moveToCenter() { setCenter( parent()->center() ); }
 
 void Widget::addProperty(const std::string& name, const Variant& value)
 {
-  auto it = _dfunc()->properties.find(name);
-  if (it != _dfunc()->properties.end())
+  bool hasProp  = _dfunc()->properties.has(name);
+  if (hasProp)
     Logger::warning("WARNING!!! Widget {} already have property {}", internalName(), name);
 
   _dfunc()->properties[name] = value;
@@ -1020,7 +1020,7 @@ const Variant& Widget::getProperty(const std::string& name) const
     return inv;
   }
 
-  VariantMap::const_iterator it = _dfunc()->properties.find(name);
+  auto it = _dfunc()->properties.find(name);
   return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 

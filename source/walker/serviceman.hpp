@@ -27,21 +27,51 @@
 
 /** This walker gives a service to buildings along the road */
 template<class T>
-class UqBuildings : public std::set<SmartPtr<T>>
+class SmartSet
 {
 public:
+  typedef std::set<SmartPtr<T>> Collection;
+
+  typedef typename Collection::iterator iterator;
+  typedef typename Collection::const_iterator const_iterator;
+  typedef typename Collection::reference reference;
+  typedef typename Collection::const_reference const_reference;
+  typedef typename Collection::reverse_iterator reverse_iterator;
+  typedef typename Collection::const_reverse_iterator const_reverse_iterator;
+
+  const_iterator begin() const { return _data.begin(); }
+  const_reverse_iterator rbegin() const { return _data.rbegin(); }
+  reverse_iterator rbegin() { return _data.rbegin(); }
+  const_reverse_iterator rend() const { return _data.rend(); }
+  reverse_iterator rend() { return _data.rend(); }
+  iterator erase(iterator it) { return _data.erase(it); }
+  iterator begin() { return _data.begin(); }
+  iterator end() { return _data.end(); }
+  const_iterator end() const { return _data.end(); }
+  size_t size() const { return _data.size(); }
+  bool empty() const { return _data.empty(); }
+  void clear() { _data.clear(); }
+  reference front() { return _data.front(); }
+  const_reference front() const { return _data.front(); }
+  reference back() { return _data.back(); }
+
   void addIfValid( SmartPtr<T> building )
   {
-    if( building.isValid() )
-      this->insert( building );
+    if (building.isValid())
+      _data.insert(building);
+  }
+
+  bool insert(SmartPtr<T> t) {
+    return _data.insert(t).second;
   }
 
   template<class Dst>
-  UqBuildings<Dst> select() const
+  SmartSet<Dst> select() const
   {
-    UqBuildings<Dst> ret;
-    for( auto i : *this )
+    SmartSet<Dst> ret;
+    for (auto i : _data) {
       ret.addIfValid( ptr_cast<Dst>( i ) );
+    }
 
     return ret;
   }
@@ -49,8 +79,9 @@ public:
   SmartList<T> toList() const
   {
     SmartList<T> ret;
-    for( auto i : *this )
+    for (auto i : _data) {
       ret.push_back( i );
+    }
 
     return ret;
   }
@@ -58,9 +89,10 @@ public:
   template<class Dst>
   bool contain() const
   {
-    for( auto& i : *this )
-      if( is_kind_of<Dst>( i ) )
+    for (const auto& i : _data) {
+      if (is_kind_of<Dst>(i))
         return true;
+    }
 
     return false;
   }
@@ -68,18 +100,19 @@ public:
   template<class Dst>
   bool firstOf() const
   {
-    for( auto i : *this )
-    {
+    for (auto i : _data) {
       SmartPtr<Dst> ret = ptr_cast<Dst>( i );
-      if( ret.isValid() )
+      if (ret.isValid())
         return ret;
     }
 
     return SmartPtr<Dst>();
   }
+protected:
+  Collection _data;
 };
 
-class ReachedBuildings : public UqBuildings<Building>
+class ReachedBuildings : public SmartSet<Building>
 {
 public:
   bool contain( object::Type type ) const;

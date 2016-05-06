@@ -24,14 +24,15 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
+#include "core/serialized_map.hpp"
 
 using namespace gfx;
 
-class WalkersDB : public std::map< walker::Type, walker::Info >
+class WalkersDB : public Map<walker::Type, walker::Info>
 {
 public:
   std::map<int, walker::Type> rmap;
-  void append( walker::Type type, const std::string& name )
+  void append(walker::Type type, const std::string& name)
   {
     (*this)[ type ] = walker::Info{ type, name, "##wt_" + name + "##" };
     rmap[ Hash(name) ] = type;
@@ -40,7 +41,7 @@ public:
 
 class WalkerHelper::Impl
 {
-public:    
+public:
   typedef std::map< world::Nation, std::string > PrettyNations;
 
   WalkersDB infodb;
@@ -127,7 +128,7 @@ public:
 VariantMap WalkerHelper::getOptions(const walker::Type type )
 {
   std::string tname = getTypename( type );
-  VariantMap::iterator mapIt = instance()._d->options.find( tname );
+  auto mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
     Logger::warning( "Unknown walker info for type {}", type );

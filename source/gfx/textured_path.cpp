@@ -147,6 +147,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
     case direction::east:  index = 8;  break;
     default: index = 0;
     }
+
     rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset + doff );
   }
 }

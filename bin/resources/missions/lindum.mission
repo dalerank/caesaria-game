@@ -2,10 +2,104 @@
   preview.text : "##lindum_preview_mission##"
   preview.title : "##lindum_preview_title##"
 
-  win:
+  version : 1
+  map : ":/maps/lindum.sav"
+  funds : 8000
+  city.name : "Lindum"
+  player.rank : 3
+  date : "-350.01.01"
+  adviserEnabled : true
+  fishPlaceEnabled : false
+  climate : 0
+  preview.image : ""
+
+  win :
   {
-    win.text : "##lindum_win_text##"
+    name : "n2_capua"
+    population : 2500
+    culture : 35
+    prosperity : 10
+    peace : 0
+    favour : 60
+    finishDate : "-300.01.01"
+    next : ":/missions/mission4.briefing"
+    title : "##architect##"
+    maxHouseLevel : "big_villa"
+    winContinue : false
+    caption : "##lindum_title##"
+    winText : "##lindum_win_text##"
     startSound : "lindum_speech"
-    winSound: "lindum_win_speech"
+    winSound : "lindum_win_speech"
+    overview :  [ "##lindum_overview##" ]
+  }
+
+  buildoptions :
+  {
+    check_desirability : true
+
+    buildings :
+    {
+      "clinic": true,
+      "barber": true,
+      "baths": true,
+      "hospital": true,
+      "senate" : true,
+      "school": true,
+      "library": true,
+      "academy": true,
+      "theater": true,
+      "amphitheater": true,
+      "colosseum": true,
+      "hippodrome": true,
+      "actorColony": true,
+      "gladiatorSchool": true,
+      "lionsNursery": true,
+      "chariotSchool": true,
+      "missionaryPost": true,
+      "governorHouse" : true,
+      "governorVilla" : true,
+      "governorPalace": true,
+      "statue_small": true,
+      "statue_middle": true,
+      "statue_big": true,
+      "fountain" : true,
+      "well": true,
+      "aqueduct": true,
+      "reservoir": true,
+      engineering_post : true
+      plaza : true
+      forum : true
+      garden : true
+      low_bridge : true
+      high_bridge : true
+      clay_pit : true
+      pottery_workshop : true
+      dock : true
+      hippodrome : false
+      charioter_school : false
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+      big_ceres_temple : true
+      big_venus_temple : true
+      big_mars_temple : true
+      big_neptune_temple : true
+      big_mercury_temple : true
+      oracle : true
+      market : true
+      oil_workshop : true
+      lumber_mill : true
+      roadBlock : true
+      furniture_workshop : true
+      granary : true
+      warehouse : true
+      wheat_farm : true
+      fig_farm : true
+      olive_farm : true
+      senate : true
+    }
   }
 }

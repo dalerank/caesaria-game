@@ -28,7 +28,7 @@ TilePosArray& TilePosArray::append(int i, int j)
 VariantList TilePosArray::save() const
 {
   VariantList ret;
-  for( auto& pos : *this )
+  for( const auto& pos : *this )
     { ret << pos; }
   return ret;
 }
@@ -36,12 +36,6 @@ VariantList TilePosArray::save() const
 void TilePosArray::load(const VariantList &vlist)
 {
   clear();
-  for( auto& it : vlist )
+  for( const auto& it : vlist )
     push_back( it.toTilePos() );
-}
-
-TilePosSet& TilePosSet::operator<<(const TilePos &pos)
-{
-  insert( pos );
-  return *this;
 }

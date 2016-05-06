@@ -39,7 +39,7 @@ public:
   EmpirePtr empire;
 };
 
-class Prices : public std::map< good::Product, PriceInfo >
+class Prices : public Map<good::Product, PriceInfo>
 {
 public:
   VariantMap save() const

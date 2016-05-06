@@ -34,7 +34,7 @@ class Entries : public ReferenceCounted
 public:
   typedef enum { file=0x1, directory=0x2, extFilter=0x4 } FilterFlag;
 
-  class Items : public std::vector< EntryInfo >
+  class Items : public Array<EntryInfo>
   {
   public:
     StringArray names() const;

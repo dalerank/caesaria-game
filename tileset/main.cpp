@@ -239,7 +239,7 @@ public:
            const StringArray& dirs, const StringArray& files = StringArray())
   {
     StringArray imageFiles;
-    imageFiles << files;
+    imageFiles.append(files);
 
     for( auto str : dirs )
     {
@@ -327,10 +327,9 @@ public:
       StringArray files = directory.entries().items().files( ".png" );
       StringArray directories = directory.entries().items().folders();
 
-      imageFiles << files;
+      imageFiles.append(files);
 
-      for( auto str : directories)
-      {
+      for( const auto& str : directories) {
         getImageFiles( vfs::Path( str ), imageFiles);
       }
     }
@@ -732,9 +731,9 @@ int main(int argc, char* argv[])
     for( const ArchiveConfig::Item& item : archiveIt.items)
     {
       if( item.type == ArchiveConfig::Item::atlas )
-        atlasFiles << item.files;
+        atlasFiles.append(item.files);
       else
-        allFiles << item.files;
+        allFiles.append(item.files);
     }
 
     auto gen = new AtlasGenerator();
@@ -756,7 +755,7 @@ int main(int argc, char* argv[])
     }
     archiveIt.info[ "atlas" ] = info;
 
-    allFiles << gen->names;
+    allFiles.append(gen->names);
     createSet( archiveIt, allFiles );
   }
 

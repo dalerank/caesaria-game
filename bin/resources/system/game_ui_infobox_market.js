@@ -42,7 +42,7 @@ game.ui.infobox.aboutMarket = function(location) {
   }
 
   var goods = market.goodStore();
-  if (market.numberWorkers() == 0) {
+  if (market.numberWorkers() > 0) {
     var furageSum = 0;
     // for all furage types of good
     for( var gtype in g_config.good.basicfood) {
@@ -62,7 +62,7 @@ game.ui.infobox.aboutMarket = function(location) {
     else
     {
       lbAbout.h = 90;
-      lbAbout.textAlign = { v:"center", h:"center" };
+      lbAbout.textAlign = { h:"upperLeft", v:"center" };
     }
 
     paintY += 24;

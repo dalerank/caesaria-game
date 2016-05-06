@@ -18,14 +18,17 @@ game.ui.infobox.show = function(typename,location)
   case "garden": case "statue_small": case "statue_middle":
   case "statue_big": case "native_hut": case "native_field":
   case "native_center": case "fortification":
-  case "wall":
+  case "wall": case "tower":
     game.ui.infobox.aboutObject(typename);
   break;
 
   case "iron_mine": case "quarry": case "lumber_mill": case "clay_pit":
+    game.ui.infobox.aboutRaw(location);
+  break;
+
   case "meat_farm": case "fig_farm": case "olive_farm": case "vegetable_farm":
   case "wheat_farm": case "vinard":
-    game.ui.infobox.aboutRaw(location);
+    game.ui.infobox.aboutFarm(location);
   break;
 
   case "prefecture": case "engineering_post": case "clinic":
@@ -144,7 +147,7 @@ game.ui.infobox.tryShow = function (location) {
     game.ui.infobox.wshow(walkers, location);
   } else {
     var overlay = g_session.city.getOverlay(location)
-    game.ui.infobox.show(overlay.typename, location)
+    game.ui.infobox.show( overlay == null || overlay == undefined ? "" : overlay.typename, location)
   }
 }
 

@@ -61,7 +61,7 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Vector<object::Type> unsignificantBuildings;
+  Array<object::Type> unsignificantBuildings;
 };
 
 Peace::Peace( PlayerCityPtr city )

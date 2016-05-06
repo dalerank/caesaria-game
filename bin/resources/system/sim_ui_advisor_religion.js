@@ -1,18 +1,23 @@
-function OnShowAdvisorReligion() {
-  sim.ui.advisors.religion.show();
+function OnShowAdvisorWindow(type) {
+  switch (type) {
+  case g_config.advisor.religion: sim.ui.advisors.religion.show(); break;
+
+  default: sim.ui.advisors.hide();
+  }
+
 }
 
 sim.ui.advisors.religion = {}
 
 sim.ui.advisors.religion.getAvice = function() {
   var advices = [];
-  var houses =  g_session.city.findOverlays("warehouse");
+  var houses =  g_session.city.findOverlays("house");
 
   var needBasicReligion = 0;
   var needSecondReligion = 0;
   var needThirdReligion = 0;
   for (var i in houses) {
-    var house = houses[i];
+    var house = houses[i].as(House);
 
     switch (house.spec.minReligionLevel) {
       case 1: needBasicReligion += (house.spec.religionLevel == 0 ? 1 : 0); break;
@@ -58,7 +63,7 @@ sim.ui.advisors.religion.getAvice = function() {
 }
 
 sim.ui.advisors.hide = function() {
-  var window = g_ui.find("CurrentAdvisor")
+  var window = g_ui.find("#advisorWindow")
 
   if (window != null)
     window.deleteLater();
@@ -71,7 +76,7 @@ sim.ui.advisors.religion.show = function() {
 
   var resolution = g_session.resolution;
   var w = new Window(parlor);
-  w.name = "CurrentAdvisor";
+  w.name = "#advisorWindow";
 
   w.geometry = {x:0, y:0, w:640, h:290};
   w.title = _u("religion_advisor");
@@ -125,6 +130,7 @@ sim.ui.advisors.religion.show = function() {
     var wPoints = 0;
     var moodText = "";
     var godText = "";
+    var relation = 0;
     if (god != null) {
       small_n = g_session.city.getOverlaysNumber(god.smallt);
       big_n = g_session.city.getOverlaysNumber(god.bigt);
@@ -133,6 +139,7 @@ sim.ui.advisors.religion.show = function() {
       wPoints = god.wrathPoints();
       moodText = god.moodDescription;
       godText = god.name();
+      relation = god.relation();
     } else {
       small_n = g_session.city.getOverlaysNumber("oracle");
       //big_n = g_session.city.getOverlaysNumber();
@@ -144,14 +151,14 @@ sim.ui.advisors.religion.show = function() {
     btn.addLabel(80, 0, 140, 20, "(" + _ut(shortDesc) + ")", "FONT_1");
     btn.addLabel(220, 0, 60, 20, small_n, "FONT_1");
     btn.addLabel(280, 0, 70, 20, big_n, "FONT_1");
-    btn.addLabel(350, 0, 50, 20, month2lastFest, "FONT_1");
+    btn.addLabel(350, 0, 50, 20, _format( "{0}/{1}", month2lastFest, relation ), "FONT_1");
 
     var wrathImage = g_render.picture("paneling", 334);
-    for (var k=0; k < w / 15; k++ )
+    for (var k=0; k < wPoints / 15; k++ )
       btn.addImage(400 + k * 15, 0, wrathImage);
 
     if (moodText.length > 0) {
-      var moodOffsetX = 400 + wPoints / 15 * 15;
+      var moodOffsetX = 410 + wPoints / 15 * 15;
       btn.addLabel(moodOffsetX, 0, 100, 20, _ut(moodText), "FONT_1" );
     }
   }

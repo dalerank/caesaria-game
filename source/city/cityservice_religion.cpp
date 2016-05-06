@@ -32,6 +32,7 @@
 #include "events/showinfobox.hpp"
 #include "cityservice_factory.hpp"
 #include "city/states.hpp"
+#include "core/serialized_map.hpp"
 
 using namespace religion;
 using namespace events;
@@ -58,7 +59,7 @@ struct CoverageInfo
   CoverageInfo() : temples({0,0}), parishionerNumber( 0 ) {}
 };
 
-class TemplesCoverity : public std::map< std::string, CoverageInfo >
+class TemplesCoverity : public Map<std::string, CoverageInfo>
 {
 public:
   void update( TemplePtr temple )
@@ -78,7 +79,7 @@ public:
 
   void clear( const DivinityList& divinities )
   {
-    std::map< std::string, CoverageInfo >::clear();
+    Map<std::string, CoverageInfo>::clear();
     for( auto divinity : divinities)
     {
       CoverageInfo& cvInfo = (*this)[divinity->internalName()];

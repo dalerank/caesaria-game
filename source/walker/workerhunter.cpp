@@ -63,7 +63,7 @@ public:
 
 Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter ), __INIT_IMPL(Recruter)
-{    
+{
   _setType( walker::recruter );
 
   __D_REF(d,Recruter)
@@ -110,7 +110,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
 int Recruter::needWorkers() const { return _dfunc()->needWorkers; }
 
 void Recruter::_centerTile()
-{  
+{
   Walker::_centerTile();
   BuildingPtr refBase = base();
 
@@ -124,7 +124,7 @@ void Recruter::_centerTile()
   ReachedBuildings reached = getReachedBuildings( pos() );
   if( d.needWorkers > 0 )
   {
-    UqBuildings<House> houses = reached.select<House>();
+    SmartSet<House> houses = reached.select<House>();
 
     for( auto house : houses )
       house->applyService( this );
@@ -148,7 +148,7 @@ void Recruter::_centerTile()
     }
   }
   else
-  {    
+  {
     if( !_pathway().isReverse() ) //return2Base();
     {
       _pathway().toggleDirection();

@@ -26,7 +26,7 @@
 namespace gfx
 {
 
-class TilesArray : public std::vector<Tile*>
+class TilesArray : public Array<Tile*>
 {
 public:
   struct Corners
@@ -51,9 +51,6 @@ public:
   TilePos rightDownCorner() const;
 
   TilesArray& operator=(const TilesArray& a);
-
-  TilesArray& append( const TilesArray& a );
-  TilesArray& append( Tile* a );
   bool appendOnce( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;

@@ -85,7 +85,7 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
     lastItem = addItem( items.front(), -1, true, true );
   }
 
-  items.erase(items.begin());
+  items.pop_front();
   for (auto& item : items)
   {
     if (lastItem->submenu() == NULL)

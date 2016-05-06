@@ -94,7 +94,6 @@ public:
     listbox.setItemsFont( Font::create( "FONT_1" ) );
     listbox.setItemsHeight( 16 );
 
-
     for( auto it=history.rbegin(); it != history.rend(); ++it )
     {
        const Gift& gift = *it;

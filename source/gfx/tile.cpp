@@ -46,7 +46,7 @@ void Tile::Terrain::clear()
   garden     = false;
   meadow     = false;
   wall       = false;
-  rubble     = false;  
+  rubble     = false;
   deepWater  = false;
 }
 
@@ -140,7 +140,7 @@ bool Tile::getFlag(Tile::Type type) const
 
   case isConstructible:
   {
-    return !(_terrain.water || _terrain.deepWater || _terrain.rock || _terrain.tree || _overlay.isValid() || _terrain.road);
+    return !(_terrain.water || _terrain.deepWater || _terrain.rock || _terrain.tree || _overlay.isValid() /*|| _terrain.road*/);
   }
   case tlMeadow: return _terrain.meadow;
   case tlRock: return _terrain.rock;

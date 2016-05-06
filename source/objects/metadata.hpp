@@ -52,7 +52,7 @@ public:
 
   static Info invalid;
 
-  Info( const Info& a );
+  Info(const Info& a);
 
   ~Info();
 

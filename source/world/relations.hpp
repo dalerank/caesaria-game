@@ -24,6 +24,8 @@
 #include "core/signals.hpp"
 #include "vfs/path.hpp"
 #include "game/gift.hpp"
+#include "core/vector_extension.hpp"
+#include "core/serialized_map.hpp"
 
 namespace world
 {
@@ -44,14 +46,14 @@ public:
   void load( const VariantList& stream );
 };
 
-class RelationAbilities : public std::vector<RelationAbility>
+class RelationAbilities : public Array<RelationAbility>
 {
 public:
   VariantList save() const;
   void load(const VariantList& stream );
 };
 
-class GiftHistory : public std::vector<Gift>
+class GiftHistory : public Array<Gift>
 {
 public:
   const Gift& last() const;
@@ -102,7 +104,7 @@ private:
   float _value;
 };
 
-class Relations : public std::map< std::string, Relation >
+class Relations : public Map< std::string, Relation >
 {
 public:
   VariantMap save() const;

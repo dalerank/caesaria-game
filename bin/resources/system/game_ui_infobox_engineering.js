@@ -391,20 +391,20 @@ game.ui.infobox.aboutRaw = function(location) {
   ibox.title = _u(factory.typename);
   ibox.overlay = factory;
 
-  var lbProgress = ibox.addLabel(20, 45, ibox.w-32,24);
+  var lbProgress = ibox.addLabel(20, 45, ibox.w/2,24);
   lbProgress.text = _format("{0} {1}%", _ut("rawm_production_complete_m"), factory.progress());
 
-  var lbAbout = ibox.addLabel(16, 70, ibox.w-32, 24);
-  lbAbout.multiline = true;
+  var lbProductivity = ibox.addLabel(ibox.w/2, 45, ibox.w/2-32,24);
+  lbProductivity.text = _format("{0} {1}%", _ut("effiency"), factory.effiency);
 
-  var lbProductivity = ibox.addLabel(20, 75, ibox.w-32, 48);
-  lbProductivity.multiline = true;
-  lbProductivity.textAlign = { v:"upperLeft", h:"upperLeft" };
+  ibox.lbProductivity = ibox.addLabel(20, 75, ibox.w-32, 48);
+  ibox.lbProductivity.multiline = true;
+  ibox.lbProductivity.textAlign = { v:"upperLeft", h:"upperLeft" };
 
   var problemText = factory.workersProblemDesc();
   var cartInfo = factory.cartStateDesc();
 
-  lbProductivity.text = _t(problemText) + _t(cartInfo);
+  ibox.lbProductivity.text = _t(problemText) + _t(cartInfo);
 
   var ginfo = factory.produce;
   ibox.addImage(10, 10, factory.produce.picture.local);
@@ -413,6 +413,21 @@ game.ui.infobox.aboutRaw = function(location) {
   ibox.setWorkingStatus(factory.active);
 
   ibox.show();
+  return ibox;
+}
+
+game.ui.infobox.aboutFarm = function(location) {
+  var ibox = game.ui.infobox.aboutRaw(location);
+
+  var lbCoverage = ibox.addLabel(ibox.w/2, 65, ibox.w/2-32,24);
+  var meadowCoverage = ibox.overlay.getProperty("meadowCoverage");
+
+  var desc = [ "meadow_extrem_poor", "meadow_very_poor", "meadow_poor",
+               "meadow_normal", "meadow_good", "meadow_rich", "meadow_awesome" ];
+  var index = Math.floor(meadowCoverage * (desc.length-1));
+
+  lbCoverage.text = _format("{0}: {1}", _ut("meadows"), _ut(desc[index]));
+  ibox.lbProductivity.y = 90;
 }
 
 game.ui.infobox.aboutSenate = function(location) {
@@ -436,8 +451,9 @@ game.ui.infobox.aboutSenate = function(location) {
   lb = ibox.addLabel(32, 65, ibox.w-32, 30);
   lb.text = _format( "{0} {1}", _ut("senate_thisyear_tax"), senate.getProperty("thisYearTax") );
 
-  lb = ibox.addLabel(60, 215, 300, 24);
+  lb = ibox.addLabel(60, 215, 275, 24);
   lb.text = _u("visit_rating_advisor");
+  lb.textAlign = { h:"lowerRight", v:"center" };
 
   var btnAdvisor = ibox.addTexturedButton(340, 208, 28,28);
   btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };

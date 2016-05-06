@@ -20,6 +20,7 @@
 #include "core/logger.hpp"
 #include "core/variant.hpp"
 #include "core/variant_map.hpp"
+#include "core/stringarray.hpp"
 #include <sstream>
 
 namespace updater
@@ -28,107 +29,107 @@ namespace updater
 class ProgramOptions
 {
 protected:
-	std::map< std::string, std::string > _desc;
-	VariantMap _vm;
+  std::map< std::string, std::string > _desc;
+  VariantMap _vm;
 
-	// The command line arguments for reference
-	StringArray _cmdLineArgs;
-	std::string _runPath;
+  // The command line arguments for reference
+  StringArray _cmdLineArgs;
+  std::string _runPath;
 
 public:
-	virtual ~ProgramOptions()	{}
+  virtual ~ProgramOptions()	{}
 
   void parse(int argc, char* argv[])
-	{
+  {
     if( argc == 0 )
       return;
 
-		_runPath = argv[0];
+    _runPath = argv[0];
 
-		for (int i = 0; i < argc; i++)
-		{
-			std::string optName = (*argv[i] == '-' ? argv[i] : "");
-			std::string optValue = (i+1 != argc
-																? (*argv[i+1] == '-' ? "" : argv[i+1] )
-																: "" );
-			if( !optName.empty() )
-			{
-				if( optName[0] == '-' ) optName = optName.substr( 1 );
-				if( optName[0] == '-' ) optName = optName.substr( 1 );
+    for (int i = 0; i < argc; i++)
+    {
+      std::string optName = (*argv[i] == '-' ? argv[i] : "");
+      std::string optValue = (i+1 != argc
+                                ? (*argv[i+1] == '-' ? "" : argv[i+1] )
+                                : "" );
+      if( !optName.empty() )
+      {
+        if( optName[0] == '-' ) optName = optName.substr( 1 );
+        if( optName[0] == '-' ) optName = optName.substr( 1 );
 
-				if( optValue.empty() )
-				{
-					_vm[ optName ] = true;
-				}
-				else
-				{
-					_vm[ optName ] = Variant( optValue );
-					i++;
-				}
-			}
-		}
-	}
+        if( optValue.empty() )
+        {
+          _vm[ optName ] = true;
+        }
+        else
+        {
+          _vm[ optName ] = Variant( optValue );
+          i++;
+        }
+      }
+    }
+  }
 
-	std::string runPath() const 	{		return _runPath;	}
+  std::string runPath() const 	{		return _runPath;	}
 
   void set(const std::string& key)
-	{
-		_vm[ key ] = true;
-		_cmdLineArgs.push_back("--" + key);
-	}
+  {
+    _vm[ key ] = true;
+    _cmdLineArgs.push_back("--" + key);
+  }
 
   void set(const std::string& key, const std::string& value)
-	{
-		_vm[ key ] = Variant( value );
-		_cmdLineArgs.push_back("--" + key + " " + value);
-	}
+  {
+    _vm[ key ] = Variant( value );
+    _cmdLineArgs.push_back("--" + key + " " + value);
+  }
 
   void reset(const std::string& key)
-	{
-		_vm.erase( key );
+  {
+    _vm.erase( key );
 
     for( auto i=_cmdLineArgs.begin(); i != _cmdLineArgs.end(); ++i)
-		{
-			if( *i == ("--" + key) )
-			{
-				_cmdLineArgs.erase(i);
-				break;
-			}
-		}
-	}
+    {
+      if( *i == ("--" + key) )
+      {
+        _cmdLineArgs.erase(i);
+        break;
+      }
+    }
+  }
 
-	bool empty() const
-	{
-		return _vm.empty();
-	}
+  bool empty() const
+  {
+    return _vm.empty();
+  }
 
-	bool isSet(const std::string& key) const
-	{
-		return _vm.count(key) > 0;
-	}
+  bool isSet(const std::string& key) const
+  {
+    return _vm.has(key) > 0;
+  }
 
-	std::string get(const std::string& key) const
-	{
-		return _vm.count(key) > 0 ? _vm.get( key ).toString() : "";
-	}
+  std::string get(const std::string& key) const
+  {
+    return _vm.get(key).toString();
+  }
 
-	const StringArray& GetRawCmdLineArgs() const
-	{
-		return _cmdLineArgs;
-	}
+  const StringArray& GetRawCmdLineArgs() const
+  {
+    return _cmdLineArgs;
+  }
 
   virtual void printHelp()
-	{
+  {
     for( auto i : _desc )
       Logger::warning( "{}\t{}", i.first.c_str(), i.second.c_str() );
-	}
+  }
 
 protected:
-	/**
-	 * Subclasses should implement this method to populate the available options
-	 * and call it in their constructors.
-	 */
-	virtual void SetupDescription() = 0;
+  /**
+   * Subclasses should implement this method to populate the available options
+   * and call it in their constructors.
+   */
+  virtual void SetupDescription() = 0;
 };
 
 }

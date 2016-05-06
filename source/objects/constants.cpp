@@ -147,7 +147,7 @@ std::string toString( const Group& g) {
   return object::InfoDB::instance().findGroupname( g );
 }
 
-object::Type toType(const std::string& name) { 
+object::Type toType(const std::string& name) {
   object::Type type = Helper::instance().findType(name);
 
   Logger::warningIf(type == unknown,
@@ -157,7 +157,7 @@ object::Type toType(const std::string& name) {
 }
 
 VariantList TypeSet::save() const {
-  StringArray ret;
+  VariantList ret;
   for (auto& type : *this) {
     ret.push_back(toString(type));
   }
@@ -168,6 +168,7 @@ VariantList TypeSet::save() const {
 void TypeSet::load(const VariantList& stream){
   StringArray names;
   names << stream;
+
   for ( const auto& typeStr : names) {
     object::Type type = toType(typeStr);
     if (type != object::unknown) {

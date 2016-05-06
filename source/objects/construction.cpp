@@ -105,8 +105,8 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
   Tilemap& tilemap = areaInfo.city->tilemap();
 
   //return area for available tiles
-  TilesArea area( tilemap, areaInfo.pos, size() );
-  area = area.select( Tile::isConstructible );
+  TilesArea area(tilemap, areaInfo.pos, size());
+  area = area.select(Tile::isConstructible);
 
   //on over map size
   if( (int)area.size() != size().area() )

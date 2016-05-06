@@ -21,7 +21,7 @@
 namespace pr
 {
 
-VariantList Array::save() const
+VariantList ParamsMap::save() const
 {
   VariantList ret;
   for( auto& item : *this )
@@ -30,7 +30,7 @@ VariantList Array::save() const
   return ret;
 }
 
-void Array::load(const VariantList& stream)
+void ParamsMap::load(const VariantList& stream)
 {
   for( auto& item : stream )
   {

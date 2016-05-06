@@ -25,7 +25,7 @@
 namespace gfx
 {
 
-class Pictures : public std::vector<Picture>
+class Pictures : public Array<Picture>
 {
 public:
   void load( const std::string& rc, int startIndex, int number, int multiplier=1 );

@@ -288,7 +288,7 @@ bool LowBridge::build( const city::AreaInfo& info )
     {
     case direction::northEast:
       _computePictures( info.city, endPos, startPos, direction::southWest );
-      std::swap( _d->subtiles.front()->_pos, _d->subtiles.back()->_pos );
+      std::swap(_d->subtiles.front()->_pos, _d->subtiles.back()->_pos);
       signSum = -1;
     break;
 
@@ -315,15 +315,15 @@ bool LowBridge::build( const city::AreaInfo& info )
     int index=0;
     foreach( t, area )
     {
-      LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
+      LowBridgeSubTilePtr subtile = _d->subtiles.at(index);
       TilePos buildPos = info.pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
       subtile->_imgId = tile.imgId();
-      subtile->_info = tile::encode( tile );
+      subtile->_info = tile::encode(tile);
       subtile->_parent = this;
 
-      events::dispatch<BuildAny>( buildPos, subtile.object() );
+      events::dispatch<BuildAny>(buildPos, subtile.object());
       index++;
     }
   }
@@ -387,14 +387,14 @@ void LowBridge::load(const VariantMap& stream)
   int lenth = math::min( vl_tinfo.size(), _d->subtiles.size() );
   for( int i=0; i < lenth; i++ )
   {
-    _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
+    _d->subtiles.at(i)->_imgId = vl_tinfo.get(i).toInt();
   }
 }
 
 void LowBridge::hide()
 {
   setState( pr::destroyable, 1);
-  for( auto tile : _d->subtiles )
+  for (auto tile : _d->subtiles)
     tile->hide();
 }
 

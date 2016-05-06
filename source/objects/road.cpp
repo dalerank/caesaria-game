@@ -69,7 +69,7 @@ bool Road::build( const city::AreaInfo& info )
   return true;
 }
 
-bool Road::canBuild( const city::AreaInfo& areaInfo ) const
+bool Road::canBuild(const city::AreaInfo& areaInfo) const
 {
   bool is_free = Construction::canBuild( areaInfo );
 
@@ -79,20 +79,18 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
   OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
   Picture pic;
-  if( overlay.is<Aqueduct>() )
-  {
+  if (overlay.is<Aqueduct>()) {
     TilesArray tiles = areaInfo.tiles();
     tiles.push_back( &tile() );
     city::AreaInfo advInfo( areaInfo.city, areaInfo.pos, &tiles );
     pic = overlay.as<Aqueduct>()->picture( advInfo );
-  }
-  else
-  {
+  } else {
     pic = picture( areaInfo );
   }
-  const_cast<Road*>( this )->setPicture( pic );
 
-  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
+  const_cast<Road*>(this)->setPicture(pic);
+
+  return (overlay.is<Aqueduct>() || overlay.is<Road>());
 }
 
 void Road::initTerrain(Tile& terrain)

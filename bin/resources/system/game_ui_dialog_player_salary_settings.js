@@ -48,6 +48,7 @@ game.ui.dialogs.playerSalarySettings.show = function () {
         if (wantSalary > availableSalary) {
             g_ui.addInformationDialog(_u("changesalary_warning"), _u("changesalary_greater_salary"));
         }
+        w.deleteLater();
     }
 
     var btnCancel = w.addButton(w.w * 0.5, w.h - 45, w.w * 0.25, 24)

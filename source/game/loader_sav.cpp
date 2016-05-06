@@ -185,7 +185,7 @@ bool C3Sav::load(const std::string& filename, Game& game)
 }
 
 bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
-{ 
+{
   uint32_t tmp;
 
   // need to rewrite better
@@ -196,20 +196,20 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize( mapArea, 0);
   std::vector<unsigned char> randomGrid; randomGrid.resize( mapArea, 0 );
   std::vector<unsigned char> zeroGrid; zeroGrid.resize( mapArea, 0 );
-    
+
   if( !f.is_open() )
   {
     Logger::error( "GameLoaderC3Sav: can't open file " );
     return false;
   }
-  
+
   f.read( (char*)&tmp, 4); // read dummy
 
   std::string cityName = LoaderHelper::getDefaultCityNameSav( tmp );
   game.city()->setName( cityName );
-  
+
   f.read((char*)&tmp, 4); // read scenario flag
-  
+
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
@@ -221,7 +221,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     }
     pk->empty();
     delete pk;
-    
+
     f.read((char*)&tmp, 4); // read length of compressed chunk
     Logger::debug( "GameLoaderC3Sav: length of compressed egdes is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
@@ -231,9 +231,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     }
     pk->empty();
     delete pk;
-    
+
     SkipCompressed(f); // skip building ids
-    
+
     f.read((char*)&tmp, 4); // read length of compressed chunk
     Logger::debug( "GameLoaderC3Sav: length of compressed terraindata is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
@@ -243,24 +243,24 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     }
     pk->empty();
     delete pk;
-    
+
     SkipCompressed(f);
     SkipCompressed(f);
     SkipCompressed(f);
     SkipCompressed(f);
-    
+
     f.read((char*)&randomGrid[0], mapArea);
-    
+
     SkipCompressed(f);
     SkipCompressed(f);
     SkipCompressed(f);
     SkipCompressed(f);
     SkipCompressed(f);
-    
+
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
     Logger::debug( "GameLoaderC3Sav: length of compressed walkers data is {}", tmp );
-    pk = new PKWareInputStream(&f, false, tmp);    
+    pk = new PKWareInputStream(&f, false, tmp);
     for (int j = 0; j < 1000; j++)
     {
       pk->skip(10);
@@ -279,7 +279,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
       f.seekg(1200, std::ios::cur);
     else
       f.seekg(length, std::ios::cur);
-    
+
     SkipCompressed(f);
     SkipCompressed(f);
 
@@ -308,7 +308,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     char climate;
     f.read(&climate, 1);
     oCity->setOption( PlayerCity::climateType, climate);
-    
+
     // here goes the WORK!
 
     // loads the graphics map
@@ -320,6 +320,13 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
     bool oldgfx = !SETTINGS_STR( c3gfx ).empty();
     oldgfx |= KILLSWITCH( oldgfx );
+
+    std::set<int> groundId = {0x203, 0x207, 0x20A, 0x20D,
+                              0x1DA, 0x1DD, 0x1E7, 0x1e1,
+                              0x1FF, 0x1FA, 0x1e2, 0x1e9,
+                              0x1f8, 0x1e5, 0x1e6, 0x201,
+                              0x208, 0x1ea, 0x2b8, 0x2bf, 0x2da,
+                              0x2bc, 0x2db};
 
     for (int itA = 0; itA < size; ++itA)
     {
@@ -333,45 +340,35 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         Tile& currentTile = oTilemap.at(i, j);
 
         unsigned int imgId = graphicGrid[index];
-        Picture pic = imgid::toPicture( imgId );
 
-        if( pic.isValid() )
-        {
-          currentTile.setPicture( pic );
-          currentTile.setImgId( imgId );
-        }
-        else
-        {
-          object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
-          if( ovType == object::unknown )
-          {
-            Logger::error( "GameLoaderC3Sav: Unknown building {} at [{},{}]", imgId, i, j );
-          }
-          else
-          {
-             if( imgId == 0x203 || imgId == 0x207 || imgId == 0x20A || imgId == 0x20D ||
-                 imgId == 0x1DA || imgId == 0x1DD || imgId == 0x1E7 || imgId == 0x1e1 ||
-                 imgId == 0x1FF || imgId == 0x1FA || imgId == 0x1e2 || imgId == 0x1e9 ||
-                 imgId == 0x1f8 || imgId == 0x1e5 || imgId == 0x1e6 || imgId == 0x201 ||
-                 imgId == 0x208 || imgId == 0x1ea )
-             {
-               Picture pic = object::Info::find( oldgfx ? object::meadow : object::terrain ).randomPicture( Size::square(1) );
-               currentTile.setPicture( pic );
-               currentTile.setImgId( imgid::fromResource( pic.name() ) );
-               currentTile.setFlag( Tile::clearAll, true );
-               currentTile.setFlag( Tile::tlMeadow, true );
-             }
+        object::Type ovType = LoaderHelper::convImgId2ovrType(imgId);
+        if (ovType == object::unknown) {
+          Logger::error("GameLoaderC3Sav: Unknown building {} at [{},{}]", imgId, i, j);
+          Picture pic = imgid::toPicture(imgId);
+
+          if (!pic.isValid())
+            pic = object::Info::find(oldgfx ? object::meadow : object::terrain).randomPicture(Size::square(1));
+
+          currentTile.setPicture(pic);
+          currentTile.setImgId(imgId);
+        } else {
+          if (groundId.count(imgId) > 0) {
+            Picture pic = object::Info::find(oldgfx ? object::meadow : object::terrain).randomPicture(Size::square(1));
+            currentTile.setPicture(pic);
+            currentTile.setImgId(imgid::fromResource(pic.name()));
+            currentTile.setFlag(Tile::clearAll, true);
+            currentTile.setFlag(Tile::tlMeadow, true);
           }
 
-          baseBuildings[ currentTile.pos() ] = imgId;
-          pic.load( config::rc.land1a, 230 + math::random( 57 ) );
-          currentTile.setPicture( pic );
-          currentTile.setImgId( imgid::fromResource( pic.name() ) );
+          baseBuildings[currentTile.pos()] = imgId;
+          Picture pic(config::rc.land1a, 230 + math::random(57));
+          currentTile.setPicture(pic);
+          currentTile.setImgId(imgid::fromResource( pic.name()));
         }
 
-        edgeData[ i ][ j ] = edgeGrid[index];
-        tile::decode( currentTile, terrainGrid[index] );
-        tile::fixPlateauFlags( currentTile );
+        edgeData[i][j] = edgeGrid[index];
+        tile::decode(currentTile, terrainGrid[index]);
+        tile::fixPlateauFlags(currentTile);
       }
     }
 
@@ -408,11 +405,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
           Tile& master = oTilemap.at(i, j - size + 1);
 
-                                  //Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
-          for (int di = 0; di < size; ++di)
-          {
-            for (int dj = 0; dj < size; ++dj)
-            {
+          //Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
+          for (int di = 0; di < size; ++di) {
+            for (int dj = 0; dj < size; ++dj) {
               oTilemap.at(master.i() + di, master.j() + dj).setMaster(&master);
             }
           }
@@ -428,12 +423,11 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         if( !masterTile )
           masterTile = &tile;
 
-        if( masterTile->overlay().isNull() )
-        {
+        if( masterTile->overlay().isNull() ) {
           LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
         }
       }
-    }    
+    }
   }
   catch(PKException)
   {

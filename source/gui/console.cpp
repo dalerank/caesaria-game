@@ -400,7 +400,7 @@ void Console::addToHistory( const std::string& wstr)								//! add to history a
       return;
 
     if( (int)console_history_.size() >= 20 )
-      console_history_.erase( console_history_.begin() );
+      console_history_.pop_front();
 
   console_history_.push_back( wstr.c_str() );
 }

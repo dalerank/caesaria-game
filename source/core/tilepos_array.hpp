@@ -21,6 +21,7 @@
 #include <set>
 #include "variant.hpp"
 #include "vector_extension.hpp"
+#include "serialized_map.hpp"
 
 class TilePosArray : public Array<TilePos>
 {
@@ -32,9 +33,6 @@ public:
   void load(const VariantList& vlist);
 };
 
-class TilePosSet : public std::set<TilePos>
-{
-public:
-  TilePosSet& operator<<(const TilePos& pos );
+class TilePosSet : public Set<TilePos> {
 };
 #endif//CAESARIA_TILEPOS_ARRAY_HPP

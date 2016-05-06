@@ -86,12 +86,13 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class EmpireHelper 
+class EmpireHelper
 {
 public:
   static float governorSalaryKoeff(CityPtr city);
-  static GovernorRanks& ranks();
+  static const GovernorRanks& ranks();
   static const GovernorRank& getRank(GovernorRank::Level level);
+  static GovernorRank& getRankRef(GovernorRank::Level level);
 };
 
 }//end namespace world
