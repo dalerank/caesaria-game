@@ -44,7 +44,7 @@ sim.ui.topmenu.options.init = function() {
 sim.ui.topmenu.setPopulation = function(pop)
 {
   var lbPop = sim.ui.topmenu.widget.find("#population")
-  lbPop.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##pop##"), pop)
+  lbPop.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _ut("pop"), pop)
 }
 
 sim.ui.topmenu.setDate = function(date)
@@ -56,7 +56,7 @@ sim.ui.topmenu.setDate = function(date)
 sim.ui.topmenu.setFunds = function(money)
 {
   var lbFunds = sim.ui.topmenu.widget.find("#funds");
-  lbFunds.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _t("##denarii_short##"), money)
+  lbFunds.text = _format( "{0} {1}", sim.ui.topmenu.useIcon ? "" : _ut("denarii_short"), money)
 }
 
 sim.ui.topmenu.labels.init = function() {
@@ -83,7 +83,6 @@ sim.ui.topmenu.labels.init = function() {
   lbFunds.name = "#funds";
   lbFunds.geometry = {x:m.w-464, y:0, w:120, h:23}
   lbFunds.font = "FONT_2_WHITE"
-  lbFunds.name = "lbFunds"
   lbFunds.icon = { rc: useIcon ? "paneling" : "", index:332 }
   lbFunds.textAlign = { h:"center", v:"center" }
   lbFunds.background = "paneling_00015"

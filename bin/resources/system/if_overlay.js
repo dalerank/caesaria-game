@@ -62,6 +62,13 @@ function UpdateFactoryPrototype(ObjectPrototype, name) {
             return this.getProperty("effiency");
         }
     })
+
+    Object.defineProperty(ObjectPrototype, "productivity", {
+        get: function () {
+            return this.getProperty("productivity");
+        }
+    })
+
     Object.defineProperty(ObjectPrototype, "produce", {
         get: function () {
             var gtype = this.getProperty("produce");

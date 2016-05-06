@@ -397,17 +397,14 @@ game.ui.infobox.aboutRaw = function(location) {
   var lbProductivity = ibox.addLabel(ibox.w/2, 45, ibox.w/2-32,24);
   lbProductivity.text = _format("{0} {1}%", _ut("effiency"), factory.effiency);
 
-  var lbAbout = ibox.addLabel(16, 70, ibox.w-32, 24);
-  lbAbout.multiline = true;
-
-  var lbProductivity = ibox.addLabel(20, 75, ibox.w-32, 48);
-  lbProductivity.multiline = true;
-  lbProductivity.textAlign = { v:"upperLeft", h:"upperLeft" };
+  ibox.lbProductivity = ibox.addLabel(20, 75, ibox.w-32, 48);
+  ibox.lbProductivity.multiline = true;
+  ibox.lbProductivity.textAlign = { v:"upperLeft", h:"upperLeft" };
 
   var problemText = factory.workersProblemDesc();
   var cartInfo = factory.cartStateDesc();
 
-  lbProductivity.text = _t(problemText) + _t(cartInfo);
+  ibox.lbProductivity.text = _t(problemText) + _t(cartInfo);
 
   var ginfo = factory.produce;
   ibox.addImage(10, 10, factory.produce.picture.local);
@@ -416,6 +413,20 @@ game.ui.infobox.aboutRaw = function(location) {
   ibox.setWorkingStatus(factory.active);
 
   ibox.show();
+  return ibox;
+}
+
+game.ui.infobox.aboutFarm = function(location) {
+  var ibox = game.ui.infobox.aboutRaw(location);
+
+  var lbCoverage = ibox.addLabel(ibox.w/2, 65, ibox.w/2-32,24);
+  var meadowCoverage = ibox.overlay.getProperty("meadowCoverage");
+
+  var desc = [ "extrem_poor", "very_poor", "poor", "normal", "good", "rich", "awesome" ];
+  var index = Math.floor(meadowCoverage * (desc.length-1));
+
+  lbCoverage.text = _format("{0}: {1}", _ut("meadows"), _ut(desc[index]));
+  ibox.lbProductivity.y = 90;
 }
 
 game.ui.infobox.aboutSenate = function(location) {

@@ -23,9 +23,12 @@ game.ui.infobox.show = function(typename,location)
   break;
 
   case "iron_mine": case "quarry": case "lumber_mill": case "clay_pit":
+    game.ui.infobox.aboutRaw(location);
+  break;
+
   case "meat_farm": case "fig_farm": case "olive_farm": case "vegetable_farm":
   case "wheat_farm": case "vinard":
-    game.ui.infobox.aboutRaw(location);
+    game.ui.infobox.aboutFarm(location);
   break;
 
   case "prefecture": case "engineering_post": case "clinic":

@@ -323,6 +323,15 @@ void Farm::load( const VariantMap& stream )
   _updateMeadowsCoverage();
 }
 
+Variant Farm::getProperty(const std::string& name) const
+{
+  if (name == "meadowCoverage") {
+    return _d->meadowsCoverage;
+  }
+
+  return Factory::getProperty(name);
+}
+
 TilesArray Farm::meadows() const
 {
   return area().select( Tile::tlMeadow );
@@ -332,7 +341,7 @@ TilesArray Farm::area() const
 {
   TilesArray ret;
   ret.append( Factory::area() );
-  for( const auto& st : _d->sublocs )
+  for (const auto& st : _d->sublocs)
     ret.append( &_map().at( st ) );
 
   return ret;

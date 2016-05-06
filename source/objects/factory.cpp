@@ -368,6 +368,7 @@ Variant Factory::getProperty(const std::string& name) const
   if (name == "produce") return (int)_d->goods.out.type();
   if (name == "consume") return (int)_d->goods.in.type();
   if (name == "effiency") return (int)effciency();
+  if (name == "productivity") return (int)productivity();
 
   return WorkingBuilding::getProperty(name);
 }
