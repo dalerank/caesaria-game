@@ -1,5 +1,10 @@
-function OnShowAdvisorReligion() {
-  sim.ui.advisors.religion.show();
+function OnShowAdvisorWindow(type) {
+  switch (type) {
+  case g_config.advisor.religion: sim.ui.advisors.religion.show(); break;
+
+  default: sim.ui.advisors.hide();
+  }
+
 }
 
 sim.ui.advisors.religion = {}
@@ -58,7 +63,7 @@ sim.ui.advisors.religion.getAvice = function() {
 }
 
 sim.ui.advisors.hide = function() {
-  var window = g_ui.find("CurrentAdvisor")
+  var window = g_ui.find("#advisorWindow")
 
   if (window != null)
     window.deleteLater();
@@ -71,7 +76,7 @@ sim.ui.advisors.religion.show = function() {
 
   var resolution = g_session.resolution;
   var w = new Window(parlor);
-  w.name = "CurrentAdvisor";
+  w.name = "#advisorWindow";
 
   w.geometry = {x:0, y:0, w:640, h:290};
   w.title = _u("religion_advisor");

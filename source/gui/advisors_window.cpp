@@ -265,10 +265,6 @@ void ParlorModel::switchAdvisor(Advisor type)
   case advisor::entertainment:
     d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
   break;
-  case advisor::religion:
-    events::dispatch<events::ScriptFunc>( "OnShowAdvisorReligion" );
-    //d.advisorPanel = new advisorwnd::Religion( d.city, d.parent );
-  break;
   case advisor::finance:
     d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );
   break;
@@ -279,6 +275,9 @@ void ParlorModel::switchAdvisor(Advisor type)
   default:
   break;
   }
+
+  VariantList vl; vl << (int)type;
+  events::dispatch<events::ScriptFunc>( "OnShowAdvisorWindow", vl );
 }
 
 }//end namespace advisorwnd
