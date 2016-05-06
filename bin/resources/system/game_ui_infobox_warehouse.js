@@ -291,6 +291,17 @@ game.ui.infobox.aboutWarehouse = function (location) {
     ibox.drawWhGood(g_config.good.furniture, 2, _paintY + 75);
     ibox.drawWhGood(g_config.good.pottery, 2, _paintY + 100);
 
+    var btnAdvisor = ibox.addTexturedButton(340, btnOrders.top() - 30, 28,28);
+    btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
+    btnAdvisor.callback = function() {
+      g_session.setOption("advisor",g_config.advisor.trading);
+      ibox.deleteLater();
+    }
+
+    var lb = ibox.addLabel(60, btnOrders.top() - 26, 275, 24);
+    lb.text = _u("visit_trade_advisor");
+    lb.textAlign = { h:"lowerRight", v:"center" };
+
     ibox.setWorkersStatus(32, 56 + 12, 542, wh.maximumWorkers(), wh.numberWorkers());
     ibox.setWorkingStatus(wh.active);
     ibox.show();
