@@ -112,7 +112,8 @@ function UpdateButtonPrototype(objProto) {
 
    objProto.addImage = function(rx, ry, pic) {
      var im = new Image(this);
-     im.geometry = {x:rx, y:ry, w:rx+pic.w, h:y+pic.h};
+     im.mode = "image"
+     im.position = {x:rx,y:ry};
      im.picture = pic;
      im.subElement = true;
      return im;

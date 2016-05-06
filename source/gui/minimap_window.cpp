@@ -500,7 +500,7 @@ void Minimap::draw(Engine& painter)
   Widget::draw( painter );
 }
 
-void Minimap::setCenter( Point pos) {  _d->center = pos; }
+void Minimap::setCenter( Point pos) { _d->center = pos; }
 
 void Minimap::setTileCenter(const TilePos& tpos)
 {

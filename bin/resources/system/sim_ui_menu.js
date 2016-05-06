@@ -413,7 +413,7 @@ sim.ui.menu.initialize = function() {
   menu.minimap.onChangeCenter = function(tilepos) {
     engine.log("Move camera from minimap [i:" + tilepos.i + "  j:" + tilepos.j + "]");
     g_session.camera.setCenter(tilepos);
-    sim.ui.menu.extmenu.minimap.update();
+    menu.minimap.tileCenter = tilepos;
   }
 
   menu.miniature = new Image(menu);

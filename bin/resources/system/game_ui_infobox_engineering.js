@@ -422,7 +422,8 @@ game.ui.infobox.aboutFarm = function(location) {
   var lbCoverage = ibox.addLabel(ibox.w/2, 65, ibox.w/2-32,24);
   var meadowCoverage = ibox.overlay.getProperty("meadowCoverage");
 
-  var desc = [ "extrem_poor", "very_poor", "poor", "normal", "good", "rich", "awesome" ];
+  var desc = [ "meadow_extrem_poor", "meadow_very_poor", "meadow_poor",
+               "meadow_normal", "meadow_good", "meadow_rich", "meadow_awesome" ];
   var index = Math.floor(meadowCoverage * (desc.length-1));
 
   lbCoverage.text = _format("{0}: {1}", _ut("meadows"), _ut(desc[index]));
@@ -450,8 +451,9 @@ game.ui.infobox.aboutSenate = function(location) {
   lb = ibox.addLabel(32, 65, ibox.w-32, 30);
   lb.text = _format( "{0} {1}", _ut("senate_thisyear_tax"), senate.getProperty("thisYearTax") );
 
-  lb = ibox.addLabel(60, 215, 300, 24);
+  lb = ibox.addLabel(60, 215, 275, 24);
   lb.text = _u("visit_rating_advisor");
+  lb.textAlign = { h:"lowerRight", v:"center" };
 
   var btnAdvisor = ibox.addTexturedButton(340, 208, 28,28);
   btnAdvisor.states = { rc:"paneling", normal:289, hover:290, pressed:291, disabled:289 };
