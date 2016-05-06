@@ -3,10 +3,7 @@ game.ui.infobox.ruleNames = ["accept", "reject", "deliver", "none"];
 game.ui.infobox.baseSpecialOrdersWindow = function (top, left, height) {
     var ibox = this.simple(0, 0, 510, height);
 
-    ibox.position = {
-        x: top,
-        y: left
-    };
+    ibox.position = { x: top, y: left};
     ibox.gbOrders = ibox.addGroupbox(17, 42, ibox.w - 35, ibox.h - 120);
     ibox.gbOrders.buttons = [];
 
@@ -132,7 +129,10 @@ game.ui.infobox.showGrSpecialOrdersWindow = function (parent, grStore) {
 }
 
 game.ui.infobox.showWhSpecialOrdersWindow = function (parent, wh) {
-    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), parent.bottom() - 560, 560);
+    var y = parent.bottom() - 560;
+    if (y < 0)
+      y = parent.top();
+    var ibox = game.ui.infobox.baseSpecialOrdersWindow(parent.left(), y, 560);
 
     ibox.title = _u("warehouse_orders");
 
@@ -180,20 +180,11 @@ game.ui.infobox.aboutStorage = function (x, y, w, h) {
         var btn = ibox.addButton(col * offset + 15, paintY, 150, 24);
         btn.font = "FONT_2";
         btn.style = "noBackground";
-        btn.textAlign = {
-            h: "upperLeft",
-            v: "center"
-        };
+        btn.textAlign = { h: "upperLeft", v: "center" };
         btn.icon = ginfo.picture.local;
-        btn.iconOffset = {
-            x: 0,
-            y: 4
-        };
-        btn.text = _format("{0} {1} {2}", g_config.metric.convQty(qty / 100), _ut(ginfo.name), g_config.metric.modeShort);
-        btn.textOffset = {
-            x: 25,
-            y: 0
-        };
+        btn.text = _format("{0} {1}", g_config.metric.convQty(qty), _ut(ginfo.name) /* g_config.metric.modeShort */);
+        btn.iconOffset = { x: 0, y: 4 };
+        btn.textOffset = { x: 25,y: 0 };
 
         return btn;
     }

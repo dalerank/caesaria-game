@@ -40,6 +40,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
+  virtual void _beforeDestroy();
 
 private:
   MarketBuyer( PlayerCityPtr city );

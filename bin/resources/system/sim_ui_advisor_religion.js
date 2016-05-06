@@ -6,13 +6,13 @@ sim.ui.advisors.religion = {}
 
 sim.ui.advisors.religion.getAvice = function() {
   var advices = [];
-  var houses =  g_session.city.findOverlays("warehouse");
+  var houses =  g_session.city.findOverlays("house");
 
   var needBasicReligion = 0;
   var needSecondReligion = 0;
   var needThirdReligion = 0;
   for (var i in houses) {
-    var house = houses[i];
+    var house = houses[i].as(House);
 
     switch (house.spec.minReligionLevel) {
       case 1: needBasicReligion += (house.spec.religionLevel == 0 ? 1 : 0); break;

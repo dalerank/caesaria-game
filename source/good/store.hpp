@@ -37,8 +37,7 @@ struct ReserveInfo
   int qty() const { return stock.qty(); }
   good::Product type() const { return stock.type(); }
 
-  bool operator<(const ReserveInfo& a ) const
-  {
+  bool operator<(const ReserveInfo& a) const {
     return id < a.id;
   }
 };
@@ -50,10 +49,11 @@ public:
   Reservations();
   const ReserveInfo& get(unsigned int id) const;
 
-  unsigned int push( const good::Stock& stock, DateTime time );
-  bool pop( unsigned int id );
+  unsigned int push(const good::Stock& stock, DateTime time);
+  bool pop(unsigned int id);
 
-  void removeExpired(DateTime currentDate, int monthNumber );
+  void removeExpired(DateTime currentDate, int monthNumber);
+  void cancel(unsigned int id);
 
   VariantMap save() const;
   void load( const VariantMap& stream );
@@ -105,6 +105,9 @@ public:
   // return the reservation
   good::Stock getStorageReservation(const int reservationID, const bool pop=false);
   good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
+
+  void cancelRetrieveReservation(int reservationID);
+  void cancelStorageReservation(int reservationID);
 
   virtual void confirmDeliver(good::Product type, int qty, unsigned int tag, const DateTime& time );
 

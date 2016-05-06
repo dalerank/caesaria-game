@@ -32,7 +32,7 @@ enum { noId=0 };
 
 class Store::Impl
 {
-public:  
+public:
   bool devastation;
   ConsumerDetails consumers;
   ProviderDetails providers;
@@ -58,7 +58,7 @@ int Store::getMaxRetrieve(const good::Product goodType)
   for( const auto& reserve : _dfunc()->retrieveReservations )
     rqty -= reserve.qty();
 
-  return rqty;
+  return math::max(rqty, 0);
 }
 
 
@@ -129,6 +129,12 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
   }
 
   return info.stock;
+}
+
+void Store::cancelRetrieveReservation(int reservationID)
+{
+  __D_REF(d,Store)
+  d.retrieveReservations.cancel(reservationID);
 }
 
 void Store::confirmDeliver(Product gtype, int qty, unsigned int tag, const DateTime& time)
@@ -340,10 +346,8 @@ unsigned int Reservations::push(const good::Stock& stock, DateTime time)
 
 bool Reservations::pop(unsigned int id)
 {
-  foreach( i, *this )
-  {
-    if( i->id == id )
-    {
+  foreach (i, *this) {
+    if (i->id == id ) {
       erase( i );
       return true;
     }
@@ -354,11 +358,23 @@ bool Reservations::pop(unsigned int id)
 
 void Reservations::removeExpired(DateTime currentDate, int monthNumber)
 {
-  for( iterator i=begin(); i != end(); )
-  {
+  for(iterator i=begin(); i != end();) {
     DateTime date = i->time;
-    if( date.monthsTo( currentDate ) > monthNumber ) { erase( i++ ); }
-    else { ++i; }
+    if( date.monthsTo( currentDate ) > monthNumber ) {
+      erase( i++ );
+    } else {
+      ++i;
+    }
+  }
+}
+
+void Reservations::cancel(unsigned int id)
+{
+  for(iterator i=begin(); i != end();) {
+    if(i->id == id) {
+      erase( i++ );
+      return;
+    }
   }
 }
 
@@ -368,8 +384,7 @@ VariantMap Reservations::save() const
 
   stream[ "idCounter" ] = static_cast<int>(_idCounter);
   VariantList vm_reservations;
-  for( const auto& item : *this )
-  {
+  for (const auto& item : *this) {
     vm_reservations.push_back( (int)item.id );
     vm_reservations.push_back( item.stock.save() );
     vm_reservations.push_back( item.time );
