@@ -18,11 +18,12 @@
 #else
 #if __GNUC__ > 2 || __GNUC__ == 2 && __GNUC_MINOR__ >= 7
 #define JS_PRINTFLIKE(fmtarg, firstvararg) \
-	__attribute__((__format__ (__printf__, fmtarg, firstvararg)))
+  __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
 #else
 #define JS_PRINTFLIKE(fmtarg, firstvararg)
 #endif
 #endif
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,12 +31,13 @@ extern "C" {
 
 typedef struct js_State js_State;
 
-typedef void *(*js_Alloc)(void *memctx, void *ptr, unsigned int size);
+typedef void *(*js_Alloc)(void *memctx, void *ptr, int size);
 typedef void (*js_Panic)(js_State *J);
 typedef void (*js_CFunction)(js_State *J);
 typedef void (*js_Finalize)(js_State *J, void *p);
 typedef int (*js_HasProperty)(js_State *J, void *p, const char *name);
 typedef int (*js_Put)(js_State *J, void *p, const char *name);
+typedef int (*js_Delete)(js_State *J, void *p, const char *name);
 
 /* Basic functions */
 js_State *js_newstate(js_Alloc alloc, void *actx, int flags);
@@ -57,27 +59,27 @@ int js_pconstruct(js_State *J, int n);
 void *js_savetry(js_State *J); /* returns a jmp_buf */
 
 #define js_try(J) \
-	setjmp(js_savetry(J))
+  setjmp(js_savetry(J))
 
 void js_endtry(js_State *J);
 
 /* State constructor flags */
 enum {
-	JS_STRICT = 1,
+  JS_STRICT = 1,
 };
 
 /* RegExp flags */
 enum {
-	JS_REGEXP_G = 1,
-	JS_REGEXP_I = 2,
-	JS_REGEXP_M = 4,
+  JS_REGEXP_G = 1,
+  JS_REGEXP_I = 2,
+  JS_REGEXP_M = 4,
 };
 
 /* Property attribute flags */
 enum {
-	JS_READONLY = 1,
-	JS_DONTENUM = 2,
-	JS_DONTCONF = 4,
+  JS_READONLY = 1,
+  JS_DONTENUM = 2,
+  JS_DONTCONF = 4,
 };
 
 void js_newerror(js_State *J, const char *message);
@@ -122,12 +124,12 @@ void js_defproperty(js_State *J, int idx, const char *name, int atts);
 void js_delproperty(js_State *J, int idx, const char *name);
 void js_defaccessor(js_State *J, int idx, const char *name, int atts);
 
-unsigned int js_getlength(js_State *J, int idx);
-void js_setlength(js_State *J, int idx, unsigned int len);
-int js_hasindex(js_State *J, int idx, unsigned int i);
-void js_getindex(js_State *J, int idx, unsigned int i);
-void js_setindex(js_State *J, int idx, unsigned int i);
-void js_delindex(js_State *J, int idx, unsigned int i);
+int js_getlength(js_State *J, int idx);
+void js_setlength(js_State *J, int idx, int len);
+int js_hasindex(js_State *J, int idx, int i);
+void js_getindex(js_State *J, int idx, int i);
+void js_setindex(js_State *J, int idx, int i);
+void js_delindex(js_State *J, int idx, int i);
 
 void js_currentfunction(js_State *J);
 void js_pushglobal(js_State *J);
@@ -136,7 +138,7 @@ void js_pushnull(js_State *J);
 void js_pushboolean(js_State *J, int v);
 void js_pushnumber(js_State *J, double v);
 void js_pushstring(js_State *J, const char *v);
-void js_pushlstring(js_State *J, const char *v, unsigned int n);
+void js_pushlstring(js_State *J, const char *v, int n);
 void js_pushliteral(js_State *J, const char *v);
 
 void js_newobject(js_State *J);
@@ -144,10 +146,10 @@ void js_newarray(js_State *J);
 void js_newboolean(js_State *J, int v);
 void js_newnumber(js_State *J, double v);
 void js_newstring(js_State *J, const char *v);
-void js_newcfunction(js_State *J, js_CFunction fun, const char *name, unsigned int length);
-void js_newcconstructor(js_State *J, js_CFunction fun, js_CFunction con, const char *name, unsigned int length);
+void js_newcfunction(js_State *J, js_CFunction fun, const char *name, int length);
+void js_newcconstructor(js_State *J, js_CFunction fun, js_CFunction con, const char *name, int length);
 void js_newuserdata(js_State *J, const char *tag, void *data, js_Finalize finalize);
-void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty has, js_Put put, js_Finalize finalize);
+void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty has, js_Put put, js_Delete delet, js_Finalize finalize);
 void js_newregexp(js_State *J, const char *pattern, int flags);
 
 void js_pushiterator(js_State *J, int idx, int own);
@@ -163,6 +165,7 @@ int js_isprimitive(js_State *J, int idx);
 int js_isobject(js_State *J, int idx);
 int js_isarray(js_State *J, int idx);
 int js_isregexp(js_State *J, int idx);
+int js_iscoercible(js_State *J, int idx);
 int js_iscallable(js_State *J, int idx);
 int js_isuserdata(js_State *J, int idx, const char *tag);
 
@@ -171,7 +174,7 @@ double js_tonumber(js_State *J, int idx);
 const char *js_tostring(js_State *J, int idx);
 void *js_touserdata(js_State *J, int idx, const char *tag);
 
-double js_tointeger(js_State *J, int idx);
+int js_tointeger(js_State *J, int idx);
 int js_toint32(js_State *J, int idx);
 unsigned int js_touint32(js_State *J, int idx);
 short js_toint16(js_State *J, int idx);

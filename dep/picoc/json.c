@@ -182,7 +182,7 @@ static void fmtobject(js_State *J, js_Buffer **sb, js_Object *obj, const char *g
 
 static void fmtarray(js_State *J, js_Buffer **sb, const char *gap, int level)
 {
-	unsigned int n, k;
+	int n, k;
 	char buf[32];
 
 	n = js_getlength(J, -1);
@@ -295,8 +295,8 @@ void jsB_initjson(js_State *J)
 {
 	js_pushobject(J, jsV_newobject(J, JS_CJSON, J->Object_prototype));
 	{
-		jsB_propf(J, "parse", JSON_parse, 2);
-		jsB_propf(J, "stringify", JSON_stringify, 3);
+		jsB_propf(J, "JSON.parse", JSON_parse, 2);
+		jsB_propf(J, "JSON.stringify", JSON_stringify, 3);
 	}
 	js_defglobal(J, "JSON", JS_DONTENUM);
 }

@@ -133,6 +133,13 @@ void EducationBuilding::initialize(const object::Info& mdata)
     _d->maxMonthVisitors = maxServe;
 }
 
+Variant EducationBuilding::getProperty(const std::string& name) const
+{
+  if (name == "currentVisitors") return _d->currentPeopleServed;
+
+  return ServiceBuilding::getProperty(name);
+}
+
 EducationBuilding::EducationBuilding(const Service::Type service, const object::Type type, const Size& size)
   : ServiceBuilding( service, type, size ), _d( new Impl )
 {

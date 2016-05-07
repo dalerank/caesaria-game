@@ -1,10 +1,17 @@
 function OnShowAdvisorWindow(type) {
   switch (type) {
   case g_config.advisor.religion: sim.ui.advisors.religion.show(); break;
+  case g_config.advisor.education: sim.ui.advisors.education.show(); break;
 
   default: sim.ui.advisors.hide();
   }
+}
 
+sim.ui.advisors.hide = function() {
+  var window = g_ui.find("#advisorWindow")
+
+  if (window != null)
+    window.deleteLater();
 }
 
 sim.ui.advisors.religion = {}
@@ -60,13 +67,6 @@ sim.ui.advisors.religion.getAvice = function() {
   }
 
   return text;
-}
-
-sim.ui.advisors.hide = function() {
-  var window = g_ui.find("#advisorWindow")
-
-  if (window != null)
-    window.deleteLater();
 }
 
 sim.ui.advisors.religion.show = function() {

@@ -244,8 +244,7 @@ void engine_js_pushud(js_State* J, const std::string& name, void* v, js_Finalize
 void engine_js_push(js_State *J, const StringArray& items)
 {
   js_newarray(J);
-  for (uint32_t i = 0; i<items.size(); i++)
-  {
+  for (uint32_t i = 0; i<items.size(); i++) {
     js_pushstring(J, items[i].c_str());
     js_setindex(J, -2, i);
   }
@@ -254,8 +253,7 @@ void engine_js_push(js_State *J, const StringArray& items)
 void engine_js_push(js_State *J, const OverlayList& ovs)
 {
   js_newarray(J);
-  for (uint32_t i = 0; i<ovs.size(); i++)
-  {
+  for (uint32_t i = 0; i<ovs.size(); i++) {
     engine_js_push(J, ovs.at(i));
     js_setindex(J, -2, i);
   }
@@ -264,8 +262,7 @@ void engine_js_push(js_State *J, const OverlayList& ovs)
 void engine_js_push(js_State *J, const Locations& locs)
 {
   js_newarray(J);
-  for (uint32_t i = 0; i<locs.size(); i++)
-  {
+  for (uint32_t i = 0; i<locs.size(); i++) {
     engine_js_push(J, locs[i]);
     js_setindex(J, -2, i);
   }
@@ -280,8 +277,7 @@ void engine_js_push(js_State *J, Scribes& scribes) { engine_js_pushud(J, TEXT(Sc
 void engine_js_push(js_State *J, const VariantMap& items)
 {
   js_newobject(J);
-  for (const auto& item : items)
-  {
+  for (const auto& item : items) {
     engine_js_push(J, item.second);
     js_setproperty(J, -2, item.first.c_str());
   }
@@ -289,21 +285,19 @@ void engine_js_push(js_State *J, const VariantMap& items)
 
 void engine_js_push(js_State *J, const TilesArray& items)
 {
-  js_newobject(J);
-  for (uint32_t i=0; i < items.size(); i++)
-  {
+  js_newarray(J);
+  for (uint32_t i=0; i < items.size(); i++) {
     engine_js_push(J, *items[i]);
-    js_setproperty(J, -2, utils::i2str(i).c_str());
+    js_setindex(J, -2, i);
   }
 }
 
 void engine_js_push(js_State *J, const SmartList<Walker>& items)
 {
-  js_newobject(J);
-  for (uint32_t i=0; i < items.size(); i++)
-  {
+  js_newarray(J);
+  for (uint32_t i=0; i < items.size(); i++) {
     engine_js_push(J, items.at(i));
-    js_setproperty(J, -2, utils::i2str(i).c_str());
+    js_setindex(J, -2, i);
   }
 }
 
@@ -414,8 +408,7 @@ PUSH_SAVEDDATA(VictoryConditions)
 
 inline DateTime engine_js_to(js_State *J, int n, DateTime)
 {
-  if (js_isuserdata(J, 1, "userdata"))
-  {
+  if (js_isuserdata(J, 1, "userdata")) {
     DateTime* dt = (DateTime*)js_touserdata(J, 1, "userdata");
     return *dt;
   }
@@ -425,8 +418,7 @@ inline DateTime engine_js_to(js_State *J, int n, DateTime)
 
 inline Picture engine_js_to(js_State *J, int n, Picture)
 {
-  if (js_isuserdata(J, n, "userdata"))
-  {
+  if (js_isuserdata(J, n, "userdata")) {
     Picture* pic = (Picture*)js_touserdata(J, n, "userdata");
     return *pic;
   }
@@ -436,16 +428,14 @@ inline Picture engine_js_to(js_State *J, int n, Picture)
 
 inline StringArray engine_js_to(js_State *J, int n, StringArray)
 {
-  if (!js_isarray(J, 1))
-  {
+  if (!js_isarray(J, 1)) {
     Logger::warning("!!! Object is not an string array");
     return StringArray();
   }
 
   int length = js_getlength(J, n);
   StringArray ret;
-  for (int i = 0; i < length; ++i)
-  {
+  for (int i = 0; i < length; ++i) {
     js_getindex(J, n, i);
     std::string tmp = js_tostring(J, -1);
     js_pop(J, 1);
@@ -461,8 +451,7 @@ inline Path engine_js_to(js_State *J, int n, Path) { return vfs::Path( js_tostri
 
 inline PointF engine_js_to(js_State *J, int n, PointF)
 {
-  if (js_isobject(J, n))
-  {
+  if (js_isobject(J, n)) {
     js_getproperty(J, n, "x"); float x = js_tonumber(J, -1);
     js_getproperty(J, n, "y"); float y = js_tonumber(J, -1);
     return PointF(x, y);
@@ -478,8 +467,7 @@ inline Point engine_js_to(js_State *J, int n, Point)
 
 inline TilePos engine_js_to(js_State *J, int n, TilePos)
 {
-  if (js_isobject(J, n))
-  {
+  if (js_isobject(J, n)) {
     js_getproperty(J, n, "i"); int i = js_toint32(J, -1);
     js_getproperty(J, n, "j"); int j = js_toint32(J, -1);
 
@@ -490,8 +478,7 @@ inline TilePos engine_js_to(js_State *J, int n, TilePos)
 
 inline Rect engine_js_to(js_State *J, int n, Rect)
 {
-  if (js_isobject(J, n))
-  {
+  if (js_isobject(J, n)) {
     js_getproperty(J, n, "x"); int x = js_toint32(J, -1);
     js_getproperty(J, n, "y"); int y = js_toint32(J, -1);
     js_getproperty(J, n, "w"); int w = js_toint32(J, -1);
@@ -547,8 +534,7 @@ void engine_js_LoadArchive(js_State* J)
   Path arcPath = dir.find(archivePath.baseName(), ignoreCase ? Path::ignoreCase : Path::nativeCase);
 
   ArchivePtr archive = FileSystem::instance().mountArchive(arcPath);
-  if (archive.isNull())
-  {
+  if (archive.isNull()) {
     Logger::warning("!!! JS:LoadArchive can't load file " + archivePath.toString());
     return;
   }
@@ -595,14 +581,15 @@ void engine_js_GetOption(js_State *J)
 void engine_js_SetOption(js_State *J)
 {
   std::string name = js_tostring(J, 1);
-  if (js_isboolean(J,2) )
+  if (js_isboolean(J,2) ) {
     game::Settings::set(name, js_toboolean(J,2));
-  else if (js_isnumber(J,2))
+  } else if (js_isnumber(J,2)) {
     game::Settings::set(name, js_tonumber(J,2));
-  else if (js_isstring(J,2))
+  } else if (js_isstring(J,2)) {
     game::Settings::set(name, std::string(js_tostring(J,2)));
-  else
+  } else {
     Logger::warning( "!!! Undefined value for js.pcall engineSetOption when set " + name );
+  }
 
   game::Settings::save();
 }
@@ -649,15 +636,13 @@ Core& Core::instance()
 void Core::loadModule(const std::string& path)
 {
   vfs::Path rpath(path);
-  if (!rpath.exist())
-  {
+  if (!rpath.exist()) {
     Logger::warning("!!! Cant find script at {}", rpath.toString());
     return;
   }
 
   int error = js_ploadfile(internal::J, rpath.toCString());
-  if (error)
-  {
+  if (error) {
     std::string str = js_tostring(internal::J,-1);
     Logger::warning( str );
   }
@@ -858,26 +843,22 @@ template<typename T,typename Rtype, typename P1Type>
 void object_call_getter_1(js_State *J, Rtype (T::*f)(P1Type),P1Type def)
 {
   T* parent = (T*)js_touserdata(J, 0, "userdata");
-  if (parent)
-  {
+  if (parent) {
     auto paramValue1 = engine_js_to(J, 1, def);
     Rtype value = (parent->*f)(paramValue1);
     engine_js_push(J,value);
-  }
-  else
+  } else {
     js_pushundefined(J);
+  }
 }
 
 void reg_divinity_constructor(js_State *J)
 {
   religion::DivinityPtr divn;
-  if (js_isstring(J, 1))
-  {
+  if (js_isstring(J, 1)) {
     std::string name = js_tostring(J, 1);
     divn = religion::rome::Pantheon::instance().get(name);
-  }
-  else if (js_isuserdata(J, 1, "userdata"))
-  {
+  } else if (js_isuserdata(J, 1, "userdata")) {
     //divn. = (T*)js_touserdata(J, 1, "userdata");
   }
 
@@ -892,8 +873,8 @@ void constructor_go_jsobject(js_State *J, const std::string& tname)
   T* udata = nullptr;
   if (js_isuserdata(J, 1, "userdata")) {
     udata = (T*)js_touserdata(J, 1, "userdata");
-    if (udata != nullptr )
-    {
+
+    if (udata != nullptr ) {
       js_currentfunction(J);
       js_getproperty(J, -1, "prototype");
       js_newuserdata(J, "userdata", udata, nullptr);
@@ -908,13 +889,10 @@ template<class T>
 void reg_overlay_constructor(js_State *J, const std::string& tname)
 {
   T* ov = nullptr;
-  if (js_isstring(J,1))
-  {
+  if (js_isstring(J,1)) {
     std::string name = js_tostring(J, 1);
     ov = safety_cast<T*>(TileOverlayFactory::instance().create(name).object());
-  }
-  else if(js_isuserdata(J, 1, "userdata"))
-  {
+  } else if(js_isuserdata(J, 1, "userdata")) {
     auto ptr = (Overlay*)js_touserdata(J, 1, "userdata");
     ov = safety_cast<T*>(ptr);
 
@@ -935,14 +913,11 @@ template<class T>
 void reg_walker_constructor(js_State *J, const std::string& tname)
 {
   T* wlk = nullptr;
-  if (js_isstring(J,1))
-  {
+  if (js_isstring(J,1)) {
     std::string name = js_tostring(J, 1);
     walker::Type type = walker::toType(name);
     wlk = safety_cast<T*>(WalkerManager::instance().create(type, internal::game->city()).object());
-  }
-  else if(js_isuserdata(J, 1, "userdata"))
-  {
+  } else if(js_isuserdata(J, 1, "userdata")) {
     auto ptr = (Walker*)js_touserdata(J, 1, "userdata");
     wlk = safety_cast<T*>(ptr);
 
@@ -962,21 +937,21 @@ void reg_walker_constructor(js_State *J, const std::string& tname)
 void reg_widget_constructor(js_State *J, const std::string& name)
 {
   Widget* widget = nullptr;
-  if (js_isstring(J,1))
-  {
+  if (js_isstring(J,1)) {
     std::string widgetName = js_tostring(J, 1);
     widget = internal::game->gui()->rootWidget()->findChild(widgetName, true);
 
     if (widget == nullptr)
       Logger::warning("!!! Cant found widget with name " + widgetName);
-  }
-  else
-  {
+  } else {
     Widget* parent = nullptr;
-    if (js_isuserdata( J, 1, "userdata" ))
+    if (js_isuserdata( J, 1, "userdata" )) {
       parent = (Widget*)js_touserdata(J, 1, "userdata");
-    if (parent == nullptr)
+    }
+
+    if (parent == nullptr) {
       parent = internal::game->gui()->rootWidget();
+    }
 
     widget = internal::game->gui()->createWidget(name, parent);
   }
@@ -1214,8 +1189,6 @@ void Core::unref(const std::string& ref)
   js_unref(internal::J, ref.c_str());
 }
 
-Core::Core()
-{
-}
+Core::Core() {}
 
 } //end namespace script

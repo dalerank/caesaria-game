@@ -12,8 +12,10 @@ static void jsB_globalf(js_State *J, const char *name, js_CFunction cfun, int n)
 
 void jsB_propf(js_State *J, const char *name, js_CFunction cfun, int n)
 {
+	const char *pname = strrchr(name, '.');
+	pname = pname ? pname + 1 : name;
 	js_newcfunction(J, cfun, name, n);
-	js_defproperty(J, -2, name, JS_DONTENUM);
+	js_defproperty(J, -2, pname, JS_DONTENUM);
 }
 
 void jsB_propn(js_State *J, const char *name, double number)
@@ -31,7 +33,7 @@ void jsB_props(js_State *J, const char *name, const char *string)
 static void jsB_parseInt(js_State *J)
 {
 	const char *s = js_tostring(J, 1);
-	int radix = js_isdefined(J, 2) ? js_toint32(J, 2) : 10;
+	int radix = js_isdefined(J, 2) ? js_tointeger(J, 2) : 10;
 	double sign = 1;
 	double n;
 	char *e;
@@ -50,7 +52,7 @@ static void jsB_parseInt(js_State *J)
 			s += 2;
 			radix = 16;
 		}
-	} else if (radix < 2 || radix > 32) {
+	} else if (radix < 2 || radix > 36) {
 		js_pushnumber(J, NAN);
 		return;
 	}

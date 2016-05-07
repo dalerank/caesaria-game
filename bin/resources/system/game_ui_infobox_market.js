@@ -42,7 +42,7 @@ game.ui.infobox.aboutMarket = function(location) {
   }
 
   var goods = market.goodStore();
-  if (market.numberWorkers() > 0) {
+  if (market.numberWorkers > 0) {
     var furageSum = 0;
     // for all furage types of good
     for( var gtype in g_config.good.basicfood) {
@@ -79,7 +79,7 @@ game.ui.infobox.aboutMarket = function(location) {
     lbAbout.text = _u("market_no_workers");
   }
 
-  ibox.setWorkersStatus(32, 8, 542, market.maximumWorkers(), market.numberWorkers());
+  ibox.setWorkersStatus(32, 8, 542, market.maximumWorkers, market.numberWorkers;
   ibox.setWorkingStatus(market.active);
 
   ibox.show();

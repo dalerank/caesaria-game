@@ -457,7 +457,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         ibox.updateCurrentAction();
         ibox.updateBaseBuilding();
     }
-
+ 
     ibox.setWalker(ibox.walker);
     ibox.show();
 }

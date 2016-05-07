@@ -228,6 +228,15 @@ void WorkingBuilding::_changeAnimationState(bool enabled)
 void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
 walker::Type WorkingBuilding::workerType() { return _d->workers.type; }
 
+Variant WorkingBuilding::getProperty(const std::string& name) const
+{
+  if (name == "maximumWorkers") return maximumWorkers();
+  if (name == "numberWorkers") return numberWorkers();
+  if (name == "needWorkers") return needWorkers();
+
+  return Building::getProperty(name);
+}
+
 void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );

@@ -58,6 +58,7 @@ var modules = [
     "mission_timescale",
     "splash_common",
     "sim_ui_advisor_religion",
+    "sim_ui_advisor_education",
     "sim_ui_dialogs_mission_targets",
     "sim_ui_dialogs_city_settings",
     "sim_ui_dialogs_speed_settings",

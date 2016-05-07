@@ -6,12 +6,8 @@ PlayerCity.prototype.walkers = function (location) {
     return this.walkers_tilepos(location);
 }
 
-Object.defineProperty(PlayerCity.prototype, "map", {
-    get: function () {
-        return this.tilemap()
-    },
-    configurable : true
-});
+Object.defineProperty(PlayerCity.prototype, "map", { get: function () { return this.tilemap() }, configurable : true });
+Object.defineProperty(PlayerCity.prototype, "population", { get: function () { return this.states().population; }, configurable : true });
 
 PlayerCity.prototype.findNextSameBuilding = function(location, type) {
   var locations = g_session.getBuildingLocations(type);

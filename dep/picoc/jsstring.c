@@ -4,6 +4,13 @@
 #include "utf.h"
 #include "regexp.h"
 
+static const char *checkstring(js_State *J, int idx)
+{
+	if (!js_iscoercible(J, idx))
+		js_typeerror(J, "string function called on null or undefined");
+	return js_tostring(J, idx);
+}
+
 int js_runeat(js_State *J, const char *s, int i)
 {
 	Rune rune = 0;
@@ -75,7 +82,7 @@ static void Sp_valueOf(js_State *J)
 static void Sp_charAt(js_State *J)
 {
 	char buf[UTFmax + 1];
-	const char *s = js_tostring(J, 0);
+	const char *s = checkstring(J, 0);
 	int pos = js_tointeger(J, 1);
 	Rune rune = js_runeat(J, s, pos);
 	if (rune > 0) {
@@ -88,7 +95,7 @@ static void Sp_charAt(js_State *J)
 
 static void Sp_charCodeAt(js_State *J)
 {
-	const char *s = js_tostring(J, 0);
+	const char *s = checkstring(J, 0);
 	int pos = js_tointeger(J, 1);
 	Rune rune = js_runeat(J, s, pos);
 	if (rune > 0)
@@ -99,15 +106,15 @@ static void Sp_charCodeAt(js_State *J)
 
 static void Sp_concat(js_State *J)
 {
-	unsigned int i, top = js_gettop(J);
-	unsigned int n;
+	int i, top = js_gettop(J);
+	int n;
 	char * volatile out;
 	const char *s;
 
 	if (top == 1)
 		return;
 
-	s = js_tostring(J, 0);
+	s = checkstring(J, 0);
 	n = strlen(s);
 	out = js_malloc(J, n + 1);
 	strcpy(out, s);
@@ -120,7 +127,7 @@ static void Sp_concat(js_State *J)
 	for (i = 1; i < top; ++i) {
 		s = js_tostring(J, i);
 		n += strlen(s);
-		out = realloc(out, n + 1);
+		out = js_realloc(J, out, n + 1);
 		strcat(out, s);
 	}
 
@@ -131,7 +138,7 @@ static void Sp_concat(js_State *J)
 
 static void Sp_indexOf(js_State *J)
 {
-	const char *haystack = js_tostring(J, 0);
+	const char *haystack = checkstring(J, 0);
 	const char *needle = js_tostring(J, 1);
 	int pos = js_tointeger(J, 2);
 	int len = strlen(needle);
@@ -150,7 +157,7 @@ static void Sp_indexOf(js_State *J)
 
 static void Sp_lastIndexOf(js_State *J)
 {
-	const char *haystack = js_tostring(J, 0);
+	const char *haystack = checkstring(J, 0);
 	const char *needle = js_tostring(J, 1);
 	int pos = js_isdefined(J, 2) ? js_tointeger(J, 2) : strlen(haystack);
 	int len = strlen(needle);
@@ -167,14 +174,14 @@ static void Sp_lastIndexOf(js_State *J)
 
 static void Sp_localeCompare(js_State *J)
 {
-	const char *a = js_tostring(J, 0);
+	const char *a = checkstring(J, 0);
 	const char *b = js_tostring(J, 1);
 	js_pushnumber(J, strcmp(a, b));
 }
 
 static void Sp_slice(js_State *J)
 {
-	const char *str = js_tostring(J, 0);
+	const char *str = checkstring(J, 0);
 	const char *ss, *ee;
 	int len = utflen(str);
 	int s = js_tointeger(J, 1);
@@ -199,7 +206,7 @@ static void Sp_slice(js_State *J)
 
 static void Sp_substring(js_State *J)
 {
-	const char *str = js_tostring(J, 0);
+	const char *str = checkstring(J, 0);
 	const char *ss, *ee;
 	int len = utflen(str);
 	int s = js_tointeger(J, 1);
@@ -221,7 +228,7 @@ static void Sp_substring(js_State *J)
 
 static void Sp_toLowerCase(js_State *J)
 {
-	const char *src = js_tostring(J, 0);
+	const char *src = checkstring(J, 0);
 	char *dst = js_malloc(J, UTFmax * strlen(src) + 1);
 	const char *s = src;
 	char *d = dst;
@@ -243,7 +250,7 @@ static void Sp_toLowerCase(js_State *J)
 
 static void Sp_toUpperCase(js_State *J)
 {
-	const char *src = js_tostring(J, 0);
+	const char *src = checkstring(J, 0);
 	char *dst = js_malloc(J, UTFmax * strlen(src) + 1);
 	const char *s = src;
 	char *d = dst;
@@ -272,7 +279,7 @@ static int istrim(int c)
 static void Sp_trim(js_State *J)
 {
 	const char *s, *e;
-	s = js_tostring(J, 0);
+	s = checkstring(J, 0);
 	while (istrim(*s))
 		++s;
 	e = s + strlen(s);
@@ -283,7 +290,7 @@ static void Sp_trim(js_State *J)
 
 static void S_fromCharCode(js_State *J)
 {
-	unsigned int i, top = js_gettop(J);
+	int i, top = js_gettop(J);
 	Rune c;
 	char *s, *p;
 
@@ -309,11 +316,11 @@ static void Sp_match(js_State *J)
 {
 	js_Regexp *re;
 	const char *text;
-	unsigned int len;
+	int len;
 	const char *a, *b, *c, *e;
 	Resub m;
 
-	text = js_tostring(J, 0);
+	text = checkstring(J, 0);
 
 	if (js_isregexp(J, 1))
 		js_copy(J, 1);
@@ -357,7 +364,7 @@ static void Sp_search(js_State *J)
 	const char *text;
 	Resub m;
 
-	text = js_tostring(J, 0);
+	text = checkstring(J, 0);
 
 	if (js_isregexp(J, 1))
 		js_copy(J, 1);
@@ -379,10 +386,10 @@ static void Sp_replace_regexp(js_State *J)
 	js_Regexp *re;
 	const char *source, *s, *r;
 	js_Buffer *sb = NULL;
-	unsigned int n, x;
+	int n, x;
 	Resub m;
 
-	source = js_tostring(J, 0);
+	source = checkstring(J, 0);
 	re = js_toregexp(J, 1);
 
 	if (js_regexec(re->prog, source, &m, 0)) {
@@ -480,7 +487,7 @@ static void Sp_replace_string(js_State *J)
 	js_Buffer *sb = NULL;
 	int n;
 
-	source = js_tostring(J, 0);
+	source = checkstring(J, 0);
 	needle = js_tostring(J, 1);
 
 	s = strstr(source, needle);
@@ -545,13 +552,13 @@ static void Sp_split_regexp(js_State *J)
 {
 	js_Regexp *re;
 	const char *text;
-	unsigned int limit, len, k;
+	int limit, len, k;
 	const char *p, *a, *b, *c, *e;
 	Resub m;
 
-	text = js_tostring(J, 0);
+	text = checkstring(J, 0);
 	re = js_toregexp(J, 1);
-	limit = js_isdefined(J, 2) ? js_touint32(J, 2) : 1 << 30;
+	limit = js_isdefined(J, 2) ? js_tointeger(J, 2) : 1 << 30;
 
 	js_newarray(J);
 	len = 0;
@@ -602,10 +609,10 @@ static void Sp_split_regexp(js_State *J)
 
 static void Sp_split_string(js_State *J)
 {
-	const char *str = js_tostring(J, 0);
+	const char *str = checkstring(J, 0);
 	const char *sep = js_tostring(J, 1);
-	unsigned int limit = js_isdefined(J, 2) ? js_touint32(J, 2) : 1 << 30;
-	unsigned int i, n;
+	int limit = js_isdefined(J, 2) ? js_tointeger(J, 2) : 1 << 30;
+	int i, n;
 
 	js_newarray(J);
 
@@ -657,31 +664,31 @@ void jsB_initstring(js_State *J)
 
 	js_pushobject(J, J->String_prototype);
 	{
-		jsB_propf(J, "toString", Sp_toString, 0);
-		jsB_propf(J, "valueOf", Sp_valueOf, 0);
-		jsB_propf(J, "charAt", Sp_charAt, 1);
-		jsB_propf(J, "charCodeAt", Sp_charCodeAt, 1);
-		jsB_propf(J, "concat", Sp_concat, 1);
-		jsB_propf(J, "indexOf", Sp_indexOf, 1);
-		jsB_propf(J, "lastIndexOf", Sp_lastIndexOf, 1);
-		jsB_propf(J, "localeCompare", Sp_localeCompare, 1);
-		jsB_propf(J, "match", Sp_match, 1);
-		jsB_propf(J, "replace", Sp_replace, 2);
-		jsB_propf(J, "search", Sp_search, 1);
-		jsB_propf(J, "slice", Sp_slice, 2);
-		jsB_propf(J, "split", Sp_split, 2);
-		jsB_propf(J, "substring", Sp_substring, 2);
-		jsB_propf(J, "toLowerCase", Sp_toLowerCase, 0);
-		jsB_propf(J, "toLocaleLowerCase", Sp_toLowerCase, 0);
-		jsB_propf(J, "toUpperCase", Sp_toUpperCase, 0);
-		jsB_propf(J, "toLocaleUpperCase", Sp_toUpperCase, 0);
+		jsB_propf(J, "String.prototype.toString", Sp_toString, 0);
+		jsB_propf(J, "String.prototype.valueOf", Sp_valueOf, 0);
+		jsB_propf(J, "String.prototype.charAt", Sp_charAt, 1);
+		jsB_propf(J, "String.prototype.charCodeAt", Sp_charCodeAt, 1);
+		jsB_propf(J, "String.prototype.concat", Sp_concat, 0); /* 1 */
+		jsB_propf(J, "String.prototype.indexOf", Sp_indexOf, 1);
+		jsB_propf(J, "String.prototype.lastIndexOf", Sp_lastIndexOf, 1);
+		jsB_propf(J, "String.prototype.localeCompare", Sp_localeCompare, 1);
+		jsB_propf(J, "String.prototype.match", Sp_match, 1);
+		jsB_propf(J, "String.prototype.replace", Sp_replace, 2);
+		jsB_propf(J, "String.prototype.search", Sp_search, 1);
+		jsB_propf(J, "String.prototype.slice", Sp_slice, 2);
+		jsB_propf(J, "String.prototype.split", Sp_split, 2);
+		jsB_propf(J, "String.prototype.substring", Sp_substring, 2);
+		jsB_propf(J, "String.prototype.toLowerCase", Sp_toLowerCase, 0);
+		jsB_propf(J, "String.prototype.toLocaleLowerCase", Sp_toLowerCase, 0);
+		jsB_propf(J, "String.prototype.toUpperCase", Sp_toUpperCase, 0);
+		jsB_propf(J, "String.prototype.toLocaleUpperCase", Sp_toUpperCase, 0);
 
 		/* ES5 */
-		jsB_propf(J, "trim", Sp_trim, 0);
+		jsB_propf(J, "String.prototype.trim", Sp_trim, 0);
 	}
-	js_newcconstructor(J, jsB_String, jsB_new_String, "String", 1);
+	js_newcconstructor(J, jsB_String, jsB_new_String, "String", 0); /* 1 */
 	{
-		jsB_propf(J, "fromCharCode", S_fromCharCode, 1);
+		jsB_propf(J, "String.fromCharCode", S_fromCharCode, 0); /* 1 */
 	}
 	js_defglobal(J, "String", JS_DONTENUM);
 }

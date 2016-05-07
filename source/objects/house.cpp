@@ -1154,6 +1154,12 @@ Variant House::getProperty(const std::string & name) const
   if (name == "isPatrician") return spec().isPatrician();
   if (name == "taxRate") return spec().taxRate();
   if (name == "minReligionLevel") return spec().minReligionLevel();
+  if (name == "scholar_n") return habitants().scholar_n();
+  if (name == "student_n") return habitants().student_n();
+  if (name == "mature_n") return habitants().mature_n();
+  if (name == "habitable") return habitants().count() > 0;
+  if (name == "minEducationLevel") return spec().minEducationLevel();
+
 
   return Building::getProperty(name);
 }
@@ -1417,18 +1423,9 @@ unsigned int House::unemployed() const
   return srvc->value();
 }
 
-bool House::isEducationNeed(Service::Type type) const
+float House::isEvolveEducationNeed(Service::Type type)
 {
-  int lvl = _d->spec.minEducationLevel();
-  switch( type )
-  {
-  case Service::school: return (lvl>0);
-  case Service::academy: return (lvl>1);
-  case Service::library: return (lvl>2);
-  default: break;
-  }
-
-  return false;
+  return spec().next().evaluateEducationNeed(this, type);
 }
 
 bool House::isEntertainmentNeed(Service::Type type) const
