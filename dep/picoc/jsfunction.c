@@ -6,7 +6,7 @@
 
 static void jsB_Function(js_State *J)
 {
-	unsigned int i, top = js_gettop(J);
+	int i, top = js_gettop(J);
 	js_Buffer *sb = NULL;
 	const char *body;
 	js_Ast *parse;
@@ -50,7 +50,7 @@ static void Fp_toString(js_State *J)
 {
 	js_Object *self = js_toobject(J, 0);
 	char *s;
-	unsigned int i, n;
+	int i, n;
 
 	if (!js_iscallable(J, 0))
 		js_typeerror(J, "not a function");
@@ -92,16 +92,20 @@ static void Fp_apply(js_State *J)
 	js_copy(J, 0);
 	js_copy(J, 1);
 
-	n = js_getlength(J, 2);
-	for (i = 0; i < n; ++i)
-		js_getindex(J, 2, i);
+	if (js_isnull(J, 2) || js_isundefined(J, 2)) {
+		n = 0;
+	} else {
+		n = js_getlength(J, 2);
+		for (i = 0; i < n; ++i)
+			js_getindex(J, 2, i);
+	}
 
 	js_call(J, n);
 }
 
 static void Fp_call(js_State *J)
 {
-	unsigned int i, top = js_gettop(J);
+	int i, top = js_gettop(J);
 
 	if (!js_iscallable(J, 0))
 		js_typeerror(J, "not a function");
@@ -114,8 +118,8 @@ static void Fp_call(js_State *J)
 
 static void callbound(js_State *J)
 {
-	unsigned int top = js_gettop(J);
-	unsigned int i, fun, args, n;
+	int top = js_gettop(J);
+	int i, fun, args, n;
 
 	fun = js_gettop(J);
 	js_currentfunction(J);
@@ -137,8 +141,8 @@ static void callbound(js_State *J)
 
 static void constructbound(js_State *J)
 {
-	unsigned int top = js_gettop(J);
-	unsigned int i, fun, args, n;
+	int top = js_gettop(J);
+	int i, fun, args, n;
 
 	fun = js_gettop(J);
 	js_currentfunction(J);
@@ -159,8 +163,8 @@ static void constructbound(js_State *J)
 
 static void Fp_bind(js_State *J)
 {
-	unsigned int i, top = js_gettop(J);
-	unsigned int n;
+	int i, top = js_gettop(J);
+	int n;
 
 	if (!js_iscallable(J, 0))
 		js_typeerror(J, "not a function");
@@ -171,11 +175,9 @@ static void Fp_bind(js_State *J)
 	else
 		n = 0;
 
-	js_newcconstructor(J, callbound, constructbound, "[bind]", n);
-
 	/* Reuse target function's prototype for HasInstance check. */
 	js_getproperty(J, 0, "prototype");
-	js_defproperty(J, -2, "prototype", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+	js_newcconstructor(J, callbound, constructbound, "[bind]", n);
 
 	/* target function */
 	js_copy(J, 0);
@@ -201,10 +203,10 @@ void jsB_initfunction(js_State *J)
 
 	js_pushobject(J, J->Function_prototype);
 	{
-		jsB_propf(J, "toString", Fp_toString, 2);
-		jsB_propf(J, "apply", Fp_apply, 2);
-		jsB_propf(J, "call", Fp_call, 1);
-		jsB_propf(J, "bind", Fp_bind, 1);
+		jsB_propf(J, "Function.prototype.toString", Fp_toString, 2);
+		jsB_propf(J, "Function.prototype.apply", Fp_apply, 2);
+		jsB_propf(J, "Function.prototype.call", Fp_call, 1);
+		jsB_propf(J, "Function.prototype.bind", Fp_bind, 1);
 	}
 	js_newcconstructor(J, jsB_Function, jsB_Function, "Function", 1);
 	js_defglobal(J, "Function", JS_DONTENUM);

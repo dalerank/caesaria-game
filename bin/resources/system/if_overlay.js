@@ -28,6 +28,11 @@ function UpdateOverlayPrototype(ObjectPrototype, name) {
             return g_session.getOverlayType(this.type())
         }
     })
+
+    Object.defineProperty(ObjectPrototype, "name", {
+        get: function () { return this.getProperty("name"); }
+    })
+
     ObjectPrototype.as = function (type) {
         return new type(this);
     }
@@ -44,6 +49,10 @@ function UpdateWorkingBuildingPrototype(ObjectPrototype, name) {
             this.setActive(en)
         }
     })
+
+    Object.defineProperty(ObjectPrototype, "numberWorkers", { get: function () { return this.getProperty("numberWorkers"); }})
+    Object.defineProperty(ObjectPrototype, "maximumWorkers", { get: function () { return this.getProperty("maximumWorkers"); }})
+    Object.defineProperty(ObjectPrototype, "needWorkers", { get: function () { return this.getProperty("needWorkers"); }})
 }
 
 function UpdateTemplePrototype(ObjectPrototype, name) {
@@ -89,6 +98,14 @@ function UpdateServiceBuildingPrototype(ObjectPrototype, name) {
 
 function UpdateEntertainmentBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
+
+    Object.defineProperty(ObjectPrototype, "currentVisitors", {
+        get: function () { return this.getProperty("currentVisitors"); }
+    })
+}
+
+function UpdateEducationBuildingPrototype(ObjectPrototype, name) {
+    UpdateServiceBuildingPrototype(ObjectPrototype, name);
 }
 
 function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {
@@ -122,6 +139,9 @@ UpdateServiceBuildingPrototype(Market.prototype, "Market");
 /*************** Other buildings **************/
 UpdateTemplePrototype(Temple.prototype, "Temple");
 UpdateFactoryPrototype(Factory.prototype, "Factory");
+
+/*************** Education buildings ******************/
+UpdateEducationBuildingPrototype(EducationBuilding.prototype, "EducationBuilding");
 
 /*************** Entertainment buildings ******************/
 UpdateEntertainmentBuildingPrototype(EntertainmentBuilding.prototype, "EntertainmentBuilding");

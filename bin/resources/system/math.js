@@ -9,3 +9,7 @@ Math.randomIndex = function(min, max) {
   var randomNumber = Math.floor( Math.random() * range) + offset;
   return randomNumber;
 }
+
+Math.percentage = function(value, base) {
+  return Math.floor(value / base * 100);
+}

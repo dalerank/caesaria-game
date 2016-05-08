@@ -49,6 +49,7 @@ public:
   virtual void collapse();
   virtual void burn();
   virtual walker::Type workerType();
+  virtual Variant getProperty(const std::string &name) const;
 
   virtual void timeStep(const unsigned long time);
 

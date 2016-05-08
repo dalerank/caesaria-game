@@ -53,7 +53,7 @@ game.ui.infobox.aboutGatehouse = function(location) {
 
   ibox.setInfoText(_u("walls_need_a_gatehouse"));
 
-  //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers(), gates.numberWorkers());
+  //ibox.setWorkersStatus(32, 8, 542, gates.maximumWorkers, gates.numberWorkers);
   ibox.setWorkingStatus(gates.active);
 
   ibox.update();
@@ -69,7 +69,7 @@ game.ui.infobox.aboutMillitaryAcademy = function(location) {
 
   ibox.setInfoText(_u("military_academy_info"));
 
-  ibox.setWorkersStatus(32, 8, 542, academy.maximumWorkers(), academy.numberWorkers());
+  ibox.setWorkersStatus(32, 8, 542, academy.maximumWorkers, academy.numberWorkers);
   ibox.setWorkingStatus(academy.active);
 
   ibox.show();
@@ -119,9 +119,9 @@ game.ui.infobox.aboutDock = function(location) {
   lbAbout.multiline = true;
   lbAbout.font = "FONT_1";
   lbAbout.textAlignment= { v:"upperLeft", h:"upperLeft"};
-  ibox.setInfoText( dock.numberWorkers() > 0 ? _u("dock_about") : _u("dock_no_workers") );
+  ibox.setInfoText( dock.numberWorkers > 0 ? _u("dock_about") : _u("dock_no_workers") );
 
-  ibox.setWorkersStatus(32, 8, 542, dock.maximumWorkers(), dock.numberWorkers());
+  ibox.setWorkersStatus(32, 8, 542, dock.maximumWorkers, dock.numberWorkers);
   ibox.setWorkingStatus(dock.active);
 
   ibox.drawGood = function(dock,goodType,index,paintY)
@@ -179,7 +179,7 @@ game.ui.infobox.aboutBarracks = function(location) {
   lbWeaponQty.font = "FONT_3";
   lbWeaponQty.text = _format( "{0} {1}", _u("weapon_store_of"), barracks.getProperty("weapon") );
 
-  ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers(), barracks.numberWorkers());
+  ibox.setWorkersStatus(32, 56+12, 542, barracks.maximumWorkers, barracks.numberWorkers);
   ibox.setWorkingStatus(barracks.active);
 
   ibox.show();
@@ -210,7 +210,7 @@ game.ui.infobox.aboutFountain = function(location) {
 }
 
 game.ui.infobox.aboutLand = function(location) {
-  var ibox = game.ui.infobox.simple(0,0,510,300)
+  var ibox = game.ui.infobox.simple(0,0,510,300);
   ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
   ibox.update = function(title, text, uri) {
@@ -375,7 +375,7 @@ game.ui.infobox.aboutFactory = function(location) {
   var cartInfo = factory.cartStateDesc();
   ibox.setInfoText(_format( "{0} {1}", _t(workInfo), _t(cartInfo)));
 
-  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers());
+  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers, factory.numberWorkers);
   ibox.setWorkingStatus(factory.active);
 
   ibox.show();
@@ -409,7 +409,7 @@ game.ui.infobox.aboutRaw = function(location) {
   var ginfo = factory.produce;
   ibox.addImage(10, 10, factory.produce.picture.local);
 
-  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers(), factory.numberWorkers());
+  ibox.setWorkersStatus(32, 160, 542, factory.maximumWorkers, factory.numberWorkers);
   ibox.setWorkingStatus(factory.active);
 
   ibox.show();
@@ -441,7 +441,7 @@ game.ui.infobox.aboutSenate = function(location) {
   ibox.title = _u(senate.typename);
 
   // number of workers
-  ibox.setWorkersStatus(32, 136, 542, senate.maximumWorkers(), senate.numberWorkers());
+  ibox.setWorkersStatus(32, 136, 542, senate.maximumWorkers, senate.numberWorkers);
 
   var lb = ibox.addLabel(60, 35, ibox.w-32, 30);
   lb.text = _format( "{0} {1}", _ut("senate_save"), senate.getProperty("funds"));
@@ -475,7 +475,7 @@ game.ui.infobox.aboutWorkingBuilding = function(location) {
   ibox.overlay = working;
   ibox.title = _u(working.typename)
 
-  ibox.setWorkersStatus(32, 150, 542, working.maximumWorkers(), working.numberWorkers());
+  ibox.setWorkersStatus(32, 150, 542, working.maximumWorkers, working.numberWorkers);
   ibox.setWorkingStatus(working.active);
 
   ibox.setInfoText(working.workersProblemDesc());
@@ -509,7 +509,7 @@ game.ui.infobox.aboutColosseum = function(location) {
   ibox.overlay = colosseum;
   ibox.initBlackframe(16, 145, ibox.w - 32, 100);
 
-  ibox.setWorkersStatus(32, 150, 542, colosseum.maximumWorkers(), colosseum.numberWorkers());
+  ibox.setWorkersStatus(32, 150, 542, colosseum.maximumWorkers, colosseum.numberWorkers);
   ibox.setWorkingStatus(colosseum.active);
   ibox.btnToggleWorks.y = 10;
   ibox.title = _u(colosseum.typename);
@@ -552,7 +552,7 @@ game.ui.infobox.aboutTheater = function(location) {
   var theater = g_session.city.getOverlay(location).as(WorkingBuilding);
 
   ibox.title = _u(theater.typename);
-  ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers(), theater.numberWorkers());
+  ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers, theater.numberWorkers);
   ibox.setWorkingStatus(theater.active);
   ibox.overlay = theater;
 
@@ -585,7 +585,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
   ibox.title = _u(amphitheater.typename);
   ibox.overlay = amphitheater;
 
-  ibox.setWorkersStatus(32, 150, 542, amphitheater.maximumWorkers(), amphitheater.numberWorkers());
+  ibox.setWorkersStatus(32, 150, 542, amphitheater.maximumWorkers, amphitheater.numberWorkers);
   ibox.setWorkingStatus(amphitheater.active);
 
   var needGlagiators = amphitheater.getProperty("needGlagiators");

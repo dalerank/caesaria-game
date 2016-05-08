@@ -249,10 +249,14 @@ void Overlay::destroy() {}
 const Size& Overlay::size() const{ return _d->size;}
 bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
-std::string Overlay::name(){  return _d->name;}
+std::string Overlay::name(){ return _d->name;}
 object::Type Overlay::type() const { return _d->overlayType;}
 
-Variant Overlay::getProperty(const std::string & name) const { return Variant(); }
+Variant Overlay::getProperty(const std::string & name) const {
+  if (name == "name") { return _d->name; }
+
+  return Variant();
+}
 
 Picture& Overlay::_fgPicture(unsigned int index)
 {

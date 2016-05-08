@@ -182,7 +182,7 @@ game.ui.infobox.aboutTemple = function (location) {
         img.tooltip = _u(longDescr);
     }
 
-    ibox.setWorkersStatus(32, 56 + 12, 542, temple.maximumWorkers(), temple.numberWorkers());
+    ibox.setWorkersStatus(32, 56 + 12, 542, temple.maximumWorkers, temple.numberWorkers);
     ibox.setWorkingStatus(temple.active);
 
     ibox.btnToggleWorks.callback = function () {

@@ -21,3 +21,4 @@
 #include "objects/workshop_chariot.hpp"
 #include "objects/theater.hpp"
 #include "objects/amphitheater.hpp"
+#include "objects/education.hpp"

@@ -230,7 +230,7 @@ game.ui.infobox.aboutGranary = function (location) {
         game.ui.infobox.showGrSpecialOrdersWindow(ibox, grStore);
     }
 
-    ibox.setWorkersStatus(32, 130, 542, granary.maximumWorkers(), granary.numberWorkers());
+    ibox.setWorkersStatus(32, 130, 542, granary.maximumWorkers, granary.numberWorkers);
     ibox.setWorkingStatus(granary.active);
     ibox.show();
 }
@@ -302,7 +302,7 @@ game.ui.infobox.aboutWarehouse = function (location) {
     lb.text = _u("visit_trade_advisor");
     lb.textAlign = { h:"lowerRight", v:"center" };
 
-    ibox.setWorkersStatus(32, 56 + 12, 542, wh.maximumWorkers(), wh.numberWorkers());
+    ibox.setWorkersStatus(32, 56 + 12, 542, wh.maximumWorkers, wh.numberWorkers);
     ibox.setWorkingStatus(wh.active);
     ibox.show();
 }

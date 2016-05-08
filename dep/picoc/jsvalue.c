@@ -7,7 +7,7 @@
 #define JSV_ISSTRING(v) (v->type==JS_TSHRSTR || v->type==JS_TMEMSTR || v->type==JS_TLITSTR)
 #define JSV_TOSTRING(v) (v->type==JS_TSHRSTR ? v->u.shrstr : v->type==JS_TLITSTR ? v->u.litstr : v->type==JS_TMEMSTR ? v->u.memstr->p : "")
 
-double jsV_numbertointeger(double n)
+int jsV_numbertointeger(double n)
 {
 	double sign = n < 0 ? -1 : 1;
 	if (isnan(n)) return 0;
@@ -33,7 +33,7 @@ int jsV_numbertoint32(double n)
 
 unsigned int jsV_numbertouint32(double n)
 {
-	return jsV_numbertoint32(n);
+	return (unsigned int)jsV_numbertoint32(n);
 }
 
 short jsV_numbertoint16(double n)
@@ -128,10 +128,10 @@ int jsV_toboolean(js_State *J, js_Value *v)
 	}
 }
 
-const char *js_itoa(char *out, unsigned int a)
+const char *js_itoa(char *out, int a)
 {
 	char buf[32], *s = out;
-	unsigned int i = 0;
+	int i = 0;
 	while (a) {
 		buf[i++] = (a % 10) + '0';
 		a /= 10;
@@ -283,8 +283,8 @@ const char *jsV_tostring(js_State *J, js_Value *v)
 	case JS_TNUMBER:
 		p = jsV_numbertostring(J, buf, v->u.number);
 		if (p == buf) {
-			unsigned int n = strlen(p);
-			if (n <= offsetof(js_Value, type)) {
+			int n = strlen(p);
+			if (n <= soffsetof(js_Value, type)) {
 				char *s = v->u.shrstr;
 				while (n--) *s++ = *p++;
 				*s = 0;
@@ -394,7 +394,7 @@ void js_newscript(js_State *J, js_Function *fun, js_Environment *scope)
 	js_pushobject(J, obj);
 }
 
-void js_newcfunction(js_State *J, js_CFunction cfun, const char *name, unsigned int length)
+void js_newcfunction(js_State *J, js_CFunction cfun, const char *name, int length)
 {
 	js_Object *obj = jsV_newobject(J, JS_CCFUNCTION, J->Function_prototype);
 	obj->u.c.name = name;
@@ -415,12 +415,13 @@ void js_newcfunction(js_State *J, js_CFunction cfun, const char *name, unsigned 
 }
 
 /* prototype -- constructor */
-void js_newcconstructor(js_State *J, js_CFunction cfun, js_CFunction ccon, const char *name, unsigned int length)
+void js_newcconstructor(js_State *J, js_CFunction cfun, js_CFunction ccon, const char *name, int length)
 {
 	js_Object *obj = jsV_newobject(J, JS_CCFUNCTION, J->Function_prototype);
 	obj->u.c.name = name;
 	obj->u.c.function = cfun;
 	obj->u.c.constructor = ccon;
+	obj->u.c.length = length;
 	js_pushobject(J, obj); /* proto obj */
 	{
 		js_pushnumber(J, length);
@@ -432,7 +433,7 @@ void js_newcconstructor(js_State *J, js_CFunction cfun, js_CFunction ccon, const
 	}
 }
 
-void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty has, js_Put put, js_Finalize finalize)
+void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty has, js_Put put, js_Delete delete, js_Finalize finalize)
 {
 	js_Object *prototype = NULL;
 	js_Object *obj;
@@ -446,18 +447,14 @@ void js_newuserdatax(js_State *J, const char *tag, void *data, js_HasProperty ha
 	obj->u.user.data = data;
 	obj->u.user.has = has;
 	obj->u.user.put = put;
+	obj->u.user.delete = delete;
 	obj->u.user.finalize = finalize;
 	js_pushobject(J, obj);
 }
 
-void finalizeObject(js_State *J, void *p)
-{
-  int i=0;
-}
-
 void js_newuserdata(js_State *J, const char *tag, void *data, js_Finalize finalize)
 {
-	js_newuserdatax(J, tag, data, NULL, NULL, finalize);
+	js_newuserdatax(J, tag, data, NULL, NULL, NULL, finalize);
 }
 
 /* Non-trivial operations on values. These are implemented using the stack. */
