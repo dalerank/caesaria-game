@@ -25,7 +25,7 @@ g_config.buildmenu = {
     buildings : [ "forum", "senate", "governorHouse", "governorVilla",
                   "governorPalace", "statue_small", "statue_middle",
                   "statue_big" ]
-  },
+  }, 
 
   entertainment : {
     buildings : [ "theater", "amphitheater", "colosseum", "hippodrome", "actorColony",

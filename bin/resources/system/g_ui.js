@@ -47,10 +47,7 @@ Ui.prototype.addFade = function(value) {
   }
 
 Ui.prototype.addSaveGameDialog = function(dir, ext) {
-    var dialog = new SaveGame(0);
-    dialog.directory = dir;
-    dialog.filter = ext;
-    return dialog;
+    return sim.ui.dialogs.savegame(dir, ext);
   }
 
 Ui.prototype.addConfirmationDialog = function(title, text) {

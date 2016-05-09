@@ -203,13 +203,11 @@ void ActionsHandler::_showIngameMenu()
   {
     CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
     CONNECT( menu, onLoad(),    this, ActionsHandler::_showLoadDialog  )
-    CONNECT( menu, onSave(),    this, ActionsHandler::_showSaveDialog  )
     CONNECT( menu, onRestart(), this, ActionsHandler::_restartGame     )
     CONNECT( menu, onMenu(),    this, ActionsHandler::_exitToMainMenu  )
   }
 }
 
-void ActionsHandler::_showSaveDialog() { events::dispatch<ScriptFunc>("OnShowSaveDialog"); }
 void ActionsHandler::_showLoadDialog() { events::dispatch<ScriptFunc>("OnShowSaveSelectDialog"); }
 
 void ActionsHandler::_restartGame()

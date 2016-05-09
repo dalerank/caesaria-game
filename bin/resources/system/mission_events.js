@@ -18,14 +18,6 @@ function OnRequestExitGame() {
     game.ui.dialogs.requestExit()
 }
 
-function OnShowSaveDialog() {
-    game.ui.dialogs.savegame();
-}
-
-function OnShowEmpirePrices() {
-    sim.ui.advisors.showEmpirePrices()
-}
-
 sim.ui.missionLose = function () {
     var window = g_ui.addWindow(0, 0, 400, 220);
     window.title = "##mission_failed##";

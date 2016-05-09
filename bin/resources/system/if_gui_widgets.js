@@ -1,6 +1,7 @@
 /* ***************************** widget class ********************************** */
 function UpdateWidgetPrototype(objProto) {
-  Object.defineProperty(objProto, 'text', { get : function () {}, set: function (str) { this.setText(_t(str)) }})
+  Object.defineProperty(objProto, 'text', { get : function () { return "unknown" },
+                                            set: function (str) { this.setText(_t(str)) }})
   Object.defineProperty(objProto, "font", { set: function (fname) { this.setFont(fname); } })
   Object.defineProperty(objProto, "enabled", { set: function (e) { this.setEnabled(e); } })
   Object.defineProperty(objProto, "textAlign", { set: function (align) { this.setTextAlignment(align.h, align.v); } })
@@ -248,8 +249,8 @@ Object.defineProperty( FileListBox.prototype, "background", {set: function (enab
 Object.defineProperty( FileListBox.prototype, "selectedIndex", {set:function (index) { this.setSelected(index); }} )
 Object.defineProperty( FileListBox.prototype, "itemHeight", {set: function (h) { this.setItemsHeight(h); }} )
 Object.defineProperty( FileListBox.prototype, "itemsFont", {set: function (fname) { this.setItemsFont(fname); }} )
-Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "count", {set: function () { return this.itemsCount(); }} )
+Object.defineProperty( FileListBox.prototype, "selectedWithData", {set: function (obj) { this.setSelectedWithData(obj.name,obj.data); }} )
 Object.defineProperty( FileListBox.prototype, "onSelectedCallback", { set: function(func) { this.onIndexSelectedEx(func); }} )
 Object.defineProperty( FileListBox.prototype, "items", {set: function (paths) { this.addLines(paths); }} )
 
@@ -258,12 +259,6 @@ Object.defineProperty( FileListBox.prototype, "itemColor", { set: function (obj)
     if(obj.hovered) this.setItemDefaultColor("hovered", obj.hovered);
   }} );
 //*************************** FileSelector class end ***************************************//
-
-//*************************** SaveGameDialog class begin ***************************************//
-Object.defineProperty( SaveGame.prototype, "directory", {set: function (path) { this.setDirectory(path); }} )
-Object.defineProperty( SaveGame.prototype, "filter", {set: function (ext) { this.setFilter(ext); }} )
-Object.defineProperty( SaveGame.prototype, "callback", {set: function (func) { this.onFileSelectedEx(func); }} )
-//*************************** SaveGameDialog class end ***************************************//
 
 //*************************** FileDialog class begin ***************************************//
 function FileDialog(parent,advanced) {

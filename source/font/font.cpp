@@ -177,7 +177,7 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
 void Font::setColor( NColor color )
 {
 #ifdef GAME_PLATFORM_ANDROID
-  color = color.abgr();
+  color.set(color.abgr());
 #endif
   _d->color.b = color.blue();
   _d->color.g = color.green();
@@ -219,9 +219,7 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
 
   if( sText )
   {
-
-    if( useAlpha )
-    {
+    if( useAlpha ) {
 #if SDL_MAJOR_VERSION>1
       SDL_SetSurfaceBlendMode( sText, SDL_BLENDMODE_NONE );
 #else
@@ -229,8 +227,7 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
 #endif
     }
 
-    if( !dstpic.surface() )
-    {
+    if( !dstpic.surface() ) {
       Logger::warning("Font::draw dstpic surface is null");
       return;
     }
@@ -250,13 +247,14 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
     SDL_FreeSurface( sText );
   }
 
-  if( updatextTx )
+  if (updatextTx) {
     dstpic.update();
+  }
 }
 
 void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha , bool updateTx)
 {
-  draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
+  draw(dstpic, text, pos.x(), pos.y(), useAlpha, updateTx);
 }
 
 Picture Font::once(const std::string &text, bool mayChange)

@@ -313,7 +313,7 @@ lobby.ui.options.showdlc = function () {
     lobby.ui.clear();
 
     var dlcFolder = ":/dlc";
-    var path = g_session.getPath(dlcFolder);
+    var path = g_fs.getPath(dlcFolder);
     if (!path.exist()) {
         g_ui.addInformationDialog("##no_dlc_found_title##", "##no_dlc_found_text##");
         lobby.ui.mainmenu.showpage();
@@ -323,7 +323,7 @@ lobby.ui.options.showdlc = function () {
     var folders = g_session.getFolders(path.str, false);
     for (var i in folders) {
         var locText = "##mainmenu_dlc_" + folders[i] + "##";
-        var fullpath = g_session.getPath(dlcFolder + "/" + folders[i]);
+        var fullpath = g_fs.getPath(dlcFolder + "/" + folders[i]);
         (function(fp) {
             lobby.ui.addButton(locText, function () {
             if (fullpath.exist()) {
@@ -362,7 +362,7 @@ lobby.ui.mainmenu.showpage = function () {
         lobby.ui.showGameCredits()
     })
 
-    var dlc = g_session.getPath(":/dlc");
+    var dlc = g_fs.getPath(":/dlc");
     if (dlc.exist())
         lobby.ui.addButton("##mainmenu_mcmxcviii##", function () {
             lobby.ui.options.showdlc()

@@ -1013,8 +1013,7 @@ void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
 
 const Variant& Widget::getProperty(const std::string& name) const
 {
-  if (name.empty())
-  {
+  if (name.empty()) {
     Logger::warning("WARNING !!! Try get property by empty name from {}", internalName());
     static Variant inv;
     return inv;

@@ -150,7 +150,7 @@ sim.ui.topmenu.file.init = function() {
     m.moveToIndex(0)
     m.addItemWithCallback(_u("gmenu_file_restart"),  sim.ui.topmenu.file.restart);
     m.addItemWithCallback("##mainmenu_loadgame##",   lobby.ui.loadgame.loadsave );
-    m.addItemWithCallback("##gmenu_file_save##",     game.ui.dialogs.savegame );
+    m.addItemWithCallback("##gmenu_file_save##",     function() { sim.ui.dialogs.savegame() } );
     m.addItemWithCallback(_u("gmenu_file_mainmenu"), sim.ui.topmenu.file.exitmenu );
     m.addItemWithCallback("##gmenu_exit_game##",     game.ui.dialogs.requestExit );
 }
