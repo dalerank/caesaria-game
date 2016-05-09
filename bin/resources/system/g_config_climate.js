@@ -22,7 +22,7 @@ sim.climate.set = function(climate)
 
   var resDir = g_session.c3mode
                  ? g_session.getOptPath("c3gfx")
-                 : g_session.getPath("");
+                 : g_fs.getPath("");
 
   switch(climate)
   {

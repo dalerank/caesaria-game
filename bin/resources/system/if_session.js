@@ -89,12 +89,6 @@ Session.prototype.getMissionInfo = function (path) {
     return info;
 }
 
-Session.prototype.getPath = function (p) {
-    var path = new Path();
-    path.set(p);
-    return path;
-}
-
 Session.prototype.getOptPath = function (p) {
     var path = new Path();
     path.set(engine.getOption(p));
@@ -182,7 +176,7 @@ Object.defineProperty(Session.prototype, "logfile", {
 
 Object.defineProperty(Session.prototype, "missionsdir", {
     get: function () {
-        return this.getPath(":/missions/")
+        return g_fs.getPath(":/missions/")
     }
 })
 Object.defineProperty(Session.prototype, "savedir", {

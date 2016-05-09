@@ -59,7 +59,6 @@ private slots:
   void _showTileHelp();
   void _resolveEnterButton();
   void _resolveExitGame();
-  void _showSaveDialog();
   void _showLoadDialog();
   void _restartGame();
   void _exitToMainMenu();

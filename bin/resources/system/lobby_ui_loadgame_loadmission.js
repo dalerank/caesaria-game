@@ -19,7 +19,7 @@ lobby.ui.loadgame.loadmission = function () {
     selector.itemsFont = "FONT_1";
     selector.itemColor = { hovered: "0xff000000" };
 
-    var files = g_session.getFiles(g_session.missionsdir.str, ".mission");
+    var files = g_fs.getFiles(g_session.missionsdir.str, ".mission");
     selector.items = files;
 
     var imgPreview = wnd.addImage(280, 175, 170, 150);

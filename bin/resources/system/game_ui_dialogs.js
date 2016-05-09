@@ -57,17 +57,3 @@ game.ui.dialogs.requestExit = function()
   var dialog = g_ui.addConfirmationDialog( "", "##exit_without_saving_question##" );
   dialog.onYesCallback = function() { g_session.setMode(5); }
 }
-
-game.ui.dialogs.savegame = function()
-{
-  engine.log("Find save in " + g_session.savedir.str + " with ext " + g_config.saves.ext)
-  if (!g_session.savedir.exist())
-  {
-    g_ui.addInformationDialog("##warning##", "##save_directory_not_exist##");
-    return;
-  }
-
-  var dialog = g_ui.addSaveGameDialog(g_session.savedir, g_config.saves.ext);
-
-  dialog.callback = function(path) { g_session.save(path); }
-}

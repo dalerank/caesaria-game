@@ -44,12 +44,7 @@ Window.prototype.closeAfterKey = function (obj) {
 
 Window.prototype.addLabel = function (rx, ry, rw, rh, text) {
     var label = new Label(this);
-    label.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    label.geometry = {x: rx,y: ry,w: rw,h: rh};
     if (text != undefined)
         label.text = text;
     return label;
@@ -57,78 +52,43 @@ Window.prototype.addLabel = function (rx, ry, rw, rh, text) {
 
 Window.prototype.addGroupbox = function (rx, ry, rw, rh) {
     var gbox = new Groupbox(this);
-    gbox.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    gbox.geometry = {x: rx,y: ry,w: rw,h: rh};
     return gbox;
 }
 
 Window.prototype.addSpinbox = function (rx, ry, rw, rh) {
     var spinbox = new Spinbox(this);
-    spinbox.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    spinbox.geometry = {x: rx,y: ry,w: rw,h: rh};
     return spinbox;
 }
 
 Window.prototype.addFileSelector = function (rx, ry, rw, rh) {
     var selector = new FileSelector(this);
-    selector.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    selector.geometry = { x: rx, y: ry, w: rw, h: rh };
     return selector;
 }
 
 Window.prototype.addDictionaryText = function (rx, ry, rw, rh) {
     var dtext = new DictionaryText(this);
-    dtext.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    dtext.geometry = {x: rx,y: ry,w: rw,h: rh};
     return dtext;
 }
 
 Window.prototype.addListbox = function (rx, ry, rw, rh) {
     var listbox = new Listbox(this);
-    listbox.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    listbox.geometry = { x: rx,y: ry,w: rw,h: rh};
     return listbox;
 }
 
 Window.prototype.addKeyValueListbox = function (rx, ry, rw, rh) {
     var kvlistbox = new KeyValueListbox(this);
-    kvlistbox.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    kvlistbox.geometry = {x: rx,y: ry,w: rw,h: rh};
     return kvlistbox;
 }
 
 Window.prototype.addEditbox = function (rx, ry, rw, rh) {
     var edit = new Editbox(this);
-    edit.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    edit.geometry = {x: rx,y: ry,w: rw,h: rh};
     return edit;
 }
 
@@ -146,12 +106,7 @@ Window.prototype.addImage = function () {
         var ry = arguments[1]
         var rw = arguments[2]
         var rh = arguments[3]
-        image.geometry = {
-            x: rx,
-            y: ry,
-            w: rw,
-            h: rh
-        }
+        image.geometry = {x: rx,y: ry,w: rw,h: rh}
         image.picture = arguments[4]
     }
     return image;
@@ -159,12 +114,7 @@ Window.prototype.addImage = function () {
 
 Window.prototype.addTexturedButton = function (rx, ry, rw, rh) {
     var button = new TexturedButton(this);
-    button.geometry = {
-        x: rx,
-        y: ry,
-        w: rw,
-        h: rh
-    };
+    button.geometry = {x: rx,y: ry,w: rw,h: rh};
     return button;
 }
 

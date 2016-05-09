@@ -7,7 +7,7 @@ game.setLanguage = function (config) {
     g_session.setLanguage(config.ext, config.talks);
 
     if (config.font !== undefined && currentFont !== config.font) {
-      var fontpath = g_session.getPath(config.font);
+      var fontpath = g_fs.getPath(config.font);
 
       if (fontpath.exist()) {
         engine.setOption("font", config.font);

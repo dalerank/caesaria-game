@@ -1,7 +1,6 @@
 #include "gui/widget_helper.hpp"
 #include "gui/label.hpp"
 #include "gui/gameautopause.hpp"
-#include "gui/save_dialog.hpp"
 #include "gui/texturedbutton.hpp"
 #include "gui/loadgamedialog.hpp"
 #include "gui/loadfiledialog.hpp"
