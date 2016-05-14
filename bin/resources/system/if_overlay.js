@@ -108,6 +108,10 @@ function UpdateEducationBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
 }
 
+function UpdateHEalthBuildingPrototype(ObjectPrototype, name) {
+    UpdateServiceBuildingPrototype(ObjectPrototype, name);
+}
+
 function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {
     UpdateWorkingBuildingPrototype(ObjectPrototype, name);
 }
@@ -135,6 +139,9 @@ UpdateTrainingBuildingPrototype(WorkshopChariot.prototype, "WorkshopChariot");
 /*************** Service buildings ************/
 UpdateServiceBuildingPrototype(Fountain.prototype, "Fountain");
 UpdateServiceBuildingPrototype(Market.prototype, "Market");
+
+/*************** Health buildings ************/
+UpdateHealthBuildingPrototype(HealthBuilding.prototype, "HealthBuilding");
 
 /*************** Other buildings **************/
 UpdateTemplePrototype(Temple.prototype, "Temple");

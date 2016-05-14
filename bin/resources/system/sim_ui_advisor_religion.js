@@ -1,7 +1,8 @@
 function OnShowAdvisorWindow(type) {
   switch (type) {
-  case g_config.advisor.religion: sim.ui.advisors.religion.show(); break;
+  case g_config.advisor.religion : sim.ui.advisors.religion.show(); break;
   case g_config.advisor.education: sim.ui.advisors.education.show(); break;
+  case g_config.advisor.health   : sim.ui.advisors.health.show(); break;
 
   default: sim.ui.advisors.hide();
   }

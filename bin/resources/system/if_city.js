@@ -7,7 +7,8 @@ PlayerCity.prototype.walkers = function (location) {
 }
 
 Object.defineProperty(PlayerCity.prototype, "map", { get: function () { return this.tilemap() }, configurable : true });
-Object.defineProperty(PlayerCity.prototype, "population", { get: function () { return this.states().population; }, configurable : true });
+Object.defineProperty(PlayerCity.prototype, "population", { get: function () { return this.getProperty("population"); }, configurable : true });
+Object.defineProperty(PlayerCity.prototype, "health", { get: function () { return this.getProperty("health"); }, configurable : true });
 
 PlayerCity.prototype.findNextSameBuilding = function(location, type) {
   var locations = g_session.getBuildingLocations(type);
