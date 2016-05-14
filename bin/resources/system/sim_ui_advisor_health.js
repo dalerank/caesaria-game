@@ -7,22 +7,66 @@ sim.ui.advisors.health.consts = {
   smallCityPopulation : 300
 }
 
-{ object::baths,    {"##bath##",     "##peoples##"} },
-    { object::barber,   {"##barber##",   "##peoples##"} },
-    { object::hospital, {"##hospital##", "##patients##"} },
-    { object::clinic,   {"##clinics##",  "##peoples##"} },
-
-
 sim.ui.advisors.health.coverageDescriptions = [ "health_poor",   "health_very_bad",
                                                 "health_bad",    "health_not_bad",
                                                 "health_simple", "health_above_simple",
                                                 "health_good",   "health_very_good",
                                                 "health_pretty", "health_awesome" ];
 
-sim.ui.advisors.health.info = [ { type:"doctor",  building:"doctors",   people:"peoples",  service:g_config.service.doctor,  max:75,  age:"scholar_n" },
-                                { type:"barber",  building:"barbers",   people:"peoples",  service:g_config.service.barber,  max:100, age:"student_n" },
-                                { type:"baths",   building:"baths",     people:"peoples",  service:g_config.service.baths,   max:800, age:"mature_n"  },
-                                { type:"clinic",  building:"clinics",   people:"peoples",  service:g_config.service.clinic,  max:800, age:"mature_n"  }  ];
+sim.ui.advisors.health.info = [ { type:"clinic",  building:"clinics",   people:"patients",  service:g_config.service.doctor,  max:75,  age:"scholar_n" },
+                                { type:"barber",  building:"barbers",   people:"peoples",   service:g_config.service.barber,  max:100, age:"student_n" },
+                                { type:"baths",   building:"bath",      people:"peoples",   service:g_config.service.baths,   max:800, age:"mature_n"  },
+                                { type:"hospital",building:"hospital",  people:"patients",  service:g_config.service.hospital,  max:800, age:"mature_n"  }  ];
+
+sim.ui.advisors.health.findInfo = function(bType) {
+  for (var i in sim.ui.advisors.health.info) {
+    var config = sim.ui.advisors.health.info[i];
+    if (config.type == bType) {
+      engine.log("Config found for " + bType)
+      return config;
+    }
+  }
+  return null;
+}
+
+
+sim.ui.advisors.health.getInfo = function(bType) {
+  var info = sim.ui.advisors.health.findInfo(bType);
+
+  var ret = Utils.clone(info);
+
+  ret.buildingWork = 0;
+  ret.peoplesServed = 0;
+  ret.buildingCount = 0;
+  ret.needService = 0;
+
+  var buildings = g_session.city.findOverlays(ret.type);
+
+  for (var i=0; i < buildings.length; i++) {
+    var b = buildings[i].as(HealthBuilding);
+
+    if (b==null)
+      continue;
+
+    ret.buildingWork += b.numberWorkers > 0 ? 1 : 0;
+    ret.peoplesServed += b.patientsCurrent;
+    ret.buildingCount++;
+  }
+
+  var houses = g_session.city.findOverlays("house");
+  for (var i=0; i < houses.length; i++) {
+    var h = houses[i].as(House);
+
+    if (h == null || !h.habitable)
+      continue;
+
+    if (h.isHealthNeed(ret.service)) {
+      ret.needService += h.habitantsCount;
+    }
+  }
+
+  return ret;
+}
 
 sim.ui.advisors.health.getAdvice = function() {
   var outText = [];
@@ -68,14 +112,14 @@ sim.ui.advisors.health.getAdvice = function() {
         outText.push("healthadv_some_regions_need_hospital");
       }
 
-      outText.push( g_session.city.getProperty("healthReason");
+      outText.push(g_session.city.getProperty("healthReason"));
     }
   }
 
   var text = outText.length == 0
                         ? "##healthadv_unknown_reason##"
                         : outText[ Math.randomIndex(0, outText.length-1)];
-  return _(text);
+  return _u(text);
 }
 
 sim.ui.advisors.health.showDetails = function(objType) {
@@ -118,7 +162,7 @@ sim.ui.advisors.health.showDetails = function(objType) {
 sim.ui.advisors.health.show = function() {
   var parlor = g_ui.find("ParlorWindow");
 
-  sim.ui.advisors.hide(); 
+  sim.ui.advisors.hide();
 
   var resolution = g_session.resolution;
   var w = new Window(parlor);
@@ -128,7 +172,7 @@ sim.ui.advisors.health.show = function() {
   w.y = resolution.h/2 - 242;
   w.title = _u("health_advisor");
 
-  var blackframe = w.addLabel(35, 90, w.w-70, 85};
+  var blackframe = w.addLabel(35, 90, w.w-70, 85);
   blackframe.style = "blackFrame"
 
   var lbWorkText = w.addLabel(180, 72, 100, 20);
@@ -176,8 +220,8 @@ sim.ui.advisors.health.show = function() {
   }
 
   var ry=5;
-  w.addEducationButton({x:12, y:ry}, "doctor");
-  w.addEducationButton({x:12, y:ry+20}, "baths");
-  w.addEducationButton({x:12, y:ry+40}, "clinic");
-  w.addEducationButton({x:12, y:ry+60}, "barber");
+  w.addHealthButton({x:12, y:ry}, "clinic");
+  w.addHealthButton({x:12, y:ry+20}, "baths");
+  w.addHealthButton({x:12, y:ry+40}, "hospital");
+  w.addHealthButton({x:12, y:ry+60}, "barber");
 }

@@ -36,6 +36,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual void initialize(const object::Info &mdata);
+  virtual Variant getProperty(const std::string &name) const;
 
 protected:
   HealthBuilding( const Service::Type service,

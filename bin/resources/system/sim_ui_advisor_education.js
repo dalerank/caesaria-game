@@ -175,7 +175,7 @@ sim.ui.advisors.education.getInfo = function(bType) {
     if (!house.habitable)
       continue;
 
-    ret.need += ( house[ret.age] * ( house.isEducationNeed(ret.service) ? 1 : 0 ) );
+    ret.need += ( house.getHabitantsNumber(ret.age) * ( house.isEducationNeed(ret.service) ? 1 : 0 ) );
     ret.nextLevel += (house.isEvolveEducationNeed(ret.service) == param.awesomeAccessValue ? 1 : 0);
     minAccessLevel = Math.min(house.getServiceValue(ret.service), minAccessLevel);
   }

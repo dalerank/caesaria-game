@@ -32,6 +32,10 @@ Object.defineProperty( House.prototype, "isPatrician", { get: function() { retur
 Object.defineProperty( House.prototype, "habitantsCount", { get: function() { return this.getProperty("habitantsCount"); }})
 Object.defineProperty( House.prototype, "unwishedBuildingPos", { get: function() { return this.getProperty("unwishedBuildingPos"); }})
 
+House.prototype.getHabitantsNumber = function (type) {
+    return this.getProperty(type);
+}
+
 House.prototype.isEducationNeed = function (type) {
   var lvl = this.spec.minEducationLevel;
   switch( type )

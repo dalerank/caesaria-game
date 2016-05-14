@@ -108,8 +108,12 @@ function UpdateEducationBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
 }
 
-function UpdateHEalthBuildingPrototype(ObjectPrototype, name) {
+function UpdateHealthBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
+
+    Object.defineProperty(ObjectPrototype, "patientsCurrent", {
+        get: function () { return this.getProperty("patientsCurrent"); }
+    })    
 }
 
 function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {
