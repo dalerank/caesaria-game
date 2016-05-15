@@ -3,6 +3,7 @@ function OnShowAdvisorWindow(type) {
   case g_config.advisor.religion : sim.ui.advisors.religion.show(); break;
   case g_config.advisor.education: sim.ui.advisors.education.show(); break;
   case g_config.advisor.health   : sim.ui.advisors.health.show(); break;
+  case g_config.advisor.entertainment : sim.ui.advisors.entertainment.show(); break;
 
   default: sim.ui.advisors.hide();
   }
@@ -27,10 +28,10 @@ sim.ui.advisors.religion.getAvice = function() {
   for (var i in houses) {
     var house = houses[i].as(House);
 
-    switch (house.spec.minReligionLevel) {
-      case 1: needBasicReligion += (house.spec.religionLevel == 0 ? 1 : 0); break;
-      case 2: needSecondReligion += (house.spec.religionLevel < 2 ? 1 : 0); break;
-      case 3: needThirdReligion += (house.spec.religionLevel < 3 ? 1 : 0); break;
+    switch (house.minReligionLevel) {
+      case 1: needBasicReligion += (house.religionLevel == 0 ? 1 : 0); break;
+      case 2: needSecondReligion += (house.religionLevel < 2 ? 1 : 0); break;
+      case 3: needThirdReligion += (house.religionLevel < 3 ? 1 : 0); break;
     }
   }
 

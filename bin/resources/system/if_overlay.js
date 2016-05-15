@@ -99,6 +99,10 @@ function UpdateServiceBuildingPrototype(ObjectPrototype, name) {
 function UpdateEntertainmentBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
 
+    Object.defineProperty(ObjectPrototype, "maxVisitors", {
+        get: function () { return this.getProperty("maxVisitors"); }
+    })
+
     Object.defineProperty(ObjectPrototype, "currentVisitors", {
         get: function () { return this.getProperty("currentVisitors"); }
     })
@@ -113,7 +117,7 @@ function UpdateHealthBuildingPrototype(ObjectPrototype, name) {
 
     Object.defineProperty(ObjectPrototype, "patientsCurrent", {
         get: function () { return this.getProperty("patientsCurrent"); }
-    })    
+    })
 }
 
 function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {

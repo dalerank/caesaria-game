@@ -12,8 +12,8 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "clipped", { set: function (v) { this.setNotClipped(!v); } });
   Object.defineProperty(objProto, "display", { set: function (v) { this.setVisible(v); }, get: function() { return this.visible() } });
 
-  Object.defineProperty(objProto, "w", { get: function() { return this.width(); }, set: function(value) { this.setWidth(value)}} );
-  Object.defineProperty(objProto, "h", { get: function() { return this.height(); }, set: function(value) { this.setHeight(value)}} );
+  Object.defineProperty(objProto, "w", { get: function() { return this.getProperty("width"); }, set: function(value) { this.setWidth(value)}} );
+  Object.defineProperty(objProto, "h", { get: function() { return this.getProperty("height"); }, set: function(value) { this.setHeight(value)}} );
   Object.defineProperty(objProto, "x", { get: function() { return this.left(); }, set: function(value) { this.setLeft(value)}} );
   Object.defineProperty(objProto, "y", { get: function() { return this.top(); }, set: function(value) { this.setTop(value)}} );
   Object.defineProperty(objProto, "screenx", { get: function() { return this.screenLeft(); } } );

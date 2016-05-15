@@ -77,6 +77,7 @@ inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, 
 inline unsigned int engine_js_to(js_State *J, int n, unsigned int) { return js_touint32(J, n); }
 inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_touint32(J, n); }
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_touint32(J, n); }
+inline Walker::Type engine_js_to(js_State *J, int n, Walker::Type) { return (Walker::Type)js_touint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_touint32(J, n); }
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_touint32(J, n); }
 inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_touint32(J, n); }
@@ -163,8 +164,7 @@ bool engine_js_tryPCall(js_State *J, int params)
   try
   {
     int error = js_pcall(internal::J, params);
-    if (error)
-    {
+    if (error) {
       std::string str = js_tostring(internal::J, -1);
       Logger::warning(str);
     }

@@ -50,6 +50,7 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   LINK_WIDGET_LOCAL_ACTION(PushButton*, btnSort, onClicked(), LoadGame::_changeSort)
 
   _changeSort();
+  setWindowFlag(Window::fdraggable, false);
 }
 
 namespace internal{

@@ -64,6 +64,7 @@ public:
 
   virtual void updateTrainee( TraineeWalkerPtr walker );
   virtual float evaluateTrainee(walker::Type  traineeType);
+  virtual Variant getProperty(const std::string &name) const;
 
   const IncomeWays& incomes() const;
 

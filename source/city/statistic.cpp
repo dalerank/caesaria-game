@@ -62,7 +62,7 @@ float Statistic::_Balance::koeff() const
   return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
 
-int Statistic::_Entertainment::coverage(Service::Type service) const
+/*int Statistic::_Entertainment::coverage(Service::Type service) const
 {
   int need = 0, have = 0;
   auto houses = _parent.rcity.statistic().houses.all();
@@ -79,7 +79,7 @@ int Statistic::_Entertainment::coverage(Service::Type service) const
   return ( have == 0
             ? 0
             : math::percentage( need, have) );
-}
+}*/
 
 HouseList Statistic::_Houses::ready4evolve(const object::TypeSet& checkTypes ) const
 {
@@ -162,7 +162,6 @@ Statistic::Statistic(PlayerCity& c)
       INIT_SUBSTAT(map),
       INIT_SUBSTAT(houses),
       INIT_SUBSTAT(religion),
-      INIT_SUBSTAT(entertainment),
       INIT_SUBSTAT(education),
       INIT_SUBSTAT(balance),
       rcity( c )
@@ -175,8 +174,7 @@ unsigned int Statistic::_Crime::level() const { return _parent.services.value<Di
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 {
-  if( type == walker::all )
-  {
+  if( type == walker::all ) {
     return _parent.rcity.walkers();
   }
 
@@ -184,9 +182,8 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
     return cached.at( type );
 
   WalkerList& wl = const_cast<_Walkers*>( this )->cached[ type ];
-  for( auto w : _parent.rcity.walkers() )
-  {
-    if( w->type() == type )
+  for (auto w : _parent.rcity.walkers()) {
+    if (w->type() == type)
       wl.push_back(w);
   }
 

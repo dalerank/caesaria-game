@@ -531,11 +531,11 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
+  /*int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
   if( hippodromeCoverage >= serviceAwesomeCoverage )
   {
     reasons.addIfValid( { "##current_races_runs_for_another##", ColorList::yellow } );
-  }
+  }*/
 
   drawReportRow( Advice::entertainment, reasons );
 }

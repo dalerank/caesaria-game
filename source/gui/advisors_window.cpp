@@ -34,7 +34,6 @@
 #include "advisor_emperor_window.hpp"
 #include "advisor_ratings_window.hpp"
 #include "advisor_trade_window.hpp"
-#include "advisor_entertainment_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
 #include "game/funds.hpp"
@@ -253,9 +252,6 @@ void ParlorModel::switchAdvisor(Advisor type)
   break;
   case advisor::trading:
     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );
-  break;
-  case advisor::entertainment:
-    d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
   break;
   case advisor::finance:
     d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );

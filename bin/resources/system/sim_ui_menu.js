@@ -64,11 +64,11 @@ sim.ui.menu.simConfig = {
            pushButton : true, submenu: false, sound: "commerce", branch:"commerce" },
 
   messages : { pos:{x:63, y:421}, image: { rc:"paneling", index:115 }, object:"message",
-           miniature : { rc:"panelwindows", index:12 }, enabled : false,
+           miniature : { rc:"panelwindows", index:12 }, enabled : false, name : "#buttonMessages",
            pushButton : true, submenu: false, sound: "message", height : 22 },
 
   disaster: { pos:{x:113, y:421}, image: { rc:"paneling", index:119 }, object:"disaster",
-           miniature : { rc:"panelwindows", index:12 }, enabled : false,
+           miniature : { rc:"panelwindows", index:12 }, enabled : false, name : "#buttonDisaster",
            pushButton : true, submenu: false, sound: "troubles", height : 22 },
 
   undo : { pos:{x:13,y:421}, image: { rc:"paneling", index:171 }, object:"cancel",
@@ -216,7 +216,8 @@ sim.ui.menu.enableAlarm = function(enable) {
     g_session.playAudio("extm_alarm_00001", 100, g_config.audio.effects);
   }
 
-  sim.ui.menu.extmenu.buttons.disaster.enabled = enable;
+  var btn = g_ui.find("#buttonDisaster");
+  btn.enabled = enable;
 }
 
 sim.ui.menu.simConfig.disaster.func = function() { g_session.setOption( "nextAlarm", true ); }
@@ -228,8 +229,8 @@ sim.ui.menu.updateScribeStatus = function() {
     var haveUnreadMessages = sim.ui.menu.extmenu.scribes.haveUnreadMessage();
     var messagesNumber = sim.ui.menu.extmenu.scribes.getMessagesNumber();
 
-    sim.ui.menu.extmenu.buttons.messages.enabled = messagesNumber > 0;
-    sim.ui.menu.extmenu.scribesBlinker.setActive(haveUnreadMessages);
+    g_ui.find("#buttonMessages").enabled = messagesNumber > 0;
+    g_ui.find("#scribesBlinker").setActive(haveUnreadMessages);
   }
 }
 
@@ -371,6 +372,9 @@ sim.ui.menu.initialize = function() {
     if (config.height)
       btn.h = config.height;
 
+    if (config.name)
+      btn.name = config.name;
+
     if (config.branch) {
       var avail = sim.ui.buildmenu.isBranchAvailable(config.branch);
       btn.enabled = avail;
@@ -389,12 +393,14 @@ sim.ui.menu.initialize = function() {
     menu.buttons[i] = btn;
   }
 
-  if (menu.buttons.messages) {
-    menu.scribesBlinker = new ImageBlinker(menu.buttons.messages);
-    menu.scribesBlinker.w = menu.buttons.messages.w;
-    menu.scribesBlinker.h = menu.buttons.messages.h;
-    menu.scribesBlinker.setImage(g_render.picture("paneling", 116));
-    menu.scribesBlinker.setActive(false);
+  var btnMessages = g_ui.find("#buttonMessages");
+  if (btnMessages) {
+    var blinker = new ImageBlinker(btnMessages);
+    blinker.w = btnMessages.w;
+    blinker.h = btnMessages.h;
+    blinker.name = "#scribesBlinker";
+    blinker.setImage(g_render.picture("paneling", 116));
+    blinker.setActive(false);
     menu.scribes = g_session.city.scribes();
   }
 

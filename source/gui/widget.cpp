@@ -1011,16 +1011,21 @@ void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
 
 }
 
-const Variant& Widget::getProperty(const std::string& name) const
+Variant Widget::getProperty(const std::string& name) const
 {
-  if (name.empty()) {
-    Logger::warning("WARNING !!! Try get property by empty name from {}", internalName());
-    static Variant inv;
-    return inv;
+  Variant ret = _dfunc()->properties.get(name, invalidVariant);
+  if (ret.isNull()) {
+    if (name == "left") return left();
+    if (name == "right") return right();
+    if (name == "top") return top();
+    if (name == "bottom") return bottom();
+    if (name == "width") return width();
+    if (name == "height") return height();
+    if (name == "name") return internalName();
+    Logger::warning("WARNING !!! Try get unknown property with name {}", name);
   }
 
-  auto it = _dfunc()->properties.find(name);
-  return it != _dfunc()->properties.end() ? it->second : invalidVariant;
+  return ret;
 }
 
 const VariantMap& Widget::properties() const

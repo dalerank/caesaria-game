@@ -550,6 +550,14 @@ Variant PlayerCity::getProperty(const std::string& name) const
   if (name == "boatEntry") return getBorderInfo(boatEntry).pos();
   if (name == "mayorRank") return (int)mayor()->rank();
   if (name == "population") return states().population;
+
+  if (name == "lastFestivalDate" || name == "nextFestivalDate") {
+    city::FestivalPtr f = statistic().services.find<city::Festival>();
+    if (f.isValid()) {
+      return name == "lastFestivalDate" ? f->last() : f->next();
+    }
+  }
+
   if (name == "health" || name == "healthReason") {
     city::HealthCarePtr hc = statistic().services.find<city::HealthCare>();
     if (hc.isValid()) {

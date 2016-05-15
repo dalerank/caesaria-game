@@ -16,7 +16,7 @@ sim.ui.advisors.health.coverageDescriptions = [ "health_poor",   "health_very_ba
 sim.ui.advisors.health.info = [ { type:"clinic",  building:"clinics",   people:"patients",  service:g_config.service.doctor,  max:75,  age:"scholar_n" },
                                 { type:"barber",  building:"barbers",   people:"peoples",   service:g_config.service.barber,  max:100, age:"student_n" },
                                 { type:"baths",   building:"bath",      people:"peoples",   service:g_config.service.baths,   max:800, age:"mature_n"  },
-                                { type:"hospital",building:"hospital",  people:"patients",  service:g_config.service.hospital,  max:800, age:"mature_n"  }  ];
+                                { type:"hospital",building:"hospital",  people:"patients",  service:g_config.service.hospital,max:800, age:"mature_n"  }  ];
 
 sim.ui.advisors.health.findInfo = function(bType) {
   for (var i in sim.ui.advisors.health.info) {
@@ -172,7 +172,7 @@ sim.ui.advisors.health.show = function() {
   w.y = resolution.h/2 - 242;
   w.title = _u("health_advisor");
 
-  var blackframe = w.addLabel(35, 90, w.w-70, 85);
+  var blackframe = w.addLabel(35, 90, w.w-70, 90);
   blackframe.style = "blackFrame"
 
   var lbWorkText = w.addLabel(180, 72, 100, 20);

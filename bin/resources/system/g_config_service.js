@@ -23,3 +23,10 @@ g_config.service = {
   patrician:28,
   srvCount:29
 }
+
+g_config.service.consts = {
+  badCoverage : 50,
+  normalCoverage : 80,
+  maxCoverage : 100,
+  maxValue : 100
+}

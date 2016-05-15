@@ -62,8 +62,6 @@ public:
   unsigned int unemployed() const;
 
   float isEvolveEducationNeed(Service::Type type);
-  bool isEntertainmentNeed( Service::Type type ) const;
-  bool isHealthNeed( Service::Type type ) const;
 
   const Desirability& desirability() const;
 

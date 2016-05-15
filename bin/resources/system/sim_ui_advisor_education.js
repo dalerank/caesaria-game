@@ -221,12 +221,12 @@ sim.ui.advisors.education.show = function() {
 
   var lbCityInfo = w.addLabel(65, 40, 550, 30);
   lbCityInfo.font = "FONT_1";
-  lbCityInfo.text = _u(sim.ui.advisors.education.getCityInfo());
+  lbCityInfo.text = sim.ui.advisors.education.getCityInfo();
 
   var lbTroubleInfo = w.addLabel(40, w.h-90, w.w-80, 85);
   lbTroubleInfo.multiline = true;
   lbTroubleInfo.font = "FONT_1";
-  //lbTroubleInfo.text = _u(sim.ui.advisors.education.getTrouble());
+  lbTroubleInfo.text = _u(sim.ui.advisors.education.getTrouble());
 
   w.btnHelp = w.addHelpButton(12, w.h - 36);
   w.btnHelp.uri = "education_advisor";
