@@ -85,6 +85,7 @@ public:
   Size getResolution() const;
   Locations getBuildingLocations(Variant type) const;
   OverlayList getOverlays(Variant type) const;
+  OverlayList getWorkingBuildings() const;
   uint32_t getOverlaysNumber(Variant var) const;
   gfx::Camera* getCamera() const;
   void setFont(const std::string& fontname);

@@ -62,6 +62,7 @@ var modules = [
     "sim_ui_advisor_education",
     "sim_ui_advisor_entertainment",
     "sim_ui_advisor_health",
+    "sim_ui_advisor_chief",
     "sim_ui_dialogs_savegame",
     "sim_ui_dialogs_mission_targets",
     "sim_ui_dialogs_city_settings",

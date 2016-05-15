@@ -210,6 +210,17 @@ OverlayList Session::getOverlays(Variant var) const
   return _game->city()->overlays().where( [type] (OverlayPtr ov) { return ov->type() == type; } );
 }
 
+OverlayList Session::getWorkingBuildings() const
+{
+  OverlayList ovs;
+  auto d = _game->city()->overlays().select<WorkingBuilding>();
+  for (auto i : d) {
+    ovs << i.as<Overlay>();
+  }
+
+  return ovs;
+}
+
 uint32_t Session::getOverlaysNumber(Variant var) const
 {
   object::Type type = object::unknown;

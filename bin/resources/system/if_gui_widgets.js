@@ -19,13 +19,6 @@ function UpdateWidgetPrototype(objProto) {
   Object.defineProperty(objProto, "screenx", { get: function() { return this.screenLeft(); } } );
   Object.defineProperty(objProto, "screeny", { get: function() { return this.screenTop(); } } );
   objProto.find = function(name) { return this.findChild(name,true); };
-  objProto.canvasDraw = function() {
-    if (arguments.length == 2) {
-      this.canvasDraw_pic(arguments[0],arguments[1]);
-    } else if (arguments.length == 4) {
-      this.canvasDraw_text(arguments[0],arguments[1],arguments[2],arguments[3]);
-    }
-  };
 
   Object.defineProperty(objProto, "geometry", {
     set: function (rect) { this.setGeometry(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h); },
@@ -79,6 +72,7 @@ function UpdateButtonPrototype(objProto) {
    Object.defineProperty(objProto, "callback", { set: function(func) { this.onClickedEx(func) }})
    Object.defineProperty(objProto, "style", {  set: function(sname) { this.setBackgroundStyle(sname) }})
    Object.defineProperty(objProto, 'textOffset',{ get: function () {}, set: function (p) { this.setTextOffset(p) }})
+   Object.defineProperty(objProto, 'iconOffset',{ get: function () {}, set: function (p) { this.setIconOffset(p) }})
    Object.defineProperty(objProto, "states", {  set: function(st) { this.changeImageSet(st.rc,st.normal,st.hover,st.pressed,st.disabled) }})
    Object.defineProperty(objProto, "iconMask", {  set: function(value) { this.setIconMask(value) }})
    Object.defineProperty(objProto, "textWidth", {get: function() { return this.getTextWidth("")}})

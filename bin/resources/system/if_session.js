@@ -103,6 +103,7 @@ Object.defineProperty(Session.prototype, "resolution", {
         return this.getResolution()
     }
 })
+
 Object.defineProperty(Session.prototype, "metric", {
     get: function () {
         return this.getAdvflag("metric")

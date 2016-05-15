@@ -65,7 +65,7 @@ DEFINE_OBJECT_FUNCTION_1(WidgetType,setHeight,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setText,std::string) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setTextAlignment,std::string,std::string) \
 DEFINE_OBJECT_FUNCTION_4(WidgetType,setAlignment,Alignment,Alignment,Alignment,Alignment) \
-DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,Font) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setInternalName,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setGeometry,Rect) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setPosition,Point) \

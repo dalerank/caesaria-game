@@ -53,6 +53,7 @@ function UpdateWorkingBuildingPrototype(ObjectPrototype, name) {
     Object.defineProperty(ObjectPrototype, "numberWorkers", { get: function () { return this.getProperty("numberWorkers"); }})
     Object.defineProperty(ObjectPrototype, "maximumWorkers", { get: function () { return this.getProperty("maximumWorkers"); }})
     Object.defineProperty(ObjectPrototype, "needWorkers", { get: function () { return this.getProperty("needWorkers"); }})
+    Object.defineProperty(ObjectPrototype, "workerType", { get: function () { return this.getProperty("workerType"); }})    
 }
 
 function UpdateTemplePrototype(ObjectPrototype, name) {

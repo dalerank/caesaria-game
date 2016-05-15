@@ -17,7 +17,6 @@ lobby.ui.showChanges = function (force) {
     engine.setOption("lastChangesNumber", lastChangesNumber);
 
     if (lastChangesNumber != currentChangesNumber) {
-        engine.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         engine.setOption("showLastChanges", true);
       }
 
@@ -238,7 +237,7 @@ lobby.ui.loadgame.loadsave = function () {
     var fileDialog = g_ui.addFileDialog(g_session.savedir.str, "", true);
     fileDialog.mayDeleteFiles = true;
     fileDialog.title = "##mainmenu_loadgame##";
-    fileDialog.text = "##load_this_game##";
+    fileDialog.text = _u("load_this_game");
     fileDialog.callback = function (path) {
         g_session.setOption("nextFile", path);
         g_session.setMode(4);

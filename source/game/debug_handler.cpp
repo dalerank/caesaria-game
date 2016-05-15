@@ -46,7 +46,6 @@
 #include "vfs/directory.hpp"
 #include "objects/fort.hpp"
 #include "events/dispatcher.hpp"
-#include "gui/loadfiledialog.hpp"
 #include "gfx/tilemap.hpp"
 #include "good/helper.hpp"
 #include "good/store.hpp"

@@ -140,15 +140,15 @@ Font engine_js_to(js_State *J, int n, Font)
       size = js_toint32(J, -1);
     }
 
-    int color = ColorList::pink.color;
+    NColor color = ColorList::pink;
     if (js_hasproperty(J, n, "color")) {
       js_getproperty(J, n, "color");
-      color = js_toint32(J, -1);
+      color = ColorList::find(js_tostring(J, -1));
     }
 
     js_getproperty(J, n, "bold"); bool bold = js_toboolean(J, -1);
     js_getproperty(J, n, "italic"); bool italic = js_toboolean(J, -1);
-    f = Font::create(family, size, bold, italic, NColor(color));
+    f = Font::create(family, size, bold, italic, color);
   }
   else if (js_isstring(J, n)) {
     std::string alias = js_tostring(J, n);

@@ -256,9 +256,6 @@ void ParlorModel::switchAdvisor(Advisor type)
   case advisor::finance:
     d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );
   break;
-  case advisor::main:
-    d.advisorPanel = new advisorwnd::Chief( d.city, d.parent );
-  break;
 
   default:
   break;

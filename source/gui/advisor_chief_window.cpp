@@ -61,21 +61,6 @@ struct Advice
   static const std::map<Type,std::string> row;
 };
 
-const std::map<Advice::Type,std::string> Advice::row = {
-                                            {employers,     "##advchief_employment##"       },
-                                            {profit,        "##advchief_finance##"          },
-                                            {migration,     "##advchief_migration##"        },
-                                            {foodStock,     "##advchief_food_stocks##"      },
-                                            {foodConsumption,"##advchief_food_consumption##"},
-                                            {military,      "##advchief_military##"         },
-                                            {crime,         "##advchief_crime##"            },
-                                            {health,        "##advchief_health##"           },
-                                            {education,     "##advchief_education##"        },
-                                            {religion,      "##advchief_religion##"         },
-                                            {entertainment, "##advchief_entertainment##"    },
-                                            {sentiment,     "##advchief_sentiment##"        }
-                                          };
-
 class InfomationRow : public PushButton
 {
 public:
@@ -140,8 +125,6 @@ public:
 
 public:
   void drawReportRow(Advice::Type, const ColoredStrings& strings);
-  void drawEmploymentState();
-  void drawProfitState();
   void drawMigrationState();
   void drawFoodStockState();
   void drawFoodConsumption();
@@ -166,8 +149,6 @@ Chief::Chief(PlayerCityPtr city, Widget* parent)
 
   _d.city = city;
   _d.initRows( this, width() );
-  _d.drawEmploymentState();
-  _d.drawProfitState();
   _d.drawMigrationState();
   _d.drawFoodStockState();
   _d.drawFoodConsumption();
@@ -178,8 +159,6 @@ Chief::Chief(PlayerCityPtr city, Widget* parent)
   _d.drawReligion();
   _d.drawEntertainment();
   _d.drawSentiment();
-
-  add<HelpButton>(Point(12, height() - 39), "advisor_chief");
 }
 
 void Chief::setupUI(const VariantMap& ui)
@@ -189,11 +168,6 @@ void Chief::setupUI(const VariantMap& ui)
 
 void Chief::Impl::initRows(Widget* parent, int width)
 {
-  Rect rowRect(rows.startPoint, Size(width-rows.startPoint.x()*2, rows.relHeight));
-  for (const auto& row : Advice::row) {
-    rows[row.first] = &parent->add<InfomationRow>(row.second, rowRect);
-    rowRect += Point(0, rows.relHeight);
-  }
 }
 
 void Chief::draw(gfx::Engine& painter)
@@ -209,43 +183,6 @@ void Chief::Impl::drawReportRow(Advice::Type type, const ColoredStrings& strings
   auto it = rows.find(type);
   if (it != rows.end())
     it->second->setReasons(strings);
-}
-
-void Chief::Impl::drawEmploymentState()
-{
-  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
-  int workless = city->statistic().workers.worklessPercent();
-  ColoredStrings reasons;
-
-  if (city->states().population == 0) {
-    reasons.addIfValid( {"##no_people_in_city##", ColorList::brown} );
-  } else {
-    int needWorkersNumber = wInfo.need - wInfo.current;
-    if (needWorkersNumber > 10) {
-      reasons.addIfValid( {fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber ),
-                           ColorList::brown} );
-    } else if(workless > bigWorklessPercent) {
-      reasons.addIfValid( {fmt::format( "{} {}%", _("##advchief_workless##"), workless ),
-                           ColorList::brown } );
-    } else {
-      reasons.addIfValid({"##advchief_employers_ok##", ColorList::black});
-    }
-  }
-
-  drawReportRow(Advice::employers, reasons);
-}
-
-void Chief::Impl::drawProfitState()
-{
-  ColoredStrings reasons;
-  int profit = city->treasury().profit();
-  std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
-  NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
-
-  reasons.addIfValid( { _(prefix) + std::string(" ") + utils::i2str( profit ),
-                        textColor } );
-
-  drawReportRow( Advice::profit, reasons);
 }
 
 void Chief::Impl::drawMigrationState()
