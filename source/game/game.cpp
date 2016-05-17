@@ -513,11 +513,13 @@ void Game::reset()
   d.pauseCounter = 0;
 
   WalkerRelations::instance().clear();
-  WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
+  WalkerRelations::instance().load(SETTINGS_RC_PATH(walkerRelations));
 
-  bool oldGameplay = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  d.city = PlayerCity::create( d.empire, d.player );
-  d.city->setOption( PlayerCity::c3gameplay, oldGameplay );
+  bool oldGameplay = KILLSWITCH(oldgfx) || !SETTINGS_STR(c3gfx).empty();
+  d.city = PlayerCity::create(d.empire, d.player);
+  d.city->setOption(PlayerCity::c3gameplay, oldGameplay);
+
+  script::Core::execFunction("OnCityLoaded");
 }
 
 void Game::clear()
@@ -525,6 +527,8 @@ void Game::clear()
   //_d->empire = world::EmpirePtr();
   _dfunc()->city->clean();
   _dfunc()->city = PlayerCityPtr();
+
+  script::Core::execFunction("OnCityUnloaded");
 }
 
 void Game::destroy()

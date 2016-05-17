@@ -323,7 +323,7 @@ sim.ui.menu.changeRendererLayer = function(layerName) {
 }
 
 sim.ui.menu.initialize = function() {
-  if (g_session.city.getOption("constructorMode")) {
+  if (g_city.getOption("constructorMode")) {
     sim.ui.menu.config = sim.ui.menu.buildConfig;
   } else {
     sim.ui.menu.config = sim.ui.menu.simConfig;
@@ -401,12 +401,12 @@ sim.ui.menu.initialize = function() {
     blinker.name = "#scribesBlinker";
     blinker.setImage(g_render.picture("paneling", 116));
     blinker.setActive(false);
-    menu.scribes = g_session.city.scribes();
+    menu.scribes = g_city.scribes();
   }
 
   menu.minimap = new Minimap(menu);
   menu.minimap.geometry = { x:8, y:35, w:144, h:110 };
-  menu.minimap.city =  g_session.city;
+  menu.minimap.city = g_city;
   menu.minimap.center = g_session.camera.worldCenter;
 
   g_session.camera.onLocationChanged = function(p) { menu.minimap.tileCenter = p; }

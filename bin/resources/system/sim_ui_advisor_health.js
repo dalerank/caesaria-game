@@ -40,7 +40,7 @@ sim.ui.advisors.health.getInfo = function(bType) {
   ret.buildingCount = 0;
   ret.needService = 0;
 
-  var buildings = g_session.city.findOverlays(ret.type);
+  var buildings = g_city.findOverlays(ret.type);
 
   for (var i=0; i < buildings.length; i++) {
     var b = buildings[i].as(HealthBuilding);
@@ -53,7 +53,7 @@ sim.ui.advisors.health.getInfo = function(bType) {
     ret.buildingCount++;
   }
 
-  var houses = g_session.city.findOverlays("house");
+  var houses = g_city.findOverlays("house");
   for (var i=0; i < houses.length; i++) {
     var h = houses[i].as(House);
 
@@ -72,15 +72,15 @@ sim.ui.advisors.health.getAdvice = function() {
   var outText = [];
   var consts = sim.ui.advisors.health.consts;
 
-  if( g_session.city.population < consts.minPopullation4healthCalc ) {
+  if( g_city.population < consts.minPopullation4healthCalc ) {
     outText.push("healthadv_not_need_health_service_now");
   } else {
-    if( g_session.city.population < consts.smallCityPopulation ) {
-      if( g_session.city.health > consts.smallCityNormalhealthValue ) {
+    if( g_city.population < consts.smallCityPopulation ) {
+      if( g_city.health > consts.smallCityNormalhealthValue ) {
         outText.push("healthadv_noproblem_small_city");
       }
     } else {
-      var houses = g_session.city.findOverlays("house");
+      var houses = g_city.findOverlays("house");
 
       var needBath = 0;
       var needBarbers = 0;
@@ -112,7 +112,7 @@ sim.ui.advisors.health.getAdvice = function() {
         outText.push("healthadv_some_regions_need_hospital");
       }
 
-      outText.push(g_session.city.getProperty("healthReason"));
+      outText.push(g_city.getProperty("healthReason"));
     }
   }
 
@@ -128,7 +128,7 @@ sim.ui.advisors.health.showDetails = function(objType) {
   var blackFrame = ibox.addLabel(15, 15, w.w-30, w.h-50);
   blackFrame.style = "blackFrame";
 
-  var buildings = g_session.city.findOverlays(objType);
+  var buildings = g_city.findOverlays(objType);
   var ry = 5;
   for (var i in buildings) {
     var bld = buildings[i].as(HealthBuilding);

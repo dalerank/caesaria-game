@@ -202,7 +202,7 @@ game.ui.infobox.aboutLegion = function (walkers) {
     var lbFlag = gbox2.addLabel(0, 18, 32, 47);
     var lbMoraleStandart = gbox2.addLabel(0, 47, 32, 109);
 
-    var walkers = g_session.city.walkers(pos);
+    var walkers = g_city.walkers(pos);
     for (var i in walkers) {
         var walker = walkers[i];
         var rs = walker.as(RomeSoldier);
@@ -382,8 +382,8 @@ game.ui.infobox.aboutWalker = function (walkers) {
             ibox.screenshots[i].deleteLater();
 
         ibox.screenshots = [];
-        var tiles = g_session.city.map.getNeighbors(ibox.walker.pos(), g_config.tilemap.AllNeighbors);
-        engine.log("g_session.city.map.tiles.length is " + tiles.length);
+        var tiles = g_city.map.getNeighbors(ibox.walker.pos(), g_config.tilemap.AllNeighbors);
+        engine.log("g_city.map.tiles.length is " + tiles.length);
         var lbRect = {
             x: 25,
             y: 45,
@@ -392,7 +392,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         };
         for (var i in tiles) {
             var tile = tiles[i];
-            var tileWalkers = g_session.city.walkers(tile.pos());
+            var tileWalkers = g_city.walkers(tile.pos());
             if (tileWalkers.lenth > 0) {
                 //mini screenshot from citizen pos need here
                 var ctzScreenshot = new WalkerImage(ibox);
@@ -411,7 +411,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
 
     ibox.updateCurrentAction = function () {
         ibox.destinationPos = ibox.walker.getProperty("plDestination");
-        var ov = g_session.city.getOverlay(ibox.destinationPos);
+        var ov = g_city.getOverlay(ibox.destinationPos);
         var action = ibox.walker.getProperty("thoughts_action");
         ibox.btnMove2dst.display = (ov != null);
         if (action) {
@@ -424,7 +424,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         var pos = ibox.walker.getProperty("plOrigin");
 
         ibox.baseBuildingPos = pos;
-        var ov = g_session.city.getOverlay(pos);
+        var ov = g_city.getOverlay(pos);
 
         ibox.lbBaseBuilding.text = _u(ov.typename)
         ibox.btnMove2base.display = ov != null;
@@ -457,7 +457,7 @@ game.ui.infobox.aboutWalker = function (walkers) {
         ibox.updateCurrentAction();
         ibox.updateBaseBuilding();
     }
- 
+
     ibox.setWalker(ibox.walker);
     ibox.show();
 }

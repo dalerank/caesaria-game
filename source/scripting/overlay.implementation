@@ -60,6 +60,7 @@ DEFINE_OBJECT_GETTER_0(House,unsigned int,capacity)
 DEFINE_OBJECT_GETTER_0(House,std::string,evolveInfo)
 DEFINE_OBJECT_GETTER_0(House,DateTime,lastTaxationDate)
 DEFINE_OBJECT_GETTER_1(House,float,evaluateTrainee,walker::Type,walker::unknown)
+DEFINE_OBJECT_GETTER_1(House,bool,ready4evolve,object::Type,object::unknown)
 DEFINE_OBJECT_GETTER_1(House,float,getServiceValue,Service::Type,Service::srvCount)
 DEFINE_OBJECT_GETTER_1(House,float,isEvolveEducationNeed,Service::Type,Service::srvCount)
 

@@ -35,7 +35,6 @@
 #include "advisor_ratings_window.hpp"
 #include "advisor_trade_window.hpp"
 #include "advisor_finance_window.hpp"
-#include "advisor_chief_window.hpp"
 #include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"

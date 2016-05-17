@@ -1286,10 +1286,14 @@ bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCh
 
 void House::addWalker(WalkerPtr walker)
 {
-  if( !_d->walkers.contain( walker ) )
-  {
-    _d->walkers.push_back( walker );
+  if (!_d->walkers.contain(walker)) {
+    _d->walkers.push_back(walker);
   }
+}
+
+bool House::ready4evolve(object::Type type) const
+{
+  return _d->spec.next().checkHouse(const_cast<House*>(this), nullptr, &type);
 }
 
 const WalkerList& House::walkers() const

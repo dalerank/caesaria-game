@@ -21,7 +21,7 @@ sim.ui.advisors.religion = {}
 
 sim.ui.advisors.religion.getAvice = function() {
   var advices = [];
-  var houses =  g_session.city.findOverlays("house");
+  var houses =  g_city.findOverlays("house");
 
   var needBasicReligion = 0;
   var needSecondReligion = 0;
@@ -135,8 +135,8 @@ sim.ui.advisors.religion.show = function() {
     var godText = "";
     var relation = 0;
     if (god != null) {
-      small_n = g_session.city.getOverlaysNumber(god.smallt);
-      big_n = g_session.city.getOverlaysNumber(god.bigt);
+      small_n = g_city.getOverlaysNumber(god.smallt);
+      big_n = g_city.getOverlaysNumber(god.bigt);
       month2lastFest = god.lastFestivalDate().monthsTo(g_session.date);
       shortDesc = _format("{0}_desc", god.iname);
       wPoints = god.wrathPoints();
@@ -144,8 +144,8 @@ sim.ui.advisors.religion.show = function() {
       godText = god.name();
       relation = god.relation();
     } else {
-      small_n = g_session.city.getOverlaysNumber("oracle");
-      //big_n = g_session.city.getOverlaysNumber();
+      small_n = g_city.getOverlaysNumber("oracle");
+      //big_n = g_city.getOverlaysNumber();
       godText = _u("oracle");
       shortDesc = _u("all");
     }

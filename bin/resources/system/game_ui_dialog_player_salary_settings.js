@@ -5,7 +5,7 @@ function ShowPlayerSalarySettings() {
 }
 
 game.ui.dialogs.playerSalarySettings.show = function () {
-    var wint = g_session.city.victoryConditions();
+    var wint = g_city.victoryConditions();
     if (wint.reignYears > 0) {
         g_ui.addInformationDialog("", _u("disabled_draw_salary_for_free_reign"))
         return;

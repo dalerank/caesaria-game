@@ -79,6 +79,7 @@ inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (g
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_touint32(J, n); }
 inline Walker::Type engine_js_to(js_State *J, int n, Walker::Type) { return (Walker::Type)js_touint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_touint32(J, n); }
+inline object::Type engine_js_to(js_State *J, int n, object::Type) { return (object::Type)js_touint32(J, n); }
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_touint32(J, n); }
 inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_touint32(J, n); }
 inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_touint32(J, n); }
@@ -336,7 +337,13 @@ void engine_js_push(js_State* J,const Variant& param)
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
-    engine_js_push(J, param.toDateTime());
+  {
+    js_newobject(J);
+    DateTime dt = param.toDateTime();
+    js_pushnumber(J, dt.year()); js_setproperty(J, -2, "year");
+    js_pushnumber(J, (int)dt.month()); js_setproperty(J, -2, "month");
+    js_pushnumber(J, dt.day()); js_setproperty(J, -2, "day");
+  }
   break;
 
   case Variant::NStringArray:
@@ -367,7 +374,7 @@ template<class Type>
 void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
 {
   auto pd = new Type(p);
-  engine_js_pushud(J, tname, pd,  destructor);
+  engine_js_pushud(J, tname, pd, destructor);
 }
 
 #define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);

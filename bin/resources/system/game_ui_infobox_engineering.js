@@ -15,7 +15,7 @@ game.ui.infobox.aboutRuins = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350)
   ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
-  var ruins = g_session.city.getOverlay(location).as(Ruins);
+  var ruins = g_city.getOverlay(location).as(Ruins);
   ibox.overlay = ruins;
   engine.log(ruins.typename);
 
@@ -36,7 +36,7 @@ game.ui.infobox.aboutRuins = function(location) {
 game.ui.infobox.aboutGatehouse = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var gates = g_session.city.getOverlay(location).as(Overlay);
+  var gates = g_city.getOverlay(location).as(Overlay);
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
   ibox.overlay = gates;
   ibox.title = _u(gates.typename);
@@ -63,7 +63,7 @@ game.ui.infobox.aboutGatehouse = function(location) {
 game.ui.infobox.aboutMillitaryAcademy = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var academy = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var academy = g_city.getOverlay(location).as(WorkingBuilding);
   ibox.initBlackframe(20, 240, ibox.w-40, 50);
   ibox.title = _u(academy.typename);
 
@@ -78,7 +78,7 @@ game.ui.infobox.aboutMillitaryAcademy = function(location) {
 game.ui.infobox.aboutFort = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 350);
 
-  var overlay = g_session.city.getOverlay(location);
+  var overlay = g_city.getOverlay(location);
   var fort = null;
   if (overlay.typename == "fortArea")
     fort = overlay.as(FortArea).base();
@@ -110,7 +110,7 @@ game.ui.infobox.aboutFort = function(location) {
 game.ui.infobox.aboutDock = function(location) {
   var ibox = this.aboutConstruction(0, 0, 510, 286);
 
-  var dock = g_session.city.getOverlay(location).as(Dock);
+  var dock = g_city.getOverlay(location).as(Dock);
   ibox.initBlackframe(16, 185, ibox.w-32, 50);
   ibox.overlay = dock;
   ibox.title = _u(dock.typename);
@@ -168,7 +168,7 @@ game.ui.infobox.aboutBarracks = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
   ibox.initBlackframe(16, 200, ibox.w-32, 56);
 
-  var barracks = g_session.city.getOverlay(location).as(Barracks);
+  var barracks = g_city.getOverlay(location).as(Barracks);
   engine.log(barracks.typename);
   ibox.overlay = barracks;
 
@@ -189,7 +189,7 @@ game.ui.infobox.aboutFountain = function(location) {
   var ibox = this.aboutConstruction(0,0,480,320);
   ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
 
-  var fountain = g_session.city.getOverlay(location);
+  var fountain = g_city.getOverlay(location);
   ibox.title = _u(fountain.typename);
   ibox.overlay = fountain;
 
@@ -220,9 +220,9 @@ game.ui.infobox.aboutLand = function(location) {
     ibox.show();
   }
 
-  var tile = g_session.city.getTile(location);
+  var tile = g_city.getTile(location);
   var tilepos = tile.pos();
-  var cityexit = g_session.city.getProperty("roadExit");
+  var cityexit = g_city.getProperty("roadExit");
 
   engine.log(_format("Show help for land at [{0},{1}]", tilepos.i, tilepos.j));
   if(tilepos.i == cityexit.i && tilepos.j == cityexit.j)
@@ -231,7 +231,7 @@ game.ui.infobox.aboutLand = function(location) {
     return;
   }
 
-  var cityenter = g_session.city.getProperty("roadEntry");
+  var cityenter = g_city.getProperty("roadEntry");
   if(tilepos.i == cityenter.i && tilepos.j == cityenter.j)
   {
     ibox.update("to_rome_road", "", "");
@@ -244,7 +244,7 @@ game.ui.infobox.aboutLand = function(location) {
     return;
   }
 
-  var waterexit = g_session.city.getProperty("boatEntry");
+  var waterexit = g_city.getProperty("boatEntry");
   if(tilepos.i == waterexit.i && tilepos.j == waterexit.j)
   {
     ibox.update("to_ocean_way", "", "water");
@@ -328,7 +328,7 @@ game.ui.infobox.aboutFactory = function(location) {
   var ibox = this.aboutConstruction(0,0,510,256);
   ibox.initBlackframe(16, 160, ibox.w-32, 52);
 
-  var factory = g_session.city.getOverlay(location).as(Factory);
+  var factory = g_city.getOverlay(location).as(Factory);
   ibox.overlay = factory;
   ibox.title = _u(factory.typename);
 
@@ -387,7 +387,7 @@ game.ui.infobox.aboutRaw = function(location) {
   var ibox = this.aboutConstruction(0,0,510,350);
   ibox.initBlackframe(16, 170, ibox.w-32, 64);
 
-  var factory = g_session.city.getOverlay(location).as(Factory);
+  var factory = g_city.getOverlay(location).as(Factory);
   ibox.title = _u(factory.typename);
   ibox.overlay = factory;
 
@@ -434,7 +434,7 @@ game.ui.infobox.aboutSenate = function(location) {
   var ibox = this.simple(0, 0, 510, 290)
   ibox.initBlackframe( 16, 126, ibox.w-32, 62);
 
-  var senate = g_session.city.getOverlay(location).as(Senate);
+  var senate = g_city.getOverlay(location).as(Senate);
   ibox.overlay = senate;
 
   g_session.playAudio("bmsel_senate_00001", 100, g_config.audio.infobox);
@@ -471,7 +471,7 @@ game.ui.infobox.aboutWorkingBuilding = function(location) {
   ibox.initInfoLabel(16,50,ibox.w-32,64);
   ibox.initBlackframe(16, 136, ibox.w-32, 62);
 
-  var working = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var working = g_city.getOverlay(location).as(WorkingBuilding);
   ibox.overlay = working;
   ibox.title = _u(working.typename)
 
@@ -504,7 +504,7 @@ game.ui.infobox.aboutServiceBuilding = function(location, text) {
 
 game.ui.infobox.aboutColosseum = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
-  var colosseum = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var colosseum = g_city.getOverlay(location).as(WorkingBuilding);
 
   ibox.overlay = colosseum;
   ibox.initBlackframe(16, 145, ibox.w - 32, 100);
@@ -549,7 +549,7 @@ game.ui.infobox.aboutTheater = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
   ibox.initBlackframe(16, 145, ibox.w-32,100);
 
-  var theater = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var theater = g_city.getOverlay(location).as(WorkingBuilding);
 
   ibox.title = _u(theater.typename);
   ibox.setWorkersStatus(32, 150, 542, theater.maximumWorkers, theater.numberWorkers);
@@ -581,7 +581,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
   var ibox = this.aboutConstruction(0, 0, 470, 300);
   ibox.initBlackframe(16, 145, ibox.w-32,100);
 
-  var amphitheater = g_session.city.getOverlay(location).as(WorkingBuilding);
+  var amphitheater = g_city.getOverlay(location).as(WorkingBuilding);
   ibox.title = _u(amphitheater.typename);
   ibox.overlay = amphitheater;
 
@@ -616,7 +616,7 @@ game.ui.infobox.aboutAmphitheater = function(location) {
 game.ui.infobox.aboutWell = function(location) {
   var ibox = this.aboutConstruction(0, 0, 480, 320);
 
-  var well = g_session.city.getOverlay(location);
+  var well = g_city.getOverlay(location);
   ibox.initInfoLabel(20, 20, ibox.w-40, ibox.h-60);
   ibox.overlay = well;
   ibox.title = _u(well.typename);

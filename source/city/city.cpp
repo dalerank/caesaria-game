@@ -552,11 +552,87 @@ Variant PlayerCity::getProperty(const std::string& name) const
   if (name == "population") return states().population;
   if (name == "worklessPercent") return statistic().workers.worklessPercent();
   if (name == "profit") return _d->funds.profit();
+  if (name == "isRomeSendWheat") return statistic().goods.isRomeSend(good::wheat);
 
   if (name == "lastFestivalDate" || name == "nextFestivalDate") {
     city::FestivalPtr f = statistic().services.find<city::Festival>();
     if (f.isValid()) {
       return name == "lastFestivalDate" ? f->last() : f->next();
+    }
+  }
+
+  if (name == "disorderReason") {
+    city::DisorderPtr d = statistic().services.find<city::Disorder>();
+    if (d.isValid()) {
+      return d->reason();
+    }
+  }
+
+  if (name == "threatValue") {
+    city::MilitaryPtr military = statistic().services.find<city::Military>();
+    if (military.isValid()) {
+      return military->value();
+    }
+  }
+
+  if (name == "cityThreat") {
+    world::ObjectList objs = empire()->findObjects(location(), 200);
+
+    int minDistance = 999;
+    world::ObjectPtr maxThreat;
+    for( auto obj : objs ) {
+      if( is_kind_of<world::Barbarian>( obj ) ||
+          is_kind_of<world::RomeChastenerArmy>( obj ) ) {
+        float distance = location().distanceTo(obj->location());
+
+        if (minDistance > distance) {
+          maxThreat = obj;
+          minDistance = (int)distance;
+        }
+      }
+    }
+
+    VariantMap vm;
+    if (maxThreat.isValid()) {
+      vm["distance"] = minDistance;
+      vm["type"] = maxThreat->type();
+    }
+
+    return vm;
+  }
+
+  if (name == "sentimentReason") {
+    city::SentimentPtr sentiment = statistic().services.find<city::Sentiment>();
+    if (sentiment.isValid()) {
+      return sentiment->reason();
+    }
+  }
+
+  if (name == "religionReason") {
+    city::ReligionPtr r = statistic().services.find<city::Religion>();
+    if (r.isValid()) {
+      return r->reason();
+    }
+  }
+
+  if (name == "theatreCoverage") {
+    city::CultureRatingPtr c = statistic().services.find<city::CultureRating>();
+    if (c.isValid()) {
+      return c->coverage(city::CultureRating::covTheatres);
+    }
+  }
+
+  if (name == "cityHealthReason") {
+    city::HealthCarePtr h = statistic().services.find<city::HealthCare>();
+    if (h.isValid()) {
+      return h->reason();
+    }
+  }
+
+  if (name == "migrationReason") {
+    city::MigrationPtr m = statistic().services.find<city::Migration>();
+    if (m.isValid()) {
+      return m->reason();
     }
   }
 
@@ -568,6 +644,18 @@ Variant PlayerCity::getProperty(const std::string& name) const
   }
 
   return Variant();
+}
+
+int PlayerCity::getParam(int monthAgo, int type) const
+{
+  city::InfoPtr info = statistic().services.find<city::Info>();
+
+  if (info.isValid()) {
+    auto params = info->params(monthAgo);
+    return params.valueOrEmpty(type);
+  }
+
+  return 0;
 }
 
 void PlayerCity::clean()

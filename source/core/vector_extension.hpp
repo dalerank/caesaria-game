@@ -117,8 +117,8 @@ public:
   }
 
   const T& valueOrEmpty(size_t index) const {
-    static T invalid = T();
-    return index < _data.size() ? _data.at(index) : invalid;
+    static const T _invalid = T();
+    return index < _data.size() ? _data.at(index) : _invalid;
   }
 
   const T& valueOrDefault(size_t index, const T& def) const {

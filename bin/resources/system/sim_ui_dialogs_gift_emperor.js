@@ -87,12 +87,12 @@ game.ui.dialogs.gift2emperor.show = function()
       }
 
       g_session.player.removeMoney(this.cost)
-      g_session.emperor.sengGift(g_session.city.name(), "gift", this.cost,g_session.date)
+      g_session.emperor.sengGift(g_city.name(), "gift", this.cost,g_session.date)
       w.deleteLater()
     }
   }
 
-  var months2lastGift = g_session.emperor.lastGiftDate(g_session.city.name())
+  var months2lastGift = g_session.emperor.lastGiftDate(g_city.name())
                                          .monthsTo(g_session.date)
 
   var lbLastGiftDate = w.addLabel(16, w.h-90, w.w-32, 20)

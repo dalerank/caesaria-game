@@ -154,6 +154,7 @@ public:
   int getOption(const std::string& optname,bool) const;
   Variant getProperty(const std::string& name) const;
 
+  int getParam(int month, int type) const;
   void clean();
 
   /** Change tile map in city */

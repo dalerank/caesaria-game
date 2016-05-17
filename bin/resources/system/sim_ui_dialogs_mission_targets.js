@@ -5,13 +5,16 @@ sim.ui.dialogs.showMissionTargets = function()
       engine.log(i + "  :  " + wint[i]);
 
     var missionTitle = wint.caption;
-    if(missionTitle == undefined || missionTitle.lenght===0)
+    if(missionTitle == undefined || missionTitle.lenght==0) {
+      engine.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + wint.caption);
+
       missionTitle = _u("build_your_rome");
+    }
 
     var w = g_ui.addWindow(0, 0, 610, 430);
     w.internalName = "MissionTargetsWindow";
     w.pauseGame = true
-    w.title = missionTitle
+    w.title = missionTitle;
     w.titleFont = "FONT_5"
     w.setTextAlignment("upperLeft", "center")
     w.closeAfterKey( {escape:true, rmb:true} )

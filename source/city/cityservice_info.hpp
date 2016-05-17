@@ -50,7 +50,7 @@ public:
     DateTime date;
 
     Parameters();
-    Parameters( const Parameters& other );
+    Parameters(const Parameters& other);
 
     VariantList save() const;
     void load(const VariantList& stream );

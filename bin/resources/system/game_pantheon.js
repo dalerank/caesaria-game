@@ -21,7 +21,7 @@ game.religion.initRomePantheon = function() {
 }
 
 game.religion.getFestivalCost = function(festival) {
-  var pop = g_session.city.states().population;
+  var pop = g_city.states().population;
   return (pop / festival.limiter) + festival.minCost;
 }
 
@@ -33,7 +33,7 @@ game.religion.assignFestival = function(who, size) {
   else if (size==3) festival = g_config.festival.big;
 
   var cost = game.religion.getFestivalCost(festival);
-  g_session.city.createIssue("sundries",-cost);
+  g_city.createIssue("sundries",-cost);
   g_session.assignFestival(who, size);
 }
 

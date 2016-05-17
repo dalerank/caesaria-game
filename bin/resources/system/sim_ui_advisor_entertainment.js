@@ -48,7 +48,7 @@ sim.ui.advisors.entertainment.getInfo = function(bType) {
   ret.partlyWork = 0;
   ret.needService = 0;
 
-  var buildings = g_session.city.findOverlays(bType);
+  var buildings = g_city.findOverlays(bType);
   for(var i=0; i < buildings.length; i++) {
     var b = buildings[i].as(EntertainmentBuilding);
 
@@ -64,7 +64,7 @@ sim.ui.advisors.entertainment.getInfo = function(bType) {
     ret.partlyWork += (b.numberWorkers != b.maximumWorkers ? 1 : 0);
   }
 
-  var houses = g_session.city.findOverlays("house");
+  var houses = g_city.findOverlays("house");
   for (var i=0; i < houses.length; i++) {
     var h = houses[i].as(House);
 
@@ -85,7 +85,7 @@ sim.ui.advisors.entertainment.showDetails = function(objType) {
   var blackFrame = ibox.addLabel(15, 15, w.w-30, w.h-50);
   blackFrame.style = "blackFrame";
 
-  var buildings = g_session.city.findOverlays(objType);
+  var buildings = g_city.findOverlays(objType);
   var ry = 5;
   for (var i in buildings) {
     var bld = buildings[i].as(HealthBuilding);
@@ -137,7 +137,7 @@ sim.ui.advisors.entertainment.getAdvice = function() {
   var nextLevelColosseum = 0;
   var maxHouseLevel = 0;
 
-  var houses = g_session.city.findOverlays("house");
+  var houses = g_city.findOverlays("house");
   for (var i=0; i < houses.length; i++) {
     var house = houses[i].as(House);
 
@@ -201,7 +201,7 @@ sim.ui.advisors.entertainment.getAdvice = function() {
   if( amthInfo.buildingCount == 0 ) { troubles.push("blood_sports_add_spice_to_life"); }
   if( clsInfo.partlyWork > 0 ){ troubles.push("small_colosseum_show"); }
 
-  var hippodromes = g_session.city.findOverlays("hippodrome");
+  var hippodromes = g_city.findOverlays("hippodrome");
   for (var i=0; i < hippodromes.length; i++) {
     var h = hippodromes[i].as(EntertainmentBuilding);
     if (h.evaluateTrainee(g_config.walker.charioteer) == 100) {
@@ -281,7 +281,7 @@ sim.ui.advisors.entertainment.show = function() {
   var btnNewFestival = w.addButton(lbFestArea.x + 54, lbFestArea.y+30, 300, 20);
   btnNewFestival.text = _u("new_festival");
   btnNewFestival.style = "blackBorderUp";
-  var nextFestivalDate = g_session.city.getProperty("nextFestivalDate");
+  var nextFestivalDate = g_city.getProperty("nextFestivalDate");
   var prepare2Festival = g_session.date.monthsTo(nextFestivalDate) >= 0;
   btnNewFestival.text = prepare2Festival ? _u("prepare_to_festival") : _u("new_festival");
   btnNewFestival.enabled = !prepare2Festival;
@@ -290,7 +290,7 @@ sim.ui.advisors.entertainment.show = function() {
   var lbMonthFromLastFestival = w.addLabel(lbFestArea.x+5, lbFestArea.y+5, 390, 20);
   lbMonthFromLastFestival.font = "FONT_1";
   lbMonthFromLastFestival.textAlign = {v:"center", h:"center"};
-  var lastFestivalDate = g_session.city.getProperty("lastFestivalDate");
+  var lastFestivalDate = g_city.getProperty("lastFestivalDate");
   var monthFromLastFestival = lastFestivalDate.monthsTo(g_session.date);
   lbMonthFromLastFestival.text = _format( "{0} {1} {2}", monthFromLastFestival, _ut("month"), _ut("month_from_last_festival"));
 

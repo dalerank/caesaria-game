@@ -94,6 +94,12 @@
           files : [ "*" ]
         }
 
+        landmerchant : {
+          type : "atlas"
+          folder : "/resources/land_merchant"
+          files : [ "*" ]
+        }
+
         prefect :
         {
           type : "atlas"

@@ -88,7 +88,6 @@ public:
   std::string levelName() const;
 
   virtual int roadsideDistance() const;
-
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
 
@@ -96,7 +95,8 @@ public:
   virtual std::string troubleDesc() const;
 
   bool isCheckedDesirability() const;
-  void addWalker( WalkerPtr walker );
+  void addWalker(WalkerPtr walker);
+  bool ready4evolve(object::Type type) const;
   const WalkerList& walkers() const;
 
   void __debugChangeLevel( int change );

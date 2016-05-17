@@ -12,6 +12,12 @@ Object.defineProperty(PlayerCity.prototype, "health", { get: function () { retur
 Object.defineProperty(PlayerCity.prototype, "workingBuildings", { get: function () { return g_session.getWorkingBuildings(); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "worklessPercent", { get: function () { return this.getProperty("worklessPercent"); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "profit", { get: function () { return this.getProperty("profit"); }, configurable : true });
+Object.defineProperty(PlayerCity.prototype, "migrationReason", { get: function() { return this.getProperty("migrationReason"); }})
+Object.defineProperty(PlayerCity.prototype, "isRomeSendWheat", { get: function() { return this.getProperty("isRomeSendWheat"); }})
+Object.defineProperty(PlayerCity.prototype, "disorderReason", { get: function() { return this.getProperty("disorderReason"); }})
+Object.defineProperty(PlayerCity.prototype, "cityHealthReason", { get: function() { return this.getProperty("cityHealthReason"); }})
+Object.defineProperty(PlayerCity.prototype, "theatreCoverage", { get: function() { return this.getProperty("theatreCoverage"); }})
+Object.defineProperty(PlayerCity.prototype, "threatValue", { get: function() { return this.getProperty("threatValue"); }})
 
 PlayerCity.prototype.findOverlays = function(type) {
   return g_session.getOverlays(type);
@@ -54,6 +60,10 @@ PlayerCity.prototype.findNextSameBuilding = function(location, type) {
   return {i:-1, j:-1};
 }
 
+Object.defineProperty(PlayerCity.prototype, "houses", {
+  get: function() { return g_session.findOverlays("house") }
+})
+
 Object.defineProperty(PlayerCity.prototype, "laborDetails", {
   get: function () {
     var ret = {map : {}, current: 0, need : 0};
@@ -75,3 +85,5 @@ Object.defineProperty(PlayerCity.prototype, "laborDetails", {
   }, configurable : true
 })
 /**************************************** City class end **************************************************************/
+
+var g_city = null;

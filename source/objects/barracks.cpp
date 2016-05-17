@@ -131,6 +131,7 @@ std::string Barracks::workersProblemDesc() const
 Variant Barracks::getProperty(const std::string& name) const
 {
   if (name == "weapon") return goodQty(good::weapon);
+  if (name == "isNeedWeapons") return isNeedWeapons();
 
   return Building::getProperty(name);
 }

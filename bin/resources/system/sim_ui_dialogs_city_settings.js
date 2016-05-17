@@ -4,17 +4,17 @@ sim.ui.dialogs.citySettings.getop = function (obj) {
     engine.log("get" + obj.group + " " + obj.flag);
     switch (obj.group) {
       case 'city':
-        return g_session.city.getOption(obj.flag);
+        return g_city.getOption(obj.flag);
       case 'game':
         return g_session.getAdvflag(obj.flag);
       case 'engine':
         return engine.getOption(obj.flag);
       case 'build':
-        return g_session.city.getBuildOption(obj.flag);
+        return g_city.getBuildOption(obj.flag);
       case 'gui':
         return sim.ui.dialogs.citySettings.getguiv(obj.flag);
       case 'risks':
-        return g_session.city.getOption(obj.flag);
+        return g_city.getOption(obj.flag);
     }
     return 0;
 };
@@ -23,7 +23,7 @@ sim.ui.dialogs.citySettings.setop = function(obj, value) {
     engine.log("set " + obj.group + " " + obj.flag);
     switch (obj.group) {
       case "city":
-        g_session.city.setOption(obj.flag, value);
+        g_city.setOption(obj.flag, value);
         break;
       case "engine":
         engine.setOption(obj.flag, value);
@@ -32,13 +32,13 @@ sim.ui.dialogs.citySettings.setop = function(obj, value) {
         g_session.setAdvflag(obj.flag, value);
         break;
       case "build":
-        g_session.city.setBuildOption(obj.flag, value);
+        g_city.setBuildOption(obj.flag, value);
         break;
       case "gui":
         sim.ui.dialogs.citySettings.setguiv(obj.flag, value);
       break;
       case "risks":
-        g_session.city.setOption(obj.flag, value);
+        g_city.setOption(obj.flag, value);
       break;
     }
 };
@@ -72,7 +72,7 @@ sim.ui.dialogs.citySettings.setguiv = function(name, value) {
 sim.ui.dialogs.citySettings.next = function(obj) {
     var value = {}
     if (obj.group === "risks") {
-      value = g_session.city.getOption(obj.flag)
+      value = g_city.getOption(obj.flag)
       value += 10;
       if (value > 100)
         value = 0;
@@ -92,7 +92,7 @@ sim.ui.dialogs.citySettings.next = function(obj) {
 sim.ui.dialogs.citySettings.text = function(obj) {
     var value = {};
     if (obj.group === "risks") {
-      value = g_session.city.getOption(obj.flag);
+      value = g_city.getOption(obj.flag);
       var lb = _t("##" + obj.base + "##");
       return _format("{0} {1} %", lb, value);
     } else if (obj.group === "gui") {

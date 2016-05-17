@@ -1,6 +1,6 @@
 sim.fastsave.filename = function () {
     var filename = g_session.savedir;
-    filename.add(g_session.city.name() + g_config.saves.fast + g_config.saves.ext);
+    filename.add(g_city.name() + g_config.saves.fast + g_config.saves.ext);
     return filename.str;
 }
 
@@ -16,7 +16,7 @@ sim.autosave.rotate = 0
 sim.autosave.filename = function (index) {
     sim.autosave.rotate = (sim.autosave.rotate + 1) % 3;
     var filename = g_session.savedir;
-    filename.add(g_session.city.name() + g_config.saves.auto + sim.autosave.rotate + g_config.saves.ext);
+    filename.add(g_city.name() + g_config.saves.auto + sim.autosave.rotate + g_config.saves.ext);
     return filename.str;
 }
 

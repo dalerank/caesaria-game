@@ -81,7 +81,7 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.btnNext.style = "whiteBorderUp"
     ibox.btnNext.tooltip = _u("infobox_construction_comma_tip")
     ibox.btnNext.callback = function () {
-      var pos = g_session.city.findNextSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      var pos = g_city.findNextSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
       if (pos.i < 0)
           return;
 
@@ -95,7 +95,7 @@ game.ui.infobox.aboutConstruction = function (rx, ry, rw, rh) {
     ibox.btnPrev.style = "whiteBorderUp"
     ibox.btnPrev.tooltip = _u("infobox_construction_comma_tip");
     ibox.btnPrev.callback = function () {
-      var pos = g_session.city.findPrevSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
+      var pos = g_city.findPrevSameBuilding(ibox.overlay.pos(), ibox.overlay.typename);
       if (pos.i < 0)
           return;
 
@@ -148,7 +148,7 @@ game.ui.infobox.aboutReservoir = function (location) {
     ibox.initInfoLabel(20, 20, ibox.w - 40, ibox.h - 60);
     ibox.title = _u("reservoir");
 
-    var reservoir = g_session.city.getOverlay(location).as(Reservoir);
+    var reservoir = g_city.getOverlay(location).as(Reservoir);
     var text = reservoir.haveWater() ? "reservoir_info" : "reservoir_no_water";
     ibox.overlay = reservoir;
     ibox.setInfoText(_u(text));
@@ -159,7 +159,7 @@ game.ui.infobox.aboutTemple = function (location) {
     var ibox = this.aboutConstruction(0, 0, 510, 266)
     ibox.initBlackframe(16, 56, ibox.w - 32, 56);
 
-    var temple = g_session.city.getOverlay(location).as(Temple);
+    var temple = g_city.getOverlay(location).as(Temple);
     ibox.overlay = temple;
     if (temple.typename == "oracle") {
         ibox.title = _u("oracle")
