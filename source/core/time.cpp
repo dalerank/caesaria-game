@@ -76,7 +76,7 @@ bool DateTime::operator<( const DateTime& other ) const{    return _toJd() < oth
 bool DateTime::operator>=( const DateTime& other ) const{    return _toJd() >= other._toJd();}
 bool DateTime::operator>( const DateTime& other ) const{    return _toJd() > other._toJd();}
 bool DateTime::isValid() const
-{   
+{
     return (_year > -4573 && _year < 9999)
             && (_month<12)
             && (_day<31)
@@ -141,7 +141,7 @@ DateTime::DateTime( const char* strValue )
           &_year, &_month, &_day, &_hour, &_minutes, &_seconds );
 }
 
-DateTime::DateTime( int y, unsigned char m, unsigned char d, 
+DateTime::DateTime( int y, unsigned char m, unsigned char d,
                     unsigned char h, unsigned char mm, unsigned char s )
 {
   _year = y;
@@ -172,9 +172,16 @@ void DateTime::setMinutes( unsigned char m )  {    _minutes = m; }
 void DateTime::setDay( unsigned char d ) { _day = d; }
 void DateTime::setSeconds( unsigned char s ) { _seconds = s; }
 
+void DateTime::setDate(unsigned int year, unsigned int month, unsigned int day)
+{
+  _year = year;
+  _month = month;
+  _day = day;
+}
+
 DateTime DateTime::currenTime()
 {
-	tm d;
+  tm d;
 
 #if defined(GAME_PLATFORM_WIN)
     _getsystime( &d );
@@ -253,7 +260,7 @@ DateTime& DateTime::operator= ( time_t t)
 }
 
 DateTime& DateTime::operator=( const DateTime& val )
-{ 
+{
   _set( val );
 
   return *this;

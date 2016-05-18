@@ -96,7 +96,7 @@ g_config.saves = {
     auto : "_autosave",
 }
 
-g_config.histolry = {
+g_config.history = {
   thisMonth : 0,
   lastMonth : 1
 }

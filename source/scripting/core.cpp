@@ -708,7 +708,7 @@ void destructor_jsobject(js_State *J, void* p)
 }
 
 template<typename T>
-void constructor_jsobject(js_State *J)
+void constructor_jsobject(js_State *J, const char* tname)
 {
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
@@ -973,7 +973,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 }
 
 #define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { destructor_jsobject<name>(J,p); }
-#define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
+#define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J,#name); }
 #define DEFINE_GAMEOBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_go_jsobject<name>(J, #name); }
 #define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) { auto p=&name::funcname; object_call_func_0<name>(J,p); }
 

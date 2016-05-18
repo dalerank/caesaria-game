@@ -18,6 +18,16 @@ Object.defineProperty(PlayerCity.prototype, "disorderReason", { get: function() 
 Object.defineProperty(PlayerCity.prototype, "cityHealthReason", { get: function() { return this.getProperty("cityHealthReason"); }})
 Object.defineProperty(PlayerCity.prototype, "theatreCoverage", { get: function() { return this.getProperty("theatreCoverage"); }})
 Object.defineProperty(PlayerCity.prototype, "threatValue", { get: function() { return this.getProperty("threatValue"); }})
+Object.defineProperty(PlayerCity.prototype, "religionReason", { get: function() { return this.getProperty("religionReason"); }})
+
+Object.defineProperty(PlayerCity.prototype, "lastFestivalDate", {
+  get: function() {
+      var dt = this.getProperty("lastFestivalDate");
+      var ret = new DateTime();
+      ret.setDate(dt.year, dt.month, dt.day);
+      return ret;
+  }
+})
 
 PlayerCity.prototype.findOverlays = function(type) {
   return g_session.getOverlays(type);
@@ -61,7 +71,7 @@ PlayerCity.prototype.findNextSameBuilding = function(location, type) {
 }
 
 Object.defineProperty(PlayerCity.prototype, "houses", {
-  get: function() { return g_session.findOverlays("house") }
+  get: function() { return g_session.getOverlays("house") }
 })
 
 Object.defineProperty(PlayerCity.prototype, "laborDetails", {

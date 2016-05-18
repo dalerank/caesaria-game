@@ -60,12 +60,9 @@ sim.ui.advisors.chief.drawFoodConsumption = function(w) {
 
   if (fk < this.consts.cityHavenotFood) {
     text = "##we_eat_much_then_produce##";
-  }
-  else if( fk > cityPriduceMoreFood ) {
+  } else if( fk > this.consts.cityPriduceMoreFood ) {
     text = "##we_produce_much_than_eat##";
-  }
-  else
-  {
+  } else {
     switch(fk) {
     case -3: text = "##we_eat_more_thie_produce##"; break;
     case -2: text = "##we_eat_some_then_produce##"; break;
@@ -86,7 +83,7 @@ sim.ui.advisors.chief.drawFoodStockState = function(w) {
 
   var reasons = [];
   if( romeSendWheat ) {
-    reasons.push( { text:"##rome_send_wheat_to_city##", color::"green" } );
+    reasons.push( { text:"##rome_send_wheat_to_city##", color:"green" } );
   } else {
     var text;
     var lastMonthFoodStock = g_city.getParam(g_config.history.thisMonth,g_config.cityparam.foodStock);
@@ -94,27 +91,26 @@ sim.ui.advisors.chief.drawFoodStockState = function(w) {
 
     if (lastMonthFoodStock < prevMonthFoodStock) {
       text = "##no_food_stored_last_month##";
-    }
-    else
-    {
+    } else {
       var monthWithFood = g_city.getParam(g_config.history.lastMonth,g_config.cityparam.monthWithFood);
       switch (monthWithFood) {
-        case cityHavenotFoodNextMonth: text = "##have_no_food_on_next_month##"; break;
-        case cityHaveSmallFoodNextMonth: text = "##small_food_on_next_month##"; break;
+        case this.consts.cityHavenotFoodNextMonth: text = "##have_no_food_on_next_month##"; break;
+        case this.consts.cityHaveSmallFoodNextMonth: text = "##small_food_on_next_month##"; break;
         case 2: text = "##some_food_on_next_month##"; break;
         case 3: text = "##our_foods_level_are_low##"; break;
 
         default:
           text = _format( "{0} {1} {2}", _ut("have_food_for"), monthWithFood, _ut("months") );
-      }
-    reasons.push( { text: text, color::"black" } );
+        }
+    }
+    reasons.push( { text: text, color:"black" } );
   }
 
   if (reasons.length==0) {
-    reasons.push( { text:_ut("food_stock_unknown_reason"), color::"red" } );
+    reasons.push( { text:_ut("food_stock_unknown_reason"), color:"red" } );
   }
 
-  w.addReportRow("foodStock", reasonss);
+  w.addReportRow("foodStock", reasons);
 }
 
 sim.ui.advisors.chief.drawMigrationState = function(w) {
@@ -127,7 +123,7 @@ sim.ui.advisors.chief.drawMigrationState = function(w) {
     textColor = "black"
   }
 
-  reasons.push( { text: migration_unknown_reason, color::textColor } );
+  reasons.push( { text: migration_unknown_reason, color:textColor } );
 
   w.addReportRow("migration", reasons);
 }
@@ -147,10 +143,10 @@ sim.ui.advisors.chief.drawCrime = function(w) {
   var reasons = [];
 
   var disorderReason = g_city.disorderReason;
-  if(disorders.length>0) {
+  if(disorderReason.length>0) {
     reasons.push( { text:disorderReason, color:"red" } );
   } else {
-    reasons.push( { text:"##advchief_no_crime##", color::"green" } );
+    reasons.push( { text:"##advchief_no_crime##", color:"green" } );
   }
 
   w.addReportRow( "crime", reasons );
@@ -169,8 +165,7 @@ sim.ui.advisors.chief.drawHealth = function() {
   w.addReportRow("health", reasons);
 }
 
-sim.ui.advisors.chief.drawEducation = function(w)
-{
+sim.ui.advisors.chief.drawEducation = function(w) {
   var reasons = [];
 
   var avTypes = [ {object:"school", text:"##advchief_some_need_education##"},
@@ -181,13 +176,14 @@ sim.ui.advisors.chief.drawEducation = function(w)
   for (var i=0; i < avTypes.length; i++) {
     var h = houses[i].as(House);
     if (houses.length > 0)
-      reasons.push( { item.second, color:"yellow" } );
+      reasons.push( { text:avTypes[i].text, color:"yellow" } );
   }
 
-  if( reasons.empty() )
-    reasons.addIfValid( { "##advchief_education_ok##", ColorList::black } );
+  if (reasons.length==0) {
+    reasons.push( { text:"##advchief_education_ok##", color:"black" } );
+  }
 
-  drawReportRow( Advice::education, reasons );
+  w.addReportRow( "education", reasons );
 }
 
 sim.ui.advisors.chief.drawReligion = function(w) {
@@ -196,7 +192,7 @@ sim.ui.advisors.chief.drawReligion = function(w) {
   if (religionReason.length>0) {
     reasons.push( { text:religionReason, color:"black" } );
   } else {
-    reasons.push( { text:"##advchief_religion_unknown##", color::"red" } );
+    reasons.push( { text:"##advchief_religion_unknown##", color:"red" } );
   }
 
   w.addReportRow("religion", reasons);
@@ -205,7 +201,7 @@ sim.ui.advisors.chief.drawReligion = function(w) {
 sim.ui.advisors.chief.drawEntertainment = function(w) {
   var reasons = [];
 
-  var lastFestivalDate = g_city.getProperty("lastFestivalDate");
+  var lastFestivalDate = g_city.lastFestivalDate;
   var monthFromLastFestival = lastFestivalDate.monthsTo(g_session.date);
   if (monthFromLastFestival > 6) {
     reasons.push( { text:"##citizens_grumble_lack_festivals_held##", color:"yellow" } );
@@ -225,7 +221,7 @@ sim.ui.advisors.chief.drawEntertainment = function(w) {
   w.addReportRow( "entertainment", reasons );
 }
 
-sim.ui.advisors.chief.drawSentiment = function(w) {
+/*sim.ui.advisors.chief.drawSentiment = function(w) {
   var reasons = [];
   var sentimentReason = g_city.sentimentReason;
 
@@ -236,11 +232,11 @@ sim.ui.advisors.chief.drawSentiment = function(w) {
   }
 
   w.addReportRow( "sentiment", reasons );
-}
+}*/
 
 sim.ui.advisors.chief.drawMilitary = function() {
   var reasons = [];
-  var threatValue = ;
+  var threatValue = "";
   var isBesieged = g_city.threatValue > this.consts.bigThreatValue;
 
   if (!isBesieged) {

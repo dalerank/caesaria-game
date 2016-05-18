@@ -80,6 +80,7 @@ DEFINE_OBJECT_DESTRUCTOR(DateTime)
 DEFINE_OBJECT_GETTER_0(DateTime,int,year)
 DEFINE_OBJECT_GETTER_1(DateTime,int,monthsTo,const DateTime&,DateTime())
 DEFINE_OBJECT_GETTER_1(DateTime,int,daysTo,const DateTime&,DateTime())
+DEFINE_OBJECT_FUNCTION_3(DateTime,setDate,int,int,int)
 DEFINE_OBJECT_CONSTRUCTOR(DateTime)
 
 DEFINE_GAMEOBJECT_CONSTRUCTOR(Stock)

@@ -6,8 +6,6 @@ sim.ui.dialogs.showMissionTargets = function()
 
     var missionTitle = wint.caption;
     if(missionTitle == undefined || missionTitle.lenght==0) {
-      engine.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + wint.caption);
-
       missionTitle = _u("build_your_rome");
     }
 
