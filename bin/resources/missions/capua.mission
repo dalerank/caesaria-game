@@ -263,7 +263,7 @@
       military_academy : false,
       barracks : false,
       wheat_farm : true,
-      vegetable_farm : false,
+      vegetable_farm : true,
       olive_farm : true,
       fig_farm : false,
       meat_farm : false,
