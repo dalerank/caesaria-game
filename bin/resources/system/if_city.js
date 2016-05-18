@@ -19,6 +19,7 @@ Object.defineProperty(PlayerCity.prototype, "cityHealthReason", { get: function(
 Object.defineProperty(PlayerCity.prototype, "theatreCoverage", { get: function() { return this.getProperty("theatreCoverage"); }})
 Object.defineProperty(PlayerCity.prototype, "threatValue", { get: function() { return this.getProperty("threatValue"); }})
 Object.defineProperty(PlayerCity.prototype, "religionReason", { get: function() { return this.getProperty("religionReason"); }})
+Object.defineProperty(PlayerCity.prototype, "sentimentReason", { get: function() { return this.getProperty("sentimentReason"); }})
 
 Object.defineProperty(PlayerCity.prototype, "lastFestivalDate", {
   get: function() {

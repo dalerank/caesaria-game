@@ -123,7 +123,7 @@ sim.ui.advisors.chief.drawMigrationState = function(w) {
     textColor = "black"
   }
 
-  reasons.push( { text: migration_unknown_reason, color:textColor } );
+  reasons.push( { text: migrationReason, color:textColor } );
 
   w.addReportRow("migration", reasons);
 }
@@ -152,7 +152,7 @@ sim.ui.advisors.chief.drawCrime = function(w) {
   w.addReportRow( "crime", reasons );
 }
 
-sim.ui.advisors.chief.drawHealth = function() {
+sim.ui.advisors.chief.drawHealth = function(w) {
   var reasons = [];
 
   var cityHealthReason = g_city.cityHealthReason;
@@ -221,20 +221,20 @@ sim.ui.advisors.chief.drawEntertainment = function(w) {
   w.addReportRow( "entertainment", reasons );
 }
 
-/*sim.ui.advisors.chief.drawSentiment = function(w) {
+sim.ui.advisors.chief.drawSentiment = function(w) {
   var reasons = [];
   var sentimentReason = g_city.sentimentReason;
 
-  if (sentiment.length>0) {
+  if (sentimentReason.length>0) {
     reasons.push( { text:sentimentReason, color:"black" } );
   } else {
     reasons.push( { text:"##unknown_sentiment_reason##", color:"red" } );
   }
 
   w.addReportRow( "sentiment", reasons );
-}*/
+}
 
-sim.ui.advisors.chief.drawMilitary = function() {
+sim.ui.advisors.chief.drawMilitary = function(w) {
   var reasons = [];
   var threatValue = "";
   var isBesieged = g_city.threatValue > this.consts.bigThreatValue;
@@ -304,23 +304,25 @@ sim.ui.advisors.chief.show = function() {
     var conf = sim.ui.advisors.chief.rows[index];
 
     var btn = new Button(blackframe);
-    btn.geometry = {x:5, y:2+22*conf.index, w:blackframe.w-10, h:20}
+    btn.geometry = {x:5, y:2+27*conf.index, w:blackframe.w-10, h:26}
     btn.style = "brownBorderOnly";
     btn.icon = g_render.picture("paneling", 48);
     btn.iconOffset = {x:6, y:6};
-    btn.font = "FONT_2";
+    btn.font = "FONT_4";
     btn.textOffset = {x:255, y:0};
 
     var reason = reasons[Math.randomIndex(0, reasons.length-1)];
-    btn.addLabel(20, 0, 200, 20, _u(conf.title), {size:17, color:reason.color});
-    btn.addLabel(220, 0, 300, 20, _t(reason.text), {size:17, color:reason.color} );
+    btn.addLabel(20, 0, 200, 20, _u(conf.title), {size:18, color:reason.color});
+    btn.addLabel(220, 0, 300, 20, _t(reason.text), {size:18, color:reason.color} );
   }
 
   sim.ui.advisors.chief.addEmploymentState(w);
+  sim.ui.advisors.chief.drawMigrationState(w);
   sim.ui.advisors.chief.drawProfitState(w);
   sim.ui.advisors.chief.drawFoodStockState(w);
   sim.ui.advisors.chief.drawFoodConsumption(w);
   sim.ui.advisors.chief.drawCrime(w);
+  sim.ui.advisors.chief.drawHealth(w);
   sim.ui.advisors.chief.drawEducation(w);
   sim.ui.advisors.chief.drawReligion(w);
   sim.ui.advisors.chief.drawEntertainment(w);
