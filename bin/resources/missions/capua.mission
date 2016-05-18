@@ -205,67 +205,81 @@
 
     buildings :
     {
-      "clinic": true,
-      "barber": true,
-      "baths": true,
-      "hospital": true,
-      "senate" : true,
-      "school": true,
-      "library": true,
-      "academy": true,
-      "theater": true,
-      "amphitheater": true,
-      "colosseum": true,
-      "hippodrome": true,
-      "actorColony": true,
-      "gladiatorSchool": true,
-      "lionsNursery": true,
-      "chariotSchool": true,
-      "missionaryPost": true,
-      "governorHouse" : true,
-      "governorVilla" : true,
-      "governorPalace": true,
-      "statue_small": true,
-      "statue_middle": true,
-      "statue_big": true,
-      "fountain" : true,
-      "well": true,
-      "aqueduct": true,
-      "reservoir": true,
-      engineering_post : true
-      plaza : true
-      forum : true
-      garden : true
-      low_bridge : true
-      high_bridge : true
-      clay_pit : true
-      pottery_workshop : true
-      dock : true
-      hippodrome : false
-      charioter_school : false
-      prefecture : true
-      small_ceres_temple : true
-      small_venus_temple : true
-      small_mars_temple : true
-      small_neptune_temple : true
-      small_mercury_temple : true
-      big_ceres_temple : true
-      big_venus_temple : true
-      big_mars_temple : true
-      big_neptune_temple : true
-      big_mercury_temple : true
-      oracle : true
-      market : true
-      oil_workshop : true
-      lumber_mill : true
-      roadBlock : true
-      furniture_workshop : true
-      granary : true
+ reservoir : true,
+      aqueduct : true,
+      fountain : true,
+      well: true,
+      barber: true,
+      baths : true,
+      clinic: true,
+      hospital : true,
+      small_ceres_temple : true,
+      small_neptune_temple : true,
+      small_mercury_temple : true,
+      small_mars_temple : true,
+      small_venus_temple : true,
+      big_ceres_temple : true,
+      big_neptune_temple : true,
+      big_mercury_temple : true,
+      big_mars_temple : true,
+      big_venus_temple : true,   
+      oracle : true,
+      school : true,
+      academy : true,
+      missionaryPost : false,
+      library : true,
+      theater : true,
+      amphitheater : true,
+      colosseum : true,
+      hippodrome : false,
+      gladiatorSchool : true,
+      lionsNursery : true,
+      actorColony : true,
+      chariotSchool : false,
+      forum : true,
+      senate : true,
+      governorHouse : true,
+      governorVilla : true,
+      governorPalace : true,
+      statue_small : true,
+      statue_middle : true,
+      statue_big : true,
+      garden : true,
+      plaza : true,
+      engineering_post : true,
+      low_bridge : true,
+      high_bridge : true,
+      shipyard : false,
+      dock : true,
+      wharf : false,
+      roadBlock : true,
+      wall : false,
+      fortification : false,
+      gatehouse : false,
+      prefecture : false,
+      fort_legionaries : false,
+      fort_javelin : false,
+      fort_horse : false,
+      military_academy : false,
+      barracks : false,
+      wheat_farm : true,
+      vegetable_farm : false,
+      olive_farm : true,
+      fig_farm : false,
+      meat_farm : false,
+      vinard : false,
+      clay_pit : true,
+      iron_mine : false,
+      lumber_mill : true,
+      quarry : false,
+      wine_workshop : false,
+      oil_workshop : true,
+      weapons_workshop : false,
+      furniture_workshop : true,
+      pottery_workshop : true,
+      market : true,
+      granary : true,
       warehouse : true
-      wheat_farm : true
-      fig_farm : true
-      olive_farm : true
-      senate : true
     }
   }
 }
