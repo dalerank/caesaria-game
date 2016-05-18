@@ -447,6 +447,10 @@
 
     buildings :
     {
+	  reservoir : true,
+      aqueduct : true,
+      fountain : true,
+      well: true,
       "clinic": true,
       "barber": true,
       "baths": true,
