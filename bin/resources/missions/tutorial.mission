@@ -113,7 +113,12 @@
     check_desirability : false
 
     buildings : {
-      well : true
+      well : true,
+      big_ceres_temple : false,
+      big_venus_temple : false,
+      big_mars_temple : false,
+      big_neptune_temple : false,
+      big_mercury_temple : false
     }
   }
 }

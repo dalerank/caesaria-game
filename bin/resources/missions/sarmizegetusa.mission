@@ -59,6 +59,93 @@
 
   events :
   {
+  	population_milestone_100#messagebox : {
+      date : "-350.01.01"
+      population : 100
+      send2scribe : true
+      title : "##population_milestone##"
+      text : "##100_citzens_in_city##"
+    }
+	
+	population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 500
+      send2scribe : true
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }
+
+    population_milestone_1000#messagebox : {
+      date : "-350.01.01"
+      population : 1000
+      send2scribe : true
+      title : "##population_milestone##"
+      text : "##1000_citzens_in_city##"
+    }
+
+    population_milestone_2000#messagebox : {
+      date : "-350.01.01"
+      population : 2000
+      send2scribe : true
+      video : "population1"
+      title : "##population_milestone##"
+      text : "##2000_citzens_in_city##"
+    }
+
+    population_milestone_3000#messagebox : {
+      date : "-350.01.01"
+      population : 3000
+      send2scribe : true
+      video : "population2"
+      title : "##population_milestone##"
+      text : "##3000_citzens_in_city##"
+    }
+	
+	population_milestone_5000#messagebox : {
+      date : "-350.01.01"
+      population : 5000
+      send2scribe : true
+      video : "population3"
+      title : "##population_milestone##"
+      text : "##5000_citzens_in_city##"
+    }
+	
+	population_milestone_10000#messagebox : {
+      date : "-350.01.01"
+      population : 10000
+      send2scribe : true
+      video : "population3"
+      title : "##population_milestone##"
+      text : "##10000_citzens_in_city##"
+    }
+	
+	population_milestone_15000#messagebox : {
+      date : "-350.01.01"
+      population : 15000
+      send2scribe : true
+      video : "population3"
+      title : "##population_milestone##"
+      text : "##15000_citzens_in_city##"
+    }
+	
+	population_milestone_20000#messagebox : {
+      date : "-350.01.01"
+      population : 20000
+      send2scribe : true
+      video : "population3"
+      title : "##population_milestone##"
+      text : "##20000_citzens_in_city##"
+    }
+	
+	population_milestone_25000#messagebox : {
+      date : "-350.01.01"
+      population : 25000
+      send2scribe : true
+      video : "population3"
+      title : "##population_milestone##"
+      text : "##25000_citzens_in_city##"
+    }
+	
     iron_price_rising#trading_options : {
       date : "65.08.01"
       goods : {
@@ -720,6 +807,8 @@
         }
       }
     }
+	
+	
   }
 
   buildoptions :
@@ -769,13 +858,11 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-
       fort_legionaries : true
       fort_javelin : true
       fort_horse : true
       military_academy : true
       barracks : true
-
       iron_mine : true
       oil_workshop : false
       lumber_mill : true
@@ -784,12 +871,10 @@
       pottery_workshop : true
       granary : true
       warehouse : true
-
       wheat_farm : true
       fig_farm : true
       meat_farm : true
       vinard : true
-
       senate : true
     }
   }
