@@ -4,7 +4,7 @@ g_config.languages = [
               { lang : "Русский"    , ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" },
               { lang : "Svenska"    , ext : "sv", },
 			  { lang : "Español"    , ext : "sp", talks : ":/audio/wavs_citizen_sp.zip" },
-			  { lang : "Român"      , ext : "ro", },
+			  { lang : "Română"     , ext : "ro", },
 			  { lang : "Français"   , ext : "fr", talks : ":/audio/wavs_citizen_fr.zip" },
 			  { lang : "Hungarian"  , ext : "hu", },
 			  { lang : "Czech"      , ext : "cs", },
