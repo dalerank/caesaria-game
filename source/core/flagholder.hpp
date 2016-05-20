@@ -22,36 +22,28 @@ class FlagHolder
 public:
   FlagHolder() : _flags( 0 ) {}
 
-  void setFlag( T flag, bool enabled=true )
-  {
-    if( enabled )
-      _flags |= flag;
-    else
-      _flags &= ~flag;
+  void setFlag(T flag, bool enabled=true) {
+    if(enabled) _flags |= flag;
+    else _flags &= ~flag;
   }
 
-  void resetFlag( T flag )
-  {
-    setFlag( flag, false );
+  void resetFlag(T flag) {
+    setFlag(flag, false);
   }
 
-  bool isFlag( T flag ) const
-  {
+  bool isFlag(T flag) const {
     return (_flags & flag) == flag;
   }
 
-  bool anyFlag( T flag ) const
-  {
+  bool anyFlag(T flag) const {
     return (_flags & flag) > 0;
   }
 
-  void toggle( T flag )
-  {
-    setFlag( flag, !isFlag( flag ) );
+  void toggle(T flag) {
+    setFlag(flag, !isFlag(flag));
   }
 
-  void setFlags( int val )
-  {
+  void setFlags(int val) {
     _flags = val;
   }
 private:

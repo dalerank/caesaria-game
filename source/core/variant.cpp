@@ -27,10 +27,9 @@
 
 namespace tname {
 template<class T>
-static bool equale( const char* name )
-{
-  return !strcmp( name, typeid(T).name() );
-}
+    static bool equale( const char* name ) {
+      return !strcmp( name, typeid(T).name() );
+    }
 }
 
 static Variant::Type staticNameToType( const char* name )
@@ -247,41 +246,32 @@ static bool compareVariants(const Variant2Impl *a, const Variant2Impl *b)
      return *v_cast<std::string>(a) == *v_cast<std::string>(b);
     case Variant::NStringArray:
        return *v_cast<StringArray>(a) == *v_cast<StringArray>(b);
-    case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
-    case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
-    case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);
-    case Variant::NRectF: return *v_cast<RectF>(a) == *v_cast<RectF>(b);
-    case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
-    case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
+    case Variant::NSize:    return *v_cast<Size>(a) == *v_cast<Size>(b);
+    case Variant::NSizeF:   return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
+    case Variant::NRectI:   return *v_cast<Rect>(a) == *v_cast<Rect>(b);
+    case Variant::NRectF:   return *v_cast<RectF>(a) == *v_cast<RectF>(b);
+    case Variant::NPoint:   return *v_cast<Point>(a) == *v_cast<Point>(b);
+    case Variant::NPointF:  return *v_cast<PointF>(a) == *v_cast<PointF>(b);
     case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
-    case Variant::Char:
-      return a->data.c == b->data.c;
-    case Variant::Int:
-        return a->data.i == b->data.i;
-    case Variant::UInt:
-        return a->data.u == b->data.u;
-    case Variant::LongLong:
-        return a->data.ll == b->data.ll;
-    case Variant::ULongLong:
-        return a->data.ull == b->data.ull;
-    case Variant::Bool:
-        return a->data.b == b->data.b;
-    case Variant::Double:
-        return a->data.d == b->data.d;
-    case Variant::Float:
-        return a->data.f == b->data.f;
-    case Variant::Date:
-        return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
+    case Variant::Char:     return a->data.c == b->data.c;
+    case Variant::Int:      return a->data.i == b->data.i;
+    case Variant::UInt:     return a->data.u == b->data.u;
+    case Variant::LongLong: return a->data.ll == b->data.ll;
+    case Variant::ULongLong:return a->data.ull == b->data.ull;
+    case Variant::Bool:     return a->data.b == b->data.b;
+    case Variant::Double:   return a->data.d == b->data.d;
+    case Variant::Float:    return a->data.f == b->data.f;
+    case Variant::Date:     return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
 //    case Variant::Time:
 //        return *v_cast<Time>(a) == *v_cast<Time>(b);
-    case Variant::NDateTime: return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
+    case Variant::NDateTime:  return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
     case Variant::NByteArray: return *v_cast<ByteArray>(a) == *v_cast<ByteArray>(b);
-    case Variant::Invalid: return true;
-    case Variant::Long: return compareNumericMetaType<long>(a, b);
-    case Variant::Ulong: return compareNumericMetaType<unsigned long>(a, b);
-    case Variant::Short: return compareNumericMetaType<short>(a, b);
-    case Variant::Ushort: return compareNumericMetaType<unsigned short>(a, b);
-    case Variant::Uchar: return compareNumericMetaType<unsigned char>(a, b);
+    case Variant::Invalid:    return true;
+    case Variant::Long:       return compareNumericMetaType<long>(a, b);
+    case Variant::Ulong:      return compareNumericMetaType<unsigned long>(a, b);
+    case Variant::Short:      return compareNumericMetaType<short>(a, b);
+    case Variant::Ushort:     return compareNumericMetaType<unsigned short>(a, b);
+    case Variant::Uchar:      return compareNumericMetaType<unsigned char>(a, b);
     default:
         break;
     }

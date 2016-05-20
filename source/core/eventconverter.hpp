@@ -27,11 +27,11 @@ public:
   static EventConverter& instance();
   ~EventConverter();
 
-  NEvent get( const SDL_Event& event );
+  NEvent get(const SDL_Event& event);
 
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
     
   EventConverter();
 };

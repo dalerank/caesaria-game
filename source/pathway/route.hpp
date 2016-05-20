@@ -20,34 +20,34 @@
 #include "objects/predefinitions.hpp"
 #include <map>
 
-class DirectRoute : public std::pair<ConstructionPtr,Pathway>
-{
+class DirectRoute {
 public:
   DirectRoute() {}
-  DirectRoute( ConstructionPtr dst, const Pathway& way )
-  {
-    set( dst, way );
+  DirectRoute(ConstructionPtr dst, const Pathway& way) {
+    set(dst, way);
   }
 
-  DirectRoute& operator=( const DirectRoute& a )
-  {
+  DirectRoute& operator=(const DirectRoute& a) {
     set( a.dst(), a.way());
     return *this;
   }
 
-  void set( ConstructionPtr dst, const Pathway& way )
-  {
-    first = dst;
-    second = way;
+  void set(ConstructionPtr dst, const Pathway& way) {
+    _dst = dst;
+    _way = way;
   }
 
   unsigned int length() const { return way().length(); }
   bool isValid() const { return way().isValid(); }
 
-  ConstructionPtr dst() const { return first; }
-  const Pathway& way() const { return second; }
+  ConstructionPtr dst() const { return _dst; }
+  const Pathway& way() const { return _way; }
+
+private:
+  ConstructionPtr _dst;
+  Pathway _way;
 };
 
-typedef std::map < ConstructionPtr, PathwayPtr > DirectPRoutes;
+typedef std::map<ConstructionPtr, PathwayPtr> DirectPRoutes;
 
 #endif //_CAESARIA_APPOINTEDWAY_H_INCLUDE_
