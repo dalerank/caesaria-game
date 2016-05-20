@@ -3,7 +3,7 @@
     anchor.bottom : "lowerRight"
     anchor.top : "lowerRight"
     geometry : [ "50%-20", "100%-42", "50%+19", "100%-16" ]
-    tooltip : "##close_this_window##"
+    tooltip : "##infobox_tooltip_exit##"
     normal : [ "paneling", 239 ]
     hovered : [ "paneling", 240 ]
     pressed : [ "paneling", 241 ]
