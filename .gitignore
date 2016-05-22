@@ -41,6 +41,7 @@ Thumbs.db
 # MSVC ignore
 /Debug
 /debug
+bin/Debug
 bin/*.exe
 bin/*.linux
 bin/saves
