@@ -643,6 +643,13 @@ Variant PlayerCity::getProperty(const std::string& name) const
     }
   }
 
+  if (name == "culture") {
+    city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
+    if (culture.isValid()) {
+      return culture->value();
+    }
+  }
+
   return Variant();
 }
 

@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+  // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,39 +60,6 @@ enum { muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongT
 const char* const cultureCoverageDesc[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
 }
 
-class RatingColumn : public Label
-{
-public:
-  Pictures columns;
-
-  RatingColumn(Widget *parent, const Point& center, int value )
-    : Label( parent )
-  {
-    int columnStartY = 275;
-    Picture footer( gui::rc.panel, gui::column.footer );
-    Picture header( gui::rc.panel, gui::column.header );
-    Picture body( gui::rc.panel, gui::column.body );
-
-    for( int i=0; i < value; i++ )
-    {
-      columns.append( body, Point( center.x() - body.width() / 2, -columnStartY + (10 + i * 2)) );
-    }
-
-    columns.append( footer, Point( center.x() - footer.width() / 2, -columnStartY + footer.height()) );
-    if( value >= 50 )
-    {
-      columns.append( header, Point( center.x() - header.width() / 2, -columnStartY + (10 + value * 2)) );
-    }
-
-    setCenter( center );
-  }
-
-  virtual void draw(Engine &painter)
-  {
-    painter.draw( columns, parent()->absoluteRect().lefttop() );
-  }
-};
-
 class Ratings::Impl
 {
 public:
@@ -106,39 +73,7 @@ public:
   void checkFavourRating();
 };
 
-void Ratings::Impl::checkCultureRating()
-{
-  CultureRatingPtr culture = city->statistic().services.find<CultureRating>();
 
-  if( culture.isValid() )
-  {
-    if( culture->value() == 0  )
-    {
-      lbRatingInfo->setText( _("##no_culture_building_in_city##") );
-      return;
-    }
-
-    StringArray troubles;
-
-    for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
-    {
-      int coverage = culture->coverage( CultureRating::Coverage(k) );
-      int objects_n = culture->objects_n( CultureRating::Coverage(k) );
-      if( objects_n == 0 )
-      {
-        std::string troubleDesc = fmt::format( "##haveno_{}_in_city##", cultureCoverageDesc[ k ] );
-        troubles.push_back( troubleDesc );
-      }
-      else if( coverage < 100 )
-      {
-        std::string troubleDesc = fmt::format( "##have_less_{}_in_city_{}##", cultureCoverageDesc[ k ], coverage / 50 );
-        troubles.push_back( troubleDesc );
-      }
-    }
-
-    lbRatingInfo->setText( _( troubles.random() ) );
-  }
-}
 
 void Ratings::Impl::checkProsperityRating()
 {

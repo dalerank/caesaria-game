@@ -27,8 +27,8 @@ namespace vfs
 class Info
 {
 public:
-  Info( vfs::Path path );
-  Info( const Info& other );
+  Info(vfs::Path path);
+  Info(const Info& other);
 
   DateTime modified() const;
   DateTime created() const;
