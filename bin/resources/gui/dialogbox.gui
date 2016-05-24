@@ -16,7 +16,7 @@
     text : "X"
     anchor.bottom : "lowerRight"
     anchor.top : "lowerRight"
-    tooltip : "##show_this_message_again##"
+    tooltip : "##show_this_msg##"
     font : "FONT_1"
   }
 }

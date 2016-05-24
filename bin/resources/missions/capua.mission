@@ -256,7 +256,7 @@
       wall : false,
       fortification : false,
       gatehouse : false,
-      prefecture : false,
+      prefecture : true,
       fort_legionaries : false,
       fort_javelin : false,
       fort_horse : false,
