@@ -176,7 +176,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->now.workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
     _d->prosperityExtend += (_d->now.workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->now.workersSalary < 0 ? prosperity::penalty : 0);
-   
+
     _d->prosperityExtend += (_city()->haveOverduePayment() ? -prosperity::taxBrokenPenalty : 0);
     _d->prosperityExtend += (_city()->isPaysTaxes() ? -prosperity::taxBrokenPenalty : 0);
 

@@ -204,12 +204,12 @@ sim.ui.advisors.chief.drawEntertainment = function(w) {
   var lastFestivalDate = g_city.lastFestivalDate;
   var monthFromLastFestival = lastFestivalDate.monthsTo(g_session.date);
   if (monthFromLastFestival > 6) {
-    reasons.push( { text:"##citizens_grumble_lack_festivals_held##", color:"yellow" } );
+    reasons.push({text:"##citizens_grumble_lack_festivals_held##", color:"yellow"});
   }
 
   var coverage = g_city.getProperty("theatreCoverage");
   if( coverage >= this.consts.serviceAwesomeCoverage ) {
-    reasons.push( { text:"##current_play_runs_for_another##", color:"yellow" } );
+    reasons.push({text:"##current_play_runs_for_another##", color:"yellow"});
   }
 
   /*int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );

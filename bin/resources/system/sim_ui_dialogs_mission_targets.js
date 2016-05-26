@@ -1,6 +1,6 @@
 sim.ui.dialogs.showMissionTargets = function()
 {
-    var wint = g_session.city.victoryConditions();
+    var wint = g_city.victoryConditions();
     for (var i in wint)
       engine.log(i + "  :  " + wint[i]);
 

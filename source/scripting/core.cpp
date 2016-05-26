@@ -149,7 +149,7 @@ Font engine_js_to(js_State *J, int n, Font)
 
     js_getproperty(J, n, "bold"); bool bold = js_toboolean(J, -1);
     js_getproperty(J, n, "italic"); bool italic = js_toboolean(J, -1);
-    f = Font::create(family, size, bold, italic, color);
+    f = Font::create(family, size, italic, bold, color);
   }
   else if (js_isstring(J, n)) {
     std::string alias = js_tostring(J, n);
