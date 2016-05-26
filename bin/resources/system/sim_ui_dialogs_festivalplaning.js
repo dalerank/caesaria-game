@@ -1,7 +1,3 @@
-function OnShowFestivalPlaningWindow() {
-  game.ui.dialogs.festivalplaning.show();
-}
-
 game.ui.dialogs.festivalplaning = {}
 
 game.ui.dialogs.festivalplaning.gods = [
@@ -10,10 +6,6 @@ game.ui.dialogs.festivalplaning.gods = [
   { type : g_config.gods.mercury, rc: 19},
   { type : g_config.gods.mars, rc: 20},
   { type : g_config.gods.venus, rc: 21},
-]
-
-game.ui.dialogs.festivalplaning.types = [
-
 ]
 
 game.ui.dialogs.festivalplaning.changeType = function(type) {

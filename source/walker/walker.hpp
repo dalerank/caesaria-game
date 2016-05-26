@@ -42,6 +42,7 @@ namespace gfx { class Tile; class Animation; class Tilemap; }
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
+  typedef walker::Type Type;
   typedef unsigned int UniqueId;
   typedef enum { male, female } Gender;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;

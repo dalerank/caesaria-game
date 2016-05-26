@@ -53,6 +53,7 @@ function UpdateWorkingBuildingPrototype(ObjectPrototype, name) {
     Object.defineProperty(ObjectPrototype, "numberWorkers", { get: function () { return this.getProperty("numberWorkers"); }})
     Object.defineProperty(ObjectPrototype, "maximumWorkers", { get: function () { return this.getProperty("maximumWorkers"); }})
     Object.defineProperty(ObjectPrototype, "needWorkers", { get: function () { return this.getProperty("needWorkers"); }})
+    Object.defineProperty(ObjectPrototype, "workerType", { get: function () { return this.getProperty("workerType"); }})    
 }
 
 function UpdateTemplePrototype(ObjectPrototype, name) {
@@ -99,6 +100,10 @@ function UpdateServiceBuildingPrototype(ObjectPrototype, name) {
 function UpdateEntertainmentBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
 
+    Object.defineProperty(ObjectPrototype, "maxVisitors", {
+        get: function () { return this.getProperty("maxVisitors"); }
+    })
+
     Object.defineProperty(ObjectPrototype, "currentVisitors", {
         get: function () { return this.getProperty("currentVisitors"); }
     })
@@ -106,6 +111,14 @@ function UpdateEntertainmentBuildingPrototype(ObjectPrototype, name) {
 
 function UpdateEducationBuildingPrototype(ObjectPrototype, name) {
     UpdateServiceBuildingPrototype(ObjectPrototype, name);
+}
+
+function UpdateHealthBuildingPrototype(ObjectPrototype, name) {
+    UpdateServiceBuildingPrototype(ObjectPrototype, name);
+
+    Object.defineProperty(ObjectPrototype, "patientsCurrent", {
+        get: function () { return this.getProperty("patientsCurrent"); }
+    })
 }
 
 function UpdateTrainingBuildingPrototype(ObjectPrototype, name) {
@@ -135,6 +148,9 @@ UpdateTrainingBuildingPrototype(WorkshopChariot.prototype, "WorkshopChariot");
 /*************** Service buildings ************/
 UpdateServiceBuildingPrototype(Fountain.prototype, "Fountain");
 UpdateServiceBuildingPrototype(Market.prototype, "Market");
+
+/*************** Health buildings ************/
+UpdateHealthBuildingPrototype(HealthBuilding.prototype, "HealthBuilding");
 
 /*************** Other buildings **************/
 UpdateTemplePrototype(Temple.prototype, "Temple");

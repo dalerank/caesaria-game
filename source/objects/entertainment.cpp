@@ -103,6 +103,12 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
+Variant EntertainmentBuilding::getProperty(const std::string& name) const
+{
+  if (name == "maxVisitors") return maxVisitors();
+  if (name == "currentVisitors") return currentVisitors();
+}
+
 const EntertainmentBuilding::IncomeWays& EntertainmentBuilding::incomes() const { return _d->incomes; }
 unsigned int EntertainmentBuilding::showsCount() const { return _d->showCounter; }
 bool EntertainmentBuilding::isShow() const {   return animation().isRunning(); }

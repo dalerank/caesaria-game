@@ -25,7 +25,7 @@ g_config.buildmenu = {
     buildings : [ "forum", "senate", "governorHouse", "governorVilla",
                   "governorPalace", "statue_small", "statue_middle",
                   "statue_big" ]
-  }, 
+  },
 
   entertainment : {
     buildings : [ "theater", "amphitheater", "colosseum", "hippodrome", "actorColony",
@@ -87,7 +87,7 @@ sim.ui.buildmenu.hide = function() {
 }
 
 sim.ui.buildmenu.isBranchAvailable = function(branch) {
-  var city = g_session.city;
+  var city = g_city;
   if (g_config.buildmenu[branch]) {
     var currentBranch = g_config.buildmenu[branch];
     if (currentBranch.buildings != undefined) {
@@ -144,7 +144,7 @@ sim.ui.buildmenu.show = function(type, left, top) {
       title = _u(type);
 
     if (type) {
-      var av = g_session.city.getBuildOption(type);
+      var av = g_city.getBuildOption(type);
       engine.log("Build menu add type " + ltype + ":" + (av?"true":"false"));
       if (!av)
         return;

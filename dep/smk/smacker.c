@@ -765,11 +765,6 @@ static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned
 	i = 0; /* index into NEW palette */
 	j = 0; /* Index into OLD palette */
 
-	if (s->palette)
-	{
-		memcpy(t,s->palette, 3 * 256 );
-	}
-
 	while ( (i < 768) && (size > 0) ) /* looping index into NEW palette */
 	{
 		if ((*p) & 0x80)
@@ -780,19 +775,18 @@ static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned
 			p ++; size --;
 
 			/* check for overflow condition */
-			if (j + k > 768 || i + k > 768)
+			if (i + k > 768)
 			{
-				fprintf(stderr,"libsmacker::palette_render(s,p,size) - ERROR: overflow, 0x80 attempt to copy %d bytes from %d to %d\n",k,j,i);
+				fprintf(stderr,"libsmacker::palette_render(s,p,size) - ERROR: overflow, 0x80 attempt to copy %d bytes from %d\n",k,i);
 				goto error;
 			}
 
 			/* if prev palette exists, copy... else memset black */
-			/*if (s->palette)
+			if (s->palette)
 			{
-				memcpy(&t[i],&s->palette[j],k);
-			}*/
+				memcpy(&t[i],&s->palette[i],k);
+			}
 			i += k;
-			j += k;
 		}
 		else if ((*p) & 0x40)
 		{

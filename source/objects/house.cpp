@@ -1159,7 +1159,9 @@ Variant House::getProperty(const std::string & name) const
   if (name == "mature_n") return habitants().mature_n();
   if (name == "habitable") return habitants().count() > 0;
   if (name == "minEducationLevel") return spec().minEducationLevel();
-
+  if (name == "minEntertainmentLevel") return spec().minEntertainmentLevel();
+  if (name == "minHealthLevel") return spec().minHealthLevel();
+  if (name == "nextEntertainmentLevel") return spec().computeEntertainmentLevel(const_cast<House*>(this));
 
   return Building::getProperty(name);
 }
@@ -1284,10 +1286,14 @@ bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCh
 
 void House::addWalker(WalkerPtr walker)
 {
-  if( !_d->walkers.contain( walker ) )
-  {
-    _d->walkers.push_back( walker );
+  if (!_d->walkers.contain(walker)) {
+    _d->walkers.push_back(walker);
   }
+}
+
+bool House::ready4evolve(object::Type type) const
+{
+  return _d->spec.next().checkHouse(const_cast<House*>(this), nullptr, &type);
 }
 
 const WalkerList& House::walkers() const
@@ -1426,35 +1432,6 @@ unsigned int House::unemployed() const
 float House::isEvolveEducationNeed(Service::Type type)
 {
   return spec().next().evaluateEducationNeed(this, type);
-}
-
-bool House::isEntertainmentNeed(Service::Type type) const
-{
-  int lvl = _d->spec.minEntertainmentLevel();
-  switch( type )
-  {
-  case Service::theater: return (lvl>=10);
-  case Service::amphitheater: return (lvl>=30);
-  case Service::colosseum: return (lvl>=60);
-  case Service::hippodrome: return (lvl>=80);
-  default: break;
-  }
-
-  return false;
-}
-
-bool House::isHealthNeed(Service::Type type) const
-{
-  int lvl = _d->spec.minHealthLevel();
-  switch( type )
-  {
-  case Service::baths: return (lvl>0);
-  case Service::doctor: return (lvl>=1);
-  case Service::hospital: return (lvl>=2);
-  default: break;
-  }
-
-  return false;
 }
 
 float House::collectTaxes()

@@ -1,7 +1,5 @@
 #define TEMPLATE_WIDGET_BEGIN(WidgetType) \
 SCRIPT_OBJECT_BEGIN(WidgetType) \
-  SCRIPT_OBJECT_FUNCTION(WidgetType,width,0) \
-  SCRIPT_OBJECT_FUNCTION(WidgetType,height,0) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setWidth,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,setHeight,1) \
   SCRIPT_OBJECT_FUNCTION(WidgetType,bottom,0) \
@@ -44,8 +42,6 @@ SCRIPT_OBJECT_BEGIN(WidgetType) \
 SCRIPT_OBJECT_END(WidgetType)
 
 #define TEMPLATE_WIDGET_IMPLEMENTATION(WidgetType) \
-DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,width) \
-DEFINE_OBJECT_GETTER_0(WidgetType,unsigned int,height) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,bottom) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,top) \
 DEFINE_OBJECT_GETTER_0(WidgetType,int,screenTop) \
@@ -57,7 +53,7 @@ DEFINE_OBJECT_GETTER_0(WidgetType,int,right) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,visible) \
 DEFINE_OBJECT_GETTER_0(WidgetType,bool,isNotClipped) \
 DEFINE_OBJECT_GETTER_0(WidgetType,const Rect&,relativeRect) \
-DEFINE_OBJECT_GETTER_1(WidgetType,const Variant&,getProperty,const std::string&,"") \
+DEFINE_OBJECT_GETTER_1(WidgetType,Variant,getProperty,const std::string&,"") \
 DEFINE_OBJECT_GETTER_2(WidgetType,findChild,std::string,bool) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,deleteLater) \
 DEFINE_OBJECT_FUNCTION_0(WidgetType,bringToFront) \
@@ -69,7 +65,7 @@ DEFINE_OBJECT_FUNCTION_1(WidgetType,setHeight,int) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setText,std::string) \
 DEFINE_OBJECT_FUNCTION_2(WidgetType,setTextAlignment,std::string,std::string) \
 DEFINE_OBJECT_FUNCTION_4(WidgetType,setAlignment,Alignment,Alignment,Alignment,Alignment) \
-DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,std::string) \
+DEFINE_OBJECT_FUNCTION_1(WidgetType,setFont,Font) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setInternalName,std::string) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setGeometry,Rect) \
 DEFINE_OBJECT_FUNCTION_1(WidgetType,setPosition,Point) \

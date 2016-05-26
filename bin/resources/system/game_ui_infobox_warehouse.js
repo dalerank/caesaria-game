@@ -193,7 +193,7 @@ game.ui.infobox.aboutStorage = function (x, y, w, h) {
 }
 
 game.ui.infobox.aboutGranary = function (location) {
-    var granary = g_session.city.getOverlay(location).as(Granary);
+    var granary = g_city.getOverlay(location).as(Granary);
 
     var ibox = this.aboutStorage(0, 0, 510, 280);
     ibox.initBlackframe(16, 150, ibox.w - 32, 58);
@@ -236,7 +236,7 @@ game.ui.infobox.aboutGranary = function (location) {
 }
 
 game.ui.infobox.aboutWarehouse = function (location) {
-    var wh = g_session.city.getOverlay(location).as(Warehouse);
+    var wh = g_city.getOverlay(location).as(Warehouse);
 
     var ibox = this.aboutStorage(0, 0, 510, 360);
 

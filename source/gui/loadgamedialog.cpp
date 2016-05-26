@@ -50,22 +50,23 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   LINK_WIDGET_LOCAL_ACTION(PushButton*, btnSort, onClicked(), LoadGame::_changeSort)
 
   _changeSort();
+  setWindowFlag(Window::fdraggable, false);
 }
 
 namespace internal{
 
-StringArray sortByDate( const vfs::Entries& array )
+StringArray sortByDate(const vfs::Entries& array)
 {
   std::map<DateTime,std::string> sortedByTime;
-  for( const auto& item : array.items() )
-  {
+  for (const auto& item : array.items()) {
     DateTime time = vfs::Info( item.fullpath ).modified();
-    sortedByTime[ time ] = item.fullpath.toString();
+    sortedByTime[time] = item.fullpath.toString();
   }
 
   StringArray ret;
-  for( const auto& item : sortedByTime )
+  for( const auto& item : sortedByTime ) {
     ret.push_front( item.second );
+  }
 
   return ret;
 }
@@ -73,14 +74,13 @@ StringArray sortByDate( const vfs::Entries& array )
 StringArray sortWithName( const vfs::Entries& array, const StringArray& parts, bool negative=false )
 {
   StringArray sortedByName;
-  for( const auto& item : array.items() )
-  {
+  for (const auto& item : array.items()) {
     bool containPart = false;
 
-    for( const auto& part : parts )
+    for (const auto& part : parts)
       containPart |= (item.name.toString().find( part ) != std::string::npos);
 
-    if( (negative && !containPart) || (containPart && !negative))
+    if ((negative && !containPart) || (containPart && !negative))
       sortedByName.push_back( item.fullpath.toString() );
   }
 
@@ -92,12 +92,12 @@ StringArray sortWithName( const vfs::Entries& array, const StringArray& parts, b
 void LoadGame::_fillFiles()
 {
   FileListBox* lbxFiles = _fileslbx();
-  if( !lbxFiles )
+  if (!lbxFiles)
     return;
 
   lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( _directory() ).entries();
+  vfs::Entries flist = _directory().entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, _extensions() );
 
   StringArray names;
@@ -139,10 +139,9 @@ void LoadGame::_fillFiles()
   break;
   }
 
-  for( const auto& path : names )
-  {
-    ListBoxItem& item = lbxFiles->addItem( path, Font(), ColorList::black );
-    vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );
+  for (const auto& path : names) {
+    ListBoxItem& item = lbxFiles->addItem(path, Font(), ColorList::black);
+    vfs::Path imgpath = vfs::Path(path).changeExtension("png");
     item.setData( "image", imgpath.toString() );
   }
 

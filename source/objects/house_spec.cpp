@@ -349,8 +349,7 @@ int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissing
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
-   if (house->hasServiceAccess(Service::baths))
-   {
+   if (house->hasServiceAccess(Service::baths)) {
       res = 1;
 
       if (house->hasServiceAccess(Service::doctor) || house->hasServiceAccess(Service::hospital))

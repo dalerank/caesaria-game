@@ -268,14 +268,6 @@ public:
     Statistic& _parent;
   } religion;
 
-
-  struct _Entertainment
-  {
-    int coverage(Service::Type service) const;
-
-    Statistic& _parent;
-  } entertainment;
-
   struct _Education
   {
     EducationBuildingList find(Service::Type service) const;

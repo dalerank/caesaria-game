@@ -121,6 +121,9 @@ public:
   bool getBuildOption(const std::string& name,bool) const;
   void setBuildOption(const std::string& name, int value);
   void createIssue(const std::string& name, int value);
+  int getIssueValue(const std::string& name, int year) const;
+
+  int getProsperityMark(int mark) const;
 
   /** Return current information about city */
   virtual const city::States& states() const;
@@ -154,6 +157,8 @@ public:
   int getOption(const std::string& optname,bool) const;
   Variant getProperty(const std::string& name) const;
 
+  int getParam(int monthAgo, int type) const;
+  int getYearParam(int yearAgo, int type) const;
   void clean();
 
   /** Change tile map in city */

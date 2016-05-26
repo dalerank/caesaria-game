@@ -26,6 +26,17 @@ g_config.audio = {
     infobox : 6
 }
 
+g_config.labor = {
+  highWorkless:15,
+  muchPlebsPercent:30
+}
+
+g_config.ratings = {
+  peaceAverage:50,
+  amazinProsperity:90,
+  peaceLongTime:90
+}
+
 g_config.climate = {
     central: 0,
     northen: 1,
@@ -94,4 +105,55 @@ g_config.saves = {
     ext : ".oc3save",
     fast : "_fastsave",
     auto : "_autosave",
+}
+
+g_config.history = {
+  thisMonth : 0,
+  lastMonth : 1,
+  thisYear : 0,
+  lastYear : 1,
+  twoYearsAgo : 2
+}
+
+g_config.cityparam = {
+  population:0,
+  funds:1,
+  tax:2,
+  taxpayes:3,
+  monthWithFood:4,
+  foodKoeff:5,
+  godsMood:6,
+  needWorkers:7,
+  maxWorkers:8,
+  workless:9,
+  crimeLevel:10,
+  colosseumCoverage:11,
+  theaterCoverage:12,
+  entertainment:13,
+  lifeValue:14,
+  education:15,
+  payDiff:16,
+  monthWtWar:17,
+  cityWages:18,
+  romeWages:19,
+  peace:20,
+  milthreat:21,
+  houseNumber:22,
+  slumNumber:23,
+  shackNumber:24,
+  sentiment:25,
+  foodStock:26,
+  foodMontlyConsumption:27,
+  favour:28,
+  prosperity:29,
+  blackHouses:30,
+}
+
+g_config.prosperity = {
+  housesCap:0,
+  haveProfit:1,
+  worklessPercent:2,
+  workersSalary:3,
+  changeValue:4,
+  plebsPercent:5
 }

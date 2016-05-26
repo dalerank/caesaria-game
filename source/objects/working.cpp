@@ -212,27 +212,26 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 
 void WorkingBuilding::_changeAnimationState(bool enabled)
 {
-  if( enabled )
+  if (enabled) {
     _animation().start();
-  else
-  {
+  } else {
     _animation().stop();
 
-    if( _d->clearAnimationOnStop && !_fgPictures().empty() )
-    {
+    if( _d->clearAnimationOnStop && !_fgPictures().empty() ) {
       _fgPictures().back() = Picture::getInvalid();
     }
   }
 }
 
 void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
-walker::Type WorkingBuilding::workerType() { return _d->workers.type; }
+walker::Type WorkingBuilding::workerType() const { return _d->workers.type; }
 
 Variant WorkingBuilding::getProperty(const std::string& name) const
 {
   if (name == "maximumWorkers") return maximumWorkers();
   if (name == "numberWorkers") return numberWorkers();
   if (name == "needWorkers") return needWorkers();
+  if (name == "workerType") return workerType();
 
   return Building::getProperty(name);
 }
@@ -241,8 +240,8 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
-  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
+  events::dispatch<ReturnWorkers>(pos(), numberWorkers());
+  events::dispatch<RemoveCitizens>(pos(), CitizenGroup(CitizenGroup::mature, buriedCitizens));
 
   setWorkers( 0 );
 }

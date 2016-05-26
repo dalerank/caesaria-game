@@ -141,6 +141,13 @@ void HealthBuilding::initialize(const object::Info& mdata)
   _d->patients.max = mdata.getOption( "patients.max" );
 }
 
+Variant HealthBuilding::getProperty(const std::string& name) const
+{
+  if (name == "patientsCurrent") return patientsCurrent();
+
+  return ServiceBuilding::getProperty(name);
+}
+
 HealthBuilding::~HealthBuilding() {}
 
 unsigned int HealthBuilding::patientsMax() const { return _d->patients.max; }

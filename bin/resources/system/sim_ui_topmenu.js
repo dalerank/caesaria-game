@@ -1,7 +1,7 @@
 sim.ui.topmenu.labels = {}
 
 sim.ui.topmenu.updateCityStats = function() {
-  var states = g_session.city.states();
+  var states = g_city.states();
   sim.ui.topmenu.setPopulation(states.population)
   sim.ui.topmenu.setFunds(states.money)
   sim.ui.topmenu.setDate(g_session.date)
@@ -36,7 +36,7 @@ sim.ui.topmenu.options.init = function() {
     m.addItemWithCallback("##speed_settings##",  function() { sim.ui.dialogs.showSpeedOptions() } )
     m.addItemWithCallback("##city_settings##", function () { sim.ui.dialogs.citySettings.show() } )
     m.addItemWithCheckingCallback("##city_constr_mode##", function(checked) {
-      g_session.city.setOption("constructorMode",checked);
+      g_city.setOption("constructorMode",checked);
       sim.ui.menu.reset();
     } )
 }

@@ -77,7 +77,9 @@ inline int32_t engine_js_to(js_State *J, int n, int32_t) { return js_toint32(J, 
 inline unsigned int engine_js_to(js_State *J, int n, unsigned int) { return js_touint32(J, n); }
 inline good::Product engine_js_to(js_State *J, int n, good::Product) { return (good::Product)js_touint32(J, n); }
 inline Service::Type engine_js_to(js_State *J, int n, Service::Type) { return (Service::Type)js_touint32(J, n); }
+inline Walker::Type engine_js_to(js_State *J, int n, Walker::Type) { return (Walker::Type)js_touint32(J, n); }
 inline Tile::Type engine_js_to(js_State *J, int n, Tile::Type) { return (Tile::Type)js_touint32(J, n); }
+inline object::Type engine_js_to(js_State *J, int n, object::Type) { return (object::Type)js_touint32(J, n); }
 inline Orders::Order engine_js_to(js_State *J, int n, Orders::Order) { return (Orders::Order)js_touint32(J, n); }
 inline gui::ElementState engine_js_to(js_State *J, int n, gui::ElementState) { return (gui::ElementState)js_touint32(J, n); }
 inline Walker::Flag engine_js_to(js_State *J, int n, Walker::Flag) { return (Walker::Flag)js_touint32(J, n); }
@@ -139,15 +141,15 @@ Font engine_js_to(js_State *J, int n, Font)
       size = js_toint32(J, -1);
     }
 
-    int color = ColorList::pink.color;
+    NColor color = ColorList::pink;
     if (js_hasproperty(J, n, "color")) {
       js_getproperty(J, n, "color");
-      color = js_toint32(J, -1);
+      color = ColorList::find(js_tostring(J, -1));
     }
 
     js_getproperty(J, n, "bold"); bool bold = js_toboolean(J, -1);
     js_getproperty(J, n, "italic"); bool italic = js_toboolean(J, -1);
-    f = Font::create(family, size, bold, italic, NColor(color));
+    f = Font::create(family, size, italic, bold, color);
   }
   else if (js_isstring(J, n)) {
     std::string alias = js_tostring(J, n);
@@ -163,8 +165,7 @@ bool engine_js_tryPCall(js_State *J, int params)
   try
   {
     int error = js_pcall(internal::J, params);
-    if (error)
-    {
+    if (error) {
       std::string str = js_tostring(internal::J, -1);
       Logger::warning(str);
     }
@@ -336,7 +337,13 @@ void engine_js_push(js_State* J,const Variant& param)
   case Variant::Date:
   case Variant::Time:
   case Variant::NDateTime:
-    engine_js_push(J, param.toDateTime());
+  {
+    js_newobject(J);
+    DateTime dt = param.toDateTime();
+    js_pushnumber(J, dt.year()); js_setproperty(J, -2, "year");
+    js_pushnumber(J, (int)dt.month()); js_setproperty(J, -2, "month");
+    js_pushnumber(J, dt.day()); js_setproperty(J, -2, "day");
+  }
   break;
 
   case Variant::NStringArray:
@@ -367,7 +374,7 @@ template<class Type>
 void engine_js_pushud_new(js_State *J, const Type& p, const std::string& tname, js_Finalize destructor)
 {
   auto pd = new Type(p);
-  engine_js_pushud(J, tname, pd,  destructor);
+  engine_js_pushud(J, tname, pd, destructor);
 }
 
 #define PREDEFINE_TYPE_DESTRUCTOR(type) void destructor_##type(js_State* J, void* p);
@@ -701,7 +708,7 @@ void destructor_jsobject(js_State *J, void* p)
 }
 
 template<typename T>
-void constructor_jsobject(js_State *J)
+void constructor_jsobject(js_State *J, const char* tname)
 {
   js_currentfunction(J);
   js_getproperty(J, -1, "prototype");
@@ -966,7 +973,7 @@ void reg_widget_constructor(js_State *J, const std::string& name)
 }
 
 #define DEFINE_OBJECT_DESTRUCTOR(name) void destructor_##name(js_State *J, void* p) { destructor_jsobject<name>(J,p); }
-#define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J); }
+#define DEFINE_OBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_jsobject<name>(J,#name); }
 #define DEFINE_GAMEOBJECT_CONSTRUCTOR(name) void constructor_##name(js_State *J) { constructor_go_jsobject<name>(J, #name); }
 #define DEFINE_OBJECT_FUNCTION_0(name,funcname) void name##_##funcname(js_State *J) { auto p=&name::funcname; object_call_func_0<name>(J,p); }
 

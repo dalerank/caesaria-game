@@ -39,13 +39,13 @@ sim.ui.dialogs.scribesmessages.show = function() {
   ibox.lbxMessages.background = true;
 
   ibox.lbxMessages.onRmbSelectedCallback = function(index) {
-    var scribes = g_session.city.scribes();
+    var scribes = g_city.scribes();
     scribes.removeMessage(index);
     ibox.update();
   }
 
   ibox.lbxMessages.onSelectedCallback = function(index) {
-    var scribes = g_session.city.scribes();
+    var scribes = g_city.scribes();
     var message = scribes.getMessage(index);
     scribes.readMessage(index);
     game.ui.infobox.aboutEvent(message.title, message.text, message.date, message.good, message.adv);
@@ -57,7 +57,7 @@ sim.ui.dialogs.scribesmessages.show = function() {
   ibox.update = function() {
     ibox.lbxMessages.clear();
 
-    var scribes = g_session.city.scribes();
+    var scribes = g_city.scribes();
 
     if (scribes.getMessagesNumber() == 0) {
       lbDate.display = false;

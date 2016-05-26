@@ -22,3 +22,4 @@
 #include "objects/theater.hpp"
 #include "objects/amphitheater.hpp"
 #include "objects/education.hpp"
+#include "objects/health.hpp"

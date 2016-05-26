@@ -76,7 +76,7 @@ sim.ui.advisors.education.getTrouble = function() {
 sim.ui.advisors.education.getCityInfo = function() {
   var sumScholars = 0;
   var sumStudents = 0;
-  var houses = g_session.city.findOverlays("house");
+  var houses = g_city.findOverlays("house");
 
   for (var i in houses) {
     var house = houses[i];
@@ -85,7 +85,7 @@ sim.ui.advisors.education.getCityInfo = function() {
   }
 
   return _format( "{0} {1}, {2} {3}, {4} {5}",
-                  g_session.city.population, _ut("people"),
+                  g_city.population, _ut("people"),
                   sumScholars, _ut("scholars"),
                   sumStudents, _ut("students") );
 }
@@ -96,7 +96,7 @@ sim.ui.advisors.education.showDetails = function(objType) {
   var blackFrame = ibox.addLabel(15, 15, w.w-30, w.h-50);
   blackFrame.style = "blackFrame";
 
-  var buildings = g_session.city.findOverlays(objType);
+  var buildings = g_city.findOverlays(objType);
   var ry = 5;
   for (var i in buildings) {
     var bld = buildings[i].as(EducationBuilding);
@@ -154,7 +154,7 @@ sim.ui.advisors.education.getInfo = function(bType) {
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  var servBuildings = g_session.city.findOverlays(bType);
+  var servBuildings = g_city.findOverlays(bType);
 
   ret.buildingCount = servBuildings.length;
   for (var i=0; i < servBuildings.length; ++i) {
@@ -165,7 +165,7 @@ sim.ui.advisors.education.getInfo = function(bType) {
     }
   }
 
-  var houses = g_session.city.findOverlays("house");
+  var houses = g_city.findOverlays("house");
   var param = sim.ui.advisors.education.param;
   var minAccessLevel = param.awesomeAccessValue;
 
@@ -175,7 +175,7 @@ sim.ui.advisors.education.getInfo = function(bType) {
     if (!house.habitable)
       continue;
 
-    ret.need += ( house[ret.age] * ( house.isEducationNeed(ret.service) ? 1 : 0 ) );
+    ret.need += ( house.getHabitantsNumber(ret.age) * ( house.isEducationNeed(ret.service) ? 1 : 0 ) );
     ret.nextLevel += (house.isEvolveEducationNeed(ret.service) == param.awesomeAccessValue ? 1 : 0);
     minAccessLevel = Math.min(house.getServiceValue(ret.service), minAccessLevel);
   }
@@ -221,12 +221,12 @@ sim.ui.advisors.education.show = function() {
 
   var lbCityInfo = w.addLabel(65, 40, 550, 30);
   lbCityInfo.font = "FONT_1";
-  lbCityInfo.text = _u(sim.ui.advisors.education.getCityInfo());
+  lbCityInfo.text = sim.ui.advisors.education.getCityInfo();
 
   var lbTroubleInfo = w.addLabel(40, w.h-90, w.w-80, 85);
   lbTroubleInfo.multiline = true;
   lbTroubleInfo.font = "FONT_1";
-  //lbTroubleInfo.text = _u(sim.ui.advisors.education.getTrouble());
+  lbTroubleInfo.text = _u(sim.ui.advisors.education.getTrouble());
 
   w.btnHelp = w.addHelpButton(12, w.h - 36);
   w.btnHelp.uri = "education_advisor";

@@ -48,6 +48,7 @@ public:
   void setMinutes( unsigned char minute );
   void setDay( unsigned char day );
   void setSeconds( unsigned char second );
+  void setDate(unsigned int year, unsigned int month, unsigned int day);
 
   explicit DateTime( const char* strValue );
   explicit DateTime( time_t time );

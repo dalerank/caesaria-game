@@ -48,7 +48,6 @@ public:
   virtual void destroy();
   virtual void collapse();
   virtual void burn();
-  virtual walker::Type workerType();
   virtual Variant getProperty(const std::string &name) const;
 
   virtual void timeStep(const unsigned long time);
@@ -65,6 +64,7 @@ public:
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
   bool haveWalkers() const;
+  walker::Type workerType() const;
 
   virtual std::string errorDesc() const;
   virtual std::string workersProblemDesc() const;

@@ -15,10 +15,7 @@ Path.prototype.slice = function (str) {
 /**************************************** Camera class begin **************************************************************/
 Object.defineProperty(Camera.prototype, "worldCenter", {
     get: function () {
-        return {
-            x: this.centerX(),
-            y: this.centerZ()
-        }
+        return { x: this.centerX(), y: this.centerZ() }
     }
 })
 
@@ -103,6 +100,7 @@ Object.defineProperty(Session.prototype, "resolution", {
         return this.getResolution()
     }
 })
+
 Object.defineProperty(Session.prototype, "metric", {
     get: function () {
         return this.getAdvflag("metric")

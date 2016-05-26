@@ -5,7 +5,7 @@ sim.ui.topmenu.debug.reset = function()
 }
 
 sim.ui.topmenu.debug.addGood2Wh = function(type) {
-  var whs = g_session.city.findOverlays("warehouse");
+  var whs = g_city.findOverlays("warehouse");
   for(var i in whs) {
     var warehouse = whs[i].as(Warehouse);
     warehouse.pushToStore(type, 400);
@@ -38,7 +38,7 @@ sim.ui.topmenu.debug.init = function()
 
   topmenu.addItemWithCallback("Debug/money", "Add 1000 dn to city", function() {
       engine.log("Added 1000 dn to city")
-      g_session.city.createIssue("donation",1000)
+      g_city.createIssue("donation",1000)
   } )
   topmenu.addItemWithCallback("Debug/money", "Add 1000 dn to player", function() {
     g_session.player.appenMoney(1000);
@@ -124,9 +124,9 @@ sim.ui.topmenu.debug.init = function()
   topmenu.addItemWithCallback("Debug/city", "add_city_border", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "crash_favor", function() {engine.log("test")} )
   topmenu.addItemWithCallback("Debug/city", "show_fest", function() {engine.log("test")} )*/
-  topmenu.addItemWithCallback("Debug/city", "add_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), 10)} )
-  topmenu.addItemWithCallback("Debug/city", "Add scribe message", function() { g_session.city.scribes().addSimpleMessage("test_message", "this is test message from yout scribes")} )
-  topmenu.addItemWithCallback("Debug/city", "remove_favor", function() { g_session.emperor.updateRelation( g_session.city.name(), -10)} )
+  topmenu.addItemWithCallback("Debug/city", "add_favor", function() { g_session.emperor.updateRelation( g_city.name(), 10)} )
+  topmenu.addItemWithCallback("Debug/city", "Add scribe message", function() { g_city.scribes().addSimpleMessage("test_message", "this is test message from yout scribes")} )
+  topmenu.addItemWithCallback("Debug/city", "remove_favor", function() { g_session.emperor.updateRelation( g_city.name(), -10)} )
 
   topmenu.addItemWithCallback("Debug/windows", "emperor gift", function() {game.ui.dialogs.gift2emperor.show()} )
   topmenu.addItemWithCallback("Debug/windows", "change salary", function() {game.ui.dialogs.playerSalarySettings.show()} )
@@ -172,15 +172,15 @@ sim.ui.topmenu.debug.init = function()
 }
 
 sim.ui.topmenu.debug.toggleBuildOptions = function(name) {
-  var value = g_session.city.getBuildOption(name);
-  g_session.city.setBuildOption(name,!value);
+  var value = g_city.getBuildOption(name);
+  g_city.setBuildOption(name,!value);
 
   engine.log( "Change build flag " + name + " to " + (!value ? "true" : "false"))
 }
 
 sim.ui.topmenu.debug.toggleCityFlag = function(name) {
-  var value = g_session.city.getOption(name)
-  g_session.city.setOption(name, !value)
+  var value = g_city.getOption(name)
+  g_city.setOption(name, !value)
 
   engine.log( "Change city flag " + name + " to " + (!value ? "true" : "false"))
 }

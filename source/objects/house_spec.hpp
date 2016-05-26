@@ -33,7 +33,6 @@ class HouseSpecification
 
 public:
   typedef enum { intv_foods=0, intv_goods, intv_service, intv_count } IntervalName;
-  enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
 
   HouseLevel::ID level() const;
   int tileCapacity() const;
@@ -108,7 +107,7 @@ public:
   ~HouseSpecHelper();
 private:
   HouseSpecHelper();
-  
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

@@ -1,5 +1,5 @@
 game.ui.infobox.aboutMarket = function(location) {
-  var market = g_session.city.getOverlay(location).as(Market);
+  var market = g_city.getOverlay(location).as(Market);
 
   var ibox = this.aboutConstruction(0, 0, 510, 256);
   ibox.initBlackframe(16, 155, ibox.w-32, 52);

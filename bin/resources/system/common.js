@@ -1,3 +1,5 @@
+var Utils = {};
+
 function _t(text) { return engine.translate(text) }
 
 function _u(text) {
@@ -18,3 +20,15 @@ var _format = function() {
     }
     return formatted
 };
+
+Utils.clone = function(obj) {
+  if (obj == null)
+    return null;
+
+  var ret = new Object();
+  for (var i in obj) {
+    ret[i] = obj[i];
+  }
+
+  return ret;
+}

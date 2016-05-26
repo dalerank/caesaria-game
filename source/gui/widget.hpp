@@ -432,7 +432,7 @@ public:
 
   void addProperty(const std::string& name, const Variant &value);
   void setProperty(const std::string& name, const Variant &value);
-  const Variant& getProperty( const std::string& name ) const;
+  Variant getProperty(const std::string& name) const;
   const VariantMap& properties() const;
 
 protected:

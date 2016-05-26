@@ -32,12 +32,8 @@
 #include "advisor_employers_window.hpp"
 #include "advisor_legion_window.hpp"
 #include "advisor_emperor_window.hpp"
-#include "advisor_ratings_window.hpp"
 #include "advisor_trade_window.hpp"
-#include "advisor_health_window.hpp"
-#include "advisor_entertainment_window.hpp"
 #include "advisor_finance_window.hpp"
-#include "advisor_chief_window.hpp"
 #include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
@@ -249,23 +245,11 @@ void ParlorModel::switchAdvisor(Advisor type)
   case advisor::empire:
     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent );
   break;
-  case advisor::ratings:
-    d.advisorPanel = new advisorwnd::Ratings( d.parent, d.city );
-  break;
   case advisor::trading:
     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );
   break;
-  case advisor::health:
-    d.advisorPanel = new advisorwnd::Health( d.city, d.parent );
-  break;
-  case advisor::entertainment:
-    d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent );
-  break;
   case advisor::finance:
     d.advisorPanel = new advisorwnd::Finance( d.city, d.parent );
-  break;
-  case advisor::main:
-    d.advisorPanel = new advisorwnd::Chief( d.city, d.parent );
   break;
 
   default:

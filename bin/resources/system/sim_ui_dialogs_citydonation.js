@@ -82,7 +82,7 @@ game.ui.dialogs.citydonation.show = function() {
   btnSend.style = "whiteBorderUp"
   btnSend.callback = function() {
     g_session.player.appendMoney(-ibox.denaries2send);
-    g_session.city.createIssue("donation",ibox.denaries2send)
+    g_city.createIssue("donation",ibox.denaries2send)
 
     //_updatePrimaryFunds();
     ibox.deleteLater();

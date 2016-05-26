@@ -142,11 +142,11 @@ game.ui.infobox.show = function(typename,location)
 }
 
 game.ui.infobox.tryShow = function (location) {
-  var walkers = g_session.city.walkers(location);
+  var walkers = g_city.walkers(location);
   if (walkers.length > 0) {
     game.ui.infobox.wshow(walkers, location);
   } else {
-    var overlay = g_session.city.getOverlay(location)
+    var overlay = g_city.getOverlay(location)
     game.ui.infobox.show( overlay == null || overlay == undefined ? "" : overlay.typename, location)
   }
 }

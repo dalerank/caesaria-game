@@ -1,5 +1,5 @@
 game.ui.infobox.aboutHouse = function(location) {
-  var house = g_session.city.getOverlay(location).as(House);
+  var house = g_city.getOverlay(location).as(House);
   var habitantsCount = house.getProperty("habitantsCount");
   if (habitantsCount==0) {
     return game.ui.infobox.aboutFreeHouse(house);
@@ -49,7 +49,7 @@ game.ui.infobox.aboutHouse = function(location) {
       var unwishedBuildingPos = house.getProperty("unwishedBuildingPos");
 
       text = _t(text);
-      var overlay = g_session.city.getOverlay(unwishedBuildingPos);
+      var overlay = g_city.getOverlay(unwishedBuildingPos);
       if (overlay != null) {
         var unwishedBuildingType = overlay.typename;
         if( overlay.typename == "house" ) {
