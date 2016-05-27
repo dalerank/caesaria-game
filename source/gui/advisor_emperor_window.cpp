@@ -51,10 +51,8 @@ namespace advisorwnd
 
 namespace
 {
-  Point requestButtonOffset = Point( 0, 55 );
-  Size requestButtonSize = Size( 560, 40 );
-
-  enum { favourLimiter=20, maxFavourValue=100 };
+  Point requestButtonOffset = Point(0, 55);
+  Size requestButtonSize = Size(560, 40);
 }
 
 class Emperor::Impl
@@ -62,21 +60,6 @@ class Emperor::Impl
 public:
   bool isRequestsUpdated;
 };
-
-void Emperor::_showChangeSalaryWindow()
-{
-  events::dispatch<events::ScriptFunc>("ShowPlayerSalarySettings");
-}
-
-void Emperor::_showSend2CityWindow()
-{
-  events::dispatch<events::ScriptFunc>("ShowPlayer2CityDonationWindow");;
-}
-
-void Emperor::_showGiftWindow()
-{
-  events::dispatch<events::ScriptFunc>("OnShowEmperorGiftWindow");
-}
 
 class GiftDetails : public Window
 {
@@ -220,35 +203,12 @@ Emperor::Emperor(PlayerCityPtr city, Widget* parent)
   GameAutoPauseWidget::insertTo( this );
   _d->isRequestsUpdated = true;
 
-  Widget::setupUI(":/gui/emperoropts.gui");
-
-  INIT_WIDGET_FROM_UI(Label*, lbTitle)
-  INIT_WIDGET_FROM_UI(Label*, lbEmperorFavour)
-  INIT_WIDGET_FROM_UI(Label*, lbEmperorFavourDesc)
-
-  if (lbEmperorFavour)
-    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->states().favor ) );
-
-  if( lbEmperorFavourDesc )
-    lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
-
-  if (lbTitle) {
-    std::string text = _mayor()->name();
-    if (text.empty())
-      text = _("##emperor_advisor_title##");
-
-    lbTitle->setText(text);
-  }
-
   _updatePrimaryFunds();
 
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnChangeSalary, onClicked(), Emperor::_showChangeSalaryWindow )
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow )
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnGiftHistory,  onClicked(), Emperor::_showGiftHistory )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnRqHistory,    onClicked(), Emperor::_showRequestsHistory )
 
-  add<HelpButton>(Point(12, height() - 39), "emperor_advisor");
+  add<HelpButton>(Point(12, height() - 39), "");
 }
 
 void Emperor::draw(gfx::Engine& painter )
@@ -256,18 +216,13 @@ void Emperor::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  if( _dfunc()->isRequestsUpdated )
-  {
+  if( _dfunc()->isRequestsUpdated ) {
     _updateRequests();
   }
 
   Window::draw( painter );
 }
 
-std::string Emperor::_getEmperorFavourStr()
-{
-  return utils::format( 0xff, "##emperor_favour_%02d##", _city->states().favor * favourLimiter / maxFavourValue  );
-}
 
 void Emperor::_resolveRequest(RequestPtr request)
 {
