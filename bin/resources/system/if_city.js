@@ -9,6 +9,7 @@ PlayerCity.prototype.walkers = function (location) {
 Object.defineProperty(PlayerCity.prototype, "map", { get: function () { return this.tilemap() }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "population", { get: function () { return this.getProperty("population"); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "health", { get: function () { return this.getProperty("health"); }, configurable : true });
+Object.defineProperty(PlayerCity.prototype, "prosperity", { get: function() { return this.getProperty("prosperity"); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "workingBuildings", { get: function () { return g_session.getWorkingBuildings(); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "worklessPercent", { get: function () { return this.getProperty("worklessPercent"); }, configurable : true });
 Object.defineProperty(PlayerCity.prototype, "profit", { get: function () { return this.getProperty("profit"); }, configurable : true });
@@ -20,6 +21,14 @@ Object.defineProperty(PlayerCity.prototype, "theatreCoverage", { get: function()
 Object.defineProperty(PlayerCity.prototype, "threatValue", { get: function() { return this.getProperty("threatValue"); }})
 Object.defineProperty(PlayerCity.prototype, "religionReason", { get: function() { return this.getProperty("religionReason"); }})
 Object.defineProperty(PlayerCity.prototype, "sentimentReason", { get: function() { return this.getProperty("sentimentReason"); }})
+Object.defineProperty(PlayerCity.prototype, "culture", { get: function() { return this.getProperty("culture"); }})
+Object.defineProperty(PlayerCity.prototype, "haveCanceledRequest", { get: function() { return this.getProperty("haveCanceledRequest"); }})
+Object.defineProperty(PlayerCity.prototype, "chastenerThreat", { get: function() { return this.getProperty("chastenerThreat"); }})
+Object.defineProperty(PlayerCity.prototype, "barbarianThreat", { get: function() { return this.getProperty("barbarianThreat"); }})
+Object.defineProperty(PlayerCity.prototype, "monthFromLastAttack", { get: function() { return this.getProperty("monthFromLastAttack"); }})
+Object.defineProperty(PlayerCity.prototype, "peaceReason", { get: function() { return this.getProperty("peaceReason"); }})
+Object.defineProperty(PlayerCity.prototype, "peace", { get: function() { return this.getProperty("peace"); }})
+Object.defineProperty(PlayerCity.prototype, "favor", { get: function() { return this.getProperty("favor"); }})
 
 Object.defineProperty(PlayerCity.prototype, "lastFestivalDate", {
   get: function() {

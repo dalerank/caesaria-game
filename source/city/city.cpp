@@ -467,6 +467,22 @@ void PlayerCity::createIssue(const std::string& name, int value)
   treasury().resolveIssue( {vtype, value} );
 }
 
+int PlayerCity::getIssueValue(const std::string& name, int year) const
+{
+  econ::Issue::Type vtype = econ::findType(name);
+  return _d->funds.getIssueValue(vtype, year);
+}
+
+int PlayerCity::getProsperityMark(int mark) const
+{
+  city::ProsperityRatingPtr prosperity = statistic().services.find<city::ProsperityRating>();
+  if (prosperity.isValid()) {
+    return prosperity->getMark((city::ProsperityRating::Mark)mark);
+  }
+
+  return 0;
+}
+
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
@@ -561,6 +577,43 @@ Variant PlayerCity::getProperty(const std::string& name) const
     }
   }
 
+  if (name == "haveCanceledRequest") {
+    city::request::DispatcherPtr rd = statistic().services.find<city::request::Dispatcher>();
+    if (rd.isValid()) {
+       return rd->haveCanceledRequest();
+    }
+
+    return false;
+  }
+
+  if (name == "monthFromLastAttack") {
+    city::MilitaryPtr rd = statistic().services.find<city::Military>();
+
+    if (rd.isValid()) {
+       return rd->monthFromLastAttack();
+    }
+
+    return false;
+  }
+
+  if (name == "chastenerThreat" || name == "barbarianThreat") {
+    city::MilitaryPtr rd = statistic().services.find<city::Military>();
+    if (rd.isValid()) {
+       bool a = name == "chastenerThreat";
+       return rd->haveNotification( a ? notification::chastener : notification::barbarian );
+    }
+
+    return false;
+  }
+
+  if (name == "prosperity") {
+    city::ProsperityRatingPtr prosperity = statistic().services.find<city::ProsperityRating>();
+    if (prosperity.isValid())
+      return prosperity->value();
+
+    return 0;
+  }
+
   if (name == "disorderReason") {
     city::DisorderPtr d = statistic().services.find<city::Disorder>();
     if (d.isValid()) {
@@ -643,6 +696,29 @@ Variant PlayerCity::getProperty(const std::string& name) const
     }
   }
 
+  if (name == "culture") {
+    city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
+    if (culture.isValid()) {
+      return culture->value();
+    }
+  }
+
+  if (name == "favor") {
+    return states().favor;
+  }
+
+  if (name == "peace" || name == "peaceReason") {
+    city::PeacePtr peaceRt = statistic().services.find<city::Peace>();
+    if (peaceRt.isValid()) {
+      if (name == "peace")
+        return peaceRt->value();
+
+      if (name == "peaceReason") {
+        return peaceRt->reason();
+      }
+    }
+  }
+
   return Variant();
 }
 
@@ -652,6 +728,18 @@ int PlayerCity::getParam(int monthAgo, int type) const
 
   if (info.isValid()) {
     auto params = info->params(monthAgo);
+    return params.valueOrEmpty(type);
+  }
+
+  return 0;
+}
+
+int PlayerCity::getYearParam(int year, int type) const
+{
+  city::InfoPtr info = statistic().services.find<city::Info>();
+
+  if (info.isValid()) {
+    auto params = info->yearParams(year);
     return params.valueOrEmpty(type);
   }
 

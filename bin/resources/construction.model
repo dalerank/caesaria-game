@@ -448,6 +448,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "bigceres", 1 ]
     sound : [ "templeceres", 2 ]
   },
 
@@ -456,6 +457,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "bigneptune", 1 ]
     sound : [ "templeneptune", 2 ]
   },
 
@@ -464,6 +466,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "smlmercury", 1 ]
     sound : [ "templemercury", 2 ]
   },
 
@@ -472,6 +475,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "bigmars", 1 ]
     sound : [ "templemars", 2 ]
   },
 
@@ -480,6 +484,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    image : [ "bigvenus", 1 ]
     sound : [ "templevenus", 2 ]
   },
 

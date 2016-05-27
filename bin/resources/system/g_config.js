@@ -26,6 +26,17 @@ g_config.audio = {
     infobox : 6
 }
 
+g_config.labor = {
+  highWorkless:15,
+  muchPlebsPercent:30
+}
+
+g_config.ratings = {
+  peaceAverage:50,
+  amazinProsperity:90,
+  peaceLongTime:90
+}
+
 g_config.climate = {
     central: 0,
     northen: 1,
@@ -98,7 +109,10 @@ g_config.saves = {
 
 g_config.history = {
   thisMonth : 0,
-  lastMonth : 1
+  lastMonth : 1,
+  thisYear : 0,
+  lastYear : 1,
+  twoYearsAgo : 2
 }
 
 g_config.cityparam = {
@@ -133,4 +147,13 @@ g_config.cityparam = {
   favour:28,
   prosperity:29,
   blackHouses:30,
+}
+
+g_config.prosperity = {
+  housesCap:0,
+  haveProfit:1,
+  worklessPercent:2,
+  workersSalary:3,
+  changeValue:4,
+  plebsPercent:5
 }
