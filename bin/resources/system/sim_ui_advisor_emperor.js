@@ -16,6 +16,33 @@ sim.ui.advisors.emperor.updatePrimaryFunds = function()
                                      _ut("denarii_short"));
 }
 
+sim.ui.advisors.emperor.showGiftsHistory = function() {
+  var gifts = g_empire.emperor.getGifts(g_city.name);
+  if (gifts.length==0) {
+    g_ui.addInformationDialog( "Note", "You was not sent any gifts to emperor");
+  } else {
+    var w = g_ui.addWindow(0, 0, 480, 640);
+    w.title = _u("history_gift");
+    w.addExitButton(w.w-37, 12);
+
+    var listbox = w.addListBox(15, 45, w.w-15, w.h-15);
+    listbox.itemHeight = 16;
+    listbox.background = true;
+    listbox.margin = {left:10, top:10};
+    listbox.itemFont = "FONT_1";
+
+    for ( var i=0; i < gifts.length; i++) {
+      var gift = gifts[i];
+      var text = _format("{0} {1} {2}", DateTime.parse(gift.date).romanStr, gift.value, gift.name);
+      listbox.fitText( text );
+    }
+
+    w.moveToCenter();
+    w.setModal();
+    w.mayMove = false;
+  }
+}
+
 sim.ui.advisors.emperor.show = function() {
   var parlor = g_ui.find("ParlorWindow");
 

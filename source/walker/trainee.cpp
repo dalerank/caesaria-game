@@ -173,10 +173,10 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     }
   }
 
-  if( droute.first.isValid() )
+  if( droute.dst().isValid() )
   {
-    finalPath = droute.second;
-    _d->destLocation = droute.first->pos();
+    finalPath = droute.way();
+    _d->destLocation = droute.dst()->pos();
   }
 
   if( finalPath.isValid() )

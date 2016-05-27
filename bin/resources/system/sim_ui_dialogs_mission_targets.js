@@ -93,11 +93,11 @@ sim.ui.dialogs.showMissionTargets = function()
     lbxHelp.margin = { left:10, top:10 }
     lbxHelp.itemColor = { simple:"0xffe0e0e0", hovered:"0xff000000" }
 
-    for (var i in items)
+    for (var i in items) {
       lbxHelp.fitText( _t(items[i]) )
+    }
 
-    if (wint.startSound.length>0)
-    {
+    if (wint.startSound.length>0) {
       engine.log(wint.startSound);
       w.addSoundMuter(5)
       w.addSoundEmitter(wint.startSound, 100, g_config.audio.speech)
