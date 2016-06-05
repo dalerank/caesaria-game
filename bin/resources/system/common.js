@@ -34,7 +34,7 @@ Utils.romanDigits = [ {value:1000, numeral:"M"},
                       {value:5,    numeral:"V"},
                       {value:4,    numeral:"IV"},
                       {value:1,    numeral:"I"},
-                      {value:0,    numeral:NULL} ]; // end marker
+                      {value:0,    numeral:""} ]; // end marker
 
 
 Utils.toRoman = function(value) {
@@ -45,7 +45,7 @@ Utils.toRoman = function(value) {
       value  -= current.value;
     }
   }
-  
+
   return result;
 }
 

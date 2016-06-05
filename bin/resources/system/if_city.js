@@ -29,6 +29,8 @@ Object.defineProperty(PlayerCity.prototype, "monthFromLastAttack", { get: functi
 Object.defineProperty(PlayerCity.prototype, "peaceReason", { get: function() { return this.getProperty("peaceReason"); }})
 Object.defineProperty(PlayerCity.prototype, "peace", { get: function() { return this.getProperty("peace"); }})
 Object.defineProperty(PlayerCity.prototype, "favor", { get: function() { return this.getProperty("favor"); }})
+Object.defineProperty(PlayerCity.prototype, "relationAbilities", { get: function() { return this.getProperty("relationAbilities"); }})
+
 
 Object.defineProperty(PlayerCity.prototype, "lastFestivalDate", {
   get: function() {

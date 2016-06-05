@@ -189,10 +189,10 @@ sim.ui.advisors.ratings.show = function() {
     btn.style = "whiteBorderUp";
     btn.tooltip = tlp;
 
-    var lb = btn.addLabel(0, 17, btn.w, btn.h-30, value, {size:32, bold:true, color:"black"});
+    var lb = btn.addLabel(0, 17, btn.w, btn.h-30, value, {size:32, color:"black"});
     lb.textAlign = {v:"center", h:"center"}
     var targetText = _format( "{0} {1}", target, _ut("wndrt_need") );
-    lb = btn.addLabel(0, btn.h-15, btn.w, 15, targetText, {size:14, color:"black"});
+    lb = btn.addLabel(0, btn.h-15, btn.w, 15, targetText, {size:14, italic:true, color:"black"});
     lb.textAlign = {v:"center", h:"center"}
 
     return btn;

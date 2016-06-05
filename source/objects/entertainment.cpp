@@ -107,6 +107,8 @@ Variant EntertainmentBuilding::getProperty(const std::string& name) const
 {
   if (name == "maxVisitors") return maxVisitors();
   if (name == "currentVisitors") return currentVisitors();
+
+  return ServiceBuilding::getProperty(name);
 }
 
 const EntertainmentBuilding::IncomeWays& EntertainmentBuilding::incomes() const { return _d->incomes; }

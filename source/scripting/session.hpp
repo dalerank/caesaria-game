@@ -66,7 +66,6 @@ public:
   void setHotkey(const std::string& name, const std::string& config);
   void setRank(int i, const std::string& name, const std::string& pretty, int salary);
   DateTime getGameDate() const;
-  std::string formatDate(DateTime date, bool roman) const;
   StringArray getCredits() const;
   StringArray getFiles(const std::string& dir, const std::string& ext);
   StringArray getFolders(const std::string& dir, bool full);
@@ -86,6 +85,7 @@ public:
   Locations getBuildingLocations(Variant type) const;
   OverlayList getOverlays(Variant type) const;
   OverlayList getWorkingBuildings() const;
+  city::RequestPtr getRequest(int index) const;
   uint32_t getOverlaysNumber(Variant var) const;
   gfx::Camera* getCamera() const;
   void setFont(const std::string& fontname);

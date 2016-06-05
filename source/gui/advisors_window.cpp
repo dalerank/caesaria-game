@@ -31,7 +31,6 @@
 #include "core/logger.hpp"
 #include "advisor_employers_window.hpp"
 #include "advisor_legion_window.hpp"
-#include "advisor_emperor_window.hpp"
 #include "advisor_trade_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "game/funds.hpp"
@@ -241,9 +240,6 @@ void ParlorModel::switchAdvisor(Advisor type)
   break;
   case advisor::population:
     d.advisorPanel = new advisorwnd::Population( d.city, d.parent );
-  break;
-  case advisor::empire:
-    d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent );
   break;
   case advisor::trading:
     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );

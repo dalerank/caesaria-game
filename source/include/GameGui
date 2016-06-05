@@ -32,5 +32,4 @@
 #include "gui/senate_popup_info.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/androidactions.hpp"
-#include "gui/advisor_request_button.hpp"
 #include "gui/helper.hpp"

@@ -131,17 +131,6 @@ DateTime Session::getGameDate() const
   return _game->date();
 }
 
-std::string Session::formatDate(DateTime date, bool roman) const
-{
-  std::string text;
-  if (roman)
-    text = utils::date2str(RomanDate(date), true);
-  else
-    text = utils::date2str(date, true);
-
-  return text;
-}
-
 StringArray Session::getCredits() const
 {
   StringArray strs;
@@ -219,6 +208,16 @@ OverlayList Session::getWorkingBuildings() const
   }
 
   return ovs;
+}
+
+city::RequestPtr Session::getRequest(int index) const
+{
+  auto dispatcher = _game->city()->statistic().services.find<city::request::Dispatcher>();
+  if (dispatcher.isValid()) {
+    return dispatcher->requests().valueOrEmpty(index);
+  }
+
+  return nullptr;
 }
 
 uint32_t Session::getOverlaysNumber(Variant var) const

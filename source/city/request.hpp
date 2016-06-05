@@ -34,22 +34,24 @@ class RqBase : public ReferenceCounted
 public:
   virtual ~RqBase() {}
 
-  virtual bool isReady( PlayerCityPtr ) const { return false; }
-  virtual void exec( PlayerCityPtr ) {}
-  virtual void success( PlayerCityPtr ) { _isDeleted = true; _isSuccessed = true; }
-  virtual void fail( PlayerCityPtr ) { _isDeleted = true; _isSuccessed = false; }
+  virtual bool isReady(PlayerCityPtr) const { return false; }
+  virtual void exec(PlayerCityPtr) {}
+  virtual void success(PlayerCityPtr) { _isDeleted = true; _isSuccessed = true; }
+  virtual void fail(PlayerCityPtr) { _isDeleted = true; _isSuccessed = false; }
   virtual bool isDeleted() const { return _isDeleted; }
   virtual DateTime startDate() const { return _startDate; }
   virtual DateTime finishedDate() const { return _finishDate; }
   virtual bool isAnnounced() const { return _isAnnounced; }
   virtual void update() {}
-  virtual void setAnnounced( bool value ) { _isAnnounced = value; }  
+  virtual void setAnnounced(bool value) { _isAnnounced = value; }
+  virtual Variant action(PlayerCityPtr, const std::string&);
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
   virtual std::string description() const{  return ""; }
 
   bool isSuccessed() const { return _isSuccessed; }
+  virtual Variant getProperty(const std::string& name) const;
 
 protected:
   bool _isDeleted, _isAnnounced, _isSuccessed;
@@ -57,23 +59,25 @@ protected:
 
   void _saveState(PlayerCityPtr city, int relation, const std::string& message);
 
-  RqBase( DateTime finish );
+  RqBase(DateTime finish);
 };
 
 class RqGood : public RqBase
 {
 public:
-  static RequestPtr create( const VariantMap& stream );
+  static RequestPtr create(const VariantMap& stream);
 
   virtual ~RqGood();
-  virtual void exec( PlayerCityPtr city );
-  virtual bool isReady( PlayerCityPtr city ) const;
+  virtual void exec(PlayerCityPtr city);
+  virtual bool isReady(PlayerCityPtr city) const;
 
   virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
+  virtual void load(const VariantMap& stream);
 
-  virtual void success( PlayerCityPtr city );
-  virtual void fail( PlayerCityPtr city );
+  virtual void success(PlayerCityPtr city);
+  virtual void fail(PlayerCityPtr city);
+  virtual Variant getProperty(const std::string &name) const;
+  virtual Variant action(PlayerCityPtr, const std::string&);
 
   virtual void update();
 

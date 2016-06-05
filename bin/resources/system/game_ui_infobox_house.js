@@ -97,7 +97,7 @@ game.ui.infobox.aboutHouse = function(location) {
       taxesStr = _format( "{0} {1}", taxes * (size.w*size.h), _ut("house_pay_tax") );
     } else {
       var lastTax = house.lastTaxationDate();
-      if( g_session.date.year() > lastTax.year() ) {
+      if( g_session.date.year > lastTax.year ) {
         taxesStr = _u("no_tax_in_this_year");
       } else {
         taxesStr = _u("no_visited_by_taxman");

@@ -703,6 +703,11 @@ Variant PlayerCity::getProperty(const std::string& name) const
     }
   }
 
+  if (name == "relationAbilities") {
+    const auto& abils = empire()->emperor().relation(this->name()).abilities();
+    return abils.save();
+  }
+
   if (name == "favor") {
     return states().favor;
   }
