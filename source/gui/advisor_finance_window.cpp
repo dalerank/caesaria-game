@@ -161,7 +161,7 @@ void Finance::draw(gfx::Engine& painter )
 bool Finance::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui
-      && event.gui.type == guiButtonClicked )
+      && event.gui.type == event::gui::buttonClicked )
   {
     if( safety_cast<FinanceRow*>( event.gui.caller ) != 0 )
       return true;

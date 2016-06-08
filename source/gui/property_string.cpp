@@ -25,7 +25,7 @@ StringAttribute::~StringAttribute()
 
 bool StringAttribute::onEvent(const NEvent &e)
 {
-  if( e.EventType == sEventGui && e.gui.type == guiEditboxChanged )
+  if( e.EventType == sEventGui && e.gui.type == event::gui::editbox::changed )
     _isNeedUpdate = true;
 
   return AbstractAttribute::onEvent( e );

@@ -256,7 +256,7 @@ bool Table::setActiveColumn(int idx, bool doOrder )
         event.EventType = sEventGui;
         event.gui.caller = this;
         event.gui.element = 0;
-        event.gui.type = guiTableHeaderChanged;
+        event.gui.type = event::gui::tableHeaderChanged;
         parent()->onEvent(event);
       }
       break;
@@ -286,7 +286,7 @@ bool Table::setActiveColumn(int idx, bool doOrder )
     event.EventType = sEventGui;
     event.gui.caller = this;
     event.gui.element = 0;
-    event.gui.type = guiTableHeaderChanged;
+    event.gui.type = event::gui::tableHeaderChanged;
     parent()->onEvent(event);
   }
 
@@ -648,7 +648,7 @@ bool Table::onEvent(const NEvent &event)
     case sEventGui:
       switch(event.gui.type)
       {
-      case guiScrollbarChanged:
+      case event::gui::scrollbarChanged:
         if( event.gui.caller == _d->verticalScrollBar
           || event.gui.caller == _d->horizontalScrollBar)
         {
@@ -656,7 +656,7 @@ bool Table::onEvent(const NEvent &event)
           return true;
         }
         break;
-      case guiElementFocusLost:
+      case event::gui::widget::focusLost:
         {
           _currentResizedColumn = -1;
           _selecting = false;
@@ -952,14 +952,14 @@ void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
     event.gui.caller = this;
     event.gui.element = 0;
     event.gui.type = (_selectedRow != oldSelectedRow || _selectedColumn != oldSelectedColumn )
-                                        ? guiTableCellChange
-                                        : guiTableCellSelected;
+                                        ? event::gui::tableCellChange
+                                        : event::gui::tableCellSelected;
     parent()->onEvent(event);
 
-    if( lmb && event.gui.type == guiTableCellSelected
+    if( lmb && event.gui.type == event::gui::tableCellSelected
       && ( DateTime::elapsedTime() - _d->cellLastTimeClick ) < 200 )
     {
-      event.gui.type = guiTableCellDblclick;
+      event.gui.type = event::gui::tableCellDblclick;
       parent()->onEvent( event );
     }
     _d->cellLastTimeClick = DateTime::elapsedTime();

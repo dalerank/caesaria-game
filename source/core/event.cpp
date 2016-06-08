@@ -16,7 +16,7 @@
 #include "event.hpp"
 #include <string.h>
 
-NEvent NEvent::ev_gui(gui::Widget* caller, gui::Widget* elm, GuiEventType type)
+NEvent NEvent::ev_gui(gui::Widget* caller, gui::Widget* elm, event::gui::Type type)
 {
   NEvent ret;
   ret.gui.caller = caller;

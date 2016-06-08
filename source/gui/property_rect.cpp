@@ -48,7 +48,7 @@ void RectAttribute::setValue(const Variant &value)
 
   _label->setText( _fullText() );
 
-  for( unsigned int i=0; i < childCount(); i++)
+  for (unsigned int i=0; i < childCount(); i++)
   {
     StringAttribute* ed = safety_cast< StringAttribute* >( getChild( i ) );
 
@@ -61,7 +61,7 @@ void RectAttribute::setValue(const Variant &value)
 
 bool RectAttribute::onEvent(const NEvent &e)
 {
-  if( e.EventType == sEventGui && e.gui.type == guiEditboxChanged )
+  if( e.EventType == sEventGui && e.gui.type == event::gui::editbox::changed )
     _isNeedUpdate = true;
 
   return AbstractAttribute::onEvent( e );

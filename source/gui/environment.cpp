@@ -202,7 +202,7 @@ bool Ui::setFocus( Widget* element )
   {
     currentFocus = _d->focused.element;
 
-    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(), element, guiElementFocusLost ) ) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(), element, event::gui::widget::focusLost ) ) )
     {
       return false;
     }
@@ -215,7 +215,7 @@ bool Ui::setFocus( Widget* element )
     currentFocus = _d->focused.element;
 
     // send focused event
-    if( element->onEvent( NEvent::ev_gui( element, _d->focused.element.object(), guiElementFocused ) ))
+    if( element->onEvent( NEvent::ev_gui( element, _d->focused.element.object(), event::gui::widget::focused ) ))
     {
       currentFocus = WidgetPtr();
 
@@ -347,12 +347,12 @@ void Ui::_updateHovered( const Point& mousePos )
   {
     if( lastHovered.isValid() )
     {
-      lastHovered->onEvent( NEvent::ev_gui( lastHovered.object(), 0, guiElementLeft ) );
+      lastHovered->onEvent( NEvent::ev_gui( lastHovered.object(), 0, event::gui::widget::left ) );
     }
 
     if( _d->hovered.current.isValid() )
     {
-      _d->hovered.current->onEvent( NEvent::ev_gui( _d->hovered.current.object(), _d->hovered.current.object(), guiElementHovered ) );
+      _d->hovered.current->onEvent( NEvent::ev_gui( _d->hovered.current.object(), _d->hovered.current.object(), event::gui::widget::hovered ) );
     }
   }
 
@@ -560,7 +560,7 @@ bool Ui::removeFocus( Widget* element)
 {
   if( _d->focused.element.isValid() && _d->focused.element == element )
   {
-    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(),  0, guiElementFocusLost )) )
+    if( _d->focused.element->onEvent( NEvent::ev_gui( _d->focused.element.object(),  0, event::gui::widget::focusLost )) )
     {
       return false;
     }

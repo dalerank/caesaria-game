@@ -254,7 +254,7 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
   case sEventGui:
     switch(event.gui.type)
     {
-    case guiTreeviewNodeSelect:
+    case event::gui::treeviewNodeSelect:
     {
         /*TreeViewItem* eventnode = ((TreeView*)event.gui.caller)->getLastEventNode();
         if(!eventnode->isRoot())

@@ -130,7 +130,7 @@ bool Parlor::onEvent( const NEvent& event )
     return true;
   }
 
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == event::gui::buttonClicked )
   {
     int id = event.gui.caller->ID();
     if( id >= 0 && id < advisor::unknown )

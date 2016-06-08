@@ -32,7 +32,7 @@ using namespace gfx;
 namespace citylayer
 {
 
-int Unemployed::type() const {  return citylayer::unemployed; }
+int Unemployed::type() const { return citylayer::unemployed; }
 
 void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
@@ -90,9 +90,9 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
 
 void Unemployed::onEvent( const NEvent& event)
 {
-  if( event.EventType == sEventMouse )
+  if (event.EventType == sEventMouse)
   {
-    switch( event.mouse.type  )
+    switch(event.mouse.type )
     {
     case NEvent::Mouse::moved:
     {

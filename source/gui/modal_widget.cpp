@@ -98,7 +98,7 @@ bool ModalScreen::onEvent(const NEvent& event)
   case sEventGui:
     switch (event.gui.type)
     {
-    case guiElementFocused:
+    case event::gui::widget::focused:
       if (!_canTakeFocus(event.gui.caller))
       {
         if (!children().empty())
@@ -109,7 +109,7 @@ bool ModalScreen::onEvent(const NEvent& event)
       Widget::onEvent(event);
       return false;
 
-    case guiElementFocusLost:
+    case event::gui::widget::focusLost:
       if (!_canTakeFocus(event.gui.element))
       {
         if (isMyChild(event.gui.caller))
@@ -130,7 +130,7 @@ bool ModalScreen::onEvent(const NEvent& event)
         return Widget::onEvent(event);
       }
 
-    case guiElementClosed:
+    case event::gui::widget::closed:
       // do not interfere with children being removed
       return Widget::onEvent(event);
 
