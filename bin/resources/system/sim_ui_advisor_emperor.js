@@ -73,16 +73,8 @@ sim.ui.advisors.emperor.updateRequests = function(w) {
   } else {
     for (var i=0; i < requests.length; i++) {
       var r = requests[i];
-      if (!r.isDeleted) {
-        var btn = w.addRequestButton(reqsRect.x+5,requests.y+5, i, r);
-        btn.tooltipText = _u("request_btn_tooltip");
-        btn.setEnabled(r.isReady);
-        btn.name = "#btnRequest"+i;
-        btn.callback = function() {
-          r.exec();
-          sim.ui.advisors.emperor.updateRequests(w);
-        };
-      }
+      if (!r.isDeleted)
+        w.addRequestButton(reqsRect.x+5,reqsRect.y+5, i, r);
     }
   }
 }
@@ -182,24 +174,31 @@ sim.ui.advisors.emperor.show = function() {
   btnChangeSalary.callback = function() { ShowPlayerSalarySettings(); }
 
   w.addRequestButton = function(x, y, index, request) {
-    var font = "FONT_1_WHITE";
+    var font = "FONT_2_WHITE";
 
     var ginfo = g_config.good.getInfo(request.gtype);
-
-    var month2comply = request.finishDate;
-    var btn = w.addButton(x, y+55*index, 560, 40)
+    engine.log(index)
+    var month2comply = g_session.date.monthsTo(request.finishDate);
+    var btn = w.addButton(x, y+45*index, 565, 40)
     btn.style = "blackBorderUp";
-    btn.addLabel(2, 2, 40, 20, request.qty, font);
-    btn.addLabel(60, 20, 60, 20, _u(ginfo.name), font);
-    btn.addLavel(250, 2, 100, 20, _format( "{0} {1}", month2comply, _ut("rqst_month_2_comply")), font );
+    btn.addLabel(8, 3, 25, 25, request.qty, {size:24, color:"brown"});
+    btn.addLabel(60, 17, 60, 20, _u(ginfo.name), font);
+    btn.addLabel(250, 2, 200, 20, _format( "{0} {1}",  month2comply, _ut("rqst_month_2_comply")), font );
     btn.addLabel(5, btn.w-20, 200, 20, request.description, font );
-    var lbIcon = btn.addLabel(40, 2, 40, 40);
+    btn.setEnabled(r.isReady);
+    btn.name = "#btnRequest"+i;
+    btn.tooltip = _u("request_btn_tooltip");
+
+    var lbIcon = btn.addLabel(34, 5, 40, 40, "");
     lbIcon.icon = ginfo.picture.local;
 
-    btn.callback = (function(request) {
+    btn.callback = function() {
       var dialog = g_ui.addConfirmationDialog( "", _u("dispatch_emperor_request_question") );
       dialog.onYesCallback = function() { request.exec(); }
-    })(request)
+      sim.ui.advisors.emperor.updateRequests(w);
+    }
+
+    return btn;
   }
 
   this.updatePrimaryFunds();
