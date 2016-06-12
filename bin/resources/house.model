@@ -407,7 +407,7 @@
       prosperity : 150,
       tax : 9
       txs : {
-        s2 : [ "housng1a_00035", "housng1a_00036", "housng1b_00035", "housng1b_00036" ]
+        s2 : [ "housng1a_00035", "housng1b_00035", "housng1c_00035", "housng1d_00035" ]
       }
     },
 
@@ -436,7 +436,7 @@
       prosperity : 180,
       tax : 10
       txs : {
-        s2: [ "housng1a_00037", "housng1a_00038", "housng1b_00037", "housng1b_00038" ]
+        s2: [ "housng1a_00037", "housng1b_00037", "housng1c_00037", "housng1d_00037" ]
       }
     },
 
@@ -464,9 +464,10 @@
       prosperity : 400,
       tax : 11
       txs : {
-        s3 : [ "housng1a_00039", "housng1b_00039" ]
+        s3 : [ "housng1a_00039", "housng1b_00039", "housng1c_00039", "housng1d_00039" ]
       }
     },
+
   /*16;Villa imposante;11;60;68;50;2;3;3;4;3;1;1;1;1;1;600;11*/
   beatifull_villa :
     {

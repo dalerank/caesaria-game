@@ -155,7 +155,8 @@
   }
 
   merchant : {
-    move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
+    move : { rc : "lmerchant", start : 1, frames : 8, action : 1, step : 8 }
+     die : { rc : "lmerchant", start : 97, frames : 8, action : 3, step : 0 }
   }
 
   merchantCamel : {
