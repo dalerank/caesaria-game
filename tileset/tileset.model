@@ -57,7 +57,14 @@
         {
           type : "atlas"
           folder : "/resources/sheep"
-          files : [ "sheep_*" ]
+          files : [ "*" ]
+        }
+
+        wolf :
+        {
+          type : "atlas"
+          folder : "/resources/wolf"
+          files : [ "*" ]
         }
       }
     }
@@ -386,7 +393,7 @@
         {
           type : "atlas"
           folder : "/resources/gardens"
-          files : [ "entertainment_*" ]
+          files : [ "*" ]
         }
 
         shipyard :

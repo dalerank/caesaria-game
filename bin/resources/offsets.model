@@ -22,10 +22,12 @@
   bigmars : { start : 1, stop : 1, offset : [ -1, -1] }
   bigmercury : { start : 1, stop : 1, offset : [ -1, -1] }
   bigneptune : { start : 1, stop : 1, offset : [ -1, -1] }
+  colosseum : { start : 1, stop : 1, offset : [ -1, -1] }
   bigvenus : { start : 1, stop : 1, offset : [ -1, -1] }
   security : { start : 45, stop : 53, offset : [ -1, -1 ] }
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
+  lmerchant : { start : 1, stop : 200, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
   marketlady : { start : 1, stop : 200, offset : [ -2, -2 ] }
   prefectdw  : { start : 1, stop : 200, offset : [ -2, -2 ] }
