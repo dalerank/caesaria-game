@@ -10,9 +10,14 @@ Object.defineProperty(Window.prototype, "mayMove", {
         this.setWindowFlag("fdraggable", may);
     }
 });
-Object.defineProperty(Window.prototype, "onCloseCallback", {
+Object.defineProperty(Window.prototype, "closeCallback", {
     set: function (func) {
         this.onCloseEx(func);
+    }
+});
+Object.defineProperty(Window.prototype, "keyPressedCallback", {
+    set: function (func) {
+        this.onKeyPressedEx(func);
     }
 });
 Object.defineProperty(Window.prototype, "model", {
