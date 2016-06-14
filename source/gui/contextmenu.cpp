@@ -231,7 +231,7 @@ bool ContextMenu::onEvent(const NEvent& event)
     case sEventGui:
       switch(event.gui.type)
       {
-      case guiElementFocusLost:
+      case event::gui::widget::focusLost:
         if (event.gui.caller == this && !isMyChild(event.gui.element) && _d->flags.allowFocus)
         {
           // set event parent of submenus
@@ -242,7 +242,7 @@ bool ContextMenu::onEvent(const NEvent& event)
           event.EventType = sEventGui;
           event.gui.caller = this;
           event.gui.element = 0;
-          event.gui.type = guiElementClosed;
+          event.gui.type = event::gui::widget::closed;
           if ( !p->onEvent(event) )
           {
             if( (_d->closeHandling & cmHide) > 0 )
@@ -258,7 +258,7 @@ bool ContextMenu::onEvent(const NEvent& event)
           return false;
         }
         break;
-      case guiElementFocused:
+      case event::gui::widget::focused:
         if (event.gui.caller == this && !_d->flags.allowFocus)
         {
           return true;
@@ -359,7 +359,7 @@ unsigned int ContextMenu::_sendClick(const Point& p)
     event.EventType = sEventGui;
     event.gui.caller = this;
     event.gui.element = 0;
-    event.gui.type = guiMenuItemSelected;
+    event.gui.type = event::gui::menuItemSelected;
     if( _d->eventParent )
       _d->eventParent->onEvent(event);
     else

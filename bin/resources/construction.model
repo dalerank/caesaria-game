@@ -128,6 +128,8 @@
     desirability : { base : -3, range : 3, step : 1 }
     employers : 25
     class : "entertainment"
+    image : [ "colosseum", 1 ]
+    animation : { rc : "colosseum", start : 2, count : 13, offset : [ 122, 81 ], delay : 3 }
     sound : [ "colloseum", 1 ]
   },
 

@@ -77,7 +77,6 @@ public:
   virtual void setWindowFlag(const std::string& flag, bool enabled=true);
 
   virtual void setupUI(const VariantMap &ui);
-
   virtual void setupUI(const vfs::Path& path);
 
   virtual void setTextAlignment(const std::string& horizontal, const std::string& vertical);

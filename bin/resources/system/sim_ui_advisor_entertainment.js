@@ -290,8 +290,7 @@ sim.ui.advisors.entertainment.show = function() {
   var lbMonthFromLastFestival = w.addLabel(lbFestArea.x+5, lbFestArea.y+5, 390, 20);
   lbMonthFromLastFestival.font = "FONT_1";
   lbMonthFromLastFestival.textAlign = {v:"center", h:"center"};
-  var lastFestivalDate = g_city.getProperty("lastFestivalDate");
-  var monthFromLastFestival = lastFestivalDate.monthsTo(g_session.date);
+  var monthFromLastFestival = g_city.lastFestivalDate.monthsTo(g_session.date);
   lbMonthFromLastFestival.text = _format( "{0} {1} {2}", monthFromLastFestival, _ut("month"), _ut("month_from_last_festival"));
 
   var lbInfoAboutLastFestival = w.addLabel(lbFestArea.x+5, lbFestArea.y+55, 390, 50);

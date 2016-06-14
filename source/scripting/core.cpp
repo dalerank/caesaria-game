@@ -35,6 +35,7 @@
 #include "religion/pantheon.hpp"
 #include "sound/engine.hpp"
 #include "scripting/session.hpp"
+#include "city/request.hpp"
 #include "core/alignment.hpp"
 
 using namespace gui;
@@ -396,6 +397,7 @@ PUSH_USERDATA(Store)
 
 PUSH_USERDATA_SMARTPTR(PlayerCity)
 PUSH_USERDATA_SMARTPTR(Player)
+PUSH_USERDATA_SMARTPTR(Request)
 PUSH_USERDATA_SMARTPTR(Soldier)
 PUSH_USERDATA_SMARTPTR(Overlay)
 PUSH_USERDATA_SMARTPTR(Empire)

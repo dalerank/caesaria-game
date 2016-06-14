@@ -483,7 +483,7 @@ bool PushButton::onEvent(const NEvent& event)
    case sEventGui:
      switch(event.gui.type)
      {
-     case guiElementFocusLost:
+     case event::gui::widget::focusLost:
        if (event.gui.caller == this && !isPushButton())
        {
          setPressed(false);
@@ -516,7 +516,7 @@ bool PushButton::onEvent(const NEvent& event)
 void PushButton::_btnClicked()
 {
   __D_REF(d,PushButton)
-  parent()->onEvent( NEvent::ev_gui( this, 0, guiButtonClicked ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, event::gui::buttonClicked ) );
 
   emit d.signal.onClicked();
   emit d.signal.onClickedEx( this );

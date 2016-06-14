@@ -62,7 +62,7 @@ bool PropertyBrowser::onEvent(const NEvent &event)
 
   if( event.EventType == sEventGui
       && event.gui.caller == _attribTable
-      && event.gui.type == guiTableCellDblclick )
+      && event.gui.type == event::gui::tableCellDblclick )
   {
     AbstractAttribute* attr = safety_cast< AbstractAttribute* >( _attribTable->element( _attribTable->selectedRow(), 1 ) );
     if( attr )

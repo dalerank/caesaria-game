@@ -21,7 +21,7 @@ game.ui.dialogs.filmwidget.show = function(filename, text, title) {
 
   var helpButton = w.addHelpButton(14, w.h-36)
 
-  var date = g_session.date
+  var date = g_session.date;
   var gbox = w.addGroupbox(14, w.h-130, w.w-28, 90)
   var lbTime = gbox.addLabel(0, 0, 150, 20)
   lbTime.font = "FONT_1"

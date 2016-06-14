@@ -117,7 +117,7 @@ bool TreeView::onEvent( const NEvent &event )
     case sEventGui:
       switch( event.gui.type )
       {
-      case guiScrollbarChanged:
+      case event::gui::scrollbarChanged:
         if( event.gui.caller == ScrollBarV || event.gui.caller == ScrollBarH )
         {
           //int pos = ( ( gui::IGUIScrollBar* )event.GUIEvent.Caller )->getPos();
@@ -125,7 +125,7 @@ bool TreeView::onEvent( const NEvent &event )
           return true;
         }
       break;
-      case guiElementFocusLost:
+      case event::gui::widget::focusLost:
         {
           _selecting = false;
           return false;
@@ -263,11 +263,11 @@ void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
     // post expand/collaps news
     if( hitNode->isExpanded() )
     {
-      event.gui.type = guiTreeviewNodeExpand;
+      event.gui.type = event::gui::treeviewNodeExpand;
     }
     else
     {
-      event.gui.type = guiTreeviewNodeCollapse;
+      event.gui.type = event::gui::treeviewNodeCollapse;
     }
     _lastEventNode = hitNode;
     parent()->onEvent( event );
@@ -285,14 +285,14 @@ void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
   {
     if( oldSelected )
     {
-      event.gui.type = guiTreeviewNodeSelect;
+      event.gui.type = event::gui::treeviewNodeSelect;
       _lastEventNode = oldSelected;
       parent()->onEvent( event );
       _lastEventNode = 0;
     }
     if( _selected )
     {
-      event.gui.type = guiTreeviewNodeSelect;
+      event.gui.type = event::gui::treeviewNodeSelect;
       _lastEventNode = _selected;
       parent()->onEvent( event );
       _lastEventNode = 0;

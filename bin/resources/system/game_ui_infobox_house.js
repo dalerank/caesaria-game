@@ -24,11 +24,11 @@ game.ui.infobox.aboutHouse = function(location) {
   ibox.keyPressedCallback = function(kbevent) {
     if (kbevent.control && kbevent.shift && !kbevent.pressed)
     {
-      switch( kbevent.key )
+      switch(kbevent.key)
       {
       case g_config.key.KEY_COMMA:
       case g_config.key.KEY_PERIOD:
-        this.overlay.__debugChangeLevel(kbevent.key == g_config.key.KEY_COMMA ? +1 : -1);
+        house.__debugChangeLevel(kbevent.key == g_config.key.KEY_COMMA ? +1 : -1);
       return true;
       default:
       break;
@@ -97,7 +97,7 @@ game.ui.infobox.aboutHouse = function(location) {
       taxesStr = _format( "{0} {1}", taxes * (size.w*size.h), _ut("house_pay_tax") );
     } else {
       var lastTax = house.lastTaxationDate();
-      if( g_session.date.year() > lastTax.year() ) {
+      if( g_session.date.year > lastTax.year ) {
         taxesStr = _u("no_tax_in_this_year");
       } else {
         taxesStr = _u("no_visited_by_taxman");

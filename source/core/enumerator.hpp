@@ -25,12 +25,9 @@ class EnumsHelper
 {
 public:
   const std::string noText;
-  T findType( const std::string& name ) const
-  {
-    for( auto& it : _equales )
-    {
-      if( name == it.second )
-      {
+  T findType(const std::string& name) const {
+    for (auto& it : _equales) {
+      if (name == it.second) {
         return it.first;
       }
     }
@@ -38,23 +35,21 @@ public:
     return getInvalid();
   }
 
-  const std::string& findName( const T& type ) const
-  {
-    typename Equales::const_iterator it = _equales.find( type );
+  const std::string& findName(const T& type) const {
+    auto it = _equales.find( type );
     return it != _equales.end() ? it->second : noText;
   }
 
   bool empty() const { return _equales.empty(); }
 
-  void append( const T& key, const std::string& name )
-  {
+  void append(const T& key, const std::string& name) {
     _equales[ key ] = name;
   }
 
   T getInvalid() const { return _invalid; }
 
   ~EnumsHelper() {}
-  EnumsHelper( const T& invalid ) : _invalid( invalid ) {}
+  EnumsHelper(const T& invalid) : _invalid(invalid) {}
 
 protected:
   typedef std::pair< T, std::string > TypeEquale;

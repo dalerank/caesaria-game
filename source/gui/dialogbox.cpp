@@ -73,7 +73,7 @@ bool Dialogbox::onEvent( const NEvent& event )
   switch( event.EventType )
   {
     case sEventGui:
-      if( event.gui.type == guiButtonClicked )
+      if( event.gui.type == event::gui::buttonClicked )
       {
         int id = event.gui.caller->ID();
         emit _d->signal.onResult( id );

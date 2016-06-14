@@ -127,6 +127,8 @@
     cost : 500,
     desirability : { base : -3, range : 3, step : 1 }
     class : "entertainment"
+    image : [ "entertainment", 36 ]
+    animation : { rc : "entertainment", start : 37, count : 13, offset : [ 122, 81 ], delay : 3 }
     sound : [ "colloseum", 1 ]
     employers : 25
   },

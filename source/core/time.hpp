@@ -37,6 +37,7 @@ public:
   unsigned char hour() const;
   Month month() const;
   int year() const;
+  int get(int prop) const;
   unsigned char minutes() const;
   unsigned char day() const;
   unsigned char dayOfWeek() const;

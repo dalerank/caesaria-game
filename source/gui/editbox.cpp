@@ -292,7 +292,7 @@ bool EditBox::onEvent(const NEvent& event)
     switch(event.EventType)
     {
     case sEventGui:
-      if (event.gui.type == guiElementFocusLost)
+      if (event.gui.type == event::gui::widget::focusLost)
       {
         if (event.gui.caller == this)
         {
@@ -537,7 +537,7 @@ bool EditBox::_processKey(const NEvent& event)
     else
     {
       emit _d->signal.onEnterPressed();
-      _sendGuiEvent( guiEditboxEnter );
+      _sendGuiEvent( event::gui::editbox::enter );
     }
     break;
   case KEY_LEFT:
@@ -770,7 +770,7 @@ bool EditBox::_processKey(const NEvent& event)
   {
     _breakText();
     _d->needUpdateTexture = true;
-    _sendGuiEvent( guiEditboxChanged );
+    _sendGuiEvent( event::gui::editbox::changed );
   }
 
   _calculateScrollPos();
@@ -1445,7 +1445,7 @@ void EditBox::_inputChar(unsigned short c)
   }
 
   _breakText();
-  _sendGuiEvent( guiEditboxChanged );
+  _sendGuiEvent( event::gui::editbox::changed );
   _calculateScrollPos();
   _d->needUpdateTexture = true;
 }
@@ -1511,7 +1511,7 @@ void EditBox::_setTextMarkers(int begin, int end)
     {
         _d->markBegin = begin;
         _d->markEnd = end;
-        _sendGuiEvent( guiEditboxMarkingChanged );
+        _sendGuiEvent( event::gui::editbox::markingChanged );
         _d->needUpdateTexture;
     }
 }
@@ -1519,7 +1519,7 @@ void EditBox::_setTextMarkers(int begin, int end)
 //! send some gui event to parent
 void EditBox::_sendGuiEvent( unsigned int type)
 {
-    parent()->onEvent( NEvent::ev_gui( this, 0, (GuiEventType)type ));
+    parent()->onEvent( NEvent::ev_gui( this, 0, (event::gui::Type)type ));
 }
 
 NColor EditBox::overrideColor() const

@@ -871,8 +871,8 @@ bool Widget::onEvent( const NEvent& event )
   {
     switch( event.gui.type )
     {
-    case guiButtonClicked: resolved = _onButtonClicked( event.gui.caller ); break;
-    case guiListboxChanged: resolved = _onListboxChanged( event.gui.caller ); break;
+    case event::gui::buttonClicked: resolved = _onButtonClicked( event.gui.caller ); break;
+    case event::gui::listboxChanged: resolved = _onListboxChanged( event.gui.caller ); break;
     default: break;
     }
   }

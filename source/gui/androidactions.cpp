@@ -123,7 +123,7 @@ void ActionsBar::beforeDraw(gfx::Engine& painter)
 
 bool ActionsBar::onEvent(const NEvent &event)
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == event::gui::buttonClicked )
   {
     if( event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut )
     {

@@ -287,11 +287,11 @@ void ListBox::setSelected(const std::string& item)
 
 void ListBox::_indexChanged(unsigned int eventType)
 {
-  parent()->onEvent( NEvent::ev_gui( this, 0, GuiEventType( eventType ) ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, (event::gui::Type)eventType ) );
 
   switch( eventType )
   {
-  case guiListboxChanged:
+  case event::gui::listboxChanged:
   {
     emit _d->signal.onIndexSelected(_d->index.selected);
     if( _d->index.selected >= 0 )
@@ -303,7 +303,7 @@ void ListBox::_indexChanged(unsigned int eventType)
   }
   break;
 
-  case guiListboxSelectedAgain:
+  case event::gui::listboxSelectedAgain:
   {
     emit _d->signal.onIndexSelectedAgain( _d->index.selected );
     if( _d->index.selected >= 0 )
@@ -359,14 +359,14 @@ bool ListBox::onEvent(const NEvent& event)
         // post the news
         if( oldSelected != _d->index.selected && !_d->selecting && !isFlag( moveOverSelect ) )
         {
-          _indexChanged( guiListboxChanged );
+          _indexChanged( event::gui::listboxChanged );
         }
 
         return true;
       }
       else if (!event.keyboard.pressed && ( event.keyboard.key == KEY_RETURN || event.keyboard.key == KEY_SPACE ) )
       {
-        _indexChanged( guiListboxSelectedAgain );
+        _indexChanged( event::gui::listboxSelectedAgain );
 
         return true;
       }
@@ -415,7 +415,7 @@ bool ListBox::onEvent(const NEvent& event)
             {
               if ( _d->index.selected != current && !_d->selecting && !isFlag( moveOverSelect ))
               {
-                _indexChanged( guiListboxChanged );
+                _indexChanged( event::gui::listboxChanged );
               }
 
               setSelected(current);
@@ -433,7 +433,7 @@ bool ListBox::onEvent(const NEvent& event)
             {
               if ( _d->index.selected != current && !_d->selecting && !isFlag( moveOverSelect ))
               {
-                _indexChanged( guiListboxChanged );
+                _indexChanged( event::gui::listboxChanged );
               }
 
               setSelected(current);
@@ -449,7 +449,7 @@ bool ListBox::onEvent(const NEvent& event)
     case sEventGui:
       switch(event.gui.type)
       {
-      case guiScrollbarChanged:
+      case event::gui::scrollbarChanged:
       {
         if (event.gui.caller == _d->scrollBar)
         {
@@ -459,10 +459,10 @@ bool ListBox::onEvent(const NEvent& event)
       }
       break;
 
-      case guiElementFocused:
+      case event::gui::widget::focused:
       break;
 
-      case guiElementFocusLost:
+      case event::gui::widget::focusLost:
       {
         if (event.gui.caller == this)
         {
@@ -567,9 +567,9 @@ void ListBox::_selectNew(int ypos)
 
     _recalculateScrollPos();
 
-    GuiEventType eventType = ( _d->index.selected == oldSelected && now < _d->time.select + 500)
-                                   ? guiListboxSelectedAgain
-                                   : guiListboxChanged;
+    auto eventType = ( _d->index.selected == oldSelected && now < _d->time.select + 500)
+                                   ? event::gui::listboxSelectedAgain
+                                   : event::gui::listboxChanged;
     _d->time.select = now;
     // post the news
     _indexChanged( eventType );

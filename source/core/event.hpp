@@ -175,77 +175,90 @@ enum KeyCode
 };
 
 //! Enumeration for all events which are sendable by the gui system
-enum GuiEventType
+namespace event
 {
-	//! A gui element has lost its focus.
-	guiElementFocusLost = 0,
+    namespace gui
+    {
+        typedef unsigned int Type;
+        enum widget
+        {
+            //! A gui element has lost its focus.
+            focusLost = 0,
 
-	//! A gui element has got the focus.
-	/** If the event is absorbed then the focus will not be changed. */
-	guiElementFocused,
+            //! A gui element has got the focus.
+            /** If the event is absorbed then the focus will not be changed. */
+            focused,
 
-	//! The mouse cursor hovered over a gui element.
-	/** If an element has sub-elements you also get this message for the subelements */
-	guiElementHovered,
+            //! The mouse cursor hovered over a gui element.
+            /** If an element has sub-elements you also get this message for the subelements */
+            hovered,
 
-	//! The mouse cursor left the hovered element.
-	/** If an element has sub-elements you also get this message for the subelements */
-	guiElementLeft,
+            //! The mouse cursor left the hovered element.
+            /** If an element has sub-elements you also get this message for the subelements */
+            left,
 
-	//! An element would like to close.
-	/** Windows and context menus use this event when they would like to close,
-	this can be cancelled by absorbing the event. */
-	guiElementClosed,
+            //! An element would like to close.
+            /** Windows and context menus use this event when they would like to close,
+            this can be cancelled by absorbing the event. */
+            closed,
+        };
 
-	//! A button was clicked.
-	guiButtonClicked,
+        enum editbox
+        {
+            //! In an editbox 'ENTER' was pressed
+            enter=widget::closed+1,
 
-	//! A scrollbar has changed its position.
-	guiScrollbarChanged,
+            //! The text in an editbox was changed. This does not include automatic changes in text-breaking.
+            changed,
 
-	//! A checkbox has changed its check state.
-	guiCheckboxChanged,
+            //! The marked area in an editbox was changed.
+            markingChanged,
+        };
 
-	//! A new item in a listbox was selected.
-	/** NOTE: You also get this event currently when the same item was clicked again after more than 500 ms. */
-	guiListboxChanged,
+        enum
+        {
+            //! A button was clicked.
+            buttonClicked=editbox::markingChanged+1,
 
-	//! An item in the listbox was selected, which was already selected.
-	/** NOTE: You get the event currently only if the item was clicked again within 500 ms or selected by "enter" or "space". */
-	guiListboxSelectedAgain,
+            //! A scrollbar has changed its position.
+            scrollbarChanged,
 
-	//! In an editbox 'ENTER' was pressed
-	guiEditboxEnter,
+            //! A checkbox has changed its check state.
+            checkboxChanged,
 
-	//! The text in an editbox was changed. This does not include automatic changes in text-breaking.
-	guiEditboxChanged,
+            //! A new item in a listbox was selected.
+            /** NOTE: You also get this event currently when the same item was clicked again after more than 500 ms. */
+            listboxChanged,
 
-  //! The marked area in an editbox was changed.
-  guiEditboxMarkingChanged,
+            //! An item in the listbox was selected, which was already selected.
+            /** NOTE: You get the event currently only if the item was clicked again within 500 ms or selected by "enter" or "space". */
+            listboxSelectedAgain,
 
-	//! The tab was changed in an tab control
-	guiTabChanged,
+            //! The tab was changed in an tab control
+            tabChanged,
 
-	//! A menu item was selected in a (context) menu
-	guiMenuItemSelected,
+            //! A menu item was selected in a (context) menu
+            menuItemSelected,
 
-	//! The selection in a combo box has been changed
-	guiComboboxChanged,
+            //! The selection in a combo box has been changed
+            comboboxChanged,
 
-	//! The value of a spin box has changed
-	guiSpinboxChanged,
+            //! The value of a spin box has changed
+            spinboxChanged,
 
-	guiTableHeaderChanged,
-	guiTableCellChange,
-	guiTableCellSelected,
-	guiTableCellDblclick,
-  guiTreeviewNodeExpand,
-  guiTreeviewNodeCollapse,
-  guiTreeviewNodeSelect,
+            tableHeaderChanged,
+            tableCellChange,
+            tableCellSelected,
+            tableCellDblclick,
+            treeviewNodeExpand,
+            treeviewNodeCollapse,
+            treeviewNodeSelect,
 
-	//! No real event. Just for convenience to get number of events
-	guiEventCount
-};
+            //! No real event. Just for convenience to get number of events
+            eventCount
+        };
+    }
+}
 
 //! Enumeration for all event types there are.
 enum SysEventType
@@ -305,7 +318,7 @@ struct NEvent
   {    
     gui::Widget* caller; //! IGUIElement who called the event
     gui::Widget* element; //! If the event has something to do with another element, it will be held here.
-    GuiEventType type; //! Type of GUI Event
+    event::gui::Type type; //! Type of GUI Event
   };
 
   struct _AppEvent
@@ -395,7 +408,7 @@ struct NEvent
     struct _AppEvent app;
   };
 
-  static NEvent ev_gui( gui::Widget* caller, gui::Widget* elm, GuiEventType type );
+  static NEvent ev_gui( gui::Widget* caller, gui::Widget* elm, event::gui::Type type );
   static NEvent ev_none();
 };
 

@@ -60,14 +60,14 @@ bool MainMenu::onEvent(const NEvent& event)
     case sEventGui:
       switch(event.gui.type)
       {
-      case guiElementFocusLost:
+      case event::gui::widget::focusLost:
         if (event.gui.caller == this && !isMyChild(event.gui.element))
         {
           _closeAllSubMenus();
           _setHovered( -1 );
         }
         break;
-      case guiElementFocused:
+      case event::gui::widget::focused:
         if (event.gui.caller == this )
         {
           bringToFront();

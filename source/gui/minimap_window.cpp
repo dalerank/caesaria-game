@@ -509,7 +509,7 @@ void Minimap::setTileCenter(const TilePos& tpos)
 
 bool Minimap::onEvent(const NEvent& event)
 {
-  if( sEventGui == event.EventType && guiButtonClicked == event.gui.type )
+  if( sEventGui == event.EventType && event::gui::buttonClicked == event.gui.type )
   {
     if (event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut)
     {

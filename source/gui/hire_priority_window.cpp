@@ -85,7 +85,7 @@ HirePriority::~HirePriority(){}
 
 bool HirePriority::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == event::gui::buttonClicked )
   {
     if( _d->prButtons.count( static_cast<PushButton*>( event.gui.caller ) ) )
     {

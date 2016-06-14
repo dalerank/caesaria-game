@@ -70,7 +70,7 @@ ScrollBar::~ScrollBar(){}
 
 void ScrollBar::_resolvePositionChanged()
 {
-  parent()->onEvent( NEvent::ev_gui( this, 0, guiScrollbarChanged ) );
+  parent()->onEvent( NEvent::ev_gui( this, 0, event::gui::scrollbarChanged ) );
   emit _d->onPositionChanged( _d->value );
 }
 
@@ -106,54 +106,54 @@ bool ScrollBar::onEvent(const NEvent& event)
 			}
 			break;
 		case sEventGui:
-			if (event.gui.type == guiButtonClicked)
+            if (event.gui.type == event::gui::buttonClicked)
 			{
-        if (event.gui.caller == _d->button.up.widget)
-        {
-          setValue(_d->value-_smallStep);
-        }
-        else if (event.gui.caller == _d->button.down.widget)
-        {
-          setValue(_d->value+_smallStep);
-        }
-				
-        _resolvePositionChanged();
+                if (event.gui.caller == _d->button.up.widget)
+                {
+                  setValue(_d->value-_smallStep);
+                }
+                else if (event.gui.caller == _d->button.down.widget)
+                {
+                  setValue(_d->value+_smallStep);
+                }
+
+                _resolvePositionChanged();
 
 				return true;
 			}
-			else
-				if (event.gui.type == guiElementFocusLost)
-				{
-					if (event.gui.caller == this)
-                        _dragging = false;
-				}
-				break;
+            else if (event.gui.type == event::gui::widget::focusLost)
+            {
+                if (event.gui.caller == this)
+                    _dragging = false;
+            }
+            break;
+
 		case sEventMouse:
 			{
 				_d->cursorPos =event.mouse.pos();
 				bool isInside = isPointInside ( _d->cursorPos );
 				switch(event.mouse.type)
 				{
-        case NEvent::Mouse::mouseWheel:
-					if( isFocused() )
+                    case NEvent::Mouse::mouseWheel:
+                    if (isFocused())
 					{
-            setValue(	value() +
+                        setValue( value() +
 										( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )	);
 
 						_resolvePositionChanged();
 						return true;
 					}
-        break;
+                    break;
 
-        case NEvent::Mouse::btnLeftPressed:
+                    case NEvent::Mouse::btnLeftPressed:
 					{
 						if (isInside)
 						{
-              _dragging = true;
-              _draggedBySlider = _d->slider.rect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
-              _trayClick = !_draggedBySlider;
-              _desiredPos = _getPosFromMousePos( _d->cursorPos );
-              ui()->setFocus ( this );
+                            _dragging = true;
+                            _draggedBySlider = _d->slider.rect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
+                            _trayClick = !_draggedBySlider;
+                            _desiredPos = _getPosFromMousePos( _d->cursorPos );
+                            ui()->setFocus ( this );
 							return true;
 						}
 					}
@@ -172,41 +172,41 @@ bool ScrollBar::onEvent(const NEvent& event)
 						if ( !_dragging )
 							return isInside;
 
-            const int newPos = _getPosFromMousePos( _d->cursorPos );
-            const int oldPos = _d->value;
+                        const int newPos = _getPosFromMousePos( _d->cursorPos );
+                        const int oldPos = _d->value;
 
-            if (!_draggedBySlider)
+                        if (!_draggedBySlider)
 						{
 							if ( isInside )
 							{
-                _draggedBySlider = _d->slider.rect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
-                _trayClick = !_draggedBySlider;
+                                _draggedBySlider = _d->slider.rect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
+                                _trayClick = !_draggedBySlider;
 							}
 
-              if( _draggedBySlider )
+                            if( _draggedBySlider )
 							{
-                setValue(newPos);
+                                setValue(newPos);
 							}
 							else
 							{
-                _trayClick = false;
-                if (event.mouse.type == NEvent::Mouse::moved)
-                {
+                                _trayClick = false;
+                                if (event.mouse.type == NEvent::Mouse::moved)
+                                {
 									return isInside;
-                }
+                                }
 							}
 						}
 
 						if (_draggedBySlider)
 						{
-              setValue(newPos);
+                            setValue(newPos);
 						}
 						else
 						{
 							_desiredPos = newPos;
 						}
 
-            if (_d->value != oldPos )
+                        if (_d->value != oldPos )
 						{
 							_resolvePositionChanged();
 						}
@@ -215,11 +215,13 @@ bool ScrollBar::onEvent(const NEvent& event)
 				break;
 
 				default:
-					break;
+                break;
 				}
-			} break;
-		default:
-			break;
+            }
+        break;
+
+        default:
+        break;
 		}
 	}
 
@@ -257,7 +259,7 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 
     if (_d->value != oldPos )
 		{
-			parent()->onEvent( NEvent::ev_gui( this, 0, guiScrollbarChanged ) );
+            parent()->onEvent( NEvent::ev_gui( this, 0, event::gui::scrollbarChanged ) );
 		}
 	}
 }

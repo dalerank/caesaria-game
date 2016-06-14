@@ -265,22 +265,22 @@ bool Window::onEvent(const NEvent& event)
     switch(event.EventType)
     {
     case sEventGui:
-      if (event.gui.type == guiElementFocusLost)
+      if (event.gui.type == event::gui::widget::focusLost)
       {
         _d->drag.active = false;
       }
-      else if (event.gui.type == guiElementFocused)
+      else if (event.gui.type == event::gui::widget::focused)
       {
           if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
             bringToFront();
       }
-      else if (event.gui.type == guiButtonClicked)
+      else if (event.gui.type == event::gui::buttonClicked)
       {
         if (event.gui.caller == _d->buttons[ buttonClose ] )
         {
             // send close event to parent
             // if the event was not absorbed
-            if( !parent()->onEvent( NEvent::ev_gui( this, 0, guiElementClosed ) ) )
+            if( !parent()->onEvent( NEvent::ev_gui( this, 0, event::gui::widget::closed ) ) )
                 deleteLater();
             return true;
         }

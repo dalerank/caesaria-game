@@ -40,15 +40,15 @@ public:
 
   const State& current() const;
 
-  bool append(const Picture& pic, const Point& pos, Rect *clip );
-  bool append( const Picture& pic, const Rect& srcrect, const Rect& dstrect, Rect* clip );
-  bool append( const Picture& pic, const Rects& srcrects, const Rects& dstrects, Rect* clip );
+  bool append(const Picture& pic, const Point& pos, Rect *clip);
+  bool append(const Picture& pic, const Rect& srcrect, const Rect& dstrect, Rect* clip);
+  bool append(const Picture& pic, const Rects& srcrects, const Rects& dstrects, Rect* clip);
 
   void reset();
   bool finish();
 
   bool active() const;
-  void setActive( bool value );
+  void setActive(bool value);
 
 private:
   class Impl;

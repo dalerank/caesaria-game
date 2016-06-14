@@ -31,7 +31,6 @@
 #include "core/logger.hpp"
 #include "advisor_employers_window.hpp"
 #include "advisor_legion_window.hpp"
-#include "advisor_emperor_window.hpp"
 #include "advisor_trade_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "game/funds.hpp"
@@ -131,7 +130,7 @@ bool Parlor::onEvent( const NEvent& event )
     return true;
   }
 
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == event::gui::buttonClicked )
   {
     int id = event.gui.caller->ID();
     if( id >= 0 && id < advisor::unknown )
@@ -241,9 +240,6 @@ void ParlorModel::switchAdvisor(Advisor type)
   break;
   case advisor::population:
     d.advisorPanel = new advisorwnd::Population( d.city, d.parent );
-  break;
-  case advisor::empire:
-    d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent );
   break;
   case advisor::trading:
     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city );

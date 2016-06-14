@@ -399,7 +399,7 @@ void Employer::draw(Engine& painter )
 
 bool Employer::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == event::gui::buttonClicked )
   {
     return true;
   }

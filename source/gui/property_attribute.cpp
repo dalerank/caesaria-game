@@ -37,12 +37,12 @@ bool AbstractAttribute::onEvent(const NEvent &e)
         case sEventGui:
           switch (e.gui.type)
             {
-            case guiElementFocused:
+            case event::gui::widget::focused:
               if( isMyChild(e.gui.caller) )
                 bringToFront();
               break;
 
-            case guiElementFocusLost:
+            case event::gui::widget::focusLost:
               if( _isNeedUpdate )
                 {
                   updateAttrib();

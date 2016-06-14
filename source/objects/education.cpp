@@ -43,7 +43,7 @@ public:
 School::School()
   : EducationBuilding(Service::school, object::school, Size(2,2))
 {
-  setPicture( info().randomPicture( Size(2,2) ) );
+  setPicture( info().randomPicture( size() ) );
   _d->maxMonthVisitors = config::educationbld::maxSchoolVisitors;
   _d->currentPeopleServed = 0;
 }

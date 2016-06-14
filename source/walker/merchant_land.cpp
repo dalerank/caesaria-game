@@ -210,19 +210,19 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
         route = wh_picker::get4Sells( pathPropagator, sell );
       }
 
-      if( !route.first.isValid() )
+      if( !route.dst().isValid() )
       {
         Logger::warning( "!!! LandMerchant can't found path to nearby warehouse. BaseCity=" + baseCityName );
         route = PathwayHelper::shortWay( city, position, object::warehouse, PathwayHelper::roadOnly );
       }
 
-      if( route.first.isValid()  )
+      if( route.dst().isValid()  )
       {
         // we found a destination!
         nextState = stSellGoods;
-        destination = route.first->pos();
-        wlk->setPos( route.second.startPos() );
-        wlk->setPathway( route.second );      
+        destination = route.dst()->pos();
+        wlk->setPos( route.way().startPos() );
+        wlk->setPathway(route.way());
         wlk->go();
       }
       else
@@ -252,13 +252,13 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
         route = wh_picker::get4Buys( pathPropagator, buy, city );
       }
       
-      if( route.first.isValid() )
+      if( route.dst().isValid() )
       {
         // we found a destination!
         nextState = stBuyGoods;
-        destination = route.first->pos();
-        wlk->setPos( route.second.startPos() );
-        wlk->setPathway( route.second );
+        destination = route.dst()->pos();
+        wlk->setPos( route.way().startPos() );
+        wlk->setPathway( route.way() );
         wlk->go();
       }
       else

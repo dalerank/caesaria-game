@@ -162,6 +162,19 @@ DateTime::DateTime()
 unsigned char DateTime::hour()    const { return _hour;}
 Month DateTime::month()           const { return Month(_month); }
 int DateTime::year()              const { return _year; }
+
+int DateTime::get(int prop) const
+{
+  switch(prop) {
+  case 0: return _year;
+  case 1: return _month;
+  case 2: return _day;
+  case 3: return _hour;
+  case 4: return _minutes;
+  case 5: return _seconds;
+  }
+}
+
 unsigned char DateTime::minutes() const { return _minutes; }
 unsigned char DateTime::day()     const { return _day; }
 unsigned char DateTime::seconds() const { return _seconds; }

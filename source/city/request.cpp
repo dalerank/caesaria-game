@@ -218,7 +218,7 @@ void RqGood::load(const VariantMap& stream)
 void RqGood::success( PlayerCityPtr city )
 {
   RqBase::success( city );
-  _d->complyRequest.apply( city );  
+  _d->complyRequest.apply( city );
 }
 
 void RqGood::fail( PlayerCityPtr city )
@@ -244,6 +244,21 @@ void RqGood::fail( PlayerCityPtr city )
   }
 }
 
+Variant RqGood::getProperty(const std::string& name) const
+{
+  if (name == "qty") return qty();
+  if (name == "gtype") return (int)info().type();
+
+  return RqBase::getProperty(name);
+}
+
+Variant RqGood::action(PlayerCityPtr c, const std::string& n)
+{
+  if (n=="isReady") return isReady(c);
+
+  return Variant();
+}
+
 void RqGood::update()
 {
   RqBase::update();
@@ -263,6 +278,13 @@ good::Info RqGood::info() const { return good::Info( _d->stock.type() ); }
 RqGood::RqGood() : RqBase( DateTime() ), _d( new Impl )
 {
   _d->alsoRemind = false;
+}
+
+Variant RqBase::action(PlayerCityPtr c, const std::string& name)
+{
+  if (name == "exec") { exec(c); return true; }
+
+  return Variant();
 }
 
 VariantMap RqBase::save() const
@@ -286,6 +308,15 @@ void RqBase::load(const VariantMap& stream)
   Logger::warningIf( vStart.isNull(), "Request: unknown start date" );
 
   _startDate = vStart.isNull() ? game::Date::current() : vStart.toDateTime();
+}
+
+Variant RqBase::getProperty(const std::string& name) const
+{
+  if (name == "isDeleted") return _isDeleted;
+  if (name == "description" ) return description();
+  if (name == "finishDate") return finishedDate();
+
+  return Variant();
 }
 
 void RqBase::_saveState(PlayerCityPtr city, int relation, const std::string& message)

@@ -19,6 +19,10 @@ g_config.align = {
   automatic:4
 }
 
+g_config.relationAbility = {
+  request : 0,
+}
+
 g_config.audio = {
     theme: 2,
     speech: 4,
